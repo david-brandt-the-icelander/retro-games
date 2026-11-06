@@ -1,0 +1,11 @@
+// Static-assets Worker for Samosa, served at icelander.net/retro-games/samosa.
+// Build with BASE_PATH=retro-games/samosa (the default in build.mjs). Deploy only after the publish gate.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "samosa",
+  "compatibility_date": "2025-01-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "icelander.net/retro-games/samosa*", "zone_name": "icelander.net" }],
+  "assets": { "directory": "./dist" }
+}

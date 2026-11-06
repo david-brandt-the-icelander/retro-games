@@ -1,0 +1,22 @@
+{
+  "name": "samosa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Samosa: a remake of a 1983 ZX Spectrum strategy game, set in Nicaragua.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && node build.mjs",
+    "test": "tsc --noEmit && node build.mjs --test && node --test dist-test/test/*.test.mjs",
+    "sheet": "node build.mjs --test && node dist-test/scripts/contact-sheet.mjs docs/contact-sheet.png",
+    "dev": "node build.mjs --watch",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.6.0",
+    "wrangler": "^4.0.0"
+  },
+  "license": "MPL-2.0"
+}
