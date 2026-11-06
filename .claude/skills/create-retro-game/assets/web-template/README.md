@@ -13,7 +13,7 @@ Inspired by *ORIGINAL TITLE* (YEAR) by AUTHOR, published by PUBLISHER. This is a
 npm install
 npm test          # typecheck + rules, flow, layout and display tests
 npm run sheet     # render every screen to docs/contact-sheet.png
-npm run build     # bundle into dist/ (BASE_PATH=retro-games/<slug> to nest it)
+npm run build     # bundle into dist/ (BASE_PATH=games/retro/<slug> to nest it)
 npm run dev       # rebuild on change
 ```
 
