@@ -25,13 +25,12 @@ async function call<T>(path: string, init?: RequestInit, ms = 5000): Promise<T |
 export const startReign = () => call<Reign>("game", { method: "POST", body: "{}" }, 3000);
 
 /** Send the keys of a finished reign; the server replays it and records the score it computes. */
-export const submitReign = (reign: Reign, keys: string[], email: string) =>
-  call<Entry>("score", { method: "POST", body: JSON.stringify({ id: reign.id, keys, email }) }, 10000);
+export const submitReign = (reign: Reign, keys: string[], name: string) =>
+  call<Entry>("score", { method: "POST", body: JSON.stringify({ id: reign.id, keys, name }) }, 10000);
 
 export async function loadTable(): Promise<TableRow[] | null> {
   const r = await call<{ scores: TableRow[] }>("scores");
   return r ? r.scores : null;
 }
 
-/** The same check the server makes, so that the form can say so before sending. */
-export const looksLikeEmail = (s: string) => s.length <= 254 && /^[^\s@]{1,64}@[^\s@.]+(\.[^\s@.]+)+$/.test(s);
+

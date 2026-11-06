@@ -2,8 +2,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { newGame, playGame } from "../src/engine";
-import { publicName, replay, validEmail } from "../worker/scores";
-import { looksLikeEmail } from "../src/scores";
+import { cleanName, replay } from "../worker/scores";
+import { hasGlyph } from "../src/zx/font";
 import { rotating } from "./helpers";
 
 async function playRecorded(seed: number) {
@@ -29,17 +29,17 @@ test("a replay is refused when the keys don't play exactly one whole reign", asy
   assert.ok(other === null || other.score !== undefined, "another seed either fails or scores its own game");
 });
 
-test("only the part before the @ is made public, in characters the font can draw", () => {
-  assert.equal(publicName("david.brandt@example.com"), "david.brandt");
-  assert.equal(publicName("a<b>\"c@x.io"), "abc");
-  assert.equal(publicName("averyveryverylongname@x.io"), "averyveryver");
-  assert.equal(publicName("!!!@x.io"), "anonymous");
-});
-
-test("emails are checked the same way in the browser and on the server", () => {
-  for (const [s, ok] of [["a@b.co", true], ["first.last+tag@sub.example.org", true], ["no-at-sign", false], ["a@b", false], ["a b@c.de", false], ["@c.de", false], [`${"x".repeat(65)}@c.de`, false]] as const) {
-    assert.equal(validEmail(s), ok, s);
-    assert.equal(looksLikeEmail(s), ok, s);
+test("a name is cleaned to what the game's font can draw, up to 12 characters", () => {
+  assert.equal(cleanName("Davíð Brandt"), "David Brandt");
+  assert.equal(cleanName("Þórður"), "Thordur");
+  assert.equal(cleanName("  Ortiga   the  Great  "), "Ortiga the G");
+  assert.equal(cleanName("Mæja <b>"), "Maeja b");
+  assert.equal(cleanName("O'Neil-Smith_2"), "O'Neil-Smith");
+  for (const empty of ["", "   ", "!!!", "@@@", "...", 42, undefined]) assert.equal(cleanName(empty), "", String(empty));
+  for (const raw of ["Davíð", "Ærnöld Þrándur", "x".repeat(300), "a\u0000b\n<c>&d"]) {
+    const name = cleanName(raw);
+    assert.ok(name.length <= 12, raw);
+    for (const ch of name) assert.ok(ch === " " || hasGlyph(ch), `${raw}: no glyph for ${ch}`);
   }
 });
 

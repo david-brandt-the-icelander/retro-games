@@ -118,7 +118,7 @@ Every screen the player can see. The wireframes phase must draw exactly this lis
 | 3 | `about` | The credit line, the remake's own credits, licence and source link | `title` (A) | extra | key; returns to `title` |
 | 4 | `sound` | A small on-screen indicator that sound is on or off; not a full screen | M on any screen; the touch sound button | extra (overlay) | none (fades after about 1.5 s; the game screen underneath is unchanged) |
 | 4a | `scores` | The public high-score table: the ten best reigns (name, score, months, fled or died), this reign highlighted | `title` (S); after an entry | extra (owner decision 2026-11-06) | key; returns to `title` |
-| 4b | `entry` | After a reign: the score, and an HTML form below the screen for the player's email | After the final report, when the server issued the reign's seed | extra (owner decision 2026-11-06) | the form: Enter submits, Escape or SKIP skips |
+| 4b | `entry` | After a reign: the score, and an HTML form below the screen for the player's name | After the final report, when the server issued the reign's seed | extra (owner decision 2026-11-06) | the form: Enter submits, Escape or SKIP skips |
 | 5 | `welcome` | Best rating so far and an encouragement; the first reports are free | `title` | `welcome` | key |
 | 6 | `month` | The month number | Start of each month (§4 step 2) | `month` | 1 s |
 | 7 | `treasury` | Balance (credit or debt), monthly costs, Swiss balance once above 0 | After `welcome`; after the audience; after a decision, the Swiss transfer or a loan result | `treasury` | key |
@@ -432,6 +432,7 @@ All melodies are new and written for this game; effects are generic beeper sound
 | 2026-11-06 | State Security's screens (report, report offer) are dark: white type on black paper. | Owner |
 | 2026-11-06 | After playtesting: every screen waits for a key (a newsflash went by too fast to read). Timed screens draw in full and play their sound, then show the any-key footer. | Owner |
 | 2026-11-06 | After playtesting: one report offer a month, at the end of the turn (RULES §4 step 15). | Owner |
+| 2026-11-06 | The high-score table asks for a name, not an email: no personal data is collected. Names are cleaned to the font's characters, at most 12. | Owner |
 | 2026-11-06 | Revised: the screens the original moved on by itself don't wait for a key after all. They show the any-key prompt and move on by themselves 7 s after they appear, unless a key comes first. | Owner |
 | 2026-11-06 | A public high-score table, keyed by the player's email: the table shows only the part before the @ (the full address is stored privately and never shown or shared); there is no email check; the server issues each reign's seed and replays the reign from its keys to compute the score, so scores can't be faked. | Owner |
 

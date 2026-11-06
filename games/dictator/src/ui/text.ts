@@ -474,13 +474,13 @@ export const SCORES = {
   offline: "The table cannot be reached.",
   yours: (rank: number, score: number) => `Your reign: ${score}, ranked ${rank}.`,
   entryTitle: (score: number) => `Your reign scored ${score}.`,
-  entryLines: ["Enter your email below to put", "it on the public table, or", "skip. Only the part before", "the @ is ever shown."],
-  entrySpeech: (score: number) => `Your reign scored ${score}. To put it on the public high-score table, type your email address in the form below the screen and press Enter, or press Escape to skip. Only the part before the @ is shown publicly.`,
-  formLabel: "Your email (only the part before the @ is shown)",
-  formNote: "The full address is stored privately with your score and never shown or shared.",
+  entryLines: ["Type your name below to put", "it on the public table, or", "skip."],
+  entrySpeech: (score: number) => `Your reign scored ${score}. To put it on the public high-score table, type your name in the form below the screen and press Enter, or press Escape to skip.`,
+  formLabel: "Your name for the high-score table",
+  formNote: "Up to 12 letters, digits or spaces. It is shown publicly with your score.",
   formSubmit: "ENTER THE TABLE",
   formSkip: "SKIP",
-  formInvalid: "That doesn't look like an email address.",
+  formInvalid: "Type a name with at least one letter or digit.",
   formFailed: "The table could not be reached. Try again, or skip.",
   speech: (rows: { name: string; score: number; months: number; alive: boolean }[] | null, mine: string) =>
     `Order of merit: the most glorious reigns. ${rows === null ? "The table cannot be reached." : rows.length === 0 ? "No reign recorded yet." :
