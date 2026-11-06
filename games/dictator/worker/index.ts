@@ -9,7 +9,7 @@
 // engine, from the seed it issued and the keys the player pressed, and records the rating
 // that replay produces. Each seed can be submitted once. Only the part of the email before
 // the @ is ever returned; the full address is stored privately.
-import { BASE, json, MAX_KEYS, publicName, replay, SEED_LIFETIME_MS, TABLE_SIZE, validEmail } from "./scores";
+import { BASE, OLD_PATH, PATH, json, MAX_KEYS, publicName, replay, SEED_LIFETIME_MS, TABLE_SIZE, validEmail } from "./scores";
 
 /** The subset of Cloudflare's D1 and Fetcher types this Worker uses. */
 interface D1Result<T> { results: T[]; meta: { changes: number } }
@@ -61,6 +61,10 @@ async function topScores(env: Env): Promise<Response> {
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
+    // The game moved from /retro-games/samosa to /games/retro/samosa; 308 keeps the method.
+    if (url.pathname === OLD_PATH || url.pathname.startsWith(OLD_PATH + "/")) {
+      return new Response(null, { status: 308, headers: { Location: PATH + url.pathname.slice(OLD_PATH.length) + url.search, "Cache-Control": "no-store" } });
+    }
     if (!url.pathname.startsWith(BASE + "/")) return env.ASSETS.fetch(req);
     const route = `${req.method} ${url.pathname.slice(BASE.length)}`;
     try {
