@@ -209,14 +209,14 @@ One entry per screen in GDD §7 order. Cells are given as rows × columns, 0-bas
 | s | row 0 × col 1 | blue | yellow | yes | no | left | icon `seal` |
 | L | row 0 × cols 3–18 | blue | yellow | yes | no | left | `"ABOUT SAMOSA"` |
 | C | rows 3–7 × cols 0–31 | yellow | blue | no | no | centre | *row 3:* `"Inspired by Dictator (1983) by"`<br>*row 4:* `"Don Priestley, published by"`<br>*row 5:* `"DK'Tronics. Independent remake,"`<br>*row 6:* `"not affiliated with or endorsed"`<br>*row 7:* `"by the original rights holders."` |
-| M | rows 11–16 × cols 0–31 | white | blue | no | no | centre | *row 11:* `"Remade for icelander.net, 2026."`<br>*row 12:* `"A caricature of Nicaraguan"`<br>*row 13:* `"history, not a record. No real"`<br>*row 14:* `"person is portrayed. MPL-2.0."`<br>*row 15:* `"github.com/david-brandt-the-"`<br>*row 16:* `"icelander/retro-games"` |
+| M | rows 11–16 × cols 0–31 | white | blue | no | no | centre | *row 11:* `"Remade by David Brandt, 2026."`<br>*row 12:* `"A caricature of Nicaraguan"`<br>*row 13:* `"history, not a record. No real"`<br>*row 14:* `"person is portrayed. MPL-2.0."`<br>*row 15:* `"github.com/david-brandt-the-"`<br>*row 16:* `"icelander/retro-games"` |
 | K | rows 21–23 × cols 0–31 | black | white | no | no | centre | `"ANY KEY: BACK TO THE TITLE"` |
 
 - **Decoration (`#`):** row 0 × col 0 and row 0 × col 2: letterhead band: yellow paper; row 0 × cols 19–31: letterhead band: yellow paper (cols 20–31 also carry the sound overlay when shown); row 1 × cols 0–31: double rule: pixel rows 2 and 5 of row 1, all 256 pixels, in the page ink; row 9 × cols 8–23: short rule: 1-pixel line on pixel row 4 of row 9, cyan.
 - **Input:** Any key except M returns to `title`. **Keypad offers:** [NEXT].
 - **Timing:** Waits for a key.
 - **Sound:** None.
-- **Screen-reader text** (polite): About Samosa. Inspired by Dictator (1983) by Don Priestley, published by DK'Tronics. Independent remake, not affiliated with or endorsed by the original rights holders. Remade for icelander.net, 2026. A caricature of Nicaraguan history, not a record. No real person is portrayed. Licence MPL-2.0. Source code at github.com/david-brandt-the-icelander/retro-games. Press any key to go back to the title.
+- **Screen-reader text** (polite): About Samosa. Inspired by Dictator (1983) by Don Priestley, published by DK'Tronics. Independent remake, not affiliated with or endorsed by the original rights holders. Remade by David Brandt, 2026. A caricature of Nicaraguan history, not a record. No real person is portrayed. Licence MPL-2.0. Source code at github.com/david-brandt-the-icelander/retro-games. Press any key to go back to the title.
 
 ### sound
 

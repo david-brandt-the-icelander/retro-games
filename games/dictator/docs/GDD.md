@@ -423,6 +423,7 @@ All melodies are new and written for this game; effects are generic beeper sound
 | 2026-11-06 | Public address: `icelander.net/retro-games/samosa` (follows the title). | Owner |
 | 2026-11-06 | Real parties and organisations are named; real people are not. Events are built on Nicaraguan history, caricatured. The ruling families are the puns Ortiga and Samosa; the player is President Ortiga; the Landowners faction becomes the Samosa family (rules unchanged). | Owner |
 | 2026-11-06 | No "wait for a key on timed screens" setting. | Owner |
+| 2026-11-06 | Credits name the remake's author as David Brandt. Headlines run under the real masthead *La Prensa*. | Owner |
 
 ## 15. Decisions (all closed)
 
