@@ -63,7 +63,7 @@ const DOSSIER_BAND = at(BLACK, YELLOW); // a manila tab on the dark file
 const AUDIENCE_BAND = at(BLACK, MAGENTA);
 const CABINET_BAND = at(WHITE, BLUE);
 
-function palace(p: Painter, office: string): void {
+export function palace(p: Painter, office: string): void {
   p.page(WHITE, BLUE, BLUE).letterhead(office, PALACE_BAND, ART.SEAL);
 }
 
@@ -731,16 +731,6 @@ export function drawScores(z: ZXScreen, rows: readonly ScoreRow[] | null, mine?:
   if (line) p.centre(18, line, at(YELLOW, BLUE));
   p.footer(T.PROMPT.backToTitle);
   return keyScreen(T.SCORES.speech(rows ? rows.slice(0, 10) : null, line));
-}
-
-/** The screen behind the email form (an extra): the form itself is HTML below the screen. */
-export function drawEntry(z: ZXScreen, score: number): Presentation {
-  const p = new Painter(z);
-  palace(p, T.OFFICE.merit);
-  p.icon(15, 3, ART.ROSETTE, at(YELLOW, BLUE, { bright: true }));
-  p.centre(7, T.SCORES.entryTitle(score), at(YELLOW, BLUE));
-  lines(p, 9, 0, 31, T.SCORES.entryLines, at(WHITE, BLUE));
-  return keyScreen(T.SCORES.entrySpeech(score), []);
 }
 
 /** Run every animation step at once (the final frame), as the contact sheet and layout tests do. */

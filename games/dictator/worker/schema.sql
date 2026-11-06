@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS games (
   created INTEGER NOT NULL,
   used INTEGER NOT NULL DEFAULT 0
 );
--- Replayed, verified reigns. `email` is private and never returned by the API; `name` is
--- the part before the @, which is all the table shows.
+-- Replayed, verified reigns. `name` is what the player typed (up to 12 characters). `email` is
+-- only filled in entries made before names replaced emails; it is private and never returned.
 CREATE TABLE IF NOT EXISTS scores (
   id TEXT PRIMARY KEY REFERENCES games(id),
   email TEXT NOT NULL,

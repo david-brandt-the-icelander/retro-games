@@ -2,8 +2,16 @@
 // longest names, biggest numbers, negative money, every option present, every flag set.
 import type { Screen } from "../src/engine/screens";
 import { SoundOverlay } from "../src/ui/overlay";
-import { drawAbout, drawEntry, drawHowto, drawScores, drawScreen, drawTitle, finish, Presentation } from "../src/ui/screens";
+import { drawAbout, drawHowto, drawScores, drawScreen, drawTitle, finish, Presentation } from "../src/ui/screens";
 import type { ZXScreen } from "../src/zx/screen";
+import { drawEntry } from "../src/ui/entry";
+import { SCORES } from "../src/ui/text";
+
+/** The name-entry screen reads keys itself, without a Presentation; this one stands in for the tests. */
+const entry = (z: ZXScreen, name: string): Presentation => {
+  drawEntry(z, 99999, name);
+  return { offer: [], mode: "key", ms: 0, motifs: [], steps: [], speech: SCORES.entrySpeech(99999, name), assertive: true };
+};
 
 const BIG = 12345, NEG = -12345;
 const allPops = [9, 9, 9, 9, 9, 9, 9, 9], allStr = [9, 9, 9, 9, 9, 9];
@@ -136,6 +144,7 @@ export const LAYOUT_SAMPLES: Sample[] = [
   { name: "scores-full", draw: (z: ZXScreen) => finish(drawScores(z, Array.from({ length: 10 }, (_, i) => ({ name: "wwwwwwwwwwwwwwww", score: 99999 - i, months: 999, alive: i % 2 === 0 })), { rank: 10, score: 99990 })) },
   { name: "scores-empty", draw: (z: ZXScreen) => finish(drawScores(z, [])) },
   { name: "scores-offline", draw: (z: ZXScreen) => finish(drawScores(z, null)) },
-  { name: "scores-entry", draw: (z: ZXScreen) => finish(drawEntry(z, 99999)) },
+  { name: "scores-entry", draw: (z: ZXScreen) => entry(z, "") },
+  { name: "scores-entry-full", draw: (z: ZXScreen) => entry(z, "ORTIGA-12.WW") },
   ...DATA_SCREENS.map((s, i) => ({ name: `data-${label(s, i)}`, draw: (z: ZXScreen) => finish(drawScreen(z, s)) })),
 ];

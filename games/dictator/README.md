@@ -23,7 +23,7 @@ Several times a month State Security offers you its file for $1,000: every group
 
 ## The high-score table
 
-After a reign you may enter the public table with your email address. Only the part before the @ is shown; the full address is stored privately with your score and never shown or shared. The server doesn't trust the browser's score: it issued the reign's random seed, and it replays your key presses through the same game engine to compute the score itself. Press S on the title screen to see the table.
+After a reign you may put it on the public table under a name of up to 12 characters (capitals, digits, dots, hyphens and spaces), typed in the style of the old arcade tables: each letter over its own underline, with the cursor blinking under the next one. Type on your keyboard, or tap or click the keys drawn on the screen; each key blinks as it is pressed. DEL (or Backspace) deletes the last letter, ENTER saves and SKIP (or Escape) leaves the reign off the table. The name is remembered for the rest of the browser session, for every game on icelander.net. A player signed in at icelander.net/games starts with the part of their email address before the @ (from `/games/me`); no email address is asked for or stored. The server doesn't trust the browser's score: it issued the reign's random seed, and it replays your key presses through the same game engine to compute the score itself. Press S on the title screen to see the table.
 
 ## Develop
 

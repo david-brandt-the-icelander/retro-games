@@ -24,6 +24,6 @@ ${body}
 <a class="button" href="/games/retro/samosa/">Play Samosa</a>
 <a class="link" href="/games/">← All the games</a>
 </div>
-<p class="note">Only the part of a player's email before the @ is shown. Enter the table at the end of a reign.</p>`;
+<p class="note">Enter the table at the end of a reign, under a name of up to 12 characters.</p>`;
   return sitePage("Samosa high scores", main, side);
 }
