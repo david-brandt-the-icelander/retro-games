@@ -4,11 +4,13 @@
 //   POST {BASE}/api/score   ← { id, keys, email }  the keys pressed at every screen, in order
 //                           → { score, rank, name }
 //   GET  {BASE}/api/scores  → { scores: [...] }    the table, best first
+//   GET  /games/retro/samosa/scores/                the table as a web page (worker/scores-page.ts)
 //
 // Scores are never trusted from the browser: the server replays the reign with the same
 // engine, from the seed it issued and the keys the player pressed, and records the rating
 // that replay produces. Each seed can be submitted once. Only the part of the email before
 // the @ is ever returned; the full address is stored privately.
+import { scoresPage } from "./scores-page";
 import { BASE, OLD_PATH, PATH, json, MAX_KEYS, publicName, replay, SEED_LIFETIME_MS, TABLE_SIZE, validEmail } from "./scores";
 
 /** The subset of Cloudflare's D1 and Fetcher types this Worker uses. */
@@ -51,12 +53,20 @@ async function submitScore(req: Request, env: Env): Promise<Response> {
   return json({ score: result.score, rank: (better?.n ?? 0) + 1, name });
 }
 
-async function topScores(env: Env): Promise<Response> {
+async function loadTop(env: Env, size: number) {
   const { results } = await env.DB.prepare(
     "SELECT name, score, months, alive FROM scores ORDER BY score DESC, created ASC LIMIT ?",
-  ).bind(TABLE_SIZE).all<{ name: string; score: number; months: number; alive: number }>();
-  return json({ scores: results.map((r) => ({ name: r.name, score: r.score, months: r.months, alive: r.alive === 1 })) });
+  ).bind(size).all<{ name: string; score: number; months: number; alive: number }>();
+  return results.map((r) => ({ name: r.name, score: r.score, months: r.months, alive: r.alive === 1 }));
 }
+
+async function topScores(env: Env): Promise<Response> {
+  return json({ scores: await loadTop(env, TABLE_SIZE) });
+}
+
+const SCORES_PAGE = `${PATH}/scores`;
+/** The web page lists more reigns than the game's own ten-row screen. */
+const PAGE_SIZE = 25;
 
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
@@ -64,6 +74,11 @@ export default {
     // The game moved from /retro-games/samosa to /games/retro/samosa; 308 keeps the method.
     if (url.pathname === OLD_PATH || url.pathname.startsWith(OLD_PATH + "/")) {
       return new Response(null, { status: 308, headers: { Location: PATH + url.pathname.slice(OLD_PATH.length) + url.search, "Cache-Control": "no-store" } });
+    }
+    // The public high-score page.
+    if (url.pathname === SCORES_PAGE || url.pathname === SCORES_PAGE + "/") {
+      if (url.pathname === SCORES_PAGE) return Response.redirect(`${url.origin}${SCORES_PAGE}/`, 301);
+      return scoresPage(await loadTop(env, PAGE_SIZE));
     }
     if (!url.pathname.startsWith(BASE + "/")) return env.ASSETS.fetch(req);
     const route = `${req.method} ${url.pathname.slice(BASE.length)}`;
