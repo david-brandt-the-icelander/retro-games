@@ -5,6 +5,7 @@ import { Recorder, type Recording } from "./engine/replay";
 import { Input, deviceLabel, fireDevice, menuAct, type Device, type Press } from "./input";
 import { MENU_ITEMS, Renderer, inRect, menuRect } from "./render";
 import { addScore, loadScores, qualifies, TABLE_SIZE } from "./scores";
+import { NAME_MAX, cleanName } from "./name";
 import { loadPublic, startGame, submitGame, type PublicRow, type Result, type Ticket } from "./net";
 import { Sound } from "./sound";
 
@@ -13,7 +14,7 @@ type Scene =
   | { kind: "lobby"; mode: "coop" | "versus"; devices: Device[]; launching: boolean }
   | { kind: "play"; game: Game; devices: Device[]; paused: boolean; rec: Recorder; ticket: Ticket | null }
   | { kind: "over"; game: Game; rec: Recorder; ticket: Ticket | null; t: number }
-  | { kind: "entry"; game: Game; rec: Recorder; ticket: Ticket | null; queue: number[]; names: (string | null)[]; letters: string[]; pos: number }
+  | { kind: "entry"; game: Game; id: number; ranked: boolean }
   | { kind: "saving"; game: Game }
   | { kind: "saved"; game: Game; results: Result[] | null; t: number };
 
@@ -24,6 +25,7 @@ const canvas = document.getElementById("game") as HTMLCanvasElement;
 const touchPad = document.getElementById("touch") as HTMLElement;
 const soundButton = document.getElementById("sound") as HTMLButtonElement;
 const pauseButton = document.getElementById("pause") as HTMLButtonElement;
+const stage = document.getElementById("stage") as HTMLElement;
 const live = document.getElementById("live") as HTMLElement;
 
 const renderer = new Renderer(canvas);
@@ -108,57 +110,95 @@ function onPublicTable(score: number): boolean {
   return publicRows.length < TABLE_SIZE || score > publicRows[TABLE_SIZE - 1].score;
 }
 
-/** After the game-over screen: initials from everyone who made a table, then the public table. */
-function afterGame({ game, rec, ticket }: Finished): void {
+/** An HTML form over the screen for a player's name. Resolves with the cleaned name, or null to skip. */
+function askName(label: string): Promise<string | null> {
+  return new Promise((resolve) => {
+    const form = document.createElement("form");
+    form.className = "entry";
+    form.noValidate = true;
+    const caption = document.createElement("label");
+    caption.htmlFor = "entry-name";
+    caption.textContent = label;
+    const field = document.createElement("input");
+    // A name, not an account: tell browsers and password managers to stay out of it.
+    Object.assign(field, { id: "entry-name", name: "player-name", type: "text", autocomplete: "off", required: true, maxLength: NAME_MAX * 2, spellcheck: false });
+    for (const [k, v] of [["data-1p-ignore", ""], ["data-lpignore", "true"], ["data-bwignore", ""], ["data-form-type", "other"], ["autocapitalize", "words"]]) field.setAttribute(k, v);
+    const message = document.createElement("p");
+    message.className = "entry-error";
+    message.setAttribute("role", "alert");
+    const submit = document.createElement("button");
+    submit.type = "submit";
+    submit.textContent = "SAVE";
+    const skip = document.createElement("button");
+    skip.type = "button";
+    skip.textContent = "SKIP";
+    const buttons = document.createElement("div");
+    buttons.className = "entry-buttons";
+    buttons.append(submit, skip);
+    const note = document.createElement("p");
+    note.className = "entry-note";
+    note.textContent = `Up to ${NAME_MAX} letters or digits. Only the name is kept. Esc skips.`;
+    form.append(caption, field, message, buttons, note);
+    const done = (value: string | null) => {
+      form.remove();
+      document.body.classList.remove("entering");
+      canvas.focus();
+      resolve(value);
+    };
+    // Typing in the form must never reach the game's keys (M would toggle the sound, P would pause).
+    form.addEventListener("keydown", (e) => { e.stopPropagation(); if (e.key === "Escape") done(null); });
+    form.addEventListener("keyup", (e) => e.stopPropagation());
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = cleanName(field.value);
+      if (!name) { message.textContent = "Please type a name with at least one letter or digit."; field.focus(); return; }
+      done(name);
+    });
+    skip.addEventListener("click", () => done(null));
+    document.body.classList.add("entering");
+    input.release();
+    stage.append(form);
+    field.focus();
+  });
+}
+
+/** After the game-over screen: a name from everyone who made a table, then the public table. */
+async function afterGame({ game, rec, ticket }: Finished): Promise<void> {
   const queue = standings(game)
     .filter((s) => (ticket && onPublicTable(s.score)) || qualifies(scores, s.score))
     .map((s) => s.id);
   const names: (string | null)[] = game.ships.map(() => null);
-  if (queue.length) {
-    scene = { kind: "entry", game, rec, ticket, queue, names, letters: ["A", "A", "A"], pos: 0 };
-    say(`Player ${queue[0] + 1}, a new high score. Type your initials and press Enter.`);
-  } else toTitle();
-}
-
-function saveEntry(s: Extract<Scene, { kind: "entry" }>): void {
-  const id = s.queue.shift()!;
-  const ship = s.game.ships[id];
-  const name = s.letters.join("").trimEnd() || "???";
-  s.names[id] = name;
-  if (qualifies(scores, ship.score)) {
-    scores = addScore(scores, {
-      name, score: ship.score, wave: s.game.wave,
-      mode: s.game.mode === "versus" ? "versus" : "coop", players: s.game.ships.length,
-    });
+  for (const id of queue) {
+    const ship = game.ships[id];
+    scene = { kind: "entry", game, id, ranked: ticket !== null };
+    say(`Player ${id + 1}, a new high score: ${ship.score}. Type your name for the high-score table.`);
+    const name = await askName(`P${id + 1}, ${ship.score.toLocaleString("en-US")} points. Your name for the high-score table:`);
+    names[id] = name;
+    if (name && qualifies(scores, ship.score)) {
+      scores = addScore(scores, {
+        name, score: ship.score, wave: game.wave,
+        mode: game.mode === "versus" ? "versus" : "coop", players: game.ships.length,
+      });
+    }
   }
-  if (s.queue.length) {
-    s.letters = ["A", "A", "A"];
-    s.pos = 0;
-    say(`Player ${s.queue[0] + 1}, a new high score. Type your initials.`);
-  } else void submit(s);
+  if (!ticket || names.every((n) => n === null)) return toTitle();
+  await submit(game, rec, ticket, names);
 }
 
 /** Sends the game to the server, which replays it and lists the named players. */
-async function submit(s: Extract<Scene, { kind: "entry" }>): Promise<void> {
-  if (!s.ticket) return toTitle();
+async function submit(game: Game, rec: Recorder, ticket: Ticket, names: (string | null)[]): Promise<void> {
   const recording: Recording = {
-    mode: s.game.mode === "versus" ? "versus" : "coop", players: s.game.ships.length,
-    seed: 0, steps: s.rec.steps, log: s.rec.log,
+    mode: game.mode === "versus" ? "versus" : "coop", players: game.ships.length,
+    seed: 0, steps: rec.steps, log: rec.log,
   };
-  scene = { kind: "saving", game: s.game };
+  scene = { kind: "saving", game };
   say("Saving scores.");
-  const results = await submitGame(s.ticket, recording, s.names);
+  const results = await submitGame(ticket, recording, names);
   if (results) await refreshPublic();
-  scene = { kind: "saved", game: s.game, results, t: 0 };
+  scene = { kind: "saved", game, results, t: 0 };
   say(results
     ? results.filter((r) => r.rank).map((r) => `Player ${r.player + 1}, ${r.name}: ${r.score}, number ${r.rank} of all pilots.`).join(" ")
     : "The score server could not be reached. Your scores are kept on this device.");
-}
-
-const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
-function cycle(letter: string, by: number): string {
-  const i = LETTERS.indexOf(letter);
-  return LETTERS[(i + by + LETTERS.length) % LETTERS.length];
 }
 
 function handle(p: Press): void {
@@ -190,7 +230,7 @@ function handle(p: Press): void {
       break;
     }
     case "over": {
-      if (scene.t > 1.2 && (act === "ok" || act === "start" || fireDevice(p))) afterGame(scene);
+      if (scene.t > 1.2 && (act === "ok" || act === "start" || fireDevice(p))) void afterGame(scene);
       break;
     }
     case "saving":
@@ -199,23 +239,8 @@ function handle(p: Press): void {
       if (scene.t > 0.8 && (act === "ok" || act === "start" || act === "back" || fireDevice(p))) toTitle();
       return;
     }
-    case "entry": {
-      const letter = /^(?:Key|Digit)([A-Z0-9])$/.exec(p.code);
-      if (letter) {
-        // Typing replaces the default initials: what comes after the typed letter is cleared.
-        const pos = scene.pos;
-        scene.letters = scene.letters.map((l, i) => (i === pos ? letter[1] : i > pos ? " " : l));
-        scene.pos = Math.min(2, scene.pos + 1);
-      } else if (act === "erase" || act === "back") scene.pos = Math.max(0, scene.pos - 1);
-      else if (act === "up" || act === "right") scene.letters[scene.pos] = cycle(scene.letters[scene.pos], 1);
-      else if (act === "down" || act === "left") scene.letters[scene.pos] = cycle(scene.letters[scene.pos], -1);
-      else if (p.code === "Enter" || p.code === "NumpadEnter" || p.code === "Space" || act === "start") saveEntry(scene);
-      else if (act === "ok") {
-        if (scene.pos < 2) scene.pos++;
-        else saveEntry(scene);
-      }
-      return; // M is a letter here
-    }
+    case "entry":
+      return; // the name form has the keyboard
   }
   if (act === "mute") {
     sound.toggle();
@@ -281,9 +306,8 @@ function draw(): void {
       renderer.gameOver(scene.game, scene.t);
       break;
     case "entry": {
-      const id = scene.queue[0];
       renderer.world(scene.game, clock);
-      renderer.entry(id, scene.game.ships[id].score, scene.letters, scene.pos, clock, scene.ticket !== null);
+      renderer.entry(scene.id, scene.game.ships[scene.id].score, scene.ranked);
       break;
     }
     case "saving":
@@ -333,7 +357,7 @@ canvas.addEventListener("pointerdown", (e) => {
   } else if (scene.kind === "lobby") {
     if (scene.devices.length === 0 && e.pointerType === "touch") join(scene.devices, "touch");
     if (scene.devices.length > 0) void launch();
-  } else if (scene.kind === "over" && scene.t > 1.2) afterGame(scene);
+  } else if (scene.kind === "over" && scene.t > 1.2) void afterGame(scene);
   else if (scene.kind === "saved" && scene.t > 0.8) toTitle();
 });
 

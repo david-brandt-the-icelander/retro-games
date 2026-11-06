@@ -11,7 +11,7 @@
 </head>
 <body>
 <main id="stage">
-  <canvas id="game" role="img" aria-label="Shatterbelt game screen" aria-describedby="live"></canvas>
+  <canvas id="game" tabindex="-1" role="img" aria-label="Shatterbelt game screen" aria-describedby="live"></canvas>
   <div id="touch" hidden>
     <div class="cluster">
       <button type="button" data-ctl="left" aria-label="Turn left">&#9664;</button>
@@ -24,12 +24,12 @@
     </div>
   </div>
 </main>
-<nav id="bar">
+<div id="bar">
   <button id="sound" type="button" aria-pressed="true">SOUND: ON (M)</button>
   <button id="pause" type="button" hidden>PAUSE (P)</button>
   <a href="scores/">HIGH SCORES</a>
-  <a href="/games/">MORE GAMES</a>
-</nav>
+</div>
+<nav class="site-links" aria-label="icelander.net"><a href="/trains">Trains of thought</a> · <a href="/games/">Games</a> · <a href="/">About and contact</a> · <a href="/feed.xml">Feed of everything</a></nav>
 <div id="live" class="sr-only" aria-live="polite"></div>
 <noscript><p class="noscript">Shatterbelt needs JavaScript.</p></noscript>
 <script src="game.js"></script>

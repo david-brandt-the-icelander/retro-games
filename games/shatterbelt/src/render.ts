@@ -715,25 +715,15 @@ export class Renderer {
     }
   }
 
-  entry(id: number, score: number, letters: string[], pos: number, t: number, ranked: boolean): void {
+  /** Behind the name form, which sits over the middle of the screen. */
+  entry(id: number, score: number, ranked: boolean): void {
     this.dimmer(0.7);
-    this.glowText("NEW HIGH SCORE", W / 2, 170, 64, PLAYER_COLORS[id]);
-    this.text(`P${id + 1}   ${fmt(score)}`, W / 2, 250, 28, COLOR.text, "center");
-    this.text("Your initials:", W / 2, 320, 18, COLOR.dim, "center", 600);
-    letters.forEach((l, i) => {
-      const x = W / 2 + (i - 1) * 90;
-      const on = i === pos;
-      this.text(l, x, 400, 72, on ? PLAYER_COLORS[id] : COLOR.text, "center", 800);
-      if (on && Math.floor(t * 3) % 2 === 0) {
-        this.ctx.fillStyle = PLAYER_COLORS[id];
-        this.ctx.fillRect(x - 28, 445, 56, 5);
-      }
-    });
-    this.text("Type letters, ENTER to save, BACKSPACE to go back.", W / 2, 520, 16, COLOR.text, "center", 500);
-    this.text("Gamepad or touch: ← → change the letter, FIRE next, blink back.", W / 2, 550, 16, COLOR.text, "center", 500);
+    this.glowText("NEW HIGH SCORE", W / 2, 120, 60, PLAYER_COLORS[id]);
+    this.hull(id, W / 2 - 120, 196, -Math.PI / 2, 1.2, 1.5);
+    this.text(`P${id + 1}   ${fmt(score)}`, W / 2 + 10, 196, 30, COLOR.text, "center");
     this.text(ranked
-      ? "Your initials go on the public table, after the server has replayed the game to check the score."
-      : "Offline game: the score is kept on this device only.", W / 2, 620, 14, COLOR.dim, "center", 500);
+      ? "Your name goes on the public table once the server has replayed the game to check the score."
+      : "Offline game: the score is kept on this device only.", W / 2, H - 40, 14, COLOR.dim, "center", 500);
   }
 
   saving(t: number): void {

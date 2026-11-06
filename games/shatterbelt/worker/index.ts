@@ -49,7 +49,7 @@ async function submitScore(req: Request, env: Env): Promise<Response> {
   const { mode, players } = body.recording;
   const entered = results
     .map((r) => ({ ...r, name: cleanName(body.names[r.player]) }))
-    .filter((r): r is typeof r & { name: string } => r.name !== null && r.score > 0);
+    .filter((r) => r.name !== "" && r.score > 0);
   if (entered.length) {
     await env.DB.batch(entered.map((r) =>
       env.DB.prepare("INSERT INTO scores (id, game, player, name, score, wave, mode, players, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")

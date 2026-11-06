@@ -27,6 +27,6 @@ ${body}
 <a class="button" href="/games/retro/shatterbelt/">Play Shatterbelt</a>
 <a class="link" href="/games/">← All the games</a>
 </div>
-<p class="note">Pilots enter their initials at the end of a game. Each player's own score counts, in co-op as in versus.</p>`;
+<p class="note">Pilots enter their names at the end of a game; only the name is kept. Each player's own score counts, in co-op as in versus.</p>`;
   return sitePage("Shatterbelt high scores", main, side);
 }

@@ -1,5 +1,6 @@
 // The best pilots: the top ten scores, kept in this browser.
 import type { Mode } from "./engine/game";
+import { cleanName } from "./name";
 
 export interface Entry {
   name: string;
@@ -18,7 +19,7 @@ export function loadScores(): Entry[] {
     if (!Array.isArray(raw)) return [];
     return raw
       .filter((e): e is Entry => !!e && typeof e.name === "string" && Number.isFinite(e.score))
-      .map((e) => ({ ...e, name: e.name.slice(0, 3).toUpperCase() }))
+      .map((e) => ({ ...e, name: cleanName(e.name) || "?" }))
       .sort((a, b) => b.score - a.score)
       .slice(0, TABLE_SIZE);
   } catch {

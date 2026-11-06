@@ -42,7 +42,7 @@ Most keyboards can't register more than a handful of keys at once, so for more t
 
 ## The high-score table
 
-At the end of a game, every pilot who made the table enters three initials. The public table is at <https://icelander.net/games/retro/shatterbelt/scores/>, and its top rows are on the title screen. No email address or other personal data is stored, only the initials.
+At the end of a game, every pilot who made the table types a name, up to 12 letters or digits, in a form over the screen (Esc or SKIP leaves them off). Names are cleaned the same way in the browser and on the server by `src/name.ts`, the same rules as Samosa and Hivestorm: accented letters lose their accents and a few are spelled out (Davíð → David, Þór → Thor). The public table is at <https://icelander.net/games/retro/shatterbelt/scores/>, and its top rows are on the title screen. No email address or other personal data is stored, only the name.
 
 The server doesn't trust the browser's score. It issues each game's random seed, and the browser records every change of every player's controls. At the end, the server replays that recording through the same game engine and lists the scores the replay produces. Each seed can be submitted once. To make a replay come out exactly as the game was played, the engine uses its own sine, cosine and arctangent built from basic arithmetic (`src/engine/dmath.ts`), which every JavaScript engine computes to the same bit.
 
@@ -61,7 +61,8 @@ npm run dev       # rebuild on change
 |---|---|
 | `src/engine/` | The pure game: every tuning number (`config.ts`), the seeded generator (`rng.ts`) and the simulation (`game.ts`). `step(game, controls[])` advances one 1/60 s step and lists what happened in `game.events`. No DOM, no timers, no `Math.random`. |
 | `src/input.ts` | The five keyboard key sets, gamepads and touch, turned into one `Controls` per player |
-| `src/render.ts` | Canvas drawing: field, effects, HUD, title, join screen, pause, game over, initials |
+| `src/render.ts` | Canvas drawing: field, effects, HUD, title, join screen, pause, game over, the high-score screens |
+| `src/name.ts` | A player's name for the tables, cleaned the same way in the browser and on the server (shared with Samosa and Hivestorm) |
 | `src/sound.ts` | Sound effects made with Web Audio; no sound files |
 | `src/engine/replay.ts` | Recording a game's controls, and replaying a recording; shared with the server |
 | `src/engine/dmath.ts` | Sine, cosine, arctangent and hypotenuse that give the same bits in every JavaScript engine |

@@ -7,8 +7,8 @@ body {
   min-height: 100dvh; overflow: hidden; font: 12px/1 ui-monospace, Menlo, Consolas, monospace;
   -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
 }
-#stage { position: relative; width: min(100vw, calc((100dvh - 48px) * 1.6)); }
-canvas#game { display: block; width: 100%; aspect-ratio: 16 / 10; touch-action: none; cursor: default; }
+#stage { position: relative; width: min(100vw, calc((100dvh - 76px) * 1.6)); }
+canvas#game { display: block; width: 100%; aspect-ratio: 16 / 10; touch-action: none; cursor: default; outline: none; }
 #touch { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; padding: 0 12px; position: absolute; left: 0; right: 0; bottom: 12px; pointer-events: none; }
 #touch[hidden] { display: none; }
 #touch .cluster { display: flex; gap: 10px; align-items: flex-end; pointer-events: auto; }
@@ -35,5 +35,24 @@ canvas#game { display: block; width: 100%; aspect-ratio: 16 / 10; touch-action: 
   #touch button { min-width: 72px; min-height: 72px; }
   #touch button.fire { min-width: 88px; min-height: 88px; }
 }
+/* The site's footer links, the same on every icelander.net page, always under the game. */
+.site-links { color: #777; font: 13px/1.7 system-ui, -apple-system, "Segoe UI", sans-serif; text-align: center; padding: 0 16px; }
+.site-links a { color: #bbb; text-underline-offset: .15em; }
+.site-links a:hover, .site-links a:focus-visible { color: #fff; }
+/* The name form for the high-score table, over the middle of the screen when a game ends. */
+.entry {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -45%); width: min(92%, 460px);
+  display: flex; flex-direction: column; gap: 8px; padding: 16px; border: 1px solid var(--line); border-radius: 10px;
+  background: rgba(4, 6, 13, 0.92); font: 14px/1.4 ui-monospace, Menlo, Consolas, monospace; color: var(--fg); user-select: text; -webkit-user-select: text;
+}
+.entry label { font-weight: bold; color: var(--hot); }
+.entry input { font: 20px ui-monospace, Menlo, Consolas, monospace; min-height: 44px; padding: 6px 10px; color: #000; background: #e8eef7; border: 2px solid var(--hot); border-radius: 6px; }
+.entry input:focus { outline: 3px solid #ffa63d; outline-offset: 1px; }
+.entry-buttons { display: flex; gap: 8px; }
+.entry-buttons button { flex: 1; min-height: 44px; font: bold 14px ui-monospace, Menlo, Consolas, monospace; color: var(--fg); background: rgba(20, 50, 80, 0.8); border: 1px solid var(--hot); border-radius: 6px; cursor: pointer; }
+.entry-buttons button:hover, .entry-buttons button:focus-visible { background: var(--hot); color: #000; }
+.entry-note { margin: 0; color: var(--dim); font-size: 12px; }
+.entry-error { margin: 0; min-height: 1.2em; color: #ff7a7a; }
+body.entering #touch { display: none; }
 .noscript { font: 16px ui-monospace, Menlo, Consolas, monospace; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

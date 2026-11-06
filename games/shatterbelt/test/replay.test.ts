@@ -86,18 +86,20 @@ test("a recording made with another seed doesn't replay as this one", () => {
   if (other) assert.notDeepEqual(other.ships.map((s) => s.score), replay(rec)!.ships.map((s) => s.score));
 });
 
-test("the server's helpers: initials, submissions, and scores from the issued seed", () => {
-  assert.equal(cleanName("abc"), "ABC");
-  assert.equal(cleanName("A "), "A");
-  assert.equal(cleanName("   "), null);
-  assert.equal(cleanName("ABCD"), null);
-  assert.equal(cleanName("A<b"), null);
-  assert.equal(cleanName(7), null);
+test("the server's helpers: names, submissions, and scores from the issued seed", () => {
+  assert.equal(cleanName("Davíð Þór"), "David Thor");
+  assert.equal(cleanName("  Ace   Pilot  "), "Ace Pilot");
+  assert.equal(cleanName("a very long pilot name"), "a very long");
+  assert.equal(cleanName("<b>x</b>"), "bxb");
+  assert.equal(cleanName("   "), "");
+  assert.equal(cleanName("!!!"), "");
+  assert.equal(cleanName(7), "");
   const { game, rec } = play("versus", 3, 4242);
-  const sub = { id: "x", recording: { mode: rec.mode, players: rec.players, steps: rec.steps, log: rec.log }, names: ["ABC", null, "Z"] };
+  const sub = { id: "x", recording: { mode: rec.mode, players: rec.players, steps: rec.steps, log: rec.log }, names: ["Ásta", null, "Z"] };
   assert.ok(validSubmission(sub));
   assert.equal(validSubmission({ ...sub, names: ["ABC"] }), false, "one name per player");
-  assert.equal(validSubmission({ ...sub, names: ["ABCD", null, null] }), false);
+  assert.equal(validSubmission({ ...sub, names: ["!!!", null, null] }), false, "a name with nothing usable");
+  assert.equal(validSubmission({ ...sub, names: ["x".repeat(201), null, null] }), false, "an overlong name");
   const results = score(rec.seed, sub)!;
   assert.deepEqual(results.map((r) => r.score), game.ships.map((s) => s.score));
   assert.ok(results.every((r) => r.wave === game.wave));
