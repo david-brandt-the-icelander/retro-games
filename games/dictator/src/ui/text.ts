@@ -43,12 +43,13 @@ export const PROMPT = {
   nextPage: "ANY KEY: NEXT PAGE",
   backToTitle: "ANY KEY: BACK TO THE TITLE",
   takePower: "ANY KEY: TAKE POWER",
-  titleKeys: "H HOW TO PLAY  A ABOUT  M SOUND",
+  titleKeys: "H HELP A ABOUT S SCORES M SOUND",
 } as const;
 
 export const OFFICE = {
   howto: "HOW TO RULE",
   about: "ABOUT SAMOSA",
+  merit: "ORDER OF MERIT",
   palace: "THE PALACE",
   treasury: "STATE TREASURY",
   security: "STATE SECURITY",
@@ -64,7 +65,7 @@ export const OFFICE = {
 /** Keypad button labels. */
 export const BUTTON = {
   next: "NEXT", yes: "YES", no: "NO", noDecision: "NO DECISION", back: "BACK",
-  play: "PLAY", howto: "HOW TO", about: "ABOUT",
+  play: "PLAY", howto: "HOW TO", about: "ABOUT", scores: "SCORES",
 } as const;
 
 export const SOUND_STATE = (on: boolean): string => `SOUND: ${on ? "ON" : "OFF"}`;
@@ -75,7 +76,7 @@ export const SOUND_SPOKEN = (on: boolean): string => (on ? "Sound on." : "Sound 
 export const TITLE = {
   name: "Samosa",
   tagline: "New dynasty. Same old palace.",
-  speech: "Samosa. New dynasty. Same old palace. A picture of an empty palace balcony with a microphone. Press any key to take power, H for how to play, A for about, M for sound.",
+  speech: "Samosa. New dynasty. Same old palace. A picture of an empty palace balcony with a microphone. Press any key to take power, H for how to play, A for about, S for the high scores, M for sound.",
 } as const;
 
 export const HOWTO_PAGES: readonly (readonly string[])[] = [
@@ -461,3 +462,27 @@ export const HEADLINE_TEXT: readonly (readonly [string, string, string])[] = [
 export function cap(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
+
+// ── Extras: the high-score table ────────────────────────────────────────
+
+export const SCORES = {
+  heading: "The most glorious reigns",
+  columns: "No NAME         SCORE MON FATE",
+  fled: "FLED",
+  died: "DIED",
+  empty: "No reign recorded yet. Be first.",
+  offline: "The table cannot be reached.",
+  yours: (rank: number, score: number) => `Your reign: ${score}, ranked ${rank}.`,
+  entryTitle: (score: number) => `Your reign scored ${score}.`,
+  entryLines: ["Enter your email below to put", "it on the public table, or", "skip. Only the part before", "the @ is ever shown."],
+  entrySpeech: (score: number) => `Your reign scored ${score}. To put it on the public high-score table, type your email address in the form below the screen and press Enter, or press Escape to skip. Only the part before the @ is shown publicly.`,
+  formLabel: "Your email (only the part before the @ is shown)",
+  formNote: "The full address is stored privately with your score and never shown or shared.",
+  formSubmit: "ENTER THE TABLE",
+  formSkip: "SKIP",
+  formInvalid: "That doesn't look like an email address.",
+  formFailed: "The table could not be reached. Try again, or skip.",
+  speech: (rows: { name: string; score: number; months: number; alive: boolean }[] | null, mine: string) =>
+    `Order of merit: the most glorious reigns. ${rows === null ? "The table cannot be reached." : rows.length === 0 ? "No reign recorded yet." :
+      rows.map((r, i) => `${i + 1}: ${r.name}, ${r.score} points, ${r.months} months, ${r.alive ? "fled" : "died"}.`).join(" ")} ${mine} Press any key.`,
+} as const;

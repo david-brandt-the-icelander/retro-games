@@ -81,7 +81,7 @@ Some lines are drawn at **double size**: the template's own 8×8 glyph, with eac
 On `news-alert` only: the tape's text appears one character every 60 ms, in reading order. Nothing else types.
 
 ### Timed screens and keys
-A screen that moves on by itself (GDD §7 pacing other than *key*) **reads no key**. Keys pressed during it are discarded, and it is not shortened (RULES §15.5: the time may be lengthened, never shortened). M still toggles sound. The `swiss` screen reads no key for its first 2 s.
+While a screen holds for its minimum time (GDD §7 pacing other than *key*), it **reads no key**: keys pressed then are discarded. Then it waits for a key like every other screen (see "Every screen waits for a key" above). M still toggles sound. The `swiss` screen reads no key for its first 2 s.
 
 ### Keypad offers (touch)
 The keypad shows exactly the buttons listed under each screen's *Keypad offers*. The general rules:

@@ -21,6 +21,10 @@ Several times a month State Security offers you its file for $1,000: every group
 
 **Keys:** one key per prompt. **Y** means yes; any other key means no, or "go on". **1–5** choose a section of the decision menu, the option numbers choose inside it, and **1–6** ask a group for help in a revolution. On the title, **H** shows how to play and **A** the About page. **M** turns sound on and off at any time. On a phone, a keypad offers the keys that matter, and tapping the screen counts as any key.
 
+## The high-score table
+
+After a reign you may enter the public table with your email address. Only the part before the @ is shown; the full address is stored privately with your score and never shown or shared. The server doesn't trust the browser's score: it issued the reign's random seed, and it replays your key presses through the same game engine to compute the score itself. Press S on the title screen to see the table.
+
 ## Develop
 
 ```bash
@@ -43,12 +47,18 @@ npm run dev       # rebuild on change
 | `src/main.ts` | Wires it together in the browser; the title, how to play, About and sound toggle live here, outside the engine |
 | `test/` | node:test suites; `samples.ts` lists the worst-case screens for the layout tests and the contact sheet |
 | `public/` | Page, styles and `_headers` (strict CSP) |
+| `worker/` | The high-score API (seeds, replay, table) and its D1 schema |
+| `src/scores.ts` | The browser's side of the high-score table |
 
 The engine never touches the DOM or timers. `playGame(io, newGame(seed), best)` plays one reign through `io.show(screen)`, which resolves with the raw key pressed (`"y"`, `"Y"`, `"1"`, `"Enter"`…); in tests it resolves at once. It returns `{ score, best }`.
 
 ## Deploy
 
-A static-assets Worker named `samosa` (`wrangler.jsonc`), routed at `icelander.net/retro-games/samosa*`. `npm run deploy` (needs `CLOUDFLARE_API_TOKEN`).
+A Worker named `samosa` (`wrangler.jsonc`), routed at `icelander.net/retro-games/samosa*`. It serves the static game, and `worker/index.ts` answers the high-score API under `/retro-games/samosa/api/`, backed by the D1 database `samosa-scores`.
+
+- First time only: `npx wrangler d1 execute samosa-scores --remote --file worker/schema.sql`.
+- Deploy: `npm run deploy` (needs `CLOUDFLARE_API_TOKEN`).
+- Local: `npx wrangler d1 execute samosa-scores --local --file worker/schema.sql`, then `npm run build && npx wrangler dev`.
 
 ## Licence
 

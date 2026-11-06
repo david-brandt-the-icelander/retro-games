@@ -10,6 +10,16 @@ canvas#zx { image-rendering: pixelated; image-rendering: crisp-edges; display: b
 #keypad button:active, #keypad button:hover { background: var(--key-hot); color: #000; }
 #sound { font: 12px/1 "Courier New", monospace; color: #aaa; background: none; border: 1px solid #444; padding: 6px 10px; min-width: 44px; min-height: 44px; cursor: pointer; }
 #sound:hover, #sound:focus-visible { color: #fff; border-color: #888; }
+/* The high-score entry form, shown below the screen after a reign. */
+.entry { display: flex; flex-direction: column; gap: 8px; width: min(100%, 520px); color: #fff; font: 14px/1.4 "Courier New", monospace; }
+.entry label { font-weight: bold; }
+.entry input { font: 18px "Courier New", monospace; min-height: 44px; padding: 6px 10px; color: #000; background: #d7d7d7; border: 2px solid #ffff00; }
+.entry input:focus { outline: 3px solid #00d7d7; outline-offset: 1px; }
+.entry-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+.entry-buttons button { font: bold 16px "Courier New", monospace; min-width: 44px; min-height: 44px; padding: 0 14px; color: var(--key-fg); background: var(--key-bg); border: 0; cursor: pointer; }
+.entry-buttons button:hover, .entry-buttons button:focus-visible { background: var(--key-hot); color: #000; }
+.entry-note { margin: 0; color: #aaa; font-size: 12px; }
+.entry-error { margin: 0; min-height: 1.4em; color: #ff5555; }
 /* Phones on their side: controls in a column beside the screen, keypad two keys wide. */
 @media (orientation: landscape) and (max-height: 520px) {
   body { flex-direction: row; gap: 16px; padding: 12px; }

@@ -681,7 +681,7 @@ export function drawTitle(z: ZXScreen): Presentation {
   }));
   p.hline(128, 16, 239);
   p.footer(T.PROMPT.takePower, T.PROMPT.titleKeys);
-  return keyScreen(T.TITLE.speech, [[ANY_KEY, T.BUTTON.play], ["h", T.BUTTON.howto], ["a", T.BUTTON.about]], ["anthem"]);
+  return keyScreen(T.TITLE.speech, [[ANY_KEY, T.BUTTON.play], ["h", T.BUTTON.howto], ["a", T.BUTTON.about], ["s", T.BUTTON.scores]], ["anthem"]);
 }
 
 export function drawHowto(z: ZXScreen, page: number): Presentation {
@@ -704,6 +704,43 @@ export function drawAbout(z: ZXScreen): Presentation {
   lines(p, 11, 0, 31, T.ABOUT.remake, at(WHITE, BLUE));
   p.footer(T.PROMPT.backToTitle);
   return keyScreen(T.ABOUT.speech);
+}
+
+export interface ScoreRow { name: string; score: number; months: number; alive: boolean }
+
+/** The public high-score table (an extra): ten rows, best first; `mine` highlights this reign. */
+export function drawScores(z: ZXScreen, rows: readonly ScoreRow[] | null, mine?: { rank: number; score: number }): Presentation {
+  const p = new Painter(z);
+  palace(p, T.OFFICE.merit);
+  p.centre(3, T.SCORES.heading, at(YELLOW, BLUE));
+  p.text(5, 1, 30, T.SCORES.columns, at(CYAN, BLUE));
+  if (rows === null) p.centre(8, T.SCORES.offline);
+  else if (rows.length === 0) p.centre(8, T.SCORES.empty);
+  rows?.slice(0, 10).forEach((r, i) => {
+    const row = 6 + i;
+    const own = mine !== undefined && mine.rank === i + 1;
+    const attr = own ? at(BLUE, YELLOW, { bright: true }) : at(WHITE, BLUE);
+    if (own) p.fill(0, row, 31, row, attr);
+    p.text(row, 1, 2, String(i + 1), attr, "right");
+    p.text(row, 4, 15, r.name.slice(0, 12), attr);
+    p.text(row, 17, 21, String(r.score), attr, "right");
+    p.text(row, 23, 25, String(r.months), attr, "right");
+    p.text(row, 27, 30, r.alive ? T.SCORES.fled : T.SCORES.died, attr);
+  });
+  const line = mine ? T.SCORES.yours(mine.rank, mine.score) : "";
+  if (line) p.centre(18, line, at(YELLOW, BLUE));
+  p.footer(T.PROMPT.backToTitle);
+  return keyScreen(T.SCORES.speech(rows ? rows.slice(0, 10) : null, line));
+}
+
+/** The screen behind the email form (an extra): the form itself is HTML below the screen. */
+export function drawEntry(z: ZXScreen, score: number): Presentation {
+  const p = new Painter(z);
+  palace(p, T.OFFICE.merit);
+  p.icon(15, 3, ART.ROSETTE, at(YELLOW, BLUE, { bright: true }));
+  p.centre(7, T.SCORES.entryTitle(score), at(YELLOW, BLUE));
+  lines(p, 9, 0, 31, T.SCORES.entryLines, at(WHITE, BLUE));
+  return keyScreen(T.SCORES.entrySpeech(score), []);
 }
 
 /** Run every animation step at once (the final frame), as the contact sheet and layout tests do. */

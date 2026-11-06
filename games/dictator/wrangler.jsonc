@@ -1,5 +1,5 @@
-// Static-assets Worker for Samosa, served at icelander.net/retro-games/samosa.
-// Build with BASE_PATH=retro-games/samosa (the default in build.mjs). Deploy only after the publish gate.
+// The Samosa Worker at icelander.net/retro-games/samosa: static assets, plus the high-score
+// API (worker/index.ts) backed by the D1 database samosa-scores (schema: worker/schema.sql).
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "samosa",
@@ -7,5 +7,8 @@
   "workers_dev": false,
   "preview_urls": false,
   "routes": [{ "pattern": "icelander.net/retro-games/samosa*", "zone_name": "icelander.net" }],
-  "assets": { "directory": "./dist" }
+  // The Worker serves the high-score API under /retro-games/samosa/api/; everything else is a static asset.
+  "main": "worker/index.ts",
+  "assets": { "directory": "./dist", "binding": "ASSETS" },
+  "d1_databases": [{ "binding": "DB", "database_name": "samosa-scores", "database_id": "fb0198cf-9442-4811-89ad-fa835df63c7d" }]
 }
