@@ -296,20 +296,20 @@ One entry per screen in GDD §7 order. Cells are given as rows × columns, 0-bas
 ### report
 
 - **Wireframe:** WIREFRAMES.md § report (GDD #8; engine kind: report (flag: first / bought / final))
-- **Colour family:** Dossier · **Border:** black · **Page (CLS):** black ink on yellow paper, BRIGHT off
+- **Colour family:** Dossier · **Border:** black · **Page (CLS):** white ink on black paper, BRIGHT off (the dark file; owner decision 2026-11-06)
 
 | Region | Cells | Ink | Paper | BRIGHT | FLASH | Align | Content (final text, or icon id) |
 |---|---|---|---|---|---|---|---|
-| s | row 0 × col 1 | yellow | black | no | no | left | icon `seal` |
-| L | row 0 × cols 3–18 | yellow | black | no | no | left | `"STATE SECURITY"` |
-| T | rows 2–3 × cols 0–31 | black | yellow | no | no | left | *row 2 (red bar):* `"TOP SECRET: BURN AFTER READING"`<br>*L2 bought:* `"File for month {month}"`<br>*L2 first:* `"Opening file, on the house"`<br>*L2 final:* `"FINAL FILE, FOR THE ARCHIVE"`<br>*Note:* row 2 is a bar: black ink on BRIGHT red paper across cols 0–31, text from col 1; row 3 black on yellow from col 1 |
-| H | row 5 × cols 1–30 | black | yellow | no | no | left | `"No GROUP         POP.  STR."`<br>'No' at cols 1–2, 'GROUP' at cols 4–8, 'POP.' at cols 18–21, 'STR.' at cols 24–27 |
-| G | rows 6–13 × cols 1–30 | black | yellow | no | no | left | columns: group number at col 1; label at cols 4–14 (left); popularity digit at col 19; strength digit at col 25 ('-' for groups 7 and 8)<br>*example, row 6:* `"1  ARMY           7     6"`<br>*example, row 11:* `"6  SEC. POLICE    9     9"`<br>*example, row 13:* `"8  WEST           7     -"` |
-| P | rows 15–17 × cols 0–31 | black | red | yes | no | left | *revolution:* `"{faction} RISE +{allyNo} {ally}"`<br>*assassination:* `"{faction} HIRE AN ASSASSIN"`<br>*none (black on yellow):* `"No plots uncovered. Yet."` |
-| O | rows 19–20 × cols 1–30 | black | yellow | no | no | left | *row 19:* `"Your bodyguard strength: {pstr}"`<br>*row 20:* `"A revolt needs strength {revstr}"` |
+| s | row 0 × col 1 | white | black | no | no | left | icon `seal` |
+| L | row 0 × cols 3–18 | white | black | no | no | left | `"STATE SECURITY"` |
+| T | rows 2–3 × cols 0–31 | white | black | no | no | left | *row 2 (red bar):* `"TOP SECRET: BURN AFTER READING"`<br>*L2 bought:* `"File for month {month}"`<br>*L2 first:* `"Opening file, on the house"`<br>*L2 final:* `"FINAL FILE, FOR THE ARCHIVE"`<br>*Note:* row 2 is a bar: black ink on BRIGHT red paper across cols 0–31, text from col 1; row 3 white on black from col 1 |
+| H | row 5 × cols 1–30 | yellow | black | yes | no | left | `"No GROUP         POP.  STR."`<br>'No' at cols 1–2, 'GROUP' at cols 4–8, 'POP.' at cols 18–21, 'STR.' at cols 24–27 |
+| G | rows 6–13 × cols 1–30 | white | black | no | no | left | columns: group number at col 1; label at cols 4–14 (left); popularity digit at col 19; strength digit at col 25 ('-' for groups 7 and 8)<br>*example, row 6:* `"1  ARMY           7     6"`<br>*example, row 11:* `"6  SEC. POLICE    9     9"`<br>*example, row 13:* `"8  WEST           7     -"` |
+| P | rows 15–17 × cols 0–31 | black | red | yes | no | left | *revolution:* `"{faction} RISE +{allyNo} {ally}"`<br>*assassination:* `"{faction} HIRE AN ASSASSIN"`<br>*none (white on black):* `"No plots uncovered. Yet."` |
+| O | rows 19–20 × cols 1–30 | white | black | no | no | left | *row 19:* `"Your bodyguard strength: {pstr}"`<br>*row 20:* `"A revolt needs strength {revstr}"` |
 | K | rows 21–23 × cols 0–31 | black | white | no | no | centre | `"PRESS A KEY OR TAP TO GO ON"` |
 
-- **Decoration (`#`):** row 0 × col 0 and row 0 × col 2: letterhead band: black paper; row 0 × cols 19–31: letterhead band: black paper (cols 20–31 also carry the sound overlay when shown); row 1 × cols 0–31: double rule: pixel rows 2 and 5 of row 1, all 256 pixels, in the page ink.
+- **Decoration (`#`):** row 0 × col 0 and row 0 × col 2: letterhead band: yellow paper (a manila tab); row 0 × cols 19–31: letterhead band: yellow paper (a manila tab) (cols 20–31 also carry the sound overlay when shown); row 1 × cols 0–31: double rule: pixel rows 2 and 5 of row 1, all 256 pixels, in the page ink.
 - **States:** Plot lines: each is a bar (black ink on BRIGHT red paper across cols 0–31, text from col 1) and carries the words RISE or ASSASSIN, so colour is never the only signal. Nothing on this screen flashes. The first report always shows the no-plots line. A strength of 7 or 8 (EAST, WEST) shows '-'.
 - **Input:** Any key except M continues. **Keypad offers:** [NEXT].
 - **Timing:** Waits for a key.
@@ -319,19 +319,19 @@ One entry per screen in GDD §7 order. Cells are given as rows × columns, 0-bas
 ### report-offer
 
 - **Wireframe:** WIREFRAMES.md § report-offer (GDD #9; engine kind: reportOffer (available / unavailable))
-- **Colour family:** Dossier · **Border:** black · **Page (CLS):** black ink on yellow paper, BRIGHT off
+- **Colour family:** Dossier · **Border:** black · **Page (CLS):** white ink on black paper, BRIGHT off (the dark file; owner decision 2026-11-06)
 
 | Region | Cells | Ink | Paper | BRIGHT | FLASH | Align | Content (final text, or icon id) |
 |---|---|---|---|---|---|---|---|
-| s | row 0 × col 1 | yellow | black | no | no | left | icon `seal` |
-| L | row 0 × cols 3–18 | yellow | black | no | no | left | `"STATE SECURITY"` |
-| F | rows 3–5 × cols 14–17 | black | yellow | no | no | left | icon `folder` |
-| Q | rows 8–9 × cols 1–30 | black | yellow | no | no | centre | *available L1:* `"Psst. The latest file on who"`<br>*available L2:* `"plots what? Only {price}."`<br>*unavailable L1:* `"No dossier this time, sorry."` |
-| R | rows 11–13 × cols 1–30 | black | yellow | no | no | centre | *police popularity:* `"Police loyalty too low: {pop}"`<br>*police strength:* `"Police too weak: strength {str}"`<br>*treasury:* `"Treasury cannot pay for it."` |
+| s | row 0 × col 1 | white | black | no | no | left | icon `seal` |
+| L | row 0 × cols 3–18 | white | black | no | no | left | `"STATE SECURITY"` |
+| F | rows 3–5 × cols 14–17 | white | black | no | no | left | icon `folder` |
+| Q | rows 8–9 × cols 1–30 | white | black | no | no | centre | *available L1:* `"Psst. The latest file on who"`<br>*available L2:* `"plots what? Only {price}."`<br>*unavailable L1:* `"No dossier this time, sorry."` |
+| R | rows 11–13 × cols 1–30 | white | black | no | no | centre | *police popularity:* `"Police loyalty too low: {pop}"`<br>*police strength:* `"Police too weak: strength {str}"`<br>*treasury:* `"Treasury cannot pay for it."` |
 | K | rows 21–23 × cols 0–31 | black | white | no | no | centre | *available only:* `"Y = YES   ANY OTHER KEY = NO"` |
 
-- **Decoration (`#`):** row 0 × col 0 and row 0 × col 2: letterhead band: black paper; row 0 × cols 19–31: letterhead band: black paper (cols 20–31 also carry the sound overlay when shown); row 1 × cols 0–31: double rule: pixel rows 2 and 5 of row 1, all 256 pixels, in the page ink.
-- **States:** *Available*: Q shows the offer, R is empty, the footer asks yes/no. *Unavailable*: Q row 8 shows the shrug, R lists only the failing reasons with no gaps between them, and there is no footer (rows 21–23 stay yellow page).
+- **Decoration (`#`):** row 0 × col 0 and row 0 × col 2: letterhead band: yellow paper (a manila tab); row 0 × cols 19–31: letterhead band: yellow paper (a manila tab) (cols 20–31 also carry the sound overlay when shown); row 1 × cols 0–31: double rule: pixel rows 2 and 5 of row 1, all 256 pixels, in the page ink.
+- **States:** *Available*: Q shows the offer, R is empty, the footer asks yes/no. *Unavailable*: Q row 8 shows the shrug, R lists only the failing reasons with no gaps between them, and there is no footer (rows 21–23 stay black page).
 - **Input:** Available: Y or y buys (to `report`); any other key except M skips. Unavailable: no key is read. **Keypad offers:** Available: [YES] sends y · [NO] sends n. Unavailable: none.
 - **Timing:** Available: waits for a key. Unavailable: as long as `report-none` (2.5 s); keys do not shorten it.
 - **Sound:** Available: none. Unavailable: `report-none`.

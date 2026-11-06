@@ -53,7 +53,7 @@ const timed = (ms: number, speech: string, motifs: MotifId[] = [], assertive = f
 
 const PALACE_BAND = at(BLUE, YELLOW, { bright: true });
 const LEDGER_BAND = at(BLACK, GREEN);
-const DOSSIER_BAND = at(YELLOW, BLACK);
+const DOSSIER_BAND = at(BLACK, YELLOW); // a manila tab on the dark file
 const AUDIENCE_BAND = at(BLACK, MAGENTA);
 const CABINET_BAND = at(WHITE, BLUE);
 
@@ -68,7 +68,7 @@ function ledgerPage(p: Painter, office: string, border = GREEN): void {
 }
 
 function dossier(p: Painter): void {
-  p.page(BLACK, YELLOW, BLACK).letterhead(T.OFFICE.security, DOSSIER_BAND, ART.SEAL);
+  p.page(WHITE, BLACK, BLACK).letterhead(T.OFFICE.security, DOSSIER_BAND, ART.SEAL);
 }
 
 function audienceHall(p: Painter, office: string): void {
@@ -184,7 +184,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     p.bar(2, 0, 31, T.REPORT.classified, 1, RED);
     const sub = s.variant === "first" ? T.REPORT.first : s.variant === "final" ? T.REPORT.final : T.REPORT.bought(s.month);
     p.text(3, 1, 31, sub);
-    p.text(5, 1, 30, T.REPORT.heading);
+    p.text(5, 1, 30, T.REPORT.heading, at(YELLOW, BLACK, { bright: true }));
     for (let g = 0; g < 8; g++) {
       const row = 6 + g;
       p.print(1, row, String(g + 1));
@@ -217,7 +217,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
 
   reportOffer(p, s) {
     dossier(p);
-    p.icon(14, 3, ART.FOLDER, at(BLACK, YELLOW));
+    p.icon(14, 3, ART.FOLDER, at(YELLOW, BLACK));
     const price = T.money(1);
     if (s.available) {
       p.text(8, 1, 30, T.OFFER.ask[0], undefined, "centre");
