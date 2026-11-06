@@ -1,6 +1,7 @@
 // The whole game as a pure simulation: newGame() makes a state, step() advances it by DT.
 // No DOM, no timers, no Math.random: the same seed and inputs always give the same game.
 import { BLINK, COMBO, DRONE, DT, GUN, H, MAX_PLAYERS, POD, ROCK, SHIP, TAKEDOWN, W, WAVE, type RockSize } from "./config";
+import { atan2, cos, hypot, sin } from "./dmath";
 import { pick, rand, range } from "./rng";
 
 /** Co-op: shots pass through other ships. Versus: they don't. Attract: no ships, the title backdrop. */
@@ -161,7 +162,7 @@ export function spawnPoint(id: number, count: number): { x: number; y: number } 
   if (count <= 1) return { x: W / 2, y: H / 2 };
   if (count === 2) return { x: W * (id === 0 ? 0.38 : 0.62), y: H / 2 };
   const a = -Math.PI / 2 + (id / count) * Math.PI * 2;
-  return { x: W / 2 + Math.cos(a) * 300, y: H / 2 + Math.sin(a) * 230 };
+  return { x: W / 2 + cos(a) * 300, y: H / 2 + sin(a) * 230 };
 }
 
 function makeShip(id: number): Ship {
@@ -239,7 +240,7 @@ function launch(g: Game, size: RockSize): { vx: number; vy: number } {
   const [lo, hi] = ROCK.speed[size];
   const a = rand(g) * Math.PI * 2;
   const sp = range(g, lo, hi) * Math.min(1.6, 1 + 0.05 * (g.wave - 1));
-  return { vx: Math.cos(a) * sp, vy: Math.sin(a) * sp };
+  return { vx: cos(a) * sp, vy: sin(a) * sp };
 }
 
 export function rocksForWave(wave: number, players: number): number {
@@ -285,7 +286,7 @@ function destroyRock(g: Game, r: Rock, by: number): void {
     for (let i = 0; i < pieces; i++) {
       const a = a0 + (i / pieces) * Math.PI * 2 + range(g, -0.3, 0.3);
       const sp = range(g, lo, hi) * Math.min(1.6, 1 + 0.05 * (g.wave - 1));
-      makeRock(g, r.x, r.y, size, r.kind, r.vx * 0.4 + Math.cos(a) * sp, r.vy * 0.4 + Math.sin(a) * sp);
+      makeRock(g, r.x, r.y, size, r.kind, r.vx * 0.4 + cos(a) * sp, r.vy * 0.4 + sin(a) * sp);
     }
   }
   if (r.kind === "crystal" && g.mode !== "attract" && rand(g) < ROCK.podChance) dropPod(g, r.x, r.y);
@@ -302,7 +303,7 @@ function damageRock(g: Game, r: Rock, by: number): void {
 function dropPod(g: Game, x: number, y: number): void {
   const a = rand(g) * Math.PI * 2;
   g.pods.push({
-    id: g.nextId++, x, y, vx: Math.cos(a) * POD.speed, vy: Math.sin(a) * POD.speed,
+    id: g.nextId++, x, y, vx: cos(a) * POD.speed, vy: sin(a) * POD.speed,
     kind: pick(g, ["rapid", "spread", "shield"] as const), life: POD.life, dead: false,
   });
 }
@@ -350,8 +351,8 @@ function fire(g: Game, s: Ship): boolean {
   for (const da of angles) {
     const a = s.angle + da;
     g.bullets.push({
-      x: wrap(s.x + Math.cos(a) * 16, W), y: wrap(s.y + Math.sin(a) * 16, H),
-      vx: Math.cos(a) * GUN.speed + s.vx, vy: Math.sin(a) * GUN.speed + s.vy,
+      x: wrap(s.x + cos(a) * 16, W), y: wrap(s.y + sin(a) * 16, H),
+      vx: cos(a) * GUN.speed + s.vx, vy: sin(a) * GUN.speed + s.vy,
       life: GUN.life, owner: s.id, dead: false,
     });
   }
@@ -375,13 +376,13 @@ function updateShip(g: Game, s: Ship, c: Controls): void {
   if (c.right) s.angle += SHIP.turn * DT;
   s.thrusting = c.thrust;
   if (c.thrust) {
-    s.vx += Math.cos(s.angle) * SHIP.thrust * DT;
-    s.vy += Math.sin(s.angle) * SHIP.thrust * DT;
+    s.vx += cos(s.angle) * SHIP.thrust * DT;
+    s.vy += sin(s.angle) * SHIP.thrust * DT;
   }
-  const k = Math.exp(-SHIP.drag * DT);
+  const k = SHIP.dragStep;
   s.vx *= k;
   s.vy *= k;
-  const sp = Math.hypot(s.vx, s.vy);
+  const sp = hypot(s.vx, s.vy);
   if (sp > SHIP.maxSpeed) {
     s.vx *= SHIP.maxSpeed / sp;
     s.vy *= SHIP.maxSpeed / sp;
@@ -402,8 +403,8 @@ function updateShip(g: Game, s: Ship, c: Controls): void {
   if (blink && s.blinkCool <= 0) {
     const x0 = s.x;
     const y0 = s.y;
-    s.x = wrap(s.x + Math.cos(s.angle) * BLINK.distance, W);
-    s.y = wrap(s.y + Math.sin(s.angle) * BLINK.distance, H);
+    s.x = wrap(s.x + cos(s.angle) * BLINK.distance, W);
+    s.y = wrap(s.y + sin(s.angle) * BLINK.distance, H);
     s.guard = Math.max(s.guard, BLINK.guard);
     s.blinkCool = BLINK.cool;
     emit(g, { type: "blink", x: x0, y: y0, x2: s.x, y2: s.y, ship: s.id });
@@ -415,7 +416,7 @@ function nearestShip(g: Game, x: number, y: number): Ship | undefined {
   let bestD = Infinity;
   for (const s of g.ships) {
     if (!s.alive) continue;
-    const d = Math.hypot(delta(s.x, x, W), delta(s.y, y, H));
+    const d = hypot(delta(s.x, x, W), delta(s.y, y, H));
     if (d < bestD) { bestD = d; best = s; }
   }
   return best;
@@ -455,9 +456,9 @@ function updateDrones(g: Game): void {
       const target = d.small ? nearestShip(g, d.x, d.y) : undefined;
       if (target) {
         const miss = Math.max(0.06, 0.45 - 0.04 * g.wave);
-        a = Math.atan2(delta(target.y, d.y, H), delta(target.x, d.x, W)) + range(g, -miss, miss);
+        a = atan2(delta(target.y, d.y, H), delta(target.x, d.x, W)) + range(g, -miss, miss);
       }
-      g.bullets.push({ x: d.x, y: d.y, vx: Math.cos(a) * DRONE.shotSpeed, vy: Math.sin(a) * DRONE.shotSpeed, life: DRONE.shotLife, owner: -1, dead: false });
+      g.bullets.push({ x: d.x, y: d.y, vx: cos(a) * DRONE.shotSpeed, vy: sin(a) * DRONE.shotSpeed, life: DRONE.shotLife, owner: -1, dead: false });
       emit(g, { type: "zap", x: d.x, y: d.y });
     }
   }

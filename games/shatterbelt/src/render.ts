@@ -1,7 +1,10 @@
 // Drawing: the field, the effects, the HUD and every screen, on one canvas in 1280×800 field units.
 import { BLINK, H, MAX_PLAYERS, POD, SHIP, W } from "./engine/config";
 import { droneRadius, multiplier, rockRadius, standings, type Game, type GameEvent, type Rock, type Ship } from "./engine/game";
-import type { Entry } from "./scores";
+import type { Result } from "./net";
+
+/** A row of a high-score table, public or this device's. */
+export interface TableRow { name: string; score: number; wave: number; mode: string; players: number }
 
 /** One colour per player. Drones are red; no player is. */
 export const PLAYER_COLORS = ["#45f0c2", "#ffa63d", "#5aa8ff", "#ff7ad9", "#b6f04a", "#b48cff", "#fff06a", "#f2f2f2", "#ff9f9f"];
@@ -535,7 +538,7 @@ export class Renderer {
   }
 
   /** Scores, ships, pods and streaks along the top; wave and best along the bottom. */
-  hud(g: Game, best: number): void {
+  hud(g: Game, best: number, offline = false): void {
     const n = g.ships.length;
     const pw = n <= 2 ? 300 : W / n;
     const big = n <= 3 ? 28 : n <= 5 ? 22 : 17;
@@ -573,7 +576,7 @@ export class Renderer {
       }
       this.ctx.globalAlpha = 1;
     });
-    this.text(`WAVE ${Math.max(1, g.wave)}   BEST ${fmt(Math.max(best, ...g.ships.map((s) => s.score)))}`, W / 2, H - 16, 14, COLOR.dim, "center", 600);
+    this.text(`WAVE ${Math.max(1, g.wave)}   BEST ${fmt(Math.max(best, ...g.ships.map((s) => s.score)))}${offline ? "   OFFLINE: SCORES STAY ON THIS DEVICE" : ""}`, W / 2, H - 16, 14, COLOR.dim, "center", 600);
     if (this.banner) {
       this.ctx.globalAlpha = Math.min(1, this.banner.t * 2);
       this.glowText(this.banner.text, W / 2, H / 2 - 20, 56, COLOR.text);
@@ -588,7 +591,7 @@ export class Renderer {
     this.text("P / START resume   ·   ESC quit to title", W / 2, H / 2 + 30, 18, COLOR.dim, "center", 600);
   }
 
-  title(sel: number, t: number, scores: Entry[], touch: boolean): void {
+  title(sel: number, t: number, scores: TableRow[], isPublic: boolean, touch: boolean): void {
     this.dimmer(0.35);
     const pulse = 0.85 + 0.15 * Math.sin(t * 2);
     this.ctx.globalAlpha = pulse;
@@ -621,7 +624,7 @@ export class Renderer {
       `A new ship every ${fmt(SHIP.extraEvery)} points.`,
     ];
     how.forEach((l, i) => this.text(l, 120, top + 30 + i * 24, 15, COLOR.text, "left", 500));
-    this.text("BEST PILOTS", 760, top, 16, PLAYER_COLORS[1]);
+    this.text(isPublic ? "BEST PILOTS" : "BEST PILOTS · THIS DEVICE", 760, top, 16, PLAYER_COLORS[1]);
     if (scores.length === 0) this.text("No scores yet. Be the first.", 760, top + 30, 15, COLOR.dim, "left", 500);
     scores.slice(0, 8).forEach((e, i) => {
       const y = top + 30 + i * 24;
@@ -635,7 +638,7 @@ export class Renderer {
     this.ctx.globalAlpha = 1;
   }
 
-  lobby(mode: string, slots: string[], deviceLabels: string[], t: number, touch: boolean): void {
+  lobby(mode: string, slots: string[], deviceLabels: string[], t: number, touch: boolean, launching = false): void {
     this.dimmer(0.6);
     this.glowText(mode === "versus" ? "VERSUS" : "CO-OP", W / 2, 62, 52, "#8fe9ff");
     this.text("Each pilot: press your FIRE to join.", W / 2, 112, 18, COLOR.text, "center", 600);
@@ -671,6 +674,10 @@ export class Renderer {
       "Thrust is the top key, turn with the side keys, blink with the bottom key.",
     ];
     rows.forEach((r, i) => this.text(r, 150, ky + 34 + i * 26, 15, COLOR.text, "left", 500));
+    if (launching) {
+      this.text("LAUNCHING…", W / 2, H - 50, 20, COLOR.text, "center");
+      return;
+    }
     const ready = slots.length > 0;
     this.ctx.globalAlpha = ready ? 0.7 + 0.3 * Math.sin(t * 5) : 0.6;
     this.text(
@@ -708,9 +715,9 @@ export class Renderer {
     }
   }
 
-  entry(id: number, score: number, letters: string[], pos: number, t: number): void {
+  entry(id: number, score: number, letters: string[], pos: number, t: number, ranked: boolean): void {
     this.dimmer(0.7);
-    this.glowText("NEW BEST PILOT", W / 2, 170, 64, PLAYER_COLORS[id]);
+    this.glowText("NEW HIGH SCORE", W / 2, 170, 64, PLAYER_COLORS[id]);
     this.text(`P${id + 1}   ${fmt(score)}`, W / 2, 250, 28, COLOR.text, "center");
     this.text("Your initials:", W / 2, 320, 18, COLOR.dim, "center", 600);
     letters.forEach((l, i) => {
@@ -724,6 +731,41 @@ export class Renderer {
     });
     this.text("Type letters, ENTER to save, BACKSPACE to go back.", W / 2, 520, 16, COLOR.text, "center", 500);
     this.text("Gamepad or touch: ← → change the letter, FIRE next, blink back.", W / 2, 550, 16, COLOR.text, "center", 500);
+    this.text(ranked
+      ? "Your initials go on the public table, after the server has replayed the game to check the score."
+      : "Offline game: the score is kept on this device only.", W / 2, 620, 14, COLOR.dim, "center", 500);
+  }
+
+  saving(t: number): void {
+    this.dimmer(0.7);
+    this.glowText("CHECKING SCORES", W / 2, H / 2 - 30, 52, COLOR.text);
+    const dots = ".".repeat(1 + (Math.floor(t * 3) % 3));
+    this.text(`The server is replaying your game${dots}`, W / 2, H / 2 + 30, 18, COLOR.dim, "center", 600);
+  }
+
+  saved(results: Result[] | null, t: number): void {
+    this.dimmer(0.7);
+    if (!results) {
+      this.glowText("NOT SAVED", W / 2, 220, 56, "#ff9f9f");
+      this.text("The score server couldn't be reached or couldn't confirm the game.", W / 2, 300, 18, COLOR.text, "center", 500);
+      this.text("Scores that made this device's table are kept here.", W / 2, 330, 18, COLOR.text, "center", 500);
+    } else {
+      this.glowText("ON THE BOARD", W / 2, 170, 56, "#8fe9ff");
+      const named = results.filter((r) => r.name && r.rank);
+      named.forEach((r, i) => {
+        const y = 260 + i * 44;
+        this.hull(r.player, W / 2 - 280, y, -Math.PI / 2, 0.9, 1.5);
+        this.text(`P${r.player + 1}  ${r.name}`, W / 2 - 250, y, 22, PLAYER_COLORS[r.player]);
+        this.text(fmt(r.score), W / 2 + 90, y, 22, COLOR.text, "right");
+        this.text(`#${r.rank}`, W / 2 + 280, y, 22, COLOR.text, "right");
+      });
+      this.text("Scores checked by replaying the whole game.", W / 2, Math.min(H - 90, 280 + named.length * 44), 15, COLOR.dim, "center", 500);
+    }
+    if (t > 0.8) {
+      this.ctx.globalAlpha = 0.6 + 0.4 * Math.sin(t * 4);
+      this.text("FIRE, ENTER or TAP to continue", W / 2, H - 40, 16, COLOR.dim, "center", 600);
+      this.ctx.globalAlpha = 1;
+    }
   }
 }
 

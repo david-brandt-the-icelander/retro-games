@@ -15,8 +15,7 @@ if (args.includes("--test")) {
   rmSync("dist", { recursive: true, force: true });
   mkdirSync(site, { recursive: true });
   cpSync("public", site, { recursive: true });
-  // _headers and _redirects must sit at the assets root.
-  if (BASE_PATH) for (const f of ["_headers", "_redirects"]) renameSync(`${site}/${f}`, `dist/${f}`);
+  if (BASE_PATH) renameSync(`${site}/_headers`, "dist/_headers"); // _headers must sit at the assets root
   const opts = { entryPoints: { game: "src/main.ts" }, bundle: true, minify: true, target: "es2020", outdir: site };
   if (args.includes("--watch")) { const c = await context(opts); await c.watch(); console.log("watching…"); }
   else await build(opts);

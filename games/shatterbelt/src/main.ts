@@ -1,17 +1,24 @@
 // The browser side: screens, the frame loop, and wiring input, sound and drawing to the engine.
 import { DT, MAX_PLAYERS } from "./engine/config";
 import { newGame, standings, step, type Controls, type Game } from "./engine/game";
+import { Recorder, type Recording } from "./engine/replay";
 import { Input, deviceLabel, fireDevice, menuAct, type Device, type Press } from "./input";
 import { MENU_ITEMS, Renderer, inRect, menuRect } from "./render";
-import { addScore, loadScores, qualifies } from "./scores";
+import { addScore, loadScores, qualifies, TABLE_SIZE } from "./scores";
+import { loadPublic, startGame, submitGame, type PublicRow, type Result, type Ticket } from "./net";
 import { Sound } from "./sound";
 
 type Scene =
   | { kind: "title"; sel: number }
-  | { kind: "lobby"; mode: "coop" | "versus"; devices: Device[] }
-  | { kind: "play"; game: Game; devices: Device[]; paused: boolean }
-  | { kind: "over"; game: Game; devices: Device[]; t: number }
-  | { kind: "entry"; game: Game; devices: Device[]; queue: number[]; letters: string[]; pos: number };
+  | { kind: "lobby"; mode: "coop" | "versus"; devices: Device[]; launching: boolean }
+  | { kind: "play"; game: Game; devices: Device[]; paused: boolean; rec: Recorder; ticket: Ticket | null }
+  | { kind: "over"; game: Game; rec: Recorder; ticket: Ticket | null; t: number }
+  | { kind: "entry"; game: Game; rec: Recorder; ticket: Ticket | null; queue: number[]; names: (string | null)[]; letters: string[]; pos: number }
+  | { kind: "saving"; game: Game }
+  | { kind: "saved"; game: Game; results: Result[] | null; t: number };
+
+/** A finished game on its way to the tables. */
+type Finished = { game: Game; rec: Recorder; ticket: Ticket | null };
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const touchPad = document.getElementById("touch") as HTMLElement;
@@ -23,13 +30,16 @@ const renderer = new Renderer(canvas);
 const input = new Input(window);
 const sound = new Sound();
 let scores = loadScores();
+/** The public table's top rows, once loaded (null while unknown or unreachable). */
+let publicRows: PublicRow[] | null = null;
+const refreshPublic = () => loadPublic().then((rows) => { if (rows) publicRows = rows; });
 let scene: Scene = { kind: "title", sel: 0 };
 const seed = () => (Math.random() * 2 ** 32) >>> 0;
 let attract = newGame("attract", 0, seed());
 let clock = 0;
 
 const say = (text: string) => { live.textContent = text; };
-const best = () => scores[0]?.score ?? 0;
+const best = () => Math.max(scores[0]?.score ?? 0, publicRows?.[0]?.score ?? 0);
 const touchMode = () => input.touchSeen || matchMedia("(pointer: coarse)").matches;
 
 function showTouch(): void {
@@ -51,7 +61,7 @@ function toTitle(): void {
 }
 
 function toLobby(mode: "coop" | "versus"): void {
-  scene = { kind: "lobby", mode, devices: [] };
+  scene = { kind: "lobby", mode, devices: [], launching: false };
   say(`${mode === "versus" ? "Versus" : "Co-op"}. Each player presses their fire key or button to join, then Space or Start to launch.`);
 }
 
@@ -62,15 +72,24 @@ function join(devices: Device[], d: Device): void {
   }
 }
 
-function launch(mode: "coop" | "versus", devices: Device[]): void {
+async function launch(): Promise<void> {
+  if (scene.kind !== "lobby" || scene.launching) return;
+  const lobby = scene;
+  const { mode, devices } = lobby;
   if (devices.length === 0) devices.push("kb");
   // A lone keyboard player may use every key set.
   const keyboards = devices.filter((d) => d.startsWith("kb"));
   if (keyboards.length === 1) devices[devices.indexOf(keyboards[0])] = "kb";
-  const game = newGame(mode, devices.length, seed());
-  scene = { kind: "play", game, devices, paused: false };
+  lobby.launching = true;
+  say("Launching.");
+  // The server issues the seed, so that it can replay the game for the public table.
+  // Without it the game still plays, and its scores stay on this device.
+  const ticket = await startGame();
+  if (scene !== lobby) return; // backed out while waiting
+  const game = newGame(mode, devices.length, ticket ? ticket.seed : seed());
+  scene = { kind: "play", game, devices, paused: false, rec: new Recorder(devices.length), ticket };
   renderer.clearEffects();
-  say(`${devices.length} ${devices.length === 1 ? "player" : "players"}, ${mode === "versus" ? "versus" : "co-op"}. Go.`);
+  say(`${devices.length} ${devices.length === 1 ? "player" : "players"}, ${mode === "versus" ? "versus" : "co-op"}.${ticket ? "" : " Offline: scores stay on this device."} Go.`);
   updateButtons();
 }
 
@@ -82,27 +101,58 @@ function setPaused(on: boolean): void {
   updateButtons();
 }
 
-function afterGame(game: Game, devices: Device[]): void {
-  const queue = standings(game).filter((s) => qualifies(scores, s.score)).map((s) => s.id);
+/** Would this score show in the public table's top ten? (Unknown table: assume yes.) */
+function onPublicTable(score: number): boolean {
+  if (score <= 0) return false;
+  if (!publicRows) return true;
+  return publicRows.length < TABLE_SIZE || score > publicRows[TABLE_SIZE - 1].score;
+}
+
+/** After the game-over screen: initials from everyone who made a table, then the public table. */
+function afterGame({ game, rec, ticket }: Finished): void {
+  const queue = standings(game)
+    .filter((s) => (ticket && onPublicTable(s.score)) || qualifies(scores, s.score))
+    .map((s) => s.id);
+  const names: (string | null)[] = game.ships.map(() => null);
   if (queue.length) {
-    scene = { kind: "entry", game, devices, queue, letters: ["A", "A", "A"], pos: 0 };
-    say(`Player ${queue[0] + 1}, new best score. Type your initials and press Enter.`);
+    scene = { kind: "entry", game, rec, ticket, queue, names, letters: ["A", "A", "A"], pos: 0 };
+    say(`Player ${queue[0] + 1}, a new high score. Type your initials and press Enter.`);
   } else toTitle();
 }
 
 function saveEntry(s: Extract<Scene, { kind: "entry" }>): void {
   const id = s.queue.shift()!;
   const ship = s.game.ships[id];
-  scores = addScore(scores, {
-    name: s.letters.join(""), score: ship.score, wave: s.game.wave,
-    mode: s.game.mode === "versus" ? "versus" : "coop", players: s.game.ships.length,
-  });
-  while (s.queue.length && !qualifies(scores, s.game.ships[s.queue[0]].score)) s.queue.shift();
+  const name = s.letters.join("").trimEnd() || "???";
+  s.names[id] = name;
+  if (qualifies(scores, ship.score)) {
+    scores = addScore(scores, {
+      name, score: ship.score, wave: s.game.wave,
+      mode: s.game.mode === "versus" ? "versus" : "coop", players: s.game.ships.length,
+    });
+  }
   if (s.queue.length) {
     s.letters = ["A", "A", "A"];
     s.pos = 0;
-    say(`Player ${s.queue[0] + 1}, new best score. Type your initials.`);
-  } else toTitle();
+    say(`Player ${s.queue[0] + 1}, a new high score. Type your initials.`);
+  } else void submit(s);
+}
+
+/** Sends the game to the server, which replays it and lists the named players. */
+async function submit(s: Extract<Scene, { kind: "entry" }>): Promise<void> {
+  if (!s.ticket) return toTitle();
+  const recording: Recording = {
+    mode: s.game.mode === "versus" ? "versus" : "coop", players: s.game.ships.length,
+    seed: 0, steps: s.rec.steps, log: s.rec.log,
+  };
+  scene = { kind: "saving", game: s.game };
+  say("Saving scores.");
+  const results = await submitGame(s.ticket, recording, s.names);
+  if (results) await refreshPublic();
+  scene = { kind: "saved", game: s.game, results, t: 0 };
+  say(results
+    ? results.filter((r) => r.rank).map((r) => `Player ${r.player + 1}, ${r.name}: ${r.score}, number ${r.rank} of all pilots.`).join(" ")
+    : "The score server could not be reached. Your scores are kept on this device.");
 }
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
@@ -123,12 +173,13 @@ function handle(p: Press): void {
       break;
     }
     case "lobby": {
+      if (scene.launching) break;
       const d = fireDevice(p);
       if (d) join(scene.devices, d);
       else if (act === "start") {
         const pad = /^(pad\d+):/.exec(p.code);
         if (pad && scene.devices.length === 0) join(scene.devices, pad[1]);
-        launch(scene.mode, scene.devices);
+        void launch();
       } else if (act === "back") toTitle();
       break;
     }
@@ -139,13 +190,21 @@ function handle(p: Press): void {
       break;
     }
     case "over": {
-      if (scene.t > 1.2 && (act === "ok" || act === "start" || fireDevice(p))) afterGame(scene.game, scene.devices);
+      if (scene.t > 1.2 && (act === "ok" || act === "start" || fireDevice(p))) afterGame(scene);
       break;
+    }
+    case "saving":
+      return;
+    case "saved": {
+      if (scene.t > 0.8 && (act === "ok" || act === "start" || act === "back" || fireDevice(p))) toTitle();
+      return;
     }
     case "entry": {
       const letter = /^(?:Key|Digit)([A-Z0-9])$/.exec(p.code);
       if (letter) {
-        scene.letters[scene.pos] = letter[1];
+        // Typing replaces the default initials: what comes after the typed letter is cleared.
+        const pos = scene.pos;
+        scene.letters = scene.letters.map((l, i) => (i === pos ? letter[1] : i > pos ? " " : l));
         scene.pos = Math.min(2, scene.pos + 1);
       } else if (act === "erase" || act === "back") scene.pos = Math.max(0, scene.pos - 1);
       else if (act === "up" || act === "right") scene.letters[scene.pos] = cycle(scene.letters[scene.pos], 1);
@@ -176,6 +235,7 @@ function tick(): void {
       if (scene.paused) break;
       const g = scene.game;
       const inputs: Controls[] = scene.devices.map((d) => input.controls(d));
+      scene.rec.record(inputs);
       step(g, inputs);
       renderer.absorb(g.events, g);
       renderer.trails(g);
@@ -183,7 +243,7 @@ function tick(): void {
       for (const e of g.events) if (e.type === "wave") say(`Wave ${e.n}.`);
       if (g.over) {
         const ranked = standings(g);
-        scene = { kind: "over", game: g, devices: scene.devices, t: 0 };
+        scene = { kind: "over", game: g, rec: scene.rec, ticket: scene.ticket, t: 0 };
         say(`Game over. ${ranked.map((s) => `Player ${s.id + 1}: ${s.score}`).join(", ")}.`);
         updateButtons();
       }
@@ -191,9 +251,11 @@ function tick(): void {
     }
     case "over":
     case "entry":
+    case "saving":
+    case "saved":
       step(scene.game);
       renderer.absorb(scene.game.events, scene.game);
-      if (scene.kind === "over") scene.t += DT;
+      if (scene.kind === "over" || scene.kind === "saved") scene.t += DT;
       break;
   }
 }
@@ -203,15 +265,15 @@ function draw(): void {
   switch (scene.kind) {
     case "title":
       renderer.world(attract, clock);
-      renderer.title(scene.sel, clock, scores, touchMode());
+      renderer.title(scene.sel, clock, publicRows ?? scores, publicRows !== null, touchMode());
       break;
     case "lobby":
       renderer.world(attract, clock);
-      renderer.lobby(scene.mode, scene.devices, scene.devices.map(deviceLabel), clock, touchMode());
+      renderer.lobby(scene.mode, scene.devices, scene.devices.map(deviceLabel), clock, touchMode(), scene.launching);
       break;
     case "play":
       renderer.world(scene.game, clock);
-      renderer.hud(scene.game, best());
+      renderer.hud(scene.game, best(), scene.ticket === null);
       if (scene.paused) renderer.paused();
       break;
     case "over":
@@ -221,9 +283,17 @@ function draw(): void {
     case "entry": {
       const id = scene.queue[0];
       renderer.world(scene.game, clock);
-      renderer.entry(id, scene.game.ships[id].score, scene.letters, scene.pos, clock);
+      renderer.entry(id, scene.game.ships[id].score, scene.letters, scene.pos, clock, scene.ticket !== null);
       break;
     }
+    case "saving":
+      renderer.world(scene.game, clock);
+      renderer.saving(clock);
+      break;
+    case "saved":
+      renderer.world(scene.game, clock);
+      renderer.saved(scene.results, scene.t);
+      break;
   }
 }
 
@@ -262,8 +332,9 @@ canvas.addEventListener("pointerdown", (e) => {
     });
   } else if (scene.kind === "lobby") {
     if (scene.devices.length === 0 && e.pointerType === "touch") join(scene.devices, "touch");
-    if (scene.devices.length > 0) launch(scene.mode, scene.devices);
-  } else if (scene.kind === "over" && scene.t > 1.2) afterGame(scene.game, scene.devices);
+    if (scene.devices.length > 0) void launch();
+  } else if (scene.kind === "over" && scene.t > 1.2) afterGame(scene);
+  else if (scene.kind === "saved" && scene.t > 0.8) toTitle();
 });
 
 // The on-screen buttons for phones and tablets.
@@ -315,4 +386,5 @@ window.addEventListener("touchstart", () => {
 showTouch();
 updateButtons();
 toTitle();
+void refreshPublic();
 requestAnimationFrame(frame);

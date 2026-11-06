@@ -12,8 +12,10 @@ export const SHIP = {
   radius: 11,
   turn: 4.4,
   thrust: 340,
-  /** Velocity decays by e^(-drag·t). */
+  /** Velocity decays by e^(-drag·t): each step multiplies it by dragStep = e^(-0.6/60), written out
+   *  so that every JavaScript engine uses the very same number. */
   drag: 0.6,
+  dragStep: 0.9900498337491681,
   maxSpeed: 430,
   lives: 3,
   /** Seconds before a lost ship comes back. */

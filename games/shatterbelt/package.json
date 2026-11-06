@@ -2,7 +2,7 @@
   "name": "shatterbelt",
   "version": "0.1.0",
   "private": true,
-  "description": "Shatterbelt: an original rock-breaking space shooter for one to nine players on one screen.",
+  "description": "Shatterbelt: an original rock-breaking space shooter for one to nine players on one screen, with a public high-score table.",
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",

@@ -1,4 +1,5 @@
-// The Shatterbelt Worker at icelander.net/games/retro/shatterbelt: static assets only.
+// The Shatterbelt Worker at icelander.net/games/retro/shatterbelt: static assets, plus the high-score
+// API and page (worker/index.ts) backed by the D1 database shatterbelt-scores (schema: worker/schema.sql).
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "shatterbelt",
@@ -6,10 +7,14 @@
   "workers_dev": false,
   "preview_urls": false,
   // Its own route is more specific than the recreations Worker's icelander.net/games/*, so it wins.
-  // The old address, /retro-games/shatterbelt, is redirected here by public/_redirects.
+  // The old address, /retro-games/shatterbelt, is redirected here by the Worker.
   "routes": [
     { "pattern": "icelander.net/games/retro/shatterbelt*", "zone_name": "icelander.net" },
     { "pattern": "icelander.net/retro-games/shatterbelt*", "zone_name": "icelander.net" }
   ],
-  "assets": { "directory": "./dist", "html_handling": "auto-trailing-slash" }
+  // The Worker serves the high-score API under /games/retro/shatterbelt/api/ and the page at
+  // /games/retro/shatterbelt/scores/; everything else is a static asset.
+  "main": "worker/index.ts",
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash" },
+  "d1_databases": [{ "binding": "DB", "database_name": "shatterbelt-scores", "database_id": "932bf59f-05df-43ac-aa1d-9d63a42304b9" }]
 }
