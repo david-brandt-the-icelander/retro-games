@@ -1,0 +1,12 @@
+// Static-assets Worker. Pick the address at the publish gate:
+// - its own subdomain: add "routes": [{ "pattern": "<slug>.example.net", "custom_domain": true }]
+// - a path on a shared domain: build with BASE_PATH=<path> and add
+//   "routes": [{ "pattern": "example.net/<path>*", "zone_name": "example.net" }]
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "game-slug",
+  "compatibility_date": "2025-01-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": { "directory": "./dist" }
+}
