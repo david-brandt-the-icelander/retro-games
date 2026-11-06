@@ -2,7 +2,7 @@
 
 A clean-room remake of a 1983 ZX Spectrum strategy game. It plays exactly like the original but shares none of its protected expression: text, names, screen designs, art, tunes or code. It is also the first game made with the **`create-retro-game`** skill (to be added in `.claude/skills/`). Building it will shape the skill.
 
-Status: **M1–M4 done** (M1 waits only for the owner's Access setup). The owner chose the title *Samosa*, a Nicaragua/Honduras setting with real organisations and pun-named ruling families, and the address `icelander.net/retro-games/samosa`, and asked for the game to be built: M5–M7 run together.
+Status: **M1–M8 done for the game** (M1 still waits for the owner's Access setup; M9, skill v1, is next). *Samosa* is published at `icelander.net/retro-games/samosa`. The owner chose its title, a Nicaragua/Honduras setting with real organisations and pun-named ruling families, and asked for it to be built and published.
 
 This repository is public, so this plan describes the original without quoting it. The original's names and wording appear only in the private faithful copy and its provenance notes.
 

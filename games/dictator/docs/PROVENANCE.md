@@ -46,11 +46,14 @@ Run against the original's listing and manual, with its four invented names as `
 
 ```
 overlap: 0 original strings, 0 shared 5-word passages, 0 name hits in 0 files (reference: 338 strings, 2109 n-grams)
+assets: 0 glyph matches, 0 tune runs, 0 transposed runs (reference: 0 glyphs, 9 notes)
 ```
 
-Scope: `games/dictator/` (PLAN.md and docs/, including GDD.md) at the end of phase 2. It is re-run at every later phase. Phase 2 caught one short phrase in a GDD purpose line that matched the original's wording; it was reworded. `zx_assets.py` is also clean: 0 glyph matches, 0 tune runs.
+Scope: the whole of `games/dictator/` (code, page, tests and docs) at the end of phase 7. Along the way the check caught and the team rewrote: one GDD purpose line, six UI-design phrases, one README sentence and one code comment. A guard test (`test/guard.test.ts`) keeps hashes of the original's strings and fails if any reappears.
 
-Accepted leftovers: none so far. The factual credit line ("Inspired by *Dictator* (1983) by Don Priestley, published by DK'Tronics…") will be accepted when it is added in phase 8.
+Parity with the baseline: 30,000 games, 0 differences (docs/TEST-PLAN.md).
+
+Accepted leftovers: the factual credit line ("Inspired by *Dictator* (1983) by Don Priestley, published by DK'Tronics. Independent remake, not affiliated with or endorsed by the original rights holders.") on the About screen and in the README.
 
 ## Decisions
 

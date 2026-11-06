@@ -9,7 +9,7 @@ Play it at `icelander.net/retro-games/samosa` (once published).
 ## How to play
 
 Each month:
-1. **The books are checked.** The treasury pays the monthly costs. In debt, the army, the secret police and your bodyguard lose heart instead.
+1. **The books are checked.** The treasury pays the monthly costs. A treasury in debt costs you the goodwill of the army and State Security, and thins your bodyguard.
 2. **An audience.** A group asks a favour. Ask your adviser what it would do to everyone, then grant it or refuse it. Refusing costs the group the goodwill it would have gained. If the treasury can't cover it, you must refuse.
 3. **Dangers.** An assassin may strike; Honduras may threaten war, or invade.
 4. **Your decision.** Take one decision from five sections, or none: reward a group, please everyone, look after yourself (secret police, more guards, a helicopter, a Swiss account), find money (loans from Moscow or Washington, seizures), or make a group stronger.

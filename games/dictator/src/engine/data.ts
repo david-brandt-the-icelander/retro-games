@@ -42,7 +42,7 @@ export interface Headline {
 const req = (from: number, popularity: Changes, strength: Changes, once = 0, monthly = 0): Request =>
   ({ from, popularity, strength, once, monthly });
 
-/** Requests R1–R24 (index 0–23): eight each from the Army, the Peasants and the Landowners. */
+/** Requests R1–R24 (index 0–23): eight from each domestic faction (Army, Peasants, Samosa family). */
 export const REQUESTS: readonly Request[] = [
   req(0, { army: 4, peasants: -3, landowners: -1 }, { army: 3, peasants: -2, landowners: -1 }, 0, 5),
   req(0, { army: 3, landowners: -3 }, { army: 1, landowners: -1 }),

@@ -1,6 +1,6 @@
 # Samosa: test plan and results
 
-Status: phase 7 of create-retro-game · implementer's part filled in; rows 6–8 and 10–13 belong to the verify role.
+Status: phase 7 of create-retro-game · **complete**. The implementer filled in rows 1–5; the verify role ran rows 6–13 on 2026-11-06.
 
 Run with `npm test` (typecheck, build, then `node --test`): **127 tests, 127 passed, 0 failed** (2026-11-06, Node 22).
 
@@ -15,21 +15,26 @@ Run with `npm test` (typecheck, build, then `node --test`): **127 tests, 127 pas
 | 4c | Pacing and sound | Timed screens last at least RULES §15.5's times; screens timed by their sound last exactly their motif (sputter + volley 4.5 s); key screens wait and offer keys; help list is digits-only (taps ignored); Swiss reads keys after 2 s; rating lines every 300 ms, keys with the last (≤ 2.4 s); helicopter, walker and teleprinter steps; all 38 motifs parse to the art bible's note counts and lengths; the funeral is the anthem in G minor | `test/pacing.test.ts` | 12 passed |
 | 5 | Layout | 75 contact-sheet samples plus 94 data-text screens (all requests, decisions, labels, headlines, every faction on the help list) at worst case (money −$12,345,000, months 999, totals 99999, every option and plot): `clipped = 0` (off the grid, outside its region, under the footer, over art); footer only on key screens and its cursor the only flash there; timed screens flash only the lamp (4 cells) or the reticle (9 cells); report never flashes and marks plots in words; debt worded; borders per family; sound overlay restores its 12 cells unless the screen was redrawn; all strings ≤ 32 columns and in the font; screen-reader text on every screen, assertive where UI-DESIGN says | `test/layout.test.ts` | 15 passed |
 | 5b | Platform | Font, palette, FLASH render, pictures, raw-key normalisation | `test/zx.test.ts` | 9 passed |
-| 6 | Parity | ≥ 10,000 games per policy vs the baseline; full state each step | scratch harness (verify role) | _not run by the implementer: `snapshot(state)` is exported from `src/engine/index.ts`_ |
-| 7 | Text overlap | `overlap.py` with `--names` | clean-room-rebuild (verify role) | _pending_ |
-| 8 | Assets | `zx_assets.py` (UDGs and tunes) | zx-spectrum-clean-room (verify role) | _pending_ |
-| 9 | Guard | Hashes of original strings never reappear | `npm test` | _not added: the implementer has no access to the original's strings; the verify role supplies the hashes_ |
-| 10 | Browser | Full games: desktop keyboard, phone portrait and landscape taps; no console errors | Playwright | Smoke run only (desktop Chrome, keyboard, 60 s of random keys through title, how to play, M, a whole reign and back to the title): no page or console errors. Full runs: verify role |
-| 11 | CSP | Headers present; no violations during play | `wrangler dev` + Playwright | _verify role_ (`public/_headers` keeps the template's strict CSP; the only inline resource is an empty `data:` favicon, allowed by `img-src 'self' data:`) |
-| 12 | Visual | "Mistakable for the original?": no, for every screen | contact sheet review | _verify role_; the implementer checked `docs/contact-sheet.png` against UI-DESIGN |
-| 13 | Accessibility | Live-region text, keyboard-only, 44 px targets, flash < 3 Hz | manual + Playwright | Implemented: polite and assertive live regions, keyboard-only play, the template's 44 px keypad buttons, FLASH at 320 ms. Review: verify role |
+| 6 | Parity | ≥ 10,000 games per policy vs the baseline; full state each step | scratch harness (verify role) | **Pass.** 30,000 games (10,000 each for a random, an eager and an invalid-key policy), 3,600,557 baseline steps, **0 differences** in screen kinds, order or game state. The baseline ran with its news-money switch off (RULES §15.6). State is compared exactly at every decision, report, treasury and rating screen and at the end; between them, 40,925 changes sat one no-input screen earlier or later than in the baseline (see below). |
+| 7 | Text overlap | `overlap.py` with `--names` | clean-room-rebuild (verify role) | **Pass:** `overlap: 0 original strings, 0 shared 5-word passages, 0 name hits in 0 files (reference: 338 strings, 2109 n-grams)` |
+| 8 | Assets | `zx_assets.py` (UDGs and tunes) | zx-spectrum-clean-room (verify role) | **Pass:** `assets: 0 glyph matches, 0 tune runs, 0 transposed runs (reference: 0 glyphs, 9 notes)` |
+| 9 | Guard | Hashes of original strings never reappear | `npm test` | **Pass.** `test/guard.test.ts` with `test/original-hashes.json` (156 hashed strings and names, no text). Checked by planting a name: the test failed, as it should. |
+| 10 | Browser | Full games: desktop keyboard, phone portrait and landscape taps; no console errors | Playwright | **Pass.** Chromium under `wrangler dev`: desktop 1280×800 (4 min, 937 keys), iPhone 13 portrait and landscape (90 s each, keys and keypad taps). 0 console errors or warnings, no page scroll; 60–77 distinct screens each. |
+| 11 | CSP | Headers present; no violations during play | `wrangler dev` + Playwright | **Pass.** The CSP header is served; 0 `securitypolicyviolation` events in all three runs. |
+| 12 | Visual | "Mistakable for the original?": no, for every screen | contact sheet review | **Pass.** No screen resembles the original's: no emblem row, no bar-chart report, no tiled backgrounds, no title wallpaper, no flashing headings. |
+| 13 | Accessibility | Live-region text, keyboard-only, 44 px targets, flash < 3 Hz | manual + Playwright | **Pass** after one fix: the sound button was 32 px tall; it is now at least 44×44 (here and in the skill's template). Keypad buttons are 44 px or more; FLASH at 320 ms. |
 
 ## Parity differences
 | Difference | Explanation (RULES §) | Accepted by |
 |---|---|---|
-| _to be filled in by the verify role_ | | |
+| The alive/escaped flags are set before the death or escape screen, not after it | Presentation order only; no draw or input in between (RULES §4) | Verify role |
+| The threat-of-war rally is applied before its screen, not after | Same; the next screen with a decision matches exactly (RULES §11) | Verify role |
+| Timed screens move on by themselves; the baseline waits for a key | Restores the original's pacing (RULES §15.6) | RULES |
+| A separate strength screen before the revolt starts | Restores the original (RULES §15.6) | RULES |
+| A funeral screen after a death | Remake addition (GDD §7) | GDD |
+| A newsflash moves no money | Owner decision (RULES §15.6) | Owner |
 
 ## Accepted overlap entries
 | Entry | Reason |
 |---|---|
-| Names in the credit line | Factual attribution |
+| The credit line on the About screen and in the README (*Dictator*, Don Priestley, DK'Tronics) | Factual attribution, as GDD §1 requires; the overlap check does not flag it |
