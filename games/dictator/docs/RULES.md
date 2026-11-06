@@ -244,7 +244,7 @@ Make up to three picks of a random domestic faction (1 of 3). The first pick tha
 
 ### 13.4 Fighting
 1. **Help screen:** shows the rebels, their ally and their combined strength, and lists the groups 1–6 whose popularity is **above** the threshold, numbered by group order.
-   - **If none are listed:** a "you are alone" note (waits for a key), and the fight goes ahead without a helper.
+   - **If none are listed:** there is no numbered list and no key is read for it. One screen shows the rebels' lines and a "you are alone" note, and waits for a key; then the fight goes ahead without a helper. (The engine emits only the *alone* screen here, not a help list.)
    - **Otherwise:** the player presses 1–6, and other keys are ignored until one of these comes.
      - A listed group becomes the **helper**.
      - An **unlisted** number (a disaffected group): a "joke" note, and the President must flee on foot (§13.3), so the game ends. An owned helicopter is **not** tried: it goes straight to the mountains.

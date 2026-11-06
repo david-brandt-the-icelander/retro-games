@@ -28,7 +28,7 @@ Verdicts: **keep** (functional, not protected) · **replace** (copied expression
 | 5 | How-to-play pages | extras | Paraphrase of the original manual | text | **replace** | Written fresh from RULES |
 | 6 | Invented names: the player's country and its adjective, the neighbouring country and its people | everywhere | Original | names | **replace** | New names chosen in the GDD; the mapping is kept in the private repo only |
 | 7 | Generic group names (army, peasants, landowners, guerrillas, secret police) and the two real superpowers | everywhere | Generic words and real-world entities | names | **keep** (GDD may restyle) | — |
-| 8 | Title *Dictator* | title, page title | Original title; a common word | branding | **replace** | The remake is titled *Sozoma* |
+| 8 | Title *Dictator* | title, page title | Original title; a common word | branding | **replace** | The remake is titled *Samosa* |
 | 9 | Intro credit screen imitating the original's (author, publisher lettering, year) | extras | Original branding | branding | **replace** | Removed; an About screen and README carry the factual credit line |
 | 10 | Screen layouts and colour schemes copied from the original:<br>• the request screen's row of icons<br>• the intelligence report's columns<br>• the tiled backgrounds<br>• the title wallpaper and flag<br>• the advice prompt column<br>• the alternating footer bar<br>• the flashing elements | screen painters | Original screen designs | art / layout | **replace** | New layouts (wireframes) and look (art bible). The flashing *behaviour* that carries gameplay information (plot markers) is kept as information, not as the same design. |
 | 11 | Pixel art: group emblems, police face, dollar band, President portrait, helicopter, mountains, coffin | art module | Own work, drawn for the baseline | art | **replace** (by design choice) | Redrawn per the new art bible, so the remake's look is fully its own; reuse only if the art bible adopts it |
@@ -54,9 +54,9 @@ Accepted leftovers: none so far. The factual credit line ("Inspired by *Dictator
 
 ## Decisions
 
-- [x] **Title:** *Sozoma*.
-- [x] **New names:** the player's country is Nicaragua and the neighbour Honduras (real places, replacing the original's invented names; GDD §4).
+- [x] **Title:** *Samosa*.
+- [x] **New names:** the player's country is Nicaragua and the neighbour Honduras (real places, replacing the original's invented names), with real organisations and pun-named ruling families (GDD §4).
 - [x] **The newsflash money quirk:** switched off.
 - [x] **Case of the Y key:** both cases.
 - [x] **Permission:** not requested (owner decision); the remake relies on the clean-room work.
-- [x] **Public address:** `icelander.net/retro-games/sozoma`.
+- [x] **Public address:** `icelander.net/retro-games/samosa`.
