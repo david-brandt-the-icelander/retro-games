@@ -1,0 +1,11 @@
+// The HIVESTORM Worker at icelander.net/games/retro/hivestorm: static assets only, open to everyone.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hivestorm",
+  "compatibility_date": "2025-01-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  // Its own route is more specific than the recreations Worker's icelander.net/games/*, so it wins.
+  "routes": [{ "pattern": "icelander.net/games/retro/hivestorm*", "zone_name": "icelander.net" }],
+  "assets": { "directory": "./dist" }
+}
