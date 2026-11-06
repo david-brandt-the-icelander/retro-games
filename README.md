@@ -6,6 +6,7 @@ Recreations of retro-games that I have made with the help of AI
 | Game | Play | Source |
 |---|---|---|
 | Rally: table tennis for one or two players, with a high-score table | [icelander.net/games/retro/rally](https://icelander.net/games/retro/rally/) ([high scores](https://icelander.net/games/retro/rally/scores/)) | [games/rally](games/rally) |
+| Shatterbelt: an original rock-breaking shooter for 1 to 9 players on one screen, co-op or versus, with a high-score table | [icelander.net/games/retro/shatterbelt](https://icelander.net/games/retro/shatterbelt/) ([high scores](https://icelander.net/games/retro/shatterbelt/scores/)) | [games/shatterbelt](games/shatterbelt) |
 | Hivestorm: an arcade shooter for one or two players, with a high-score table | [icelander.net/games/retro/hivestorm](https://icelander.net/games/retro/hivestorm/) ([high scores](https://icelander.net/games/retro/hivestorm/scores/)) | [games/hivestorm](games/hivestorm) |
 | Samosa: a remake of a 1983 ZX Spectrum strategy game | [icelander.net/games/retro/samosa](https://icelander.net/games/retro/samosa/) ([high scores](https://icelander.net/games/retro/samosa/scores/)) | [games/dictator](games/dictator) |
 
