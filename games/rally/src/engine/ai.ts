@@ -1,6 +1,6 @@
 // The computer opponent. It sees the ball only every `reaction` seconds, guesses where the ball
 // will reach its paddle (bounces included) with some error, and moves there no faster than its level allows.
-import { BALL, H, PADDLE_H, PADDLE_SPEED, SERVE_SPEED, faceX, type Control, type Side, type State } from "./rules";
+import { BALL, H, PADDLE_H, PADDLE_SPEED, SERVE_SPEED, faceX, speedOf, type Control, type Side, type State } from "./rules";
 import { rng } from "./rng";
 
 export type LevelName = "easy" | "normal" | "hard";
@@ -34,8 +34,8 @@ export function predictY(s: State, x: number): number {
   return BALL / 2 + (m <= span ? m : 2 * span - m);
 }
 
-/** How fast the error grows with the ball's speed: a ball twice as fast is guessed this power of 2 times worse. */
-export const FAST_MISS = 1.5;
+/** How the error grows with the ball's speed: as speed^1.5, so a ball twice as fast is guessed 2.8 times worse. */
+const fastMiss = (pace: number): number => pace * Math.sqrt(pace); // not pace ** 1.5: pow may differ by browser
 
 export class Cpu {
   private random: () => number;
@@ -74,8 +74,7 @@ export class Cpu {
     const key = s.rally * 2 + this.side;
     if (this.planned !== key) {
       this.planned = key;
-      const pace = Math.hypot(s.ball.vx, s.ball.vy) / SERVE_SPEED;
-      const miss = (this.random() * 2 - 1) * this.level.error * pace ** FAST_MISS;
+      const miss = (this.random() * 2 - 1) * this.level.error * fastMiss(speedOf(s.ball) / SERVE_SPEED);
       const aim = (this.random() * 2 - 1) * this.level.aim * (PADDLE_H / 2);
       this.guess = miss - aim;
     }

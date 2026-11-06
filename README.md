@@ -5,8 +5,8 @@ Recreations of retro-games that I have made with the help of AI
 
 | Game | Play | Source |
 |---|---|---|
-| Rally: table tennis for one or two players | [icelander.net/games/retro/rally](https://icelander.net/games/retro/rally/) | [games/rally](games/rally) |
-| Samosa: a remake of a 1983 ZX Spectrum strategy game | [icelander.net/games/retro/samosa](https://icelander.net/games/retro/samosa/) | [games/dictator](games/dictator) |
+| Rally: table tennis for one or two players, with a high-score table | [icelander.net/games/retro/rally](https://icelander.net/games/retro/rally/) ([high scores](https://icelander.net/games/retro/rally/scores/)) | [games/rally](games/rally) |
+| Samosa: a remake of a 1983 ZX Spectrum strategy game | [icelander.net/games/retro/samosa](https://icelander.net/games/retro/samosa/) ([high scores](https://icelander.net/games/retro/samosa/scores/)) | [games/dictator](games/dictator) |
 
 ## Agent skills
 

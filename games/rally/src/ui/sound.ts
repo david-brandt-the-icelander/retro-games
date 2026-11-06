@@ -34,6 +34,9 @@ export class Sound {
     osc.stop(t + dur + 0.02);
   }
 
+  /** A key of the on-screen keyboard. */
+  key(): void { this.tone(880, 0, 0.03, "square", 0.05); }
+
   play(e: GameEvent, cheer: boolean): void {
     switch (e.kind) {
       case "paddle": {

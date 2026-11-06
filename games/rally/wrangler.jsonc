@@ -1,4 +1,5 @@
-// The Rally Worker at icelander.net/games/retro/rally: static assets only, no server code.
+// The Rally Worker at icelander.net/games/retro/rally: the static game, plus the high-score API
+// (worker/index.ts) backed by the D1 database rally-scores (schema: worker/schema.sql).
 // Its own route is more specific than the recreations Worker's icelander.net/games/*, so it wins.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
@@ -7,5 +8,10 @@
   "workers_dev": false,
   "preview_urls": false,
   "routes": [{ "pattern": "icelander.net/games/retro/rally*", "zone_name": "icelander.net" }],
-  "assets": { "directory": "./dist", "not_found_handling": "none" }
+  // The Worker answers the API and the scores page under /games/retro/rally/; everything else is a static asset.
+  "main": "worker/index.ts",
+  "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "none" },
+  // No database_id yet: the first `wrangler deploy` creates rally-scores and fills it in. Then apply
+  // the schema once: npx wrangler d1 execute rally-scores --remote --file worker/schema.sql
+  "d1_databases": [{ "binding": "DB", "database_name": "rally-scores" }]
 }

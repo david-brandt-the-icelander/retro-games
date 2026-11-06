@@ -124,6 +124,46 @@ kbd {
 #help th, #help td { padding: .3em .7em; text-align: left; border-bottom: 1px solid #ffffff20; }
 #help th { color: var(--dim); font-weight: 600; }
 
+/* High scores: the name in underlined slots, an on-screen keyboard, and the table. */
+.links { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.points { font: 800 clamp(1rem, 3.4vw, 1.4rem) var(--mono); color: var(--ball); letter-spacing: .08em; }
+.points[hidden] { display: none; }
+.ask { color: var(--dim); font-size: .8rem; letter-spacing: .2em; font-weight: 700; }
+.slots { display: flex; gap: clamp(5px, 1.4vw, 12px); }
+.slot {
+  width: clamp(14px, 3.2vw, 26px); height: clamp(22px, 4.6vw, 36px);
+  display: grid; place-items: end center; padding-bottom: 6px;
+  font: 800 clamp(.95rem, 3.2vw, 1.5rem)/1 var(--mono); color: var(--line);
+  border-bottom: 3px solid var(--line);
+}
+/* The cursor: the underline of the next free slot blinks. */
+.slot.cursor { animation: cursor 0.64s steps(1, end) infinite; }
+@keyframes cursor { 0% { border-bottom-color: var(--ball); } 50% { border-bottom-color: transparent; } }
+.keyboard { display: flex; flex-direction: column; align-items: center; gap: clamp(3px, .8vw, 6px); }
+.krow { display: flex; gap: clamp(3px, .8vw, 6px); }
+.key {
+  min-width: clamp(22px, 5vw, 40px); height: clamp(22px, 4.6vw, 36px); padding: 0 .3em;
+  border: 1px solid #ffffff55; border-radius: 6px; background: #ffffff12; color: var(--line);
+  font: 700 clamp(.7rem, 2.2vw, .95rem) var(--mono); cursor: pointer; touch-action: manipulation;
+}
+.key.wide { min-width: clamp(56px, 12vw, 96px); letter-spacing: .08em; }
+.key:hover { background: #ffffff24; }
+.key:focus-visible { outline: 2px solid var(--right); outline-offset: 1px; }
+/* A key blinks once for every press, typed or clicked. */
+.key.hit { animation: hit 160ms steps(1, end); }
+@keyframes hit { 0% { background: var(--ball); color: var(--night); border-color: var(--ball); } 100% { background: #ffffff12; } }
+.message { color: var(--dim); font-size: .85rem; min-height: 1.3em; }
+.table { border-collapse: collapse; font: 600 clamp(.7rem, 2.2vw, .95rem) var(--mono); }
+.table th { color: var(--dim); font-weight: 600; text-align: left; padding: .2em .7em; }
+.table td { padding: .2em .7em; border-top: 1px solid #ffffff1a; }
+.table td.num, .table th.num { text-align: right; }
+.table tr.mine td { color: var(--night); background: var(--ball); }
+
+/* The site's footer links, the same on every icelander.net page, always under the game. */
+.site-links { margin: 0; color: var(--dim); font-size: .8rem; text-align: center; }
+.site-links a { color: var(--line); opacity: .8; text-underline-offset: .15em; }
+.site-links a:hover, .site-links a:focus-visible { opacity: 1; }
+
 #rotate { display: none; margin: 0; color: var(--dim); font-size: .85rem; text-align: center; }
 @media (orientation: portrait) and (max-width: 700px) {
   #rotate { display: block; }
@@ -136,7 +176,22 @@ kbd {
   .panel { gap: 8px; }
   button.big { min-width: 9em; padding: .55em 1em; font-size: .85rem; }
   #help p, #help table { font-size: .78rem; }
+  #entry, #scores { gap: 6px; }
 }
 
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .noscript { position: fixed; inset: 0; display: grid; place-items: center; margin: 0; background: var(--night); }
+
+/* Phones on their side: the table is too short for name entry and the scores, so they cover the
+   screen, with keys sized to its height. */
+@media (orientation: landscape) and (max-height: 520px) {
+  #entry, #scores { position: fixed; inset: 0; z-index: 2; border-radius: 0; background: #071226f2; gap: 4px; padding: 8px 16px; }
+  #entry h2, #scores h2 { font-size: 1.1rem; }
+  #entry .ask { display: none; }
+  .points { font-size: 1rem; }
+  .slot { height: 9vh; font-size: 5.5vh; padding-bottom: 3px; }
+  .keyboard, .krow { gap: 1vh; }
+  .key { height: 9vh; min-width: 11vh; font-size: 4.2vh; }
+  .key.wide { min-width: 24vh; }
+  .message { font-size: .75rem; }
+}

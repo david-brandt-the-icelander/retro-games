@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  BALL, H, IDLE, MAX_ANGLE, MAX_SPEED, PADDLE_H, POINT_PAUSE, SERVE_DELAY, SERVE_SPEED, SPEEDUP, W,
+  BALL, H, IDLE, MAX_SLOPE, MAX_SPEED, PADDLE_H, POINT_PAUSE, SERVE_DELAY, SERVE_SPEED, SPEEDUP, W,
   faceX, newMatch, serverFor, step, winnerOf, type Control, type GameEvent, type State,
 } from "../src/engine/rules";
 
@@ -67,8 +67,9 @@ test("a hit near the tip leaves at a steep angle, toward that tip's side", () =>
   const s = inPlay({ x: faceX(1) - 20, y: H / 2 + PADDLE_H / 2 + BALL / 2 - 1, vx: 400, vy: 0 });
   run(s, 0.1);
   assert.ok(s.ball.vx < 0);
-  const angle = Math.atan2(s.ball.vy, -s.ball.vx);
-  assert.ok(angle > MAX_ANGLE * 0.9 && angle <= MAX_ANGLE + 1e-9, `angle ${angle}`);
+  const slope = s.ball.vy / -s.ball.vx;
+  assert.ok(slope > MAX_SLOPE * 0.9 && slope <= MAX_SLOPE + 1e-9, `slope ${slope}`);
+  assert.ok(Math.abs(Math.atan(MAX_SLOPE) * 180 / Math.PI - 55) < 1e-9, "55°");
 });
 
 test("the ball never goes faster than MAX_SPEED", () => {

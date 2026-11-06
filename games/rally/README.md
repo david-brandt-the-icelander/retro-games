@@ -8,11 +8,21 @@ Rally is an original game in the paddle-and-ball genre that the earliest arcade 
 
 ## How to play
 
-- Hit the ball past the other paddle. The further from your paddle's centre the ball lands, the steeper it leaves (up to 55°). Every return is 6% faster than the last, up to a top speed.
+- Hit the ball past the other paddle. The further from your paddle's centre the ball lands, the steeper it leaves (up to 55°: the engine works in slopes, not angles). Every return is 6% faster than the last, up to a top speed.
 - **First to 11 wins, by two clear points.** The serve changes every two points, and every point from 10–10. The ball rests on the server's paddle for a moment, so the server chooses where to serve from.
 - **One player:** you are the left paddle against the computer (easy, normal or hard; the choice is remembered). Use **W/S** or **↑/↓**, drag anywhere on the table, or move the mouse over it.
 - **Two players:** left uses **W/S** or drags on the left half; right uses **↑/↓** or drags on the right half. Both can play with keys, or both by touch on one phone or tablet.
-- **P** or **Esc** pauses (so does switching away from the tab), and **M** turns sound on and off. On the title screen, **1** and **2** start a game and **H** shows how to play.
+- **P** or **Esc** pauses (so does switching away from the tab), and **M** turns sound on and off. On the title screen, **1** and **2** start a game, **H** shows how to play and **S** the high scores.
+
+## High scores
+
+One-player matches score: each point you win is worth 100 on easy, 200 on normal and 300 on hard, and winning the match adds ten points' worth (1,000, 2,000 or 3,000).
+
+After a match you may put your score on the public table, also at [icelander.net/games/retro/rally/scores](https://icelander.net/games/retro/rally/scores/), under a name of up to 12 characters (capitals, digits, dots, hyphens and spaces), typed in the style of the old arcade tables. Each letter sits over its own underline with a space between, and the cursor blinks under the next one. Type on your keyboard, or tap or click the keys drawn on screen; each key blinks as it is pressed. **DEL** (or Backspace) deletes the last letter, **ENTER** saves and **SKIP** (or Escape) leaves the match off the table. While you type, M is a letter, not the sound key.
+
+The name is remembered for the rest of the browser session, for every game on icelander.net (Samosa uses the same rules). A player signed in at icelander.net/games starts with the part of their email address before the @ (from `/games/me`). No email address is asked for or stored.
+
+**Scores can't be faked.** The server issues each one-player match's seed. The browser records the player's paddle control tick by tick, one entry per change, and the server replays the whole match with the same engine, against the same computer, before it lists the score the replay produced. Each seed enters once. The engine uses only `+ − × ÷` and `√`, which every browser computes to the same bit (not `sin`, `cos`, `pow` or `hypot`, which may differ), so a match played in any browser replays exactly on the server. A 10-minute match replays in about 5 ms.
 
 ## The computer
 
@@ -33,17 +43,24 @@ npm run dev       # rebuild on change; serve dist/ with any static server
 | `src/engine/ai.ts` | The computer player and its three levels |
 | `src/engine/rng.ts` | The seeded generator, so a match replays exactly in tests |
 | `src/ui/` | Canvas drawing (`render.ts`), keys/touch/mouse (`input.ts`) and synthesised sound (`sound.ts`) |
-| `src/main.ts` | Menus, the fixed-step frame loop (120 Hz), the scoreboard and layout. A computer-against-computer match plays behind the menus. |
+| `src/engine/match.ts` | Scoring, and a one-player match as the table sees it: the recorder, and `replay(seed, level, recording)`, which the server runs |
+| `src/names.ts`, `src/scores.ts` | The name rules (the same as Samosa's), and the browser's side of the table: seeds, submitting, the session name |
+| `src/ui/entry.ts` | The name entry: underlined slots, the blinking cursor, the on-screen keyboard |
+| `src/main.ts` | Menus, the fixed-step frame loop (120 Hz), recording, name entry, the table, the scoreboard and layout. A computer-against-computer match plays behind the menus. |
+| `worker/` | The Worker: the high-score API (seeds, replay, table), the public scores page in icelander.net's look, and the D1 schema |
 | `public/` | The page, its styles, and `_headers` (strict CSP: everything comes from this origin) |
 | `test/` | node:test suites |
 
 ## Deploy
 
-A static-assets Worker named `rally` (`wrangler.jsonc`), routed at `icelander.net/games/retro/rally*`. There is no server code and no database.
+A Worker named `rally` (`wrangler.jsonc`), routed at `icelander.net/games/retro/rally*`. It serves the static game, and `worker/index.ts` answers the high-score API under `/games/retro/rally/api/` and the page `/games/retro/rally/scores/`, backed by the D1 database `rally-scores`.
 
 ```bash
 npm run deploy    # test, build, wrangler deploy (needs CLOUDFLARE_API_TOKEN or `wrangler login`)
 ```
+
+- First deploy only: `wrangler deploy` creates the `rally-scores` database itself (the config names it but has no `database_id` yet; commit the id wrangler writes back, if it does). Then create the tables once: `npx wrangler d1 execute rally-scores --remote --file worker/schema.sql`.
+- Local: `npx wrangler d1 execute rally-scores --local --file worker/schema.sql`, then `npm run build && npx wrangler dev`, and open `http://localhost:8787/games/retro/rally/`.
 
 ## Licence
 

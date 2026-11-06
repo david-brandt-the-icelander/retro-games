@@ -20,10 +20,14 @@ export const SERVE_SPEED = 380;
 /** Each return is this much faster than the last, up to MAX_SPEED. */
 export const SPEEDUP = 1.06;
 export const MAX_SPEED = 960;
-/** A ball that meets the paddle's very tip leaves at this angle from the horizontal. */
-export const MAX_ANGLE = (55 * Math.PI) / 180;
-/** The widest angle a serve leaves at. */
-export const SERVE_ANGLE = (22 * Math.PI) / 180;
+/**
+ * A ball that meets the paddle's very tip leaves at this slope (vy / vx): tan 55°. Slopes, not
+ * angles, so the engine needs only + − × ÷ and √, which every browser computes to the same bit;
+ * the server replays a match and must get exactly the browser's result.
+ */
+export const MAX_SLOPE = 1.4281480067421144;
+/** The steepest slope a serve leaves at: tan 22°. */
+export const SERVE_SLOPE = 0.4040262258351568;
 
 /** The ball rests on the server's paddle this long before it is served, in seconds. */
 export const SERVE_DELAY = 0.9;
@@ -135,11 +139,18 @@ function restBall(s: State): void {
   b.vy = 0;
 }
 
+/** Sets the ball's velocity from its speed, its direction along x and its slope. */
+function launch(b: Ball, speed: number, dir: number, slope: number): void {
+  const norm = Math.sqrt(1 + slope * slope);
+  b.vx = (dir * speed) / norm;
+  b.vy = (slope * speed) / norm;
+}
+
+/** The ball's speed. Math.sqrt is exact in every browser (Math.hypot need not be). */
+export const speedOf = (b: Ball): number => Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+
 function serve(s: State, events: GameEvent[]): void {
-  const angle = (s.random() * 2 - 1) * SERVE_ANGLE;
-  const dir = s.server === 0 ? 1 : -1;
-  s.ball.vx = dir * SERVE_SPEED * Math.cos(angle);
-  s.ball.vy = SERVE_SPEED * Math.sin(angle);
+  launch(s.ball, SERVE_SPEED, s.server === 0 ? 1 : -1, (s.random() * 2 - 1) * SERVE_SLOPE);
   s.phase = "play";
   s.rally = 0;
   events.push({ kind: "serve", side: s.server });
@@ -164,11 +175,9 @@ function returnBall(s: State, side: Side): number {
   const b = s.ball;
   const reach = PADDLE_H / 2 + BALL / 2;
   const offset = clamp((b.y - s.paddles[side].y) / reach, -1, 1);
-  const angle = offset * MAX_ANGLE;
-  const speed = Math.min(Math.hypot(b.vx, b.vy) * SPEEDUP, MAX_SPEED);
+  const speed = Math.min(speedOf(b) * SPEEDUP, MAX_SPEED);
   const dir = side === 0 ? 1 : -1;
-  b.vx = dir * speed * Math.cos(angle);
-  b.vy = speed * Math.sin(angle);
+  launch(b, speed, dir, offset * MAX_SLOPE);
   b.x = faceX(side) + (dir * BALL) / 2;
   s.rally++;
   return speed;
@@ -214,7 +223,7 @@ export function step(s: State, controls: [Control, Control], dt: number): GameEv
       if (s.timer <= 0) serve(s, events);
       break;
     case "play": {
-      const speed = Math.hypot(s.ball.vx, s.ball.vy);
+      const speed = speedOf(s.ball);
       const n = Math.max(1, Math.ceil((speed * dt) / MAX_TRAVEL));
       for (let i = 0; i < n && s.phase === "play"; i++) moveBall(s, dt / n, events);
       break;
