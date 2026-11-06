@@ -23,7 +23,7 @@ Several times a month State Security offers you its file for $1,000: every group
 
 ## The high-score table
 
-After a reign you may enter the public table with your email address. Only the part before the @ is shown; the full address is stored privately with your score and never shown or shared. The server doesn't trust the browser's score: it issued the reign's random seed, and it replays your key presses through the same game engine to compute the score itself. Press S on the title screen to see the table.
+After a reign you may enter the public table under a name of your choosing (up to 12 letters, digits or spaces; accented letters are written plainly, so Davíð becomes David). No email or other personal data is asked for. The server doesn't trust the browser's score: it issued the reign's random seed, and it replays your key presses through the same game engine to compute the score itself. Press S on the title screen to see the table, or open <https://icelander.net/games/retro/samosa/scores/>.
 
 ## Develop
 

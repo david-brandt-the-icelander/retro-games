@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HIVESTORM</title>
+<meta name="description" content="HIVESTORM: an arcade shooter for one or two players. Break up a swaying hive of wasp-like aliens before they peel off and dive at your ship.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 10'%3E%3Cpath d='M4 0h3v4H4z' fill='%23e8d428'/%3E%3Cpath d='M3 2h5v1H3z' fill='%237a5010'/%3E%3Cpath d='M0 4h3v3H0zM8 4h3v3H8z' fill='%23a0dcff'/%3E%3Cpath d='M4 5h3v3H4z' fill='%2340c050'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="hivestorm.css">
+</head>
+<body data-phase="attract">
+<canvas id="screen" width="224" height="288" role="img" aria-label="HIVESTORM game screen. Press 1 for one player or 2 for two players; arrow keys move, space fires."></canvas>
+<div id="pad">
+  <div class="row starts">
+    <button type="button" data-action="start1">1 PLAYER</button>
+    <button type="button" data-action="start2">2 PLAYERS</button>
+  </div>
+  <div class="row moves">
+    <button type="button" data-action="left" aria-label="Move left">&#9664;</button>
+    <button type="button" data-action="right" aria-label="Move right">&#9654;</button>
+    <button type="button" data-action="fire" class="fire">FIRE</button>
+  </div>
+  <div class="row small">
+    <button type="button" data-action="pause" class="pause">PAUSE</button>
+    <button type="button" id="sound" aria-pressed="true">SOUND ON (M)</button>
+  </div>
+  <nav class="site-links" aria-label="icelander.net"><a href="/trains">Trains of thought</a> · <a href="/games/">Games</a> · <a href="/">About and contact</a> · <a href="/feed.xml">Feed of everything</a></nav>
+</div>
+<noscript><p class="noscript">This game needs JavaScript.</p></noscript>
+<script src="game.js"></script>
+</body>
+</html>
