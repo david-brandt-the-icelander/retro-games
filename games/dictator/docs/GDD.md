@@ -433,6 +433,8 @@ All melodies are new and written for this game; effects are generic beeper sound
 | 2026-11-06 | After playtesting: every screen waits for a key (a newsflash went by too fast to read). Timed screens draw in full and play their sound, then show the any-key footer. | Owner |
 | 2026-11-06 | After playtesting: one report offer a month, at the end of the turn (RULES §4 step 15). | Owner |
 | 2026-11-06 | The high-score table asks for a name, not an email: no personal data is collected. Names are cleaned to the font's characters, at most 12. | Owner |
+| 2026-11-06 | The State Security report shows each value as a bar too, as the original's report did, in Samosa's own colours and layout. | Owner |
+| 2026-11-06 | Every game page carries the site's footer links under the game: Trains of thought · Games · About and contact · Feed of everything. | Owner |
 | 2026-11-06 | Revised: the screens the original moved on by itself don't wait for a key after all. They show the any-key prompt and move on by themselves 7 s after they appear, unless a key comes first. | Owner |
 | 2026-11-06 | A public high-score table, keyed by the player's email: the table shows only the part before the @ (the full address is stored privately and never shown or shared); there is no email check; the server issues each reign's seed and replays the reign from its keys to compute the score, so scores can't be faked. | Owner |
 

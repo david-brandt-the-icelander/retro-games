@@ -176,7 +176,7 @@ export const REPORT = {
   bought: (m: number) => `File for month ${m}`,
   first: "Opening file, on the house",
   final: "FINAL FILE, FOR THE ARCHIVE",
-  heading: "No GROUP         POP.  STR.",
+  heading: "No GROUP       POP.   STR.",
   rise: (faction: string, allyNo: number, ally: string) => `${faction} RISE +${allyNo} ${ally}`,
   assassin: (faction: string) => `${faction} HIRE AN ASSASSIN`,
   noPlots: "No plots uncovered. Yet.",

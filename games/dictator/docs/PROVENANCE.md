@@ -53,6 +53,8 @@ Scope: the whole of `games/dictator/` (code, page, tests and docs) at the end of
 
 Parity with the baseline: 30,000 games, 0 differences (docs/TEST-PLAN.md).
 
+Owner's deliberate choice (2026-11-06): the State Security report shows values as bars, as the original's report did. Only the idea of a bar for a 0–9 value is shared: the colours (cyan and magenta), positions, digits beside the bars, letterhead and the absence of flashing are Samosa's own.
+
 Accepted leftovers: the factual credit line ("Inspired by *Dictator* (1983) by Don Priestley, published by DK'Tronics. Independent remake, not affiliated with or endorsed by the original rights holders.") on the About screen and in the README.
 
 ## Decisions
