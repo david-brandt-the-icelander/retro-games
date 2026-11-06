@@ -1,6 +1,6 @@
 // Renders every sample screen headlessly into one PNG contact sheet for review:
 //   npm run sheet                     → docs/contact-sheet.png
-//   node dist-test/scripts/contact-sheet.mjs out.png report   (only samples whose name contains "report")
+//   node dist-test/scripts/contact-sheet.mjs out.png report   (only samples whose name matches the pattern)
 // Each screen is drawn twice side by side, FLASH off and FLASH on, with its name above it.
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
@@ -11,8 +11,8 @@ import { FULL_HEIGHT, FULL_WIDTH, ZXScreen } from "../src/zx/screen";
 
 const out = process.argv[2] ?? "docs/contact-sheet.png";
 const filter = process.argv[3] ?? "";
-const samples = SAMPLES.filter((s) => s.name.includes(filter));
-const PAIRS = 3; // screens per row of the sheet
+const samples = SAMPLES.filter((s) => new RegExp(filter).test(s.name));
+const PAIRS = Number(process.env.SHEET_PAIRS ?? 3); // screens per row of the sheet
 const GAP = 8, CAPTION = 12;
 const TILE_W = 2 * FULL_WIDTH + GAP, TILE_H = CAPTION + FULL_HEIGHT;
 const rows = Math.ceil(samples.length / PAIRS);

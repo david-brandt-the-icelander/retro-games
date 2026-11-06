@@ -12,7 +12,7 @@ export function keyStream(seed: number, keys: readonly string[]): () => string {
 }
 
 /** An IO that answers every screen with `answer`, recording each screen and a snapshot taken before the key. */
-export function recorder(state: GameState, answer: (screen: Screen, n: number) => string, limit = 200000): { io: IO; log: Step[] } {
+export function recorder(state: GameState, answer: (screen: Screen, n: number) => string, limit = 20000): { io: IO; log: Step[] } {
   const log: Step[] = [];
   const io: IO = {
     show: async (screen) => {
@@ -25,13 +25,22 @@ export function recorder(state: GameState, answer: (screen: Screen, n: number) =
   return { io, log };
 }
 
-/** Rotate through keys, but always answer the help list with a digit so it cannot spin forever. */
-export function rotating(keys: readonly string[]): (screen: Screen, n: number) => string {
-  let i = 0;
+/** Keys drawn at random (seeded) from a list; the help list always gets a digit so it cannot spin forever. */
+export function rotating(keys: readonly string[], seed = 1): (screen: Screen, n: number) => string {
+  const next = keyStream(seed, keys);
+  const digit = keyStream(seed + 1, ["1", "2", "3", "4", "5", "6"]);
   return (screen) => {
-    const k = keys[i++ % keys.length];
-    if (screen.kind === "helpList" && !/^[1-6]$/.test(k)) return String(1 + (i % 6));
-    return k;
+    const k = next();
+    return screen.kind === "helpList" && !/^[1-6]$/.test(k) ? digit() : k;
+  };
+}
+
+/** Wrap a policy so that a help list shown 20 times in a row gets a 2 (tests may send other keys on purpose). */
+export function patient(answer: (screen: Screen, n: number) => string): (screen: Screen, n: number) => string {
+  let repeats = 0;
+  return (screen, n) => {
+    repeats = screen.kind === "helpList" ? repeats + 1 : 0;
+    return repeats > 20 ? "2" : answer(screen, n);
   };
 }
 

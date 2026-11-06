@@ -1,0 +1,35 @@
+# Samosa: test plan and results
+
+Status: phase 7 of create-retro-game · implementer's part filled in; rows 6–8 and 10–13 belong to the verify role.
+
+Run with `npm test` (typecheck, build, then `node --test`): **127 tests, 127 passed, 0 failed** (2026-11-06, Node 22).
+
+| # | Area | What | How | Result |
+|---|---|---|---|---|
+| 1 | Rules | One test per RULES rule, including boundaries: starting values (§1–2); clamping; costs ≥ 0; the mood roll (§3); disaffection at ≤; accounts debt/credit/exactly 0 (§5); plots in months 1–2, the pause, ally order, the faction itself and loyal groups excluded (§6); report availability strictly above (§7); request choice with the 22-place look-ahead and the reset (§8.1); affordability, all branches (§8.3); grant then money; refusal costs exactly the gain (§8.4); sections; used marks except D11/D13; bodyguard without a limit; helicopter; Swiss floor and the < 1 case; loans: early/no more/refused/granted in that order (§9); assassination all-three before police, coin flip (§10); hostility ≤/≥, forces, the ≥ test, a won war (§11); news start/wrap/all used, no money (§12); revolution picks, helpers, the on-foot formula, crushed ≤, punishment, helper 9 and pause (§13); the rating (§14); the data tables (§17) | `test/rules.test.ts` | 45 passed |
+| 2 | Probabilities | Seeded rates within tolerance: threshold and revolution strength ⅓ each; invasion ⅓; helicopter ⅔; news ⅓; assassin faction ⅓; coin flip ½; caught on foot at guerrilla strength 0 / 3 / 6 / 9 = 0 / 28.6 / 58.3 / 70.6 % | `test/rules.test.ts` | passed (tolerances 1.5–3 %) |
+| 3 | Flow | Opening (welcome, treasury, free first report with revolution strength 10); a month's screen order (RULES §4); bankrupt month (penalties, notice, report offer); bought report; grant/refuse; unaffordable request (dialog, cash short, must refuse, refused); advice; decisions: normal, declined, Swiss, bodyguard, loans early/granted, used-up section, unaffordable decision; **every ending**: assassinated, executed (both headings), helicopter after a lost war, won war, threat of war, caught and escaped on foot, helicopter escape and failure after a revolt, overthrown, crushed and punished (helper 9, pause), joke → mountains, alone; rating and best; replay by seed | `test/flow.test.ts` | 32 passed |
+| 3b | Termination / bot | Six key policies (yes, no, digits, valid, invalid incl. `Escape`, `ArrowUp`, `M`, and a decision-heavy one) × 1,000 seeds = **6,000 full reigns**, >100,000 screens; invariants checked at every screen (groups 0–9, costs/bodyguard/Swiss ≥ 0, Swiss and month never fall, ally ⇔ revolution, used news stays used, loans and helicopter stay); every reign ends with the final report; alive ⇔ escaped at the end; all 42 engine kinds shown | `test/bot.test.ts` | passed (≈ 3 s) |
+| 4 | Quirks | Y and y are yes, nothing else is; digits; menu keys other than 1–5 mean no decision; unlisted/used section numbers return to the menu; help list ignores other keys and is shown again (state unchanged); timed screens ignore the key (an unaffordable dialog answered Y is still refused; an unavailable offer answered Y does not buy); M is just "no" to the engine (the platform keeps it away) | `test/input.test.ts`, `test/flow.test.ts` | 9 passed |
+| 4b | Draw order | The generator against RULES §15.4 written out again (1,000 draws × 5 seeds, incl. 0 and 2³²−1); `pick` = floor(u × n); a quiet month draws threshold, revolution strength, pick(24), the assassin's pick(3), news pick(3) [+ pick(6)], three revolution picks, in that order; each draw happens before the screen that reveals it and after the screen before (swing after `invasion`, helicopter after `warResult`, coin after `assassinAttempt`, raw draw after `mountains`, swing after `revoltStart`, loan picks after `loanWait`); advice, dialogs, reports, the Swiss transfer and plots never draw | `test/rng.test.ts`, `test/rules.test.ts`, `test/flow.test.ts` | 4 + covered in rows 1 and 3 |
+| 4c | Pacing and sound | Timed screens last at least RULES §15.5's times; screens timed by their sound last exactly their motif (sputter + volley 4.5 s); key screens wait and offer keys; help list is digits-only (taps ignored); Swiss reads keys after 2 s; rating lines every 300 ms, keys with the last (≤ 2.4 s); helicopter, walker and teleprinter steps; all 38 motifs parse to the art bible's note counts and lengths; the funeral is the anthem in G minor | `test/pacing.test.ts` | 12 passed |
+| 5 | Layout | 75 contact-sheet samples plus 94 data-text screens (all requests, decisions, labels, headlines, every faction on the help list) at worst case (money −$12,345,000, months 999, totals 99999, every option and plot): `clipped = 0` (off the grid, outside its region, under the footer, over art); footer only on key screens and its cursor the only flash there; timed screens flash only the lamp (4 cells) or the reticle (9 cells); report never flashes and marks plots in words; debt worded; borders per family; sound overlay restores its 12 cells unless the screen was redrawn; all strings ≤ 32 columns and in the font; screen-reader text on every screen, assertive where UI-DESIGN says | `test/layout.test.ts` | 15 passed |
+| 5b | Platform | Font, palette, FLASH render, pictures, raw-key normalisation | `test/zx.test.ts` | 9 passed |
+| 6 | Parity | ≥ 10,000 games per policy vs the baseline; full state each step | scratch harness (verify role) | _not run by the implementer: `snapshot(state)` is exported from `src/engine/index.ts`_ |
+| 7 | Text overlap | `overlap.py` with `--names` | clean-room-rebuild (verify role) | _pending_ |
+| 8 | Assets | `zx_assets.py` (UDGs and tunes) | zx-spectrum-clean-room (verify role) | _pending_ |
+| 9 | Guard | Hashes of original strings never reappear | `npm test` | _not added: the implementer has no access to the original's strings; the verify role supplies the hashes_ |
+| 10 | Browser | Full games: desktop keyboard, phone portrait and landscape taps; no console errors | Playwright | Smoke run only (desktop Chrome, keyboard, 60 s of random keys through title, how to play, M, a whole reign and back to the title): no page or console errors. Full runs: verify role |
+| 11 | CSP | Headers present; no violations during play | `wrangler dev` + Playwright | _verify role_ (`public/_headers` keeps the template's strict CSP; the only inline resource is an empty `data:` favicon, allowed by `img-src 'self' data:`) |
+| 12 | Visual | "Mistakable for the original?": no, for every screen | contact sheet review | _verify role_; the implementer checked `docs/contact-sheet.png` against UI-DESIGN |
+| 13 | Accessibility | Live-region text, keyboard-only, 44 px targets, flash < 3 Hz | manual + Playwright | Implemented: polite and assertive live regions, keyboard-only play, the template's 44 px keypad buttons, FLASH at 320 ms. Review: verify role |
+
+## Parity differences
+| Difference | Explanation (RULES §) | Accepted by |
+|---|---|---|
+| _to be filled in by the verify role_ | | |
+
+## Accepted overlap entries
+| Entry | Reason |
+|---|---|
+| Names in the credit line | Factual attribution |

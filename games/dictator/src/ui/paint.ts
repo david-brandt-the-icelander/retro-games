@@ -165,7 +165,7 @@ export class Painter {
   /** A framed stamp box: black on BRIGHT paper with a 1-pixel frame on its outermost pixel ring. */
   stamp(c0: number, r0: number, c1: number, r1: number, paper: number): Attr {
     const attr = at(BLACK, paper, { bright: true });
-    this.fill(c0, r0, c1, r1, attr);
+    this.clear(c0, r0, c1, r1, attr); // the box hides any line drawn under it (e.g. the ledger margin)
     this.rect(c0 * 8, r0 * 8, c1 * 8 + 7, r1 * 8 + 7);
     return attr;
   }
