@@ -28,6 +28,8 @@ export interface WaitOptions {
   typing?: readonly string[];
   /** Maps a tap or click on the screen (client coordinates) to a key, or null to ignore it. */
   tapKey?: (clientX: number, clientY: number) => string | null;
+  /** Move on by itself after this many ms, answering ANY, if no key comes first. */
+  timeoutMs?: number;
 }
 
 export class Input {
@@ -78,7 +80,16 @@ export class Input {
     this.typing = options.typing ?? null;
     this.tapKey = options.tapKey;
     this.showKeypad(options.offer ?? []);
-    return new Promise((resolve) => { this.pending = resolve; });
+    return new Promise((resolve) => {
+      this.pending = resolve;
+      if (options.timeoutMs === undefined) return;
+      setTimeout(() => {
+        if (this.pending !== resolve) return; // answered already, or another prompt is waiting now
+        this.pending = null;
+        this.keypad.replaceChildren();
+        resolve(ANY); // not a key the player pressed, so the key listeners aren't told
+      }, Math.max(0, options.timeoutMs));
+    });
   }
 
   /** Show no keypad and read no key (while a screen holds before its footer). */
