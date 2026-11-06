@@ -51,18 +51,21 @@ At the very start of each month, before the month number goes up, roll two hidde
 1. Roll the threshold, then the revolution strength (§3).
 2. The month number goes up by one. **Month screen.**
 3. **Plot check** (§6).
-4. **Accounts** (§5). If bankrupt: **bankruptcy screen**, plot check, then a **report offer** (§7).
+4. **Accounts** (§5). If bankrupt: **bankruptcy screen**, then a plot check.
 5. **Audience** (§8): choose a request, show it, offer advice, then the decision dialog. The treasury report follows.
 6. Plot check.
 7. **Assassination check** (§10).
 8. **War check** (§11). This runs even after a failed assassination attempt.
 9. Plot check.
-10. Report offer.
+10. *(No report offer here in the remake; see step 15.)*
 11. **Presidential decision** (§9): at most one, possibly none.
-12. Plot check, then a report offer.
-13. **News check** (§12). If news happens: the news screens, plot check, report offer.
+12. Plot check.
+13. **News check** (§12). If news happens: the news screens, then a plot check.
 14. **Revolution check** (§13).
-15. Next month.
+15. **Report offer** (§7): the month's **only** one, at the end of the turn, if the President is still in office.
+16. Next month.
+
+**Owner decision (2026-11-06):** the original offers a report up to four times a month (after a bankruptcy, after the dangers, after the decision and after news) and once more after a crushed revolt. The remake offers it **once**, at step 15. The plot checks stay where they were, so the report shows the statuses as of the month's last plot check. An offer draws no random number, so this changes when money can be spent on reports, nothing else.
 
 A game ends only by death or escape. There is no time limit and no victory condition.
 
@@ -180,7 +183,7 @@ Then the treasury report.
 After the result, the treasury report.
 
 ### 9.3 After any decision
-- After a normal decision: the treasury report, then the plot check and a report offer (§4 step 12).
+- After a normal decision: the treasury report, then the plot check (§4 step 12).
 - D11 (bodyguard): applies its changes **and** raises the President's strength by 2. It is never marked used.
 - D12 (helicopter): gives the President the helicopter.
 
@@ -254,7 +257,7 @@ Make up to three picks of a random domestic faction (1 of 3). The first pick tha
    - Ask whether to **punish** the rebels. Yes sets popularity and strength to 0 for the rebel faction and its ally.
    - The helper's **strength** becomes 9.
    - The plot pause becomes month + 2.
-   - Then the plot check and a report offer. The month ends.
+   - Then the plot check. The month ends with its report offer (§4 step 15).
 
 ## 14. Ending and rating
 
@@ -324,7 +327,10 @@ Parity testing needs the remake to draw exactly the same random numbers, in the 
 
 Nothing else draws: not advice, dialogs, reports, the Swiss transfer or plots.
 
-### 15.5 Pacing (from the original's pauses)
+### 15.5 Pacing
+
+**Owner decision (2026-11-06): every screen waits for a key**, so players can read at their own speed. A screen that the original moved on by itself (the second table below) first draws in full and plays its sound; then it waits for a key like any other screen. Keys pressed before it has finished drawing are ignored. The tables below record the original's pacing and the minimum time each screen stays up.
+
 
 **Waits for a key:**
 - title, welcome
@@ -337,7 +343,7 @@ Nothing else draws: not advice, dialogs, reports, the Swiss transfer or plots.
 - punish question, rating, final report
 - the funeral (a remake addition: it waits for a key, as the baseline's does)
 
-**Moves on by itself:**
+**Moved on by itself in the original** (now: shown at least this long, then waits for a key):
 
 | Screen | Shown for about |
 |---|---|
@@ -362,14 +368,15 @@ Nothing else draws: not advice, dialogs, reports, the Swiss transfer or plots.
 | Assassination attempt and result, war result, revolution start, helicopter escape, caught or escaped on foot | their sound effect |
 | Death screens | their sound, then the funeral |
 
-The baseline waits for a key on several of these. The remake follows this table; the GDD may lengthen a time, but should not shorten it.
+The keys these screens read never change the game (§15.1: any key means "next"), so the change is invisible to the game state.
 
 ### 15.6 Deliberate differences from the baseline
 Parity testing compares the remake with the faithful baseline. These differences are intended, because they restore the original or are the remake's own choices. Every other difference is a bug.
 
 | Difference | Why |
 |---|---|
-| Screens that move on by themselves (§15.5), where the baseline waits for a key | Restores the original's pacing. The game state is unaffected. |
+| Every screen waits for a key (§15.5) | Owner decision. The game state is unaffected. |
+| One report offer a month, at its end (§4 step 15) | Owner decision. Parity answers *no* to every offer on both sides and leaves offers and reports out of the comparison; unit tests cover the new placement. |
 | A separate strength summary screen before the revolution starts (§13.4) | Restores the original's two screens. The baseline shows one. |
 | Y in either case (§15.1) | Same as the baseline; owner decision. |
 | A newsflash moves no money (§9.4, §12) | Owner decision. Parity runs the baseline with its news-money switch **off**. |

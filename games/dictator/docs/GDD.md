@@ -121,7 +121,7 @@ Every screen the player can see. The wireframes phase must draw exactly this lis
 | 6 | `month` | The month number | Start of each month (§4 step 2) | `month` | 1 s |
 | 7 | `treasury` | Balance (credit or debt), monthly costs, Swiss balance once above 0 | After `welcome`; after the audience; after a decision, the Swiss transfer or a loan result | `treasury` | key |
 | 8 | `report` | The intelligence report: month, every group's popularity and strength, plots, the President's strength, the revolution strength | A *yes* at an available `report-offer`; free after the first `treasury`; free as the *final* report after `rating` | `report` (flag: first / bought / final) | key |
-| 9 | `report-offer` | Ask whether to buy a report for 1 (a thousand); or say none is available, with every failing reason | §4 steps 4, 10, 12, 13; after a crushed revolt | `reportOffer` (variants: available / unavailable) | available: key · unavailable: its sound |
+| 9 | `report-offer` | Ask whether to buy a report for 1 (a thousand); or say none is available, with every failing reason | §4 step 15: once a month, at its end | `reportOffer` (variants: available / unavailable) | available: key · unavailable: its sound |
 | 10 | `bankrupt` | The treasury is empty; who loses what | §5, when the treasury is negative | `bankrupt` | 5 s |
 | 11 | `audience` | Which faction has come, and what it asks for | §4 step 5 | `audience` | key |
 | 12 | `advice-offer` | Ask whether to see advice | After `audience`; after choosing a normal decision option | `adviceOffer` | key |
@@ -159,6 +159,8 @@ Every screen the player can see. The wireframes phase must draw exactly this lis
 | 44 | `escaped` | The guerrillas missed; the President is over the border | After `mountains`, not caught | `escaped` | its sound |
 | 45 | `funeral` | Mourning, and how long the rule lasted | After any death screen (`assassin-result` killed, `execution`, `overthrown`, `caught`) | `funeral` | key (a remake addition, RULES §15.5) |
 | 46 | `rating` | The score, line by line; the best so far | After `funeral`, `heli-escape` or `escaped` | `rating` | key |
+
+**Pacing update (owner, 2026-11-06):** a time in the Pacing column is now the *minimum* time a screen stays up while it draws and plays its sound; after that, every screen waits for a key.
 
 **46 screens**: 42 engine screens and 4 extras. The final intelligence report is the `report` screen with its *final* flag, not a separate screen. There is no intro or publisher-credit screen.
 
@@ -425,6 +427,8 @@ All melodies are new and written for this game; effects are generic beeper sound
 | 2026-11-06 | No "wait for a key on timed screens" setting. | Owner |
 | 2026-11-06 | Credits name the remake's author as David Brandt. Headlines run under the real masthead *La Prensa*. | Owner |
 | 2026-11-06 | State Security's screens (report, report offer) are dark: white type on black paper. | Owner |
+| 2026-11-06 | After playtesting: every screen waits for a key (a newsflash went by too fast to read). Timed screens draw in full and play their sound, then show the any-key footer. | Owner |
+| 2026-11-06 | After playtesting: one report offer a month, at the end of the turn (RULES §4 step 15). | Owner |
 
 ## 15. Decisions (all closed)
 
@@ -436,4 +440,4 @@ All melodies are new and written for this game; effects are generic beeper sound
 | 4 | The case of the Y key (RULES §15.1) | Both cases, or lower case only | **Both cases** |
 | 5 | Ask the original author's estate for permission | Ask, or rely on the clean-room work | **Don't ask** |
 | 6 | The public address | `/retro-games/<title-slug>`, `/retro-games/dictator`, a subdomain | **`icelander.net/retro-games/samosa`** |
-| 7 | A "wait for a key on timed screens" setting | Offer it, or not | **Not offered** |
+| 7 | A "wait for a key on timed screens" setting | Offer it, or not | First **not offered**; then, after playtesting, **every screen waits for a key**, for everyone (no setting) |

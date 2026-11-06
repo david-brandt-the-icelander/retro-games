@@ -40,8 +40,16 @@ The letterheads are short labels the GDD's §8.1 table does not list. They add a
 
 Screens without a letterhead are the title, `month` (a calendar), the press screens, and every crisis, war, flight and ending screen. They are interruptions, not paperwork, and fill the whole screen.
 
+### Every screen waits for a key (owner decision, 2026-11-06)
+This overrides every *Timing* line below that says a screen moves on by itself, lasts as long as its sound, or has "no footer":
+1. The screen draws in full, running its animation steps and its sound, as specified.
+2. It stays at least as long as its old timing (the stated seconds, or its motif's length). Keys pressed during that time are ignored.
+3. Then the footer counterfoil appears with the any-key prompt (`"PRESS A KEY OR TAP TO GO ON"`) and its cursor, and the screen waits for a key. The touch keypad offers [NEXT], and a tap on the screen counts.
+
+Where a formerly timed screen draws anything in rows 21–23, move that content up or trim it so that the footer fits; the layout tests must stay clean (no text or art under the footer). The unaffordable decision dialog and the unavailable report offer get the any-key footer too. The screen-reader text adds "Press any key." at the end.
+
 ### The footer counterfoil (rows 21–23): "waiting for a key"
-Every screen that waits for a key, and only those, has the same footer: a tear-off slip at the foot of the page.
+Every screen that waits for a key (which is now every screen) has the same footer: a tear-off slip at the foot of the page.
 - **Rows 21–23:** white paper, black ink, BRIGHT off, on every screen and in every colour family.
 - **Row 21, the perforation:** one pixel line on pixel row 3 of the row, with every other pixel set (x = 0, 2, 4, …, 254), in black.
 - **Row 22, the prompt:** centred, starting at column floor((32 − length) ÷ 2). Every footer prompt is ≤ 28 characters.
