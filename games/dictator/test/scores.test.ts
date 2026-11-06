@@ -42,3 +42,13 @@ test("emails are checked the same way in the browser and on the server", () => {
     assert.equal(looksLikeEmail(s), ok, s);
   }
 });
+
+test("the high-score web page lists the reigns, escapes names, and carries the site's footer", async () => {
+  const { scoresPage } = await import("../worker/scores-page");
+  const html = await scoresPage([{ name: "ortiga", score: 120, months: 30, alive: true }, { name: "<b>x</b>", score: 7, months: 2, alive: false }]).text();
+  assert.match(html, /<td>1<\/td><td>ortiga<\/td><td class="num">120<\/td><td class="num">30<\/td><td>Fled<\/td>/);
+  assert.match(html, /&lt;b&gt;x&lt;\/b&gt;/);
+  assert.doesNotMatch(html, /<b>x<\/b>/);
+  assert.match(html, /<a href="\/trains">Trains of thought<\/a> · <a href="\/games\/">Games<\/a> · <a href="\/">About and contact<\/a> · <a href="\/feed.xml">Feed of everything<\/a>/);
+  assert.match(await scoresPage([]).text(), /No reign recorded yet/);
+});
