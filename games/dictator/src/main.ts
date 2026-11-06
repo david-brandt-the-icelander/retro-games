@@ -110,9 +110,11 @@ async function present(pr: Presentation, motifs: readonly MotifId[] = pr.motifs)
   }
   input.idle();
   // A screen holds for pr.ms reading no key (keys pressed meanwhile are dropped); its last step,
-  // due at the same moment and scheduled first, draws the footer. Then every screen waits for a key.
+  // due at the same moment and scheduled first, draws the footer. Then it waits for a key; a screen
+  // the original moved on by itself (pr.autoMs) moves on by itself too, 7 s after it appeared.
   if (pr.ms > 0) await sleep(pr.ms);
-  const key = await input.waitKey({ offer: pr.offer, tapCounts: pr.mode !== "digits" });
+  const timeoutMs = pr.autoMs === undefined ? undefined : pr.autoMs - pr.ms;
+  const key = await input.waitKey({ offer: pr.offer, tapCounts: pr.mode !== "digits", timeoutMs });
   display.fit(); // the keypad may have wrapped onto another row
   return key;
 }

@@ -44,7 +44,7 @@ Screens without a letterhead are the title, `month` (a calendar), the press scre
 This overrides every *Timing* line below that says a screen moves on by itself, lasts as long as its sound, or has "no footer":
 1. The screen draws in full, running its animation steps and its sound, as specified.
 2. It stays at least as long as its old timing (the stated seconds, or its motif's length). Keys pressed during that time are ignored.
-3. Then the footer counterfoil appears with the any-key prompt (`"PRESS A KEY OR TAP TO GO ON"`) and its cursor, and the screen waits for a key. The touch keypad offers [NEXT], and a tap on the screen counts.
+3. Then the footer counterfoil appears with the any-key prompt (`"PRESS A KEY OR TAP TO GO ON"`) and its cursor. A key, the keypad's [NEXT] or a tap moves on at once; with none, the screen **moves on by itself 7 s after it appeared** (or at the end of its hold, if that is longer). Owner decision, revised the same day.
 
 Where a formerly timed screen draws anything in rows 21–23, move that content up or trim it so that the footer fits; the layout tests must stay clean (no text or art under the footer). The unaffordable decision dialog and the unavailable report offer get the any-key footer too. The screen-reader text adds "Press any key." at the end.
 

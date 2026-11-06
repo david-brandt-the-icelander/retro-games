@@ -329,7 +329,7 @@ Nothing else draws: not advice, dialogs, reports, the Swiss transfer or plots.
 
 ### 15.5 Pacing
 
-**Owner decision (2026-11-06): every screen waits for a key**, so players can read at their own speed. A screen that the original moved on by itself (the second table below) first draws in full and plays its sound; then it waits for a key like any other screen. Keys pressed before it has finished drawing are ignored. The tables below record the original's pacing and the minimum time each screen stays up.
+**Owner decisions (2026-11-06):** a screen that the original moved on by itself (the second table below) first draws in full and plays its sound, ignoring keys, for at least its time in the table. Then it shows the any-key prompt: a key moves on at once, and with no key it **moves on by itself 7 seconds after it appeared** (or when its own time ends, if that is longer). Screens that ask something still wait for their answer. (An earlier decision that day made these screens wait for a key indefinitely; it was replaced by this one.) The tables below record the original's pacing and the minimum time each screen stays up.
 
 
 **Waits for a key:**
