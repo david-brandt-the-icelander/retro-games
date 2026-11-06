@@ -1,0 +1,15 @@
+schema_version: "1.1"
+name: build-from-baseline
+expected_outcome: |
+  Working from the private faithful clone in lock-keeper-faithful/, the run
+  writes docs/PROVENANCE.md and a clean-room docs/RULES.md for
+  games/canal-lock/ before any game code, then builds the remake from the
+  skill's web template. Its engine exposes newGame(seed), playGame(io, state,
+  best) and snapshot(state). A parity harness kept outside the game folder
+  plays both engines with the same seeds and inputs and reports 0 unexplained
+  differences. overlap.py with the original listing and --names is clean, a
+  guard test stores hashes (not text) of the original's strings, no baseline
+  file or string is copied into games/canal-lock/, the tests pass, and the
+  report says it is not legal advice. Nothing is deployed.
+context:
+  scaffold_script: place-files.sh

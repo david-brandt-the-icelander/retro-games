@@ -60,7 +60,7 @@ test("same seed, same game; every game ends", async () => {
   for (let seed = 1; seed <= 200; seed++) {
     for (const k of ["o", "k", "i", "?"]) {
       const run = async () => {
-        const io = scripted((screen, n) => (k === "?" ? (n % 3 ? "x" : "o") : k));
+        const io = scripted((screen, n) => (k === "?" ? (n % 3 ? "x" : "o") : k === "i" ? (n === 1 ? "i" : "o") : k));
         const s = newGame(seed);
         await playGame(io, s, 0);
         return JSON.stringify([io.log, snapshot(s)]);
