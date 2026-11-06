@@ -1,6 +1,13 @@
 # retro-games
 Recreations of retro-games that I have made with the help of AI
 
+## Games
+
+| Game | Play | Source |
+|---|---|---|
+| Rally: table tennis for one or two players | [icelander.net/games/retro/rally](https://icelander.net/games/retro/rally/) | [games/rally](games/rally) |
+| Samosa: a remake of a 1983 ZX Spectrum strategy game | [icelander.net/games/retro/samosa](https://icelander.net/games/retro/samosa/) | [games/dictator](games/dictator) |
+
 ## Agent skills
 
 `.claude/skills/` holds Claude Code skills for turning a faithful clone into a remake that is safe to publish. Each skill keeps the original's rules and mechanics and replaces anything copied as written:

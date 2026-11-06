@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rally</title>
+<meta name="description" content="Rally: two paddles, one ball, first to eleven. Play the computer or a friend on the same device.">
+<meta name="theme-color" content="#071226">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="rally.css">
+</head>
+<body>
+<div id="app">
+  <header id="board">
+    <div class="side left"><span class="serve" id="serve0" aria-hidden="true"></span><span class="name" id="name0">YOU</span><span class="score" id="score0">0</span></div>
+    <div class="tools">
+      <button id="pause" type="button" title="Pause (P)" aria-label="Pause">II</button>
+      <button id="sound" type="button" title="Sound (M)" aria-pressed="true" aria-label="Sound">♪</button>
+    </div>
+    <div class="side right"><span class="score" id="score1">0</span><span class="name" id="name1">CPU</span><span class="serve" id="serve1" aria-hidden="true"></span></div>
+  </header>
+
+  <div id="stage">
+    <canvas id="table" width="800" height="480" role="img" aria-label="The table"></canvas>
+
+    <section id="title" class="panel" aria-labelledby="title-h">
+      <h1 id="title-h">RALLY</h1>
+      <p class="tag">Two paddles. One ball. First to eleven.</p>
+      <div class="choices">
+        <button type="button" data-action="one" class="big"><kbd>1</kbd> ONE PLAYER</button>
+        <button type="button" data-action="two" class="big"><kbd>2</kbd> TWO PLAYERS</button>
+      </div>
+      <div class="level" role="radiogroup" aria-label="Computer's level">
+        <span class="label">COMPUTER</span>
+        <button type="button" role="radio" data-level="easy">EASY</button>
+        <button type="button" role="radio" data-level="normal">NORMAL</button>
+        <button type="button" role="radio" data-level="hard">HARD</button>
+      </div>
+      <button type="button" data-action="help" class="link"><kbd>H</kbd> How to play</button>
+    </section>
+
+    <section id="help" class="panel" aria-labelledby="help-h" hidden>
+      <h2 id="help-h">HOW TO PLAY</h2>
+      <p>Hit the ball past the other paddle. Meet it near your paddle's tip to send it off at a sharp angle; every return is a little faster than the last.</p>
+      <p>First to 11 wins, but you must be two points clear. The serve changes every two points, and every point from 10–10. While you hold the ball, move to choose where you serve from.</p>
+      <table>
+        <tr><th></th><th>Keys</th><th>Touch or mouse</th></tr>
+        <tr><td>One player</td><td><kbd>W</kbd>/<kbd>S</kbd> or <kbd>↑</kbd>/<kbd>↓</kbd></td><td>drag anywhere, or move the mouse</td></tr>
+        <tr><td>Left player</td><td><kbd>W</kbd>/<kbd>S</kbd></td><td>drag on the left half</td></tr>
+        <tr><td>Right player</td><td><kbd>↑</kbd>/<kbd>↓</kbd></td><td>drag on the right half</td></tr>
+      </table>
+      <p><kbd>P</kbd> or <kbd>Esc</kbd> pauses, <kbd>M</kbd> turns sound on and off.</p>
+      <button type="button" data-action="menu" class="big">BACK</button>
+    </section>
+
+    <section id="paused" class="panel" aria-labelledby="paused-h" hidden>
+      <h2 id="paused-h">PAUSED</h2>
+      <div class="choices">
+        <button type="button" data-action="resume" class="big">RESUME</button>
+        <button type="button" data-action="menu" class="big">QUIT TO MENU</button>
+      </div>
+    </section>
+
+    <section id="over" class="panel" aria-labelledby="over-h" hidden>
+      <h2 id="over-h">YOU WIN</h2>
+      <p class="final" id="final"></p>
+      <div class="choices">
+        <button type="button" data-action="again" class="big">PLAY AGAIN</button>
+        <button type="button" data-action="menu" class="big">MENU</button>
+      </div>
+    </section>
+  </div>
+  <p id="rotate">Turn your phone sideways for a bigger table.</p>
+</div>
+<div id="announce" class="sr-only" aria-live="polite"></div>
+<noscript><p class="noscript">Rally needs JavaScript.</p></noscript>
+<script src="game.js"></script>
+</body>
+</html>

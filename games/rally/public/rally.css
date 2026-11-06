@@ -1,0 +1,142 @@
+:root {
+  color-scheme: dark;
+  --night: #071226;
+  --table: #0d2a55;
+  --line: #e8f0ff;
+  --left: #ff7a5c;
+  --right: #4fd8ff;
+  --ball: #fff3c4;
+  --dim: #8ea3c7;
+  --font: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: radial-gradient(ellipse at 50% 30%, #11295a 0%, var(--night) 70%);
+  color: var(--line);
+  font: 16px/1.45 var(--font);
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: max(10px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+/* The scoreboard and the stage share a width, set from the script to fit the table on screen. */
+#board, #stage { width: var(--w, min(800px, calc(100vw - 32px))); }
+
+#board {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+.side { display: flex; align-items: center; gap: .6em; }
+.side.right { justify-content: flex-end; }
+.name { font-size: clamp(.8rem, 2.4vw, 1.05rem); color: var(--dim); }
+.left .name { color: var(--left); }
+.right .name { color: var(--right); }
+.score { font: 800 clamp(1.6rem, 6vw, 2.6rem)/1 var(--mono); min-width: 2ch; text-align: center; font-variant-numeric: tabular-nums; }
+.serve { width: .55em; height: .55em; border-radius: 50%; background: var(--ball); box-shadow: 0 0 8px var(--ball); visibility: hidden; }
+.serve.on { visibility: visible; }
+.tools { display: flex; gap: 8px; }
+.tools button {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid #ffffff30; background: #ffffff10; color: var(--line);
+  font: 700 15px var(--font); cursor: pointer;
+}
+.tools button[aria-pressed="false"] { opacity: .45; text-decoration: line-through; }
+.tools button:hover { background: #ffffff22; }
+
+#stage { position: relative; aspect-ratio: 800 / 480; }
+#table {
+  display: block; width: 100%; height: 100%;
+  border-radius: 14px;
+  box-shadow: 0 18px 50px #00000080, 0 0 0 1px #ffffff18;
+  touch-action: none;
+  cursor: none;
+}
+body.menu #table { cursor: default; }
+
+.panel {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: safe center;
+  gap: clamp(8px, 2.2vw, 18px);
+  padding: 16px;
+  text-align: center;
+  background: #071226d0;
+  border-radius: 14px;
+  overflow: auto;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+.panel[hidden] { display: none; }
+.panel h1, .panel h2 { margin: 0; font-weight: 900; letter-spacing: .25em; }
+.panel h1 {
+  font-size: clamp(2.4rem, 11vw, 5rem);
+  background: linear-gradient(90deg, var(--left), var(--ball) 50%, var(--right));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  padding-left: .25em;
+}
+.panel h2 { font-size: clamp(1.4rem, 5vw, 2.2rem); }
+.panel p { margin: 0; max-width: 34em; }
+.tag { color: var(--dim); }
+.final { font: 800 clamp(1.4rem, 5vw, 2rem) var(--mono); }
+
+.choices { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+button { font-family: inherit; }
+button.big {
+  min-width: 11em; padding: .8em 1.4em;
+  border-radius: 999px; border: 2px solid var(--line); background: transparent; color: var(--line);
+  font-weight: 800; letter-spacing: .12em; cursor: pointer;
+}
+button.big:hover, button.big:focus-visible { background: var(--line); color: var(--night); outline: none; }
+button.big:focus-visible { box-shadow: 0 0 0 3px var(--right); }
+button.link { background: none; border: 0; color: var(--dim); cursor: pointer; font-size: .95rem; padding: .4em; }
+button.link:hover, button.link:focus-visible { color: var(--line); }
+
+.level { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.level .label { color: var(--dim); font-size: .8rem; letter-spacing: .15em; margin-right: 4px; }
+.level button {
+  padding: .35em .9em; border-radius: 999px; border: 1px solid #ffffff40; background: transparent; color: var(--dim);
+  font-weight: 700; letter-spacing: .1em; font-size: .8rem; cursor: pointer;
+}
+.level button[aria-checked="true"] { background: var(--right); border-color: var(--right); color: var(--night); }
+
+kbd {
+  display: inline-block; min-width: 1.6em; padding: 0 .35em; margin-right: .25em;
+  border: 1px solid currentColor; border-radius: 5px; font: 700 .8em/1.5 var(--mono); opacity: .8;
+}
+#help table { border-collapse: collapse; font-size: .9rem; }
+#help th, #help td { padding: .3em .7em; text-align: left; border-bottom: 1px solid #ffffff20; }
+#help th { color: var(--dim); font-weight: 600; }
+
+#rotate { display: none; margin: 0; color: var(--dim); font-size: .85rem; text-align: center; }
+@media (orientation: portrait) and (max-width: 700px) {
+  #rotate { display: block; }
+  /* The table is too short for the menus, so they cover the screen instead. */
+  .panel { position: fixed; inset: 0; z-index: 2; border-radius: 0; background: #071226f2; }
+}
+
+/* Small screens: the panels shrink to fit inside the table. */
+@media (max-height: 520px), (max-width: 560px) {
+  .panel { gap: 8px; }
+  button.big { min-width: 9em; padding: .55em 1em; font-size: .85rem; }
+  #help p, #help table { font-size: .78rem; }
+}
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.noscript { position: fixed; inset: 0; display: grid; place-items: center; margin: 0; background: var(--night); }
