@@ -1,26 +1,28 @@
-# Sozoma: art bible
+# Samosa: art bible
 
 Status: draft for owner review · Phase 4 of `create-retro-game` · Owner approval: _pending_
 
-Written by the designer from `RULES.md` and `GDD.md` only. No picture, layout, colour scheme, tune or effect here was taken from the original game; §10 lists the original's recognisable screens (from a verbal description supplied for this purpose) and how each of ours differs.
+Written by the designer from `RULES.md`, `GDD.md` and the owner's research brief on Nicaraguan history only. No picture, layout, colour scheme, tune or effect here was taken from the original game. §10 lists the original's recognisable screens (from a verbal description supplied for this purpose) and how each of ours differs.
 
 ## 1. Identity statement
 
-**The palace runs on paper.** Every ordinary screen of *Sozoma* is a document from one of the President's offices. Each comes with a letterhead and a small seal, and ends in a perforated counterfoil at the foot of the page. The offices' documents:
-- a blue-inked ledger with a red margin
-- a manila dossier
-- a white petition card on a velvet-black wall
-- a cyan cabinet agenda
-- a teleprinter tape and a front page
+**The palace runs on paper.** President Ortiga has inherited the palace the Samosa family fled by air, and every ordinary screen of *Samosa* is a document from one of its offices. Each comes with a letterhead and a small seal, and ends in a perforated counterfoil at the foot of the page. The offices' documents:
+- a blue-inked ledger with a red margin (the State Treasury)
+- a manila State Security file
+- a white petition card on a velvet-black wall (the audience hall)
+- a cyan agenda (the Directorate)
+- a teleprinter tape and a *La Prensa* front page
 
-When things go wrong, the paperwork stops. The screen turns black, a single alarm lamp blinks, and the vanities of the regime take the stage:
+When things go wrong, the paperwork stops. The screen turns black, a single alarm lamp blinks, and the vanities of every Nicaraguan regime take the stage:
 - the medal (a rosette)
 - the statue
 - the empty balcony with its microphone
+- the helicopter kept fuelled on the roof for Miami
 
 **Sound:** a pompous brass-band anthem squeezed through a doorbell, ticking clerks, and a beeper that sulks.
 
 **Influences (none from the original):**
+- the history in the research brief: the National Guard's paperwork and rackets, the dynasty's estates and its flight to Miami, the Contra camps across the Honduran mountains, Moscow's crates and Washington's amendments, the canal that was never dug
 - government forms and rubber stamps of the 1970s and 1980s
 - typed carbon copies, and the tear-off stubs of tickets and receipts
 - tabloid front pages and teleprinter tape
@@ -29,12 +31,18 @@ When things go wrong, the paperwork stops. The screen turns black, a single alar
 
 **The visual motif:**
 - **Paperwork.** A letterhead band with a seal on row 0, a double rule under it, and the white **counterfoil** footer with a perforated edge and a blinking cursor.
-- **Vanity.** Three images recur: the **rosette** medal, the **statue** and the **balcony**.
+- **Vanity.** Three images recur: the **rosette** medal, the **statue** and the **balcony**. Two more carry the history: the **helicopter** and the northern **ridge** that runs to the Contra camps in Honduras.
 
-The satire is aimed at the office and its pomp (letterheads, decrees, stamps, statues). It is never aimed at Nicaraguans or Hondurans:
-- no costume, food, dress, accent, landscape landmark or flag of either country appears anywhere
-- no real person, party symbol, coat of arms or emblem appears anywhere
-- the President is never shown
+**Guard-rails (GDD §4.1).** The satire is aimed at regimes, dynasties, superpowers and their paperwork. It is never aimed at Nicaraguans or Hondurans as peoples, at victims, prisoners or exiles, at the Miskito relocations, or at faith. In the art, that means:
+- **No real person drawn:** no likeness of any ruler or family member, and President Ortiga is never shown. No moustache, dark glasses, pink colour scheme or couple portrait that points at a real person.
+- **No real flag, coat of arms or party emblem drawn:**
+  - no blue–white–blue bands
+  - no red-and-black diagonal split
+  - no five-volcano triangle
+  - no star or hammer-and-sickle
+  - real organisations are named only in words
+- **No costume, food, dress, accent or landmark** of either country.
+- **Everyone stays anonymous:** the statue, the walker and the helicopter's pilot are anonymous silhouettes.
 
 ## 2. Hardware frame
 
@@ -117,7 +125,7 @@ Never for text: anything on red or magenta except black, normal red ink, magenta
 **Three styles, all from the same glyphs:**
 1. **Normal:** one glyph per cell. Sentence case for messages; capitals for letterheads, labels, tables, prompts, headlines and the dossier.
 2. **Double size:** each glyph pixel drawn as a 2 × 2 block, so one character fills 2 × 2 cells. Used for big numbers and one-word verdicts: the month, `BANKRUPT`, `REVOLUTION!`, the masthead, the invasion totals and the rating total.
-3. **Logo:** the five large letters of §6 (logo-S, -O, -Z, -M, -A). They are not a font, and are used only on the title.
+3. **Logo:** the four large letters of §6 (logo-S, -A, -M, -O). They are not a font, and are used only on the title.
 
 There are no inverse-video headings and no underlined text. Emphasis comes from the letterhead band, red bars, boxes and colour (always with words).
 
@@ -152,7 +160,7 @@ Every picture in the game is listed here. Each was **described in words first** 
 | `moon` | A crescent moon opening to the right. | 2×2 | white on blue | mountains, caught |
 | `ring` | A calendar binding ring: an oval loop with a short stem running down into the page. | 1×1 | white on blue | month |
 | `balcony` | The President's empty balcony at night, seen from the front. An elliptical arch over two pilasters frames a lit doorway with drawn-back curtains and a pelmet. In the middle stands an old box microphone on a stand, waiting. Below runs a balustrade of eight vase-shaped balusters between two rails. Nobody is there. | 8×6 | per cell: see the attribute map | title |
-| `logo-S`, `logo-O`, `logo-Z`, `logo-M`, `logo-A` | Heavy block capitals with 3-pixel strokes: S and O rounded at the corners, Z, M and A sharp. Each is drawn on a 12 × 12 grid and shown at **double size** (each `#` a 2 × 2 block), so a letter fills 3 × 3 cells. | 3×3 each | BRIGHT yellow on black | title |
+| `logo-S`, `logo-A`, `logo-M`, `logo-O` | Heavy block capitals with 3-pixel strokes: S and O rounded at the corners, M and A sharp. Each is drawn on a 12 × 12 grid and shown at **double size** (each `#` a 2 × 2 block), so a letter fills 3 × 3 cells. | 3×3 each | BRIGHT yellow on black | title |
 
 ### `seal` (1×1 cells, 8×8 pixels)
 
@@ -791,7 +799,7 @@ WWWWWWWW
 
 ### The logo letters (12 × 12 each, drawn at double size)
 
-The title spells S O Z O M A with `logo-O` used twice. The letters' top-left cells are at row 3 and cols 4, 8, 12, 16, 20, 24, with one empty cell between letters.
+The title spells S A M O S A, with `logo-S` and `logo-A` each used twice. The letters' top-left cells are at row 3 and cols 4, 8, 12, 16, 20, 24, with one empty cell between letters.
 
 `logo-S`
 
@@ -810,38 +818,21 @@ The title spells S O Z O M A with `logo-O` used twice. The letters' top-left cel
 ..########..
 ```
 
-`logo-O`
+`logo-A`
 
 ```
-..########..
-.##########.
+....####....
+...######...
+..###..###..
+.###....###.
 ###......###
 ###......###
-###......###
-###......###
-###......###
-###......###
-###......###
-###......###
-.##########.
-..########..
-```
-
-`logo-Z`
-
-```
 ############
 ############
-........###.
-.......###..
-......###...
-.....###....
-....###.....
-...###......
-..###.......
-.###........
-############
-############
+###......###
+###......###
+###......###
+###......###
 ```
 
 `logo-M`
@@ -861,21 +852,21 @@ The title spells S O Z O M A with `logo-O` used twice. The letters' top-left cel
 ###......###
 ```
 
-`logo-A`
+`logo-O`
 
 ```
-....####....
-...######...
-..###..###..
-.###....###.
-###......###
-###......###
-############
-############
+..########..
+.##########.
 ###......###
 ###......###
 ###......###
 ###......###
+###......###
+###......###
+###......###
+###......###
+.##########.
+..########..
 ```
 
 ### Drawn decorations (not icons)
@@ -906,7 +897,7 @@ These are lines and outlines drawn with the template's `plot` in the cell's ink.
 
 ## 7. Title concept
 
-**"The balcony is ready."** It is night at the palace. The name **SOZOMA** stands once across the top in heavy brass block letters, between two thin brass rules, as if cast on the palace frieze. Below it, a single wry line in cyan, then the picture: the President's **empty balcony**. The doorway is lit and the curtains are drawn back. An old box microphone waits on its stand, and the balustrade runs below. Nobody steps out: the player is the one about to take that place.
+**"The balcony is ready."** It is night at the palace the Samosas left in a hurry. The name **SAMOSA** stands once across the top in heavy brass block letters, between two thin brass rules, as if cast on the palace frieze. Below it, a single wry line in cyan, then the picture: the President's **empty balcony**. The doorway is lit and the curtains are drawn back. An old box microphone waits on its stand, and the balustrade runs below. Nobody steps out: the player is the one about to take that place.
 
 - **Layout** (`UI-DESIGN.md` § title):
   - logo on rows 3–5, cols 4–26, between brass rules on rows 2 and 6
@@ -1270,7 +1261,7 @@ C6:0.08 D6:0.08 E6:0.08 G6:0.08 C7:0.3 R:0.1 G6:0.1 C7:0.5 R:0.18
 
 ## 10. Distinctiveness
 
-The left column describes, in words only, the recognisable elements of the original's screens as the verify role described them. It reproduces none of them. The right column is what *Sozoma* does instead.
+The left column describes, in words only, the recognisable elements of the original's screens as the verify role described them. It reproduces none of them. The right column is what *Samosa* does instead.
 
 | Original element (described, not reproduced) | How ours differs |
 |---|---|
@@ -1289,7 +1280,7 @@ The left column describes, in words only, the recognisable elements of the origi
 | A **coffin** | No coffin. A green **laurel wreath** on black. |
 | The original's tunes and effects | All motifs are new (§9). The funeral is **our own anthem** slowed into G minor, not any traditional march. |
 
-**Would anyone mistake a Sozoma screen for the original's?** The layouts, the motif (paperwork and vanity), the colour families and the near-total absence of flashing were all chosen to make the answer no. The phase 7 visual review checks it on the contact sheet.
+**Would anyone mistake a Samosa screen for the original's?** The layouts, the motif (paperwork and vanity), the colour families and the near-total absence of flashing were all chosen to make the answer no. The phase 7 visual review checks it on the contact sheet.
 
 ## 11. Do and don't
 
@@ -1305,5 +1296,7 @@ The left column describes, in words only, the recognisable elements of the origi
 - Don't flash headings, names, numbers or more than one small element.
 - Don't show the President, a face, a flag, a coat of arms, a party symbol or money signs as decoration.
 - Don't draw national costume, food or landmarks of Nicaragua or Honduras.
+- Don't draw any real flag, party emblem or party colour scheme (blue–white–blue bands, a red-and-black diagonal), or any likeness of a real person.
+- Don't make a joke of victims, prisoners, exiles, the Miskito coast or faith, in pictures or words.
 - Don't use red or magenta paper behind white or yellow text.
 - Don't quote any existing tune, the original's or a well-known march, anthem or bugle call.

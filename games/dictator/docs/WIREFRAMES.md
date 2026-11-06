@@ -1,4 +1,4 @@
-# Sozoma: UI wireframes
+# Samosa: UI wireframes
 
 Status: draft for owner review · Phase 3 of `create-retro-game` · Check: `python3 -I .claude/skills/create-retro-game/scripts/wireframe_check.py games/dictator/docs/WIREFRAMES.md`
 
@@ -128,7 +128,7 @@ Legend:
 - s: letterhead seal mark; 1×1 cell
 - L: letterhead: the palace office this paper comes from; ≤ 16 chars; left
 - C: credit line, verbatim from the GDD, wrapped; 5 lines × 32; centred
-- M: the remake: who made it, real countries and invented events, licence, source; 6 lines × 32; centred
+- M: the remake: who it was made for, the caricature notice, licence, source; 6 lines × 32; centred
 - K: footer counterfoil: perforation on row 21, key prompt on row 22 (and 23 on the title); prompt ≤ 28 chars; centred; a flashing cursor cell after the prompt
 
 Decoration (`#`): letterhead band: yellow paper; letterhead band: yellow paper (cols 20–31 also carry the sound overlay when shown); double rule: pixel rows 2 and 5 of row 1, all 256 pixels, in the page ink; short rule: 1-pixel line on pixel row 4 of row 9, cyan.
@@ -600,7 +600,7 @@ Legend:
 - s: letterhead seal mark; 1×1 cell
 - L: letterhead: the palace office this paper comes from; ≤ 16 chars; left
 - I: the item that cannot be paid for; ≤ 28 chars; left
-- C: the money is not there; 2 lines × 28; left
+- C: there is no money for it; 2 lines × 28; left
 - H: one hint per loan not yet granted, the East first; 1 line each × 28; left
 - X: an open, empty strongbox; 4×3 cells
 
@@ -947,7 +947,7 @@ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 ```
 
 Legend:
-- M: newspaper masthead at double size; 16 chars (32 cells)
+- M: newspaper masthead at double size; ≤ 16 chars (32 cells); centred
 - H: the headline in capitals; 3 lines × 30; centred
 
 Decoration (`#`): heavy rule: pixel rows 1–3, black; left column of 'print': 1-pixel lines on pixel row 3 of each row; lengths in the art bible; right column of 'print', same.
@@ -1271,7 +1271,7 @@ Legend:
 - K: footer counterfoil: perforation on row 21, key prompt on row 22 (and 23 on the title); prompt ≤ 28 chars; centred; a flashing cursor cell after the prompt
 
 ## Screen: help-list
-GDD #34 · Kind: helpList · Input: 1–6 only · Timed: no · From: escape-ask (other key) · To: strength, joke, alone
+GDD #34 · Kind: helpList · Input: 1–6 only · Timed: no · From: escape-ask (other key, someone can be asked) · To: strength, joke
 
 ```wireframe
 ................................
@@ -1307,7 +1307,7 @@ Legend:
 - K: footer counterfoil: perforation on row 21, key prompt on row 22 (and 23 on the title); prompt ≤ 28 chars; centred; a flashing cursor cell after the prompt
 
 ## Screen: alone
-GDD #35 · Kind: alone · Input: any key · Timed: no · From: help-list (nobody listed) · To: strength
+GDD #35 · Kind: alone · Input: any key · Timed: no · From: escape-ask (other key, nobody can be asked) · To: strength
 
 ```wireframe
 ................................
@@ -1337,7 +1337,7 @@ KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
 ```
 
 Legend:
-- H: kept from `help-list`: who has risen and their strength; 2 lines × 32; centred
+- H: who has risen with whom and their strength (the same lines as on `help-list`); 2 lines × 32; centred
 - A: nobody will help; 3 lines × 32; centred
 - K: footer counterfoil: perforation on row 21, key prompt on row 22 (and 23 on the title); prompt ≤ 28 chars; centred; a flashing cursor cell after the prompt
 
@@ -1621,7 +1621,7 @@ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 
 Legend:
 - O: the moon; 2×2 cells
-- T: caught, and the guerrillas celebrate; 3 lines × 32; centred
+- T: caught, and the Contras celebrate; 3 lines × 32; centred
 
 Decoration (`#`): the northern mountains: a black silhouette below the ridge line in the art bible, on the sky paper; the path: black ground, empty.
 
@@ -1809,10 +1809,10 @@ revolt-alarm -> escape-ask [after 5 s]
 escape-ask -> heli-escape [Y, with a helicopter that starts]
 escape-ask -> heli-fail [Y, with a helicopter that fails]
 escape-ask -> mountains [Y, no helicopter]
-escape-ask -> help-list [any other key]
+escape-ask -> help-list [any other key, when some group can be asked for help]
+escape-ask -> alone [any other key, when no group can be asked for help]
 help-list -> strength [1-6, a listed group]
 help-list -> joke [1-6, an unlisted group]
-help-list -> alone [at once, when nobody is listed]
 alone -> strength [any key]
 joke -> mountains [after 3 s]
 heli-fail -> mountains [after 3 s]
