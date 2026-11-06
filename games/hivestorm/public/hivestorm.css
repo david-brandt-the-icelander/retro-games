@@ -1,0 +1,60 @@
+/* HIVESTORM page: the 224×288 screen scaled to fit, with touch buttons below it on phones and tablets. */
+:root { --pad-h: 196px; --btn: #1c1c3a; --btn-hot: #ffd040; --fg: #fff; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #000; color: var(--fg); }
+body {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  padding: 8px 16px env(safe-area-inset-bottom); overflow: hidden;
+  font: bold 14px/1 ui-monospace, Menlo, Consolas, monospace;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+canvas#screen {
+  display: block; image-rendering: pixelated; image-rendering: crisp-edges;
+  /* As large as fits, keeping the 7:9 shape. */
+  height: min(calc(100dvh - var(--pad-h) - 24px), calc((100vw - 32px) * 288 / 224));
+  aspect-ratio: 224 / 288; width: auto; max-width: 100%;
+  touch-action: none;
+}
+#pad { display: flex; flex-direction: column; gap: 8px; width: min(100%, 420px); height: var(--pad-h); }
+#pad .row { display: flex; gap: 8px; }
+#pad button {
+  flex: 1; min-height: 44px; font: inherit; color: var(--fg); background: var(--btn);
+  border: 1px solid #3a3a6a; border-radius: 6px; touch-action: none; cursor: pointer;
+}
+#pad .moves button { min-height: 64px; font-size: 20px; }
+#pad .moves .fire { flex: 1.4; background: #4a1020; border-color: #902040; }
+#pad button.down, #pad button:active { background: var(--btn-hot); color: #000; }
+#pad .small button { flex: 0 1 auto; min-height: 32px; padding: 0 12px; font-size: 12px; font-weight: normal; color: #aaa; background: none; border-color: #444; }
+body[data-phase="playing"] .starts { display: none; }
+body[data-phase="attract"] .pause { display: none; }
+
+/* Keyboard-and-mouse devices use the keys: no touch buttons, just the sound toggle. */
+@media (hover: hover) and (pointer: fine) {
+  :root { --pad-h: 64px; }
+  #pad .starts, #pad .moves, #pad .pause { display: none !important; }
+  #pad .small { justify-content: center; }
+}
+
+/* Phones on their side: buttons beside the screen. */
+@media (orientation: landscape) and (max-height: 540px) and (pointer: coarse) {
+  :root { --pad-h: 0px; }
+  body { flex-direction: row; gap: 16px; padding: 8px 16px; }
+  canvas#screen { height: calc(100dvh - 16px); }
+  #pad { height: auto; width: 220px; }
+}
+/* The site's footer links, the same on every icelander.net page, always under the game. */
+.site-links { color: #777; font: 13px/1.7 system-ui, -apple-system, "Segoe UI", sans-serif; font-weight: normal; text-align: center; }
+.site-links a { color: #bbb; text-underline-offset: .15em; }
+.site-links a:hover, .site-links a:focus-visible { color: #fff; }
+/* The name form for the high-score table, shown under the screen when a game ends. */
+.entry { display: flex; flex-direction: column; gap: 8px; width: 100%; font: 14px/1.4 ui-monospace, Menlo, Consolas, monospace; }
+.entry label { font-weight: bold; color: #ffd040; }
+.entry input { font: 18px ui-monospace, Menlo, Consolas, monospace; min-height: 44px; padding: 6px 10px; color: #000; background: #e8e8f0; border: 2px solid #ffd040; border-radius: 6px; text-transform: uppercase; }
+.entry input:focus { outline: 3px solid #30d0ff; outline-offset: 1px; }
+.entry-buttons { display: flex; gap: 8px; }
+.entry-buttons button { flex: 1; }
+.entry-note { margin: 0; color: #999; font-size: 12px; font-weight: normal; }
+.entry-error { margin: 0; min-height: 1.2em; color: #ff6060; font-weight: normal; }
+body.entering #pad .row:not(.small) { display: none !important; }
+body.entering #pad { height: auto; }
+.noscript { font: 16px ui-monospace, monospace; }
