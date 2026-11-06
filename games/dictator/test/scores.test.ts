@@ -2,11 +2,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { newGame, playGame } from "../src/engine";
-import { entryName, replay } from "../worker/scores";
-import { cleanName, nameChar, nameFromEmail, validName } from "../src/names";
+import { cleanName, replay } from "../worker/scores";
+import { hasGlyph } from "../src/zx/font";
+import { NAME_MAX, nameChar, nameFromEmail } from "../src/name";
 import { DEL, ENTER, KEYS, keyAt, keyFor, NAME_COL, NAME_ROW, NameEntry, SKIP } from "../src/ui/entry";
 import { WIDTH, ZXScreen } from "../src/zx/screen";
-import { NAME_LENGTH } from "../src/names";
 import { rotating } from "./helpers";
 
 async function playRecorded(seed: number) {
@@ -32,37 +32,38 @@ test("a replay is refused when the keys don't play exactly one whole reign", asy
   assert.ok(other === null || other.score !== undefined, "another seed either fails or scores its own game");
 });
 
-test("a name is up to 12 capitals, digits, dots, hyphens and spaces", () => {
-  for (const ok of ["A", "ORTIGA", "ORTIGA-12.WW", "DON P", "123456789012"]) assert.ok(validName(ok), ok);
-  for (const bad of ["", "ortiga", " A", "A ", "1234567890123", "<B>", "Ä", 7, null, undefined]) assert.ok(!validName(bad), String(bad));
-  assert.equal(cleanName("  ortiga <the> 2nd!  "), "ORTIGA THE 2");
-  assert.equal(cleanName("averyveryverylongname"), "AVERYVERYVER");
-  assert.equal(cleanName("abcdefghijk lmn"), "ABCDEFGHIJK", "no space left at the end after cutting");
-  assert.equal(nameChar("m"), "M");
-  assert.equal(nameChar("."), ".");
-  assert.equal(nameChar("_"), null);
-  assert.equal(nameChar("Enter"), null);
+test("a name is cleaned to what the game's font can draw, up to 12 characters", () => {
+  assert.equal(cleanName("Davíð Brandt"), "David Brandt");
+  assert.equal(cleanName("Þórður"), "Thordur");
+  assert.equal(cleanName("  Ortiga   the  Great  "), "Ortiga the G");
+  assert.equal(cleanName("Mæja <b>"), "Maeja b");
+  assert.equal(cleanName("O'Neil-Smith_2"), "O'Neil-Smith");
+  for (const empty of ["", "   ", "!!!", "@@@", "...", 42, undefined]) assert.equal(cleanName(empty), "", String(empty));
+  for (const raw of ["Davíð", "Ærnöld Þrándur", "x".repeat(300), "a\u0000b\n<c>&d"]) {
+    const name = cleanName(raw);
+    assert.ok(name.length <= 12, raw);
+    for (const ch of name) assert.ok(ch === " " || hasGlyph(ch), `${raw}: no glyph for ${ch}`);
+  }
 });
 
-test("a signed-in player's default name is the part of their email before the @", () => {
+test("name entry types capitals, digits, dots, hyphens and spaces; M is a letter there", () => {
+  assert.equal(nameChar("m"), "M");
+  assert.equal(nameChar("."), ".");
+  assert.equal(nameChar(" "), " ");
+  for (const k of ["_", "'", "Enter", "é"]) assert.equal(nameChar(k), null, k);
+});
+
+test("a signed-in player's default name is their email before the @, in capitals, all typeable", () => {
   assert.equal(nameFromEmail("david.brandt"), "DAVID.BRANDT");
   assert.equal(nameFromEmail("first_last+games"), "FIRST-LAST");
+  assert.equal(nameFromEmail("davíð"), "DAVID");
   assert.equal(nameFromEmail("averyveryverylongname"), "AVERYVERYVER");
   assert.equal(nameFromEmail("x@example.com"), "X");
   assert.equal(nameFromEmail("!!!"), "");
+  for (const local of ["o'neil", "a_b_c", "Þórður.Ó"]) for (const ch of nameFromEmail(local)) assert.notEqual(nameChar(ch), null, `${local}: ${ch}`);
 });
 
-test("the server takes a typed name, or the part before the @ from an older page", () => {
-  assert.equal(entryName({ name: "ORTIGA" }), "ORTIGA");
-  assert.equal(entryName({ name: "ortiga" }), null, "names arrive as stored");
-  assert.equal(entryName({ name: "", email: "a@b.co" }), null, "a name, when sent, must be valid");
-  assert.equal(entryName({ email: "david_b@example.com" }), "DAVID-B");
-  assert.equal(entryName({ email: "!!!@x.io" }), "ANONYMOUS");
-  assert.equal(entryName({ email: "not an email" }), null);
-  assert.equal(entryName({}), null);
-});
-
-test("the on-screen keyboard: every name character has a key, and keys don't overlap", () => {
+test("the on-screen keyboard: every typeable character has a key, and keys don't overlap", () => {
   const chars = new Set(KEYS.map((k) => k.key));
   for (const ch of "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.- ") assert.ok(chars.has(ch), ch);
   for (const k of [DEL, SKIP, ENTER]) assert.ok(chars.has(k), k);
@@ -74,7 +75,7 @@ test("the on-screen keyboard: every name character has a key, and keys don't ove
   assert.equal(keyAt(0, 0), null, "the letterhead is no key");
   assert.equal(keyFor("q")?.key, "Q", "typed letters light their key");
   assert.equal(keyFor("Delete")?.key, DEL);
-  assert.equal(NAME_COL + 2 * (NAME_LENGTH - 1) < 32, true, "twelve slots fit");
+  assert.ok(NAME_COL + 2 * (NAME_MAX - 1) < 32, "twelve slots fit");
 });
 
 test("name entry: letters over their underlines, the cursor under the next free slot, keys keep their frames", () => {

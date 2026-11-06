@@ -10,6 +10,10 @@ canvas#zx { image-rendering: pixelated; image-rendering: crisp-edges; display: b
 #keypad button:active, #keypad button:hover { background: var(--key-hot); color: #000; }
 #sound { font: 12px/1 "Courier New", monospace; color: #aaa; background: none; border: 1px solid #444; padding: 6px 10px; min-width: 44px; min-height: 44px; cursor: pointer; }
 #sound:hover, #sound:focus-visible { color: #fff; border-color: #888; }
+/* The site's footer links, the same on every icelander.net page, always under the game. */
+.site-links { color: #777; font: 13px/1.7 system-ui, -apple-system, "Segoe UI", sans-serif; text-align: center; }
+.site-links a { color: #bbb; text-underline-offset: .15em; }
+.site-links a:hover, .site-links a:focus-visible { color: #fff; }
 /* Phones on their side: controls in a column beside the screen, keypad two keys wide. */
 @media (orientation: landscape) and (max-height: 520px) {
   body { flex-direction: row; gap: 16px; padding: 12px; }

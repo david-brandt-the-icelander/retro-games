@@ -5,7 +5,7 @@ import type { IO, Screen } from "./engine";
 import { SoundOverlay } from "./ui/overlay";
 import { drawAbout, drawHowto, drawScores, drawScreen, drawTitle, Presentation } from "./ui/screens";
 import { DEL, ENTER, keyAt, NameEntry, SKIP, TYPING_KEYS } from "./ui/entry";
-import { cleanName, NAME_LENGTH, nameChar } from "./names";
+import { cleanName, NAME_MAX, nameChar } from "./name";
 import { defaultName, loadTable, Reign, saveName, startReign, submitReign } from "./scores";
 import { MotifId, MOTIFS } from "./ui/sounds";
 import { HOWTO_PAGES, SCORES, SOUND_SPOKEN } from "./ui/text";
@@ -172,7 +172,7 @@ async function offerTable(reign: Reign, score: number, keys: string[]): Promise<
     if (key === DEL || key === "Delete") name = name.slice(0, -1);
     else {
       const ch = nameChar(key);
-      if (ch === null || name.length >= NAME_LENGTH) continue;
+      if (ch === null || name.length >= NAME_MAX) continue;
       name += ch;
     }
     entry.name(name).message("");

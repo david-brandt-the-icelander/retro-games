@@ -8,10 +8,10 @@
 //
 // Scores are never trusted from the browser: the server replays the reign with the same
 // engine, from the seed it issued and the keys the player pressed, and records the rating
-// that replay produces. Each seed can be submitted once. A name is up to 12 capitals, digits,
-// dots, hyphens and spaces (src/names.ts); no email address is asked for or stored.
+// that replay produces. Each seed can be submitted once. The player gives only a name for the
+// table (cleaned by src/name.ts); no email or other personal data is asked for or kept.
 import { scoresPage } from "./scores-page";
-import { BASE, OLD_PATH, PATH, entryName, json, MAX_KEYS, replay, SEED_LIFETIME_MS, TABLE_SIZE } from "./scores";
+import { BASE, OLD_PATH, PATH, json, MAX_KEYS, cleanName, replay, SEED_LIFETIME_MS, TABLE_SIZE } from "./scores";
 
 /** The subset of Cloudflare's D1 and Fetcher types this Worker uses. */
 interface D1Result<T> { results: T[]; meta: { changes: number } }
@@ -30,13 +30,13 @@ async function issueGame(env: Env): Promise<Response> {
 }
 
 async function submitScore(req: Request, env: Env): Promise<Response> {
-  let body: { id?: unknown; keys?: unknown; name?: unknown; email?: unknown };
+  let body: { id?: unknown; keys?: unknown; name?: unknown };
   try { body = await req.json(); } catch { return json({ error: "bad request" }, 400); }
   const { id, keys } = body;
+  const name = cleanName(body.name);
   if (typeof id !== "string" || id.length > 64) return json({ error: "bad game id" }, 400);
   if (!Array.isArray(keys) || keys.length > MAX_KEYS || !keys.every((k) => typeof k === "string" && k.length <= 12)) return json({ error: "bad keys" }, 400);
-  const name = entryName(body);
-  if (name === null) return json({ error: "bad name" }, 400);
+  if (!name) return json({ error: "bad name" }, 400);
 
   const game = await env.DB.prepare("SELECT seed, created, used FROM games WHERE id = ?").bind(id).first<{ seed: number; created: number; used: number }>();
   if (!game || game.used || game.created < Date.now() - SEED_LIFETIME_MS) return json({ error: "unknown or used game" }, 409);
@@ -47,8 +47,7 @@ async function submitScore(req: Request, env: Env): Promise<Response> {
   const claim = await env.DB.prepare("UPDATE games SET used = 1 WHERE id = ? AND used = 0").bind(id).run();
   if (claim.meta.changes !== 1) return json({ error: "unknown or used game" }, 409);
 
-  // The email column stays for entries made before names; new entries store none.
-  await env.DB.prepare("INSERT INTO scores (id, email, name, score, months, alive, created) VALUES (?, '', ?, ?, ?, ?, ?)")
+  await env.DB.prepare("INSERT INTO scores (id, name, score, months, alive, created) VALUES (?, ?, ?, ?, ?, ?)")
     .bind(id, name, result.score, result.months, result.alive ? 1 : 0, Date.now()).run();
   const better = await env.DB.prepare("SELECT COUNT(*) AS n FROM scores WHERE score > ?").bind(result.score).first<{ n: number }>();
   return json({ score: result.score, rank: (better?.n ?? 0) + 1, name });

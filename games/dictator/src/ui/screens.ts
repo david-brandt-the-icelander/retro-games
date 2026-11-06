@@ -81,6 +81,17 @@ function ledgerPage(p: Painter, office: string, border = GREEN): void {
   p.vline(20, 16, 167);
 }
 
+/** Bar colours on the State Security file: popularity and strength (owner decision 2026-11-06). */
+const POP_GAUGE = at(CYAN, BLACK, { bright: true });
+const STR_GAUGE = at(MAGENTA, BLACK, { bright: true });
+
+/** A bar of 0–9 units, 4 pixels each, 6 pixels tall, in the five cells from `col`, after the value's digit. */
+function gauge(p: Painter, row: number, col: number, value: number, attr: Attr): void {
+  p.fill(col, row, col + 4, row, attr);
+  const x0 = col * 8 + 1;
+  for (let y = row * 8 + 1; y <= row * 8 + 6; y++) if (value > 0) p.hline(y, x0, x0 + value * 4 - 2);
+}
+
 function dossier(p: Painter): void {
   p.page(WHITE, BLACK, BLACK).letterhead(T.OFFICE.security, DOSSIER_BAND, ART.SEAL);
 }
@@ -203,8 +214,10 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
       const row = 6 + g;
       p.print(1, row, String(g + 1));
       p.text(row, 4, 14, T.LABELS[g]);
-      p.print(19, row, String(s.popularity[g]));
-      p.print(25, row, g < 6 ? String(s.strength[g]) : "-");
+      p.print(16, row, String(s.popularity[g]));
+      gauge(p, row, 17, s.popularity[g], POP_GAUGE);
+      p.print(23, row, g < 6 ? String(s.strength[g]) : "-");
+      if (g < 6) gauge(p, row, 24, s.strength[g], STR_GAUGE);
     }
     const plots: string[] = [];
     const spoken: string[] = [];

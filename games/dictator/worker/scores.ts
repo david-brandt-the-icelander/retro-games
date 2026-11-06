@@ -1,8 +1,5 @@
 // High-score helpers shared by the Worker (worker/index.ts) and its tests.
 import { newGame, playGame } from "../src/engine";
-import { nameFromEmail, validName } from "../src/names";
-
-export { validName };
 
 export const BASE = "/games/retro/samosa/api";
 /** Where the game used to live: every path there is redirected to the same path under /games/retro/samosa. */
@@ -23,19 +20,7 @@ export const json = (body: unknown, status = 200) =>
     },
   });
 
-/**
- * The name for an entry: the name the player typed; or, from a page cached before names
- * replaced emails, the part of the email before the @. Null when neither is usable.
- */
-export function entryName(body: { name?: unknown; email?: unknown }): string | null {
-  if (body.name !== undefined) return validName(body.name) ? body.name : null;
-  if (validEmail(body.email)) return nameFromEmail(body.email.slice(0, body.email.lastIndexOf("@"))) || "ANONYMOUS";
-  return null;
-}
-
-export function validEmail(email: unknown): email is string {
-  return typeof email === "string" && email.length <= 254 && /^[^\s@]{1,64}@[^\s@.]+(\.[^\s@.]+)+$/.test(email);
-}
+export { cleanName } from "../src/name";
 
 /** Replay a reign from its seed and keys. Returns null unless the keys play exactly one whole game. */
 export async function replay(seed: number, keys: string[]): Promise<{ score: number; months: number; alive: boolean } | null> {

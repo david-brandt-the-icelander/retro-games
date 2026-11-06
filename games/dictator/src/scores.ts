@@ -1,7 +1,7 @@
 // The browser's side of the high-score table (worker/index.ts is the server).
 // Every call is best effort: when the server can't be reached, the game still plays,
 // it just can't be entered on the table.
-import { cleanName, nameFromEmail } from "./names";
+import { cleanName, nameFromEmail } from "./name";
 
 export interface Reign { id: string; seed: number }
 export interface TableRow { name: string; score: number; months: number; alive: boolean }

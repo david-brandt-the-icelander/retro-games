@@ -1,7 +1,7 @@
 // The name-entry screen after a reign, in the style of the old arcade tables: the name in
 // underlined slots with a flashing cursor, and a QWERTY keyboard drawn on the screen. A key
 // blinks once each time it is pressed, typed or tapped.
-import { NAME_LENGTH } from "../names";
+import { NAME_MAX } from "../name";
 import { BLUE, COLS, CYAN, WHITE, YELLOW, ZXScreen } from "../zx/screen";
 import { at, Painter } from "./paint";
 import { palace } from "./screens";
@@ -35,7 +35,7 @@ export const TYPING_KEYS: readonly string[] = [DEL, "Delete", SKIP];
 
 /** The name's row, and the column of its first slot: 12 slots, one blank column between each. */
 export const NAME_ROW = 7;
-export const NAME_COL = (COLS - (2 * NAME_LENGTH - 1)) >> 1;
+export const NAME_COL = (COLS - (2 * NAME_MAX - 1)) >> 1;
 const MESSAGE_ROW = 19;
 
 const PAGE = at(WHITE, BLUE);
@@ -104,9 +104,9 @@ export class NameEntry {
   name(name: string): this {
     const p = this.p;
     p.clear(0, NAME_ROW, COLS - 1, NAME_ROW, PAGE); // not row 8: the keys' frames reach into it
-    this.cursor = Math.min(name.length, NAME_LENGTH - 1);
+    this.cursor = Math.min(name.length, NAME_MAX - 1);
     this.cursorOn = true;
-    for (let i = 0; i < NAME_LENGTH; i++) {
+    for (let i = 0; i < NAME_MAX; i++) {
       p.print(NAME_COL + 2 * i, NAME_ROW, name[i] ?? " ", NAME);
       this.underline(i, true);
     }
