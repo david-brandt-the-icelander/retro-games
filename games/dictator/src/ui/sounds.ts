@@ -5,7 +5,7 @@ import { TICK } from "../zx/sound";
 
 export interface MotifSpec {
   volume: number;
-  /** The motif's length in seconds; screens timed by their sound last exactly this long. */
+  /** The motif's length in seconds; screens the original timed by their sound hold exactly this long before their footer. */
   seconds: number;
   /** How many template notes the recipe makes. */
   count: number;

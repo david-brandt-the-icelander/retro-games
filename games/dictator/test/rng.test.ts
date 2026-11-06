@@ -55,12 +55,17 @@ test("nothing draws but the rules: advice, dialogs, reports, the Swiss account a
       return ["adviceOffer", "reportOffer"].includes(sc.kind) ? "y" : "n";
     },
   }, s, null);
-  const still = [["adviceOffer", "advice"], ["advice", "dialog"], ["dialog", "treasury"], ["reportOffer", "report"], ["section", "swiss"], ["swiss", "reportOffer"], ["welcome", "treasury"], ["treasury", "report"]];
+  const still = [["adviceOffer", "advice"], ["advice", "dialog"], ["dialog", "treasury"], ["reportOffer", "report"], ["section", "swiss"], ["welcome", "treasury"], ["treasury", "report"]];
   for (const [a, b] of still) {
     const i = log.findIndex((x, j) => x.kind === a && log[j + 1]?.kind === b);
     assert.ok(i >= 0, `${a} → ${b} not seen`);
     assert.equal(log[i + 1].rng, log[i].rng, `${a} → ${b}`);
   }
+  // The month's report offer (and a bought report) come last: only the next month's mood roll follows.
+  const offer = log.findIndex((x) => x.kind === "reportOffer");
+  const next = log.findIndex((x, j) => j > offer && x.kind === "month");
+  assert.ok(offer >= 0 && next > offer);
+  assert.equal(drawsBetween(log[offer].rng, log[next].rng), 2);
 });
 
 test("snapshot has exactly the parity shape, in RULES' terms", () => {

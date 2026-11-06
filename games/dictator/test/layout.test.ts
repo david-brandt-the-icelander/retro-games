@@ -10,7 +10,7 @@ import * as T from "../src/ui/text";
 import { hasGlyph } from "../src/zx/font";
 import { BLACK, BLUE, COLS, GREEN, RED, WHITE, WIDTH, YELLOW, ZXScreen } from "../src/zx/screen";
 import { rotating } from "./helpers";
-import { LAYOUT_SAMPLES, SAMPLES, SCREENS } from "./samples";
+import { isHeld, LAYOUT_SAMPLES, SAMPLES, SCREENS } from "./samples";
 
 const flashCells = (z: ZXScreen): number[] => [...z.attrs.keys()].filter((i) => z.attrs[i] & 128);
 const draw = (s: Screen) => { const z = new ZXScreen(); const pr = finish(drawScreen(z, s)); return { z, pr }; };
@@ -34,15 +34,10 @@ test("every engine kind has a sample, and the flow shows only sampled kinds", as
   for (const k of seen) assert.ok(sampled.has(k as never), `no sample for ${k}`);
 });
 
-test("only screens that wait for a key have the footer, and its cursor is their only flash", () => {
+test("every screen, drawn in full, has the footer, and its cursor is the only flash", () => {
   for (const s of SCREENS) {
-    const { z, pr } = draw(s);
-    const waits = pr.mode !== "timed";
-    assert.equal(z.hasFooter, waits, s.kind);
-    if (!waits) {
-      for (let i = 21 * COLS; i < 24 * COLS; i++) assert.equal(z.chars[i], " ", `${s.kind} has text in the footer rows`);
-      continue;
-    }
+    const { z } = draw(s);
+    assert.ok(z.hasFooter, s.kind);
     const flashing = flashCells(z);
     assert.equal(flashing.length, 1, `${s.kind}: ${flashing}`);
     assert.equal(flashing[0] >> 5, 22, s.kind);
@@ -63,12 +58,15 @@ test("the footer prompt is centred and the cursor sits one cell after it", () =>
   assert.equal(row[start + T.PROMPT.yes.length + 1], "█");
 });
 
-test("timed screens flash only the alarm lamp or the rifle sight", () => {
+test("while a held screen waits out its time, it flashes only the alarm lamp or the rifle sight, and nothing in the footer rows", () => {
   const allowed: Partial<Record<Screen["kind"], number>> = { newsAlert: 4, revoltAlarm: 4, assassinAttempt: 9 };
   for (const s of SCREENS) {
-    const { z, pr } = draw(s);
-    if (pr.mode !== "timed") continue;
+    if (!isHeld(s)) continue;
+    const z = new ZXScreen();
+    const pr = drawScreen(z, s);
+    for (const step of pr.steps.slice(0, -1)) step.run(); // everything but the footer
     assert.equal(flashCells(z).length, allowed[s.kind] ?? 0, s.kind);
+    for (let i = 21 * COLS; i < 24 * COLS; i++) assert.equal(z.chars[i], " ", `${s.kind} has text in the footer rows`);
   }
 });
 

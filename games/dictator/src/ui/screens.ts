@@ -1,7 +1,7 @@
 // One painter per screen kind, cell for cell from docs/UI-DESIGN.md, plus the extras (title,
 // how to play, About). Each painter draws the screen and says how it is presented: the keypad
-// offer, whether it waits for a key or moves on by itself, its sound, its animation steps and
-// its screen-reader text.
+// offer, how long it holds before it reads a key, its sound, its animation steps and its
+// screen-reader text. Every screen waits for a key (owner decision, RULES §15.5).
 import { REQUESTS } from "../engine/data";
 import type { Item, Screen } from "../engine/screens";
 import type { Note } from "../zx/sound";
@@ -27,9 +27,9 @@ export interface Step {
 export interface Presentation {
   /** Buttons on the touch keypad (shown once keys are read). */
   offer: Offer;
-  /** key: any key answers; digits: only the keypad or keys answer, a tap on the screen is ignored; timed: no key is read. */
-  mode: "key" | "digits" | "timed";
-  /** timed: how long the screen stays; key/digits: how long before keys are read. */
+  /** key: any key answers; digits: only the keypad or keys answer, a tap on the screen is ignored. */
+  mode: "key" | "digits";
+  /** How long the screen holds, ignoring keys, before it reads one (its last step draws the footer). */
   ms: number;
   /** Motifs played one after another when the screen has been drawn. */
   motifs: MotifId[];
@@ -46,14 +46,20 @@ const YES_NO: Offer = [["y", T.BUTTON.yes], ["n", T.BUTTON.no]];
 
 const keyScreen = (speech: string, offer: Offer = NEXT, motifs: MotifId[] = []): Presentation =>
   ({ offer, mode: "key", ms: 0, motifs, steps: [], speech, assertive: false });
-const timed = (ms: number, speech: string, motifs: MotifId[] = [], assertive = false): Presentation =>
-  ({ offer: [], mode: "timed", ms, motifs, steps: [], speech, assertive });
+/**
+ * A screen the original moved on by itself (RULES §15.5): it draws in full and plays its sound,
+ * holds for at least its old time reading no key, then shows the any-key footer and waits.
+ */
+const held = (p: Painter, ms: number, speech: string, motifs: MotifId[] = [], assertive = false, steps: Step[] = []): Presentation => ({
+  offer: NEXT, mode: "key", ms, motifs, speech: `${speech} ${T.PRESS_ANY}`, assertive,
+  steps: [...steps, { at: ms, run: () => { p.footer(T.PROMPT.any); } }],
+});
 
 // ── Colour families (ART-BIBLE §3) ──────────────────────────────────────
 
 const PALACE_BAND = at(BLUE, YELLOW, { bright: true });
 const LEDGER_BAND = at(BLACK, GREEN);
-const DOSSIER_BAND = at(YELLOW, BLACK);
+const DOSSIER_BAND = at(BLACK, YELLOW); // a manila tab on the dark file
 const AUDIENCE_BAND = at(BLACK, MAGENTA);
 const CABINET_BAND = at(WHITE, BLUE);
 
@@ -68,7 +74,7 @@ function ledgerPage(p: Painter, office: string, border = GREEN): void {
 }
 
 function dossier(p: Painter): void {
-  p.page(BLACK, YELLOW, BLACK).letterhead(T.OFFICE.security, DOSSIER_BAND, ART.SEAL);
+  p.page(WHITE, BLACK, BLACK).letterhead(T.OFFICE.security, DOSSIER_BAND, ART.SEAL);
 }
 
 function audienceHall(p: Painter, office: string): void {
@@ -168,7 +174,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     p.big(9, 10, 21, String(s.month), at(BLACK, WHITE));
     p.hline(127, 64, 191, 2);
     p.centre(18, T.MONTH.line, at(YELLOW, BLUE));
-    return timed(1000, T.MONTH.speech(s.month), ["month-chime"]);
+    return held(p, 1000, T.MONTH.speech(s.month), ["month-chime"]);
   },
 
   treasury(p, s) {
@@ -184,7 +190,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     p.bar(2, 0, 31, T.REPORT.classified, 1, RED);
     const sub = s.variant === "first" ? T.REPORT.first : s.variant === "final" ? T.REPORT.final : T.REPORT.bought(s.month);
     p.text(3, 1, 31, sub);
-    p.text(5, 1, 30, T.REPORT.heading);
+    p.text(5, 1, 30, T.REPORT.heading, at(YELLOW, BLACK, { bright: true }));
     for (let g = 0; g < 8; g++) {
       const row = 6 + g;
       p.print(1, row, String(g + 1));
@@ -217,7 +223,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
 
   reportOffer(p, s) {
     dossier(p);
-    p.icon(14, 3, ART.FOLDER, at(BLACK, YELLOW));
+    p.icon(14, 3, ART.FOLDER, at(YELLOW, BLACK));
     const price = T.money(1);
     if (s.available) {
       p.text(8, 1, 30, T.OFFER.ask[0], undefined, "centre");
@@ -231,7 +237,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     if (s.policeWeak) reasons.push(T.OFFER.weak(s.policeStrength));
     if (s.cannotPay) reasons.push(T.OFFER.cannotPay);
     lines(p, 11, 1, 30, reasons);
-    return timed(2500, T.OFFER.speechUnavailable(reasons), ["report-none"]);
+    return held(p, 2500, T.OFFER.speechUnavailable(reasons), ["report-none"]);
   },
 
   bankrupt(p) {
@@ -240,7 +246,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     p.big(3, 8, 23, T.BANKRUPT.stamp, stamp);
     lines(p, 7, 4, 30, T.BANKRUPT.lines, at(BLUE, WHITE), "left");
     p.icon(14, 14, ART.COFFER, at(BLUE, WHITE));
-    return timed(5000, T.BANKRUPT.speech, ["bankrupt-slide"], true);
+    return held(p, 5000, T.BANKRUPT.speech, ["bankrupt-slide"], true);
   },
 
   audience(p, s) {
@@ -295,7 +301,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     p.hline(126, 56, 207, 2);
     const spokenHeader = s.item.type === "request" ? `Petition of ${T.SPOKEN_THE[REQUESTS[s.item.index].from]}` : "By decree of President Ortiga";
     const speech = T.DIALOG.speech(spokenHeader, text, money, s.affordable);
-    if (!s.affordable) return timed(5000, speech);
+    if (!s.affordable) return held(p, 5000, speech);
     p.footer(T.PROMPT.yes);
     return keyScreen(speech, YES_NO);
   },
@@ -309,7 +315,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     const hints = [...(s.askEast ? [T.CASH_SHORT.ask(T.POWER.east)] : []), ...(s.askWest ? [T.CASH_SHORT.ask(T.POWER.west)] : [])];
     lines(p, 9, 4, 31, hints, ink, "left");
     p.icon(14, 13, ART.COFFER, ink);
-    return timed(7000, T.CASH_SHORT.speech(item, hints), ["cash-short-raspberry"]);
+    return held(p, 7000, T.CASH_SHORT.speech(item, hints), ["cash-short-raspberry"]);
   },
 
   mustRefuse(p) {
@@ -317,7 +323,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     p.icon(13, 3, ART.DOOR_SHUT, at(YELLOW, BLACK));
     const stamp = p.stamp(1, 10, 30, 13, RED);
     lines(p, 11, 2, 29, T.MUST_REFUSE.lines, stamp);
-    return timed(5000, T.MUST_REFUSE.speech, ["refuse-thud"]);
+    return held(p, 5000, T.MUST_REFUSE.speech, ["refuse-thud"]);
   },
 
   menu(p, s) {
@@ -350,7 +356,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     cabinet(p, T.SECTION.title(s.section));
     const stamp = p.stamp(1, 8, 30, 11, RED);
     lines(p, 9, 2, 29, T.SECTION.used, stamp);
-    return timed(3000, T.SECTION.usedSpeech(s.section));
+    return held(p, 3000, T.SECTION.usedSpeech(s.section));
   },
 
   swiss(p, s) {
@@ -378,7 +384,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     ledgerPage(p, T.OFFICE.foreign);
     p.icon(14, 5, ART.ENVELOPE, at(BLUE, WHITE));
     lines(p, 10, 4, 30, [T.LOAN.letter(T.POWER[s.power]), T.LOAN.considered], at(BLUE, WHITE));
-    return timed(1000, T.LOAN.waitSpeech(T.POWER[s.power]), ["loan-typewriter"]);
+    return held(p, 1000, T.LOAN.waitSpeech(T.POWER[s.power]), ["loan-typewriter"]);
   },
 
   loanResult(p, s) {
@@ -409,7 +415,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
         t += 60;
       }
     });
-    return { ...timed(6000, T.NEWS.alertSpeech, ["news-teleprinter"], true), steps };
+    return held(p, 6000, T.NEWS.alertSpeech, ["news-teleprinter"], true, steps);
   },
 
   newsHeadline(p, s) {
@@ -425,14 +431,14 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
       const y = 75 + 8 * i;
       p.hline(y, 8, 8 + left[i] - 1).hline(y, 136, 136 + right[i] - 1);
     }
-    return timed(2000, T.NEWS.headlineSpeech(h));
+    return held(p, 2000, T.NEWS.headlineSpeech(h));
   },
 
   assassinAttempt(p, s) {
     p.page(WHITE, BLACK, RED);
     p.icon(14, 4, ART.RETICLE, at(RED, BLACK, { bright: true, flash: true }));
     lines(p, 10, 0, 31, T.ASSASSIN.attempt(T.LABELS[s.faction]));
-    return timed(1600, T.ASSASSIN.attemptSpeech(s.faction), ["assassin-shot"], true);
+    return held(p, 1600, T.ASSASSIN.attemptSpeech(s.faction), ["assassin-shot"], true);
   },
 
   assassinResult(p, s) {
@@ -440,14 +446,14 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     if (!s.killed) p.icon(15, 4, ART.ROSETTE, at(YELLOW, BLACK, { bright: true }));
     const ls = s.killed ? T.ASSASSIN.killed : T.ASSASSIN.survived;
     lines(p, 10, 0, 31, ls);
-    return timed(s.killed ? 2500 : 2000, ls.join(" "), [s.killed ? "assassin-dead" : "assassin-miss"], true);
+    return held(p, s.killed ? 2500 : 2000, ls.join(" "), [s.killed ? "assassin-dead" : "assassin-miss"], true);
   },
 
   warThreat(p) {
     p.page(GREEN, BLACK, GREEN);
     p.icon(14, 3, ART.BUGLE, at(YELLOW, BLACK));
     T.WAR.threat.forEach((l, i) => p.centre(8 + i, l, at(GREEN, BLACK, { bright: i === 0 })));
-    return timed(3500, T.WAR.threatSpeech, ["war-drums"], true);
+    return held(p, 3500, T.WAR.threatSpeech, ["war-drums"], true);
   },
 
   invasion(p, s) {
@@ -460,7 +466,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     p.big(10, 17, 30, String(s.theirs), at(GREEN, BLACK, { bright: true }));
     p.vline(127, 64, 95).vline(128, 64, 95);
     p.centre(14, T.WAR.guns, at(WHITE, BLACK));
-    return timed(4000, T.WAR.invasionSpeech(s.ours, s.theirs), ["war-short"], true);
+    return held(p, 4000, T.WAR.invasionSpeech(s.ours, s.theirs), ["war-short"], true);
   },
 
   warResult(p, s) {
@@ -469,7 +475,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     const stamp = p.stamp(1, 8, 30, 11, s.won ? GREEN : RED);
     const ls = s.won ? T.WAR.won : T.WAR.lost;
     lines(p, 9, 2, 29, ls, stamp);
-    return timed(2500, ls.join(" "), [s.won ? "war-won" : "war-lost"], true);
+    return held(p, 2500, ls.join(" "), [s.won ? "war-won" : "war-lost"], true);
   },
 
   heliEscape(p) {
@@ -485,7 +491,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
       const row = 9 - k;
       steps.push({ at: 500 * k, run: () => { p.clear(18, row + 2, 21, row + 2, sky); p.icon(18, row, ART.HELICOPTER, sky); } });
     }
-    return { ...timed(3000, T.HELI.escapeSpeech, ["rotor"]), steps };
+    return held(p, 3000, T.HELI.escapeSpeech, ["rotor"], false, steps);
   },
 
   execution(p, s) {
@@ -494,7 +500,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     p.centre(4, heading, at(RED, BLACK, { bright: true }));
     p.hline(52, 64, 191);
     lines(p, 9, 0, 31, T.EXECUTION.lines);
-    return timed(s.heliFailed ? 4500 : 3000, `${heading} ${T.EXECUTION.lines.join(" ")}`, s.heliFailed ? ["sputter", "volley"] : ["volley"], true);
+    return held(p, s.heliFailed ? 4500 : 3000, `${heading} ${T.EXECUTION.lines.join(" ")}`, s.heliFailed ? ["sputter", "volley"] : ["volley"], true);
   },
 
   revoltAlarm(p) {
@@ -503,7 +509,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     p.big(7, 0, 31, T.REVOLT.alarm, at(RED, BLACK, { bright: true }));
     p.centre(11, T.REVOLT.streets);
     p.icon(14, 14, ART.STATUE, at(WHITE, BLACK));
-    return timed(5000, T.REVOLT.alarmSpeech, ["revolt-siren"], true);
+    return held(p, 5000, T.REVOLT.alarmSpeech, ["revolt-siren"], true);
   },
 
   escapeAsk(p) {
@@ -541,7 +547,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
   joke(p, s) {
     p.page(WHITE, BLACK, RED);
     lines(p, 9, 0, 31, T.REVOLT.joke(T.LABELS[s.group]));
-    return timed(3000, T.REVOLT.jokeSpeech(s.group));
+    return held(p, 3000, T.REVOLT.jokeSpeech(s.group));
   },
 
   strength(p, s) {
@@ -551,21 +557,21 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     p.hline(76, 48, 207);
     p.text(10, 6, 25, `${T.REVOLT.rebels} ${s.rebels}`, at(RED, BLACK, { bright: true }));
     p.centre(14, T.REVOLT.blink, at(YELLOW, BLACK));
-    return timed(5000, T.REVOLT.strengthSpeech(s.bodyguard, s.helper, s.helperStrength, s.rebels), ["heartbeat"]);
+    return held(p, 5000, T.REVOLT.strengthSpeech(s.bodyguard, s.helper, s.helperStrength, s.rebels), ["heartbeat"]);
   },
 
   revoltStart(p) {
     p.page(WHITE, BLACK, RED);
     p.icon(14, 3, ART.STATUE, at(WHITE, BLACK));
     lines(p, 11, 0, 31, T.REVOLT.start);
-    return timed(2500, T.REVOLT.start.join(" "), ["skirmish"], true);
+    return held(p, 2500, T.REVOLT.start.join(" "), ["skirmish"], true);
   },
 
   overthrown(p) {
     p.page(WHITE, BLACK, RED);
     p.icon(13, 4, ART.STATUE_FALLEN, at(WHITE, BLACK));
     lines(p, 10, 0, 31, T.REVOLT.overthrown);
-    return timed(2500, T.REVOLT.overthrown.join(" "), ["overthrown-drop"], true);
+    return held(p, 2500, T.REVOLT.overthrown.join(" "), ["overthrown-drop"], true);
   },
 
   crushed(p) {
@@ -585,7 +591,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     p.icon(17, 7, ART.SMOKE, at(WHITE, BLUE));
     p.icon(14, 9, ART.HELICOPTER, at(WHITE, BLUE));
     lines(p, 15, 0, 31, T.HELI.fail);
-    return timed(3000, T.HELI.failSpeech, ["sputter"]);
+    return held(p, 3000, T.HELI.failSpeech, ["sputter"]);
   },
 
   mountains(p) {
@@ -601,7 +607,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
       const col = 1 + k;
       steps.push({ at: 140 * k, run: () => { p.clear(col - 1, 13, col - 1, 14, path); p.icon(col, 13, ART.WALKER, path); } });
     }
-    return { ...timed(4000, T.FLIGHT.mountainsSpeech, ["footsteps"]), steps };
+    return held(p, 4000, T.FLIGHT.mountainsSpeech, ["footsteps"], false, steps);
   },
 
   caught(p) {
@@ -610,7 +616,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     ridge(p, BLUE);
     p.fill(0, 13, 31, 14, at(WHITE, BLACK));
     lines(p, 17, 0, 31, T.FLIGHT.caught);
-    return timed(3000, T.FLIGHT.caught.join(" "), ["caught-jig"], true);
+    return held(p, 3000, T.FLIGHT.caught.join(" "), ["caught-jig"], true);
   },
 
   escaped(p) {
@@ -618,7 +624,7 @@ const DRAW: { [K in Screen["kind"]]: Draw<K> } = {
     ridge(p, YELLOW);
     p.icon(26, 13, ART.WALKER, at(BLACK, YELLOW));
     lines(p, 17, 0, 31, T.FLIGHT.escaped);
-    return timed(2500, T.FLIGHT.escapedSpeech, ["escaped-whistle"]);
+    return held(p, 2500, T.FLIGHT.escapedSpeech, ["escaped-whistle"]);
   },
 
   funeral(p, s) {
@@ -675,7 +681,7 @@ export function drawTitle(z: ZXScreen): Presentation {
   }));
   p.hline(128, 16, 239);
   p.footer(T.PROMPT.takePower, T.PROMPT.titleKeys);
-  return keyScreen(T.TITLE.speech, [[ANY_KEY, T.BUTTON.play], ["h", T.BUTTON.howto], ["a", T.BUTTON.about]], ["anthem"]);
+  return keyScreen(T.TITLE.speech, [[ANY_KEY, T.BUTTON.play], ["h", T.BUTTON.howto], ["a", T.BUTTON.about], ["s", T.BUTTON.scores]], ["anthem"]);
 }
 
 export function drawHowto(z: ZXScreen, page: number): Presentation {
@@ -698,6 +704,43 @@ export function drawAbout(z: ZXScreen): Presentation {
   lines(p, 11, 0, 31, T.ABOUT.remake, at(WHITE, BLUE));
   p.footer(T.PROMPT.backToTitle);
   return keyScreen(T.ABOUT.speech);
+}
+
+export interface ScoreRow { name: string; score: number; months: number; alive: boolean }
+
+/** The public high-score table (an extra): ten rows, best first; `mine` highlights this reign. */
+export function drawScores(z: ZXScreen, rows: readonly ScoreRow[] | null, mine?: { rank: number; score: number }): Presentation {
+  const p = new Painter(z);
+  palace(p, T.OFFICE.merit);
+  p.centre(3, T.SCORES.heading, at(YELLOW, BLUE));
+  p.text(5, 1, 30, T.SCORES.columns, at(CYAN, BLUE));
+  if (rows === null) p.centre(8, T.SCORES.offline);
+  else if (rows.length === 0) p.centre(8, T.SCORES.empty);
+  rows?.slice(0, 10).forEach((r, i) => {
+    const row = 6 + i;
+    const own = mine !== undefined && mine.rank === i + 1;
+    const attr = own ? at(BLUE, YELLOW, { bright: true }) : at(WHITE, BLUE);
+    if (own) p.fill(0, row, 31, row, attr);
+    p.text(row, 1, 2, String(i + 1), attr, "right");
+    p.text(row, 4, 15, r.name.slice(0, 12), attr);
+    p.text(row, 17, 21, String(r.score), attr, "right");
+    p.text(row, 23, 25, String(r.months), attr, "right");
+    p.text(row, 27, 30, r.alive ? T.SCORES.fled : T.SCORES.died, attr);
+  });
+  const line = mine ? T.SCORES.yours(mine.rank, mine.score) : "";
+  if (line) p.centre(18, line, at(YELLOW, BLUE));
+  p.footer(T.PROMPT.backToTitle);
+  return keyScreen(T.SCORES.speech(rows ? rows.slice(0, 10) : null, line));
+}
+
+/** The screen behind the email form (an extra): the form itself is HTML below the screen. */
+export function drawEntry(z: ZXScreen, score: number): Presentation {
+  const p = new Painter(z);
+  palace(p, T.OFFICE.merit);
+  p.icon(15, 3, ART.ROSETTE, at(YELLOW, BLUE, { bright: true }));
+  p.centre(7, T.SCORES.entryTitle(score), at(YELLOW, BLUE));
+  lines(p, 9, 0, 31, T.SCORES.entryLines, at(WHITE, BLUE));
+  return keyScreen(T.SCORES.entrySpeech(score), []);
 }
 
 /** Run every animation step at once (the final frame), as the contact sheet and layout tests do. */
