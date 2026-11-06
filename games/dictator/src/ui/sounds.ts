@@ -109,7 +109,7 @@ export interface Motif { notes: readonly Note[]; volume: number; seconds: number
 /** Every motif, ready to play. */
 export const MOTIFS = Object.fromEntries(
   Object.entries(MOTIF_SPECS).map(([id, spec]) => [id, { notes: parseRecipe(spec.recipe), volume: spec.volume, seconds: spec.seconds }]),
-) as Record<MotifId, Motif>;
+) as unknown as Record<MotifId, Motif>;
 
 /** The length of some notes in seconds. */
 export const duration = (notes: readonly Note[]): number => notes.reduce((t, [s]) => t + s, 0);

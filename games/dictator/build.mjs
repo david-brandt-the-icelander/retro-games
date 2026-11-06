@@ -3,8 +3,8 @@
 import { build, context } from "esbuild";
 import { cpSync, mkdirSync, readdirSync, renameSync, rmSync } from "node:fs";
 
-/** e.g. "retro-games/my-game" to serve under https://example.net/retro-games/my-game/ */
-const BASE_PATH = process.env.BASE_PATH ?? "";
+/** The site is served under https://icelander.net/retro-games/samosa/ (set BASE_PATH="" to build at the root). */
+const BASE_PATH = process.env.BASE_PATH ?? "retro-games/samosa";
 const args = process.argv.slice(2);
 const node = { bundle: true, platform: "node", format: "esm", target: "node20" };
 

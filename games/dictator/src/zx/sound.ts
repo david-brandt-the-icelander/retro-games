@@ -1,6 +1,6 @@
 // Beeper-style sound: square-wave notes given as (seconds, semitones from middle C), rests,
 // and short noise bursts. Silent until the first key unlocks audio (browser rule).
-// The game composes its own motifs (art bible); this template ships none.
+// The game's own motifs are in src/ui/sounds.ts (art bible §9).
 
 /** A note: duration in seconds and pitch in semitones from middle C, a rest (null) or noise. */
 export type Note = readonly [seconds: number, pitch: number | null | "noise"];
@@ -34,12 +34,15 @@ export class Sound {
     this.playing = [];
   }
 
-  /** Play notes one after another; with `stopFirst` false, mix over what is playing. */
-  play(notes: readonly Note[], volume = 0.05, stopFirst = true): void {
+  /** True once audio has been unlocked by a user gesture. */
+  get unlocked(): boolean { return this.ctx !== null; }
+
+  /** Play notes one after another, `delay` seconds from now; with `stopFirst` false, mix over what is playing. */
+  play(notes: readonly Note[], volume = 0.05, stopFirst = true, delay = 0): void {
     const ctx = this.ctx;
     if (this.muted || !ctx) return;
     if (stopFirst) this.stop();
-    let t = ctx.currentTime + 0.02;
+    let t = ctx.currentTime + 0.02 + delay;
     for (const [seconds, pitch] of notes) {
       if (pitch !== null) {
         const gain = ctx.createGain();

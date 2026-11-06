@@ -34,6 +34,8 @@ export class ZXScreen {
   hasFooter = false;
   /** Incremented on every change, so a display knows when to redraw. */
   version = 0;
+  /** Incremented on every cls(), so an overlay knows whether the screen under it was redrawn. */
+  clears = 0;
 
   /** Clear the screen to the given colours (like CLS after INK/PAPER). */
   cls(attr: Attr, border = this.border): void {
@@ -43,6 +45,7 @@ export class ZXScreen {
     this.clipped = 0;
     this.hasFooter = false;
     this.border = border;
+    this.clears++;
     this.version++;
   }
 

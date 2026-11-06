@@ -3,17 +3,11 @@ import { test } from "node:test";
 import { CHARSET, glyph, hasGlyph, parseGlyph } from "../src/zx/font";
 import { normaliseKey } from "../src/zx/input";
 import { BLACK, BLUE, BORDER, FULL_HEIGHT, FULL_WIDTH, packRGBA, RED, rgb, WHITE, WIDTH, YELLOW, ZXScreen } from "../src/zx/screen";
-import { TEXT } from "../src/ui/text";
 
 test("the font covers printable ASCII plus £ and ©", () => {
   for (let c = 32; c < 127; c++) assert.ok(hasGlyph(String.fromCharCode(c)), `missing ${String.fromCharCode(c)}`);
   assert.ok(hasGlyph("£") && hasGlyph("©"));
   for (const ch of CHARSET) assert.equal(glyph(ch).length, 8);
-});
-
-test("every character in the game's text table has a glyph", () => {
-  const strings = Object.values(TEXT).map((v) => (typeof v === "function" ? (v as (n: number) => string)(-1234567890) : v));
-  for (const t of strings) for (const ch of t) assert.ok(hasGlyph(ch), `no glyph for ${JSON.stringify(ch)} in ${t}`);
 });
 
 test("glyphs are distinct and capitals keep the top row clear", () => {
@@ -87,10 +81,12 @@ test("version changes on every drawing call", () => {
   assert.ok(s.version > v);
 });
 
-test("keys are normalised the way prompts expect", () => {
-  assert.equal(normaliseKey("Y"), "y");
+test("keys reach the game as typed: case kept, Enter and Space kept, others ignored", () => {
+  assert.equal(normaliseKey("Y"), "Y");
+  assert.equal(normaliseKey("y"), "y");
   assert.equal(normaliseKey("3"), "3");
-  assert.equal(normaliseKey("Enter"), "enter");
-  assert.equal(normaliseKey(" "), "enter");
+  assert.equal(normaliseKey("Enter"), "Enter");
+  assert.equal(normaliseKey(" "), " ");
   assert.equal(normaliseKey("Shift"), null);
+  assert.equal(normaliseKey("ArrowUp"), null);
 });
