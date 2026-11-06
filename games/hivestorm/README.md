@@ -33,9 +33,15 @@ HIVESTORM is an original game in the formation-and-dive shooter genre of the lat
 - A diving alien that rams your ship destroys both, and you still get its points.
 - Clearing the hive starts the next wave. Each wave dives faster and more often, with more aliens out at once.
 - When only 5 aliens are left, they stop going home and dive one after another.
-- The high score is kept in your browser.
+- **High scores:** when a game ends, each player whose score makes the top ten can enter a name for the public table. The title screens show the table every other 10 seconds, and the web page [/games/retro/hivestorm/scores/](https://icelander.net/games/retro/hivestorm/scores/) lists the top 25. Only the name is kept: no email or other personal data.
 
 Every number is in [`src/engine/rules.ts`](src/engine/rules.ts).
+
+## How scores are checked
+
+The browser never reports a score. When a game starts, the page uses a seed the server issued (`POST api/game`). It records the controls on every frame as runs of the same input, and sends them with the names when the game ends (`POST api/score`). The server plays the whole game again with the same engine, from that seed (`src/engine/replay.ts`). It records the scores the replay reaches, and only if the controls start a game on their first frame and end it on their last. Each seed counts once. The engine uses its own sine and cosine (`src/engine/trig.ts`), made from plain arithmetic, so every browser and the server reach exactly the same positions. A replay takes about 1 ms per minute of play.
+
+The table lives in the D1 database `hivestorm-scores` (schema: `worker/schema.sql`).
 
 ## Code
 
@@ -44,11 +50,13 @@ Every number is in [`src/engine/rules.ts`](src/engine/rules.ts).
 - `src/ui/render.ts`: draws the game onto a 224×288 canvas.
 - `src/ui/sound.ts`: sound effects made with Web Audio, with no sound files.
 - `src/ui/input.ts`: the keyboard and touch buttons.
-- `src/main.ts`: the page and its fixed-step loop.
+- `src/main.ts`: the page and its fixed-step loop. It records each game and offers the high-score table.
+- `src/scores.ts`, `src/name.ts`: the browser's side of the table, and how a name is cleaned.
+- `worker/`: the Worker. It serves the game, the high-score API and the scores page (`scores-page.ts`, in icelander.net's look from `look.ts`).
 
 ```bash
 npm ci
-npm test         # engine and art tests
+npm test         # engine, art, replay and API tests
 npm run build    # static site in dist/games/retro/hivestorm/
 npm run deploy   # test, build and deploy the hivestorm Worker to icelander.net/games/retro/hivestorm*
 ```

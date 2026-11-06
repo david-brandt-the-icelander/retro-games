@@ -53,6 +53,9 @@ export class Controls {
     el.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
+  /** A pause press from the page itself (the tab was hidden), taken on the next frame like a key. */
+  queuePause(): void { this.presses.pause = true; }
+
   /** This frame's input; presses are used up. */
   read(): Input {
     const input: Input = { left: this.held.has("left"), right: this.held.has("right"), fire: this.held.has("fire"), ...this.presses };

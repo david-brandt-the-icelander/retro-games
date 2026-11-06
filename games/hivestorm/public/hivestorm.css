@@ -46,4 +46,15 @@ body[data-phase="attract"] .pause { display: none; }
 .site-links { color: #777; font: 13px/1.7 system-ui, -apple-system, "Segoe UI", sans-serif; font-weight: normal; text-align: center; }
 .site-links a { color: #bbb; text-underline-offset: .15em; }
 .site-links a:hover, .site-links a:focus-visible { color: #fff; }
+/* The name form for the high-score table, shown under the screen when a game ends. */
+.entry { display: flex; flex-direction: column; gap: 8px; width: 100%; font: 14px/1.4 ui-monospace, Menlo, Consolas, monospace; }
+.entry label { font-weight: bold; color: #ffd040; }
+.entry input { font: 18px ui-monospace, Menlo, Consolas, monospace; min-height: 44px; padding: 6px 10px; color: #000; background: #e8e8f0; border: 2px solid #ffd040; border-radius: 6px; text-transform: uppercase; }
+.entry input:focus { outline: 3px solid #30d0ff; outline-offset: 1px; }
+.entry-buttons { display: flex; gap: 8px; }
+.entry-buttons button { flex: 1; }
+.entry-note { margin: 0; color: #999; font-size: 12px; font-weight: normal; }
+.entry-error { margin: 0; min-height: 1.2em; color: #ff6060; font-weight: normal; }
+body.entering #pad .row:not(.small) { display: none !important; }
+body.entering #pad { height: auto; }
 .noscript { font: 16px ui-monospace, monospace; }

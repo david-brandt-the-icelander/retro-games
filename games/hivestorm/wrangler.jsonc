@@ -1,4 +1,5 @@
-// The HIVESTORM Worker at icelander.net/games/retro/hivestorm: static assets only, open to everyone.
+// The Hivestorm Worker at icelander.net/games/retro/hivestorm: the static game, open to everyone, plus
+// the high-score API (worker/index.ts) backed by the D1 database hivestorm-scores (schema: worker/schema.sql).
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hivestorm",
@@ -7,5 +8,9 @@
   "preview_urls": false,
   // Its own route is more specific than the recreations Worker's icelander.net/games/*, so it wins.
   "routes": [{ "pattern": "icelander.net/games/retro/hivestorm*", "zone_name": "icelander.net" }],
-  "assets": { "directory": "./dist" }
+  // The Worker serves the high-score API under /games/retro/hivestorm/api/ and the page .../scores/;
+  // everything else is a static asset.
+  "main": "worker/index.ts",
+  "assets": { "directory": "./dist", "binding": "ASSETS" },
+  "d1_databases": [{ "binding": "DB", "database_name": "hivestorm-scores", "database_id": "c29ed586-3080-4efa-9fc6-2a50330591f4" }]
 }

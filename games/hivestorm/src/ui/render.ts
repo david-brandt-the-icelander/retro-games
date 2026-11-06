@@ -172,11 +172,42 @@ function drawAttract(ctx: Ctx, game: Game): void {
   centred(ctx, "P PAUSE  M SOUND", 272, "#8090a0");
 }
 
-export function render(ctx: Ctx, game: Game): void {
+/** What the page adds to the game's own picture: the high-score table for the title screens. */
+export interface View {
+  table: { name: string; score: number; wave: number }[] | null;
+  /** 0-based rows to flash, just entered. */
+  highlight: number[];
+  /** Show the table instead of the title. */
+  showTable: boolean;
+}
+
+function drawTable(ctx: Ctx, game: Game, view: View): void {
+  const f = game.frame;
+  centred(ctx, "HIGH SCORES", 40, COLOURS.accent, 2);
+  centred(ctx, "THE BEST PILOTS AGAINST THE HIVE", 64, COLOURS.dim);
+  const rows = view.table ?? [];
+  text(ctx, "NO  NAME          SCORE WAVE", 31, 84, COLOURS.label);
+  if (!rows.length) centred(ctx, view.table ? "NO SCORES YET. BE THE FIRST!" : "TABLE NOT AVAILABLE", 110, COLOURS.text);
+  rows.slice(0, 10).forEach((r, i) => {
+    const flash = view.highlight.includes(i) && Math.floor(f / 10) % 2 === 0;
+    const colour = flash ? COLOURS.accent : i === 0 ? KIND_PALETTE.queen.a : COLOURS.text;
+    const line = `${String(i + 1).padStart(2)}  ${r.name.toUpperCase().padEnd(12)} ${String(r.score).padStart(6)} ${String(r.wave).padStart(3)}`;
+    text(ctx, line, 31, 100 + i * 13, colour);
+  });
+  drawAlien(ctx, "queen", Math.floor(f / 16), 30, 47);
+  drawAlien(ctx, "queen", Math.floor(f / 16), W - 30, 47);
+  centred(ctx, "SCORES AT ICELANDER.NET/GAMES", 236, "#8090a0");
+  if (Math.floor(f / 30) % 2 === 0) centred(ctx, "PRESS 1 OR 2 PLAYERS", 252, COLOURS.text);
+}
+
+export function render(ctx: Ctx, game: Game, view?: View): void {
   ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, W, H);
   drawStars(ctx, game.frame, !game.paused);
-  if (game.phase === "attract") drawAttract(ctx, game);
+  if (game.phase === "attract") {
+    if (view?.showTable) drawTable(ctx, game, view);
+    else drawAttract(ctx, game);
+  }
   else drawPlay(ctx, game);
   drawHud(ctx, game);
 

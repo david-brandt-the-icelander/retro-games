@@ -1,6 +1,7 @@
 // The game itself: no drawing, no sound, no DOM. `step` advances one frame (1/60 s) and lists what happened in
 // `events`, so the page can play sounds and the tests can drive whole games.
 import { Rng } from "./rng";
+import { dcos, dsin } from "./trig";
 import { H, Kind, POINTS, QUEEN_BONUS, RULES, SLOTS, W, diveInterval, diveSpeed, maxDivers } from "./rules";
 
 export type Phase = "attract" | "ready" | "play" | "dying" | "waveClear" | "playerOver" | "gameOver";
@@ -91,9 +92,12 @@ export class Game {
   swayDir = 1;
   diveCooldown = 0;
   rng: Rng;
+  /** The seed the next game starts from. The page sets it to one the high-score server issued, so the game can be replayed there. */
+  nextSeed: number;
 
   constructor(seed = Date.now()) {
     this.rng = new Rng(seed);
+    this.nextSeed = seed;
     this.loadHive(SLOTS.map(() => true));
   }
 
@@ -109,6 +113,12 @@ export class Game {
   }
 
   start(players: 1 | 2): void {
+    // Every game starts from the same state and its own seed, whatever the title screen was doing,
+    // so the same seed and inputs always play the same game (see replay.ts).
+    this.rng = new Rng(this.nextSeed);
+    this.frame = 0;
+    this.sway = 0;
+    this.swayDir = 1;
     this.numPlayers = players;
     this.players = Array.from({ length: players }, newPlayer);
     this.current = 0;
@@ -307,8 +317,8 @@ export class Game {
       } else if (a.mode === "peel") {
         a.t += RULES.peel.turn;
         const r = RULES.peel.radius;
-        a.x = a.cx - a.dir * r * Math.cos(a.t);
-        a.y = a.cy - r * Math.sin(a.t);
+        a.x = a.cx - a.dir * r * dcos(a.t);
+        a.y = a.cy - r * dsin(a.t);
         a.vx = a.x - px;
         a.vy = a.y - py;
         if (a.t >= RULES.peel.sweep) { a.mode = "dive"; a.t = 0; }
@@ -316,7 +326,7 @@ export class Game {
         a.t++;
         const d = RULES.dive;
         if (a.y < RULES.player.y - 24) {
-          const target = this.playerX + Math.sin(a.t * 0.05 + a.id) * 18;
+          const target = this.playerX + dsin(a.t * 0.05 + a.id) * 18;
           a.vx += Math.sign(target - a.x) * d.steer;
           a.vx = Math.max(-d.maxVx, Math.min(d.maxVx, a.vx));
         }
