@@ -62,7 +62,7 @@ export class Input {
     return new Promise((resolve) => { this.pending = resolve; });
   }
 
-  /** Show no keypad and read no key (timed screens). */
+  /** Show no keypad and read no key (while a screen holds before its footer). */
   idle(): void {
     this.pending = null;
     this.keypad.replaceChildren();

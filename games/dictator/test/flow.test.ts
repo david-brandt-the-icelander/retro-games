@@ -27,6 +27,16 @@ async function find(make: (seed: number) => GameState, answer: () => Answer, ok:
 }
 
 const after = (log: Step[], kind: string, i = 0) => log.findIndex((x, j) => j >= i && x.screen.kind === kind);
+/** The screens from log[i] to the end of its month, leaving out any news (which may or may not come). */
+const restOfMonth = (log: Step[], i: number) => {
+  const end = after(log, "month", i + 1);
+  return kinds(log).slice(i, end < 0 ? undefined : end).filter((k) => k !== "newsAlert" && k !== "newsHeadline");
+};
+/** The last screen of a kind before log[before] (-1 if none). */
+const lastBefore = (log: Step[], kind: string, before = log.length) => {
+  for (let j = before - 1; j >= 0; j--) if (log[j].screen.kind === kind) return j;
+  return -1;
+};
 const followedBy = (log: Step[], seq: string[]) => {
   const ks = kinds(log);
   for (let i = 0; i + seq.length <= ks.length; i++) if (seq.every((k, j) => ks[i + j] === k)) return i;
@@ -55,13 +65,18 @@ test("the reign opens with welcome, the treasury and a free first report, then m
   assert.equal(log[3].snap.month, 1);
 });
 
-test("a calm month follows RULES §4: audience, report offer, decision, report offer, news", async () => {
-  const s = calm(8);
-  const { log } = await run(s, always("n"));
-  const i = after(log, "month");
-  const seq = kinds(log).slice(i, i + 9);
-  assert.deepEqual(seq, ["month", "audience", "adviceOffer", "dialog", "treasury", "reportOffer", "menu", "reportOffer", seq[8]]);
-  assert.ok(["month", "newsAlert"].includes(seq[8]));
+test("a calm month follows RULES §4: audience, decision, news, then the month's only report offer", async () => {
+  let withNews = 0, without = 0;
+  for (let seed = 1; seed <= 20; seed++) {
+    const { log } = await run(calm(seed), always("n"));
+    const i = after(log, "month");
+    const end = after(log, "month", i + 1);
+    const seq = kinds(log).slice(i, end + 1);
+    const news = seq.includes("newsAlert") ? ["newsAlert", "newsHeadline"] : [];
+    if (news.length) withNews++; else without++;
+    assert.deepEqual(seq, ["month", "audience", "adviceOffer", "dialog", "treasury", "menu", ...news, "reportOffer", "month"], `seed ${seed}`);
+  }
+  assert.ok(withNews > 0 && without > 0);
 });
 
 test("a quiet month draws exactly in RULES §15.4 order", async () => {
@@ -79,8 +94,6 @@ test("a quiet month draws exactly in RULES §15.4 order", async () => {
     assert.equal(aud.screen.kind === "audience" && aud.screen.request, request);
     assert.equal(aud.snap.rng, ref.rng);
     pick(ref, 3); // assassin's faction (nobody plots)
-    const offer = after(log, "reportOffer");
-    assert.equal(log[offer].snap.rng, ref.rng);
     const news = pick(ref, 3) === 0;
     let headline = -1;
     if (news) headline = pick(ref, 6);
@@ -89,21 +102,24 @@ test("a quiet month draws exactly in RULES §15.4 order", async () => {
       assert.equal(n.screen.kind === "newsHeadline" && n.screen.headline, headline);
     }
     for (let k = 0; k < 3; k++) pick(ref, 3); // revolution: nobody plots, three picks
+    assert.equal(log[after(log, "reportOffer")].snap.rng, ref.rng); // the offer comes after them and draws nothing
     const m2 = log[after(log, "month", after(log, "month") + 1)];
     assert.equal(drawsBetween(ref.rng, m2.snap.rng), 2, `seed ${seed}`);
   }
 });
 
-test("a bankrupt month: penalties first, then the notice, a plot check and a report offer", async () => {
+test("a bankrupt month: penalties first, then the notice and a plot check; the offer waits for the month's end", async () => {
   const s = calm(3, { treasury: -10 });
   const { log } = await run(s, always("n"));
   const i = after(log, "bankrupt");
   assert.equal(log[i - 1].screen.kind, "month");
-  assert.equal(log[i + 1].screen.kind, "reportOffer");
-  assert.equal(log[i + 2].screen.kind, "audience");
+  assert.equal(log[i + 1].screen.kind, "audience");
   assert.deepEqual([log[i].snap.pop[ARMY], log[i].snap.pop[POLICE], log[i].snap.str[POLICE], log[i].snap.presidentStrength], [8, 8, 5, 3]);
   assert.equal(log[i].snap.treasury, -10);
-  const offer = log[i + 1].screen;
+  const rest = restOfMonth(log, i);
+  assert.equal(rest.filter((k) => k === "reportOffer").length, 1);
+  assert.equal(rest[rest.length - 1], "reportOffer");
+  const offer = log[after(log, "reportOffer", i)].screen;
   assert.ok(offer.kind === "reportOffer" && !offer.available && offer.cannotPay);
 });
 
@@ -177,10 +193,10 @@ function decisionKeys(keys: string[]): Answer {
   };
 }
 
-test("taking a decision: section, advice offer, dialog, treasury, then the report offer", async () => {
+test("taking a decision: section, advice offer, dialog, treasury; the report offer ends the month", async () => {
   const r = await run(calm(2), decisionKeys(["1", "1", "n", "y"]));
   const i = after(r.log, "menu");
-  assert.deepEqual(kinds(r.log).slice(i, i + 6), ["menu", "section", "adviceOffer", "dialog", "treasury", "reportOffer"]);
+  assert.deepEqual(restOfMonth(r.log, i), ["menu", "section", "adviceOffer", "dialog", "treasury", "reportOffer"]);
   assert.ok(r.log[i + 4].snap.decisionUsed[0]);
   assert.ok(!r.log[i + 3].snap.decisionUsed[0]);
 });
@@ -188,16 +204,16 @@ test("taking a decision: section, advice offer, dialog, treasury, then the repor
 test("declining a decision's dialog goes back to the menu", async () => {
   const r = await run(calm(2), decisionKeys(["1", "2", "n", "n", "Enter"]));
   const i = after(r.log, "menu");
-  assert.deepEqual(kinds(r.log).slice(i, i + 6), ["menu", "section", "adviceOffer", "dialog", "menu", "reportOffer"]);
+  assert.deepEqual(restOfMonth(r.log, i), ["menu", "section", "adviceOffer", "dialog", "menu", "reportOffer"]);
 });
 
-test("the Swiss account: its own screen, then straight to the report offer; repeatable", async () => {
+test("the Swiss account: its own screen, and the decision is over; repeatable", async () => {
   const r = await run(calm(2, { treasury: 501 }), decisionKeys(["3", "4"]));
   const i = after(r.log, "swiss");
   const sw = r.log[i].screen;
   assert.deepEqual(sw, { kind: "swiss", before: 501 - 60, moved: 220, treasury: 221, costs: 60, swiss: 220 });
-  assert.equal(r.log[i + 1].screen.kind, "reportOffer");
-  assert.ok(!r.log[i + 1].snap.decisionUsed[12]);
+  assert.deepEqual(restOfMonth(r.log, i), ["swiss", "reportOffer"]);
+  assert.ok(!r.log[after(r.log, "reportOffer", i)].snap.decisionUsed[12]);
 });
 
 test("the bodyguard decision adds 2 and stays available", async () => {
@@ -207,10 +223,10 @@ test("the bodyguard decision adds 2 and stays available", async () => {
   assert.ok(!t.decisionUsed[10]);
 });
 
-test("a loan: wait, result, treasury, report offer; too early in month 1", async () => {
+test("a loan: wait, result, treasury, and the decision is over; too early in month 1", async () => {
   const r = await run(calm(2), decisionKeys(["4", "1"]));
   const i = after(r.log, "loanWait");
-  assert.deepEqual(kinds(r.log).slice(i, i + 4), ["loanWait", "loanResult", "treasury", "reportOffer"]);
+  assert.deepEqual(restOfMonth(r.log, i), ["loanWait", "loanResult", "treasury", "reportOffer"]);
   const res = r.log[i + 1].screen;
   assert.ok(res.kind === "loanResult" && res.outcome === "early" && res.power === "east");
   assert.equal(drawsBetween(r.log[i].snap.rng, r.log[i + 1].snap.rng), 1);
@@ -230,13 +246,13 @@ test("a used-up section shows the note and returns to the menu", async () => {
   s.decisionUsed[6] = s.decisionUsed[7] = s.decisionUsed[8] = true;
   const r = await run(s, decisionKeys(["2", "x"]));
   const i = after(r.log, "menu");
-  assert.deepEqual(kinds(r.log).slice(i, i + 4), ["menu", "sectionUsed", "menu", "reportOffer"]);
+  assert.deepEqual(restOfMonth(r.log, i), ["menu", "sectionUsed", "menu", "reportOffer"]);
 });
 
 test("an unaffordable decision: dialog by itself, cash short, back to the menu", async () => {
   const r = await run(calm(2, { treasury: 50 }), decisionKeys(["3", "3", "n", "y", "n"]));
   const i = after(r.log, "menu");
-  assert.deepEqual(kinds(r.log).slice(i, i + 7), ["menu", "section", "adviceOffer", "dialog", "cashShort", "menu", "reportOffer"]);
+  assert.deepEqual(restOfMonth(r.log, i), ["menu", "section", "adviceOffer", "dialog", "cashShort", "menu", "reportOffer"]);
   assert.ok(!r.log[i + 5].snap.helicopter);
 });
 
@@ -300,22 +316,22 @@ test("ending: a lost war with a helicopter: away (2 in 3) or executed under the 
   assert.ok(!shot.s.alive && !shot.s.escaped);
 });
 
-test("a won war wipes out the Neighbour's strength and the month goes on", async () => {
+test("a won war wipes out the Neighbour's strength and the month goes on to the decision", async () => {
   const r = await find(warState(false, 40), () => always("n"), (log) => log.some((x) => x.screen.kind === "warResult"));
   const i = after(r.log, "warResult");
   const w = r.log[i].screen;
   assert.ok(w.kind === "warResult" && w.won);
   assert.equal(r.log[i].snap.str[NEIGHBOUR], 0);
-  assert.equal(r.log[i + 1].screen.kind, "reportOffer");
+  assert.equal(r.log[i + 1].screen.kind, "menu");
 });
 
-test("a threat of war rallies the home groups, then the report offer", async () => {
+test("a threat of war rallies the home groups, then the decision", async () => {
   const r = await find((seed) => Object.assign(warState(false)(seed), { popularity: [5, 5, 5, 0, 0, 5, 9, 9] }), () => always("n"),
     (log) => log.some((x) => x.screen.kind === "warThreat"));
   const i = after(r.log, "warThreat");
   const before = r.log[i - 1].snap.pop, now = r.log[i].snap.pop;
   assert.deepEqual([now[0] - before[0], now[1] - before[1], now[2] - before[2], now[5] - before[5], now[4] - before[4]], [1, 1, 1, 1, 0]);
-  assert.equal(r.log[i + 1].screen.kind, "reportOffer");
+  assert.equal(r.log[i + 1].screen.kind, "menu");
 });
 
 /** The Army rises with the guerrillas; everyone else is loyal. */
@@ -357,18 +373,71 @@ test("ending: overthrown when the rebels are too strong", async () => {
   assert.equal(drawsBetween(r.log[i + 4].snap.rng, r.log[i + 5].snap.rng), 1); // the swing, after the start screen
 });
 
-test("a crushed revolt: punish, the helper to 9, plots paused, then a report offer and the next month", async () => {
-  const r = await find(revoltState({ bodyguard: 30 }), () => (sc: Screen) => (sc.kind === "crushed" ? "Y" : escapeKeys(false, "6")(sc, 0)),
+test("a crushed revolt: punish, the helper to 9, plots paused, a plot check, then the month's only report offer", async () => {
+  const r = await find(revoltState({ bodyguard: 30 }), () => (sc: Screen) => (sc.kind === "crushed" ? "Y" : sc.kind === "reportOffer" ? "y" : escapeKeys(false, "6")(sc, 0)),
     (log) => log.some((x) => x.screen.kind === "crushed"));
   const i = after(r.log, "crushed");
-  assert.deepEqual(kinds(r.log).slice(i, i + 2), ["crushed", "reportOffer"]);
-  const snap = r.log[i + 1].snap;
+  assert.equal(r.log[i].snap.status[ARMY], "revolution");
+  const m = after(r.log, "month", i);
+  const tail = kinds(r.log).slice(i, m + 1);
+  // Bought or not, the offer follows the crushed screen and nothing else comes before the next month.
+  assert.deepEqual(tail, tail.length === 3 ? ["crushed", "reportOffer", "month"] : ["crushed", "reportOffer", "report", "month"]);
+  const offer = r.log[i + 1];
+  assert.ok(offer.screen.kind === "reportOffer");
+  const monthStart = lastBefore(r.log, "month", i);
+  assert.equal(kinds(r.log).slice(monthStart, i).filter((k) => k === "reportOffer").length, 0, "no earlier offer this month");
+  const snap = offer.snap;
   assert.deepEqual([snap.pop[ARMY], snap.str[ARMY], snap.pop[GUERRILLAS], snap.str[GUERRILLAS]], [0, 0, 0, 0]);
   assert.equal(snap.str[POLICE], 9);
   assert.equal(snap.plotPause, snap.month + 2);
+  // the plot check ran between the crushed screen and the offer: the pause has cleared the plots
   assert.deepEqual(snap.status, ["none", "none", "none"]);
-  const next = r.log.slice(i + 1).find((x) => x.screen.kind !== "report" && x.screen.kind !== "reportOffer");
-  assert.equal(next?.screen.kind, "month");
+  assert.equal(snap.rng, r.log[i].snap.rng);
+});
+
+// ── The report offer: once a month, at its end (RULES §4 step 15) ───────
+
+const ENDINGS = new Set(["execution", "heliEscape", "overthrown", "caught", "escaped"]);
+const isEnding = (x: Step) => ENDINGS.has(x.screen.kind) || (x.screen.kind === "assassinResult" && x.screen.killed);
+
+test("exactly one report offer per completed month, its last step, after the revolution check; offers draw nothing", async () => {
+  let months = 0, bought = 0, revolutions = 0;
+  for (let seed = 1; seed <= 300; seed++) {
+    const keys = seed % 2 ? ["y", "1", "n", "3", "Y", "2", "Enter", "4", "5", "6"] : ["n", "y", "2", "5"];
+    const { log } = await run(newGame(seed), rotating(keys, seed));
+    const starts = log.flatMap((x, j) => (x.screen.kind === "month" ? [j] : []));
+    assert.equal(kinds(log).slice(0, starts[0] ?? log.length).filter((k) => k === "reportOffer").length, 0, "none before month 1");
+    for (let k = 0; k + 1 < starts.length; k++) {
+      const seg = log.slice(starts[k], starts[k + 1]);
+      const offers = seg.flatMap((x, j) => (x.screen.kind === "reportOffer" ? [j] : []));
+      assert.equal(offers.length, 1, `seed ${seed} month ${k + 1}: ${kinds(seg)}`);
+      const o = offers[0];
+      const tail = kinds(seg).slice(o + 1);
+      assert.ok(tail.length === 0 || (tail.length === 1 && tail[0] === "report"), `seed ${seed}: ${tail}`);
+      if (tail.length) bought++;
+      if (kinds(seg).includes("revoltAlarm")) revolutions++;
+      // the next month's mood roll is the only draw between the offer and the next month screen
+      assert.equal(drawsBetween(seg[o].snap.rng, log[starts[k + 1]].snap.rng), 2, `seed ${seed}`);
+      months++;
+    }
+  }
+  assert.ok(months > 1000 && bought > 50 && revolutions > 5, `${months} ${bought} ${revolutions}`);
+});
+
+test("no report offer after a game-ending screen: the reign's last month has none", async () => {
+  const endings = new Set<string>();
+  for (let seed = 1; seed <= 300; seed++) {
+    const keys = seed % 2 ? ["y", "1", "n", "3", "Y", "2", "Enter", "4", "5", "6"] : ["n", "y", "2", "5"];
+    const { log } = await run(newGame(seed), rotating(keys, seed));
+    const end = log.findIndex(isEnding);
+    assert.ok(end > 0, `seed ${seed}`);
+    endings.add(log[end].screen.kind);
+    const lastMonth = lastBefore(log, "month");
+    assert.ok(lastMonth < end);
+    assert.deepEqual(kinds(log).slice(lastMonth).filter((k) => k === "reportOffer"), [], `seed ${seed}`);
+    assert.ok(log.slice(end).every((x) => x.screen.kind !== "reportOffer" && x.screen.kind !== "month"));
+  }
+  assert.ok(endings.size >= 4, [...endings].join());
 });
 
 test("the help list ignores other keys and shows itself again; an unlisted group is a joke and a run", async () => {

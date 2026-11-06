@@ -108,8 +108,9 @@ async function present(pr: Presentation, motifs: readonly MotifId[] = pr.motifs)
     }, step.at);
   }
   input.idle();
-  if (pr.ms > 0) await sleep(pr.ms); // timed screens, and the first part of swiss and rating, read no key
-  if (pr.mode === "timed") return "";
+  // A screen holds for pr.ms reading no key (keys pressed meanwhile are dropped); its last step,
+  // due at the same moment and scheduled first, draws the footer. Then every screen waits for a key.
+  if (pr.ms > 0) await sleep(pr.ms);
   const key = await input.waitKey({ offer: pr.offer, tapCounts: pr.mode !== "digits" });
   display.fit(); // the keypad may have wrapped onto another row
   return key;

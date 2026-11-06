@@ -138,7 +138,7 @@ export const ABOUT = {
 
 // ── Speech endings ───────────────────────────────────────────────────────
 
-const PRESS_ANY = "Press any key.";
+export const PRESS_ANY = "Press any key.";
 const PRESS_YES = "Press Y for yes, any other key for no.";
 
 // ── Game screens ─────────────────────────────────────────────────────────

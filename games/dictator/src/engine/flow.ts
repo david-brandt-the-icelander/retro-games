@@ -49,11 +49,6 @@ export async function playGame(io: IO, s: GameState, best: number | null = null)
     }
   }
 
-  async function plotsThenOffer(): Promise<void> {
-    rules.checkPlots(s);
-    await reportOffer();
-  }
-
   /** The President dies: the death screen has been shown; on to the funeral. */
   function die(): never {
     s.alive = false;
@@ -185,7 +180,7 @@ export async function playGame(io: IO, s: GameState, best: number | null = null)
     rules.printHeadline(s, n);
     await show({ kind: "newsAlert" });
     await show({ kind: "newsHeadline", headline: n });
-    await plotsThenOffer();
+    rules.checkPlots(s);
   }
 
   // ── Revolution (§13) ─────────────────────────────────────────────────
@@ -239,7 +234,7 @@ export async function playGame(io: IO, s: GameState, best: number | null = null)
     }
     if (isYes(await show({ kind: "crushed" }))) rules.punishRebels(s, faction);
     rules.afterVictory(s, helper);
-    await plotsThenOffer();
+    rules.checkPlots(s); // the month ends with its report offer (step 15)
   }
 
   async function revolution(): Promise<void> {
@@ -251,24 +246,27 @@ export async function playGame(io: IO, s: GameState, best: number | null = null)
   }
 
   // ── One month (§4) ───────────────────────────────────────────────────
+  // The remake offers a report once a month, at its end (step 15, owner decision); the plot
+  // checks stay where RULES puts them. A reign that ends mid-month never reaches the offer.
   async function month(): Promise<void> {
-    rules.rollMood(s);
-    s.month++;
+    rules.rollMood(s); // step 1
+    s.month++; // step 2
     await show({ kind: "month", month: s.month });
-    rules.checkPlots(s);
-    if (rules.settleAccounts(s) === "bankrupt") {
+    rules.checkPlots(s); // step 3
+    if (rules.settleAccounts(s) === "bankrupt") { // step 4
       await show({ kind: "bankrupt" });
-      await plotsThenOffer();
+      rules.checkPlots(s);
     }
-    await audience();
-    rules.checkPlots(s);
-    await assassination();
-    await war();
-    await plotsThenOffer();
-    await decide();
-    await plotsThenOffer();
-    await news();
-    await revolution();
+    await audience(); // step 5
+    rules.checkPlots(s); // step 6
+    await assassination(); // step 7
+    await war(); // step 8
+    rules.checkPlots(s); // step 9 (step 10: no offer here)
+    await decide(); // step 11
+    rules.checkPlots(s); // step 12
+    await news(); // step 13
+    await revolution(); // step 14
+    await reportOffer(); // step 15: the month's only offer
   }
 
   // ── The reign ────────────────────────────────────────────────────────

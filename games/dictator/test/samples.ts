@@ -94,6 +94,15 @@ export const SCREENS: Screen[] = [
   { kind: "rating", popularity: 0, months: 1, monthsPoints: 3, alive: false, survivalBonus: 0, swiss: 0, swissPoints: 0, total: 3, best: 99999, newBest: false },
 ];
 
+/** The screens the original moved on by itself (RULES §15.5): they now hold, then wait for a key. */
+export const HELD_KINDS: ReadonlySet<Screen["kind"]> = new Set<Screen["kind"]>([
+  "month", "bankrupt", "cashShort", "mustRefuse", "sectionUsed", "loanWait", "newsAlert", "newsHeadline", "assassinAttempt",
+  "assassinResult", "warThreat", "invasion", "warResult", "heliEscape", "execution", "revoltAlarm", "joke", "strength",
+  "revoltStart", "overthrown", "heliFail", "mountains", "caught", "escaped",
+]);
+export const isHeld = (s: Screen): boolean =>
+  HELD_KINDS.has(s.kind) || (s.kind === "reportOffer" && !s.available) || (s.kind === "dialog" && !s.affordable);
+
 /** Every data text on its screens (for the layout tests only, not the contact sheet). */
 export const DATA_SCREENS: Screen[] = [
   ...Array.from({ length: 24 }, (_, r): Screen => ({ kind: "audience", request: r, faction: Math.floor(r / 8) })),
