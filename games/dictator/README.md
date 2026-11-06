@@ -23,7 +23,7 @@ Several times a month State Security offers you its file for $1,000: every group
 
 ## The high-score table
 
-After a reign you may enter the public table under a name of your choosing (up to 12 letters, digits or spaces; accented letters are written plainly, so Davíð becomes David). No email or other personal data is asked for. The server doesn't trust the browser's score: it issued the reign's random seed, and it replays your key presses through the same game engine to compute the score itself. Press S on the title screen to see the table, or open <https://icelander.net/games/retro/samosa/scores/>.
+After a reign you may put it on the public table under a name of up to 12 characters, typed in the style of the old arcade tables: each letter over its own underline, with the cursor blinking under the next one. Type on your keyboard, or tap or click the keys drawn on the screen (capitals, digits, dots, hyphens and spaces); each key blinks as it is pressed. DEL (or Backspace) deletes the last letter, ENTER saves and SKIP (or Escape) leaves the reign off the table. The name is remembered for the rest of the browser session, for every game on icelander.net. A player signed in at icelander.net/games starts with the part of their email address before the @ (from `/games/me`; accented letters are written plainly, so Davíð becomes DAVID). No email or other personal data is asked for or stored. The server doesn't trust the browser's score: it issued the reign's random seed, and it replays your key presses through the same game engine to compute the score itself. Press S on the title screen to see the table, or open <https://icelander.net/games/retro/samosa/scores/>.
 
 ## Develop
 

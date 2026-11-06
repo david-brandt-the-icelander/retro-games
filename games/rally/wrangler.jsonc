@@ -1,0 +1,15 @@
+// The Rally Worker at icelander.net/games/retro/rally: the static game, plus the high-score API
+// (worker/index.ts) backed by the D1 database rally-scores (schema: worker/schema.sql).
+// Its own route is more specific than the recreations Worker's icelander.net/games/*, so it wins.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rally",
+  "compatibility_date": "2025-06-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "icelander.net/games/retro/rally*", "zone_name": "icelander.net" }],
+  // The Worker answers the API and the scores page under /games/retro/rally/; everything else is a static asset.
+  "main": "worker/index.ts",
+  "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "none" },
+  "d1_databases": [{ "binding": "DB", "database_name": "rally-scores", "database_id": "cfa22c0a-477c-4d43-9f93-a88614800caf" }]
+}

@@ -21,6 +21,13 @@ export interface WaitOptions {
   offer?: Offer;
   /** Whether a tap on the screen counts as any key (default true). */
   tapCounts?: boolean;
+  /**
+   * Typing mode, for entering a name: reserved keys (M for sound) are typed like any other,
+   * and these keys, ignored otherwise, are passed on too (e.g. "Backspace", "Escape").
+   */
+  typing?: readonly string[];
+  /** Maps a tap or click on the screen (client coordinates) to a key, or null to ignore it. */
+  tapKey?: (clientX: number, clientY: number) => string | null;
   /** Move on by itself after this many ms, answering ANY, if no key comes first. */
   timeoutMs?: number;
 }
@@ -28,6 +35,8 @@ export interface WaitOptions {
 export class Input {
   private pending: ((key: string) => void) | null = null;
   private tapCounts = true;
+  private typing: readonly string[] | null = null;
+  private tapKey: WaitOptions["tapKey"] = undefined;
   private listeners: Array<(key: string) => void> = [];
   private readonly reserved = new Map<string, () => void>();
 
@@ -36,16 +45,24 @@ export class Input {
       if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
       // A focused button handles its own Enter/Space; other keys still answer the prompt.
       if (e.target instanceof HTMLButtonElement && (e.key === "Enter" || e.key === " ")) return;
-      const k = normaliseKey(e.key);
+      const typing = this.pending ? this.typing : null;
+      const k = typing?.includes(e.key) ? e.key : normaliseKey(e.key);
       if (k === null) return;
-      const action = this.reserved.get(k.toLowerCase());
+      const action = typing ? undefined : this.reserved.get(k.toLowerCase());
       if (action) { e.preventDefault(); action(); return; }
       if (!this.pending) return;
       e.preventDefault();
       this.resolve(k);
     });
     target.addEventListener("pointerdown", (e) => {
-      if (!this.pending || !this.tapCounts) return;
+      if (!this.pending) return;
+      if (this.tapKey) {
+        e.preventDefault();
+        const key = this.tapKey(e.clientX, e.clientY);
+        if (key !== null) this.resolve(key);
+        return;
+      }
+      if (!this.tapCounts) return;
       e.preventDefault();
       this.resolve(ANY);
     });
@@ -60,6 +77,8 @@ export class Input {
   /** Wait for the next key. Keys pressed while nobody waits are discarded. */
   waitKey(options: WaitOptions = {}): Promise<string> {
     this.tapCounts = options.tapCounts ?? true;
+    this.typing = options.typing ?? null;
+    this.tapKey = options.tapKey;
     this.showKeypad(options.offer ?? []);
     return new Promise((resolve) => {
       this.pending = resolve;

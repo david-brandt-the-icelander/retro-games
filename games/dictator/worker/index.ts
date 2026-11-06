@@ -49,8 +49,9 @@ async function submitScore(req: Request, env: Env): Promise<Response> {
 
   await env.DB.prepare("INSERT INTO scores (id, name, score, months, alive, created) VALUES (?, ?, ?, ?, ?, ?)")
     .bind(id, name, result.score, result.months, result.alive ? 1 : 0, Date.now()).run();
-  const better = await env.DB.prepare("SELECT COUNT(*) AS n FROM scores WHERE score > ?").bind(result.score).first<{ n: number }>();
-  return json({ score: result.score, rank: (better?.n ?? 0) + 1, name });
+  // Ties list oldest first, and this entry is the newest, so it ranks after every entry scoring as much.
+  const ahead = await env.DB.prepare("SELECT COUNT(*) AS n FROM scores WHERE score >= ?").bind(result.score).first<{ n: number }>();
+  return json({ score: result.score, rank: Math.max(1, ahead?.n ?? 1), name });
 }
 
 async function loadTop(env: Env, size: number) {

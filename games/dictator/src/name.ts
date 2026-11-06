@@ -15,3 +15,21 @@ export function cleanName(raw: unknown): string {
   const kept = plain.replace(/[^A-Za-z0-9 .'_-]/g, "").replace(/\s+/g, " ").trim().slice(0, NAME_MAX).trim();
   return /[A-Za-z0-9]/.test(kept) ? kept : "";
 }
+
+/** The characters the name-entry keyboard types (src/ui/entry.ts): capitals, digits, . - and space. */
+export const KEY_CHARS = new Set([..."ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.- "]);
+
+/** A typed key as a name character (letters in capitals), or null when the keyboard has no such key. */
+export function nameChar(key: string): string | null {
+  const ch = key.length === 1 ? key.toUpperCase() : "";
+  return KEY_CHARS.has(ch) ? ch : null;
+}
+
+/**
+ * The name offered to a player signed in to the games: their email before the @ (and before any
+ * +tag), cleaned as above, in capitals, with underscores as hyphens, so every character is a key.
+ */
+export function nameFromEmail(localPart: string): string {
+  const base = localPart.split("@")[0].split("+")[0].replace(/_/g, "-");
+  return [...cleanName(base).toUpperCase()].filter((c) => KEY_CHARS.has(c)).join("").trim();
+}
