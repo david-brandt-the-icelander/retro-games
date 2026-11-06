@@ -98,7 +98,7 @@ The repo's licence can only cover the user's own work. Check that nothing third-
 Run the bundled checker against the original's text:
 
 ```bash
-python3 -I <skill-dir>/scripts/overlap.py <reference> <repo-dir> [--names NAME ...] [--ngram 5]
+python3 -I -B <skill-dir>/scripts/overlap.py <reference> <repo-dir> [--names NAME ...] [--ngram 5]
 ```
 
 - `<reference>` is the original listing, disassembly or manual text (one or more files). The script pulls quoted strings out of BASIC listings and `DEFM`/`DB` lines out of disassemblies; other files are read as prose.

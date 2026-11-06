@@ -2,7 +2,7 @@
 
 A clean-room remake of a 1983 ZX Spectrum strategy game. It plays exactly like the original but shares none of its protected expression: text, names, screen designs, art, tunes or code. It is also the first game made with the **`create-retro-game`** skill (to be added in `.claude/skills/`). Building it will shape the skill.
 
-Status: **M1–M8 done for the game** (M1 still waits for the owner's Access setup; M9, skill v1, is next). *Samosa* is published at `icelander.net/retro-games/samosa`. The owner chose its title, a Nicaragua/Honduras setting with real organisations and pun-named ruling families, and asked for it to be built and published.
+Status: **M1–M8 done for the game** (M1 still waits for the owner's Access setup). **M9, skill v1, is done**. *Samosa* is published at `icelander.net/retro-games/samosa`. The owner chose its title, a Nicaragua/Honduras setting with real organisations and pun-named ruling families, and asked for it to be built and published.
 
 This repository is public, so this plan describes the original without quoting it. The original's names and wording appear only in the private faithful copy and its provenance notes.
 
@@ -117,5 +117,17 @@ The evals use an invented game, as the existing skills' evals do, so this reposi
 | M7 | Phases 6–7: implementation, parity, verification | M6 |
 | M8 | Phase 8: publish | M7 |
 | M9 | Skill v1: lessons from Dictator; the two evals | M8 |
+
+### What M9 changed in the skill
+- **Clean-room hand-offs:** a distinctiveness brief from the verify role to the designer; overlap hits fed back by location, never lists of original text.
+- **Gates:** how to run the phases back to back when the owner says "build it"; branch from `main` per milestone and never cherry-pick across branches; playtest changes become logged decisions.
+- **RULES:** starting values for every state field, and the before/after timing of state changes around screens with no decision.
+- **Real-world settings** (GDD reference): named organisations allowed, real people only under pun names, no jokes about victims, research with sources, map a real group onto an existing faction.
+- **Implementation:** the parity hook (`snapshot`, raw keys, every screen through `show`); screens print the state they are shown in.
+- **Parity kit** (`assets/parity/`): policies that draw only on decision screens, the comparison with its reordering report, and checks of displayed values.
+- **Guard test:** `scripts/make_guard_hashes.py` and the template's `test/guard.test.ts`.
+- **Browser and publish:** measuring touch targets (the sound button was 32 px); Cloudflare Web Analytics injection blocked by the CSP.
+- **Other fixes:** the zx_assets blind spot for tunes in a custom encoding; scripts run with `python3 -I -B`, and caches are ignored.
+- **Evals:** `design-invented-game` and `build-from-baseline`.
 
 This reduces legal risk but is not legal advice. The publisher was dissolved and the author has died; asking his estate for permission is worth considering alongside the clean-room work.

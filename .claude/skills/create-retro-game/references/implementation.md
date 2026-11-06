@@ -20,6 +20,11 @@ src/
   interface IO { show(screen: Screen): Promise<string> }   // resolves with the key pressed
   ```
   `Screen` is a discriminated union of every screen kind with the data it shows. The browser implements `show` by painting and waiting for input; tests implement it with a script. Keep presentation-only screens (intro, help, About) outside the engine.
+- **The parity hook.** When there is a baseline, `src/engine/index.ts` also exports `snapshot(state)`: the state in RULES' terms (RULES' field names and group order, the RNG's raw state included), in the exact shape the verify role gives in the brief. The verify role snapshots at every `show`, before the key is applied.
+- **Keys reach the engine raw** (`"y"`, `"Y"`, `"Enter"`, `" "`). The engine applies RULES' key semantics itself, so the browser layer never decides what a key means. Platform keys (such as M for sound) are taken by the input layer and never reach the engine.
+- **Every screen goes through `show`**, timed ones included; the engine ignores the key a timed screen returns. Pacing lives in the presentation layer, so changing it (an owner may ask for every screen to wait for a key) never touches the engine.
+- **State changes around screens.** Apply each change at the point RULES gives. Where RULES doesn't say whether a change happens before or after a screen with no decision on it (a death flag, a rally), pick one and list it in your report: parity tolerates it around such screens, but not at decision screens or screens that print numbers.
+- **Screens print the state they are shown in.** Fill a screen's numbers from the state at the moment of `show`, never from a copy taken earlier; the verify role checks displayed values against the snapshot.
 - **Painters** draw one screen kind each, from the UI design. They return the keys to offer on the touch keypad. Text and colours live in the painters or a text table, never in the engine.
 - **Text:** keep every player-facing string in one module (e.g. `src/ui/text.ts`). That makes the overlap check, translation and review easy.
 

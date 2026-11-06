@@ -70,7 +70,7 @@ The checker requires every flow node to be a defined screen, and every screen to
 ## Check
 
 ```bash
-python3 -I <skill-dir>/scripts/wireframe_check.py games/<slug>/docs/WIREFRAMES.md
+python3 -I -B <skill-dir>/scripts/wireframe_check.py games/<slug>/docs/WIREFRAMES.md
 ```
 
 It exits non-zero and lists every problem: wrong size, unknown characters, undefined or unused regions, duplicate ids, and dangling or missing flow nodes.

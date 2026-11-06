@@ -21,7 +21,7 @@ You need the original's text to check the remake against. Keep everything you do
    ```
 3. Look at what is on the tape:
    ```bash
-   python3 -I <this-skill>/scripts/zx_basic_list.py original-tape/<FILE>.TAP --blocks > original.bas
+   python3 -I -B <this-skill>/scripts/zx_basic_list.py original-tape/<FILE>.TAP --blocks > original.bas
    ```
    - **BASIC games** (most strategy, management and adventure games of 1982–84): this prints the whole program — the tape *is* the source. It also handles programs saved as a memory dump (`SAVE "x" CODE 23552,n` or from 22528 with the screen), and `.sna` snapshots.
    - **Machine-code blocks**: a tape often mixes a BASIC program with `CODE` blocks that hold the messages, graphics or the whole game. Always run `--strings` once to see what text is inside them; it finds printable runs, including the common bit‑7‑terminated strings. Save the text as a reference with `--text > original-strings.txt`. For fully machine-code games also look for a fan disassembly (see `references/sources.md`); disassemblies give you every message as `DEFM` lines.
@@ -44,10 +44,14 @@ Add these to the general skill's inventory.
 Check graphics and tunes mechanically. Text checks can't see them:
 
 ```bash
-python3 -I <this-skill>/scripts/zx_assets.py original.bas <repo-dir>
+python3 -I -B <this-skill>/scripts/zx_assets.py original.bas <repo-dir>
 ```
 
 It reads the UDG bytes from the listing's `DATA` lines and the tune from its `BEEP` statements and `DATA` duration/pitch pairs. It then reports any original 8‑byte graphic in the remake, as numbers, hex or binary, or drawn as `"..XXXX.."` rows, including mirrored or inverted copies. It also reports any run of 6 or more original notes, including runs interleaved with durations or transposed to another key. A tune moved up an octave is still the same tune.
+
+**Its blind spot: tunes in a custom encoding.** Some games keep a tune in strings (for example a letter or a digit per note, decoded by the program at run time) instead of `BEEP` literals or numeric `DATA`. `zx_assets.py` can't see those, and it reports `0 notes` or a suspiciously small count. When it does, read the listing for the routine that plays the tune, decode the notes by hand into `BEEP d,p` lines in a scratch file, and pass that file as an extra reference. Never commit the decoded tune.
+
+Run the scripts with `python3 -I -B` so they leave no `__pycache__` behind in the repository.
 
 Fonts: if the remake has an 8×8 font, find out where it came from. A comment like "dumped from the ROM", the address 15616 (`0x3D00`), or a glyph table that matches an emulator's font means it is the Sinclair ROM font: replace it with your own.
 
@@ -73,8 +77,8 @@ Watch for behaviour that comes from how BASIC works: `INKEY$`/`INPUT` matching o
 Run the general skill's overlap check with the extracted listing, the text from code blocks and the manual as references, plus the invented names. Then run the asset check:
 
 ```bash
-python3 -I <clean-room-rebuild>/scripts/overlap.py original.bas original-strings.txt manual.txt <repo-dir> --names <Name1> <Name2>
-python3 -I <this-skill>/scripts/zx_assets.py original.bas <repo-dir>
+python3 -I -B <clean-room-rebuild>/scripts/overlap.py original.bas original-strings.txt manual.txt <repo-dir> --names <Name1> <Name2>
+python3 -I -B <this-skill>/scripts/zx_assets.py original.bas <repo-dir>
 ```
 
 Both must come back clean, apart from the factual credit line, before you finish.

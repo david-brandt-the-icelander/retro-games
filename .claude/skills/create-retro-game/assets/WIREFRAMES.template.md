@@ -1,6 +1,6 @@
 # <Working title>: UI wireframes
 
-Status: draft · Phase 3 of create-retro-game · Check: `python3 -I scripts/wireframe_check.py docs/WIREFRAMES.md`
+Status: draft · Phase 3 of create-retro-game · Check: `python3 -I -B scripts/wireframe_check.py docs/WIREFRAMES.md`
 
 Notation: 32×24 cells per screen. `.` is empty, `#` is decoration, and letters and digits are regions explained in each screen's legend (see `references/wireframes.md`). The two screens below are an example; replace them.
 
