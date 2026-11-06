@@ -24,7 +24,7 @@ You need the original's text to check the remake against. Keep everything you do
    python3 -I <this-skill>/scripts/zx_basic_list.py original-tape/<FILE>.TAP --blocks > original.bas
    ```
    - **BASIC games** (most strategy, management and adventure games of 1982–84): this prints the whole program — the tape *is* the source. It also handles programs saved as a memory dump (`SAVE "x" CODE 23552,n` or from 22528 with the screen), and `.sna` snapshots.
-   - **Machine-code games**: there's no listing. Get the text with `--strings` (finds printable runs, including the common bit‑7‑terminated strings) and look for a fan disassembly (see `references/sources.md`); disassemblies give you every message as `DEFM` lines.
+   - **Machine-code blocks**: a tape often mixes a BASIC program with `CODE` blocks that hold the messages, graphics or the whole game. Always run `--strings` once to see what text is inside them; it finds printable runs, including the common bit‑7‑terminated strings. Save the text as a reference with `--text > original-strings.txt`. For fully machine-code games also look for a fan disassembly (see `references/sources.md`); disassemblies give you every message as `DEFM` lines.
 4. Get the manual/inlay text too (Spectrum Computing entry, gamesdatabase.org, archive.org scans) and save it as plain text. Remakes often copy the instructions into a "How to play" screen.
 5. Record the copyright line from the program itself (often in a `REM` or `PRINT` near the start, e.g. `REM © …` or `PRINT "Copyright …"`) and from the manual in PROVENANCE.md: it's the best starting point for finding the rights holder.
 
@@ -41,6 +41,16 @@ Add these to the general skill's inventory.
 - The **Sinclair ROM font**: don't ship it or trace it; draw your own 8×8 font.
 - Distinctive invented names (countries, factions, characters) and the title, if it's distinctive.
 
+Check graphics and tunes mechanically. Text checks can't see them:
+
+```bash
+python3 -I <this-skill>/scripts/zx_assets.py original.bas <repo-dir>
+```
+
+It reads the UDG bytes from the listing's `DATA` lines and the tune from its `BEEP` statements and `DATA` duration/pitch pairs. It then reports any original 8‑byte graphic in the remake, as numbers, hex or binary, or drawn as `"..XXXX.."` rows, including mirrored or inverted copies. It also reports any run of 6 or more original notes, including runs interleaved with durations or transposed to another key. A tune moved up an octave is still the same tune.
+
+Fonts: if the remake has an 8×8 font, find out where it came from. A comment like "dumped from the ROM", the address 15616 (`0x3D00`), or a glyph table that matches an emulator's font means it is the Sinclair ROM font: replace it with your own.
+
 **Keep (hardware facts and functionality):**
 - The 15-colour palette, INK/PAPER/BRIGHT/FLASH attributes and attribute clash; the 256×192 display, 32×24 grid of 8×8 cells, the border.
 - The beeper as a sound technology (square waves, clicks), keyboard controls, Kempston/Sinclair joystick conventions, the general "stripy border while loading" aesthetic.
@@ -50,7 +60,7 @@ Add these to the general skill's inventory.
 
 Sinclair BASIC ports are especially prone to line-by-line translation: functions named after line numbers, `GO TO`-shaped control flow, single-letter variables (`a$`, `g`, `r`), and identical ordering of unrelated `LET`s. Read the listing to write the behaviour spec (general skill, step 3) — note formulas like `INT (RND*(g/3+.4))` as maths, not code — then implement from the spec in your own structure.
 
-Watch for behaviour that is really a BASIC artefact (e.g. `INPUT` only accepting lowercase because of caps lock, integer truncation from `INT`, `RND` granularity). Decide with the user whether a "faithful" remake keeps it, and note the decision in the spec.
+Watch for behaviour that comes from how BASIC works: `INKEY$`/`INPUT` matching only lowercase, any key press counting as a turn, integer truncation from `INT`, the order of `IF` checks, `RND` granularity. These are gameplay, so **keep them as the original has them**. Write them into the spec's quirks section and cover them in the parity check. If one looks like it should change, for example accepting uppercase keys, offer it as an open decision and don't change it yourself.
 
 ## [Spectrum] Step 4 — rebuild the presentation
 
@@ -60,11 +70,14 @@ Watch for behaviour that is really a BASIC artefact (e.g. `INPUT` only accepting
 
 ## [Spectrum] Step 5 — verify
 
-Run the general skill's overlap check with the extracted listing and the manual text as references, plus the invented names:
+Run the general skill's overlap check with the extracted listing, the text from code blocks and the manual as references, plus the invented names. Then run the asset check:
 
 ```bash
-python3 -I <clean-room-rebuild>/scripts/overlap.py original.bas manual.txt <repo-dir> --names <Name1> <Name2>
+python3 -I <clean-room-rebuild>/scripts/overlap.py original.bas original-strings.txt manual.txt <repo-dir> --names <Name1> <Name2>
+python3 -I <this-skill>/scripts/zx_assets.py original.bas <repo-dir>
 ```
+
+Both must come back clean, apart from the factual credit line, before you finish.
 
 BASIC listings split messages across several `PRINT` items (`PRINT "You have ";m;" men"`), so short fragments under three words won't be flagged on their own. Skim the listing's `PRINT` lines against the remake's screens as well. Expect the credit line you added on purpose ("Inspired by *Title* by *Author*") to show up as name hits; record it as accepted in PROVENANCE.md.
 
@@ -78,5 +91,6 @@ See `references/sources.md` for where to look. Common patterns:
 
 ## Bundled files
 
-- `scripts/zx_basic_list.py` — lists BASIC programs in `.tap`, `.tzx` and `.sna` images (`--blocks` shows the tape structure, `--strings` prints the printable text in non-BASIC blocks).
+- `scripts/zx_basic_list.py` — lists BASIC programs in `.tap`, `.tzx` and `.sna` images. `--blocks` shows the tape structure, `--strings` shows the text in non-BASIC blocks with offsets, and `--text` prints just that text, ready to use as an overlap reference.
+- `scripts/zx_assets.py` — finds the original's UDG graphics and BEEP tunes in a remake (exact, mirrored, inverted, interleaved or transposed).
 - `references/sources.md` — where to find Spectrum originals, manuals and fan disassemblies.

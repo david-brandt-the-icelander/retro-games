@@ -33,7 +33,11 @@ Rules, turn structure, win/lose conditions, formulas, probabilities, timings and
 
 ## Workflow
 
-Work on a new git branch. Make progress visible: after each step, write down what you found or changed in `docs/PROVENANCE.md` (template: `assets/PROVENANCE.template.md`). Don't silently drop gameplay features — a rebuild that plays worse is a failure too.
+Work on a new git branch. Before changing anything, copy the clone as it stands to a scratch directory outside the repo: it is the behaviour baseline for the parity check in step 9. Make progress visible: after each step, write down what you found or changed in `docs/PROVENANCE.md` (template: `assets/PROVENANCE.template.md`).
+
+**Gameplay must stay identical, quirks included.** Input handling (which keys or answers are accepted, case sensitivity, what happens on invalid input), rounding and integer truncation, the order of checks, timing and randomness are all gameplay. Don't drop features or "improve" anything on the way through, however harmless it looks. If the clone already differs from the original, the original wins: restore it and say so. If you think a change would be better, leave the original behaviour in place and offer the change as an open decision.
+
+**Only asked to check, not to change?** Do steps 1, 2 and 11 (inventory and overlap check) and report what is risky, what is fine and what the fix would involve. Don't modify any files.
 
 ### 1. Gather inputs
 
@@ -46,6 +50,8 @@ Walk the whole clone — source, data files, assets, docs, tests, README, build 
 ### 3. Clean-room behaviour spec
 
 If there is no behaviour spec yet, write one (e.g. `docs/RULES.md`) describing *what the game does* in your own words: states, turn order, every rule, every formula and number. It must contain no original text (describe a message's purpose and length budget instead of quoting it) and no original code.
+
+Give quirks their own section in the spec: input handling, invalid-input behaviour, rounding, and check order. They are the details a rewrite loses most easily.
 
 From here on, implement only from the spec. If subagents are available, separate the roles: one agent reads the original and writes or checks the spec; the agent that writes code reads only the spec. This "clean room" separation is what makes the new code demonstrably independent; when working alone, at least close the original before writing each module.
 
@@ -77,9 +83,11 @@ Remove the original's credit screen, copyright line, publisher logo and the orig
 
 Factual attribution like this is fine — it's reproducing their branding that isn't.
 
-### 9. Tests
+### 9. Tests and behaviour parity
 
-Update fixtures and assertions that use original strings or data so they use the new ones. Add a test that fails if any string from the old text table reappears, if that's cheap. All tests must pass before you finish.
+Update fixtures and assertions that use original strings or data so they use the new ones. Add a test that fails if any string from the old text table reappears, if that's cheap; store hashes rather than the text so the test file doesn't republish it. All tests must pass before you finish.
+
+Then prove the rebuild plays the same. Write a small parity script in your scratch directory, never in the repo. It drives the baseline copy from the start of the workflow and the new code with the same random numbers and the same inputs, for thousands of games, and compares the full game state after every step. Include invalid and edge-case inputs, such as wrong case, empty or out-of-range answers, and values at each threshold. Every difference is a bug, unless it is a deliberate fix that restores the original's behaviour; explain each of those in the report.
 
 ### 10. Licence
 
@@ -103,7 +111,7 @@ Iterate until it reports nothing except generic phrases you can justify ("press 
 
 Finish with:
 1. What changed, per category (text, art, audio, levels, code, branding, docs, tests, licence).
-2. The overlap-check result (paste the summary line).
+2. The overlap-check result (paste the summary line) and the parity result (games and steps compared, differences found).
 3. **Open decisions** for the user: title, renamed proper nouns, anything marked *decide*, and whether to seek permission from the rights holder (see `references/legal-basis.md`).
 4. One line: this reduces risk but is not legal advice.
 

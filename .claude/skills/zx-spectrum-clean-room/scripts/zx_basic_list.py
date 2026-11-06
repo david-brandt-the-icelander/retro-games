@@ -12,6 +12,8 @@ It handles:
     the dumped system variables.
   * 48K .sna snapshots (the program is found through PROG and VARS).
 --blocks also prints the tape's block structure.
+--text prints only the text found by --strings, one string per line, ready
+  to save as a reference file for overlap.py.
 --strings also prints printable text found in machine-code / data blocks
   (runs of at least 6 characters; a final character with bit 7 set, a common
   end-of-string marker in Spectrum games, is accepted), for games that have no
@@ -212,7 +214,17 @@ def main(argv):
         print(__doc__)
         return 2
     data = open(argv[1], "rb").read()
-    strings = "--strings" in argv
+    text_only = "--text" in argv
+    strings = "--strings" in argv or text_only
+    if text_only:
+        blocks = list(tzx_blocks(data) if data.startswith(b"ZXTape!") else tap_blocks(data))
+        skip = {i for i, _, _ in programs(blocks)}
+        for n, b in enumerate(blocks):
+            if (len(b) == 19 and b[0] == 0) or n in skip:
+                continue
+            for _, t in text_runs(b[1:-1]):
+                print(t)
+        return 0
     found = 0
     if argv[1].lower().endswith(".sna"):
         ram, prog = sna_program(data)

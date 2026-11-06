@@ -1,0 +1,13 @@
+schema_version: "1.1"
+name: moonmine-assets
+expected_outcome: |
+  The original's text is recovered from the tape, including the messages that
+  live in its CODE block, and its UDG graphics and BEEP tunes are identified.
+  The rebuilt moonmine-remake/ contains none of the original's messages,
+  credits, UDG bitmaps (in any form) or tunes (including the transposed
+  jingle). The font that claims to be a ROM dump is replaced. Gameplay is
+  unchanged, quirks included: lowercase q/a/o/p only, every key press burns
+  lamp oil, and the order of the end checks is kept. Tests pass, the README has
+  a factual credit, and open decisions are listed.
+context:
+  scaffold_script: place-files.sh
