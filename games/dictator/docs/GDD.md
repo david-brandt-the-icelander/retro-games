@@ -1,4 +1,4 @@
-# Sozoma: game design document
+# Samosa: game design document
 
 Status: **approved** · Phase 2 of `create-retro-game` · written by the designer from `docs/RULES.md` · Owner decisions recorded 2026-11-06 (§14)
 
@@ -8,7 +8,7 @@ It contains no text from the original game and none of its invented names. Any o
 
 ## 1. Identity
 
-- **Title: *Sozoma*** (owner's choice). The repository folder stays `games/dictator/`; the public address is `icelander.net/retro-games/sozoma`.
+- **Title: *Samosa*** (owner's choice: a pun on the Somoza dynasty, whose stand-in family is a faction in the game). The repository folder stays `games/dictator/`; the public address is `icelander.net/retro-games/samosa`.
 - **Title proposals** considered, each with a one-line pitch:
 
 | # | Title | Pitch |
@@ -18,7 +18,7 @@ It contains no text from the original game and none of its invented names. Any o
 | 3 | ***One More Month*** | Grant, refuse, bribe and borrow your way through another month in the palace; the only prize is a better score at your funeral. |
 | — | *Dictator* (the original's title) | Possible if the owner accepts the risk. It is a common English word, so it is a weak mark, but it is still the name most associated with the 1983 game, so it signals "the same game" more strongly than anything else, and invites confusion with the original's rights holders. |
 
-  The designer recommended *Tinpot*; the owner chose ***Sozoma***, an invented word of six letters that fits large lettering in 32 columns. Its pitch line is written in the UI design.
+  The designer recommended *Tinpot*; the owner first chose *Sozoma*, then ***Samosa***: six letters, fits large lettering in 32 columns. Its pitch line is written in the UI design.
 - **Credit line** (fixed, used as written in the README and the About screen):
   "Inspired by *Dictator* (1983) by Don Priestley, published by DK'Tronics. Independent remake, not affiliated with or endorsed by the original rights holders."
 
@@ -36,7 +36,7 @@ This is the contract the later phases check against.
 | Kept (functional, from RULES) | Renewed (expression, ours) |
 |---|---|
 | The eight groups, their order, their starting popularity and strength (RULES §1) | All on-screen text: about 75 messages, the 24 requests, 19 decisions and 6 headlines, the how-to-play pages |
-| The treasury, costs, Swiss account, bodyguard strength, helicopter and loans (§2) | The player's country, its adjective, the bordering state and its people, the export crop, in-world nicknames (§4 below) |
+| The treasury, costs, Swiss account, bodyguard strength, helicopter and loans (§2) | The player's country, its adjective, the bordering state and its people, the export crop, the ruling families' pun names and the named organisations (§4 below) |
 | The monthly thresholds and their hidden/shown status (§3) | The title (§1) and the title screen |
 | The month's 15 steps in their order, and the plot checks between them (§4) | Every screen layout (wireframes, phase 3); none recreates the original's designs |
 | Accounts, plots, reports, audience, decisions, assassination, war, news, revolution, escape, rating: every rule and formula (§5–§14) | Colours per screen, icons, portraits and all pixel art (art bible, phase 4) |
@@ -47,36 +47,37 @@ This is the contract the later phases check against.
 | Pacing: which screens wait for a key and the minimum time of each timed screen (§15.5); we may lengthen, never shorten | The how-to-play pages, written fresh from RULES |
 | The quirks: a request can be skipped when the used marks reset (§8.1); unlimited bodyguards; the unreachable "no more loans" result still has its message | Touch keypad, responsive layouts, screen-reader text, sound toggle (additions that don't change the game) |
 | The platform's hardware look: 32×24 cells, 8 colours + BRIGHT, FLASH, border, beeper | |
-| Generic words: the President, the Army, the Peasants, the Landowners, the Guerrillas, the Secret Police, the East, the West | (Settings may add nicknames in flavour text, but the group labels on screen stay generic, see §4) |
+| The eight groups' roles and order (RULES §1) | Their on-screen labels and identities: the Landowners become the Samosa family, the Guerrillas the Contras, and so on (§4.2) |
 
 ## 4. Setting and names
 
-The owner chose a **real setting**: the player rules **Nicaragua**, and the bordering state is **Honduras**. The three fictional settings the designer proposed (Splendoria, Brinmoor, Philatelia) were not chosen and are dropped.
+The owner chose a **real setting with real organisations**: the player rules **Nicaragua** as **President Ortiga**, the bordering state is **Honduras**, and the game is titled ***Samosa***. Events are built on Nicaragua's real history, caricatured. The research brief (kept outside the repository, with sources) gives a historical anchor for every request, decision and headline; the UI design writes the texts from it.
 
 ### 4.1 Ground rules
 
-- **Real countries, invented events.** Nicaragua and Honduras are real; the President, the requests, the decisions, the wars and the headlines are invented. The About screen says so.
-- **No real person.** The President has no personal name and no gender, and no screen, picture or text points at a real head of state, past or present. The title *Sozoma* is an invented word.
-- **No real party, movement or institution by name.** Every faction keeps a generic label (see the next point). Headlines don't name real organisations.
-- **No ethnic or national caricature.** No costume, accent, food or dress code mocking Nicaraguans or Hondurans. The satire targets the President, the palace and the system: medals, statues, balconies, paperwork, the Swiss account. Hondurans appear only as the Neighbour's state and army, never as a people to sneer at.
-- **The group labels stay generic on screen** (Army, Peasants, Landowners, Guerrillas, Secret Police, the East, the West), so reports, advice lines and the help list stay readable at a glance. The Neighbour's name is *Honduras*.
-- **The President** is "the President" in every text.
-- The geography fits RULES: two coasts (D6 leases a naval base), farmland and estates (R2, R23, R24 irrigation), a mountainous northern border with Honduras (the escape on foot, §13.3), migrant labour and trade across that border (R12, R20, D16), and one export crop (N4).
+- **Organisations and parties are named** (owner decision): the Sandinistas (FSLN), the Contras, the National Guard, the CIA, *La Prensa*, the business council COSEP, the Soviet Union, Cuba, Washington, and so on. Satire aims at what they did as institutions.
+- **No real person is named or drawn.** The two ruling families appear only under pun names: **Ortiga** (for Ortega; Spanish for "nettle") and **Samosa** (for Somoza). No first names, no likenesses, no quotes put in a real person's mouth. Other people appear only by role ("the editor", "the bishop", "the ambassador").
+- **The President** is "President Ortiga": no first name, no gender, no spouse.
+- **Caricature, not cruelty.** The jokes land on the regime, the dynasties, the superpowers and the bureaucracy: graft, vanity, paranoia, the helicopter on the roof. Never joke about victims: the murdered newspaper editor (1978), the dead of 2018, political prisoners and exiles, the Miskito relocations, or religious faith itself. No caricature of Nicaraguans or Hondurans as peoples.
+- **Mixed eras, on purpose.** Flavour may draw on any period, from the filibusters to the canal concession, as if the whole history were one long, very bad presidency.
+- **The group labels stay short on screen** so reports, advice and the help list read at a glance (§4.2); the full organisation names appear in requests, headlines and the how-to-play pages.
 
 ### 4.2 Names
 
-| Role | Name | Notes |
-|---|---|---|
-| The game | ***Sozoma*** (6) | Title only; never used as a place or person in the game |
-| The player's country | **Nicaragua** (9) | |
-| Its adjective / people | **Nicaraguan** / **Nicaraguans** (10 / 11) | "the Nicaraguan Army" |
-| The bordering state | **Honduras** (8) | Across the northern mountains |
-| Its people / adjective | **Hondurans** / **Honduran** (9 / 8) | |
-| The export crop (N4) | **coffee** | |
-| The two superpowers | **the East** and **the West** | Generic Cold War terms, as RULES uses them |
-| The guerrillas | **the guerrillas** (generic) | No nickname |
-| The secret police | **the Secret Police** (generic) | No nickname |
-| The mountains (§13.3) | **the northern mountains** | Generic; no real range named |
+| Role (RULES) | On-screen label | In texts | Notes |
+|---|---|---|---|
+| The game | ***SAMOSA*** (6) | | Title only |
+| The President | President Ortiga | | The new dynasty; ex-guerrilla turned strongman |
+| Army | ARMY | the Sandinista Popular Army; in old-regime jokes, the National Guard | |
+| Peasants | PEASANTS | the campesinos, the farm workers' union | |
+| Landowners | SAMOSAS | **the Samosa family**: the old dynasty and its estates, businesses and Miami friends | Same faction, same rules and numbers; it speaks as the family |
+| Guerrillas | CONTRAS | the Contras, camped over the border in Honduras, paid by Washington | Always hostile, as RULES says |
+| The Neighbour | HONDURAS | Honduras and Hondurans | Across the northern mountains |
+| Secret police | SEC. POLICE | State Security | |
+| The East | EAST | Moscow and Havana (the Soviet Union and Cuba) | |
+| The West | WEST | Washington (and its CIA) | |
+| Export crop (N4) | | coffee | |
+| The mountains (§13.3) | | the northern mountains | |
 
 ## 5. Player experience
 
@@ -393,8 +394,9 @@ All melodies are new and written for this game; effects are generic beeper sound
 
 | Risk | Kind | Likelihood | Mitigation |
 |---|---|---|---|
-| The title collides with an existing game or trademark | Legal | Low | *Sozoma* is an invented word; search before publishing |
-| The real setting: Nicaragua had a real dictatorship (the title's sound recalls its ruling family), and the game shows its government as corrupt and Honduras as a hostile invader | Reputational | Medium | §4.1: no real person, party or organisation named; no caricature of either people; the About screen says the events are invented. The owner chose the setting and accepts this risk. |
+| The title collides with an existing game or trademark | Legal | Low | *Samosa* is a common food word, a weak mark either way; search game stores before publishing |
+| The real setting: the game names real parties and organisations, puns on two real ruling families, and shows Honduras as a hostile invader | Reputational / political | Medium | §4.1: no real person named or drawn; no jokes about victims; no caricature of either people; the About screen says the events are caricatures of history, not a record. The owner chose this and accepts the risk. |
+| Named contributors with ties to Nicaragua could face retaliation (its government strips critics of citizenship) | Personal | Low | The owner decides how the credits read; anonymous credits are possible |
 | A screen still looks like the original's (the request screen's icon row, the report's column layout, tiled backgrounds, the title wallpaper) | Legal | Medium | The wireframes and art bible design from RULES and this document only; the art bible's distinctiveness table; phase 7's visual review |
 | Original wording leaks into new text, through memory or paraphrase | Legal | Low–medium | Text written from purposes only; `overlap.py` with the original's names at every phase; a guard test of hashes of the original strings |
 | The funeral or other tunes resemble the original's | Legal | Low | Original motifs only (§9); the funeral uses our own anthem, not a public-domain march |
@@ -413,22 +415,23 @@ All melodies are new and written for this game; effects are generic beeper sound
 | 2026-11-06 | The skill is named `create-retro-game`; the remake lives in `games/dictator/`. | Owner |
 | 2026-11-06 | `docs/RULES.md` approved on merge (PR #4). | Owner |
 | 2026-11-06 | RULES clarified from the designer's questions, checked against the baseline: affordability wording (§8.3); one execution screen after a lost war, headed by the helicopter's failure or the Neighbour's victory (§11); the joke skips the helicopter (§13.4); the rating's best includes this game (§14); platform keys such as M never reach the game (§15.1). | Spec role |
-| 2026-11-06 | Title: *Sozoma*. | Owner |
+| 2026-11-06 | Title: *Sozoma*; later changed to *Samosa*. | Owner |
 | 2026-11-06 | Setting: Nicaragua; the Neighbour is Honduras. Names in §4.2. | Owner |
 | 2026-11-06 | The newsflash money quirk is switched off. | Owner |
 | 2026-11-06 | Y is accepted in both cases. | Owner |
 | 2026-11-06 | No request for permission from the original author's estate. | Owner |
-| 2026-11-06 | Public address: `icelander.net/retro-games/sozoma`. | Owner |
+| 2026-11-06 | Public address: `icelander.net/retro-games/samosa` (follows the title). | Owner |
+| 2026-11-06 | Real parties and organisations are named; real people are not. Events are built on Nicaraguan history, caricatured. The ruling families are the puns Ortiga and Samosa; the player is President Ortiga; the Landowners faction becomes the Samosa family (rules unchanged). | Owner |
 | 2026-11-06 | No "wait for a key on timed screens" setting. | Owner |
 
 ## 15. Decisions (all closed)
 
 | # | Decision | Options considered | Decided |
 |---|---|---|---|
-| 1 | The title | *President for Life*, *Tinpot*, *One More Month*, keep *Dictator* | ***Sozoma*** (owner's own) |
-| 2 | The setting and names | Splendoria, Brinmoor or Philatelia (fictional) | **Nicaragua and Honduras** (real; §4) |
+| 1 | The title | *President for Life*, *Tinpot*, *One More Month*, keep *Dictator* | ***Samosa*** (owner's own) |
+| 2 | The setting and names | Splendoria, Brinmoor or Philatelia (fictional) | **Nicaragua and Honduras**, real organisations, pun-named families (§4) |
 | 3 | The newsflash money quirk (RULES §9.4, §12) | Keep it on, or switch it off | **Off** |
 | 4 | The case of the Y key (RULES §15.1) | Both cases, or lower case only | **Both cases** |
 | 5 | Ask the original author's estate for permission | Ask, or rely on the clean-room work | **Don't ask** |
-| 6 | The public address | `/retro-games/<title-slug>`, `/retro-games/dictator`, a subdomain | **`icelander.net/retro-games/sozoma`** |
+| 6 | The public address | `/retro-games/<title-slug>`, `/retro-games/dictator`, a subdomain | **`icelander.net/retro-games/samosa`** |
 | 7 | A "wait for a key on timed screens" setting | Offer it, or not | **Not offered** |
