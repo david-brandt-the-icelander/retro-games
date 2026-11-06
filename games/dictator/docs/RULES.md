@@ -33,7 +33,7 @@ Eight groups, always in this order (the order matters for plots, wars and the he
 | Treasury | 1000 | May go negative (in debt) |
 | Monthly costs | 60 | Never below 0 |
 | Swiss account | 0 | Only ever grows; counts in the rating only if the President survives |
-| President's strength (bodyguard) | 4 | +2 per bodyguard decision; −1 per bankrupt month (not below 0) |
+| President's strength (bodyguard) | 4 | +2 per bodyguard decision, with **no upper limit**; −1 per bankrupt month (not below 0) |
 | Month | 0 | Becomes 1 at the start of the first month |
 | Helicopter | no | Bought by decision D12 |
 | East loan / West loan granted | no / no | Each superpower lends at most once |
@@ -68,7 +68,7 @@ A game ends only by death or escape. There is no time limit and no victory condi
 
 **Before month 1:** a welcome screen showing the best rating so far, then a treasury report and a free intelligence report. That first report shows no plots and the revolution strength from before the first roll, 10.
 
-**After the end:** the death screens or the funeral, then the rating (§14), then a **final** intelligence report, then back to the title.
+**After the end:** the death screens, then (if the President died) the funeral, then the rating (§14), then a **final** intelligence report, then back to the title.
 
 ## 5. Accounts
 
@@ -193,7 +193,7 @@ The game remembers the money of the **last item whose decision dialog was shown*
 2. If it doesn't plan an assassination, nothing happens.
 3. Otherwise an **attempt**:
    - If all three domestic factions plan assassinations: the President is **killed**.
-   - Otherwise, if the secret police's popularity is at or below the threshold **and** their strength is at or below the threshold: a coin flip, and the President is killed on one side.
+   - Otherwise, if the secret police's popularity is at or below the threshold **and** their strength is at or below the threshold: a coin flip (pick(2)): the President is killed on a 0 and survives on a 1.
    - Otherwise the attempt **fails**. The game goes on, and the war check still follows.
 
 ## 11. War with the Neighbour
@@ -250,7 +250,7 @@ Make up to three picks of a random domestic faction (1 of 3). The first pick tha
    - **Otherwise:** the player presses 1–6, and other keys are ignored until one of these comes.
      - A listed group becomes the **helper**.
      - An **unlisted** number (a disaffected group): a "joke" note, and the President must flee on foot (§13.3), so the game ends.
-2. **Strength summary:** the President's strength, the helper's strength and the rebels' combined strength, shown for a few seconds.
+2. **Strength summary:** the President's strength, the helper's strength and the rebels' combined strength, shown for a few seconds. (The original shows this summary and the start of the revolution as two screens; the baseline merges them into one. The remake follows the original: see §15.6.)
 3. **The revolution starts.** It is **crushed** if the rebels' strength is at most the President's plus the helper's (0 without a helper), plus a swing of −1, 0 or +1. Otherwise the President is **overthrown** (dead).
 4. **If crushed:**
    - Ask whether to **punish** the rebels. Yes sets popularity and strength to 0 for the rebel faction and its ally.
@@ -290,7 +290,7 @@ The dead don't see the alive and money lines at all.
 
 ### 15.2 Arithmetic
 - Money is whole thousands. Integer division rounds down: the Swiss transfer takes floor(treasury ÷ 2), and rating points for money are floor(Swiss ÷ 10).
-- All popularity and strength changes are clamped to 0–9 after each one. Running costs never go below 0.
+- Every change to a **group's** popularity or strength is clamped to 0–9 after each one. The **President's** strength is not: it never drops below 0 but has no maximum, so four bodyguards make 12 (this counts in war and revolt totals). Running costs never go below 0.
 - Disaffected means popularity **≤** the threshold, and the plot ally test is **≥** the revolution strength. Hostility needs popularity ≤ the threshold and strength **≥** the threshold.
 - The war and the revolution compare with a −1/0/+1 swing (§11, §13.4).
 
@@ -315,7 +315,7 @@ Parity testing needs the remake to draw exactly the same random numbers, in the 
 |---|---|
 | Start of each month | pick(3) for the threshold (+2); pick(3) for the revolution strength (+10) |
 | Choosing the request | pick(24) for the start; again after each reset |
-| Assassination check | pick(3) for the faction; then, **only if** an attempt is made, not all three plot, and the police are both unloved and weak, pick(2) |
+| Assassination check | pick(3) for the faction; then, **only if** an attempt is made, not all three plot, and the police are both unloved and weak, pick(2), where 0 means killed |
 | War check (only if hostile) | pick(3), where 0 means invasion. If invading: pick(3) for the swing (value − 1). If the war is lost and there is a helicopter: pick(3), where 0 means the helicopter fails |
 | Loan request | pick(5) for the "too early" test, always. **Only if** the loan is then granted: pick(200) |
 | News check | pick(3), where 0 means news. Only then pick(6) for the start |
@@ -336,6 +336,7 @@ Nothing else draws: not advice, dialogs, reports, the Swiss transfer or plots.
 - the result of a loan request
 - escape question, help list, "you are alone"
 - punish question, rating, final report
+- the funeral (a remake addition: it waits for a key, as the baseline's does)
 
 **Moves on by itself:**
 
@@ -355,11 +356,23 @@ Nothing else draws: not advice, dialogs, reports, the Swiss transfer or plots.
 | Mountains | 4 s |
 | Joke note | 3 s |
 | Strength summary | 5 s |
+| Swiss transfer | 2 s, then the treasury lines appear and it waits for a key |
 | Unavailable report offer | its sound |
-| Assassination, war, revolution-start and escape result screens | their sound effect |
+| Threat of war | its sound |
+| Invasion (both strengths) | its sound (the short war) |
+| Assassination attempt and result, war result, revolution start, helicopter escape, caught or escaped on foot | their sound effect |
 | Death screens | their sound, then the funeral |
 
 The baseline waits for a key on several of these. The remake follows this table; the GDD may lengthen a time, but should not shorten it.
+
+### 15.6 Deliberate differences from the baseline
+Parity testing compares the remake with the faithful baseline. These differences are intended, because they restore the original or are the remake's own choices. Every other difference is a bug.
+
+| Difference | Why |
+|---|---|
+| Screens that move on by themselves (§15.5), where the baseline waits for a key | Restores the original's pacing. The game state is unaffected. |
+| A separate strength summary screen before the revolution starts (§13.4) | Restores the original's two screens. The baseline shows one. |
+| Y in either case (§15.1) | Same as the baseline; an open decision. |
 
 ## 16. Message purposes
 
