@@ -1,0 +1,39 @@
+/* Shatterbelt: one canvas, as large as fits at 16:10, with touch buttons on phones and tablets. */
+:root { --bg: #04060d; --fg: #e9eef7; --dim: #7f8aa3; --line: #2a3550; --hot: #8fe9ff; color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); }
+body {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  min-height: 100dvh; overflow: hidden; font: 12px/1 ui-monospace, Menlo, Consolas, monospace;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+#stage { position: relative; width: min(100vw, calc((100dvh - 48px) * 1.6)); }
+canvas#game { display: block; width: 100%; aspect-ratio: 16 / 10; touch-action: none; cursor: default; }
+#touch { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; padding: 0 12px; position: absolute; left: 0; right: 0; bottom: 12px; pointer-events: none; }
+#touch[hidden] { display: none; }
+#touch .cluster { display: flex; gap: 10px; align-items: flex-end; pointer-events: auto; }
+#touch button {
+  min-width: 64px; min-height: 64px; padding: 0 12px; border-radius: 50%;
+  font: bold 13px ui-monospace, Menlo, Consolas, monospace; color: var(--fg);
+  background: rgba(20, 30, 50, 0.45); border: 2px solid rgba(143, 233, 255, 0.45);
+  touch-action: none; -webkit-tap-highlight-color: transparent;
+}
+#touch button.small { min-width: 52px; min-height: 52px; font-size: 11px; }
+#touch button.fire { min-width: 78px; min-height: 78px; border-color: rgba(255, 166, 61, 0.7); }
+#touch button.on { background: rgba(143, 233, 255, 0.35); }
+#bar { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
+#bar button, #bar a {
+  font: 12px/1 ui-monospace, Menlo, Consolas, monospace; color: var(--dim); background: none; text-decoration: none;
+  border: 1px solid var(--line); padding: 8px 12px; min-height: 32px; cursor: pointer; display: inline-flex; align-items: center;
+}
+#bar button:hover, #bar button:focus-visible, #bar a:hover, #bar a:focus-visible { color: var(--fg); border-color: var(--hot); }
+#bar button[hidden] { display: none; }
+/* Phones held upright: the field on top, the touch buttons underneath it. */
+@media (orientation: portrait) {
+  #stage { width: 100vw; }
+  #touch { position: static; padding: 16px 16px 0; }
+  #touch button { min-width: 72px; min-height: 72px; }
+  #touch button.fire { min-width: 88px; min-height: 88px; }
+}
+.noscript { font: 16px ui-monospace, Menlo, Consolas, monospace; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

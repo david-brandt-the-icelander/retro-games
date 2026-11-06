@@ -1,6 +1,13 @@
 # retro-games
 Recreations of retro-games that I have made with the help of AI
 
+## Games
+
+| Game | What | Play |
+|---|---|---|
+| [Samosa](games/dictator) | A remake of a 1983 ZX Spectrum strategy game, set in Nicaragua | [icelander.net/retro-games/samosa](https://icelander.net/retro-games/samosa/) |
+| [Shatterbelt](games/shatterbelt) | An original rock-breaking space shooter for 1 to 9 players on one screen, co-op or versus | [icelander.net/retro-games/shatterbelt](https://icelander.net/retro-games/shatterbelt/) |
+
 ## Agent skills
 
 `.claude/skills/` holds Claude Code skills for turning a faithful clone into a remake that is safe to publish. Each skill keeps the original's rules and mechanics and replaces anything copied as written:
