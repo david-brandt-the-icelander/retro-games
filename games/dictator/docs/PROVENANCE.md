@@ -62,4 +62,4 @@ Accepted leftovers: the factual credit line ("Inspired by *Dictator* (1983) by D
 - [x] **The newsflash money quirk:** switched off.
 - [x] **Case of the Y key:** both cases.
 - [x] **Permission:** not requested (owner decision); the remake relies on the clean-room work.
-- [x] **Public address:** `icelander.net/retro-games/samosa`.
+- [x] **Public address:** `icelander.net/games/retro/samosa` (first `/retro-games/samosa`, which now redirects).

@@ -1,4 +1,4 @@
-// The Samosa Worker at icelander.net/retro-games/samosa: static assets, plus the high-score
+// The Samosa Worker at icelander.net/games/retro/samosa: static assets, plus the high-score
 // API (worker/index.ts) backed by the D1 database samosa-scores (schema: worker/schema.sql).
 {
   "$schema": "node_modules/wrangler/config-schema.json",
@@ -6,8 +6,13 @@
   "compatibility_date": "2025-01-01",
   "workers_dev": false,
   "preview_urls": false,
-  "routes": [{ "pattern": "icelander.net/retro-games/samosa*", "zone_name": "icelander.net" }],
-  // The Worker serves the high-score API under /retro-games/samosa/api/; everything else is a static asset.
+  // Its own route is more specific than the recreations Worker's icelander.net/games/*, so it wins.
+  // The old address, /retro-games/samosa, is redirected here.
+  "routes": [
+    { "pattern": "icelander.net/games/retro/samosa*", "zone_name": "icelander.net" },
+    { "pattern": "icelander.net/retro-games/samosa*", "zone_name": "icelander.net" }
+  ],
+  // The Worker serves the high-score API under /games/retro/samosa/api/; everything else is a static asset.
   "main": "worker/index.ts",
   "assets": { "directory": "./dist", "binding": "ASSETS" },
   "d1_databases": [{ "binding": "DB", "database_name": "samosa-scores", "database_id": "fb0198cf-9442-4811-89ad-fa835df63c7d" }]

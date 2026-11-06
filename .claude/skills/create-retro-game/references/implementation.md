@@ -42,6 +42,6 @@ src/
 - `ui/paint.ts`: page, band, text, multi-part lines (e.g. one flashing word), word wrap, tiling, icons with overlap tracking, footer.
 
 ## Deploying
-- The template's `wrangler.jsonc` serves `dist/` as static assets. `BASE_PATH` in `build.mjs` nests the site, e.g. under `retro-games/<slug>/`, when it shares a domain.
+- The template's `wrangler.jsonc` serves `dist/` as static assets. `BASE_PATH` in `build.mjs` nests the site, e.g. under `games/retro/<slug>/`, when it shares a domain.
 - `public/_headers` sets a strict CSP. Everything the game needs is served from its own origin, with no CDNs.
 - Deploy only after the publish gate.

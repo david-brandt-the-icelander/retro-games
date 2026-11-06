@@ -2,7 +2,7 @@
 
 A clean-room remake of a 1983 ZX Spectrum strategy game. It plays exactly like the original but shares none of its protected expression: text, names, screen designs, art, tunes or code. It is also the first game made with the **`create-retro-game`** skill (to be added in `.claude/skills/`). Building it will shape the skill.
 
-Status: **M1–M8 done for the game** (M1 still waits for the owner's Access setup). **M9, skill v1, is done**. *Samosa* is published at `icelander.net/retro-games/samosa`. The owner chose its title, a Nicaragua/Honduras setting with real organisations and pun-named ruling families, and asked for it to be built and published.
+Status: **M1–M8 done for the game** (M1 still waits for the owner's Access setup). **M9, skill v1, is done**. *Samosa* is published at `icelander.net/games/retro/samosa`, listed on `icelander.net/games`. The owner chose its title, a Nicaragua/Honduras setting with real organisations and pun-named ruling families, and asked for it to be built and published.
 
 This repository is public, so this plan describes the original without quoting it. The original's names and wording appear only in the private faithful copy and its provenance notes.
 
@@ -11,7 +11,7 @@ This repository is public, so this plan describes the original without quoting i
 | # | Decision |
 |---|---|
 | 1 | The faithful recreation lives in the private repo `david-brandt-the-icelander/recreations`, under `zxspectrum/dictator`. |
-| 2 | It is served only to the owner, behind an OAuth login. It was first planned at `icelander.net/retro-games/dictator`; it now lives at `icelander.net/recreations/zxspectrum/dictator`, served by the `recreations` repository's shared Worker. |
+| 2 | It is served only to the owner, behind a sign-in (now an emailed link). It was first planned at `icelander.net/retro-games/dictator`; it now lives at `icelander.net/games/recreations/zxspectrum/dictator` (first `/recreations/zxspectrum/dictator`), served by the `recreations` repository's shared Worker. |
 | 3 | Its public copies are taken down, and the old repository's history is purged (see §2: to be re-confirmed). |
 | 4 | Its working branch moved straight into `recreations`. |
 | 5 | The skill is named `create-retro-game`; the remake lives in `games/dictator/` in this repository. |

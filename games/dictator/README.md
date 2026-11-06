@@ -4,7 +4,7 @@
 
 Inspired by *Dictator* (1983) by Don Priestley, published by DK'Tronics. Independent remake, not affiliated with or endorsed by the original rights holders.
 
-Play it at <https://icelander.net/retro-games/samosa/>.
+Play it at <https://icelander.net/games/retro/samosa/>. All the games are listed at <https://icelander.net/games/>.
 
 ## How to play
 
@@ -31,7 +31,7 @@ After a reign you may enter the public table with your email address. Only the p
 npm install
 npm test          # typecheck + rules, flow, input, RNG, pacing, layout, bot and display tests
 npm run sheet     # render every screen to docs/contact-sheet.png
-npm run build     # bundle into dist/retro-games/samosa/ (BASE_PATH="" builds at the root)
+npm run build     # bundle into dist/games/retro/samosa/ (BASE_PATH="" builds at the root)
 npm run dev       # rebuild on change
 ```
 
@@ -54,7 +54,7 @@ The engine never touches the DOM or timers. `playGame(io, newGame(seed), best)` 
 
 ## Deploy
 
-A Worker named `samosa` (`wrangler.jsonc`), routed at `icelander.net/retro-games/samosa*`. It serves the static game, and `worker/index.ts` answers the high-score API under `/retro-games/samosa/api/`, backed by the D1 database `samosa-scores`.
+A Worker named `samosa` (`wrangler.jsonc`), routed at `icelander.net/games/retro/samosa*` (the old `icelander.net/retro-games/samosa*` redirects there). It serves the static game, and `worker/index.ts` answers the high-score API under `/retro-games/samosa/api/`, backed by the D1 database `samosa-scores`.
 
 - First time only: `npx wrangler d1 execute samosa-scores --remote --file worker/schema.sql`.
 - Deploy: `npm run deploy` (needs `CLOUDFLARE_API_TOKEN`).
