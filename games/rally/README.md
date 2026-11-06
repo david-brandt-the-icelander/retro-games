@@ -59,7 +59,7 @@ A Worker named `rally` (`wrangler.jsonc`), routed at `icelander.net/games/retro/
 npm run deploy    # test, build, wrangler deploy (needs CLOUDFLARE_API_TOKEN or `wrangler login`)
 ```
 
-- First deploy only: `wrangler deploy` creates the `rally-scores` database itself (the config names it but has no `database_id` yet; commit the id wrangler writes back, if it does). Then create the tables once: `npx wrangler d1 execute rally-scores --remote --file worker/schema.sql`.
+- The database `rally-scores` and its tables exist (created 2026-11-06 with `wrangler d1 create` and `npx wrangler d1 execute rally-scores --remote --file worker/schema.sql`); a later schema change goes in `worker/migrations/`.
 - Local: `npx wrangler d1 execute rally-scores --local --file worker/schema.sql`, then `npm run build && npx wrangler dev`, and open `http://localhost:8787/games/retro/rally/`.
 
 ## Licence

@@ -11,7 +11,5 @@
   // The Worker answers the API and the scores page under /games/retro/rally/; everything else is a static asset.
   "main": "worker/index.ts",
   "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "none" },
-  // No database_id yet: the first `wrangler deploy` creates rally-scores and fills it in. Then apply
-  // the schema once: npx wrangler d1 execute rally-scores --remote --file worker/schema.sql
-  "d1_databases": [{ "binding": "DB", "database_name": "rally-scores" }]
+  "d1_databases": [{ "binding": "DB", "database_name": "rally-scores", "database_id": "cfa22c0a-477c-4d43-9f93-a88614800caf" }]
 }
