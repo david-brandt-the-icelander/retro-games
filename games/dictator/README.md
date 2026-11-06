@@ -4,7 +4,7 @@
 
 Inspired by *Dictator* (1983) by Don Priestley, published by DK'Tronics. Independent remake, not affiliated with or endorsed by the original rights holders.
 
-Play it at `icelander.net/retro-games/samosa` (once published).
+Play it at <https://icelander.net/retro-games/samosa/>.
 
 ## How to play
 
@@ -48,7 +48,7 @@ The engine never touches the DOM or timers. `playGame(io, newGame(seed), best)` 
 
 ## Deploy
 
-A static-assets Worker named `samosa` (`wrangler.jsonc`), routed at `icelander.net/retro-games/samosa*`. Deploy only after the owner's publish gate: `npm run deploy`.
+A static-assets Worker named `samosa` (`wrangler.jsonc`), routed at `icelander.net/retro-games/samosa*`. `npm run deploy` (needs `CLOUDFLARE_API_TOKEN`).
 
 ## Licence
 
