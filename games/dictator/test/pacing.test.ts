@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Screen } from "../src/engine";
-import { drawScreen } from "../src/ui/screens";
+import { AUTO_ADVANCE_MS, drawScreen } from "../src/ui/screens";
 import * as T from "../src/ui/text";
 import { duration, MOTIF_SPECS, MOTIFS, parseRecipe, tally } from "../src/ui/sounds";
 import { TICK } from "../src/zx/sound";
@@ -104,6 +104,22 @@ test("every screen waits for a key with a keypad offer; the others read keys at 
     assert.equal(pr.ms, 0, s.kind);
     assert.ok(z.hasFooter, s.kind);
   }
+});
+
+test("the screens the original timed move on by themselves 7 s after they appear; every other screen waits", () => {
+  let held = 0;
+  for (const s of SCREENS) {
+    const pr = present(s);
+    if (isHeld(s)) {
+      held++;
+      assert.equal(pr.autoMs, Math.max(AUTO_ADVANCE_MS, pr.ms), s.kind);
+      assert.ok(pr.autoMs! >= pr.ms, `${s.kind}: never before its hold ends`);
+    } else {
+      assert.equal(pr.autoMs, undefined, `${s.kind} waits for its key`);
+    }
+  }
+  assert.ok(held > 15);
+  assert.equal(AUTO_ADVANCE_MS, 7000);
 });
 
 test("the help list reads only digits, and a tap there counts for nothing", () => {

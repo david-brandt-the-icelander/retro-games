@@ -31,6 +31,11 @@ export interface Presentation {
   mode: "key" | "digits";
   /** How long the screen holds, ignoring keys, before it reads one (its last step draws the footer). */
   ms: number;
+  /**
+   * For a screen the original moved on by itself: it also moves on by itself this many ms after
+   * it appeared, if no key comes first (owner decision; RULES §15.5).
+   */
+  autoMs?: number;
   /** Motifs played one after another when the screen has been drawn. */
   motifs: MotifId[];
   steps: Step[];
@@ -50,8 +55,11 @@ const keyScreen = (speech: string, offer: Offer = NEXT, motifs: MotifId[] = []):
  * A screen the original moved on by itself (RULES §15.5): it draws in full and plays its sound,
  * holds for at least its old time reading no key, then shows the any-key footer and waits.
  */
+/** Screens the original moved on by itself move on after this long, unless a key comes first. */
+export const AUTO_ADVANCE_MS = 7000;
+
 const held = (p: Painter, ms: number, speech: string, motifs: MotifId[] = [], assertive = false, steps: Step[] = []): Presentation => ({
-  offer: NEXT, mode: "key", ms, motifs, speech: `${speech} ${T.PRESS_ANY}`, assertive,
+  offer: NEXT, mode: "key", ms, autoMs: Math.max(AUTO_ADVANCE_MS, ms), motifs, speech: `${speech} ${T.PRESS_ANY}`, assertive,
   steps: [...steps, { at: ms, run: () => { p.footer(T.PROMPT.any); } }],
 });
 
