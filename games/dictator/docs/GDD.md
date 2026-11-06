@@ -117,11 +117,13 @@ Every screen the player can see. The wireframes phase must draw exactly this lis
 | 2 | `howto` | How to play, in several pages, written from RULES | `title` (H) | extra | key per page; returns to `title` |
 | 3 | `about` | The credit line, the remake's own credits, licence and source link | `title` (A) | extra | key; returns to `title` |
 | 4 | `sound` | A small on-screen indicator that sound is on or off; not a full screen | M on any screen; the touch sound button | extra (overlay) | none (fades after about 1.5 s; the game screen underneath is unchanged) |
+| 4a | `scores` | The public high-score table: the ten best reigns (name, score, months, fled or died), this reign highlighted | `title` (S); after an entry | extra (owner decision 2026-11-06) | key; returns to `title` |
+| 4b | `entry` | After a reign: the score, and an HTML form below the screen for the player's email | After the final report, when the server issued the reign's seed | extra (owner decision 2026-11-06) | the form: Enter submits, Escape or SKIP skips |
 | 5 | `welcome` | Best rating so far and an encouragement; the first reports are free | `title` | `welcome` | key |
 | 6 | `month` | The month number | Start of each month (§4 step 2) | `month` | 1 s |
 | 7 | `treasury` | Balance (credit or debt), monthly costs, Swiss balance once above 0 | After `welcome`; after the audience; after a decision, the Swiss transfer or a loan result | `treasury` | key |
 | 8 | `report` | The intelligence report: month, every group's popularity and strength, plots, the President's strength, the revolution strength | A *yes* at an available `report-offer`; free after the first `treasury`; free as the *final* report after `rating` | `report` (flag: first / bought / final) | key |
-| 9 | `report-offer` | Ask whether to buy a report for 1 (a thousand); or say none is available, with every failing reason | §4 steps 4, 10, 12, 13; after a crushed revolt | `reportOffer` (variants: available / unavailable) | available: key · unavailable: its sound |
+| 9 | `report-offer` | Ask whether to buy a report for 1 (a thousand); or say none is available, with every failing reason | §4 step 15: once a month, at its end | `reportOffer` (variants: available / unavailable) | available: key · unavailable: its sound |
 | 10 | `bankrupt` | The treasury is empty; who loses what | §5, when the treasury is negative | `bankrupt` | 5 s |
 | 11 | `audience` | Which faction has come, and what it asks for | §4 step 5 | `audience` | key |
 | 12 | `advice-offer` | Ask whether to see advice | After `audience`; after choosing a normal decision option | `adviceOffer` | key |
@@ -159,6 +161,8 @@ Every screen the player can see. The wireframes phase must draw exactly this lis
 | 44 | `escaped` | The guerrillas missed; the President is over the border | After `mountains`, not caught | `escaped` | its sound |
 | 45 | `funeral` | Mourning, and how long the rule lasted | After any death screen (`assassin-result` killed, `execution`, `overthrown`, `caught`) | `funeral` | key (a remake addition, RULES §15.5) |
 | 46 | `rating` | The score, line by line; the best so far | After `funeral`, `heli-escape` or `escaped` | `rating` | key |
+
+**Pacing update (owner, 2026-11-06):** a time in the Pacing column is now the *minimum* time a screen stays up while it draws and plays its sound; after that, every screen waits for a key.
 
 **46 screens**: 42 engine screens and 4 extras. The final intelligence report is the `report` screen with its *final* flag, not a separate screen. There is no intro or publisher-credit screen.
 
@@ -361,7 +365,7 @@ All melodies are new and written for this game; effects are generic beeper sound
 - **Phone portrait:** the screen fits the width; the keypad sits below it.
 - **Phone landscape:** the screen fits the height; the keypad sits to one side.
 
-**Other:** a static page with no server calls, so it keeps working offline once loaded; current versions of Chrome, Firefox, Safari and Edge, desktop and mobile; no account, no cookies, no tracking.
+**Other:** a static page that keeps working offline once loaded. Its only server calls are for the high-score table (owner decision 2026-11-06): a seed at the start of each reign, the reign's keys if the player enters the table, and the table itself. Offline, a reign plays with a local seed and can't be entered. Current versions of Chrome, Firefox, Safari and Edge, desktop and mobile; no account, no cookies, no tracking.
 
 ## 11. Accessibility
 
@@ -385,7 +389,7 @@ All melodies are new and written for this game; effects are generic beeper sound
 - **No rule changes.** Not to the balance, the draws, the quirks or the input. Ideas for "improvements" go to the owner as open decisions, never into the game.
 - **No saved games** or resume. A reign is short; closing the page ends it.
 - **No difficulty modes**, no tutorials that change play, no hints beyond the in-game advice.
-- No online leaderboard, accounts, analytics or cookies.
+- No accounts, analytics or cookies. (An online high-score table was added later by owner decision; see the decision log.)
 - No intro screen imitating a publisher credit, and no imitation of the original's screens.
 - No translations in the first release (English only); the text budget leaves room to add them later.
 - No new content: no extra requests, decisions or headlines.
@@ -424,6 +428,10 @@ All melodies are new and written for this game; effects are generic beeper sound
 | 2026-11-06 | Real parties and organisations are named; real people are not. Events are built on Nicaraguan history, caricatured. The ruling families are the puns Ortiga and Samosa; the player is President Ortiga; the Landowners faction becomes the Samosa family (rules unchanged). | Owner |
 | 2026-11-06 | No "wait for a key on timed screens" setting. | Owner |
 | 2026-11-06 | Credits name the remake's author as David Brandt. Headlines run under the real masthead *La Prensa*. | Owner |
+| 2026-11-06 | State Security's screens (report, report offer) are dark: white type on black paper. | Owner |
+| 2026-11-06 | After playtesting: every screen waits for a key (a newsflash went by too fast to read). Timed screens draw in full and play their sound, then show the any-key footer. | Owner |
+| 2026-11-06 | After playtesting: one report offer a month, at the end of the turn (RULES §4 step 15). | Owner |
+| 2026-11-06 | A public high-score table, keyed by the player's email: the table shows only the part before the @ (the full address is stored privately and never shown or shared); there is no email check; the server issues each reign's seed and replays the reign from its keys to compute the score, so scores can't be faked. | Owner |
 
 ## 15. Decisions (all closed)
 
@@ -435,4 +443,4 @@ All melodies are new and written for this game; effects are generic beeper sound
 | 4 | The case of the Y key (RULES §15.1) | Both cases, or lower case only | **Both cases** |
 | 5 | Ask the original author's estate for permission | Ask, or rely on the clean-room work | **Don't ask** |
 | 6 | The public address | `/retro-games/<title-slug>`, `/retro-games/dictator`, a subdomain | **`icelander.net/retro-games/samosa`** |
-| 7 | A "wait for a key on timed screens" setting | Offer it, or not | **Not offered** |
+| 7 | A "wait for a key on timed screens" setting | Offer it, or not | First **not offered**; then, after playtesting, **every screen waits for a key**, for everyone (no setting) |

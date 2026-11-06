@@ -84,7 +84,8 @@ export const SCREEN_KINDS: readonly ScreenKind[] = [
 export interface IO {
   /**
    * Show a screen and resolve with the raw key pressed ("y", "Y", "1", "Enter", " " …).
-   * Timed screens resolve when their time is up; the engine ignores what they return.
+   * Screens the original moved on by itself (RULES §15.5) also wait for a key now; the engine
+   * ignores what they return.
    */
   show(screen: Screen): Promise<string>;
 }

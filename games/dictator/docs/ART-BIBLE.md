@@ -8,7 +8,7 @@ Written by the designer from `RULES.md`, `GDD.md` and the owner's research brief
 
 **The palace runs on paper.** President Ortiga has inherited the palace the Samosa family fled by air, and every ordinary screen of *Samosa* is a document from one of its offices. Each comes with a letterhead and a small seal, and ends in a perforated counterfoil at the foot of the page. The offices' documents:
 - a blue-inked ledger with a red margin (the State Treasury)
-- a manila State Security file
+- a dark State Security file under a manila tab
 - a white petition card on a velvet-black wall (the audience hall)
 - a cyan agenda (the Directorate)
 - a teleprinter tape and a *La Prensa* front page
@@ -63,7 +63,7 @@ Each screen group has one page scheme, one accent and one border. Text pairs are
 | **Palace** | howto, about, welcome, rating | blue | white | letterhead band BRIGHT yellow paper / BRIGHT blue ink; yellow for headings and key numbers; cyan for page numbers | blue |
 | **Calendar** | month | blue (the wall) | yellow | a white calendar page with a BRIGHT red strip, black ink | blue |
 | **Ledger** | treasury, bankrupt, cash-short, swiss, loan-wait, loan-result | white | blue (ink pen) | letterhead band green paper / black ink; a red margin line; red bars and stamp boxes (black on BRIGHT red), green box for good news (black on BRIGHT green) | green (bankrupt: red) |
-| **Dossier** | report, report-offer | yellow (manila) | black | letterhead band black paper / yellow ink; red bars for the classified line and the plots | black |
+| **Dossier** | report, report-offer | black (the dark file; owner decision 2026-11-06) | white; the table heading BRIGHT yellow | letterhead band yellow paper / black ink (a manila tab); red bars for the classified line and the plots | black |
 | **Audience** | audience, advice-offer, advice, dialog, must-refuse | black (velvet); dialog is a white sheet with blue ink | white | letterhead band magenta paper / black ink; the petition card white paper / blue ink; the brass door in yellow | magenta |
 | **Cabinet** | menu, section, section-used | cyan | black | letterhead band blue paper / white ink; number boxes white on black | blue |
 | **Press** | news-alert, news-headline | alert black, headline white | headline black, alert white | the white teleprinter tape; the masthead white on black; the BRIGHT red alarm lamp | white |
@@ -1266,7 +1266,7 @@ The left column describes, in words only, the recognisable elements of the origi
 | Original element (described, not reproduced) | How ours differs |
 |---|---|
 | The audience screen showed a **row of large faction emblems** across the screen, with the requesting faction picked out | **No emblems at all**, for any faction, anywhere. The audience is a single **palace door** centred on a black wall, with a magenta letterhead. The usher's one-line announcement names the faction, and the request sits on a white **petition card**. Factions are only ever named in words. |
-| The intelligence report was **columns of faction names with horizontal bar charts** (one colour for popularity, another for strength). Plotters' names flashed, and a flashing letter marked assassins. | A **manila dossier**: yellow paper and black type, with a letterhead and a red classified bar. A plain typed table gives each group's number, name and **two digits** (no bars, no meters, no colour coding). Plots are listed **below** the table as sentences on red bars (`RISE`, `HIRE AN ASSASSIN`). **Nothing on the report flashes**, and no letter marks anything. |
+| The intelligence report was **columns of faction names with horizontal bar charts** (one colour for popularity, another for strength). Plotters' names flashed, and a flashing letter marked assassins. | A **dark State Security file**: white type on black paper under a manila letterhead tab and a red classified bar. A plain typed table gives each group's number, name and **two digits** (no bars, no meters, no colour coding). Plots are listed **below** the table as sentences on red bars (`RISE`, `HIRE AN ASSASSIN`). **Nothing on the report flashes**, and no letter marks anything. |
 | Many screens had **tiled, repeating-pattern backgrounds** filling the paper | **Every screen has plain, solid paper.** Decoration is a few single lines (rules, a perforation, a margin), outlines and one silhouette. No pattern fills any screen. |
 | The title was **the title word repeated as wallpaper, flashing**, with a **national flag** | The name appears **once**, still, in brass block letters over an empty balcony at night. **No flag** of any kind appears in the game. |
 | Prompts sat in a **column down one side** | Every prompt sits in **one place**, the white counterfoil across the **bottom** of the page. Choices (menu, section, help list) are numbered lists in the middle of the page. |

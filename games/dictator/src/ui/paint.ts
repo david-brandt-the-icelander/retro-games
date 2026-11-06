@@ -170,9 +170,14 @@ export class Painter {
     return attr;
   }
 
-  /** The footer counterfoil (rows 21–23): perforation, centred prompt and a flashing cursor. */
+  /**
+   * The footer counterfoil (rows 21–23): perforation, centred prompt and a flashing cursor. The
+   * cursor is the only flash on a screen with a footer, so an alarm lamp or a rifle sight that
+   * flashed while the screen held stops flashing when the footer appears.
+   */
   footer(prompt: string, second?: string): this {
     for (let i = FOOTER_ROW * COLS; i < ROWS * COLS; i++) if (this.words.has(i) || this.art.has(i)) this.z.clipped++;
+    for (let i = 0; i < this.z.attrs.length; i++) this.z.attrs[i] &= 127;
     this.z.hasFooter = true;
     this.inFooter = true;
     this.clear(0, FOOTER_ROW, COLS - 1, ROWS - 1, at(BLACK, WHITE));

@@ -3,9 +3,10 @@
 import { isYes, newGame, playGame } from "./engine";
 import type { IO, Screen } from "./engine";
 import { SoundOverlay } from "./ui/overlay";
-import { drawAbout, drawHowto, drawScreen, drawTitle, Presentation } from "./ui/screens";
+import { drawAbout, drawEntry, drawHowto, drawScores, drawScreen, drawTitle, Presentation } from "./ui/screens";
+import { loadTable, looksLikeEmail, Reign, startReign, submitReign } from "./scores";
 import { MotifId, MOTIFS } from "./ui/sounds";
-import { HOWTO_PAGES, SOUND_SPOKEN } from "./ui/text";
+import { HOWTO_PAGES, SCORES, SOUND_SPOKEN } from "./ui/text";
 import { Display } from "./zx/display";
 import { Input } from "./zx/input";
 import { ZXScreen } from "./zx/screen";
@@ -108,14 +109,88 @@ async function present(pr: Presentation, motifs: readonly MotifId[] = pr.motifs)
     }, step.at);
   }
   input.idle();
-  if (pr.ms > 0) await sleep(pr.ms); // timed screens, and the first part of swiss and rating, read no key
-  if (pr.mode === "timed") return "";
+  // A screen holds for pr.ms reading no key (keys pressed meanwhile are dropped); its last step,
+  // due at the same moment and scheduled first, draws the footer. Then every screen waits for a key.
+  if (pr.ms > 0) await sleep(pr.ms);
   const key = await input.waitKey({ offer: pr.offer, tapCounts: pr.mode !== "digits" });
   display.fit(); // the keypad may have wrapped onto another row
   return key;
 }
 
-const io: IO = { show: (s: Screen) => present(drawScreen(screen, s)) };
+/** Every key the engine receives, in order: the server replays a reign from its seed and these. */
+let keyLog: string[] = [];
+const io: IO = {
+  show: async (s: Screen) => {
+    const key = await present(drawScreen(screen, s));
+    keyLog.push(key);
+    return key;
+  },
+};
+
+// ── The high-score table ─────────────────────────────────────────────────
+
+/** An HTML form below the screen for the player's email. Resolves with the address, or null to skip. */
+function askEmail(error = ""): Promise<string | null> {
+  return new Promise((resolve) => {
+    const form = document.createElement("form");
+    form.className = "entry";
+    form.noValidate = true;
+    const label = document.createElement("label");
+    label.htmlFor = "entry-email";
+    label.textContent = SCORES.formLabel;
+    const field = document.createElement("input");
+    Object.assign(field, { id: "entry-email", type: "email", autocomplete: "email", required: true, maxLength: 254, spellcheck: false });
+    const note = document.createElement("p");
+    note.className = "entry-note";
+    note.textContent = SCORES.formNote;
+    const message = document.createElement("p");
+    message.className = "entry-error";
+    message.setAttribute("role", "alert");
+    message.textContent = error;
+    const submit = document.createElement("button");
+    submit.type = "submit";
+    submit.textContent = SCORES.formSubmit;
+    const skip = document.createElement("button");
+    skip.type = "button";
+    skip.textContent = SCORES.formSkip;
+    const buttons = document.createElement("div");
+    buttons.className = "entry-buttons";
+    buttons.append(submit, skip);
+    form.append(label, field, message, buttons, note);
+    const done = (value: string | null) => { form.remove(); keypad.hidden = false; display.fit(); resolve(value); };
+    // Typing in the form must never reach the game's keys (M would toggle the sound).
+    form.addEventListener("keydown", (e) => { e.stopPropagation(); if (e.key === "Escape") done(null); });
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = field.value.trim();
+      if (!looksLikeEmail(email)) { message.textContent = SCORES.formInvalid; field.focus(); return; }
+      done(email);
+    });
+    skip.addEventListener("click", () => done(null));
+    keypad.hidden = true;
+    controls.prepend(form);
+    display.fit();
+    field.focus();
+  });
+}
+
+/** After a reign: offer the table, send the reign to be replayed, then show the table. */
+async function offerTable(reign: Reign, score: number, keys: string[]): Promise<void> {
+  const pr = drawEntry(screen, score);
+  overlay.restore();
+  announce(pr.speech, pr.assertive);
+  let error = "";
+  for (;;) {
+    const email = await askEmail(error);
+    if (email === null) return;
+    const entry = await submitReign(reign, keys, email);
+    if (entry) {
+      await present(drawScores(screen, await loadTable(), { rank: entry.rank, score: entry.score }));
+      return;
+    }
+    error = SCORES.formFailed;
+  }
+}
 
 // ── The extras and the game loop ─────────────────────────────────────────
 
@@ -130,6 +205,8 @@ async function title(fresh: boolean): Promise<void> {
       for (let page = 1; page <= HOWTO_PAGES.length; page++) await present(drawHowto(screen, page));
     } else if (key === "a") {
       await present(drawAbout(screen));
+    } else if (key === "s") {
+      await present(drawScores(screen, await loadTable()));
     } else return;
   }
 }
@@ -137,7 +214,10 @@ async function title(fresh: boolean): Promise<void> {
 (async () => {
   for (;;) {
     await title(true);
-    const outcome = await playGame(io, newGame(), loadBest());
+    const reign = await startReign(); // null when offline: the reign plays, but can't be entered
+    keyLog = [];
+    const outcome = await playGame(io, newGame(reign?.seed), loadBest());
     store(BEST_KEY, String(outcome.best));
+    if (reign) await offerTable(reign, outcome.score, keyLog);
   }
 })();

@@ -1,5 +1,6 @@
 // Input quirks (RULES §15.1): one raw key per prompt; only Y or y is yes; any other key is no or
-// next; 1-5 at the menu; a section's numbers; 1-6 at the help list; timed screens ignore keys.
+// next; 1-5 at the menu; a section's numbers; 1-6 at the help list; the screens the original
+// timed ignore keys.
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { digit, isYes, newGame, playGame } from "../src/engine";
@@ -28,12 +29,17 @@ function calm(seed: number): GameState {
   return s;
 }
 
+/** The opening and month 1, up to and including the month 2 screen. */
 async function firstMonth(answer: (sc: Screen) => string, s = calm(3)) {
   const { io, log } = recorder(s, patient(answer));
   await playGame(io, s, null);
   const end = log.findIndex((x, i) => i > 3 && x.screen.kind === "month");
-  return log.slice(0, end);
+  return log.slice(0, end + 1);
 }
+
+/** The kinds from log[i] on, leaving out any news (which may or may not come). */
+const noNews = (log: Awaited<ReturnType<typeof firstMonth>>, i: number) =>
+  kinds(log).slice(i).filter((k) => k !== "newsAlert" && k !== "newsHeadline");
 
 test("Y in either case buys a report; any other key skips it", async () => {
   for (const [key, buys] of [["y", true], ["Y", true], ["n", false], ["Enter", false], [" ", false], ["x", false]] as const) {
@@ -60,8 +66,7 @@ test("at the menu, any key but 1-5 means no decision this month", async () => {
   for (const key of ["0", "6", "9", "a", "Enter", " ", "y"]) {
     const log = await firstMonth((sc) => (sc.kind === "menu" ? key : "n"));
     const i = log.findIndex((x) => x.screen.kind === "menu");
-    assert.equal(log[i + 1].screen.kind, "reportOffer", key);
-    assert.equal(log.filter((x) => x.screen.kind === "menu").length, 1);
+    assert.deepEqual(noNews(log, i), ["menu", "reportOffer", "month"], key);
   }
 });
 
@@ -69,7 +74,7 @@ test("in a section, an unlisted or used number goes back to the menu without an 
   for (const key of ["4", "0", "Enter", "x"]) {
     let menus = 0;
     const log = await firstMonth((sc) => (sc.kind === "menu" ? (++menus === 1 ? "2" : "n") : sc.kind === "section" ? key : "n"));
-    assert.deepEqual(kinds(log).slice(log.findIndex((x) => x.screen.kind === "menu")).slice(0, 4), ["menu", "section", "menu", "reportOffer"], key);
+    assert.deepEqual(noNews(log, log.findIndex((x) => x.screen.kind === "menu")), ["menu", "section", "menu", "reportOffer", "month"], key);
   }
   const used = calm(3);
   used.decisionUsed[0] = true;
@@ -81,8 +86,8 @@ test("in a section, an unlisted or used number goes back to the menu without an 
   assert.equal(log[i + 1].screen.kind, "menu");
 });
 
-test("timed screens ignore the key they return", async () => {
-  // An unaffordable request answered "y" everywhere is still refused (the dialog is timed).
+test("the screens the original timed ignore the key they return", async () => {
+  // An unaffordable request answered "y" everywhere is still refused (the dialog only waits for any key).
   for (let seed = 1; seed < 400; seed++) {
     const s = calm(seed);
     s.treasury = -500;
@@ -98,7 +103,7 @@ test("timed screens ignore the key they return", async () => {
   assert.fail("no unaffordable request found");
 });
 
-test("an unavailable report offer is timed: Y does not buy", async () => {
+test("an unavailable report offer only waits for any key: Y does not buy", async () => {
   const s = calm(3);
   s.popularity[5] = 0;
   const log = await firstMonth(() => "Y", s);
