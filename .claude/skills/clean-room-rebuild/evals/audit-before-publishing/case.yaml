@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: audit-before-publishing
+expected_outcome: |
+  No file in harbour-remake/ is changed. The answer lists the risky items
+  (verbatim messages, the copied credit/title screen, the copied map, the
+  line-by-line port, tests quoting original text, invented names, the
+  public-domain licence claim over copied material) and says the rules and
+  numbers are fine to keep, with a note that it is not legal advice.
+context:
+  scaffold_script: place-files.sh
