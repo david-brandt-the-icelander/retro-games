@@ -61,7 +61,7 @@ If an existing spec quotes the original, rewrite those passages as descriptions.
 
 Rewrite every player-facing string from scratch so it does the same job: same meaning, same constraints (e.g. 32 columns, same number of lines, same placeholder values), new wording. Don't paraphrase sentence by sentence — decide what the message must tell the player, then write it as you would have. Keep the tone (satirical, terse, pompous…) if it suits the game; tone is not protected, specific wording is.
 
-Rename distinctive invented proper nouns (e.g. an invented country or faction name). Keep generic words. Propose the renames to the user in the open-decisions list rather than deciding alone when the name is central to the game's identity.
+Rename distinctive invented proper nouns: places, factions, characters, items. Keep generic words. List **every** rename in the open-decisions list as "old → new", with alternatives when the name is central to the game. The user should never find a renamed place they weren't told about.
 
 ### 5. Graphics, fonts and audio
 
