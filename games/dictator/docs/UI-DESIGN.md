@@ -94,7 +94,7 @@ The keypad shows exactly the buttons listed under each screen's *Keypad offers*.
 | Section | one button per listed option, labelled with its number → the digit; `BACK` → Enter |
 | Help list | `1` … `6` → the digit (all six) |
 | Title | `PLAY` → Enter, `HOW TO` → `h`, `ABOUT` → `a` |
-| Timed screens | no buttons |
+| Screens while they hold | no buttons; then [NEXT] |
 
 - Tapping the screen counts as any key, as in the template, everywhere except the help list. There a tap is ignored, so a stray tap can't choose a helper.
 - The sound button (`SOUND: ON (M)` / `SOUND: OFF (M)`, the template's) is always shown under the keypad.
