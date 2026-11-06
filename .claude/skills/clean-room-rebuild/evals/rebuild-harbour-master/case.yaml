@@ -1,0 +1,13 @@
+schema_version: "1.1"
+name: rebuild-harbour-master
+expected_outcome: |
+  The remake in harbour-remake/ keeps every rule and number of the original
+  (starting gold 100, reputation 5, the four events' gold and reputation
+  effects, the end conditions and the 30-day limit) but no longer contains the
+  original's messages, credit/title screen, map or line-by-line ported code.
+  Tests are updated and pass. A provenance inventory records what was kept and
+  replaced, the README carries a factual "inspired by / not affiliated" credit,
+  and the final report lists open decisions such as the title and the invented
+  place names.
+context:
+  scaffold_script: place-files.sh
