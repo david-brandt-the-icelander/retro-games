@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: design-invented-game
+expected_outcome: |
+  The design phases of the remake are written in games/canal-lock/docs/ from
+  the approved RULES.md: a GDD with the template's sections and three title
+  proposals; WIREFRAMES.md, which passes wireframe_check.py and has a wireframe
+  for every screen in the GDD's screen list; and an art bible with a
+  distinctiveness table. None of the three documents contains a line of the
+  original's text (listing or manual) or its invented names (Marrowdeep,
+  Pellandine, Ezra), apart from the factual credit line. The run stops at the
+  gate: no UI design or code is started, and the report asks the owner to
+  choose the title, setting and names and to approve the documents.
+context:
+  scaffold_script: place-files.sh

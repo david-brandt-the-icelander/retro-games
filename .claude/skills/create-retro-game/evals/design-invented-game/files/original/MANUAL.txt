@@ -1,0 +1,33 @@
+LOCK KEEPER
+Sinclair ZX Spectrum 48K
+
+(C) 1984 Inventasoft Limited. Written by R. T. Placeholder.
+
+LOADING
+Type LOAD "" and press ENTER, then start the tape. The game loads in about
+three minutes.
+
+THE STORY
+For forty years old Ezra Thimble kept Lock Seven on the Marrowdeep Cut. Now
+Ezra has gone to live with his sister in the hills, and the Pellandine
+Navigation Company has handed you his windlass, his keys and his kettle.
+
+Every morning a boat noses up to your gates. Let it through and the boatmen
+pay their toll, but each lockful of water you let down drains the pound above
+you. Turn a boat away and you keep your water, but word travels fast along the
+towpath and your good name suffers. Only the rain can fill the pound again.
+
+PLAYING THE GAME
+Press O to open the gates or K to keep them shut. The Company inspector pays
+nothing: he charges you a fee to look at your lock, though the boatmen think
+better of you for letting him through.
+
+You lose your post if the pound runs dry, if your purse is emptied, or if the
+boatmen lose all patience with you. Keep the lock for twenty days and the
+Company will pension you off to a cottage by the water.
+
+HINTS
+A wise keeper watches the sky. Coal pays best but drinks the most water.
+
+Lock Keeper is a trademark of Inventasoft Limited. Unauthorised copying,
+hiring or lending of this program is prohibited.
