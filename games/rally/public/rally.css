@@ -1,0 +1,197 @@
+:root {
+  color-scheme: dark;
+  --night: #071226;
+  --table: #0d2a55;
+  --line: #e8f0ff;
+  --left: #ff7a5c;
+  --right: #4fd8ff;
+  --ball: #fff3c4;
+  --dim: #8ea3c7;
+  --font: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: radial-gradient(ellipse at 50% 30%, #11295a 0%, var(--night) 70%);
+  color: var(--line);
+  font: 16px/1.45 var(--font);
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: max(10px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+/* The scoreboard and the stage share a width, set from the script to fit the table on screen. */
+#board, #stage { width: var(--w, min(800px, calc(100vw - 32px))); }
+
+#board {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+.side { display: flex; align-items: center; gap: .6em; }
+.side.right { justify-content: flex-end; }
+.name { font-size: clamp(.8rem, 2.4vw, 1.05rem); color: var(--dim); }
+.left .name { color: var(--left); }
+.right .name { color: var(--right); }
+.score { font: 800 clamp(1.6rem, 6vw, 2.6rem)/1 var(--mono); min-width: 2ch; text-align: center; font-variant-numeric: tabular-nums; }
+.serve { width: .55em; height: .55em; border-radius: 50%; background: var(--ball); box-shadow: 0 0 8px var(--ball); visibility: hidden; }
+.serve.on { visibility: visible; }
+.tools { display: flex; gap: 8px; }
+.tools button {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid #ffffff30; background: #ffffff10; color: var(--line);
+  font: 700 15px var(--font); cursor: pointer;
+}
+.tools button[aria-pressed="false"] { opacity: .45; text-decoration: line-through; }
+.tools button:hover { background: #ffffff22; }
+
+#stage { position: relative; aspect-ratio: 800 / 480; }
+#table {
+  display: block; width: 100%; height: 100%;
+  border-radius: 14px;
+  box-shadow: 0 18px 50px #00000080, 0 0 0 1px #ffffff18;
+  touch-action: none;
+  cursor: none;
+}
+body.menu #table { cursor: default; }
+
+.panel {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: safe center;
+  gap: clamp(8px, 2.2vw, 18px);
+  padding: 16px;
+  text-align: center;
+  background: #071226d0;
+  border-radius: 14px;
+  overflow: auto;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+.panel[hidden] { display: none; }
+.panel h1, .panel h2 { margin: 0; font-weight: 900; letter-spacing: .25em; }
+.panel h1 {
+  font-size: clamp(2.4rem, 11vw, 5rem);
+  background: linear-gradient(90deg, var(--left), var(--ball) 50%, var(--right));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  padding-left: .25em;
+}
+.panel h2 { font-size: clamp(1.4rem, 5vw, 2.2rem); }
+.panel p { margin: 0; max-width: 34em; }
+.tag { color: var(--dim); }
+.final { font: 800 clamp(1.4rem, 5vw, 2rem) var(--mono); }
+
+.choices { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+button { font-family: inherit; }
+button.big {
+  min-width: 11em; padding: .8em 1.4em;
+  border-radius: 999px; border: 2px solid var(--line); background: transparent; color: var(--line);
+  font-weight: 800; letter-spacing: .12em; cursor: pointer;
+}
+button.big:hover, button.big:focus-visible { background: var(--line); color: var(--night); outline: none; }
+button.big:focus-visible { box-shadow: 0 0 0 3px var(--right); }
+button.link { background: none; border: 0; color: var(--dim); cursor: pointer; font-size: .95rem; padding: .4em; }
+button.link:hover, button.link:focus-visible { color: var(--line); }
+
+.level { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.level .label { color: var(--dim); font-size: .8rem; letter-spacing: .15em; margin-right: 4px; }
+.level button {
+  padding: .35em .9em; border-radius: 999px; border: 1px solid #ffffff40; background: transparent; color: var(--dim);
+  font-weight: 700; letter-spacing: .1em; font-size: .8rem; cursor: pointer;
+}
+.level button[aria-checked="true"] { background: var(--right); border-color: var(--right); color: var(--night); }
+
+kbd {
+  display: inline-block; min-width: 1.6em; padding: 0 .35em; margin-right: .25em;
+  border: 1px solid currentColor; border-radius: 5px; font: 700 .8em/1.5 var(--mono); opacity: .8;
+}
+#help table { border-collapse: collapse; font-size: .9rem; }
+#help th, #help td { padding: .3em .7em; text-align: left; border-bottom: 1px solid #ffffff20; }
+#help th { color: var(--dim); font-weight: 600; }
+
+/* High scores: the name in underlined slots, an on-screen keyboard, and the table. */
+.links { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.points { font: 800 clamp(1rem, 3.4vw, 1.4rem) var(--mono); color: var(--ball); letter-spacing: .08em; }
+.points[hidden] { display: none; }
+.ask { color: var(--dim); font-size: .8rem; letter-spacing: .2em; font-weight: 700; }
+.slots { display: flex; gap: clamp(5px, 1.4vw, 12px); }
+.slot {
+  width: clamp(14px, 3.2vw, 26px); height: clamp(22px, 4.6vw, 36px);
+  display: grid; place-items: end center; padding-bottom: 6px;
+  font: 800 clamp(.95rem, 3.2vw, 1.5rem)/1 var(--mono); color: var(--line);
+  border-bottom: 3px solid var(--line);
+}
+/* The cursor: the underline of the next free slot blinks. */
+.slot.cursor { animation: cursor 0.64s steps(1, end) infinite; }
+@keyframes cursor { 0% { border-bottom-color: var(--ball); } 50% { border-bottom-color: transparent; } }
+.keyboard { display: flex; flex-direction: column; align-items: center; gap: clamp(3px, .8vw, 6px); }
+.krow { display: flex; gap: clamp(3px, .8vw, 6px); }
+.key {
+  min-width: clamp(22px, 5vw, 40px); height: clamp(22px, 4.6vw, 36px); padding: 0 .3em;
+  border: 1px solid #ffffff55; border-radius: 6px; background: #ffffff12; color: var(--line);
+  font: 700 clamp(.7rem, 2.2vw, .95rem) var(--mono); cursor: pointer; touch-action: manipulation;
+}
+.key.wide { min-width: clamp(56px, 12vw, 96px); letter-spacing: .08em; }
+.key:hover { background: #ffffff24; }
+.key:focus-visible { outline: 2px solid var(--right); outline-offset: 1px; }
+/* A key blinks once for every press, typed or clicked. */
+.key.hit { animation: hit 160ms steps(1, end); }
+@keyframes hit { 0% { background: var(--ball); color: var(--night); border-color: var(--ball); } 100% { background: #ffffff12; } }
+.message { color: var(--dim); font-size: .85rem; min-height: 1.3em; }
+.table { border-collapse: collapse; font: 600 clamp(.7rem, 2.2vw, .95rem) var(--mono); }
+.table th { color: var(--dim); font-weight: 600; text-align: left; padding: .2em .7em; }
+.table td { padding: .2em .7em; border-top: 1px solid #ffffff1a; }
+.table td.num, .table th.num { text-align: right; }
+.table tr.mine td { color: var(--night); background: var(--ball); }
+
+/* The site's footer links, the same on every icelander.net page, always under the game. */
+.site-links { margin: 0; color: var(--dim); font-size: .8rem; text-align: center; }
+.site-links a { color: var(--line); opacity: .8; text-underline-offset: .15em; }
+.site-links a:hover, .site-links a:focus-visible { opacity: 1; }
+
+#rotate { display: none; margin: 0; color: var(--dim); font-size: .85rem; text-align: center; }
+@media (orientation: portrait) and (max-width: 700px) {
+  #rotate { display: block; }
+  /* The table is too short for the menus, so they cover the screen instead. */
+  .panel { position: fixed; inset: 0; z-index: 2; border-radius: 0; background: #071226f2; }
+}
+
+/* Small screens: the panels shrink to fit inside the table. */
+@media (max-height: 520px), (max-width: 560px) {
+  .panel { gap: 8px; }
+  button.big { min-width: 9em; padding: .55em 1em; font-size: .85rem; }
+  #help p, #help table { font-size: .78rem; }
+  #entry, #scores { gap: 6px; }
+}
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.noscript { position: fixed; inset: 0; display: grid; place-items: center; margin: 0; background: var(--night); }
+
+/* Phones on their side: the table is too short for name entry and the scores, so they cover the
+   screen, with keys sized to its height. */
+@media (orientation: landscape) and (max-height: 520px) {
+  #entry, #scores { position: fixed; inset: 0; z-index: 2; border-radius: 0; background: #071226f2; gap: 4px; padding: 8px 16px; }
+  #entry h2, #scores h2 { font-size: 1.1rem; }
+  #entry .ask { display: none; }
+  .points { font-size: 1rem; }
+  .slot { height: 9vh; font-size: 5.5vh; padding-bottom: 3px; }
+  .keyboard, .krow { gap: 1vh; }
+  .key { height: 9vh; min-width: 11vh; font-size: 4.2vh; }
+  .key.wide { min-width: 24vh; }
+  .message { font-size: .75rem; }
+}

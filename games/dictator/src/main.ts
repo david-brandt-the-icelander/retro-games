@@ -3,14 +3,15 @@
 import { isYes, newGame, playGame } from "./engine";
 import type { IO, Screen } from "./engine";
 import { SoundOverlay } from "./ui/overlay";
-import { drawAbout, drawEntry, drawHowto, drawScores, drawScreen, drawTitle, Presentation } from "./ui/screens";
-import { cleanName, NAME_MAX } from "./name";
-import { loadTable, Reign, startReign, submitReign } from "./scores";
+import { drawAbout, drawHowto, drawScores, drawScreen, drawTitle, Presentation } from "./ui/screens";
+import { DEL, ENTER, keyAt, NameEntry, SKIP, TYPING_KEYS } from "./ui/entry";
+import { cleanName, NAME_MAX, nameChar } from "./name";
+import { defaultName, loadTable, Reign, saveName, startReign, submitReign } from "./scores";
 import { MotifId, MOTIFS } from "./ui/sounds";
 import { HOWTO_PAGES, SCORES, SOUND_SPOKEN } from "./ui/text";
 import { Display } from "./zx/display";
 import { Input } from "./zx/input";
-import { ZXScreen } from "./zx/screen";
+import { BORDER, FULL_HEIGHT, FULL_WIDTH, ZXScreen } from "./zx/screen";
 import { Sound } from "./zx/sound";
 
 const canvas = document.getElementById("zx") as HTMLCanvasElement;
@@ -132,68 +133,50 @@ const io: IO = {
 
 // ── The high-score table ─────────────────────────────────────────────────
 
-/** An HTML form below the screen for the player's name. Resolves with the cleaned name, or null to skip. */
-function askName(error = ""): Promise<string | null> {
-  return new Promise((resolve) => {
-    const form = document.createElement("form");
-    form.className = "entry";
-    form.noValidate = true;
-    const label = document.createElement("label");
-    label.htmlFor = "entry-name";
-    label.textContent = SCORES.formLabel;
-    const field = document.createElement("input");
-    // A name, not an account: tell browsers and password managers to stay out of it.
-    Object.assign(field, { id: "entry-name", name: "player-name", type: "text", autocomplete: "off", required: true, maxLength: NAME_MAX * 2, spellcheck: false });
-    for (const [k, v] of [["data-1p-ignore", ""], ["data-lpignore", "true"], ["data-bwignore", ""], ["data-form-type", "other"], ["autocapitalize", "words"]]) field.setAttribute(k, v);
-    const note = document.createElement("p");
-    note.className = "entry-note";
-    note.textContent = SCORES.formNote;
-    const message = document.createElement("p");
-    message.className = "entry-error";
-    message.setAttribute("role", "alert");
-    message.textContent = error;
-    const submit = document.createElement("button");
-    submit.type = "submit";
-    submit.textContent = SCORES.formSubmit;
-    const skip = document.createElement("button");
-    skip.type = "button";
-    skip.textContent = SCORES.formSkip;
-    const buttons = document.createElement("div");
-    buttons.className = "entry-buttons";
-    buttons.append(submit, skip);
-    form.append(label, field, message, buttons, note);
-    const done = (value: string | null) => { form.remove(); keypad.hidden = false; display.fit(); resolve(value); };
-    // Typing in the form must never reach the game's keys (M would toggle the sound).
-    form.addEventListener("keydown", (e) => { e.stopPropagation(); if (e.key === "Escape") done(null); });
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const name = cleanName(field.value);
-      if (!name) { message.textContent = SCORES.formInvalid; field.focus(); return; }
-      done(name);
-    });
-    skip.addEventListener("click", () => done(null));
-    keypad.hidden = true;
-    controls.prepend(form);
-    display.fit();
-    field.focus();
-  });
+/** Where a tap or click lands on the paper, in Spectrum pixels; then the on-screen key there, if any. */
+function tappedKey(clientX: number, clientY: number): string | null {
+  const r = canvas.getBoundingClientRect();
+  const x = ((clientX - r.left) / r.width) * FULL_WIDTH - BORDER;
+  const y = ((clientY - r.top) / r.height) * FULL_HEIGHT - BORDER;
+  return keyAt(x, y);
 }
 
-/** After a reign: offer the table, send the reign to be replayed, then show the table. */
+/**
+ * After a reign: the player types a name (up to 12 characters, as on the old arcade tables) on the
+ * screen's keyboard or their own, then the reign is sent to be replayed and the table is shown.
+ */
 async function offerTable(reign: Reign, score: number, keys: string[]): Promise<void> {
-  const pr = drawEntry(screen, score);
+  let name = await defaultName();
+  current++; // stop any animation of the last screen
   overlay.restore();
-  announce(pr.speech, pr.assertive);
-  let error = "";
+  const entry = new NameEntry(screen).draw(score, name).start();
+  announce(SCORES.entrySpeech(score, name), true);
   for (;;) {
-    const name = await askName(error);
-    if (name === null) return;
-    const entry = await submitReign(reign, keys, name);
-    if (entry) {
-      await present(drawScores(screen, await loadTable(), { rank: entry.rank, score: entry.score }));
-      return;
+    const key = await input.waitKey({ typing: TYPING_KEYS, tapKey: tappedKey });
+    entry.blink(key);
+    if (key === SKIP) return;
+    if (key === ENTER) {
+      const final = cleanName(name);
+      if (!final) { entry.message(SCORES.entryEmpty); announce(SCORES.entryEmpty, true); continue; }
+      entry.message(SCORES.entrySending);
+      const result = await submitReign(reign, keys, final);
+      if (result) {
+        saveName(final);
+        await present(drawScores(screen, await loadTable(), { rank: result.rank, score: result.score }));
+        return;
+      }
+      entry.message(SCORES.entryFailed);
+      announce(SCORES.entryFailed, true);
+      continue;
     }
-    error = SCORES.formFailed;
+    if (key === DEL || key === "Delete") name = name.slice(0, -1);
+    else {
+      const ch = nameChar(key);
+      if (ch === null || name.length >= NAME_MAX) continue;
+      name += ch;
+    }
+    entry.name(name).message("");
+    announce(SCORES.entryName(name), false);
   }
 }
 
