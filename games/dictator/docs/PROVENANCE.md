@@ -2,9 +2,9 @@
 
 Remake of: *Dictator* (1983, ZX Spectrum 48K) by Don Priestley (design and programming), published by DK'Tronics.
 
-**Starting point:** a faithful baseline, the owner's own TypeScript recreation. It lives in the private repository `david-brandt-the-icelander/recreations` (`zx_spectrum/dictator`), because it contains the original's text and data. It is read only by the spec/verify role, and none of its files are copied here.
+**Starting point:** a faithful baseline, the owner's own TypeScript recreation. It lives in the private repository `david-brandt-the-icelander/recreations` (`zxspectrum/dictator`), because it contains the original's text and data. It is read only by the spec/verify role, and none of its files are copied here.
 
-**Reference material** (kept outside this repository, in the private repo's `zx_spectrum/dictator/original/`):
+**Reference material** (kept outside this repository, in the private repo's `zxspectrum/dictator/original/`):
 - the tape image, from Spectrum Computing (entry 1388, `https://spectrumcomputing.co.uk/pub/sinclair/games/d/Dictator.tap.zip`)
 - its BASIC program, decoded with `zx-spectrum-clean-room/scripts/zx_basic_list.py`. The tape holds only BASIC: no machine-code text blocks.
 - the instructions as plain text, from gamesdatabase.org
@@ -48,7 +48,7 @@ Run against the original's listing and manual, with its four invented names as `
 overlap: 0 original strings, 0 shared 5-word passages, 0 name hits in 0 files (reference: 338 strings, 2109 n-grams)
 ```
 
-Scope: `games/dictator/` (PLAN.md and docs/) at the end of phase 1. It is re-run at every later phase.
+Scope: `games/dictator/` (PLAN.md and docs/, including GDD.md) at the end of phase 2. It is re-run at every later phase. Phase 2 caught one short phrase in a GDD purpose line that matched the original's wording; it was reworded. `zx_assets.py` is also clean: 0 glyph matches, 0 tune runs.
 
 Accepted leftovers: none so far. The factual credit line ("Inspired by *Dictator* (1983) by Don Priestley, published by DK'Tronics…") will be accepted when it is added in phase 8.
 
@@ -59,4 +59,4 @@ Accepted leftovers: none so far. The factual credit line ("Inspired by *Dictator
 - [ ] **The newsflash money quirk** (RULES §9.4, §12): keep it, as faithful, or switch it off.
 - [ ] **Case of the Y key** (RULES §15.1): accept both cases, as the baseline does, or lower case only, as the original did.
 - [ ] **Permission:** ask Don Priestley's estate for permission to publish a free remake?
-- [ ] **Public address** for the remake; `icelander.net/retro-games/dictator` is taken by the private faithful version.
+- [ ] **Public address** for the remake: `icelander.net/retro-games/dictator` is now free (the private faithful version moved to `icelander.net/recreations/zxspectrum/dictator`), or a path named after the new title.

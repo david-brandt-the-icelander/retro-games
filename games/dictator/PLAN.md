@@ -2,7 +2,7 @@
 
 A clean-room remake of a 1983 ZX Spectrum strategy game. It plays exactly like the original but shares none of its protected expression: text, names, screen designs, art, tunes or code. It is also the first game made with the **`create-retro-game`** skill (to be added in `.claude/skills/`). Building it will shape the skill.
 
-Status: **plan approved in outline; milestone 1 under way.**
+Status: **M1–M3 done (M1 waits only for the owner's Access setup); M4, the GDD, is at its gate.**
 
 This repository is public, so this plan describes the original without quoting it. The original's names and wording appear only in the private faithful copy and its provenance notes.
 
@@ -10,8 +10,8 @@ This repository is public, so this plan describes the original without quoting i
 
 | # | Decision |
 |---|---|
-| 1 | The faithful recreation lives in the private repo `david-brandt-the-icelander/recreations`, under `zx_spectrum/dictator`. |
-| 2 | It is served only to the owner, behind an OAuth login, at `icelander.net/retro-games/dictator`. |
+| 1 | The faithful recreation lives in the private repo `david-brandt-the-icelander/recreations`, under `zxspectrum/dictator`. |
+| 2 | It is served only to the owner, behind an OAuth login. It was first planned at `icelander.net/retro-games/dictator`; it now lives at `icelander.net/recreations/zxspectrum/dictator`, served by the `recreations` repository's shared Worker. |
 | 3 | Its public copies are taken down, and the old repository's history is purged (see §2: to be re-confirmed). |
 | 4 | Its working branch moved straight into `recreations`. |
 | 5 | The skill is named `create-retro-game`; the remake lives in `games/dictator/` in this repository. |
@@ -20,8 +20,8 @@ This repository is public, so this plan describes the original without quoting i
 
 | Step | State |
 |---|---|
-| Source moved, with its 11-commit history, to `recreations/zx_spectrum/dictator` | **Done**: draft PR `recreations#1` |
-| Worker reconfigured as `dictator-faithful`: route `icelander.net/retro-games/dictator*` only; `workers.dev` and preview URLs off; site nested under that path | **Done** (in the PR); checked under `wrangler dev` |
+| Source moved, with its 11-commit history, to `recreations/zxspectrum/dictator` | **Done**: draft PR `recreations#1` |
+| Served privately | **Superseded.** The per-game Worker is replaced by the shared `recreations` Worker, which checks the Access login itself and serves every game under `icelander.net/recreations/<platform>/<game>`. `recreations#1` is merged with it. |
 | Deploy guard: `npm run deploy` refuses unless an anonymous request is redirected to the Cloudflare Access login | **Done**; refuses today, as intended |
 | Public deployment on `workers.dev` deleted | **Done**: returns 404 |
 | `dictator/` removed from the old repository | **Done as a PR** (`padresmurfa/y#62`), awaiting merge |

@@ -130,7 +130,7 @@ Showing it records this item as the **last costed item** (§9.4).
 
 **Affordable?**
 - If treasury + one-off change > 0: affordable.
-- Otherwise, if the item costs money (a negative one-off change, or a monthly change that raises costs) and either treasury + one-off change < 0 or treasury + monthly letter value < 0: **not affordable**. Here *monthly letter value* is the monthly change with costs **lowered** counted as positive.
+- Otherwise, if the item costs money (a negative one-off change, or a monthly change that raises costs) and either treasury + one-off change < 0 or treasury − the rise in monthly costs < 0: **not affordable**. (An item that lowers monthly costs counts as a negative rise, so it never fails the second test.)
 - Otherwise affordable.
 
 | Situation | What happens |
@@ -213,7 +213,7 @@ The game remembers the money of the **last item whose decision dialog was shown*
 - **The country wins:** the Neighbour's strength becomes 0, and the game goes on.
 - **The Neighbour wins:**
   - with a helicopter: 2 chances in 3 to escape (alive)
-  - otherwise, or if the helicopter fails: the President is executed (dead)
+  - otherwise, or if the helicopter fails: the President is executed (dead). This is one screen: when the helicopter failed, its heading says so; otherwise its heading says the Neighbour has won. There is no separate helicopter-fails note here (that 3 s note belongs to §13.3 only).
   - there is no escape on foot after a war
 
 ## 12. News
@@ -249,7 +249,7 @@ Make up to three picks of a random domestic faction (1 of 3). The first pick tha
    - **If none are listed:** a "you are alone" note (waits for a key), and the fight goes ahead without a helper.
    - **Otherwise:** the player presses 1–6, and other keys are ignored until one of these comes.
      - A listed group becomes the **helper**.
-     - An **unlisted** number (a disaffected group): a "joke" note, and the President must flee on foot (§13.3), so the game ends.
+     - An **unlisted** number (a disaffected group): a "joke" note, and the President must flee on foot (§13.3), so the game ends. An owned helicopter is **not** tried: it goes straight to the mountains.
 2. **Strength summary:** the President's strength, the helper's strength and the rebels' combined strength, shown for a few seconds. (The original shows this summary and the start of the revolution as two screens; the baseline merges them into one. The remake follows the original: see §15.6.)
 3. **The revolution starts.** It is **crushed** if the rebels' strength is at most the President's plus the helper's (0 without a helper), plus a swing of −1, 0 or +1. Otherwise the President is **overthrown** (dead).
 4. **If crushed:**
@@ -276,7 +276,7 @@ Make up to three picks of a random domestic faction (1 of 3). The first pick tha
 
 The dead don't see the alive and money lines at all.
 
-**The best rating** is kept between games (in the browser) and shown on the welcome screen. Then comes the final intelligence report.
+**The best rating** is kept between games (in the browser) and shown on the welcome screen. The rating screen's "best so far" already includes this game: it is the larger of the stored best and this total. The stored best is updated once the game is over. Then comes the final intelligence report.
 
 ## 15. Quirks: keep these exactly
 
@@ -287,6 +287,7 @@ The dead don't see the alive and money lines at all.
 - **The decision menu:** 1–5 choose a section; any other key means no decision this month.
 - **Inside a section:** a number that isn't an available option goes back to the menu, without an error.
 - **Asking for help:** only 1–6 are accepted, and other keys are ignored. An unlisted number is accepted and is a joke (§13.4).
+- **Keys outside the game:** the remake's platform layer may reserve keys of its own (such as a sound toggle). Such a key never reaches the game, so it is neither "no" nor "next"; parity tests never send it.
 
 ### 15.2 Arithmetic
 - Money is whole thousands. Integer division rounds down: the Swiss transfer takes floor(treasury ÷ 2), and rating points for money are floor(Swiss ÷ 10).
@@ -399,7 +400,7 @@ Each message is described by its purpose; the UI design writes the words to fit.
 | Threat of war | §11 | War threatens, and the home groups rally (popularity rises). |
 | Invasion and result | §11 | Both sides' strengths; a short war; then won or lost. |
 | Helicopter escape | §11, §13.3 | The President got away by helicopter. |
-| Execution | After a lost war | Without a helicopter, or if it fails: condemned as a traitor and shot (the failure noted first, if any). |
+| Execution | After a lost war | Without a helicopter, or if it fails: condemned as a traitor and shot. The heading says the helicopter failed, or else that the Neighbour won. |
 | Revolution alarm | §13.2 | A revolution has broken out. |
 | Escape question | §13.2 | Ask whether to try to escape. |
 | Help list | §13.4 | Who has risen with whom, their combined strength, and who can be asked for help (numbered). |
