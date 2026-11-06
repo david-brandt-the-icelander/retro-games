@@ -20,16 +20,7 @@ export const json = (body: unknown, status = 200) =>
     },
   });
 
-/** The public name: the part before the @, limited to characters the game's font can draw. */
-export function publicName(email: string): string {
-  const local = email.slice(0, email.lastIndexOf("@"));
-  const clean = local.replace(/[^A-Za-z0-9._+-]/g, "").slice(0, 12);
-  return clean || "anonymous";
-}
-
-export function validEmail(email: unknown): email is string {
-  return typeof email === "string" && email.length <= 254 && /^[^\s@]{1,64}@[^\s@.]+(\.[^\s@.]+)+$/.test(email);
-}
+export { cleanName } from "../src/name";
 
 /** Replay a reign from its seed and keys. Returns null unless the keys play exactly one whole game. */
 export async function replay(seed: number, keys: string[]): Promise<{ score: number; months: number; alive: boolean } | null> {

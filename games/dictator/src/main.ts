@@ -4,7 +4,8 @@ import { isYes, newGame, playGame } from "./engine";
 import type { IO, Screen } from "./engine";
 import { SoundOverlay } from "./ui/overlay";
 import { drawAbout, drawEntry, drawHowto, drawScores, drawScreen, drawTitle, Presentation } from "./ui/screens";
-import { loadTable, looksLikeEmail, Reign, startReign, submitReign } from "./scores";
+import { cleanName, NAME_MAX } from "./name";
+import { loadTable, Reign, startReign, submitReign } from "./scores";
 import { MotifId, MOTIFS } from "./ui/sounds";
 import { HOWTO_PAGES, SCORES, SOUND_SPOKEN } from "./ui/text";
 import { Display } from "./zx/display";
@@ -131,17 +132,19 @@ const io: IO = {
 
 // ── The high-score table ─────────────────────────────────────────────────
 
-/** An HTML form below the screen for the player's email. Resolves with the address, or null to skip. */
-function askEmail(error = ""): Promise<string | null> {
+/** An HTML form below the screen for the player's name. Resolves with the cleaned name, or null to skip. */
+function askName(error = ""): Promise<string | null> {
   return new Promise((resolve) => {
     const form = document.createElement("form");
     form.className = "entry";
     form.noValidate = true;
     const label = document.createElement("label");
-    label.htmlFor = "entry-email";
+    label.htmlFor = "entry-name";
     label.textContent = SCORES.formLabel;
     const field = document.createElement("input");
-    Object.assign(field, { id: "entry-email", type: "email", autocomplete: "email", required: true, maxLength: 254, spellcheck: false });
+    // A name, not an account: tell browsers and password managers to stay out of it.
+    Object.assign(field, { id: "entry-name", name: "player-name", type: "text", autocomplete: "off", required: true, maxLength: NAME_MAX * 2, spellcheck: false });
+    for (const [k, v] of [["data-1p-ignore", ""], ["data-lpignore", "true"], ["data-bwignore", ""], ["data-form-type", "other"], ["autocapitalize", "words"]]) field.setAttribute(k, v);
     const note = document.createElement("p");
     note.className = "entry-note";
     note.textContent = SCORES.formNote;
@@ -164,9 +167,9 @@ function askEmail(error = ""): Promise<string | null> {
     form.addEventListener("keydown", (e) => { e.stopPropagation(); if (e.key === "Escape") done(null); });
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      const email = field.value.trim();
-      if (!looksLikeEmail(email)) { message.textContent = SCORES.formInvalid; field.focus(); return; }
-      done(email);
+      const name = cleanName(field.value);
+      if (!name) { message.textContent = SCORES.formInvalid; field.focus(); return; }
+      done(name);
     });
     skip.addEventListener("click", () => done(null));
     keypad.hidden = true;
@@ -183,9 +186,9 @@ async function offerTable(reign: Reign, score: number, keys: string[]): Promise<
   announce(pr.speech, pr.assertive);
   let error = "";
   for (;;) {
-    const email = await askEmail(error);
-    if (email === null) return;
-    const entry = await submitReign(reign, keys, email);
+    const name = await askName(error);
+    if (name === null) return;
+    const entry = await submitReign(reign, keys, name);
     if (entry) {
       await present(drawScores(screen, await loadTable(), { rank: entry.rank, score: entry.score }));
       return;

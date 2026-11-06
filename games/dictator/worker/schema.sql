@@ -7,11 +7,10 @@ CREATE TABLE IF NOT EXISTS games (
   created INTEGER NOT NULL,
   used INTEGER NOT NULL DEFAULT 0
 );
--- Replayed, verified reigns. `email` is private and never returned by the API; `name` is
--- the part before the @, which is all the table shows.
+-- Replayed, verified reigns, with the name the player typed for the table (src/name.ts).
+-- No email or other personal data is kept.
 CREATE TABLE IF NOT EXISTS scores (
   id TEXT PRIMARY KEY REFERENCES games(id),
-  email TEXT NOT NULL,
   name TEXT NOT NULL,
   score INTEGER NOT NULL,
   months INTEGER NOT NULL,

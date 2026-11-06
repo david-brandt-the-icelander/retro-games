@@ -8,7 +8,7 @@ import { SoundOverlay } from "../src/ui/overlay";
 import { drawScreen, drawTitle, finish } from "../src/ui/screens";
 import * as T from "../src/ui/text";
 import { hasGlyph } from "../src/zx/font";
-import { BLACK, BLUE, COLS, GREEN, RED, WHITE, WIDTH, YELLOW, ZXScreen } from "../src/zx/screen";
+import { BLACK, BLUE, COLS, CYAN, GREEN, MAGENTA, RED, WHITE, WIDTH, YELLOW, ZXScreen } from "../src/zx/screen";
 import { rotating } from "./helpers";
 import { isHeld, LAYOUT_SAMPLES, SAMPLES, SCREENS } from "./samples";
 
@@ -77,8 +77,19 @@ test("the report never flashes and marks plots in words", () => {
   assert.ok(rows[15].includes("RISE +6 SEC. POLICE"));
   assert.ok(rows[17].includes("HIRE AN ASSASSIN"));
   assert.equal(flashCells(z).length, 1); // the footer cursor only
-  assert.equal(rows[6].slice(1), "1  ARMY           9     9");
-  assert.equal(rows[13].slice(1), "8  WEST           9     -");
+  assert.equal(rows[6].slice(1), "1  ARMY        9      9");
+  assert.equal(rows[13].slice(1), "8  WEST        9      -");
+  // Each value also has a bar: 4 pixels a unit, cyan for popularity and magenta for strength.
+  const lit = (row: number, col: number) => {
+    let n = 0;
+    for (let x = col * 8; x < col * 8 + 40; x++) n += z.pixels[(row * 8 + 3) * 256 + x];
+    return n;
+  };
+  assert.equal(lit(6, 17), 9 * 4 - 1, "popularity 9: a full bar");
+  assert.equal(lit(6, 24), 9 * 4 - 1, "strength 9: a full bar");
+  assert.equal(lit(13, 24), 0, "the West has no strength, and no bar");
+  assert.equal(z.attrAt(17, 6).ink, CYAN);
+  assert.equal(z.attrAt(24, 6).ink, MAGENTA);
   const bar = z.attrAt(0, 15);
   assert.deepEqual([bar.ink, bar.paper, bar.bright], [BLACK, RED, true]);
 });
