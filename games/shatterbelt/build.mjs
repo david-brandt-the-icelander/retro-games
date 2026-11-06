@@ -2,8 +2,8 @@
 import { build, context } from "esbuild";
 import { cpSync, mkdirSync, readdirSync, renameSync, rmSync } from "node:fs";
 
-/** The site is served under https://icelander.net/retro-games/shatterbelt/ (set BASE_PATH="" to build at the root). */
-const BASE_PATH = process.env.BASE_PATH ?? "retro-games/shatterbelt";
+/** The site is served under https://icelander.net/games/retro/shatterbelt/ (set BASE_PATH="" to build at the root). */
+const BASE_PATH = process.env.BASE_PATH ?? "games/retro/shatterbelt";
 const args = process.argv.slice(2);
 
 if (args.includes("--test")) {
@@ -15,7 +15,8 @@ if (args.includes("--test")) {
   rmSync("dist", { recursive: true, force: true });
   mkdirSync(site, { recursive: true });
   cpSync("public", site, { recursive: true });
-  if (BASE_PATH) renameSync(`${site}/_headers`, "dist/_headers"); // _headers must sit at the assets root
+  // _headers and _redirects must sit at the assets root.
+  if (BASE_PATH) for (const f of ["_headers", "_redirects"]) renameSync(`${site}/${f}`, `dist/${f}`);
   const opts = { entryPoints: { game: "src/main.ts" }, bundle: true, minify: true, target: "es2020", outdir: site };
   if (args.includes("--watch")) { const c = await context(opts); await c.watch(); console.log("watching…"); }
   else await build(opts);

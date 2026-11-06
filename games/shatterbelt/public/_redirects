@@ -1,0 +1,3 @@
+# The game's first address; it moved under /games/retro/ with the rest of the site's games.
+/retro-games/shatterbelt /games/retro/shatterbelt/ 301
+/retro-games/shatterbelt/* /games/retro/shatterbelt/:splat 301

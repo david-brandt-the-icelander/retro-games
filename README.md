@@ -5,8 +5,8 @@ Recreations of retro-games that I have made with the help of AI
 
 | Game | What | Play |
 |---|---|---|
-| [Samosa](games/dictator) | A remake of a 1983 ZX Spectrum strategy game, set in Nicaragua | [icelander.net/retro-games/samosa](https://icelander.net/retro-games/samosa/) |
-| [Shatterbelt](games/shatterbelt) | An original rock-breaking space shooter for 1 to 9 players on one screen, co-op or versus | [icelander.net/retro-games/shatterbelt](https://icelander.net/retro-games/shatterbelt/) |
+| [Samosa](games/dictator) | A remake of a 1983 ZX Spectrum strategy game, set in Nicaragua | [icelander.net/games/retro/samosa](https://icelander.net/games/retro/samosa/) |
+| [Shatterbelt](games/shatterbelt) | An original rock-breaking space shooter for 1 to 9 players on one screen, co-op or versus | [icelander.net/games/retro/shatterbelt](https://icelander.net/games/retro/shatterbelt/) |
 
 ## Agent skills
 

@@ -1,10 +1,15 @@
-// The Shatterbelt Worker at icelander.net/retro-games/shatterbelt: static assets only.
+// The Shatterbelt Worker at icelander.net/games/retro/shatterbelt: static assets only.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "shatterbelt",
   "compatibility_date": "2025-01-01",
   "workers_dev": false,
   "preview_urls": false,
-  "routes": [{ "pattern": "icelander.net/retro-games/shatterbelt*", "zone_name": "icelander.net" }],
+  // Its own route is more specific than the recreations Worker's icelander.net/games/*, so it wins.
+  // The old address, /retro-games/shatterbelt, is redirected here by public/_redirects.
+  "routes": [
+    { "pattern": "icelander.net/games/retro/shatterbelt*", "zone_name": "icelander.net" },
+    { "pattern": "icelander.net/retro-games/shatterbelt*", "zone_name": "icelander.net" }
+  ],
   "assets": { "directory": "./dist", "html_handling": "auto-trailing-slash" }
 }

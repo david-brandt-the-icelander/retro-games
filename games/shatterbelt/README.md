@@ -4,7 +4,7 @@
 
 Shatterbelt is an original game in the rock-shooter genre that arcades made popular around 1979: turn, thrust, shoot, and the screen wraps at every edge. Its name, look, sounds, rules for crystal and iron rocks, pods, blink, streaks, drones and multiplayer are its own.
 
-Play it at <https://icelander.net/retro-games/shatterbelt/>.
+Play it at <https://icelander.net/games/retro/shatterbelt/>. It is listed with the other games at <https://icelander.net/games/>.
 
 ## How to play
 
@@ -47,7 +47,7 @@ The ten best scores are kept in your browser, with three initials.
 ```bash
 npm install
 npm test          # typecheck, then the engine rules and whole-game simulations (1–9 players, both modes)
-npm run build     # bundle into dist/retro-games/shatterbelt/ (BASE_PATH="" builds at the root)
+npm run build     # bundle into dist/games/retro/shatterbelt/ (BASE_PATH="" builds at the root)
 npm run dev       # rebuild on change
 ```
 
@@ -64,7 +64,7 @@ npm run dev       # rebuild on change
 
 ## Deploy
 
-A Worker named `shatterbelt` (`wrangler.jsonc`), routed at `icelander.net/retro-games/shatterbelt*`. It serves static assets only.
+A Worker named `shatterbelt` (`wrangler.jsonc`), routed at `icelander.net/games/retro/shatterbelt*`. It serves static assets only. Its route is more specific than the `recreations` Worker's `icelander.net/games/*`, so it wins. It also answers the game's first address, `icelander.net/retro-games/shatterbelt*`, and `public/_redirects` sends that to the new one with a 301.
 
 ```bash
 npm run deploy    # test, build, wrangler deploy (needs CLOUDFLARE_API_TOKEN)
