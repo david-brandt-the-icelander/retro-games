@@ -1,6 +1,7 @@
-# Cloudflare static-asset headers. Everything the game needs is served from this origin.
+# Cloudflare static-asset headers. Everything the game needs is served from this origin, except
+# Cloudflare Web Analytics: its beacon script (injected by Cloudflare) and the reports it sends.
 /*
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; connect-src 'self' https://cloudflareinsights.com; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
