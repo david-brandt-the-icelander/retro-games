@@ -1,6 +1,6 @@
-# Dictator remake (working title): game design document
+# Sozoma: game design document
 
-Status: draft · Phase 2 of `create-retro-game` · written by the designer from `docs/RULES.md` · Owner approval: _pending_
+Status: **approved** · Phase 2 of `create-retro-game` · written by the designer from `docs/RULES.md` · Owner decisions recorded 2026-11-06 (§14)
 
 This document decides what the remake *is*: its name, its world, its voice, its screens and its sounds. `RULES.md` decides what it *does*, and nothing here changes a rule. Where this document mentions a number, a draw or an order, RULES is the authority.
 
@@ -8,8 +8,8 @@ It contains no text from the original game and none of its invented names. Any o
 
 ## 1. Identity
 
-- **Working title:** *Dictator remake* (until the owner chooses).
-- **Title proposals**, each with a one-line pitch:
+- **Title: *Sozoma*** (owner's choice). The repository folder stays `games/dictator/`; the public address is `icelander.net/retro-games/sozoma`.
+- **Title proposals** considered, each with a one-line pitch:
 
 | # | Title | Pitch |
 |---|---|---|
@@ -18,7 +18,7 @@ It contains no text from the original game and none of its invented names. Any o
 | 3 | ***One More Month*** | Grant, refuse, bribe and borrow your way through another month in the palace; the only prize is a better score at your funeral. |
 | — | *Dictator* (the original's title) | Possible if the owner accepts the risk. It is a common English word, so it is a weak mark, but it is still the name most associated with the 1983 game, so it signals "the same game" more strongly than anything else, and invites confusion with the original's rights holders. |
 
-  My recommendation is ***Tinpot***: it is short (6 letters, fits large lettering in 32 columns), it names the satire's target exactly, and it is not a word anyone would expect to own. *President for Life* is the stronger pitch but the more likely to collide with other games and books; check before choosing (see §13).
+  The designer recommended *Tinpot*; the owner chose ***Sozoma***, an invented word of six letters that fits large lettering in 32 columns. Its pitch line is written in the UI design.
 - **Credit line** (fixed, used as written in the README and the About screen):
   "Inspired by *Dictator* (1983) by Don Priestley, published by DK'Tronics. Independent remake, not affiliated with or endorsed by the original rights holders."
 
@@ -45,78 +45,38 @@ This is the contract the later phases check against.
 | Input semantics: one key per prompt, only Y means yes, any other key means no or next, 1–5 menu, 1–6 help with other keys ignored (§15.1) | The code: a new engine written from RULES only |
 | Integer arithmetic, clamping, ≤/≥ comparisons and the −1/0/+1 swings (§15.2) | The About screen, which replaces any credit screen; there is **no** intro screen imitating a publisher credit |
 | Pacing: which screens wait for a key and the minimum time of each timed screen (§15.5); we may lengthen, never shorten | The how-to-play pages, written fresh from RULES |
-| The quirks: the newsflash repeats the last costed item's money (§9.4, an open decision); a request can be skipped when the used marks reset (§8.1); unlimited bodyguards; the unreachable "no more loans" result still has its message | Touch keypad, responsive layouts, screen-reader text, sound toggle (additions that don't change the game) |
+| The quirks: a request can be skipped when the used marks reset (§8.1); unlimited bodyguards; the unreachable "no more loans" result still has its message | Touch keypad, responsive layouts, screen-reader text, sound toggle (additions that don't change the game) |
 | The platform's hardware look: 32×24 cells, 8 colours + BRIGHT, FLASH, border, beeper | |
 | Generic words: the President, the Army, the Peasants, the Landowners, the Guerrillas, the Secret Police, the East, the West | (Settings may add nicknames in flavour text, but the group labels on screen stay generic, see §4) |
 
 ## 4. Setting and names
 
-### 4.1 Ground rules for every setting
+The owner chose a **real setting**: the player rules **Nicaragua**, and the bordering state is **Honduras**. The three fictional settings the designer proposed (Splendoria, Brinmoor, Philatelia) were not chosen and are dropped.
 
-- All places are **fictional**. No real country's name, and no name built to sound like one.
-- **No ethnic or racial caricature.** No costume, accent, food or dress code that points at a real people or region. The satire targets the President, the palace and the system: medals, statues, balconies, paperwork, the Swiss account.
-- **The group labels stay generic on screen** (Army, Peasants, Landowners, Guerrillas, Secret Police, plus the Neighbour's name and the two powers), because the reports, the advice lines and the help list must stay readable at a glance. A setting may give the guerrillas or the police a nickname in headlines and flavour text only.
-- **The President** is "the President" in every setting, without a personal name or a gender. A setting may add an honorific for flavour.
-- The geography has to fit RULES: a coast (D6 leases a naval base), farmland and estates (R2, R23, R24 irrigation), a land border with the Neighbour across **mountains** (§13.3 escape on foot), migrant labour and trade across that border (R12, R20, D16), and one export crop (N4).
-- Names should be short: the longest name in a set should fit comfortably in a 32-column line next to a number.
+### 4.1 Ground rules
 
-### 4.2 Setting A: Splendoria, the vanity republic *(recommended)*
+- **Real countries, invented events.** Nicaragua and Honduras are real; the President, the requests, the decisions, the wars and the headlines are invented. The About screen says so.
+- **No real person.** The President has no personal name and no gender, and no screen, picture or text points at a real head of state, past or present. The title *Sozoma* is an invented word.
+- **No real party, movement or institution by name.** Every faction keeps a generic label (see the next point). Headlines don't name real organisations.
+- **No ethnic or national caricature.** No costume, accent, food or dress code mocking Nicaraguans or Hondurans. The satire targets the President, the palace and the system: medals, statues, balconies, paperwork, the Swiss account. Hondurans appear only as the Neighbour's state and army, never as a people to sneer at.
+- **The group labels stay generic on screen** (Army, Peasants, Landowners, Guerrillas, Secret Police, the East, the West), so reports, advice lines and the help list stay readable at a glance. The Neighbour's name is *Honduras*.
+- **The President** is "the President" in every text.
+- The geography fits RULES: two coasts (D6 leases a naval base), farmland and estates (R2, R23, R24 irrigation), a mountainous northern border with Honduras (the escape on foot, §13.3), migrant labour and trade across that border (R12, R20, D16), and one export crop (N4).
 
-A small, warm, coastal republic with a mountain range along its border, whose President has renamed the country, the capital, the airport and the national bird after the regime's own magnificence. Statues outnumber schools. Across the mountains lives a calm, sensible neighbour that wants nothing to do with any of it.
-
-| Role | Name | Notes |
-|---|---|---|
-| The player's country | **Splendoria** (10) | Officially "the Eternal Republic of Splendoria". The name is the joke: a regime that named a country after its own splendour. |
-| Its adjective / people | **Splendorian** (11) | "the Splendorian Army", "Splendorian vanilla" |
-| The bordering state | **Modestia** (8) | A quiet, tidy republic over the mountains. The name flatters it, not mocks it. |
-| Its people / adjective | **Modestians** / **Modestian** (10 / 9) | |
-| The export crop (N4) | **vanilla** | The nation's one export is, fittingly, plain vanilla. |
-| The two superpowers | **the East** and **the West** | Generic real-world Cold War terms, kept as RULES uses them. |
-| The guerrillas | **the guerrillas** (generic) | Headline nickname: *the Hill Front*. |
-| The secret police | **the Secret Police** (generic) | Flavour nickname: *the Ministry of Gratitude*. |
-| The President's honorific | *His or Her Splendour* | Flavour only. |
-
-### 4.3 Setting B: Brinmoor, the island under the rain
-
-A cold, windswept island in an invented northern sea, split down the middle by a ridge of bare mountains. The western half is Brinmoor, ruled from a damp palace by a President with a very dry sense of entitlement; the eastern half is Wyndle. The tone is dour and deadpan: ration books, fog, brass bands playing in the drizzle. The two superpowers are fictional blocs, which keeps real-world politics at arm's length.
+### 4.2 Names
 
 | Role | Name | Notes |
 |---|---|---|
-| The player's country | **Brinmoor** (8) | "the People's Republic of Brinmoor" |
-| Its adjective / people | **Brinmoorish** / **Brinmoorers** (11 / 11) | |
-| The bordering state | **Wyndle** (6) | The other half of the island, beyond the ridge. |
-| Its people / adjective | **Wyndlers** / **Wyndlish** (8 / 8) | |
-| The export crop (N4) | **kelp** | Harvested from the shore and sold abroad as fertiliser and food thickener. "The kelp price collapses" is suitably grim. |
-| The two superpowers | **the Plan** (the East's role) and **the Market** (the West's role) | Fictional blocs, named for how they run things. R6 becomes "the Plan's advisers", D4 "Market-made weapons", D14 "ask the Plan for a loan", D15 "ask the Market for aid". The refusal styles (RULES §16) write themselves: five-year officialese and a banker's brush-off. |
-| The guerrillas | **the guerrillas** (generic) | Headline nickname: *the Ridge Bands*. |
-| The secret police | **the Secret Police** (generic) | Flavour nickname: *the Weather Office*, because it watches everything. |
-| The President's honorific | *the Lord President* | Flavour only. |
-
-### 4.4 Setting C: Philatelia, the postage-stamp state
-
-A tiny coastal republic whose main source of foreign money, apart from its crop, is selling beautiful postage stamps to collectors abroad. Every stamp carries the President's portrait. Across the mountains lies Perforia, a rival stamp-issuing state. The visual hook is strong (screens as stamps, sheets and postmarks), and the satire is the regime's obsession with its own image.
-
-| Role | Name | Notes |
-|---|---|---|
-| The player's country | **Philatelia** (10) | "the Commemorative Republic of Philatelia" |
-| Its adjective / people | **Philatelic** / **Philatelians** (10 / 12) | "the Philatelic Army" is the joke. |
-| The bordering state | **Perforia** (8) | The rival stamp state across the mountains. |
-| Its people / adjective | **Perforians** / **Perforian** (10 / 9) | |
-| The export crop (N4) | **gumbark** | An invented tree whose sap becomes the glue on the back of stamps. |
-| The two superpowers | **the East** and **the West** | Generic real-world Cold War terms. |
-| The guerrillas | **the guerrillas** (generic) | Headline nickname: *the Unfranked*. |
-| The secret police | **the Secret Police** (generic) | Flavour nickname: *the Sorting Office*. |
-| The President's honorific | *the Postmaster-President* | Flavour only. |
-
-### 4.5 Recommendation: Setting A, Splendoria
-
-- **The satire lands on the regime.** The country's very name is the dictator's vanity, so every screen that names it is a small joke at the palace's expense. The neighbour's name is a compliment, so the player is never invited to sneer at another people.
-- **It ports the topics without friction.** RULES' 49 topics already speak of the East and the West, Western companies and the East's advisers; Splendoria keeps those generic terms, so the request and decision texts need no extra invention, and the player's real-world intuitions about the two powers still work.
-- **The geography fits every rule:** coast for the naval base, estates and irrigation, a mountain border for the escape on foot, and one crop to collapse.
-- **The names are short** and read well in 32 columns.
-- **It is not tied to a real region.** The names are built from English words with a Latin ending, and the art bible should keep costume and scenery generic (operetta uniforms, palms and statues are fine; anything pointing at a real culture is not).
-
-Setting B is the best choice if the owner wants to keep real-world superpowers out entirely. Setting C has the strongest visual identity and could be reconsidered at the art-bible stage as a *look* (stamps, postmarks) for Splendoria.
+| The game | ***Sozoma*** (6) | Title only; never used as a place or person in the game |
+| The player's country | **Nicaragua** (9) | |
+| Its adjective / people | **Nicaraguan** / **Nicaraguans** (10 / 11) | "the Nicaraguan Army" |
+| The bordering state | **Honduras** (8) | Across the northern mountains |
+| Its people / adjective | **Hondurans** / **Honduran** (9 / 8) | |
+| The export crop (N4) | **coffee** | |
+| The two superpowers | **the East** and **the West** | Generic Cold War terms, as RULES uses them |
+| The guerrillas | **the guerrillas** (generic) | No nickname |
+| The secret police | **the Secret Police** (generic) | No nickname |
+| The mountains (§13.3) | **the northern mountains** | Generic; no real range named |
 
 ## 5. Player experience
 
@@ -381,7 +341,7 @@ All melodies are new and written for this game; effects are generic beeper sound
 | Prompt | Keys | Notes |
 |---|---|---|
 | Every prompt | One key per prompt | Never a typed line |
-| Yes/no questions | **Y** = yes; any other key = no | Case of Y is an open decision (§15); recommendation: accept both cases |
+| Yes/no questions | **Y** or **y** = yes; any other key = no | Both cases (owner decision) |
 | Screens that wait | Any key continues | A key that doesn't fit the prompt counts as "no" or "next" |
 | Decision menu | **1–5** choose a section | Any other key: no decision this month |
 | Inside a section | The number of an available option | Any other key, or a used or unlisted number, goes back to the menu without an error |
@@ -413,7 +373,7 @@ All melodies are new and written for this game; effects are generic beeper sound
 - **Contrast.** Text uses ink/paper pairs with a contrast ratio of at least 4.5:1 (for example white or yellow on black or blue; never red on blue or magenta on red for text). The art bible lists the allowed text pairs.
 - **Keyboard-only play.** The whole game, including the extras, works with the keyboard alone. No mouse or touch is ever required, and focus never leaves the game.
 - **Nothing carried by colour or sound alone.** A plot is marked in words as well as by FLASH or colour; debt shows a minus sign or the word, not only red; every sound has a matching on-screen message, so the game is fully playable muted.
-- **Timing.** Timed screens follow RULES §15.5. Because RULES allows lengthening (never shortening), the remake offers a **"wait for a key on timed screens"** setting, off by default, for players who need more reading time or use a screen reader. It changes no game state, and parity testing runs with it off. (Open decision 7.)
+- **Timing.** Timed screens follow RULES §15.5 exactly. There is no "wait for a key" setting (owner decision); the screen-reader mirror announces each timed screen as it appears.
 - **Motion and sound:** sound starts muted until the first key; there is no autoplay and no full-screen flashing.
 
 ## 12. Scope and non-goals
@@ -433,17 +393,17 @@ All melodies are new and written for this game; effects are generic beeper sound
 
 | Risk | Kind | Likelihood | Mitigation |
 |---|---|---|---|
-| The title collides with an existing game or trademark (especially *President for Life* or keeping *Dictator*) | Legal | Medium | Search game stores, trademark registers and the web before the owner chooses; prefer the most distinctive option |
+| The title collides with an existing game or trademark | Legal | Low | *Sozoma* is an invented word; search before publishing |
+| The real setting: Nicaragua had a real dictatorship (the title's sound recalls its ruling family), and the game shows its government as corrupt and Honduras as a hostile invader | Reputational | Medium | §4.1: no real person, party or organisation named; no caricature of either people; the About screen says the events are invented. The owner chose the setting and accepts this risk. |
 | A screen still looks like the original's (the request screen's icon row, the report's column layout, tiled backgrounds, the title wallpaper) | Legal | Medium | The wireframes and art bible design from RULES and this document only; the art bible's distinctiveness table; phase 7's visual review |
 | Original wording leaks into new text, through memory or paraphrase | Legal | Low–medium | Text written from purposes only; `overlap.py` with the original's names at every phase; a guard test of hashes of the original strings |
 | The funeral or other tunes resemble the original's | Legal | Low | Original motifs only (§9); the funeral uses our own anthem, not a public-domain march |
 | A setting reads as a caricature of a real people or region | Design / reputational | Low–medium | §4.1 ground rules; the art bible avoids national costume and real-region scenery; owner review |
 | The satire offends because the subject (coups, executions) is grim | Design | Low | Keep the joke on the regime; stark, short wording for deaths; no gore in art |
-| Short timed screens are hard to read on phones or with screen readers | Design / accessibility | Medium | Lengthen where RULES allows; the "wait for a key" setting; the text mirror |
+| Short timed screens are hard to read on phones or with screen readers | Design / accessibility | Medium | Keep timed texts short (UI design budgets); the text mirror announces each one |
 | The M key (sound) swallowing a keypress changes the input semantics compared with the baseline | Technical / parity | Low | The parity harness never sends M; documented in §10 |
 | Phone layouts squeeze a 32-column screen too small to read | Technical | Medium | Fit-to-width scaling; the keypad never overlaps the screen; test on small phones in phase 7 |
 | Local storage is blocked (private browsing) | Technical | Low | Wrap reads and writes; the game runs with no best rating |
-| The newsflash money quirk looks like a bug to players | Design | Medium | Keep it (faithful), and say nothing in-game; or mention it in the how-to-play pages if the owner wishes (§15, item 3) |
 
 ## 14. Decision log
 
@@ -453,16 +413,22 @@ All melodies are new and written for this game; effects are generic beeper sound
 | 2026-11-06 | The skill is named `create-retro-game`; the remake lives in `games/dictator/`. | Owner |
 | 2026-11-06 | `docs/RULES.md` approved on merge (PR #4). | Owner |
 | 2026-11-06 | RULES clarified from the designer's questions, checked against the baseline: affordability wording (§8.3); one execution screen after a lost war, headed by the helicopter's failure or the Neighbour's victory (§11); the joke skips the helicopter (§13.4); the rating's best includes this game (§14); platform keys such as M never reach the game (§15.1). | Spec role |
-| _pending_ | Title, setting and names (this GDD's gate). | Owner |
+| 2026-11-06 | Title: *Sozoma*. | Owner |
+| 2026-11-06 | Setting: Nicaragua; the Neighbour is Honduras. Names in §4.2. | Owner |
+| 2026-11-06 | The newsflash money quirk is switched off. | Owner |
+| 2026-11-06 | Y is accepted in both cases. | Owner |
+| 2026-11-06 | No request for permission from the original author's estate. | Owner |
+| 2026-11-06 | Public address: `icelander.net/retro-games/sozoma`. | Owner |
+| 2026-11-06 | No "wait for a key on timed screens" setting. | Owner |
 
-## 15. Open decisions
+## 15. Decisions (all closed)
 
-| # | Decision | Options | Recommendation |
+| # | Decision | Options considered | Decided |
 |---|---|---|---|
-| 1 | **The title** | *President for Life*, *Tinpot*, *One More Month*, or keep *Dictator* with the risk accepted | *Tinpot* |
-| 2 | **The setting and names** | A: Splendoria / Modestia; B: Brinmoor / Wyndle; C: Philatelia / Perforia (§4) | A, Splendoria |
-| 3 | **The newsflash money quirk** (RULES §9.4, §12): a headline also re-applies the money of the last item whose dialog was shown | Keep it on (faithful), or switch it off | Keep it on: pillar 1, and it's part of the original's character. The switch exists in code for testing only. |
-| 4 | **The case of the Y key** (RULES §15.1) | Accept Y and y (as the baseline does), or only lower-case y (as the original did with caps lock off) | Accept both. The original's case behaviour was an accident of the keyboard, not a design; a caps-lock trap would feel like a bug today, and the touch keypad sends one "yes" anyway. |
-| 5 | **Permission from the original author's estate** to publish a free remake | Ask, or rely on the clean-room work alone | Ask, politely and early. Permission doesn't replace the clean-room work, but it lowers the risk and is a courtesy. |
-| 6 | **The remake's public address** | `icelander.net/retro-games/<title-slug>` (e.g. `/retro-games/tinpot`); `icelander.net/retro-games/dictator` (free now that the private version lives under `/recreations/`); a subdomain such as `<title-slug>.icelander.net` | `icelander.net/retro-games/<title-slug>`, once the title is chosen, so the address matches the name on the screen. The repository folder can stay `games/dictator/`. |
-| 7 | **"Wait for a key on timed screens"** setting (§11) | Offer it (off by default), or not | Offer it: RULES allows lengthening, it changes no state, and it helps screen-reader users. |
+| 1 | The title | *President for Life*, *Tinpot*, *One More Month*, keep *Dictator* | ***Sozoma*** (owner's own) |
+| 2 | The setting and names | Splendoria, Brinmoor or Philatelia (fictional) | **Nicaragua and Honduras** (real; §4) |
+| 3 | The newsflash money quirk (RULES §9.4, §12) | Keep it on, or switch it off | **Off** |
+| 4 | The case of the Y key (RULES §15.1) | Both cases, or lower case only | **Both cases** |
+| 5 | Ask the original author's estate for permission | Ask, or rely on the clean-room work | **Don't ask** |
+| 6 | The public address | `/retro-games/<title-slug>`, `/retro-games/dictator`, a subdomain | **`icelander.net/retro-games/sozoma`** |
+| 7 | A "wait for a key on timed screens" setting | Offer it, or not | **Not offered** |

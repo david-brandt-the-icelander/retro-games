@@ -38,7 +38,7 @@ Eight groups, always in this order (the order matters for plots, wars and the he
 | Helicopter | no | Bought by decision D12 |
 | East loan / West loan granted | no / no | Each superpower lends at most once |
 | Plot pause | 0 | Plots are suppressed while the month is below this |
-| Last costed item | none | See §9.4 |
+| Last costed item | — | Original only; the remake does not keep it (§9.4) |
 
 ## 3. Monthly thresholds
 
@@ -126,7 +126,7 @@ The dialog shows the requester, the request and its money:
 - the monthly change: whether running costs go up or down, and by how much
 - both together, or a statement that none of this costs anything
 
-Showing it records this item as the **last costed item** (§9.4).
+(In the original, showing it also recorded the item as the **last costed item**; the remake drops that, §9.4.)
 
 **Affordable?**
 - If treasury + one-off change > 0: affordable.
@@ -184,8 +184,8 @@ After the result, the treasury report.
 - D11 (bodyguard): applies its changes **and** raises the President's strength by 2. It is never marked used.
 - D12 (helicopter): gives the President the helicopter.
 
-### 9.4 The last costed item (an original quirk)
-The game remembers the money of the **last item whose decision dialog was shown**: this month's request, or any presidential option that reached its dialog, whether or not it was taken or affordable. A newsflash applies that money again (§12).
+### 9.4 The last costed item (an original quirk, switched off in the remake)
+The original remembers the money of the **last item whose decision dialog was shown**: this month's request, or any presidential option that reached its dialog, whether or not it was taken or affordable. A newsflash applies that money again (§12). **The remake switches this off** (owner decision): a newsflash changes only popularity and strength. The remake need not track the last costed item at all.
 
 ## 10. Assassination
 
@@ -221,9 +221,7 @@ The game remembers the money of the **last item whose decision dialog was shown*
 1. One chance in three each month; otherwise nothing.
 2. Draw a starting point from N1–N6 and take the first unused headline from there, wrapping, looking at all 6. If all six are used, no news.
 3. The headline is marked used. Headlines never reset.
-4. Apply its popularity and strength changes, then **the last costed item's money** (§9.4) to the treasury and monthly costs.
-
-That money quirk is faithful to the original. A switch may turn it off, but it is on by default (an open decision).
+4. Apply its popularity and strength changes. Nothing else changes: no money moves (§9.4, the original's money quirk is switched off).
 
 **Screens:** an alert with no key wait, then the headline.
 
@@ -282,7 +280,7 @@ The dead don't see the alive and money lines at all.
 
 ### 15.1 Input
 - **One key per prompt.** Prompts never take typed lines.
-- **Yes:** only the **Y** key means yes. Every other key means no, or "next". The baseline accepts Y in either case. The original read the keyboard as typed, so only a lower-case y counted while caps lock was off. Accepting both is an open decision for the GDD; the baseline does.
+- **Yes:** only the **Y** key means yes. Every other key means no, or "next". The baseline accepts Y in either case. The original read the keyboard as typed, so only a lower-case y counted while caps lock was off. The remake accepts both cases (owner decision), as the baseline does.
 - **Any key:** wherever a screen waits, any key continues, and a key that doesn't fit the prompt counts as "no". On touch screens, tapping the screen counts as any key.
 - **The decision menu:** 1–5 choose a section; any other key means no decision this month.
 - **Inside a section:** a number that isn't an available option goes back to the menu, without an error.
@@ -373,7 +371,8 @@ Parity testing compares the remake with the faithful baseline. These differences
 |---|---|
 | Screens that move on by themselves (§15.5), where the baseline waits for a key | Restores the original's pacing. The game state is unaffected. |
 | A separate strength summary screen before the revolution starts (§13.4) | Restores the original's two screens. The baseline shows one. |
-| Y in either case (§15.1) | Same as the baseline; an open decision. |
+| Y in either case (§15.1) | Same as the baseline; owner decision. |
+| A newsflash moves no money (§9.4, §12) | Owner decision. Parity runs the baseline with its news-money switch **off**. |
 
 ## 16. Message purposes
 

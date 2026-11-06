@@ -28,7 +28,7 @@ Verdicts: **keep** (functional, not protected) · **replace** (copied expression
 | 5 | How-to-play pages | extras | Paraphrase of the original manual | text | **replace** | Written fresh from RULES |
 | 6 | Invented names: the player's country and its adjective, the neighbouring country and its people | everywhere | Original | names | **replace** | New names chosen in the GDD; the mapping is kept in the private repo only |
 | 7 | Generic group names (army, peasants, landowners, guerrillas, secret police) and the two real superpowers | everywhere | Generic words and real-world entities | names | **keep** (GDD may restyle) | — |
-| 8 | Title *Dictator* | title, page title | Original title; a common word | branding | **decide** | GDD proposes three alternatives; keeping it is the owner's call |
+| 8 | Title *Dictator* | title, page title | Original title; a common word | branding | **replace** | The remake is titled *Sozoma* |
 | 9 | Intro credit screen imitating the original's (author, publisher lettering, year) | extras | Original branding | branding | **replace** | Removed; an About screen and README carry the factual credit line |
 | 10 | Screen layouts and colour schemes copied from the original:<br>• the request screen's row of icons<br>• the intelligence report's columns<br>• the tiled backgrounds<br>• the title wallpaper and flag<br>• the advice prompt column<br>• the alternating footer bar<br>• the flashing elements | screen painters | Original screen designs | art / layout | **replace** | New layouts (wireframes) and look (art bible). The flashing *behaviour* that carries gameplay information (plot markers) is kept as information, not as the same design. |
 | 11 | Pixel art: group emblems, police face, dollar band, President portrait, helicopter, mountains, coffin | art module | Own work, drawn for the baseline | art | **replace** (by design choice) | Redrawn per the new art bible, so the remake's look is fully its own; reuse only if the art bible adopts it |
@@ -52,11 +52,11 @@ Scope: `games/dictator/` (PLAN.md and docs/, including GDD.md) at the end of pha
 
 Accepted leftovers: none so far. The factual credit line ("Inspired by *Dictator* (1983) by Don Priestley, published by DK'Tronics…") will be accepted when it is added in phase 8.
 
-## Open decisions
+## Decisions
 
-- [ ] **Title:** keep *Dictator* (a common word) or choose one of the GDD's three proposals.
-- [ ] **New names** for the player's country, its adjective, the neighbour and its people (GDD).
-- [ ] **The newsflash money quirk** (RULES §9.4, §12): keep it, as faithful, or switch it off.
-- [ ] **Case of the Y key** (RULES §15.1): accept both cases, as the baseline does, or lower case only, as the original did.
-- [ ] **Permission:** ask Don Priestley's estate for permission to publish a free remake?
-- [ ] **Public address** for the remake: `icelander.net/retro-games/dictator` is now free (the private faithful version moved to `icelander.net/recreations/zxspectrum/dictator`), or a path named after the new title.
+- [x] **Title:** *Sozoma*.
+- [x] **New names:** the player's country is Nicaragua and the neighbour Honduras (real places, replacing the original's invented names; GDD §4).
+- [x] **The newsflash money quirk:** switched off.
+- [x] **Case of the Y key:** both cases.
+- [x] **Permission:** not requested (owner decision); the remake relies on the clean-room work.
+- [x] **Public address:** `icelander.net/retro-games/sozoma`.

@@ -2,7 +2,7 @@
 
 A clean-room remake of a 1983 ZX Spectrum strategy game. It plays exactly like the original but shares none of its protected expression: text, names, screen designs, art, tunes or code. It is also the first game made with the **`create-retro-game`** skill (to be added in `.claude/skills/`). Building it will shape the skill.
 
-Status: **M1–M3 done (M1 waits only for the owner's Access setup); M4, the GDD, is at its gate.**
+Status: **M1–M4 done** (M1 waits only for the owner's Access setup). The owner chose the title *Sozoma*, a Nicaragua/Honduras setting and the address `icelander.net/retro-games/sozoma`, and asked for the game to be built: M5–M7 run together.
 
 This repository is public, so this plan describes the original without quoting it. The original's names and wording appear only in the private faithful copy and its provenance notes.
 
