@@ -2,8 +2,8 @@
 import { DT, MAX_PLAYERS } from "./engine/config";
 import { newGame, standings, step, type Controls, type Game } from "./engine/game";
 import { Recorder, fromBits, toBits, type Recording } from "./engine/replay";
-import { Input, deviceLabel, fireDevice, menuAct, type Device, type Press } from "./input";
-import { MENU_ITEMS, PLAYER_COLORS, Renderer, inRect, menuRect } from "./render";
+import { Input, KEYS_LABEL, isFire, menuAct, type Press } from "./input";
+import { PLAYER_COLORS, Renderer, inRect, launchRect } from "./render";
 import { addScore, loadScores, qualifies, TABLE_SIZE } from "./scores";
 import { NAME_MAX, cleanName } from "./name";
 import { loadPublic, startGame, submitGame, type PublicRow, type Result, type Ticket } from "./net";
@@ -11,9 +11,8 @@ import { Sound } from "./sound";
 import { Lockstep, MULTIPLAYER_PAGE, REFUSALS, Room, delaySteps, everyoneIn, fingerprint, matchInAddress, type RoomMessage, type Start } from "./online";
 
 type Scene =
-  | { kind: "title"; sel: number }
-  | { kind: "lobby"; mode: "coop" | "versus"; devices: Device[]; launching: boolean }
-  | { kind: "play"; game: Game; devices: Device[]; paused: boolean; rec: Recorder; ticket: Ticket | null; net?: Net }
+  | { kind: "title"; launching: boolean }
+  | { kind: "play"; game: Game; paused: boolean; rec: Recorder; ticket: Ticket | null; net?: Net }
   | { kind: "over"; game: Game; rec: Recorder; ticket: Ticket | null; t: number; net?: Net }
   | { kind: "entry"; game: Game; id: number; ranked: boolean }
   | { kind: "saving"; game: Game }
@@ -44,7 +43,7 @@ let scores = loadScores();
 /** The public table's top rows, once loaded (null while unknown or unreachable). */
 let publicRows: PublicRow[] | null = null;
 const refreshPublic = () => loadPublic().then((rows) => { if (rows) publicRows = rows; });
-let scene: Scene = { kind: "title", sel: 0 };
+let scene: Scene = { kind: "title", launching: false };
 const seed = () => (Math.random() * 2 ** 32) >>> 0;
 let attract = newGame("attract", 0, seed());
 let clock = 0;
@@ -65,43 +64,30 @@ function updateButtons(): void {
 }
 
 function toTitle(): void {
-  scene = { kind: "title", sel: 0 };
+  scene = { kind: "title", launching: false };
   renderer.clearEffects();
-  say("Shatterbelt. Choose co-op or versus.");
+  say("Shatterbelt. Press Space or Enter to launch. To play with friends, each on their own computer, start a game on the multiplayer page.");
   updateButtons();
 }
 
-function toLobby(mode: "coop" | "versus"): void {
-  leaveRoom();
-  scene = { kind: "lobby", mode, devices: [], launching: false };
-  say(`${mode === "versus" ? "Versus" : "Co-op"}. Each player presses their fire key or button to join, then Space or Start to launch.`);
-}
+/** Waiting for an online game this page was opened for: no solo game meanwhile. */
+const awaitingMatch = () => room !== null && !begun && netText.endsWith("…");
 
-function join(devices: Device[], d: Device): void {
-  if (devices.length < MAX_PLAYERS && !devices.includes(d)) {
-    devices.push(d);
-    say(`Player ${devices.length} joined with ${deviceLabel(d)}.`);
-  }
-}
-
+/** A game for this browser's one pilot. Friends play together from the multiplayer page, each on their own computer. */
 async function launch(): Promise<void> {
-  if (scene.kind !== "lobby" || scene.launching) return;
-  const lobby = scene;
-  const { mode, devices } = lobby;
-  if (devices.length === 0) devices.push("kb");
-  // A lone keyboard player may use every key set.
-  const keyboards = devices.filter((d) => d.startsWith("kb"));
-  if (keyboards.length === 1) devices[devices.indexOf(keyboards[0])] = "kb";
-  lobby.launching = true;
+  if (scene.kind !== "title" || scene.launching || awaitingMatch()) return;
+  const title = scene;
+  leaveRoom();
+  title.launching = true;
   say("Launching.");
   // The server issues the seed, so that it can replay the game for the public table.
   // Without it the game still plays, and its scores stay on this device.
   const ticket = await startGame();
-  if (scene !== lobby) return; // backed out while waiting
-  const game = newGame(mode, devices.length, ticket ? ticket.seed : seed());
-  scene = { kind: "play", game, devices, paused: false, rec: new Recorder(devices.length), ticket };
+  if (scene !== title) return; // an online game began meanwhile
+  const game = newGame("coop", 1, ticket ? ticket.seed : seed());
+  scene = { kind: "play", game, paused: false, rec: new Recorder(1), ticket };
   renderer.clearEffects();
-  say(`${devices.length} ${devices.length === 1 ? "player" : "players"}, ${mode === "versus" ? "versus" : "co-op"}.${ticket ? "" : " Offline: scores stay on this device."} Go.`);
+  say(`${ticket ? "" : "Offline: scores stay on this device. "}Go.`);
   updateButtons();
 }
 
@@ -182,8 +168,9 @@ async function afterGame({ game, rec, ticket, net }: Finished): Promise<void> {
   for (const id of queue) {
     const ship = game.ships[id];
     scene = { kind: "entry", game, id, ranked: ticket !== null };
-    say(`Player ${id + 1}, a new high score: ${ship.score}. Type your name for the high-score table.`);
-    const name = await askName(`P${id + 1}, ${ship.score.toLocaleString("en-US")} points. Your name for the high-score table:`);
+    const who = game.ships.length > 1 ? `P${id + 1}, ` : "";
+    say(`${who}A new high score: ${ship.score}. Type your name for the high-score table.`);
+    const name = await askName(`${who}${ship.score.toLocaleString("en-US")} points. Your name for the high-score table:`);
     names[id] = name;
     if (name && qualifies(scores, ship.score)) {
       scores = addScore(scores, {
@@ -219,21 +206,7 @@ function handle(p: Press): void {
   const act = menuAct(p);
   switch (scene.kind) {
     case "title": {
-      if (act === "mute") break;
-      if (act === "up" || act === "left") scene.sel = (scene.sel + MENU_ITEMS.length - 1) % MENU_ITEMS.length;
-      else if (act === "down" || act === "right") scene.sel = (scene.sel + 1) % MENU_ITEMS.length;
-      else if (act === "ok" || act === "start" || fireDevice(p)) toLobby(scene.sel === 0 ? "coop" : "versus");
-      break;
-    }
-    case "lobby": {
-      if (scene.launching) break;
-      const d = fireDevice(p);
-      if (d) join(scene.devices, d);
-      else if (act === "start") {
-        const pad = /^(pad\d+):/.exec(p.code);
-        if (pad && scene.devices.length === 0) join(scene.devices, pad[1]);
-        void launch();
-      } else if (act === "back") toTitle();
+      if (act === "ok" || act === "start" || isFire(p)) void launch();
       break;
     }
     case "play": {
@@ -252,13 +225,13 @@ function handle(p: Press): void {
       break;
     }
     case "over": {
-      if (scene.t > 1.2 && (act === "ok" || act === "start" || fireDevice(p))) void afterGame(scene);
+      if (scene.t > 1.2 && (act === "ok" || act === "start" || isFire(p))) void afterGame(scene);
       break;
     }
     case "saving":
       return;
     case "saved": {
-      if (scene.t > 0.8 && (act === "ok" || act === "start" || act === "back" || fireDevice(p))) toTitle();
+      if (scene.t > 0.8 && (act === "ok" || act === "start" || act === "back" || isFire(p))) toTitle();
       return;
     }
     case "entry":
@@ -275,14 +248,13 @@ function tick(online?: Controls[]): void {
   renderer.update(DT);
   switch (scene.kind) {
     case "title":
-    case "lobby":
       step(attract);
       renderer.absorb(attract.events, attract);
       break;
     case "play": {
       if (scene.paused) break;
       const g = scene.game;
-      const inputs: Controls[] = online ?? scene.devices.map((d) => input.controls(d));
+      const inputs: Controls[] = online ?? [input.controls()];
       scene.rec.record(inputs);
       step(g, inputs);
       renderer.absorb(g.events, g);
@@ -314,11 +286,7 @@ function draw(): void {
   switch (scene.kind) {
     case "title":
       renderer.world(attract, clock);
-      renderer.title(scene.sel, clock, publicRows ?? scores, publicRows !== null, touchMode());
-      break;
-    case "lobby":
-      renderer.world(attract, clock);
-      renderer.lobby(scene.mode, scene.devices, scene.devices.map(deviceLabel), clock, touchMode(), scene.launching);
+      renderer.title(clock, publicRows ?? scores, publicRows !== null, touchMode(), KEYS_LABEL, scene.launching ? "LAUNCHING…" : awaitingMatch() ? "JOINING THE GAME…" : null);
       break;
     case "play":
       renderer.world(scene.game, clock);
@@ -450,7 +418,7 @@ function beginOnline(room: Room, start: Start, mode: "coop" | "versus", ticket: 
   };
   namesHeard = [];
   const game = newGame(mode, start.slots.length, start.seed);
-  scene = { kind: "play", game, devices: [], paused: false, rec: new Recorder(start.slots.length), ticket, net };
+  scene = { kind: "play", game, paused: false, rec: new Recorder(start.slots.length), ticket, net };
   begun = true;
   netText = "ONLINE GAME OVER";
   renderer.clearEffects();
@@ -459,15 +427,6 @@ function beginOnline(room: Room, start: Start, mode: "coop" | "versus", ticket: 
   const n = start.slots.length;
   say(`Online, ${n} ${n === 1 ? "pilot" : "pilots"}, ${mode === "versus" ? "versus" : "co-op"}. You are player ${lock.me + 1}. Go.`);
   updateButtons();
-}
-
-/** This browser's pilot: any keys, any gamepad, or the touch buttons. */
-function localControls(): Controls {
-  const all = ["kb", "touch", "pad0", "pad1", "pad2", "pad3"].map((d) => input.controls(d));
-  return {
-    left: all.some((c) => c.left), right: all.some((c) => c.right), thrust: all.some((c) => c.thrust),
-    fire: all.some((c) => c.fire), blink: all.some((c) => c.blink),
-  };
 }
 
 /** A fingerprint of the game, compared between the browsers. */
@@ -479,7 +438,7 @@ const gamePrint = (g: Game): number => fingerprint([
 function stepOnline(net: Net, now: number): void {
   let stuck = false;
   while (acc >= DT && scene.kind === "play" && scene.net === net) {
-    net.lock.local(toBits(localControls()));
+    net.lock.local(toBits(input.controls()));
     if (!net.lock.ready()) { stuck = true; acc = Math.min(acc, DT); break; }
     acc -= DT;
     tick(net.lock.next().map((b) => fromBits(b ?? 0)));
@@ -583,7 +542,7 @@ function frame(now: number): void {
   requestAnimationFrame(frame);
 }
 
-// Taps on the canvas: menu items, launching, continuing.
+// Taps on the canvas: launching, continuing.
 canvas.addEventListener("pointerdown", (e) => {
   sound.unlock();
   if (e.pointerType === "touch") {
@@ -592,15 +551,7 @@ canvas.addEventListener("pointerdown", (e) => {
   }
   const { x, y } = renderer.toField(e.clientX, e.clientY);
   if (scene.kind === "title") {
-    MENU_ITEMS.forEach((_, i) => {
-      if (inRect(menuRect(i), x, y)) {
-        scene = { kind: "title", sel: i };
-        toLobby(i === 0 ? "coop" : "versus");
-      }
-    });
-  } else if (scene.kind === "lobby") {
-    if (scene.devices.length === 0 && e.pointerType === "touch") join(scene.devices, "touch");
-    if (scene.devices.length > 0) void launch();
+    if (inRect(launchRect, x, y)) void launch();
   } else if (scene.kind === "over" && scene.t > 1.2) void afterGame(scene);
   else if (scene.kind === "saved" && scene.t > 0.8) toTitle();
 });

@@ -1,6 +1,6 @@
 # Shatterbelt
 
-*Break the belt. Mind your wingmates.* A drifting belt of rock surrounds your ships. Shoot the rocks apart before they hit you, for as long as your ships last. Up to nine pilots play on one screen, together (co-op) or against each other (versus).
+*Break the belt. Mind your wingmates.* A drifting belt of rock surrounds your ships. Shoot the rocks apart before they hit you, for as long as your ships last. Fly alone, or with up to eight friends, each on their own computer, together (co-op) or against each other (versus).
 
 Shatterbelt is an original game in the rock-shooter genre that arcades made popular around 1979: turn, thrust, shoot, and the screen wraps at every edge. Its name, look, sounds, rules for crystal and iron rocks, pods, blink, streaks, drones and multiplayer are its own.
 
@@ -24,25 +24,21 @@ Play it at <https://games.icelander.net/retro/shatterbelt/>. It is listed with t
 
 Large drone 250, hunter 700, versus takedown 500. Each of these is multiplied by your streak.
 
-## Joining: one to nine players
+## Controls
 
-Choose co-op or versus. On the join screen, each player presses **their own FIRE** to take the next slot. Then press **SPACE** (or START on a gamepad) to launch. A single keyboard player can just press SPACE; they may then use the arrow keys or WASD and fire with SPACE.
+One pilot per browser. Press **LAUNCH** (Space, Enter, or tap it) on the title screen to fly alone; to play with friends, each of you on your own computer, start from the multiplayer page (below). Every pilot uses the same controls:
 
 | Controls | Turn | Thrust | Fire | Blink |
 |---|---|---|---|---|
-| Keyboard 1 | A / D | W | Q | S |
-| Keyboard 2 | F / H | T | R | G |
-| Keyboard 3 | J / L | I | U | K |
-| Keyboard 4 | ← / → | ↑ | Enter (or / , right Shift, right Ctrl) | ↓ |
-| Keyboard 5 | Numpad 4 / 6 | Numpad 8 | Numpad 0 | Numpad 5 |
-| Gamepad (up to 9) | stick or d-pad | d-pad up, right trigger or stick up | A or right bumper | B, X or left bumper |
+| Keyboard | ← / → or A / D | ↑ or W | Space or Enter | ↓ or S |
+| Gamepad | stick or d-pad | d-pad up, right trigger or stick up | A or right bumper | B, X or left bumper |
 | Touch (phones, tablets) | ◀ ▶ | THRUST | FIRE | BLINK |
 
-Most keyboards can't register more than a handful of keys at once, so for more than two or three players use gamepads, or play online. **P** or START pauses. In the pause screen, **Esc** quits to the title. **M** turns sound on and off. Leaving the tab pauses the game.
+The numpad works too (4 / 6 turn, 8 thrusts, 0 fires, 5 blinks). **P** or START pauses a game alone. In the pause screen, **Esc** quits to the title. **M** turns sound on and off. Leaving the tab pauses the game.
 
 ## Playing online: each pilot on their own computer
 
-Games with friends start on the multiplayer page, [games.icelander.net/multiplayer](https://games.icelander.net/multiplayer/), not in the game itself. Everyone who plays must be signed in to the games. One player starts a game there and waits; the others join it by choosing the game and typing that player's address (which keeps it in their contacts, so they can see when that friend is waiting). Once two or more are waiting, a 60-second countdown starts, and starts again whenever someone else joins; the game begins when it runs out, or as soon as everyone presses Ready. Each player's browser then opens this game with `?match=ID`. Up to nine pilots, each on their own computer, phone or tablet, play one game together; the lobby offers **Shatterbelt co-op** and **Shatterbelt versus**. Pilots are numbered in the order they joined the lobby's game, and the line under the field shows which one you are, in your colour. Each of you flies with any keys (arrows or WASD, Space to fire), a gamepad or the touch buttons. An online game can't be paused; press **Esc** twice to leave it. A pilot who leaves stays in the game with an idle ship. Online games go on the public table like any other: each pilot names themselves on their own screen, and the host's browser sends the game with every name. **BACK TO MULTIPLAYER**, under the field, returns to the lobby for another game.
+Games with friends start on the multiplayer page, [games.icelander.net/multiplayer](https://games.icelander.net/multiplayer/), not in the game itself. Everyone who plays must be signed in to the games. One player starts a game there and waits; the others join it by choosing the game and typing that player's address (which keeps it in their contacts, so they can see when that friend is waiting). Once two or more are waiting, a 60-second countdown starts, and starts again whenever someone else joins; the game begins when it runs out, or as soon as everyone presses Ready. Each player's browser then opens this game with `?match=ID`. Up to nine pilots, each on their own computer, phone or tablet, play one game together; the lobby offers **Shatterbelt co-op** and **Shatterbelt versus**. Pilots are numbered in the order they joined the lobby's game, and the line under the field shows which one you are, in your colour. Each of you flies with the controls above. An online game can't be paused; press **Esc** twice to leave it. A pilot who leaves stays in the game with an idle ship. Online games go on the public table like any other: each pilot names themselves on their own screen, and the host's browser sends the game with every name. **BACK TO MULTIPLAYER**, under the field, returns to the lobby for another game.
 
 Every browser runs the whole game itself, in lockstep (`src/online.ts`). Each one sends only its own player's controls, a few steps ahead of when they are played (the delay, set when the game starts from everyone's measured connection: usually 60–150 ms). A browser steps the game only once it has every player's controls for that step, so every browser plays exactly the same game; it is the same property that lets the server replay a game for the high-score table. Every 120 steps (a second or two) the browsers compare a fingerprint of their games, and end the game if they ever differ. A browser that falls behind (a slow connection, or a hidden tab) makes the others wait, and they say so.
 
@@ -60,7 +56,7 @@ When the server can't be reached at the start of a game, the game still plays, a
 
 ```bash
 npm install
-npm test          # typecheck, then the engine rules and whole-game simulations (1–9 players, both modes)
+npm test          # typecheck, then the engine rules and whole-game simulations (1–9 players, both modes, as online games have)
 npm run build     # bundle into dist/retro/shatterbelt/ (BASE_PATH="" builds at the root)
 npm run dev       # rebuild on change
 ```
@@ -68,8 +64,8 @@ npm run dev       # rebuild on change
 | Path | What |
 |---|---|
 | `src/engine/` | The pure game: every tuning number (`config.ts`), the seeded generator (`rng.ts`) and the simulation (`game.ts`). `step(game, controls[])` advances one 1/60 s step and lists what happened in `game.events`. No DOM, no timers, no `Math.random`. |
-| `src/input.ts` | The five keyboard key sets, gamepads and touch, turned into one `Controls` per player |
-| `src/render.ts` | Canvas drawing: field, effects, HUD, title, join screen, pause, game over, the high-score screens |
+| `src/input.ts` | The keys, gamepads and touch, turned into this browser's pilot's `Controls` |
+| `src/render.ts` | Canvas drawing: field, effects, HUD, title, pause, game over, the high-score screens |
 | `src/name.ts` | A player's name for the tables, cleaned the same way in the browser and on the server (shared with Samosa and Hivestorm) |
 | `src/sound.ts` | Sound effects made with Web Audio; no sound files |
 | `src/engine/replay.ts` | Recording a game's controls, and replaying a recording; shared with the server |
