@@ -56,48 +56,7 @@ canvas#game { display: block; width: 100%; aspect-ratio: 16 / 10; touch-action: 
 body.entering #touch { display: none; }
 .noscript { font: 16px ui-monospace, Menlo, Consolas, monospace; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-/* Online: making or joining a room and its lobby, over the whole page; and a status line under the field. */
-.online {
-  position: fixed; inset: 0; z-index: 3; overflow: auto;
-  display: flex; flex-direction: column; align-items: center; justify-content: safe center; gap: 12px;
-  padding: 16px; text-align: center; background: rgba(4, 6, 13, 0.93);
-  font: 14px/1.45 ui-monospace, Menlo, Consolas, monospace; user-select: text; -webkit-user-select: text;
-}
-.online[hidden] { display: none; }
-.online h2 { margin: 0; color: var(--hot); font-size: 26px; letter-spacing: .15em; text-shadow: 0 0 12px rgba(143, 233, 255, .6); }
-.online p { margin: 0; max-width: 34em; color: var(--fg); }
-.online button {
-  min-height: 44px; padding: 0 18px; font: bold 14px ui-monospace, Menlo, Consolas, monospace; color: var(--fg);
-  background: rgba(20, 50, 80, 0.8); border: 1px solid var(--hot); border-radius: 6px; cursor: pointer;
-}
-.online button:hover, .online button:focus-visible { background: var(--hot); color: #000; outline: none; }
-.online button.big { min-width: 14em; font-size: 16px; }
-.online button:disabled { opacity: .4; cursor: default; background: rgba(20, 50, 80, 0.8); color: var(--fg); }
-.online button.link { min-height: 32px; background: none; border-color: var(--line); color: var(--dim); font-weight: normal; }
-.online input {
-  font: bold 20px ui-monospace, Menlo, Consolas, monospace; letter-spacing: .3em; text-align: center; text-transform: uppercase;
-  width: 7em; min-height: 44px; color: #000; background: #e8eef7; border: 2px solid var(--hot); border-radius: 6px;
-}
-.online input:focus { outline: 3px solid #ffa63d; outline-offset: 1px; }
-.online input.online-link { width: min(26em, 80vw); font-size: 12px; letter-spacing: 0; text-transform: none; text-align: left; }
-.online-join, .online-share, .online-mode { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; align-items: center; }
-.online-mode span { color: var(--dim); }
-.online-mode button[aria-checked="true"] { background: var(--hot); color: #000; }
-.online .online-message { color: #ffa63d; min-height: 1.3em; }
-.online .online-intro, .online .online-or, .online .online-note { color: var(--dim); }
-.online .online-note { font-size: 12px; }
-.online-players { list-style: none; margin: 0; padding: 0; font-weight: bold; columns: 3 9em; column-gap: 24px; }
-.online-players li { padding: 2px 0; }
+/* Online: the status line under the field, in a game started from the multiplayer page. */
 .net { color: var(--hot); font: bold 12px/1 ui-monospace, Menlo, Consolas, monospace; padding: 0 4px; }
 .net[hidden] { display: none; }
-/* Each player's colour, as on the field (render.ts PLAYER_COLORS). */
-.online-players li:nth-child(1) { color: #45f0c2; }
-.online-players li:nth-child(2) { color: #ffa63d; }
-.online-players li:nth-child(3) { color: #5aa8ff; }
-.online-players li:nth-child(4) { color: #ff7ad9; }
-.online-players li:nth-child(5) { color: #b6f04a; }
-.online-players li:nth-child(6) { color: #b48cff; }
-.online-players li:nth-child(7) { color: #fff06a; }
-.online-players li:nth-child(8) { color: #f2f2f2; }
-.online-players li:nth-child(9) { color: #ff9f9f; }
-.online-players li.online-waiting { color: var(--dim); font-weight: normal; column-span: all; }
+.net a { color: var(--hot); }

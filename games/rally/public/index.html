@@ -29,7 +29,6 @@
       <div class="choices">
         <button type="button" data-action="one" class="big"><kbd>1</kbd> ONE PLAYER</button>
         <button type="button" data-action="two" class="big"><kbd>2</kbd> TWO PLAYERS</button>
-        <button type="button" data-action="online" class="big"><kbd>O</kbd> ONLINE</button>
       </div>
       <div class="level" role="radiogroup" aria-label="Computer's level">
         <span class="label">COMPUTER</span>
@@ -54,7 +53,7 @@
         <tr><td>Right player</td><td><kbd>↑</kbd>/<kbd>↓</kbd></td><td>drag on the right half</td></tr>
         <tr><td>Online</td><td><kbd>W</kbd>/<kbd>S</kbd> or <kbd>↑</kbd>/<kbd>↓</kbd></td><td>drag anywhere, or move the mouse</td></tr>
       </table>
-      <p>To play a friend on another computer or phone, choose ONLINE: one of you makes a room, and the other joins with its four-letter code or link. The one who made the room plays on the left.</p>
+      <p>To play a friend on another computer or phone, sign in and meet on the <a href="/games/multiplayer/">multiplayer page</a>.</p>
       <p><kbd>P</kbd> or <kbd>Esc</kbd> pauses, <kbd>M</kbd> turns sound on and off.</p>
       <p>Against the computer, each point you win scores 100 on easy, 200 on normal and 300 on hard, and winning the match adds ten points' worth. Then you may put your score on the public table.</p>
       <button type="button" data-action="menu" class="big">BACK</button>
@@ -80,7 +79,14 @@
       </div>
     </section>
 
-    <section id="online" class="panel online" aria-label="Play online" hidden></section>
+    <section id="online" class="panel" aria-labelledby="online-h" hidden>
+      <h2 id="online-h">ONLINE MATCH</h2>
+      <p id="online-status" role="status"></p>
+      <div class="choices">
+        <a class="big" href="/games/multiplayer/">BACK TO MULTIPLAYER</a>
+        <button type="button" data-action="menu" class="big">PLAY HERE INSTEAD</button>
+      </div>
+    </section>
 
     <section id="entry" class="panel" aria-labelledby="entry-h" hidden>
       <h2 id="entry-h">YOU WIN</h2>

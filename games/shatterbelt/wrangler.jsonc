@@ -16,9 +16,11 @@
   // /games/retro/shatterbelt/scores/; everything else is a static asset.
   "main": "worker/index.ts",
   "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash" },
-  // Online rooms (worker/room.ts): one Durable Object per room code, relaying the players' moves.
-  "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "Room" }] },
-  "migrations": [{ "tag": "rooms-v1", "new_sqlite_classes": ["Room"] }],
-  "vars": { "ROOM_SIZE": "9" },
+  // The online rooms that were here moved to the games hub (icelander.net/games/multiplayer); this
+  // deletes their Durable Object class. Keep both entries: Cloudflare applies migrations in order.
+  "migrations": [
+    { "tag": "rooms-v1", "new_sqlite_classes": ["Room"] },
+    { "tag": "rooms-v2", "deleted_classes": ["Room"] }
+  ],
   "d1_databases": [{ "binding": "DB", "database_name": "shatterbelt-scores", "database_id": "932bf59f-05df-43ac-aa1d-9d63a42304b9" }]
 }
