@@ -5,10 +5,12 @@
 //                       → { results: [{ player, score, wave, name, rank }] }
 //   GET  {BASE}/scores  → { scores: [...] }          the table, best first
 //   GET  /games/retro/shatterbelt/scores/            the table as a web page (worker/scores-page.ts)
+//   GET  {BASE}/room/{CODE}                          a WebSocket to an online room (worker/room.ts)
 //
 // Scores are never trusted from the browser: the server replays the game with the same engine,
 // from the seed it issued and the recorded controls, and lists the scores that replay produces.
 // Each seed can be submitted once.
+import { Room, roomRequest, type RoomEnv } from "./room";
 import { scoresPage, type Row } from "./scores-page";
 import { BASE, MAX_BODY, OLD_PATH, PAGE_SIZE, PATH, SCORES_PAGE, SEED_LIFETIME_MS, TABLE_SIZE, cleanName, json, score, validSubmission } from "./scores";
 
@@ -17,7 +19,11 @@ interface D1Result<T> { results: T[]; meta: { changes: number } }
 interface D1Statement { bind(...v: unknown[]): D1Statement; first<T>(): Promise<T | null>; all<T>(): Promise<D1Result<T>>; run(): Promise<D1Result<unknown>> }
 interface D1Database { prepare(sql: string): D1Statement; batch(statements: D1Statement[]): Promise<unknown> }
 interface Fetcher { fetch(req: Request): Promise<Response> }
-export interface Env { DB: D1Database; ASSETS: Fetcher }
+interface Rooms { idFromName(name: string): unknown; get(id: unknown): { fetch(req: Request): Promise<Response> } }
+export interface Env extends RoomEnv { DB: D1Database; ASSETS: Fetcher; ROOMS: Rooms }
+
+/** Online rooms are Durable Objects; Cloudflare finds the class by this export. */
+export { Room };
 
 async function issueGame(env: Env): Promise<Response> {
   const id = crypto.randomUUID();
@@ -92,6 +98,8 @@ export default {
       }
     }
     if (!url.pathname.startsWith(BASE + "/")) return env.ASSETS.fetch(req);
+    const rooms = roomRequest(req, url.pathname.slice(BASE.length), env.ROOMS);
+    if (rooms) return rooms;
     const route = `${req.method} ${url.pathname.slice(BASE.length)}`;
     try {
       if (route === "POST /game") return await issueGame(env);

@@ -1,9 +1,10 @@
 // The page: runs the game at a steady 60 steps a second, draws it each animation frame, plays its
 // sounds, records each game's controls, and offers the high-score table when a game ends.
-import { Game, Input } from "./engine/game";
+import { Game, Input, NO_INPUT } from "./engine/game";
 import { Recorder } from "./engine/replay";
 import { H, W } from "./engine/rules";
 import { NAME_MAX, cleanName } from "./name";
+import { Lockstep, OnlinePanel, codeInAddress, delaySteps, fingerprint, type Room, type RoomMessage, type Start } from "./online";
 import { Ticket, loadTable, newTicket, qualifies, submitGame } from "./scores";
 import { Controls } from "./ui/input";
 import { View, render } from "./ui/render";
@@ -38,6 +39,7 @@ showSound();
 const controls = new Controls(document);
 controls.onActivity = () => sound.unlock();
 controls.onMute = toggleSound;
+controls.onOnline = () => openOnline();
 soundButton.addEventListener("click", (e) => { e.preventDefault(); sound.unlock(); toggleSound(); soundButton.blur(); });
 document.querySelectorAll<HTMLElement>("[data-action]").forEach((el) => controls.bindButton(el, el.dataset.action!));
 
@@ -46,8 +48,9 @@ const setMode = () => { document.body.dataset.phase = game.phase === "attract" ?
 
 // Pause when the tab is hidden, so nobody dies while away. It goes through the controls like a
 // key press, so the recording (and the server's replay) sees it on the frame it happened.
+// (An online game can't be paused: the other player waits for this browser's moves instead.)
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden && !game.paused && game.phase !== "attract" && game.phase !== "gameOver") controls.queuePause();
+  if (document.hidden && !online?.lock && !game.paused && game.phase !== "attract" && game.phase !== "gameOver") controls.queuePause();
 });
 
 // ── The high-score table ─────────────────────────────────────────────────
@@ -126,14 +129,23 @@ function askName(label: string, error = ""): Promise<string | null> {
 }
 
 /** After a game: ask each player whose score makes the table for a name, then send the game to be replayed. */
-async function offerTable(rec: Recording, scores: number[]): Promise<void> {
+async function offerTable(rec: Recording, scores: number[], net: OnlineGame | null): Promise<void> {
   if (!rec.ticket) return; // started without a seed from the server (offline): it can't be checked
   if (!view.table) await refreshTable();
   const names: (string | null)[] = scores.map(() => null);
   for (let i = 0; i < scores.length; i++) {
+    if (net && i !== net.me) continue; // online, each browser asks its own player
     if (!qualifies(scores[i], view.table)) continue;
     const who = scores.length === 2 ? `PLAYER ${i + 1}: ${scores[i]} POINTS!` : `${scores[i]} POINTS!`;
     names[i] = await askName(`${who} Your name for the high-score table:`);
+  }
+  if (net) {
+    // Online, one browser sends the game for both: the host, once it has the other player's name.
+    net.room.send({ t: "name", player: net.me, name: names[net.me] });
+    if (net.room.you !== net.lead()) return;
+    const theirs = await net.names;
+    theirs[net.me] = names[net.me];
+    names.splice(0, names.length, ...theirs);
   }
   if (names.every((n) => n === null)) return;
   let error = "";
@@ -143,12 +155,201 @@ async function offerTable(rec: Recording, scores: number[]): Promise<void> {
       await refreshTable();
       view.highlight = result.entries.map((e) => e.rank - 1).filter((r) => r < 10);
       tableUntil = game.frame + 900;
+      net?.room.send({ t: "table", highlight: view.highlight });
       return;
     }
     error = "The score could not be sent. Try again, or skip.";
     if ((await askName("Send your score again? Your name:", error)) === null) return;
   }
 }
+
+// ── Online: two players on different computers, taking turns ────────────
+//
+// Both browsers run the same game in lockstep (src/online.ts). Each sends only its own player's
+// controls, and each frame the game plays the controls of the player whose turn it is. The host
+// (who made the room) is player 1, and starts each game with a seed the high-score server issued,
+// so an online game can go on the table too.
+
+interface OnlineGame {
+  room: Room;
+  /** The game's lockstep while it is being played, else null. */
+  lock: Lockstep | null;
+  /** This browser's player: 0 or 1. */
+  me: number;
+  /** The players' slots in the room, from the game's start (empty before one). */
+  slots: number[];
+  /** The slot that sends the game to the table: the lowest one still here. */
+  lead: () => number;
+  ticket: Ticket | null;
+  /** The other player's name for the table, once it arrives. */
+  names: Promise<(string | null)[]>;
+  gotName: (player: number, name: string | null) => void;
+  /** Why the game was cut short, shown above the screen. */
+  note: string;
+}
+
+let online: OnlineGame | null = null;
+const onlineRoot = document.getElementById("online") as HTMLElement;
+const net = document.getElementById("net") as HTMLElement;
+
+const panel = new OnlinePanel({
+  root: onlineRoot,
+  min: 2,
+  label: (slot) => `PLAYER ${slot + 1}`,
+  intro: "Two players on different computers, phones or tablets, taking turns as on one machine. One of you makes a room and shares its code; the other joins with it.",
+  onStart: (room) => startOnline(room),
+  onBack: () => closePanel(),
+  onRoom: (room) => {
+    online = newOnline(room, null, 0);
+    room.listen((msg) => roomMessage(room, msg));
+  },
+});
+
+function newOnline(room: Room, ticket: Ticket | null, me: number, slots: number[] = []): OnlineGame {
+  let gotName: (player: number, name: string | null) => void = () => {};
+  // The other player's name (or null: none, or they left), or nothing after 90 seconds.
+  const names = new Promise<(string | null)[]>((resolve) => {
+    const got: (string | null)[] = [null, null];
+    const timer = setTimeout(() => resolve(got), 90_000);
+    gotName = (player, name) => {
+      if (player !== 1 - me) return;
+      got[player] = name;
+      clearTimeout(timer);
+      resolve(got);
+    };
+  });
+  return { room, lock: null, me, slots, ticket, names, gotName, note: "", lead: () => Math.min(...slots.filter((s) => room.peers.has(s))) };
+}
+
+function openOnline(): void {
+  if (game.phase !== "attract" || online?.lock) return; // from the title screens only
+  sound.unlock();
+  onlineRoot.hidden = false;
+  if (online && !online.room.closed) panel.showLobby();
+  else { online = null; panel.showChoose(); }
+}
+
+function closePanel(): void {
+  onlineRoot.hidden = true;
+  if (!panel.room) online = null;
+}
+
+/** Inputs as bits: only left, right and fire travel; the starts and pause are the page's own business online. */
+const pack = (i: Input): number => (i.left ? 1 : 0) | (i.right ? 2 : 0) | (i.fire ? 4 : 0);
+const unpack = (b: number): Input => ({ ...NO_INPUT, left: !!(b & 1), right: !!(b & 2), fire: !!(b & 4) });
+
+/** The host starts a game, with a seed from the server if it has one. */
+function startOnline(room: Room): void {
+  const slots = [...room.peers].sort((a, b) => a - b).slice(0, 2);
+  if (slots.length < 2) return;
+  const t = ticket;
+  ticket = null;
+  void fetchTicket();
+  const start: Start & { ticket: Ticket | null } = {
+    slots, seed: t ? t.seed : (Math.random() * 2 ** 32) >>> 0, ticket: t,
+    delay: delaySteps(slots.map((s) => room.rtts.get(s) ?? 150), 1 / 60),
+  };
+  room.send({ t: "start", ...start });
+  beginOnline(room, start, t);
+}
+
+function roomMessage(room: Room, msg: RoomMessage): void {
+  if (!online || online.room !== room) return;
+  if (msg.t === "start" && Array.isArray(msg.slots) && msg.slots.includes(room.you)) {
+    const t = msg.ticket as Ticket | null;
+    const valid = t && typeof t.id === "string" && Number.isInteger(t.seed) ? { id: t.id, seed: t.seed >>> 0 } : null;
+    beginOnline(room, { slots: msg.slots as number[], seed: Number(msg.seed) >>> 0, delay: Math.max(1, Math.min(60, Number(msg.delay) | 0)) }, valid);
+  } else if (msg.t === "name" && typeof msg.player === "number") {
+    online.gotName(msg.player, typeof msg.name === "string" ? cleanName(msg.name) || null : null);
+  } else if (msg.t === "table" && Array.isArray(msg.highlight)) {
+    void refreshTable().then(() => { view.highlight = (msg.highlight as number[]).filter((r) => Number.isInteger(r) && r >= 0 && r < 10); tableUntil = game.frame + 900; });
+  } else if (msg.t === "closed") {
+    if (online.lock) endOnline("CONNECTION LOST");
+    else online.note = "THE ROOM WAS LOST";
+  } else if (msg.t === "leave") {
+    const player = online.slots.indexOf(Number(msg.slot));
+    if (player >= 0) online.gotName(player, null);
+  }
+}
+
+function beginOnline(room: Room, start: Start, t: Ticket | null): void {
+  online?.lock?.stop();
+  const lock = new Lockstep(room, start, 0);
+  online = newOnline(room, t, lock.me, start.slots);
+  online.lock = lock;
+  lock.onLeave = () => { if (online) online.note = "PLAYER LEFT: YOU PLAY BOTH TURNS"; };
+  lock.onDesync = () => endOnline("OUT OF STEP: THE GAMES DIFFERED");
+  // Whatever this browser was doing, the online game starts from the title, unpaused.
+  document.querySelector("form.entry")?.remove();
+  document.body.classList.remove("entering");
+  recording = null;
+  game.paused = false;
+  game.phase = "attract";
+  game.nextSeed = start.seed;
+  closePanel();
+  sound.unlock();
+  acc = 0;
+}
+
+/** The online game is over, or cut short. */
+function endOnline(why: string): void {
+  if (!online?.lock) return;
+  online.lock.stop();
+  online.lock = null;
+  online.note = why;
+  if (why && game.phase !== "attract" && game.phase !== "gameOver") {
+    // Cut short: it can't go on without the other browser.
+    recording = null;
+    game.phase = "attract";
+  }
+}
+
+/** A fingerprint of the game, compared between the two browsers. */
+const gamePrint = (g: Game): number => fingerprint([
+  g.frame, g.playerX, g.current, g.aliveCount, g.sway, g.shot?.x ?? -1, g.shot?.y ?? -1, g.bullets.length,
+  ...g.players.flatMap((p) => [p.score, p.lives]), (g.rng as unknown as { s: number }).s,
+]);
+
+function stepOnline(o: OnlineGame, lock: Lockstep, now: number): void {
+  let stuck = false;
+  while (acc >= STEP && o.lock === lock) {
+    lock.local(pack(controls.read()));
+    if (!lock.ready()) { stuck = true; acc = Math.min(acc, STEP); break; }
+    acc -= STEP;
+    const all = lock.next();
+    // The first frame starts a two-player game; after that, the player whose turn it is plays
+    // (or, if they have left, the one still here).
+    let input: Input;
+    if (lock.frame === 1) input = { ...NO_INPUT, start2: true };
+    else {
+      const turn = all[game.current] ?? all[1 - game.current] ?? 0;
+      input = unpack(turn);
+    }
+    step(input, o);
+    lock.check(gamePrint(game));
+    if (game.phase === "gameOver") endOnline("");
+  }
+  lock.flush(now);
+  lock.stalled(now, stuck);
+}
+
+/** The line above the screen: the room, whose turn it is, and any waiting. */
+function showNet(now: number): void {
+  let text = "";
+  if (online && !online.room.closed) {
+    const lock = online.lock;
+    if (lock && lock.waitingSince !== null && now - lock.waitingSince > 400) text = `WAITING FOR PLAYER ${2 - lock.me}…`;
+    else if (online.note) text = online.note;
+    else if (lock) text = `ONLINE · YOU ARE PLAYER ${lock.me + 1}`;
+    else text = `ROOM ${online.room.code} · O FOR THE ROOM`;
+  } else if (online?.note) text = online.note;
+  net.hidden = !text;
+  document.body.classList.toggle("online-on", !!text);
+  document.body.classList.toggle("online-play", !!online?.lock);
+  if (net.textContent !== text) net.textContent = text;
+}
+
+document.getElementById("online-open")!.addEventListener("click", (e) => { e.preventDefault(); openOnline(); (e.currentTarget as HTMLElement).blur(); });
 
 // ── The loop ─────────────────────────────────────────────────────────────
 
@@ -159,26 +360,29 @@ const STEP = 1000 / 60;
 let last = performance.now();
 let acc = 0;
 
-function step(input: Input): void {
+function step(input: Input, net: OnlineGame | null = null): void {
   const wasAttract = game.phase === "attract";
-  if (wasAttract && (input.start1 || input.start2)) {
+  if (wasAttract && (input.start1 || input.start2) && !net) {
     // The game about to start uses the server's seed if one arrived; otherwise one of its own.
     if (!ticket) game.nextSeed = (Math.random() * 2 ** 32) >>> 0;
   }
   const events = game.step(input);
   for (const e of events) sound.play(e);
   if (wasAttract && game.phase === "ready") {
-    recording = { ticket: ticket && game.nextSeed === ticket.seed ? ticket : null, recorder: new Recorder() };
-    ticket = null;
+    if (net) recording = { ticket: net.ticket, recorder: new Recorder() };
+    else {
+      recording = { ticket: ticket && game.nextSeed === ticket.seed ? ticket : null, recorder: new Recorder() };
+      ticket = null;
+      void fetchTicket();
+    }
     view.highlight = [];
-    void fetchTicket();
   }
   if (recording) {
     recording.recorder.push(input);
     if (game.phase === "gameOver") {
       const done = recording;
       recording = null;
-      void offerTable(done, game.players.map((p) => p.score));
+      void offerTable(done, game.players.map((p) => p.score), net);
     }
   }
 }
@@ -186,15 +390,24 @@ function step(input: Input): void {
 function frame(now: number): void {
   acc = Math.min(acc + (now - last), 250);
   last = now;
-  while (acc >= STEP) {
-    step(controls.read());
-    acc -= STEP;
+  if (online?.lock) stepOnline(online, online.lock, now);
+  else {
+    while (acc >= STEP) {
+      const input = controls.read();
+      step(onlineRoot.hidden ? input : NO_INPUT); // keys don't start games behind the online screens
+      acc -= STEP;
+    }
   }
+  showNet(now);
   if (game.hiScore !== savedHi) { savedHi = game.hiScore; save(HI_KEY, String(savedHi)); }
   // On the title screens: the title for 10 seconds, then the table for 10, unless a score was just entered.
   view.showTable = game.phase === "attract" && (game.frame < tableUntil || Math.floor(game.frame / 600) % 2 === 1);
+  view.you = online?.lock ? online.me : null;
   setMode();
   render(ctx, game, view);
   requestAnimationFrame(frame);
 }
+// A link to a room (?room=ABCD) joins it straight away.
+const invited = codeInAddress();
+if (invited) { onlineRoot.hidden = false; void panel.join(invited, false); }
 requestAnimationFrame(frame);

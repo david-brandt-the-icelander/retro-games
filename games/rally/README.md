@@ -1,6 +1,6 @@
 # Rally
 
-*Two paddles. One ball. First to eleven.* A table-tennis game for the browser: play the computer, or a friend on the same keyboard or phone.
+*Two paddles. One ball. First to eleven.* A table-tennis game for the browser: play the computer, a friend on the same keyboard or phone, or a friend on another computer.
 
 Play it at <https://icelander.net/games/retro/rally/>.
 
@@ -12,7 +12,16 @@ Rally is an original game in the paddle-and-ball genre that the earliest arcade 
 - **First to 11 wins, by two clear points.** The serve changes every two points, and every point from 10–10. The ball rests on the server's paddle for a moment, so the server chooses where to serve from.
 - **One player:** you are the left paddle against the computer (easy, normal or hard; the choice is remembered). Use **W/S** or **↑/↓**, drag anywhere on the table, or move the mouse over it.
 - **Two players:** left uses **W/S** or drags on the left half; right uses **↑/↓** or drags on the right half. Both can play with keys, or both by touch on one phone or tablet.
-- **P** or **Esc** pauses (so does switching away from the tab), and **M** turns sound on and off. On the title screen, **1** and **2** start a game, **H** shows how to play and **S** the high scores.
+- **Online:** play a friend on another computer, phone or tablet. See below.
+- **P** or **Esc** pauses (so does switching away from the tab), and **M** turns sound on and off. On the title screen, **1** and **2** start a game, **O** goes online, **H** shows how to play and **S** the high scores.
+
+## Playing online
+
+Choose **ONLINE** (or press **O**). One of you chooses **MAKE A ROOM** and gets a four-letter code and a link to send; the other types the code under **JOIN**, or opens the link. The one who made the room plays on the left and presses **START**. Each of you uses your own keys, finger or mouse, as in a one-player game. An online match can't be paused: **Esc** opens a menu over it while it goes on, from which you can leave. After a match, **BACK TO THE ROOM** returns to the room, where the host can start another. Online matches don't go on the high-score table, which is for matches against the computer.
+
+Every browser runs the whole game itself, in lockstep (`src/online.ts`). Each one sends only its own player's controls, a few steps ahead of when they are played (the delay, set when the game starts from everyone's measured connection: usually 60–150 ms). A browser steps the game only once it has every player's controls for that step, so every browser plays exactly the same game; it is the same property that lets the server replay a game for the high-score table. Every 120 steps (a second or two) the browsers compare a fingerprint of their games, and end the game if they ever differ. A browser that falls behind (a slow connection, or a hidden tab) makes the others wait, and they say so.
+
+The room is a Cloudflare Durable Object (`worker/room.ts`), one per room code, at `GET api/room/{CODE}` (a WebSocket). It doesn't know the game: it numbers the players, tells them who comes and goes, and passes each one's messages to the others in order. It keeps nothing once everyone has left. `src/online.ts`, `worker/room.ts` and `test/online.test.ts` are the same files in Rally, Shatterbelt and Hivestorm.
 
 ## High scores
 
@@ -46,21 +55,22 @@ npm run dev       # rebuild on change; serve dist/ with any static server
 | `src/engine/match.ts` | Scoring, and a one-player match as the table sees it: the recorder, and `replay(seed, level, recording)`, which the server runs |
 | `src/names.ts`, `src/scores.ts` | The name rules (the same as Samosa's), and the browser's side of the table: seeds, submitting, the session name |
 | `src/ui/entry.ts` | The name entry: underlined slots, the blinking cursor, the on-screen keyboard |
-| `src/main.ts` | Menus, the fixed-step frame loop (120 Hz), recording, name entry, the table, the scoreboard and layout. A computer-against-computer match plays behind the menus. |
-| `worker/` | The Worker: the high-score API (seeds, replay, table), the public scores page in icelander.net's look, and the D1 schema |
+| `src/main.ts` | Menus, the fixed-step frame loop (120 Hz), recording, name entry, the table, the scoreboard, online matches and layout. A computer-against-computer match plays behind the menus. |
+| `src/online.ts` | Online play in the browser: the room's WebSocket, the lockstep, and the screens for making or joining a room |
+| `worker/` | The Worker: the high-score API (seeds, replay, table), the public scores page in icelander.net's look, the D1 schema, and the online rooms (`room.ts`) |
 | `public/` | The page, its styles, and `_headers` (strict CSP: everything comes from this origin) |
 | `test/` | node:test suites |
 
 ## Deploy
 
-A Worker named `rally` (`wrangler.jsonc`), routed at `icelander.net/games/retro/rally*`. It serves the static game, and `worker/index.ts` answers the high-score API under `/games/retro/rally/api/` and the page `/games/retro/rally/scores/`, backed by the D1 database `rally-scores`.
+A Worker named `rally` (`wrangler.jsonc`), routed at `icelander.net/games/retro/rally*`. It serves the static game, and `worker/index.ts` answers the high-score API under `/games/retro/rally/api/` and the page `/games/retro/rally/scores/`, backed by the D1 database `rally-scores`. Online rooms are the Durable Object class `Room` (binding `ROOMS`, SQLite-backed so it runs on the free plan); `wrangler deploy` creates it from the `migrations` entry in `wrangler.jsonc`. `ROOM_SIZE` (2) is how many players a room holds.
 
 ```bash
 npm run deploy    # test, build, wrangler deploy (needs CLOUDFLARE_API_TOKEN or `wrangler login`)
 ```
 
 - The database `rally-scores` and its tables exist (created 2026-11-06 with `wrangler d1 create` and `npx wrangler d1 execute rally-scores --remote --file worker/schema.sql`); a later schema change goes in `worker/migrations/`.
-- Local: `npx wrangler d1 execute rally-scores --local --file worker/schema.sql`, then `npm run build && npx wrangler dev`, and open `http://localhost:8787/games/retro/rally/`.
+- Local: `npx wrangler d1 execute rally-scores --local --file worker/schema.sql`, then `npm run build && npx wrangler dev`, and open `http://localhost:8787/games/retro/rally/`. Rooms work locally too: open the page in two browser windows.
 
 ## Licence
 

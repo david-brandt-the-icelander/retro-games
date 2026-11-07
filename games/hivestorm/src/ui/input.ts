@@ -11,6 +11,7 @@ export class Controls {
   /** Called on any key or touch, so sound can start. */
   onActivity: () => void = () => {};
   onMute: () => void = () => {};
+  onOnline: () => void = () => {};
 
   constructor(root: Document) {
     root.addEventListener("keydown", (e) => {
@@ -20,6 +21,7 @@ export class Controls {
       else if (e.code === "Digit2" || e.code === "Numpad2") this.presses.start2 = true;
       else if (e.code === "KeyP" || e.code === "Escape") this.presses.pause = true;
       else if (e.code === "KeyM") this.onMute();
+      else if (e.code === "KeyO") this.onOnline();
       this.held.add(this.map(e.code));
       if (this.isGameKey(e.code)) e.preventDefault();
     });
