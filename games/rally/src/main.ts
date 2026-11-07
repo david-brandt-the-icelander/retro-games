@@ -1,15 +1,16 @@
 // Wires the pure game to the page: menus, the frame loop, input, sound and the scoreboard.
 import { Cpu, LEVELS, type LevelName } from "./engine/ai";
 import { DT, Recorder, cpuSeed, quantise, scoreOf } from "./engine/match";
-import { H, W, newMatch, step, type Control, type GameEvent, type Side, type State } from "./engine/rules";
+import { H, IDLE, W, newMatch, step, type Control, type GameEvent, type Side, type State } from "./engine/rules";
 import { cleanName } from "./name";
+import { Lockstep, OnlinePanel, codeInAddress, delaySteps, fingerprint, type Room, type RoomMessage, type Start } from "./online";
 import { defaultName, loadTable, saveName, startMatch, submitMatch, type Match, type TableRow } from "./scores";
 import { actionFor, edit, NameEntry } from "./ui/entry";
 import { Input } from "./ui/input";
 import { Renderer } from "./ui/render";
 import { Sound } from "./ui/sound";
 
-type Screen = "title" | "help" | "play" | "paused" | "over" | "entry" | "scores";
+type Screen = "title" | "help" | "play" | "paused" | "over" | "entry" | "scores" | "online";
 /** How long the control hints stay on the table at the start of a match, in seconds. */
 const HINT_TIME = 4;
 
@@ -20,8 +21,9 @@ const board = $<HTMLElement>("board");
 const rotate = $<HTMLElement>("rotate");
 const siteLinks = $<HTMLElement>("site-links");
 const panels: Record<Exclude<Screen, "play">, HTMLElement> = {
-  title: $("title"), help: $("help"), paused: $("paused"), over: $("over"), entry: $("entry"), scores: $("scores"),
+  title: $("title"), help: $("help"), paused: $("paused"), over: $("over"), entry: $("entry"), scores: $("scores"), online: $("online"),
 };
+const netwait = $<HTMLElement>("netwait");
 const announce = $<HTMLElement>("announce");
 const soundButton = $<HTMLButtonElement>("sound");
 const pauseButton = $<HTMLButtonElement>("pause");
@@ -48,6 +50,12 @@ let starting = false;
 /** The computer-against-computer match that plays behind the menus. */
 let demo = newDemo();
 
+/**
+ * Online: the room this browser is in, which side it plays, and the match's lockstep (null
+ * between matches). The room's host plays on the left.
+ */
+let online: { room: Room; side: Side; lock: Lockstep | null; ended: string | null } | null = null;
+
 function seed(): number {
   return (Math.random() * 2 ** 32) >>> 0;
 }
@@ -58,9 +66,12 @@ function newDemo(): { s: State; cpus: [Cpu, Cpu] } {
 }
 
 /** The menus play a computer match behind them; a table opened from the title does too. */
-const demoShowing = (): boolean => screen === "title" || screen === "help" || (screen === "scores" && $("scores-again").hidden);
+const demoShowing = (): boolean => screen === "title" || screen === "help" || screen === "online" || (screen === "scores" && $("scores-again").hidden);
 
-const names = (): [string, string] => (players === 1 ? ["YOU", "CPU"] : ["LEFT", "RIGHT"]);
+const names = (): [string, string] =>
+  online?.lock || online?.ended ? (online.side === 0 ? ["YOU", "RIVAL"] : ["RIVAL", "YOU"]) : players === 1 ? ["YOU", "CPU"] : ["LEFT", "RIGHT"];
+/** Whether an online match is being played (it can't be paused: it goes on behind the menu). */
+const playingOnline = (): boolean => online?.lock != null && match.phase !== "over";
 
 // ——— Screens ———
 
@@ -68,17 +79,25 @@ function show(next: Screen): void {
   screen = next;
   for (const [name, el] of Object.entries(panels)) el.hidden = name !== next;
   document.body.classList.toggle("menu", next !== "play");
-  pauseButton.hidden = next !== "play" && next !== "paused";
+  pauseButton.hidden = (next !== "play" && next !== "paused") || playingOnline();
+  if (next === "paused") {
+    const net = playingOnline();
+    $("paused-h").textContent = net ? "ONLINE MATCH" : "PAUSED";
+    $("paused-note").hidden = !net;
+    $("resume").textContent = net ? "BACK TO THE MATCH" : "RESUME";
+    $("quit").textContent = net ? "LEAVE THE MATCH" : "QUIT TO MENU";
+  }
   pauseButton.textContent = next === "paused" ? "▶" : "II";
   pauseButton.setAttribute("aria-label", next === "paused" ? "Resume" : "Pause");
   input.reset();
-  if (next !== "play" && next !== "entry") (panels[next].querySelector("button.big:not([hidden]), button[aria-checked='true']") as HTMLButtonElement | null)?.focus();
+  if (next !== "play" && next !== "entry" && next !== "online") (panels[next].querySelector("button.big:not([hidden]), button[aria-checked='true']") as HTMLButtonElement | null)?.focus();
   else (document.activeElement as HTMLElement | null)?.blur(); // play and name entry read keys themselves
   updateBoard();
 }
 
 async function start(n: 1 | 2): Promise<void> {
   if (starting) return;
+  leaveOnline();
   players = n;
   sound.wake();
   ranked = null;
@@ -128,6 +147,7 @@ function say(text: string): void {
 
 const resultTitle = (winner: Side): string => {
   const [a, b] = names();
+  if (online) return winner === online.side ? "YOU WIN" : "RIVAL WINS";
   return players === 1 ? (winner === 0 ? "YOU WIN" : "CPU WINS") : `${winner === 0 ? a : b} WINS`;
 };
 /** The player's score for this one-player match. */
@@ -136,20 +156,113 @@ const points = (): number => scoreOf(ranked?.level ?? level, match.score, match.
 function gameOver(winner: Side): void {
   const title = resultTitle(winner);
   const final = `${match.score[0]} – ${match.score[1]}`;
+  if (online) { endOnline(null); return; }
   if (players === 1 && ranked && points() > 0) { void offerEntry(title, final); return; }
   showOver(ranked || players === 2 ? "" : "Offline: this score can't go on the table.");
 }
 
 /** The result panel: who won, the points, and (one player) the score. */
 function showOver(note = ""): void {
-  const title = resultTitle(match.winner ?? 0);
+  const title = online?.ended ?? resultTitle(match.winner ?? 0);
   $("over-h").textContent = title;
   $("final").textContent = `${match.score[0]} – ${match.score[1]}`;
   const p = $("over-points");
   p.hidden = players !== 1;
   p.textContent = `SCORE ${points().toLocaleString("en")}${note ? ` · ${note}` : ""}`;
-  say(`${title.toLowerCase()}, ${match.score[0]} to ${match.score[1]}.${players === 1 ? ` Score ${points()}.` : ""}`);
+  const onlineNote = online ? (online.room.closed ? "The connection to the room was lost." : online.room.peers.size < 2 ? "Your rival has left the room." : "Back in the room, the host can start another match.") : "";
+  $("over-note").textContent = onlineNote;
+  $("over-note").hidden = !online;
+  $("over-again").textContent = online && !online.room.closed ? "BACK TO THE ROOM" : "PLAY AGAIN";
+  $("over-again").hidden = !!online?.room.closed;
+  say(`${title.toLowerCase()}, ${match.score[0]} to ${match.score[1]}.${players === 1 ? ` Score ${points()}.` : ""} ${onlineNote}`);
   show("over");
+}
+
+// ——— Online: a friend on another computer ———
+
+const panel = new OnlinePanel({
+  root: panels.online,
+  min: 2,
+  label: (slot) => (slot === 0 ? "LEFT" : "RIGHT"),
+  intro: "Play a friend on another computer, phone or tablet. One of you makes a room and shares its code; the other joins with it. Whoever makes the room plays on the left.",
+  onStart: (room) => startOnline(room),
+  onBack: () => { leaveOnline(); show("title"); },
+  onRoom: (room) => {
+    online = { room, side: room.you === room.host ? 0 : 1, lock: null, ended: null };
+    room.listen((msg) => roomMessage(room, msg));
+  },
+});
+
+/** A Control as a whole number, to send: 0–2 for the keys' direction, 3 + y for a finger or mouse. */
+const pack = (c: Control): number => (c.target === null ? c.dir + 1 : 3 + c.target);
+const unpack = (n: number | null): Control =>
+  n === null ? IDLE : n < 3 ? { dir: (n - 1) as -1 | 0 | 1, target: null } : { dir: 0, target: Math.min(H, n - 3) };
+const IDLE_PACKED = pack(IDLE);
+
+/** The host starts a match: a fresh seed, and a delay to suit both connections. */
+function startOnline(room: Room): void {
+  const slots = [...room.peers].sort((a, b) => a - b).slice(0, 2);
+  if (slots.length < 2) return;
+  const start: Start = { slots, seed: seed(), delay: delaySteps(slots.map((s) => room.rtts.get(s) ?? 150), DT) };
+  room.send({ t: "start", ...start });
+  beginOnline(room, start);
+}
+
+function roomMessage(room: Room, msg: RoomMessage): void {
+  if (!online || online.room !== room) return;
+  if (msg.t === "start" && Array.isArray(msg.slots) && msg.slots.includes(room.you)) {
+    beginOnline(room, { slots: msg.slots as number[], seed: Number(msg.seed) >>> 0, delay: Math.max(1, Math.min(120, Number(msg.delay) | 0)) });
+  } else if (msg.t === "closed" && online.lock) {
+    endOnline("CONNECTION LOST");
+  } else if ((msg.t === "leave" || msg.t === "closed") && screen === "over") {
+    showOver();
+  }
+}
+
+function beginOnline(room: Room, start: Start): void {
+  if (!online) return;
+  online.lock?.stop();
+  const lock = new Lockstep(room, start, IDLE_PACKED);
+  online.side = lock.me as Side;
+  online.lock = lock;
+  online.ended = null;
+  lock.onLeave = () => endOnline("RIVAL LEFT");
+  lock.onDesync = () => endOnline("OUT OF STEP");
+  sound.wake();
+  ranked = null;
+  cpu = null;
+  players = 2;
+  match = newMatch(start.seed);
+  hintLeft = HINT_TIME;
+  acc = 0;
+  show("play");
+  say(`Online match. You play on the ${online.side === 0 ? "left" : "right"}. First to 11.`);
+}
+
+/** The online match is over: won, or cut short (why, as the result's title). */
+function endOnline(why: string | null): void {
+  if (!online?.lock) return;
+  online.lock.stop();
+  online.lock = null;
+  online.ended = why;
+  netwait.hidden = true;
+  showOver();
+}
+
+/** Leaves the room, if this browser is in one. */
+function leaveOnline(): void {
+  if (!online) return;
+  online.lock?.stop();
+  online = null;
+  panel.leaveRoom();
+  netwait.hidden = true;
+}
+
+function openOnline(): void {
+  sound.wake();
+  show("online");
+  if (online && !online.room.closed) panel.showLobby();
+  else { leaveOnline(); panel.showChoose(); }
 }
 
 // ——— High scores: name entry, then the table ———
@@ -233,6 +346,29 @@ async function showScores(mine?: { rank: number; score: number }): Promise<void>
 
 // ——— The frame loop ———
 
+/** A fingerprint of the match, compared between the two browsers of an online match. */
+const matchPrint = (s: State): number =>
+  fingerprint([s.ball.x, s.ball.y, s.ball.vx, s.ball.vy, s.paddles[0].y, s.paddles[1].y, s.score[0], s.score[1], s.timer]);
+
+/** Steps an online match by real time: this browser's control goes out, and each step waits for the rival's. */
+function stepOnline(lock: Lockstep, dt: number, now: number): void {
+  acc += dt;
+  let stuck = false;
+  while (acc >= DT && online?.lock === lock && match.phase !== "over") {
+    lock.local(pack(screen === "play" ? quantise(input.one()) : IDLE));
+    if (!lock.ready()) { stuck = true; acc = Math.min(acc, DT); break; }
+    acc -= DT;
+    const [a, b] = lock.next();
+    handle(step(match, [unpack(a), unpack(b)], DT));
+    lock.check(matchPrint(match));
+  }
+  lock.flush(now);
+  lock.stalled(now, stuck);
+  const late = stuck && lock.waitingSince !== null && now - lock.waitingSince > 400;
+  if (late) netwait.textContent = "Waiting for your rival's moves…";
+  netwait.hidden = !late;
+}
+
 function controls(): [Control, Control] {
   if (players === 2) return input.two();
   // The player's control in whole pixels, as it is recorded, so the server's replay matches exactly.
@@ -263,7 +399,10 @@ function frame(now: number): void {
   const dt = Math.min((now - last) / 1000, 0.25);
   last = now;
 
-  if (screen === "play") {
+  if (online?.lock && (screen === "play" || screen === "paused")) {
+    hintLeft = Math.max(0, hintLeft - dt);
+    stepOnline(online.lock, dt, now);
+  } else if (screen === "play") {
     acc += dt;
     hintLeft = Math.max(0, hintLeft - dt);
     while (acc >= DT && screen === "play") {
@@ -286,9 +425,10 @@ function frame(now: number): void {
     renderer.draw(demo.s, dt, null);
   } else {
     const hints: [string, string] | null = hintLeft > 0 && screen === "play"
-      ? players === 1 ? ["W / S, ↑ / ↓ or drag", ""] : ["W / S or drag here", "↑ / ↓ or drag here"]
+      ? online ? (online.side === 0 ? ["YOU: W / S, ↑ / ↓ or drag", ""] : ["", "YOU: W / S, ↑ / ↓ or drag"])
+        : players === 1 ? ["W / S, ↑ / ↓ or drag", ""] : ["W / S or drag here", "↑ / ↓ or drag here"]
       : null;
-    renderer.draw(match, screen === "play" ? dt : 0, hints);
+    renderer.draw(match, screen === "play" || playingOnline() ? dt : 0, hints);
   }
   requestAnimationFrame(frame);
 }
@@ -312,10 +452,11 @@ function act(action: string | undefined): void {
   switch (action) {
     case "one": void start(1); break;
     case "two": void start(2); break;
-    case "again": void start(players); break;
+    case "again": if (online) openOnline(); else void start(players); break;
+    case "online": openOnline(); break;
     case "help": show("help"); break;
     case "scores": void showScores(); break;
-    case "menu": cpu = null; demo = newDemo(); show("title"); break;
+    case "menu": leaveOnline(); cpu = null; demo = newDemo(); show("title"); break;
     case "resume": show("play"); break;
   }
 }
@@ -327,7 +468,7 @@ document.addEventListener("click", (e) => {
   else act(el.dataset.action);
 });
 soundButton.addEventListener("click", () => setSound(!sound.on));
-pauseButton.addEventListener("click", () => show(screen === "paused" ? "play" : "paused"));
+pauseButton.addEventListener("click", () => { if (!playingOnline()) show(screen === "paused" ? "play" : "paused"); });
 
 document.addEventListener("keydown", (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -343,25 +484,29 @@ document.addEventListener("keydown", (e) => {
 
   if (screen === "play") {
     if (input.key(e.code, true)) e.preventDefault();
-    if (k === "p" || e.key === "Escape") { e.preventDefault(); show("paused"); }
+    // Escape opens the menu over an online match, which goes on; P can't pause it.
+    if ((k === "p" && !playingOnline()) || e.key === "Escape") { e.preventDefault(); show("paused"); }
     return;
   }
   if (screen === "paused" && (k === "p" || e.key === "Escape" || k === " ")) { e.preventDefault(); show("play"); return; }
   if (screen === "title") {
     if (k === "1") void start(1);
     else if (k === "2") void start(2);
+    else if (k === "o") openOnline();
     else if (k === "h") show("help");
     else if (k === "s") void showScores();
     return;
   }
   if (screen === "help" && (e.key === "Escape" || k === "h")) { show("title"); return; }
   if (screen === "scores" && e.key === "Escape") { show("title"); return; }
+  if (screen === "online" && e.key === "Escape") { leaveOnline(); show("title"); return; }
   if (screen === "over" && e.key === "Escape") show("title");
 });
 document.addEventListener("keyup", (e) => { input.key(e.code, false); });
 
-document.addEventListener("visibilitychange", () => { if (document.hidden && screen === "play") show("paused"); });
-window.addEventListener("blur", () => { if (screen === "play") show("paused"); });
+// Leaving the page pauses a match, except online, where the rival waits for this browser's moves instead.
+document.addEventListener("visibilitychange", () => { if (document.hidden && screen === "play" && !playingOnline()) show("paused"); });
+window.addEventListener("blur", () => { if (screen === "play" && !playingOnline()) show("paused"); });
 window.addEventListener("resize", layout);
 new ResizeObserver(layout).observe(document.documentElement);
 window.addEventListener("orientationchange", layout);
@@ -369,5 +514,8 @@ window.addEventListener("orientationchange", layout);
 setLevel(level);
 setSound(sound.on);
 show("title");
+// A link to a room (?room=ABCD) joins it straight away.
+const invited = codeInAddress();
+if (invited) { show("online"); void panel.join(invited, false); }
 layout();
 requestAnimationFrame((now) => { last = now; frame(now); });

@@ -10,12 +10,21 @@ HIVESTORM is an original game in the formation-and-dive shooter genre of the lat
 |---|---|---|
 | Start a 1-player game | `1` | **1 PLAYER** |
 | Start a 2-player game | `2` | **2 PLAYERS** |
+| Play online | `O` | **ONLINE** |
 | Move | `←` `→` (or `A` `D`) | ◀ ▶ |
 | Fire (hold to keep firing) | `Space` (or `↑`, `Ctrl`, `Enter`) | **FIRE** |
 | Pause | `P` or `Esc` | **PAUSE** |
 | Sound on or off | `M` | **SOUND** |
 
 **Two players** take turns at the same controls. The turn passes each time a ship is lost. Each player has their own score, ships, wave and hive, and a hive stays as its player left it until their next turn. When one player is out of ships, the other plays on alone. The game ends when both are out and names the winner.
+
+## Playing online
+
+Two players on different computers, phones or tablets play the same two-player game, taking turns as they would on one machine. Press **O** or **ONLINE** on the title screen. One of you chooses **MAKE A ROOM** and gets a four-letter code and a link to send; the other types the code under **JOIN**, or opens the link. The one who made the room is player 1 and presses **START**. Each of you plays your own turns with your own controls, and watches the other's. The line under the screen says which player you are and whose turn it is. An online game can't be paused. If the other player leaves, you play both turns. When the game ends, each of you can put your own score on the high-score table: the host's browser sends the game with both names, and the server replays it as any other. Press **O** again for the room, where the host can start another game.
+
+Every browser runs the whole game itself, in lockstep (`src/online.ts`). Each one sends only its own player's controls, a few steps ahead of when they are played (the delay, set when the game starts from everyone's measured connection: usually 60–150 ms). A browser steps the game only once it has every player's controls for that step, so every browser plays exactly the same game; it is the same property that lets the server replay a game for the high-score table. Every 120 steps (a second or two) the browsers compare a fingerprint of their games, and end the game if they ever differ. A browser that falls behind (a slow connection, or a hidden tab) makes the others wait, and they say so.
+
+The room is a Cloudflare Durable Object (`worker/room.ts`), one per room code, at `GET api/room/{CODE}` (a WebSocket). It doesn't know the game: it numbers the players, tells them who comes and goes, and passes each one's messages to the others in order. It keeps nothing once everyone has left. `src/online.ts`, `worker/room.ts` and `test/online.test.ts` are the same files in Rally, Shatterbelt and Hivestorm.
 
 ## Rules
 
@@ -50,9 +59,10 @@ The table lives in the D1 database `hivestorm-scores` (schema: `worker/schema.sq
 - `src/ui/render.ts`: draws the game onto a 224×288 canvas.
 - `src/ui/sound.ts`: sound effects made with Web Audio, with no sound files.
 - `src/ui/input.ts`: the keyboard and touch buttons.
-- `src/main.ts`: the page and its fixed-step loop. It records each game and offers the high-score table.
+- `src/main.ts`: the page and its fixed-step loop. It records each game, offers the high-score table, and plays online games.
+- `src/online.ts`: online play in the browser: the room's WebSocket, the lockstep, and the screens for making or joining a room.
 - `src/scores.ts`, `src/name.ts`: the browser's side of the table, and how a name is cleaned.
-- `worker/`: the Worker. It serves the game, the high-score API and the scores page (`scores-page.ts`, in icelander.net's look from `look.ts`).
+- `worker/`: the Worker. It serves the game, the high-score API, the scores page (`scores-page.ts`, in icelander.net's look from `look.ts`) and the online rooms (`room.ts`: the Durable Object class `Room`, binding `ROOMS`, SQLite-backed so it runs on the free plan, created by `wrangler deploy` from the `migrations` entry in `wrangler.jsonc`).
 
 ```bash
 npm ci

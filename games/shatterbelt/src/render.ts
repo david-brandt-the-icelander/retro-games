@@ -632,7 +632,7 @@ export class Renderer {
       this.text(fmt(e.score), 1000, y, 15, COLOR.text, "right", 600);
       this.text(`W${e.wave} ${e.mode === "versus" ? "VS" : e.players > 1 ? `${e.players}P` : "1P"}`, 1020, y, 13, COLOR.dim, "left", 500);
     });
-    const go = touch ? "TAP A MODE" : "↑ ↓ choose · ENTER or SPACE select · M sound";
+    const go = touch ? "TAP A MODE · OR PLAY ONLINE BELOW" : "↑ ↓ choose · ENTER or SPACE select · O online · M sound";
     this.ctx.globalAlpha = 0.6 + 0.4 * Math.sin(t * 4);
     this.text(go, W / 2, H - 22, 15, COLOR.dim, "center", 600);
     this.ctx.globalAlpha = 1;

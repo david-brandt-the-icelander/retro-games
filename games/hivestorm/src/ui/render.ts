@@ -169,7 +169,7 @@ function drawAttract(ctx: Ctx, game: Game): void {
   centred(ctx, `EXTRA SHIP AT ${RULES.extraLifeAt}`, 226, COLOURS.dim);
   if (Math.floor(f / 30) % 2 === 0) centred(ctx, "PRESS 1 OR 2 PLAYERS", 246, COLOURS.text);
   centred(ctx, "ARROWS MOVE  SPACE FIRES", 262, "#8090a0");
-  centred(ctx, "P PAUSE  M SOUND", 272, "#8090a0");
+  centred(ctx, "P PAUSE  M SOUND  O ONLINE", 272, "#8090a0");
 }
 
 /** What the page adds to the game's own picture: the high-score table for the title screens. */
@@ -179,6 +179,8 @@ export interface View {
   highlight: number[];
   /** Show the table instead of the title. */
   showTable: boolean;
+  /** Online: the player this browser plays (0 or 1), so the screen can say whose turn it is. */
+  you?: number | null;
 }
 
 function drawTable(ctx: Ctx, game: Game, view: View): void {
@@ -212,7 +214,7 @@ export function render(ctx: Ctx, game: Game, view?: View): void {
   drawHud(ctx, game);
 
   const mid = 150;
-  const who = `PLAYER ${game.current + 1}`;
+  const who = view?.you != null && game.numPlayers === 2 ? (game.current === view.you ? "YOUR TURN" : `PLAYER ${game.current + 1}'S TURN`) : `PLAYER ${game.current + 1}`;
   switch (game.phase) {
     case "ready":
       centred(ctx, who, mid, COLOURS.label);

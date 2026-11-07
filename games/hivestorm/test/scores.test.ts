@@ -131,7 +131,7 @@ function fakeEnv(): Env & { rows: { games: Map<string, { seed: number; created: 
       return st;
     },
   };
-  return { DB: DB as never, ASSETS: { fetch: async () => new Response("asset") }, rows: { games, scores } };
+  return { DB: DB as never, ASSETS: { fetch: async () => new Response("asset") }, ROOMS: null as never, rows: { games, scores } };
 }
 
 const API = "https://icelander.net/games/retro/hivestorm/api";

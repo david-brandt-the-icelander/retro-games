@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Shatterbelt</title>
-<meta name="description" content="Shatterbelt: break up a drifting rock belt with up to nine pilots on one screen, together or against each other.">
+<meta name="description" content="Shatterbelt: break up a drifting rock belt with up to nine pilots on one screen or online, together or against each other.">
 <meta name="theme-color" content="#04060d">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="style.css">
@@ -23,10 +23,13 @@
       <button type="button" data-ctl="fire" class="fire">FIRE</button>
     </div>
   </div>
+  <section id="online" class="online" aria-label="Play online" hidden></section>
 </main>
 <div id="bar">
   <button id="sound" type="button" aria-pressed="true">SOUND: ON (M)</button>
   <button id="pause" type="button" hidden>PAUSE (P)</button>
+  <button id="online-open" type="button">PLAY ONLINE (O)</button>
+  <span id="net" class="net" role="status" hidden></span>
   <a href="scores/">HIGH SCORES</a>
 </div>
 <nav class="site-links" aria-label="icelander.net"><a href="/trains">Trains of thought</a> · <a href="/games/">Games</a> · <a href="/">About and contact</a> · <a href="/feed.xml">Feed of everything</a></nav>

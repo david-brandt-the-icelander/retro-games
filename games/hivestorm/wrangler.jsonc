@@ -12,5 +12,9 @@
   // everything else is a static asset.
   "main": "worker/index.ts",
   "assets": { "directory": "./dist", "binding": "ASSETS" },
+  // Online rooms (worker/room.ts): one Durable Object per room code, relaying the players' moves.
+  "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "Room" }] },
+  "migrations": [{ "tag": "rooms-v1", "new_sqlite_classes": ["Room"] }],
+  "vars": { "ROOM_SIZE": "2" },
   "d1_databases": [{ "binding": "DB", "database_name": "hivestorm-scores", "database_id": "c29ed586-3080-4efa-9fc6-2a50330591f4" }]
 }
