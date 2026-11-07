@@ -2,7 +2,7 @@
   "name": "hivestorm",
   "version": "1.0.0",
   "private": true,
-  "description": "HIVESTORM: an original formation-and-dive arcade shooter for one or two players.",
+  "description": "HIVESTORM: an original formation-and-dive arcade shooter for one player, or two online on their own devices.",
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",

@@ -1,6 +1,6 @@
 # Rally
 
-*Two paddles. One ball. First to eleven.* A table-tennis game for the browser: play the computer, a friend on the same keyboard or phone, or a friend on another computer.
+*Two paddles. One ball. First to eleven.* A table-tennis game for the browser: play the computer, or a friend online, each of you on your own computer, phone or tablet.
 
 Play it at <https://games.icelander.net/retro/rally/>.
 
@@ -10,10 +10,9 @@ Rally is an original game in the paddle-and-ball genre that the earliest arcade 
 
 - Hit the ball past the other paddle. The further from your paddle's centre the ball lands, the steeper it leaves (up to 55°: the engine works in slopes, not angles). Every return is 6% faster than the last, up to a top speed.
 - **First to 11 wins, by two clear points.** The serve changes every two points, and every point from 10–10. The ball rests on the server's paddle for a moment, so the server chooses where to serve from.
-- **One player:** you are the left paddle against the computer (easy, normal or hard; the choice is remembered). Use **W/S** or **↑/↓**, drag anywhere on the table, or move the mouse over it.
-- **Two players:** left uses **W/S** or drags on the left half; right uses **↑/↓** or drags on the right half. Both can play with keys, or both by touch on one phone or tablet.
-- **Online:** play a friend on another computer, phone or tablet, started from the multiplayer page. See below.
-- **P** or **Esc** pauses (so does switching away from the tab), and **M** turns sound on and off. On the title screen, **1** and **2** start a game, **H** shows how to play and **S** the high scores.
+- **Against the computer:** you are the left paddle (easy, normal or hard; the choice is remembered). Use **W/S** or **↑/↓**, drag anywhere on the table, or move the mouse over it.
+- **A friend:** each of you on your own computer, phone or tablet, with the same controls, started from the multiplayer page (the title screen links to it). See below. There is no two-player game on one device.
+- **P** or **Esc** pauses (so does switching away from the tab), and **M** turns sound on and off. On the title screen, **1** starts a match against the computer, **H** shows how to play and **S** the high scores.
 
 ## Playing online
 

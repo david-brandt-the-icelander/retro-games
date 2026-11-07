@@ -25,7 +25,8 @@ canvas#screen {
 #pad .moves .fire { flex: 1.4; background: #4a1020; border-color: #902040; }
 #pad button.down, #pad button:active { background: var(--btn-hot); color: #000; }
 #pad .small button { flex: 0 1 auto; min-height: 32px; padding: 0 12px; font-size: 12px; font-weight: normal; color: #aaa; background: none; border-color: #444; }
-body[data-phase="playing"] #pad .starts { display: none; }
+body[data-phase="playing"] #pad .starts, body[data-phase="playing"] #pad .friends { display: none; }
+#pad .small .friends { align-self: center; padding: 0 6px; color: #ffd040; font-size: 12px; font-weight: normal; text-underline-offset: .15em; }
 body[data-phase="attract"] .pause { display: none; }
 body.online-play #pad .pause { display: none; } /* an online game can't be paused */
 

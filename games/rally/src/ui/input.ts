@@ -1,10 +1,9 @@
-// Keys, touches and the mouse, turned into a Control for each paddle.
+// Keys, touches and the mouse, turned into this browser's player's Control. One player per browser:
+// friends play each other online, each on their own device (the multiplayer page).
 import { H, IDLE, W, type Control } from "../engine/rules";
 
-const UP_LEFT = new Set(["KeyW"]);
-const DOWN_LEFT = new Set(["KeyS"]);
-const UP_RIGHT = new Set(["ArrowUp"]);
-const DOWN_RIGHT = new Set(["ArrowDown"]);
+const UP = ["KeyW", "ArrowUp"];
+const DOWN = ["KeyS", "ArrowDown"];
 
 export class Input {
   private held = new Set<string>();
@@ -37,7 +36,7 @@ export class Input {
 
   /** Returns true when the key moves a paddle, so the page shouldn't scroll. */
   key(code: string, down: boolean): boolean {
-    const paddle = UP_LEFT.has(code) || DOWN_LEFT.has(code) || UP_RIGHT.has(code) || DOWN_RIGHT.has(code);
+    const paddle = UP.includes(code) || DOWN.includes(code);
     if (down) { this.held.add(code); if (paddle) this.hover = null; }
     else this.held.delete(code);
     return paddle;
@@ -49,36 +48,14 @@ export class Input {
     this.hover = null;
   }
 
-  private dir(up: Set<string>, down: Set<string>): -1 | 0 | 1 {
-    const u = [...up].some((k) => this.held.has(k));
-    const d = [...down].some((k) => this.held.has(k));
-    return u === d ? 0 : u ? -1 : 1;
-  }
-
-  private pointer(side: "left" | "right" | "any"): number | null {
-    let y: number | null = null;
-    for (const p of this.pointers.values()) {
-      if (side === "any" || (side === "left") === (p.x < W / 2)) y = p.y;
-    }
-    return y;
-  }
-
-  /** The human's paddle in a one-player game: any keys, any finger, or the mouse. */
+  /** The player's paddle: either key pair, any finger, or the mouse. */
   one(): Control {
-    const dir = this.dir(new Set([...UP_LEFT, ...UP_RIGHT]), new Set([...DOWN_LEFT, ...DOWN_RIGHT]));
-    if (dir) return { dir, target: null };
-    const y = this.pointer("any") ?? this.hover;
+    const u = UP.some((k) => this.held.has(k));
+    const d = DOWN.some((k) => this.held.has(k));
+    if (u !== d) return { dir: u ? -1 : 1, target: null };
+    let y: number | null = null;
+    for (const p of this.pointers.values()) y = p.y; // the latest finger
+    y ??= this.hover;
     return y === null ? IDLE : { dir: 0, target: y };
-  }
-
-  /** Both paddles in a two-player game: W/S and the left half; the arrows and the right half. */
-  two(): [Control, Control] {
-    const side = (up: Set<string>, down: Set<string>, half: "left" | "right"): Control => {
-      const dir = this.dir(up, down);
-      if (dir) return { dir, target: null };
-      const y = this.pointer(half);
-      return y === null ? IDLE : { dir: 0, target: y };
-    };
-    return [side(UP_LEFT, DOWN_LEFT, "left"), side(UP_RIGHT, DOWN_RIGHT, "right")];
   }
 }

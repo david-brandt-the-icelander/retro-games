@@ -5,9 +5,9 @@ Recreations of retro-games that I have made with the help of AI
 
 | Game | Play | Source |
 |---|---|---|
-| Rally: table tennis for one or two players, on one device or online, with a high-score table | [games.icelander.net/retro/rally](https://games.icelander.net/retro/rally/) ([high scores](https://games.icelander.net/retro/rally/scores/)) | [games/rally](games/rally) |
+| Rally: table tennis against the computer, or a friend online on their own device, with a high-score table | [games.icelander.net/retro/rally](https://games.icelander.net/retro/rally/) ([high scores](https://games.icelander.net/retro/rally/scores/)) | [games/rally](games/rally) |
 | Shatterbelt: an original rock-breaking shooter, alone or online with up to nine pilots each on their own computer, co-op or versus, with a high-score table | [games.icelander.net/retro/shatterbelt](https://games.icelander.net/retro/shatterbelt/) ([high scores](https://games.icelander.net/retro/shatterbelt/scores/)) | [games/shatterbelt](games/shatterbelt) |
-| Hivestorm: an arcade shooter for one or two players, on one device or online, with a high-score table | [games.icelander.net/retro/hivestorm](https://games.icelander.net/retro/hivestorm/) ([high scores](https://games.icelander.net/retro/hivestorm/scores/)) | [games/hivestorm](games/hivestorm) |
+| Hivestorm: an arcade shooter for one player, or two online each on their own device, with a high-score table | [games.icelander.net/retro/hivestorm](https://games.icelander.net/retro/hivestorm/) ([high scores](https://games.icelander.net/retro/hivestorm/scores/)) | [games/hivestorm](games/hivestorm) |
 | Samosa: a remake of a 1983 ZX Spectrum strategy game | [games.icelander.net/retro/samosa](https://games.icelander.net/retro/samosa/) ([high scores](https://games.icelander.net/retro/samosa/scores/)) | [games/dictator](games/dictator) |
 
 ## Agent skills

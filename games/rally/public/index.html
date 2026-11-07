@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rally</title>
-<meta name="description" content="Rally: two paddles, one ball, first to eleven. Play the computer, a friend on the same device, or a friend on another computer.">
+<meta name="description" content="Rally: two paddles, one ball, first to eleven. Play the computer, or a friend online, each on your own computer.">
 <meta name="theme-color" content="#071226">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="rally.css">
@@ -27,8 +27,7 @@
       <h1 id="title-h">RALLY</h1>
       <p class="tag">Two paddles. One ball. First to eleven.</p>
       <div class="choices">
-        <button type="button" data-action="one" class="big"><kbd>1</kbd> ONE PLAYER</button>
-        <button type="button" data-action="two" class="big"><kbd>2</kbd> TWO PLAYERS</button>
+        <button type="button" data-action="one" class="big"><kbd>1</kbd> PLAY THE COMPUTER</button>
       </div>
       <div class="level" role="radiogroup" aria-label="Computer's level">
         <span class="label">COMPUTER</span>
@@ -39,6 +38,7 @@
       <div class="links">
         <button type="button" data-action="help" class="link"><kbd>H</kbd> How to play</button>
         <button type="button" data-action="scores" class="link"><kbd>S</kbd> High scores</button>
+        <a class="link" href="/multiplayer/">Play a friend online</a>
       </div>
     </section>
 
@@ -48,12 +48,9 @@
       <p>First to 11 wins, but you must be two points clear. The serve changes every two points, and every point from 10–10. While you hold the ball, move to choose where you serve from.</p>
       <table>
         <tr><th></th><th>Keys</th><th>Touch or mouse</th></tr>
-        <tr><td>One player</td><td><kbd>W</kbd>/<kbd>S</kbd> or <kbd>↑</kbd>/<kbd>↓</kbd></td><td>drag anywhere, or move the mouse</td></tr>
-        <tr><td>Left player</td><td><kbd>W</kbd>/<kbd>S</kbd></td><td>drag on the left half</td></tr>
-        <tr><td>Right player</td><td><kbd>↑</kbd>/<kbd>↓</kbd></td><td>drag on the right half</td></tr>
-        <tr><td>Online</td><td><kbd>W</kbd>/<kbd>S</kbd> or <kbd>↑</kbd>/<kbd>↓</kbd></td><td>drag anywhere, or move the mouse</td></tr>
+        <tr><td>Your paddle</td><td><kbd>W</kbd>/<kbd>S</kbd> or <kbd>↑</kbd>/<kbd>↓</kbd></td><td>drag anywhere, or move the mouse</td></tr>
       </table>
-      <p>To play a friend on another computer or phone, sign in and meet on the <a href="/multiplayer/">multiplayer page</a>.</p>
+      <p>To play a friend, each of you on your own computer, phone or tablet, sign in and meet on the <a href="/multiplayer/">multiplayer page</a>. You both use the same controls.</p>
       <p><kbd>P</kbd> or <kbd>Esc</kbd> pauses, <kbd>M</kbd> turns sound on and off.</p>
       <p>Against the computer, each point you win scores 100 on easy, 200 on normal and 300 on hard, and winning the match adds ten points' worth. Then you may put your score on the public table.</p>
       <button type="button" data-action="menu" class="big">BACK</button>
