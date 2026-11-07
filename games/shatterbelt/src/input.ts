@@ -1,42 +1,18 @@
-// Keyboards, gamepads and touch, turned into one Controls per player and a queue of presses for menus.
+// The keyboard, gamepads and touch, turned into this browser's pilot's Controls and a queue of presses for
+// menus. One pilot per browser: friends play together each on their own computer (the multiplayer page).
 import { IDLE, type Controls } from "./engine/game";
 
-/** A keyboard key set: physical key codes for each control (KeyboardEvent.code, so any layout works). */
-export interface KeySet {
-  name: string;
-  /** How the keys are shown to players. */
-  label: string;
-  left: string[];
-  right: string[];
-  thrust: string[];
-  fire: string[];
-  blink: string[];
-}
+/** The pilot's keys: physical key codes (KeyboardEvent.code, so any layout works). Arrows or WASD, or the numpad. */
+export const KEYS = {
+  left: ["ArrowLeft", "KeyA", "Numpad4"],
+  right: ["ArrowRight", "KeyD", "Numpad6"],
+  thrust: ["ArrowUp", "KeyW", "Numpad8"],
+  fire: ["Space", "Enter", "NumpadEnter", "Numpad0", "ShiftRight", "ControlRight"],
+  blink: ["ArrowDown", "KeyS", "Numpad5", "Numpad2"],
+} as const;
 
-/** Five players can share one keyboard (as far as the keyboard can register that many keys at once). */
-export const KEY_SETS: KeySet[] = [
-  { name: "kb1", label: "W A D · Q fire · S blink", left: ["KeyA"], right: ["KeyD"], thrust: ["KeyW"], fire: ["KeyQ"], blink: ["KeyS"] },
-  { name: "kb2", label: "T F H · R fire · G blink", left: ["KeyF"], right: ["KeyH"], thrust: ["KeyT"], fire: ["KeyR"], blink: ["KeyG"] },
-  { name: "kb3", label: "I J L · U fire · K blink", left: ["KeyJ"], right: ["KeyL"], thrust: ["KeyI"], fire: ["KeyU"], blink: ["KeyK"] },
-  { name: "kb4", label: "← ↑ → · ENTER fire · ↓ blink", left: ["ArrowLeft"], right: ["ArrowRight"], thrust: ["ArrowUp"], fire: ["Enter", "NumpadEnter", "Slash", "ShiftRight", "ControlRight"], blink: ["ArrowDown"] },
-  { name: "kb5", label: "NUMPAD 4 8 6 · 0 fire · 5 blink", left: ["Numpad4"], right: ["Numpad6"], thrust: ["Numpad8"], fire: ["Numpad0", "Numpad7"], blink: ["Numpad5", "Numpad2"] },
-];
-
-/** A lone keyboard player gets every key set at once, plus Space to fire. */
-export const ALL_KEYS: KeySet = {
-  name: "kb", label: "ARROWS or WASD · SPACE fire · ↓/S blink",
-  left: KEY_SETS.flatMap((k) => k.left), right: KEY_SETS.flatMap((k) => k.right), thrust: KEY_SETS.flatMap((k) => k.thrust),
-  fire: ["Space", ...KEY_SETS.flatMap((k) => k.fire)], blink: KEY_SETS.flatMap((k) => k.blink),
-};
-
-/** What a player plays with: a key set ("kb1"…"kb5", or "kb" for all keys), a gamepad ("pad0"…), or "touch". */
-export type Device = string;
-
-export function deviceLabel(d: Device): string {
-  if (d === "touch") return "TOUCH BUTTONS";
-  if (d.startsWith("pad")) return `GAMEPAD ${Number(d.slice(3)) + 1}`;
-  return (d === "kb" ? ALL_KEYS : KEY_SETS.find((k) => k.name === d))?.label ?? d;
-}
+/** How the keys are shown to players. */
+export const KEYS_LABEL = "ARROWS or WASD · SPACE fire · ↓/S blink";
 
 /** A press for menus: a key code, or "pad<i>:<button>" / "touch:<control>". */
 export interface Press {
@@ -123,23 +99,17 @@ export class Input {
     return this.down.has(code);
   }
 
-  controls(device: Device): Controls {
-    if (device === "touch") return { ...this.touch };
-    if (device.startsWith("pad")) return this.pads[Number(device.slice(3))] ?? IDLE;
-    const set = device === "kb" ? ALL_KEYS : KEY_SETS.find((k) => k.name === device);
-    if (!set) return IDLE;
-    const on = (codes: string[]) => codes.some((c) => this.down.has(c));
-    return { left: on(set.left), right: on(set.right), thrust: on(set.thrust), fire: on(set.fire), blink: on(set.blink) };
+  /** The pilot's controls: any of the keys, any gamepad, or the touch buttons. */
+  controls(): Controls {
+    const keys = (codes: readonly string[]) => codes.some((c) => this.down.has(c));
+    const all = [this.touch, ...this.pads.filter(Boolean)];
+    const on = (k: keyof Controls) => keys(KEYS[k]) || all.some((c) => c[k]);
+    return { left: on("left"), right: on("right"), thrust: on("thrust"), fire: on("fire"), blink: on("blink") };
   }
 }
 
-/** The device whose FIRE this press is, if any. */
-export function fireDevice(p: Press): Device | undefined {
-  if (p.code === "touch:fire") return "touch";
-  const pad = /^pad(\d+):fire$/.exec(p.code);
-  if (pad) return `pad${pad[1]}`;
-  return KEY_SETS.find((k) => k.fire.includes(p.code))?.name;
-}
+/** Is this press a FIRE (any fire key, gamepad button or the touch button)? */
+export const isFire = (p: Press): boolean => p.code === "touch:fire" || /^pad\d+:fire$/.test(p.code) || (KEYS.fire as readonly string[]).includes(p.code);
 
 /** The menu meaning of a press from any device. */
 export type MenuAct = "up" | "down" | "left" | "right" | "ok" | "back" | "start" | "pause" | "mute" | "erase";

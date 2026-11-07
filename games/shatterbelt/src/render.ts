@@ -1,5 +1,5 @@
 // Drawing: the field, the effects, the HUD and every screen, on one canvas in 1280×800 field units.
-import { BLINK, H, MAX_PLAYERS, POD, SHIP, W } from "./engine/config";
+import { BLINK, H, POD, SHIP, W } from "./engine/config";
 import { droneRadius, multiplier, rockRadius, standings, type Game, type GameEvent, type Rock, type Ship } from "./engine/game";
 import type { Result } from "./net";
 
@@ -54,9 +54,8 @@ interface Particle {
 export interface Rect { x: number; y: number; w: number; h: number }
 export const inRect = (r: Rect, x: number, y: number): boolean => x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h;
 
-/** Title menu items, in field units, for taps. */
-export const MENU_ITEMS = ["CO-OP", "VERSUS"] as const;
-export const menuRect = (i: number): Rect => ({ x: 440, y: 338 + i * 62, w: 400, h: 50 });
+/** The title's LAUNCH button, in field units, for taps. */
+export const launchRect: Rect = { x: 440, y: 330, w: 400, h: 56 };
 
 export class Renderer {
   private ctx: CanvasRenderingContext2D;
@@ -591,24 +590,21 @@ export class Renderer {
     this.text("P / START resume   ·   ESC quit to title", W / 2, H / 2 + 30, 18, COLOR.dim, "center", 600);
   }
 
-  title(sel: number, t: number, scores: TableRow[], isPublic: boolean, touch: boolean): void {
+  title(t: number, scores: TableRow[], isPublic: boolean, touch: boolean, keysLabel: string, busy: string | null = null): void {
     this.dimmer(0.35);
     const pulse = 0.85 + 0.15 * Math.sin(t * 2);
     this.ctx.globalAlpha = pulse;
     this.glowText("SHATTERBELT", W / 2, 170, 104, "#8fe9ff");
     this.ctx.globalAlpha = 1;
     this.text("Break the belt. Mind your wingmates.", W / 2, 245, 20, COLOR.dim, "center", 600);
-    this.text("1 TO 9 PLAYERS", W / 2, 285, 16, PLAYER_COLORS[1], "center");
-    MENU_ITEMS.forEach((item, i) => {
-      const r = menuRect(i);
-      const on = i === sel;
-      const c = this.ctx;
-      c.beginPath();
-      c.rect(r.x, r.y, r.w, r.h);
-      this.glow(on ? "#8fe9ff" : "rgba(143,233,255,0.25)", on ? 2 : 1, on ? "rgba(20,50,80,0.6)" : "rgba(4,6,13,0.5)");
-      this.text(item, W / 2, r.y + r.h / 2 + 1, 26, on ? COLOR.text : COLOR.dim, "center");
-    });
-    this.text(sel === 0 ? "Everyone against the rocks. Your shots pass through friends; your hulls don't." : "Every ship for itself. Shots hit other pilots: +500 for a takedown.", W / 2, 478, 16, COLOR.text, "center", 500);
+    const r = launchRect;
+    const c = this.ctx;
+    c.beginPath();
+    c.rect(r.x, r.y, r.w, r.h);
+    this.glow(busy ? "rgba(143,233,255,0.25)" : "#8fe9ff", 2, "rgba(20,50,80,0.6)");
+    this.text(busy ?? "LAUNCH", W / 2, r.y + r.h / 2 + 1, 28, busy ? COLOR.dim : COLOR.text, "center");
+    this.text(touch ? "◀ ▶ turn · THRUST · FIRE · BLINK" : `${keysLabel} · gamepads too`, W / 2, 420, 16, COLOR.text, "center", 500);
+    this.text("With friends, each on their own computer: games.icelander.net/multiplayer (up to nine pilots)", W / 2, 456, 15, PLAYER_COLORS[1], "center", 500);
 
     // Lower panel: how to play and the best pilots, side by side.
     const top = 530;
@@ -632,58 +628,10 @@ export class Renderer {
       this.text(fmt(e.score), 1000, y, 15, COLOR.text, "right", 600);
       this.text(`W${e.wave} ${e.mode === "versus" ? "VS" : e.players > 1 ? `${e.players}P` : "1P"}`, 1020, y, 13, COLOR.dim, "left", 500);
     });
-    const go = touch ? "TAP A MODE" : "↑ ↓ choose · ENTER or SPACE select · M sound";
+    if (busy) return;
+    const go = touch ? "TAP LAUNCH" : "SPACE or ENTER to launch · M sound";
     this.ctx.globalAlpha = 0.6 + 0.4 * Math.sin(t * 4);
     this.text(go, W / 2, H - 22, 15, COLOR.dim, "center", 600);
-    this.ctx.globalAlpha = 1;
-  }
-
-  lobby(mode: string, slots: string[], deviceLabels: string[], t: number, touch: boolean, launching = false): void {
-    this.dimmer(0.6);
-    this.glowText(mode === "versus" ? "VERSUS" : "CO-OP", W / 2, 62, 52, "#8fe9ff");
-    this.text("Each pilot: press your FIRE to join.", W / 2, 112, 18, COLOR.text, "center", 600);
-    const cw = 360;
-    const ch = 92;
-    for (let i = 0; i < MAX_PLAYERS; i++) {
-      const col = i % 3;
-      const row = Math.floor(i / 3);
-      const x = W / 2 - cw * 1.5 + col * cw + 8;
-      const y = 140 + row * (ch + 10);
-      const joined = i < slots.length;
-      const c = this.ctx;
-      c.beginPath();
-      c.rect(x, y, cw - 16, ch);
-      this.glow(joined ? PLAYER_COLORS[i] : "rgba(127,138,163,0.3)", joined ? 1.5 : 1, joined ? "rgba(10,16,30,0.75)" : "rgba(4,6,13,0.4)");
-      if (joined) {
-        this.hull(i, x + 40, y + ch / 2, -Math.PI / 2 + Math.sin(t * 2 + i) * 0.3, 1.4);
-        this.text(`P${i + 1}`, x + 80, y + 28, 22, PLAYER_COLORS[i]);
-        this.text(deviceLabels[i], x + 80, y + 60, 12, COLOR.text, "left", 500);
-      } else {
-        this.ctx.globalAlpha = i === slots.length ? 0.6 + 0.4 * Math.sin(t * 5) : 0.35;
-        this.text(i === slots.length ? "PRESS FIRE TO JOIN" : `P${i + 1}`, x + (cw - 16) / 2, y + ch / 2, 15, COLOR.dim, "center", 600);
-        this.ctx.globalAlpha = 1;
-      }
-    }
-    const ky = 470;
-    this.text("FIRE TO JOIN WITH", W / 2, ky, 14, PLAYER_COLORS[1], "center");
-    const rows = [
-      "Keyboard:  Q (keys W A S D)   ·   R (keys T F G H)   ·   U (keys I J K L)",
-      "           ENTER (arrow keys)   ·   NUMPAD 0 (numpad 8 4 5 6)",
-      "Gamepad:   A button (stick or d-pad turns, up or right trigger thrusts, B blinks)",
-      `Touch:     the FIRE button${touch ? "" : " (on phones and tablets)"}`,
-      "Thrust is the top key, turn with the side keys, blink with the bottom key.",
-    ];
-    rows.forEach((r, i) => this.text(r, 150, ky + 34 + i * 26, 15, COLOR.text, "left", 500));
-    if (launching) {
-      this.text("LAUNCHING…", W / 2, H - 50, 20, COLOR.text, "center");
-      return;
-    }
-    const ready = slots.length > 0;
-    this.ctx.globalAlpha = ready ? 0.7 + 0.3 * Math.sin(t * 5) : 0.6;
-    this.text(
-      ready ? (touch ? "TAP HERE TO LAUNCH  ·  SPACE / START" : "SPACE or START to launch   ·   ESC back") : "Playing alone on the keyboard? Just press SPACE.   ·   ESC back",
-      W / 2, H - 50, 20, ready ? COLOR.text : COLOR.dim, "center",
-    );
     this.ctx.globalAlpha = 1;
   }
 
