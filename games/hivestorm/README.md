@@ -1,6 +1,6 @@
 # HIVESTORM
 
-An arcade shooter for one or two players, free to play at [games.icelander.net/retro/hivestorm](https://games.icelander.net/retro/hivestorm/).
+An arcade shooter for one player, or two online each on their own device, free to play at [games.icelander.net/retro/hivestorm](https://games.icelander.net/retro/hivestorm/).
 
 HIVESTORM is an original game in the formation-and-dive shooter genre of the late 1970s. A hive of 37 wasp-like aliens sways across the top of the screen. Aliens peel off from the ends of the hive, swoop down at your ship and fire as they come, then fly back in at the top. Your ship has one shot in the air at a time. The name, the creatures, the pixel art, the sounds, the screen text, the scoring numbers and the code were all made for this game; none of them are taken from an existing title.
 
@@ -8,14 +8,13 @@ HIVESTORM is an original game in the formation-and-dive shooter genre of the lat
 
 | | Keyboard | Touch |
 |---|---|---|
-| Start a 1-player game | `1` | **1 PLAYER** |
-| Start a 2-player game | `2` | **2 PLAYERS** |
+| Start a game | `1` | **PLAY** |
 | Move | `←` `→` (or `A` `D`) | ◀ ▶ |
 | Fire (hold to keep firing) | `Space` (or `↑`, `Ctrl`, `Enter`) | **FIRE** |
 | Pause | `P` or `Esc` | **PAUSE** |
 | Sound on or off | `M` | **SOUND** |
 
-**Two players** take turns at the same controls. The turn passes each time a ship is lost. Each player has their own score, ships, wave and hive, and a hive stays as its player left it until their next turn. When one player is out of ships, the other plays on alone. The game ends when both are out and names the winner.
+**Two players** play each other online, each on their own computer, phone or tablet with the same controls (below; **PLAY A FRIEND ONLINE** under the screen goes to the multiplayer page). There is no two-player game on one device. They take turns: the turn passes each time a ship is lost. Each player has their own score, ships, wave and hive, and a hive stays as its player left it until their next turn. When one player is out of ships, the other plays on alone. The game ends when both are out and names the winner.
 
 ## Playing online
 

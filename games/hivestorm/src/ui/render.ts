@@ -167,7 +167,7 @@ function drawAttract(ctx: Ctx, game: Game): void {
   centred(ctx, `${QUEEN_BONUS[1]} OR ${QUEEN_BONUS[2]} IF HER GUARDS`, 201, KIND_PALETTE.queen.a);
   centred(ctx, "FALL FIRST", 210, KIND_PALETTE.queen.a);
   centred(ctx, `EXTRA SHIP AT ${RULES.extraLifeAt}`, 226, COLOURS.dim);
-  if (Math.floor(f / 30) % 2 === 0) centred(ctx, "PRESS 1 OR 2 PLAYERS", 246, COLOURS.text);
+  if (Math.floor(f / 30) % 2 === 0) centred(ctx, "PRESS 1 TO PLAY", 246, COLOURS.text);
   centred(ctx, "ARROWS MOVE  SPACE FIRES", 262, "#8090a0");
   centred(ctx, "P PAUSE  M SOUND", 272, "#8090a0");
 }
@@ -198,8 +198,8 @@ function drawTable(ctx: Ctx, game: Game, view: View): void {
   });
   drawAlien(ctx, "queen", Math.floor(f / 16), 30, 47);
   drawAlien(ctx, "queen", Math.floor(f / 16), W - 30, 47);
-  centred(ctx, "SCORES AT ICELANDER.NET/GAMES", 236, "#8090a0");
-  if (Math.floor(f / 30) % 2 === 0) centred(ctx, "PRESS 1 OR 2 PLAYERS", 252, COLOURS.text);
+  centred(ctx, "SCORES AT GAMES.ICELANDER.NET", 236, "#8090a0");
+  if (Math.floor(f / 30) % 2 === 0) centred(ctx, "PRESS 1 TO PLAY", 252, COLOURS.text);
 }
 
 export function render(ctx: Ctx, game: Game, view?: View): void {

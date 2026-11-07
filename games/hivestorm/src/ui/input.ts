@@ -1,4 +1,5 @@
-// Keyboard and touch input, turned into the game's Input once per frame.
+// Keyboard and touch input, turned into the game's Input once per frame. One player per device: two
+// players play each other online, each on their own device (the multiplayer page), never taking turns here.
 import type { Input } from "../engine/game";
 
 const LEFT = new Set(["ArrowLeft", "KeyA", "KeyZ"]);
@@ -17,7 +18,6 @@ export class Controls {
       this.onActivity();
       if (e.repeat) { if (this.isGameKey(e.code)) e.preventDefault(); return; }
       if (e.code === "Digit1" || e.code === "Numpad1") this.presses.start1 = true;
-      else if (e.code === "Digit2" || e.code === "Numpad2") this.presses.start2 = true;
       else if (e.code === "KeyP" || e.code === "Escape") this.presses.pause = true;
       else if (e.code === "KeyM") this.onMute();
       this.held.add(this.map(e.code));
@@ -36,12 +36,12 @@ export class Controls {
 
   private isGameKey(code: string): boolean { return LEFT.has(code) || RIGHT.has(code) || FIRE.has(code); }
 
-  /** Wires an on-screen button: held buttons ("left", "right", "fire") or one-shot presses ("start1", "start2", "pause"). */
+  /** Wires an on-screen button: held buttons ("left", "right", "fire") or one-shot presses ("start1", "pause"). */
   bindButton(el: HTMLElement, action: string): void {
     const down = (e: Event) => {
       e.preventDefault();
       this.onActivity();
-      if (action === "start1" || action === "start2" || action === "pause") this.presses[action] = true;
+      if (action === "start1" || action === "pause") this.presses[action] = true;
       else if (action === "mute") this.onMute();
       else this.held.add(action);
       el.classList.add("down");

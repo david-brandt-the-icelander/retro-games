@@ -73,7 +73,7 @@ const demoShowing = (): boolean => screen === "title" || screen === "help" || sc
 /** The other player's name online: their address before the @, as the scoreboard shows it. */
 const rivalName = (): string => (online?.room.names[1 - online.side] ?? "").toUpperCase().slice(0, 12) || "RIVAL";
 const names = (): [string, string] =>
-  online ? (online.side === 0 ? ["YOU", rivalName()] : [rivalName(), "YOU"]) : players === 1 ? ["YOU", "CPU"] : ["LEFT", "RIGHT"];
+  online ? (online.side === 0 ? ["YOU", rivalName()] : [rivalName(), "YOU"]) : ["YOU", "CPU"];
 /** Whether an online match is being played (it can't be paused: it goes on behind the menu). */
 const playingOnline = (): boolean => online?.lock != null && match.phase !== "over";
 
@@ -99,25 +99,24 @@ function show(next: Screen): void {
   updateBoard();
 }
 
-async function start(n: 1 | 2): Promise<void> {
+/** A match against the computer. A friend is played online, each on their own device, from the multiplayer page. */
+async function start(): Promise<void> {
   if (starting) return;
   leaveOnline();
-  players = n;
+  players = 1;
   sound.wake();
   ranked = null;
   let s = seed();
-  if (n === 1) {
-    // The server's seed lets it replay the match later. Without one (offline), the match still plays.
-    starting = true;
-    const issued = await startMatch();
-    starting = false;
-    if (issued) { s = issued.seed >>> 0; ranked = { match: issued, level, recorder: new Recorder() }; }
-  }
+  // The server's seed lets it replay the match later. Without one (offline), the match still plays.
+  starting = true;
+  const issued = await startMatch();
+  starting = false;
+  if (issued) { s = issued.seed >>> 0; ranked = { match: issued, level, recorder: new Recorder() }; }
   match = newMatch(s);
-  cpu = n === 1 ? new Cpu(1, LEVELS[level], cpuSeed(s)) : null;
+  cpu = new Cpu(1, LEVELS[level], cpuSeed(s));
   hintLeft = HINT_TIME;
   show("play");
-  say(`${n === 1 ? "One player, " + level : "Two players"}. First to 11.`);
+  say(`Against the computer, ${level}. First to 11.`);
 }
 
 function setLevel(next: LevelName): void {
@@ -390,7 +389,6 @@ function stepOnline(lock: Lockstep, dt: number, now: number): void {
 }
 
 function controls(): [Control, Control] {
-  if (players === 2) return input.two();
   // The player's control in whole pixels, as it is recorded, so the server's replay matches exactly.
   const human = quantise(input.one());
   ranked?.recorder.record(human);
@@ -400,7 +398,7 @@ function controls(): [Control, Control] {
 function handle(events: GameEvent[]): void {
   renderer.events(events);
   for (const e of events) {
-    // In a one-player game, cheer the human's points; in a two-player game, every point sounds the same.
+    // Against the computer, cheer the human's points; online, every point sounds the same.
     sound.play(e, players === 2 || ("side" in e && e.side === 0));
     if (e.kind === "point") {
       const [a, b] = names();
@@ -446,7 +444,7 @@ function frame(now: number): void {
   } else {
     const hints: [string, string] | null = hintLeft > 0 && screen === "play"
       ? online ? (online.side === 0 ? ["YOU: W / S, ↑ / ↓ or drag", ""] : ["", "YOU: W / S, ↑ / ↓ or drag"])
-        : players === 1 ? ["W / S, ↑ / ↓ or drag", ""] : ["W / S or drag here", "↑ / ↓ or drag here"]
+        : ["W / S, ↑ / ↓ or drag", ""]
       : null;
     renderer.draw(match, screen === "play" || playingOnline() ? dt : 0, hints);
   }
@@ -470,9 +468,8 @@ function layout(): void {
 function act(action: string | undefined): void {
   sound.wake();
   switch (action) {
-    case "one": void start(1); break;
-    case "two": void start(2); break;
-    case "again": if (online) { leaveOnline(); location.assign(MULTIPLAYER_PAGE); } else void start(players); break;
+    case "one": void start(); break;
+    case "again": if (online) { leaveOnline(); location.assign(MULTIPLAYER_PAGE); } else void start(); break;
     case "help": show("help"); break;
     case "scores": void showScores(); break;
     case "menu": leaveOnline(); cpu = null; demo = newDemo(); show("title"); break;
@@ -509,8 +506,7 @@ document.addEventListener("keydown", (e) => {
   }
   if (screen === "paused" && (k === "p" || e.key === "Escape" || k === " ")) { e.preventDefault(); show("play"); return; }
   if (screen === "title") {
-    if (k === "1") void start(1);
-    else if (k === "2") void start(2);
+    if (k === "1") void start();
     else if (k === "h") show("help");
     else if (k === "s") void showScores();
     return;

@@ -2,7 +2,7 @@
   "name": "rally",
   "version": "1.0.0",
   "private": true,
-  "description": "Rally: two paddles, one ball, first to eleven. A table-tennis game for one player against the computer, or two on one device.",
+  "description": "Rally: two paddles, one ball, first to eleven. A table-tennis game against the computer, or a friend online on their own device.",
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
