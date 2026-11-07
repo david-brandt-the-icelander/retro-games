@@ -98,17 +98,17 @@ export function sitePage(title: string, main: string, side: string, status = 200
 </head>
 <body>
 <main class="page">
-<p class="site-mark"><a href="/">icelander.net</a></p>
+<p class="site-mark"><a href="https://icelander.net/">icelander.net</a></p>
 <article class="card">
 <section class="main">
 ${main}
 </section>
 <aside class="side">
-<a class="monogram" href="/" aria-label="icelander.net">DB</a>
+<a class="monogram" href="https://icelander.net/" aria-label="icelander.net">DB</a>
 ${side}
 </aside>
 </article>
-<p class="back"><a href="/trains">Trains of thought</a> · <a href="/games/">Games</a> · <a href="/">About and contact</a> · <a href="/feed.xml">Feed of everything</a></p>
+<p class="back"><a href="https://icelander.net/trains">Trains of thought</a> · <a href="/">Games</a> · <a href="https://icelander.net/">About and contact</a> · <a href="https://icelander.net/feed.xml">Feed of everything</a></p>
 </main>
 </body>
 </html>

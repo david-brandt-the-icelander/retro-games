@@ -1,6 +1,6 @@
 # HIVESTORM
 
-An arcade shooter for one or two players, free to play at [icelander.net/games/retro/hivestorm](https://icelander.net/games/retro/hivestorm/).
+An arcade shooter for one or two players, free to play at [games.icelander.net/retro/hivestorm](https://games.icelander.net/retro/hivestorm/).
 
 HIVESTORM is an original game in the formation-and-dive shooter genre of the late 1970s. A hive of 37 wasp-like aliens sways across the top of the screen. Aliens peel off from the ends of the hive, swoop down at your ship and fire as they come, then fly back in at the top. Your ship has one shot in the air at a time. The name, the creatures, the pixel art, the sounds, the screen text, the scoring numbers and the code were all made for this game; none of them are taken from an existing title.
 
@@ -19,11 +19,11 @@ HIVESTORM is an original game in the formation-and-dive shooter genre of the lat
 
 ## Playing online
 
-Games with friends start on the multiplayer page, [icelander.net/games/multiplayer](https://icelander.net/games/multiplayer/), not in the game itself. Everyone who plays must be signed in to the games. One player starts a game there and waits; the others join it by choosing the game and typing that player's address (which keeps it in their contacts, so they can see when that friend is waiting). Once two or more are waiting, a 60-second countdown starts, and starts again whenever someone else joins; the game begins when it runs out, or as soon as everyone presses Ready. Each player's browser then opens this game with `?match=ID`. Two players on different computers, phones or tablets play the same two-player game, taking turns as they would on one machine. The one who joined the lobby's game first is player 1. Each of you plays your own turns with your own controls, and watches the other's; the line under the screen says which player you are and who you play. An online game can't be paused. If the other player leaves, you play both turns. When the game ends, each of you can put your own score on the high-score table: the host's browser sends the game with both names, and the server replays it as any other. **BACK TO MULTIPLAYER**, under the screen, returns to the lobby for another game.
+Games with friends start on the multiplayer page, [games.icelander.net/multiplayer](https://games.icelander.net/multiplayer/), not in the game itself. Everyone who plays must be signed in to the games. One player starts a game there and waits; the others join it by choosing the game and typing that player's address (which keeps it in their contacts, so they can see when that friend is waiting). Once two or more are waiting, a 60-second countdown starts, and starts again whenever someone else joins; the game begins when it runs out, or as soon as everyone presses Ready. Each player's browser then opens this game with `?match=ID`. Two players on different computers, phones or tablets play the same two-player game, taking turns as they would on one machine. The one who joined the lobby's game first is player 1. Each of you plays your own turns with your own controls, and watches the other's; the line under the screen says which player you are and who you play. An online game can't be paused. If the other player leaves, you play both turns. When the game ends, each of you can put your own score on the high-score table: the host's browser sends the game with both names, and the server replays it as any other. **BACK TO MULTIPLAYER**, under the screen, returns to the lobby for another game.
 
 Every browser runs the whole game itself, in lockstep (`src/online.ts`). Each one sends only its own player's controls, a few steps ahead of when they are played (the delay, set when the game starts from everyone's measured connection: usually 60–150 ms). A browser steps the game only once it has every player's controls for that step, so every browser plays exactly the same game; it is the same property that lets the server replay a game for the high-score table. Every 120 steps (a second or two) the browsers compare a fingerprint of their games, and end the game if they ever differ. A browser that falls behind (a slow connection, or a hidden tab) makes the others wait, and they say so.
 
-The relay is the games hub's, not this game's: a Cloudflare Durable Object per match in the `recreations` repository (`worker/match.ts`), at `GET /games/multiplayer/match/{ID}` (a WebSocket). It lets in only the signed-in players the lobby put in the match, each in their place in the lobby, and passes each one's messages to the others in order. `src/online.ts` and `test/online.test.ts` are the same files in Rally, Shatterbelt and Hivestorm.
+The relay is the games hub's, not this game's: a Cloudflare Durable Object per match in the `recreations` repository (`worker/match.ts`), at `GET /multiplayer/match/{ID}` (a WebSocket). It lets in only the signed-in players the lobby put in the match, each in their place in the lobby, and passes each one's messages to the others in order. `src/online.ts` and `test/online.test.ts` are the same files in Rally, Shatterbelt and Hivestorm.
 
 ## Rules
 
@@ -41,7 +41,7 @@ The relay is the games hub's, not this game's: a Cloudflare Durable Object per m
 - A diving alien that rams your ship destroys both, and you still get its points.
 - Clearing the hive starts the next wave. Each wave dives faster and more often, with more aliens out at once.
 - When only 5 aliens are left, they stop going home and dive one after another.
-- **High scores:** when a game ends, each player whose score makes the top ten can enter a name for the public table. The title screens show the table every other 10 seconds, and the web page [/games/retro/hivestorm/scores/](https://icelander.net/games/retro/hivestorm/scores/) lists the top 25. Only the name is kept: no email or other personal data.
+- **High scores:** when a game ends, each player whose score makes the top ten can enter a name for the public table. The title screens show the table every other 10 seconds, and the web page [/retro/hivestorm/scores/](https://games.icelander.net/retro/hivestorm/scores/) lists the top 25. Only the name is kept: no email or other personal data.
 
 Every number is in [`src/engine/rules.ts`](src/engine/rules.ts).
 
@@ -66,6 +66,6 @@ The table lives in the D1 database `hivestorm-scores` (schema: `worker/schema.sq
 ```bash
 npm ci
 npm test         # engine, art, replay and API tests
-npm run build    # static site in dist/games/retro/hivestorm/
-npm run deploy   # test, build and deploy the hivestorm Worker to icelander.net/games/retro/hivestorm*
+npm run build    # static site in dist/retro/hivestorm/
+npm run deploy   # test, build and deploy the hivestorm Worker to games.icelander.net/retro/hivestorm*
 ```

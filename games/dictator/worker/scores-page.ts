@@ -1,4 +1,4 @@
-// The public high-score page, /games/retro/samosa/scores/: the same table the game shows on its
+// The public high-score page, /retro/samosa/scores/: the same table the game shows on its
 // title screen (S), as a web page in icelander.net's look.
 import { escapeHtml, sitePage } from "./look";
 
@@ -21,8 +21,8 @@ ${body}
 </table>`;
   const side = `<div class="block">
 <p class="label">Samosa</p>
-<a class="button" href="/games/retro/samosa/">Play Samosa</a>
-<a class="link" href="/games/">← All the games</a>
+<a class="button" href="/retro/samosa/">Play Samosa</a>
+<a class="link" href="/">← All the games</a>
 </div>
 <p class="note">Players enter the table with a name of their choosing at the end of a reign.</p>`;
   return sitePage("Samosa high scores", main, side);

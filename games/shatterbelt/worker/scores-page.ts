@@ -1,4 +1,4 @@
-// The public high-score page, /games/retro/shatterbelt/scores/: the same table the game shows on its
+// The public high-score page, /retro/shatterbelt/scores/: the same table the game shows on its
 // title screen, as a web page in icelander.net's look.
 import { escapeHtml, sitePage } from "./look";
 
@@ -24,8 +24,8 @@ ${body}
 </table>`;
   const side = `<div class="block">
 <p class="label">Shatterbelt</p>
-<a class="button" href="/games/retro/shatterbelt/">Play Shatterbelt</a>
-<a class="link" href="/games/">← All the games</a>
+<a class="button" href="/retro/shatterbelt/">Play Shatterbelt</a>
+<a class="link" href="/">← All the games</a>
 </div>
 <p class="note">Pilots enter their names at the end of a game; only the name is kept. Each player's own score counts, in co-op as in versus.</p>`;
   return sitePage("Shatterbelt high scores", main, side);

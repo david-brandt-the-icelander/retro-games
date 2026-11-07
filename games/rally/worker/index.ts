@@ -4,7 +4,7 @@
 //   POST {BASE}/score   ← { id, name, level, recording }   the player's paddle moves, tick by tick
 //                       → { score, rank, name }
 //   GET  {BASE}/scores  → { scores: [...] }                the table, best first
-//   GET  /games/retro/rally/scores/                         the table as a web page (worker/scores-page.ts)
+//   GET  /retro/rally/scores/                         the table as a web page (worker/scores-page.ts)
 //
 // Scores are never trusted from the browser: the server replays the match with the same engine,
 // from the seed it issued, the computer's level and the player's recorded moves, and records the

@@ -39,8 +39,8 @@ export async function loadTable(): Promise<TableRow[] | null> {
 /** Shared by every game on icelander.net, for this browser session. */
 const NAME_KEY = "games.name";
 
-/** Who is signed in at icelander.net/games (the recreations Worker): the part of their email before the @. */
-const ME = "/games/me";
+/** Who is signed in at games.icelander.net (the games hub, in the recreations repository): the part of their email before the @. */
+const ME = "/me";
 
 export function saveName(name: string): void {
   try { sessionStorage.setItem(NAME_KEY, name); } catch { /* storage blocked: the name lasts this screen only */ }
