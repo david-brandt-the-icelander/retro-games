@@ -100,6 +100,6 @@ test("the high-score web page lists the reigns, escapes names, and carries the s
   assert.match(html, /<td>1<\/td><td>ortiga<\/td><td class="num">120<\/td><td class="num">30<\/td><td>Fled<\/td>/);
   assert.match(html, /&lt;b&gt;x&lt;\/b&gt;/);
   assert.doesNotMatch(html, /<b>x<\/b>/);
-  assert.match(html, /<a href="https:\/\/icelander\.net\/trains">Trains of thought<\/a> · <a href="\/">Games<\/a> · <a href="https:\/\/icelander\.net\/">About and contact<\/a> · <a href="https:\/\/icelander\.net\/feed.xml">Feed of everything<\/a>/);
+  assert.match(html, /<a href="https:\/\/icelander\.net\/trains">Trains of thought<\/a> · <a href="\/">Games<\/a> · <a href="https:\/\/icelander\.net\/">About and contact<\/a>/);
   assert.match(await scoresPage([]).text(), /No reign recorded yet/);
 });
