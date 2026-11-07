@@ -4,7 +4,7 @@
 //   POST {BASE}/score   ← { id, runs, names }              the game's recorded controls, and a name (or null) per player
 //                       → { entries: [{ player, name, score, wave, rank }] }
 //   GET  {BASE}/scores  → { scores: [...] }                the table, best first
-//   GET  /games/retro/hivestorm/scores/                    the table as a web page (worker/scores-page.ts)
+//   GET  /retro/hivestorm/scores/                    the table as a web page (worker/scores-page.ts)
 //
 // Scores are never trusted from the browser: the server plays the game again with the same engine,
 // from the seed it issued and the controls the players used on every frame (src/engine/replay.ts),

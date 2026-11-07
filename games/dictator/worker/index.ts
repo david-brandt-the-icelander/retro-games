@@ -4,14 +4,14 @@
 //   POST {BASE}/api/score   ← { id, keys, name }   the keys pressed at every screen, in order, and a name
 //                           → { score, rank, name }
 //   GET  {BASE}/api/scores  → { scores: [...] }    the table, best first
-//   GET  /games/retro/samosa/scores/                the table as a web page (worker/scores-page.ts)
+//   GET  /retro/samosa/scores/                the table as a web page (worker/scores-page.ts)
 //
 // Scores are never trusted from the browser: the server replays the reign with the same
 // engine, from the seed it issued and the keys the player pressed, and records the rating
 // that replay produces. Each seed can be submitted once. The player gives only a name for the
 // table (cleaned by src/name.ts); no email or other personal data is asked for or kept.
 import { scoresPage } from "./scores-page";
-import { BASE, OLD_PATH, PATH, json, MAX_KEYS, cleanName, replay, SEED_LIFETIME_MS, TABLE_SIZE } from "./scores";
+import { BASE, OLD_PATH, ORIGIN, PATH, json, MAX_KEYS, cleanName, replay, SEED_LIFETIME_MS, TABLE_SIZE } from "./scores";
 
 /** The subset of Cloudflare's D1 and Fetcher types this Worker uses. */
 interface D1Result<T> { results: T[]; meta: { changes: number } }
@@ -72,9 +72,9 @@ const PAGE_SIZE = 25;
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
-    // The game moved from /retro-games/samosa to /games/retro/samosa; 308 keeps the method.
+    // The game moved from icelander.net/retro-games/samosa to games.icelander.net/retro/samosa; 308 keeps the method.
     if (url.pathname === OLD_PATH || url.pathname.startsWith(OLD_PATH + "/")) {
-      return new Response(null, { status: 308, headers: { Location: PATH + url.pathname.slice(OLD_PATH.length) + url.search, "Cache-Control": "no-store" } });
+      return new Response(null, { status: 308, headers: { Location: ORIGIN + PATH + url.pathname.slice(OLD_PATH.length) + url.search, "Cache-Control": "no-store" } });
     }
     // The public high-score page.
     if (url.pathname === SCORES_PAGE || url.pathname === SCORES_PAGE + "/") {

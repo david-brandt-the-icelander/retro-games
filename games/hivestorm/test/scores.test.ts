@@ -89,7 +89,7 @@ test("the high-score web page lists the scores, escapes names, and carries the s
   assert.match(html, /<td>1<\/td><td>ace<\/td><td class="num">12000<\/td><td class="num">5<\/td><td>1 player<\/td>/);
   assert.match(html, /&lt;b&gt;x&lt;\/b&gt;/);
   assert.doesNotMatch(html, /<b>x<\/b>/);
-  assert.match(html, /<a href="\/trains">Trains of thought<\/a> · <a href="\/games\/">Games<\/a>/);
+  assert.match(html, /<a href="https:\/\/icelander\.net\/trains">Trains of thought<\/a> · <a href="\/">Games<\/a>/);
   assert.match(await scoresPage([]).text(), /No score recorded yet/);
 });
 
@@ -134,7 +134,7 @@ function fakeEnv(): Env & { rows: { games: Map<string, { seed: number; created: 
   return { DB: DB as never, ASSETS: { fetch: async () => new Response("asset") }, rows: { games, scores } };
 }
 
-const API = "https://icelander.net/games/retro/hivestorm/api";
+const API = "https://games.icelander.net/retro/hivestorm/api";
 const post = (env: Env, path: string, body: unknown) =>
   worker.fetch(new Request(`${API}/${path}`, { method: "POST", body: JSON.stringify(body) }), env);
 
@@ -149,7 +149,7 @@ test("the API issues a seed, scores a replayed two-player game once, and lists i
   assert.equal((await post(env, "score", { id, runs: game.runs, names: ["Ace", null] })).status, 409, "each game once");
   const table = (await (await worker.fetch(new Request(`${API}/scores`), env)).json()) as { scores: { name: string; score: number; players: number }[] };
   assert.deepEqual(table.scores.map((s) => [s.name, s.score, s.players]), [["Ace", game.scores[0].score, 2]]);
-  const page = await (await worker.fetch(new Request("https://icelander.net/games/retro/hivestorm/scores/"), env)).text();
+  const page = await (await worker.fetch(new Request("https://games.icelander.net/retro/hivestorm/scores/"), env)).text();
   assert.match(page, /<td>Ace<\/td>/);
 });
 
@@ -164,5 +164,5 @@ test("the API refuses made-up controls, wrong player counts and bad names, and k
   assert.equal((await post(env, "score", { id: "nope", runs: game.runs, names: ["Ace"] })).status, 409);
   assert.equal(env.rows.scores.length, 0);
   assert.equal((await post(env, "score", { id, runs: game.runs, names: ["Ace"] })).status, 200, "the real game still counts");
-  assert.equal((await worker.fetch(new Request("https://icelander.net/games/retro/hivestorm/"), env)).status, 200, "everything else is the static game");
+  assert.equal((await worker.fetch(new Request("https://games.icelander.net/retro/hivestorm/"), env)).status, 200, "everything else is the static game");
 });

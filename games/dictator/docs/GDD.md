@@ -8,7 +8,7 @@ It contains no text from the original game and none of its invented names. Any o
 
 ## 1. Identity
 
-- **Title: *Samosa*** (owner's choice: a pun on the Somoza dynasty, whose stand-in family is a faction in the game). The repository folder stays `games/dictator/`; the public address is `icelander.net/games/retro/samosa`.
+- **Title: *Samosa*** (owner's choice: a pun on the Somoza dynasty, whose stand-in family is a faction in the game). The repository folder stays `games/dictator/`; the public address is `games.icelander.net/retro/samosa`.
 - **Title proposals** considered, each with a one-line pitch:
 
 | # | Title | Pitch |
@@ -425,7 +425,7 @@ All melodies are new and written for this game; effects are generic beeper sound
 | 2026-11-06 | Y is accepted in both cases. | Owner |
 | 2026-11-06 | No request for permission from the original author's estate. | Owner |
 | 2026-11-06 | Public address: `icelander.net/retro-games/samosa` (follows the title). | Owner |
-| 2026-11-06 | The address moves to `icelander.net/games/retro/samosa`, beside the games page `icelander.net/games`; the old address redirects. | Owner |
+| 2026-11-06 | The address moves to `games.icelander.net/retro/samosa`, beside the games page `games.icelander.net`; the old address redirects. | Owner |
 | 2026-11-06 | Real parties and organisations are named; real people are not. Events are built on Nicaraguan history, caricatured. The ruling families are the puns Ortiga and Samosa; the player is President Ortiga; the Landowners faction becomes the Samosa family (rules unchanged). | Owner |
 | 2026-11-06 | No "wait for a key on timed screens" setting. | Owner |
 | 2026-11-06 | Credits name the remake's author as David Brandt. Headlines run under the real masthead *La Prensa*. | Owner |
@@ -448,5 +448,5 @@ All melodies are new and written for this game; effects are generic beeper sound
 | 3 | The newsflash money quirk (RULES §9.4, §12) | Keep it on, or switch it off | **Off** |
 | 4 | The case of the Y key (RULES §15.1) | Both cases, or lower case only | **Both cases** |
 | 5 | Ask the original author's estate for permission | Ask, or rely on the clean-room work | **Don't ask** |
-| 6 | The public address | `/retro-games/<title-slug>`, `/retro-games/dictator`, a subdomain | **`icelander.net/games/retro/samosa`** (first `/retro-games/samosa`) |
+| 6 | The public address | `/retro-games/<title-slug>`, `/retro-games/dictator`, a subdomain | **`games.icelander.net/retro/samosa`** (first `/retro-games/samosa`) |
 | 7 | A "wait for a key on timed screens" setting | Offer it, or not | First **not offered**; then, after playtesting, **every screen waits for a key**, for everyone (no setting) |

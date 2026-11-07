@@ -4,13 +4,13 @@
 //   POST {BASE}/score   ← { id, recording, names }   every change of every player's controls
 //                       → { results: [{ player, score, wave, name, rank }] }
 //   GET  {BASE}/scores  → { scores: [...] }          the table, best first
-//   GET  /games/retro/shatterbelt/scores/            the table as a web page (worker/scores-page.ts)
+//   GET  /retro/shatterbelt/scores/            the table as a web page (worker/scores-page.ts)
 //
 // Scores are never trusted from the browser: the server replays the game with the same engine,
 // from the seed it issued and the recorded controls, and lists the scores that replay produces.
 // Each seed can be submitted once.
 import { scoresPage, type Row } from "./scores-page";
-import { BASE, MAX_BODY, OLD_PATH, PAGE_SIZE, PATH, SCORES_PAGE, SEED_LIFETIME_MS, TABLE_SIZE, cleanName, json, score, validSubmission } from "./scores";
+import { BASE, MAX_BODY, OLD_PATH, ORIGIN, PAGE_SIZE, PATH, SCORES_PAGE, SEED_LIFETIME_MS, TABLE_SIZE, cleanName, json, score, validSubmission } from "./scores";
 
 /** The subset of Cloudflare's D1 and Fetcher types this Worker uses. */
 interface D1Result<T> { results: T[]; meta: { changes: number } }
@@ -78,10 +78,10 @@ async function loadTop(env: Env, size: number): Promise<Row[]> {
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
-    // The game moved from /retro-games/shatterbelt to /games/retro/shatterbelt; 308 keeps the method.
+    // The game moved from icelander.net/retro-games/shatterbelt to games.icelander.net/retro/shatterbelt; 308 keeps the method.
     if (url.pathname === OLD_PATH || url.pathname.startsWith(OLD_PATH + "/")) {
       const rest = url.pathname.slice(OLD_PATH.length) || "/";
-      return new Response(null, { status: 308, headers: { Location: PATH + rest + url.search, "Cache-Control": "no-store" } });
+      return new Response(null, { status: 308, headers: { Location: ORIGIN + PATH + rest + url.search, "Cache-Control": "no-store" } });
     }
     if (url.pathname === SCORES_PAGE) return Response.redirect(`${url.origin}${SCORES_PAGE}/`, 301);
     if (url.pathname === SCORES_PAGE + "/") {

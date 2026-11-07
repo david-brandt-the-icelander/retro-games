@@ -3,7 +3,7 @@ import { LEVELS, type LevelName } from "../src/engine/ai";
 import { replay, type Result } from "../src/engine/match";
 import { cleanName } from "../src/name";
 
-export const PATH = "/games/retro/rally";
+export const PATH = "/retro/rally";
 export const BASE = `${PATH}/api`;
 export const SCORES_PAGE = `${PATH}/scores`;
 /** Rows on the game's own table, and on the web page. */

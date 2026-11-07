@@ -1,10 +1,12 @@
 // High-score helpers shared by the Worker (worker/index.ts) and its tests.
 import { newGame, playGame } from "../src/engine";
 
-export const BASE = "/games/retro/samosa/api";
-/** Where the game used to live: every path there is redirected to the same path under /games/retro/samosa. */
+export const BASE = "/retro/samosa/api";
+/** Where the game used to live: every path there is redirected to the same path under /retro/samosa. */
+/** The games' own site, where the old address redirects to. */
+export const ORIGIN = "https://games.icelander.net";
 export const OLD_PATH = "/retro-games/samosa";
-export const PATH = "/games/retro/samosa";
+export const PATH = "/retro/samosa";
 export const TABLE_SIZE = 10;
 export const MAX_KEYS = 20000;
 export const SEED_LIFETIME_MS = 24 * 60 * 60 * 1000;

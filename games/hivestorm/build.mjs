@@ -2,8 +2,8 @@
 import { build, context } from "esbuild";
 import { cpSync, mkdirSync, readdirSync, renameSync, rmSync } from "node:fs";
 
-/** The game is served at https://icelander.net/games/retro/hivestorm/ (set BASE_PATH="" to build at the root). */
-const BASE_PATH = process.env.BASE_PATH ?? "games/retro/hivestorm";
+/** The game is served at https://games.icelander.net/retro/hivestorm/ (set BASE_PATH="" to build at the root). */
+const BASE_PATH = process.env.BASE_PATH ?? "retro/hivestorm";
 const args = process.argv.slice(2);
 
 if (args.includes("--test")) {
