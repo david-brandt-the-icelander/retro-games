@@ -1,6 +1,6 @@
 // The browser side: screens, the frame loop, and wiring input, sound and drawing to the engine.
 import { DT, MAX_PLAYERS } from "./engine/config";
-import { IDLE, newGame, standings, step, type Controls, type Game } from "./engine/game";
+import { newGame, standings, step, type Controls, type Game } from "./engine/game";
 import { Recorder, fromBits, toBits, type Recording } from "./engine/replay";
 import { Input, deviceLabel, fireDevice, menuAct, type Device, type Press } from "./input";
 import { MENU_ITEMS, PLAYER_COLORS, Renderer, inRect, menuRect } from "./render";
@@ -8,7 +8,7 @@ import { addScore, loadScores, qualifies, TABLE_SIZE } from "./scores";
 import { NAME_MAX, cleanName } from "./name";
 import { loadPublic, startGame, submitGame, type PublicRow, type Result, type Ticket } from "./net";
 import { Sound } from "./sound";
-import { Lockstep, OnlinePanel, codeInAddress, delaySteps, fingerprint, type Room, type RoomMessage, type Start } from "./online";
+import { Lockstep, MULTIPLAYER_PAGE, REFUSALS, Room, delaySteps, everyoneIn, fingerprint, matchInAddress, type RoomMessage, type Start } from "./online";
 
 type Scene =
   | { kind: "title"; sel: number }
@@ -220,7 +220,6 @@ function handle(p: Press): void {
   switch (scene.kind) {
     case "title": {
       if (act === "mute") break;
-      if (p.code === "KeyO") { openOnline(); return; }
       if (act === "up" || act === "left") scene.sel = (scene.sel + MENU_ITEMS.length - 1) % MENU_ITEMS.length;
       else if (act === "down" || act === "right") scene.sel = (scene.sel + 1) % MENU_ITEMS.length;
       else if (act === "ok" || act === "start" || fireDevice(p)) toLobby(scene.sel === 0 ? "coop" : "versus");
@@ -241,7 +240,7 @@ function handle(p: Press): void {
       if (scene.net) {
         // Online there's no pause; Escape twice leaves the game.
         if (p.code === "Escape") {
-          if (clock - escAt < 2) { leaveRoom(); toTitle(); return; }
+          if (clock - escAt < 2) { leaveRoom(); noteUntil = 0; toTitle(); return; }
           escAt = clock;
           note("ESC AGAIN TO LEAVE THE GAME", 2);
         }
@@ -348,76 +347,58 @@ function draw(): void {
 
 // ——— Online: each pilot on their own computer ———
 //
-// Every browser in the room runs the same game in lockstep (src/online.ts) and sends only its own
-// pilot's controls. The host (the lowest slot in the room) picks the mode and starts each game with a
-// seed the high-score server issued, so an online game goes on the public table like any other: each
-// browser asks its own pilot's name, and the host sends the game with every name to be replayed.
+// Online games start on the multiplayer page (icelander.net/games/multiplayer/), which opens this page
+// with ?match=ID&mode=coop (or versus) for every pilot. Every browser runs the same game in lockstep
+// (src/online.ts) and sends only its own pilot's controls. The host (the first in the lobby) starts
+// the game with a seed the high-score server issued, so an online game goes on the public table like
+// any other: each browser asks its own pilot's name, and the host sends the game with every name.
 
-const onlineRoot = document.getElementById("online") as HTMLElement;
-const onlineButton = document.getElementById("online-open") as HTMLButtonElement;
 const netLine = document.getElementById("net") as HTMLElement;
-let onlineMode: "coop" | "versus" = "coop";
+/** The mode the multiplayer page chose, from the address. */
+const onlineMode: "coop" | "versus" = new URLSearchParams(location.search).get("mode") === "versus" ? "versus" : "coop";
+/** The match this browser is in, if any, and whether its game has begun. */
+let room: Room | null = null;
+let begun = false;
+/** What the status line says while there is no game: connecting, waiting, or why not. */
+let netText = "";
 /** A short message for the status line, until `noteUntil` (clock seconds). */
 let noteText = "";
 let noteUntil = 0;
 let escAt = -10;
 const note = (text: string, seconds = 6) => { noteText = text; noteUntil = clock + seconds; say(text); };
 
-/** The host's choice of mode, shown in the lobby. */
-const modeChoice = document.createElement("div");
-modeChoice.className = "online-mode";
-modeChoice.setAttribute("role", "radiogroup");
-modeChoice.setAttribute("aria-label", "Mode");
-const modeLabel = document.createElement("span");
-modeLabel.textContent = "MODE";
-modeChoice.append(modeLabel);
-for (const [mode, label] of [["coop", "CO-OP"], ["versus", "VERSUS"]] as const) {
-  const b = document.createElement("button");
-  b.type = "button";
-  b.textContent = label;
-  b.dataset.mode = mode;
-  b.setAttribute("role", "radio");
-  b.addEventListener("click", () => setOnlineMode(mode));
-  modeChoice.append(b);
-}
-function setOnlineMode(mode: "coop" | "versus"): void {
-  onlineMode = mode;
-  modeChoice.querySelectorAll<HTMLButtonElement>("button").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.mode === mode)));
-}
-setOnlineMode("coop");
-
-/** Pilots are numbered by their place in the room, as they will be in the game. */
-const pilotOf = (room: Room | null, slot: number): number => (room ? [...room.peers].sort((a, b) => a - b).indexOf(slot) : slot);
-
-const panel: OnlinePanel = new OnlinePanel({
-  root: onlineRoot,
-  min: 2,
-  label: (slot) => `P${pilotOf(panel.room, slot) + 1}`,
-  intro: "Up to nine pilots, each on their own computer, phone or tablet, co-op or versus. One of you makes a room and shares its code; the others join with it.",
-  hostOptions: modeChoice,
-  onStart: (room) => void startOnline(room),
-  onBack: () => closePanel(),
-  onRoom: (room) => room.listen((msg) => roomMessage(room, msg)),
-});
-
-function openOnline(): void {
-  sound.unlock();
-  if (scene.kind !== "title") toTitle();
-  onlineRoot.hidden = false;
-  input.release();
-  if (panel.room && !panel.room.closed) panel.showLobby();
-  else panel.showChoose();
+/** Connects to the match in the address, and starts it once every pilot is there. */
+async function joinMatch(id: string): Promise<void> {
+  netText = "CONNECTING TO THE GAME…";
+  let r: Room;
+  try {
+    r = await Room.open(id);
+  } catch (e) {
+    netText = (REFUSALS[(e as Error).message] ?? REFUSALS.unreachable).toUpperCase();
+    return;
+  }
+  room = r;
+  const waiting = () => {
+    if (room === r && !begun) {
+      netText = r.peers.size < r.size ? `WAITING FOR ${r.size - r.peers.size} MORE…` : "STARTING…";
+    }
+  };
+  waiting();
+  r.listen((msg) => { roomMessage(r, msg); waiting(); });
+  await everyoneIn(r);
+  if (room !== r || (scene.kind === "play" && scene.net)) return; // the host has started it already
+  if (r.isHost) void startOnline(r);
+  // If the host never comes, whoever is host by then starts it.
+  else setTimeout(() => { if (room === r && !(scene.kind === "play" && scene.net) && r.isHost) void startOnline(r); }, 5000);
 }
 
-function closePanel(): void {
-  onlineRoot.hidden = true;
-  canvas.focus();
-}
-
-/** Leaves the room, if this browser is in one. */
+/** Leaves the match, if this browser is in one. */
 function leaveRoom(): void {
   if (scene.kind === "play" && scene.net) scene.net.lock.stop();
-  panel.leaveRoom();
+  if (matchInAddress()) history.replaceState(null, "", location.pathname); // a reload doesn't join it again
+  room?.close();
+  room = null;
+  netText = "";
 }
 
 let starting = false;
@@ -427,8 +408,9 @@ async function startOnline(room: Room): Promise<void> {
   starting = true;
   const ticket = await startGame();
   starting = false;
-  if (room.closed || panel.room !== room) return;
+  if (room.closed) return;
   const slots = [...room.peers].sort((a, b) => a - b).slice(0, MAX_PLAYERS);
+  if (slots.length < 2) { netText = "NOBODY ELSE ARRIVED"; return; }
   const start: Start & { mode: string; ticket: Ticket | null } = {
     slots, seed: ticket ? ticket.seed : seed(), mode: onlineMode, ticket,
     delay: delaySteps(slots.map((s) => room.rtts.get(s) ?? 150), DT),
@@ -437,16 +419,16 @@ async function startOnline(room: Room): Promise<void> {
   beginOnline(room, start, onlineMode, ticket);
 }
 
-function roomMessage(room: Room, msg: RoomMessage): void {
-  if (panel.room !== room) return;
-  if (msg.t === "start" && Array.isArray(msg.slots) && msg.slots.includes(room.you)) {
+function roomMessage(r: Room, msg: RoomMessage): void {
+  if (room !== r) return;
+  if (msg.t === "start" && Array.isArray(msg.slots) && msg.slots.includes(r.you)) {
     const t = msg.ticket as Ticket | null;
     const ticket = t && typeof t.id === "string" && Number.isInteger(t.seed) ? { id: t.id, seed: t.seed >>> 0 } : null;
     const slots = (msg.slots as unknown[]).map(Number).slice(0, MAX_PLAYERS);
-    beginOnline(room, { slots, seed: Number(msg.seed) >>> 0, delay: Math.max(1, Math.min(60, Number(msg.delay) | 0)) }, msg.mode === "versus" ? "versus" : "coop", ticket);
+    beginOnline(r, { slots, seed: Number(msg.seed) >>> 0, delay: Math.max(1, Math.min(60, Number(msg.delay) | 0)) }, msg.mode === "versus" ? "versus" : "coop", ticket);
   } else if (msg.t === "closed") {
     if (scene.kind === "play" && scene.net) { scene.net.lock.stop(); toTitle(); }
-    note("THE CONNECTION TO THE ROOM WAS LOST", 8);
+    netText = "THE CONNECTION TO THE GAME WAS LOST";
   } else if (msg.t === "name" || msg.t === "leave") {
     namesHeard.push(msg);
     wakeNames();
@@ -469,7 +451,8 @@ function beginOnline(room: Room, start: Start, mode: "coop" | "versus", ticket: 
   namesHeard = [];
   const game = newGame(mode, start.slots.length, start.seed);
   scene = { kind: "play", game, devices: [], paused: false, rec: new Recorder(start.slots.length), ticket, net };
-  closePanel();
+  begun = true;
+  netText = "ONLINE GAME OVER";
   renderer.clearEffects();
   acc = 0;
   sound.unlock();
@@ -496,7 +479,7 @@ const gamePrint = (g: Game): number => fingerprint([
 function stepOnline(net: Net, now: number): void {
   let stuck = false;
   while (acc >= DT && scene.kind === "play" && scene.net === net) {
-    net.lock.local(toBits(onlineRoot.hidden ? localControls() : IDLE));
+    net.lock.local(toBits(localControls()));
     if (!net.lock.ready()) { stuck = true; acc = Math.min(acc, DT); break; }
     acc -= DT;
     tick(net.lock.next().map((b) => fromBits(b ?? 0)));
@@ -554,10 +537,9 @@ async function afterOnline(game: Game, rec: Recorder, ticket: Ticket | null, net
   room.send({ t: "results", results });
 }
 
-/** The status line under the field: the room, which pilot you are, and any waiting. */
+/** The status line under the field: which pilot you are, any waiting, and the way back to the multiplayer page. */
 function showNet(now: number): void {
-  const room = panel.room && !panel.room.closed ? panel.room : null;
-  let text = "";
+  let text = netText;
   let color = "";
   if (clock < noteUntil) text = noteText;
   else if (scene.kind === "play" && scene.net) {
@@ -566,15 +548,18 @@ function showNet(now: number): void {
     text = waiting.length ? `WAITING FOR ${waiting.map((i) => `P${i + 1}`).join(", ")}…` : `ONLINE · YOU ARE P${lock.me + 1}`;
     color = waiting.length ? "" : PLAYER_COLORS[lock.me];
   }
+  // Back to the multiplayer page once the online game is over, or couldn't start.
+  const back = !!text && !(scene.kind === "play" && scene.net) && !text.endsWith("…") && (room === null || netText === "ONLINE GAME OVER" || room.closed);
   netLine.hidden = !text;
-  if (netLine.textContent !== text) netLine.textContent = text;
   netLine.style.color = color;
-  const label = room ? `ROOM ${room.code} (O)` : "PLAY ONLINE (O)";
-  if (onlineButton.textContent !== label) onlineButton.textContent = label;
-  onlineButton.hidden = scene.kind === "play" || scene.kind === "over" || scene.kind === "entry" || scene.kind === "saving";
+  const key = `${text}|${back}`;
+  if (netLine.dataset.key === key) return;
+  netLine.dataset.key = key;
+  const link = document.createElement("a");
+  link.href = MULTIPLAYER_PAGE;
+  link.textContent = "BACK TO MULTIPLAYER";
+  netLine.replaceChildren(text, ...(back ? [" · ", link] : []));
 }
-
-onlineButton.addEventListener("click", () => { openOnline(); onlineButton.blur(); });
 
 let last = performance.now();
 let acc = 0;
@@ -583,7 +568,7 @@ function frame(now: number): void {
   last = now;
   clock += dt;
   input.poll();
-  for (const p of input.drain()) if (onlineRoot.hidden) handle(p);
+  for (const p of input.drain()) handle(p);
   acc += dt;
   if (scene.kind === "play" && scene.net) stepOnline(scene.net, now);
   else {
@@ -606,7 +591,6 @@ canvas.addEventListener("pointerdown", (e) => {
     showTouch();
   }
   const { x, y } = renderer.toField(e.clientX, e.clientY);
-  if (!onlineRoot.hidden) return;
   if (scene.kind === "title") {
     MENU_ITEMS.forEach((_, i) => {
       if (inRect(menuRect(i), x, y)) {
@@ -671,7 +655,7 @@ showTouch();
 updateButtons();
 toTitle();
 void refreshPublic();
-// A link to a room (?room=ABCD) joins it straight away.
-const invited = codeInAddress();
-if (invited) { onlineRoot.hidden = false; void panel.join(invited, false); }
+// Opened from the multiplayer page with ?match=ID: join that match.
+const invited = matchInAddress();
+if (invited) void joinMatch(invited);
 requestAnimationFrame(frame);

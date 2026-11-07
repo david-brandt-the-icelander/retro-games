@@ -3,7 +3,7 @@ import { Cpu, LEVELS, type LevelName } from "./engine/ai";
 import { DT, Recorder, cpuSeed, quantise, scoreOf } from "./engine/match";
 import { H, IDLE, W, newMatch, step, type Control, type GameEvent, type Side, type State } from "./engine/rules";
 import { cleanName } from "./name";
-import { Lockstep, OnlinePanel, codeInAddress, delaySteps, fingerprint, type Room, type RoomMessage, type Start } from "./online";
+import { Lockstep, MULTIPLAYER_PAGE, REFUSALS, Room, delaySteps, everyoneIn, fingerprint, matchInAddress, type RoomMessage, type Start } from "./online";
 import { defaultName, loadTable, saveName, startMatch, submitMatch, type Match, type TableRow } from "./scores";
 import { actionFor, edit, NameEntry } from "./ui/entry";
 import { Input } from "./ui/input";
@@ -24,6 +24,7 @@ const panels: Record<Exclude<Screen, "play">, HTMLElement> = {
   title: $("title"), help: $("help"), paused: $("paused"), over: $("over"), entry: $("entry"), scores: $("scores"), online: $("online"),
 };
 const netwait = $<HTMLElement>("netwait");
+const onlineStatus = $<HTMLElement>("online-status");
 const announce = $<HTMLElement>("announce");
 const soundButton = $<HTMLButtonElement>("sound");
 const pauseButton = $<HTMLButtonElement>("pause");
@@ -51,8 +52,9 @@ let starting = false;
 let demo = newDemo();
 
 /**
- * Online: the room this browser is in, which side it plays, and the match's lockstep (null
- * between matches). The room's host plays on the left.
+ * Online: the match this browser is in (started from the multiplayer page), which side it plays,
+ * and the match's lockstep (null before and after it). The first to join the game in the lobby
+ * plays on the left.
  */
 let online: { room: Room; side: Side; lock: Lockstep | null; ended: string | null } | null = null;
 
@@ -68,8 +70,10 @@ function newDemo(): { s: State; cpus: [Cpu, Cpu] } {
 /** The menus play a computer match behind them; a table opened from the title does too. */
 const demoShowing = (): boolean => screen === "title" || screen === "help" || screen === "online" || (screen === "scores" && $("scores-again").hidden);
 
+/** The other player's name online: their address before the @, as the scoreboard shows it. */
+const rivalName = (): string => (online?.room.names[1 - online.side] ?? "").toUpperCase().slice(0, 12) || "RIVAL";
 const names = (): [string, string] =>
-  online?.lock || online?.ended ? (online.side === 0 ? ["YOU", "RIVAL"] : ["RIVAL", "YOU"]) : players === 1 ? ["YOU", "CPU"] : ["LEFT", "RIGHT"];
+  online ? (online.side === 0 ? ["YOU", rivalName()] : [rivalName(), "YOU"]) : players === 1 ? ["YOU", "CPU"] : ["LEFT", "RIGHT"];
 /** Whether an online match is being played (it can't be paused: it goes on behind the menu). */
 const playingOnline = (): boolean => online?.lock != null && match.phase !== "over";
 
@@ -147,7 +151,7 @@ function say(text: string): void {
 
 const resultTitle = (winner: Side): string => {
   const [a, b] = names();
-  if (online) return winner === online.side ? "YOU WIN" : "RIVAL WINS";
+  if (online) return winner === online.side ? "YOU WIN" : `${rivalName()} WINS`;
   return players === 1 ? (winner === 0 ? "YOU WIN" : "CPU WINS") : `${winner === 0 ? a : b} WINS`;
 };
 /** The player's score for this one-player match. */
@@ -169,29 +173,46 @@ function showOver(note = ""): void {
   const p = $("over-points");
   p.hidden = players !== 1;
   p.textContent = `SCORE ${points().toLocaleString("en")}${note ? ` · ${note}` : ""}`;
-  const onlineNote = online ? (online.room.closed ? "The connection to the room was lost." : online.room.peers.size < 2 ? "Your rival has left the room." : "Back in the room, the host can start another match.") : "";
+  const onlineNote = online ? (online.room.closed ? "The connection to the game was lost." : online.room.peers.size < 2 ? `${rivalName()} has left.` : "") : "";
   $("over-note").textContent = onlineNote;
-  $("over-note").hidden = !online;
-  $("over-again").textContent = online && !online.room.closed ? "BACK TO THE ROOM" : "PLAY AGAIN";
-  $("over-again").hidden = !!online?.room.closed;
+  $("over-note").hidden = !onlineNote;
+  // Another online match starts from the multiplayer page.
+  $("over-again").textContent = online ? "BACK TO MULTIPLAYER" : "PLAY AGAIN";
   say(`${title.toLowerCase()}, ${match.score[0]} to ${match.score[1]}.${players === 1 ? ` Score ${points()}.` : ""} ${onlineNote}`);
   show("over");
 }
 
-// ——— Online: a friend on another computer ———
+// ——— Online: a match started from the multiplayer page ———
+//
+// The multiplayer page (icelander.net/games/multiplayer/) opens this page with ?match=ID for both
+// players. Both connect to the match; once both are there, the host (the first in the lobby) starts it.
 
-const panel = new OnlinePanel({
-  root: panels.online,
-  min: 2,
-  label: (slot) => (slot === 0 ? "LEFT" : "RIGHT"),
-  intro: "Play a friend on another computer, phone or tablet. One of you makes a room and shares its code; the other joins with it. Whoever makes the room plays on the left.",
-  onStart: (room) => startOnline(room),
-  onBack: () => { leaveOnline(); show("title"); },
-  onRoom: (room) => {
-    online = { room, side: room.you === room.host ? 0 : 1, lock: null, ended: null };
-    room.listen((msg) => roomMessage(room, msg));
-  },
-});
+/** Connects to the match in the address, and starts it once both players are there. */
+async function joinMatch(id: string): Promise<void> {
+  show("online");
+  onlineStatus.textContent = "Connecting to the game…";
+  let room: Room;
+  try {
+    room = await Room.open(id);
+  } catch (e) {
+    onlineStatus.textContent = REFUSALS[(e as Error).message] ?? REFUSALS.unreachable;
+    return;
+  }
+  online = { room, side: room.you === 0 ? 0 : 1, lock: null, ended: null };
+  room.listen((msg) => roomMessage(room, msg));
+  const waiting = () => {
+    if (online?.room === room && !online.lock && screen === "online") {
+      onlineStatus.textContent = room.peers.size < room.size ? `Waiting for ${rivalName()} to arrive…` : "Starting…";
+    }
+  };
+  waiting();
+  room.listen(waiting);
+  await everyoneIn(room);
+  if (online?.room !== room || online.lock) return; // the host has started it already
+  if (room.isHost) startOnline(room);
+  // If the host never comes, whoever is host by then starts it.
+  else setTimeout(() => { if (online?.room === room && !online.lock && room.isHost) startOnline(room); }, 5000);
+}
 
 /** A Control as a whole number, to send: 0–2 for the keys' direction, 3 + y for a finger or mouse. */
 const pack = (c: Control): number => (c.target === null ? c.dir + 1 : 3 + c.target);
@@ -202,7 +223,10 @@ const IDLE_PACKED = pack(IDLE);
 /** The host starts a match: a fresh seed, and a delay to suit both connections. */
 function startOnline(room: Room): void {
   const slots = [...room.peers].sort((a, b) => a - b).slice(0, 2);
-  if (slots.length < 2) return;
+  if (slots.length < 2) {
+    onlineStatus.textContent = `${rivalName()} didn't arrive. Start a new game from the multiplayer page.`;
+    return;
+  }
   const start: Start = { slots, seed: seed(), delay: delaySteps(slots.map((s) => room.rtts.get(s) ?? 150), DT) };
   room.send({ t: "start", ...start });
   beginOnline(room, start);
@@ -216,6 +240,8 @@ function roomMessage(room: Room, msg: RoomMessage): void {
     endOnline("CONNECTION LOST");
   } else if ((msg.t === "leave" || msg.t === "closed") && screen === "over") {
     showOver();
+  } else if (msg.t === "closed" && screen === "online") {
+    onlineStatus.textContent = REFUSALS.lost;
   }
 }
 
@@ -226,7 +252,7 @@ function beginOnline(room: Room, start: Start): void {
   online.side = lock.me as Side;
   online.lock = lock;
   online.ended = null;
-  lock.onLeave = () => endOnline("RIVAL LEFT");
+  lock.onLeave = () => endOnline(`${rivalName()} LEFT`);
   lock.onDesync = () => endOnline("OUT OF STEP");
   sound.wake();
   ranked = null;
@@ -249,20 +275,14 @@ function endOnline(why: string | null): void {
   showOver();
 }
 
-/** Leaves the room, if this browser is in one. */
+/** Leaves the match, if this browser is in one. */
 function leaveOnline(): void {
+  if (matchInAddress()) history.replaceState(null, "", location.pathname); // a reload doesn't join it again
   if (!online) return;
   online.lock?.stop();
+  online.room.close();
   online = null;
-  panel.leaveRoom();
   netwait.hidden = true;
-}
-
-function openOnline(): void {
-  sound.wake();
-  show("online");
-  if (online && !online.room.closed) panel.showLobby();
-  else { leaveOnline(); panel.showChoose(); }
 }
 
 // ——— High scores: name entry, then the table ———
@@ -452,8 +472,7 @@ function act(action: string | undefined): void {
   switch (action) {
     case "one": void start(1); break;
     case "two": void start(2); break;
-    case "again": if (online) openOnline(); else void start(players); break;
-    case "online": openOnline(); break;
+    case "again": if (online) { leaveOnline(); location.assign(MULTIPLAYER_PAGE); } else void start(players); break;
     case "help": show("help"); break;
     case "scores": void showScores(); break;
     case "menu": leaveOnline(); cpu = null; demo = newDemo(); show("title"); break;
@@ -492,7 +511,6 @@ document.addEventListener("keydown", (e) => {
   if (screen === "title") {
     if (k === "1") void start(1);
     else if (k === "2") void start(2);
-    else if (k === "o") openOnline();
     else if (k === "h") show("help");
     else if (k === "s") void showScores();
     return;
@@ -514,8 +532,8 @@ window.addEventListener("orientationchange", layout);
 setLevel(level);
 setSound(sound.on);
 show("title");
-// A link to a room (?room=ABCD) joins it straight away.
-const invited = codeInAddress();
-if (invited) { show("online"); void panel.join(invited, false); }
+// Opened from the multiplayer page with ?match=ID: join that match.
+const invited = matchInAddress();
+if (invited) void joinMatch(invited);
 layout();
 requestAnimationFrame((now) => { last = now; frame(now); });

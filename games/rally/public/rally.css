@@ -98,13 +98,14 @@ body.menu #table { cursor: default; }
 
 .choices { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
 button { font-family: inherit; }
-button.big {
+.big {
+  display: inline-block; text-align: center; text-decoration: none; font-size: 13.33px;
   min-width: 11em; padding: .8em 1.4em;
   border-radius: 999px; border: 2px solid var(--line); background: transparent; color: var(--line);
   font-weight: 800; letter-spacing: .12em; cursor: pointer;
 }
-button.big:hover, button.big:focus-visible { background: var(--line); color: var(--night); outline: none; }
-button.big:focus-visible { box-shadow: 0 0 0 3px var(--right); }
+.big:hover, .big:focus-visible { background: var(--line); color: var(--night); outline: none; }
+.big:focus-visible { box-shadow: 0 0 0 3px var(--right); }
 button.link { background: none; border: 0; color: var(--dim); cursor: pointer; font-size: .95rem; padding: .4em; }
 button.link:hover, button.link:focus-visible { color: var(--line); }
 
@@ -174,7 +175,7 @@ kbd {
 /* Small screens: the panels shrink to fit inside the table. */
 @media (max-height: 520px), (max-width: 560px) {
   .panel { gap: 8px; }
-  button.big { min-width: 9em; padding: .55em 1em; font-size: .85rem; }
+  .big { min-width: 9em; padding: .55em 1em; font-size: .85rem; }
   #help p, #help table { font-size: .78rem; }
   #entry, #scores { gap: 6px; }
 }
@@ -196,28 +197,7 @@ kbd {
   .message { font-size: .75rem; }
 }
 
-/* Online: making or joining a room, and its lobby. */
-.online input {
-  font: 800 1.1rem var(--mono); letter-spacing: .3em; text-align: center; text-transform: uppercase;
-  width: 7.5em; padding: .5em .6em; border-radius: 999px; border: 2px solid var(--dim); background: #ffffff10; color: var(--line);
-}
-.online input:focus-visible { outline: none; border-color: var(--right); }
-.online-join, .online-share { display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; }
-.online-join button, .online-share button {
-  padding: .55em 1.1em; border-radius: 999px; border: 2px solid var(--line); background: transparent; color: var(--line);
-  font-weight: 800; letter-spacing: .1em; cursor: pointer;
-}
-.online-join button:hover, .online-share button:hover, .online-join button:focus-visible, .online-share button:focus-visible { background: var(--line); color: var(--night); outline: none; }
-.online input.online-link { width: min(22em, 70vw); font: 600 .8rem var(--mono); letter-spacing: 0; text-transform: none; text-align: left; border-radius: 8px; user-select: all; }
-.online-intro, .online-or, .online-note { color: var(--dim); font-size: .9rem; }
-.online-note { font-size: .75rem; }
-.online-message { color: var(--ball); font-size: .9rem; min-height: 1.3em; }
-.online-players { list-style: none; margin: 0; padding: 0; font: 700 1rem var(--mono); letter-spacing: .08em; }
-.online-players li { padding: .15em 0; }
-.online-players li:first-child { color: var(--left); }
-.online-players li:nth-child(2) { color: var(--right); }
-.online-players li.online-waiting { color: var(--dim); font: 400 .9rem var(--font); letter-spacing: 0; }
-button.big:disabled { opacity: .4; cursor: default; background: transparent; color: var(--line); }
+#help a, #online a:not(.big) { color: var(--right); }
 /* Shown over the table while the match waits for the other player's moves to arrive. */
 .netwait {
   position: absolute; left: 50%; top: 12px; transform: translateX(-50%); margin: 0;
