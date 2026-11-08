@@ -628,12 +628,14 @@ func _computer_turn() -> void:
 func _take_back() -> void:
 	if str(game.result) != "*":
 		return
-	Api.engine_cancel()
-	_thinking = false
 	var n := chess.moves.size()
 	n -= 2 if n % 2 == my_side else 1
+	# Nothing of yours to take back (playing Black, before the computer's first move): carry on
+	# without disturbing the computer's search.
 	if n < 0:
 		return
+	Api.engine_cancel()
+	_thinking = false
 	var g := game.duplicate(true)
 	g.moves = g.moves.slice(0, n)
 	# The transcript keeps the start and the moves still on the board.

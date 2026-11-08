@@ -1,0 +1,86 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Invitation (challenge) state diagram",
+  "folder": "games/chess/worker",
+  "description": "One row of the D1 table challenges: an invitation from a signed-in player to an email address, whether or not anyone has signed in with it yet. It is answered at most once: closeChallenge only updates a row whose status is still open, so a second answer, from any route, gets 409 \"The challenge was already answered.\" The lobby lists only open invitations, both ways; GET challenges/{id} shows any status to its sender or addressee.",
+  "sources": [
+    {
+      "path": "games/chess/worker/api.ts",
+      "symbol": "handleApi"
+    },
+    {
+      "path": "games/chess/worker/api.ts",
+      "symbol": "createChallenge"
+    },
+    {
+      "path": "games/chess/worker/db.ts",
+      "symbol": "insertChallenge"
+    },
+    {
+      "path": "games/chess/worker/db.ts",
+      "symbol": "closeChallenge"
+    },
+    {
+      "path": "games/chess/worker/schema.sql",
+      "symbol": "challenges"
+    },
+    {
+      "path": "games/chess/shared/protocol.ts",
+      "symbol": "Challenge"
+    }
+  ],
+  "machine": "challenges.status (worker/schema.sql), written by worker/db.ts for worker/api.ts",
+  "initialState": "open",
+  "states": [
+    {
+      "id": "open",
+      "description": "Inserted by POST challenges with the challenger's colour (white, black or random); emailed through Resend when that is set up, and the challenger gets the link ?challenge=ID either way. At most 30 per sender per hour (429 beyond), and not to the sender's own address."
+    },
+    {
+      "id": "accepted",
+      "description": "The addressee accepted: game_id names the online game it started.",
+      "terminal": true
+    },
+    {
+      "id": "declined",
+      "description": "The addressee declined.",
+      "terminal": true
+    },
+    {
+      "id": "cancelled",
+      "description": "The sender withdrew it.",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "open",
+      "to": "accepted",
+      "trigger": "POST challenges/{id}/accept",
+      "guard": "the signed-in player's email is the one it was sent to",
+      "action": "closeChallenge(id, accepted, new game id); resolve a random colour with a random bit; insert the online game with its start entry; make each player the other's contact; answer with the game."
+    },
+    {
+      "from": "open",
+      "to": "declined",
+      "trigger": "POST challenges/{id}/decline",
+      "guard": "the signed-in player's email is the one it was sent to",
+      "action": "closeChallenge(id, declined)."
+    },
+    {
+      "from": "open",
+      "to": "cancelled",
+      "trigger": "POST challenges/{id}/cancel",
+      "guard": "the signed-in player sent it",
+      "action": "closeChallenge(id, cancelled)."
+    },
+    {
+      "from": "open",
+      "to": "open",
+      "trigger": "POST challenges/{id}/accept, decline or cancel",
+      "guard": "from a player it wasn't sent by or to, or an answer the player may not give (accepting or declining one's own, cancelling another's)",
+      "action": "403 for a stranger, 404 for the wrong answer; nothing changes."
+    }
+  ]
+}

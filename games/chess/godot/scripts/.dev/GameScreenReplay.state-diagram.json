@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Replay playback state diagram",
+  "folder": "games/chess/godot/scripts",
+  "description": "Playback of a finished game on a GameScreen in mode \"replay\". The position is cursor: how many transcript entries (start, moves, chat, offers, the end) have happened; _seek(n) shows the board after them and highlights them in the transcript. Play shows the entries one by one, waiting as long as the players took between them divided by the pace (1×, 4× or 16×), but between 0.35 and 3 seconds. The mode itself is fixed when the screen is made; leaving the screen is the screen navigation's business.",
+  "sources": [
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen._toggle_play"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen._stop_and_seek"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen._seek"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen._wait_before"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen._process"
+    }
+  ],
+  "machine": "GameScreen._playing with cursor and _play_timer (godot/scripts/game_screen.gd), mode \"replay\"",
+  "initialState": "paused",
+  "states": [
+    {
+      "id": "paused",
+      "description": "_playing = false; the button reads Play. _ready() starts here at cursor 0, the start position."
+    },
+    {
+      "id": "playing",
+      "description": "_playing = true; the button reads Pause, and _process counts _play_timer down."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "paused",
+      "to": "playing",
+      "trigger": "Play (_toggle_play)",
+      "action": "If the cursor is at the end, _seek(0) first; _play_timer = _wait_before(cursor)."
+    },
+    {
+      "from": "playing",
+      "to": "paused",
+      "trigger": "Pause (_toggle_play)"
+    },
+    {
+      "from": "playing",
+      "to": "playing",
+      "trigger": "_play_timer runs out",
+      "guard": "entries remain after the cursor",
+      "action": "_seek(cursor + 1), gliding a move into place; _play_timer = _wait_before(cursor)."
+    },
+    {
+      "from": "playing",
+      "to": "paused",
+      "trigger": "_play_timer runs out",
+      "guard": "the cursor is at the end",
+      "action": "The button reads Play again."
+    },
+    {
+      "from": "paused",
+      "to": "paused",
+      "trigger": "Start, Back, Next, End, the slider, or a move clicked in the transcript",
+      "action": "_stop_and_seek(n): _seek to n, clamped to the transcript."
+    },
+    {
+      "from": "playing",
+      "to": "paused",
+      "trigger": "Start, Back, Next, End, the slider, or a move clicked in the transcript",
+      "action": "_stop_and_seek(n): stop, then _seek to n."
+    },
+    {
+      "from": "paused",
+      "to": "paused",
+      "trigger": "a pace button (1×, 4×, 16×)",
+      "action": "_set_speed(s)."
+    },
+    {
+      "from": "playing",
+      "to": "playing",
+      "trigger": "a pace button (1×, 4×, 16×)",
+      "action": "_set_speed(s); the next wait uses it."
+    }
+  ]
+}

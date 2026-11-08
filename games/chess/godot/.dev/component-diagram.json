@@ -1,0 +1,111 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Gambit Godot client component diagram",
+  "folder": "games/chess/godot",
+  "description": "The Godot 4 project (GDScript, Compatibility renderer for WebGL 2). Its one scene runs main.gd; api.gd and sfx.gd are autoloads. The rules live apart from the scripts, and the web export runs in web_shell/shell.html, which loads the page bridge.",
+  "sources": [
+    {
+      "path": "games/chess/godot/project.godot",
+      "symbol": "autoload"
+    },
+    {
+      "path": "games/chess/godot/scenes/main.tscn",
+      "symbol": "Main"
+    },
+    {
+      "path": "games/chess/godot/export_presets.cfg",
+      "symbol": "html/custom_html_shell"
+    },
+    {
+      "path": "games/chess/godot/web_shell/shell.html",
+      "symbol": "bridge.js"
+    }
+  ],
+  "components": [
+    {
+      "id": "client",
+      "name": "Godot client",
+      "responsibility": "Everything the Godot engine runs.",
+      "folder": "games/chess/godot"
+    },
+    {
+      "id": "scripts",
+      "name": "Scripts",
+      "responsibility": "The shell and its screens, a game beside the 3D table, the pieces, the look, sounds, and the API, live connection and page bridge client.",
+      "folder": "games/chess/godot/scripts",
+      "diagram": "games/chess/godot/scripts/.dev/component-diagram.json"
+    },
+    {
+      "id": "rules",
+      "name": "Chess rules",
+      "responsibility": "Positions, legal moves, SAN, check, mate and draws in GDScript, for the board in the game.",
+      "folder": "games/chess/godot/chess",
+      "diagram": "games/chess/godot/chess/.dev/component-diagram.json"
+    },
+    {
+      "id": "shell",
+      "name": "Web shell (shell.html)",
+      "responsibility": "The page the web export runs in: the canvas, the loading screen and the bridge.js script.",
+      "folder": "games/chess/godot/web_shell"
+    },
+    {
+      "id": "bridge",
+      "name": "Page bridge",
+      "responsibility": "window.chessBridge and Stockfish.",
+      "folder": "games/chess/bridge",
+      "diagram": "games/chess/bridge/.dev/component-diagram.json"
+    },
+    {
+      "id": "worker",
+      "name": "Chess Worker",
+      "responsibility": "Sign-in, the JSON API and live games.",
+      "folder": "games/chess/worker",
+      "diagram": "games/chess/worker/.dev/component-diagram.json"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "client",
+      "to": "scripts",
+      "kind": "contains",
+      "description": "The scene's script and the autoloads."
+    },
+    {
+      "from": "client",
+      "to": "rules",
+      "kind": "contains",
+      "description": "The global class Chess."
+    },
+    {
+      "from": "client",
+      "to": "shell",
+      "kind": "contains",
+      "description": "The export's custom HTML shell."
+    },
+    {
+      "from": "scripts",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Chess.Game for the game shown, Chess.Position for the board, legal moves for picking pieces."
+    },
+    {
+      "from": "scripts",
+      "to": "bridge",
+      "kind": "depends-on",
+      "description": "JavaScriptBridge.get_interface(\"chessBridge\"), in the browser only."
+    },
+    {
+      "from": "scripts",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "HTTPRequest to api/ and auth/, WebSocketPeer to api/games/{id}/live."
+    },
+    {
+      "from": "shell",
+      "to": "bridge",
+      "kind": "depends-on",
+      "description": "Loads bridge.js, which starts the engine."
+    }
+  ]
+}

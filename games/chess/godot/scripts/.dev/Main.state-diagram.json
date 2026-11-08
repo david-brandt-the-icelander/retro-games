@@ -1,0 +1,300 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Gambit screen navigation state diagram",
+  "folder": "games/chess/godot/scripts",
+  "description": "Which screen the shell shows in front of the 3D table. Main._screen_name changes only in go(), which frees the old screen (a GameScreen closes its live connection and cancels Stockfish on the way out), stops the lobby's 10-second refresh, and shows the new one; go() also pushes onto a back stack of up to 12 entries that go(\"back\") pops. The top bar is there from the start and stays on every screen, so its buttons lead from each state. go() waits for Api.load_me() before showing the lobby, contact or history. A provider sign-in leaves the page for the provider and comes back as a fresh start; it is not a transition here. Desktop-only development switches (--goto and others) are left out.",
+  "sources": [
+    {
+      "path": "games/chess/godot/scripts/main.gd",
+      "symbol": "Main.go"
+    },
+    {
+      "path": "games/chess/godot/scripts/main.gd",
+      "symbol": "Main._ready"
+    },
+    {
+      "path": "games/chess/godot/scripts/main.gd",
+      "symbol": "Main._lobby"
+    },
+    {
+      "path": "games/chess/godot/scripts/main.gd",
+      "symbol": "Main._answer"
+    },
+    {
+      "path": "games/chess/godot/scripts/main.gd",
+      "symbol": "Main._open_game"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen.leave"
+    }
+  ],
+  "machine": "Main._screen_name (godot/scripts/main.gd), changed only by go()",
+  "initialState": "loading",
+  "states": [
+    {
+      "id": "loading",
+      "description": "No screen yet: the table turns behind the top bar while Api.load_me() finds out who is signed in."
+    },
+    {
+      "id": "home",
+      "description": "The title, Play a friend, Play the computer, and Continue when a game against the computer is saved in play; the table turns slowly (showcase)."
+    },
+    {
+      "id": "setup",
+      "description": "The computer's eight strengths and your colour; preloads Stockfish."
+    },
+    {
+      "id": "lobby",
+      "description": "Signed in: invite by email, invitations both ways, games in play and contacts, refreshed every 10 seconds. Signed out: the sign-in card instead."
+    },
+    {
+      "id": "contact",
+      "description": "One contact: the record against them, every game together, invite, remove."
+    },
+    {
+      "id": "history",
+      "description": "Finished games: from the server, 30 at a time, when signed in; from user://history.json when signed out."
+    },
+    {
+      "id": "game",
+      "description": "A GameScreen (online, computer or replay) beside the board; no veil."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "loading",
+      "to": "home",
+      "trigger": "Api.load_me() finishes in _ready()",
+      "guard": "no ?challenge=ID in the page's address"
+    },
+    {
+      "from": "loading",
+      "to": "lobby",
+      "trigger": "Api.load_me() finishes in _ready()",
+      "guard": "the address held ?challenge=ID (Api.challenge_in_address())",
+      "action": "Keep the invitation id for the lobby's first refresh."
+    },
+    {
+      "from": "home",
+      "to": "lobby",
+      "trigger": "Play a friend"
+    },
+    {
+      "from": "home",
+      "to": "setup",
+      "trigger": "Play the computer"
+    },
+    {
+      "from": "home",
+      "to": "game",
+      "trigger": "Continue your game against level N",
+      "guard": "the saved computer game (user://computer.json) is in play and has moves",
+      "action": "GameScreen(\"computer\") on the saved game."
+    },
+    {
+      "from": "setup",
+      "to": "game",
+      "trigger": "Start the game",
+      "action": "A new computer game at the chosen strength and colour (random resolved now), saved to user://computer.json; GameScreen(\"computer\")."
+    },
+    {
+      "from": "setup",
+      "to": "home",
+      "trigger": "Back"
+    },
+    {
+      "from": "lobby",
+      "to": "lobby",
+      "trigger": "Dev sign-in",
+      "guard": "signed out and the server offers the dev provider",
+      "action": "Api.sign_in(\"dev\"); once signed in, rebuild as the lobby."
+    },
+    {
+      "from": "lobby",
+      "to": "lobby",
+      "trigger": "Decline, Cancel, or an Accept the server refuses",
+      "action": "POST api/challenges/{id}/decline|cancel|accept; toast any error; go(\"lobby\") rebuilds and drops the extra back-stack entry."
+    },
+    {
+      "from": "lobby",
+      "to": "game",
+      "trigger": "Accept on an invitation",
+      "guard": "the server answers with the new game",
+      "action": "GameScreen(\"online\")."
+    },
+    {
+      "from": "lobby",
+      "to": "game",
+      "trigger": "a row under Your games",
+      "action": "_open_game(): GET api/games/{id}; online while in play, replay once finished."
+    },
+    {
+      "from": "lobby",
+      "to": "game",
+      "trigger": "the lobby's refresh finds the invitation from the address already accepted",
+      "action": "_open_game(gameId)."
+    },
+    {
+      "from": "lobby",
+      "to": "contact",
+      "trigger": "a contact row",
+      "action": "go(\"contact\", contact)."
+    },
+    {
+      "from": "lobby",
+      "to": "history",
+      "trigger": "All your games"
+    },
+    {
+      "from": "contact",
+      "to": "lobby",
+      "trigger": "Back (go(\"back\")), or Remove from contacts once the server has removed it"
+    },
+    {
+      "from": "contact",
+      "to": "game",
+      "trigger": "a game row",
+      "action": "_open_game(): online while in play, replay once finished."
+    },
+    {
+      "from": "history",
+      "to": "game",
+      "trigger": "a game row",
+      "action": "A game kept on the device (id local-…) opens as a replay; others through _open_game()."
+    },
+    {
+      "from": "game",
+      "to": "setup",
+      "trigger": "Leave (GameScreen.leave(\"back\") → go(\"back\"))",
+      "guard": "the screen before the game was set-up"
+    },
+    {
+      "from": "game",
+      "to": "lobby",
+      "trigger": "Leave (GameScreen.leave(\"back\") → go(\"back\"))",
+      "guard": "the screen before was the lobby, or home or another game while signed in"
+    },
+    {
+      "from": "game",
+      "to": "home",
+      "trigger": "Leave (GameScreen.leave(\"back\") → go(\"back\"))",
+      "guard": "the screen before was home or another game, while signed out"
+    },
+    {
+      "from": "game",
+      "to": "contact",
+      "trigger": "Leave (GameScreen.leave(\"back\") → go(\"back\"))",
+      "guard": "the screen before was a contact",
+      "action": "Show that contact again (the back stack keeps its argument)."
+    },
+    {
+      "from": "game",
+      "to": "history",
+      "trigger": "Leave (GameScreen.leave(\"back\") → go(\"back\"))",
+      "guard": "the screen before was history"
+    },
+    {
+      "from": "game",
+      "to": "setup",
+      "trigger": "New game, after a finished game against the computer (leave(\"setup\"))"
+    },
+    {
+      "from": "game",
+      "to": "lobby",
+      "trigger": "Rematch, once the invitation is sent (leave(\"lobby\"))",
+      "action": "POST api/challenges to the opponent with the colours swapped."
+    },
+    {
+      "from": "loading",
+      "to": "home",
+      "trigger": "top bar: the Gambit logo or Play; or Sign out, after Api.logout()"
+    },
+    {
+      "from": "setup",
+      "to": "home",
+      "trigger": "top bar: the Gambit logo or Play; or Sign out, after Api.logout()"
+    },
+    {
+      "from": "lobby",
+      "to": "home",
+      "trigger": "top bar: the Gambit logo or Play; or Sign out, after Api.logout()"
+    },
+    {
+      "from": "contact",
+      "to": "home",
+      "trigger": "top bar: the Gambit logo or Play; or Sign out, after Api.logout()"
+    },
+    {
+      "from": "history",
+      "to": "home",
+      "trigger": "top bar: the Gambit logo or Play; or Sign out, after Api.logout()"
+    },
+    {
+      "from": "game",
+      "to": "home",
+      "trigger": "top bar: the Gambit logo or Play; or Sign out, after Api.logout()"
+    },
+    {
+      "from": "loading",
+      "to": "lobby",
+      "trigger": "top bar: Friends; or Sign in, while signed out"
+    },
+    {
+      "from": "home",
+      "to": "lobby",
+      "trigger": "top bar: Friends; or Sign in, while signed out"
+    },
+    {
+      "from": "setup",
+      "to": "lobby",
+      "trigger": "top bar: Friends; or Sign in, while signed out"
+    },
+    {
+      "from": "contact",
+      "to": "lobby",
+      "trigger": "top bar: Friends; or Sign in, while signed out"
+    },
+    {
+      "from": "history",
+      "to": "lobby",
+      "trigger": "top bar: Friends; or Sign in, while signed out"
+    },
+    {
+      "from": "game",
+      "to": "lobby",
+      "trigger": "top bar: Friends; or Sign in, while signed out"
+    },
+    {
+      "from": "loading",
+      "to": "history",
+      "trigger": "top bar: History"
+    },
+    {
+      "from": "home",
+      "to": "history",
+      "trigger": "top bar: History"
+    },
+    {
+      "from": "setup",
+      "to": "history",
+      "trigger": "top bar: History"
+    },
+    {
+      "from": "lobby",
+      "to": "history",
+      "trigger": "top bar: History"
+    },
+    {
+      "from": "contact",
+      "to": "history",
+      "trigger": "top bar: History"
+    },
+    {
+      "from": "game",
+      "to": "history",
+      "trigger": "top bar: History"
+    }
+  ]
+}
