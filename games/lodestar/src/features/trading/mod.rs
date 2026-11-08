@@ -111,7 +111,6 @@ mod tests {
     }
 
     const E: u8 = 5;
-    const R: u8 = 0;
 
     #[test]
     fn a_first_hold_of_grain() {
