@@ -1,7 +1,9 @@
 //! Reusable functional capabilities and their operations.
 
+pub mod ai;
 pub mod bubble;
 pub mod cockpit;
+pub mod combat;
 pub mod equipment;
 pub mod flight;
 pub mod market;

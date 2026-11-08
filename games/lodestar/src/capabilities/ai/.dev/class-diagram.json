@@ -1,0 +1,267 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Ship AI class diagram",
+  "folder": "games/lodestar/src/capabilities/ai",
+  "description": "How non-player objects think (RULES C.5): the dispatcher and the AI byte helpers in mod.rs, the steering rule, the ship, station, pod and drone AI, the missile AI with its retargeting after removals, becoming angry and launching child ships. A think changes the bubble and the cockpit and returns a Thought for the combat capability to apply to the pilot.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/ai/mod.rs",
+      "symbol": "Thought"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/ai/mod.rs",
+      "symbol": "Hit"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/ai/mod.rs",
+      "symbol": "think"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/ai/steering.rs",
+      "symbol": "Pointing"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/ai/ship.rs",
+      "symbol": "think_ship"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/ai/missile.rs",
+      "symbol": "think_missile"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/ai/anger.rs",
+      "symbol": "anger"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/ai/launch.rs",
+      "symbol": "launch_child"
+    }
+  ],
+  "types": [
+    {
+      "id": "ai",
+      "name": "mod ai",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/ai/mod.rs"
+      ],
+      "members": [
+        "ACTIVE, HOSTILE, ECM_FITTED, PACIFIED, ENEMY_LAUNCH, STATION_POLICE",
+        "is_active(ai) -> bool",
+        "aggression(ai) -> u8",
+        "missile_target(ai) -> usize",
+        "player_missile(target) -> u8",
+        "due(object, counter, slot) -> bool",
+        "think(bubble, slot, cockpit, random) -> Thought"
+      ]
+    },
+    {
+      "id": "thought",
+      "name": "Thought",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/ai/mod.rs"
+      ],
+      "members": [
+        "hit: Option<Hit>",
+        "kill: bool"
+      ]
+    },
+    {
+      "id": "hit",
+      "name": "Hit",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/ai/mod.rs"
+      ],
+      "members": [
+        "damage: u8",
+        "from_z: f64"
+      ]
+    },
+    {
+      "id": "pointing",
+      "name": "Pointing",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/ai/steering.rs"
+      ],
+      "members": [
+        "direction: Vec3",
+        "value: f64",
+        "pointing(object) -> Pointing",
+        "steer(object, target, p, adjust_speed)"
+      ]
+    },
+    {
+      "id": "ship",
+      "name": "mod ship",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/ai/ship.rs"
+      ],
+      "members": [
+        "think_ship(bubble, slot, cockpit, random) -> Thought",
+        "head_for_planet(bubble, slot)",
+        "think_station(bubble, slot, random)",
+        "drift(bubble, slot)"
+      ]
+    },
+    {
+      "id": "missile",
+      "name": "mod missile",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/ai/missile.rs"
+      ],
+      "members": [
+        "think_missile(bubble, slot, cockpit, random) -> Thought",
+        "retarget_missiles(bubble, removed)"
+      ]
+    },
+    {
+      "id": "anger",
+      "name": "mod anger",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/ai/anger.rs"
+      ],
+      "members": [
+        "anger(bubble, slot)"
+      ]
+    },
+    {
+      "id": "launch",
+      "name": "mod launch",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/ai/launch.rs"
+      ],
+      "members": [
+        "launch_child(bubble, parent, kind, ai, random) -> Option<usize>"
+      ]
+    },
+    {
+      "id": "bubble",
+      "name": "Bubble",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/bubble/mod.rs"
+      ],
+      "members": [
+        "add(object) -> Option<usize>",
+        "get_mut(slot)"
+      ],
+      "external": true
+    },
+    {
+      "id": "cockpit",
+      "name": "Cockpit",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/cockpit/mod.rs"
+      ],
+      "members": [
+        "station_present: bool",
+        "ecm_active() -> bool",
+        "start_ecm(own)",
+        "show(message)"
+      ],
+      "external": true
+    },
+    {
+      "id": "random",
+      "name": "MainGenerator",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/random/mod.rs"
+      ],
+      "members": [
+        "draw() -> Draw",
+        "byte() -> u8"
+      ],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "ai",
+      "to": "ship",
+      "kind": "depends-on",
+      "description": "Dispatches pods, the hostile station, drifting drones and every other ship."
+    },
+    {
+      "from": "ai",
+      "to": "missile",
+      "kind": "depends-on",
+      "description": "Dispatches missiles to the missile AI."
+    },
+    {
+      "from": "ai",
+      "to": "thought",
+      "kind": "depends-on",
+      "description": "Every think returns a Thought."
+    },
+    {
+      "from": "thought",
+      "to": "hit",
+      "kind": "depends-on",
+      "description": "Carries the damage to the player and the attacker's z."
+    },
+    {
+      "from": "ship",
+      "to": "pointing",
+      "kind": "depends-on",
+      "description": "Computes P and steers by the steering rule."
+    },
+    {
+      "from": "ship",
+      "to": "launch",
+      "kind": "depends-on",
+      "description": "Launches police, escape pods, missiles and drones."
+    },
+    {
+      "from": "missile",
+      "to": "pointing",
+      "kind": "depends-on",
+      "description": "Steers toward the player or its target with P = 36."
+    },
+    {
+      "from": "ship",
+      "to": "cockpit",
+      "kind": "depends-on",
+      "description": "Reads the safe zone and the E.C.M. pulse; shows the incoming-missile message."
+    },
+    {
+      "from": "missile",
+      "to": "cockpit",
+      "kind": "depends-on",
+      "description": "Reads the E.C.M. pulse and starts one for a target with E.C.M."
+    },
+    {
+      "from": "ai",
+      "to": "bubble",
+      "kind": "depends-on",
+      "description": "Reads and changes the thinking object and its neighbours."
+    },
+    {
+      "from": "anger",
+      "to": "bubble",
+      "kind": "depends-on",
+      "description": "Wakes the ship and turns the station hostile."
+    },
+    {
+      "from": "launch",
+      "to": "random",
+      "kind": "depends-on",
+      "description": "A canister draws a pair for its spin and speed."
+    },
+    {
+      "from": "ship",
+      "to": "random",
+      "kind": "depends-on",
+      "description": "Draws the roll, escape, missile and heading bytes in RULES order."
+    }
+  ]
+}
