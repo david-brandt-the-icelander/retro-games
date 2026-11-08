@@ -5,6 +5,7 @@ A space trading and combat game for the desktop (Windows, macOS, Linux), with it
 **Status:** design (overall design, art bible, UI design). Nothing is playable yet. LodeStar is the working title and `lodestar` its slug; the GDD phase confirms the title. The first deliverable is a working base: the Rust sim built from `docs/RULES.md` under a plain playable client.
 
 - [docs/DESIGN.md](docs/DESIGN.md): the overall design: the sim and presentation split, the camera, ships and their rig contract, animation, lighting and bloom, controls, HUD, UI, the desktop build, the layered source layout, testing and milestones.
+- [docs/RULES.md](docs/RULES.md): the clean-room behaviour spec (phase 1, awaiting approval): universe and trade, flight, combat and AI, game modes and messages, tick by tick, with the decisions the owner still has to make.
 - [docs/ART-BIBLE.md](docs/ART-BIBLE.md): the visual and audio identity: pillars, palette, ships and materials, light and bloom, space, effects, camera, type and icons, sound, and how every screen differs from the original's.
 - [docs/UI-DESIGN.md](docs/UI-DESIGN.md): tokens, layout, components, the flight HUD element by element, every screen and the flow between them, text budgets and accessibility.
 - [docs/contact-sheet.png](docs/contact-sheet.png) and [docs/screens/](docs/screens/): example screens over real-time renders of the Cheetah model.
