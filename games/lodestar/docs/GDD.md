@@ -1,6 +1,6 @@
 # LodeStar: game design document
 
-Status: draft · Phase 2 of `create-retro-game` · Owner approval: _pending_
+Status: approved · Phase 2 of `create-retro-game` · Owner approval: 8 November 2026, with the recommendation taken on every open choice
 
 This document decides what LodeStar *is*: its name, world, words, numbers and sounds. What the game *does* is in [RULES.md](RULES.md), which wins wherever the two seem to disagree; every value below fills a slot that RULES marks as **data**. The look is in [ART-BIBLE.md](ART-BIBLE.md), the screens in [UI-DESIGN.md](UI-DESIGN.md), the engineering in [DESIGN.md](DESIGN.md).
 
@@ -615,7 +615,7 @@ All new: synthesised or recorded for LodeStar, no melody associated with the ori
 | An invented name echoes the original or another space game (ships, goods, governments, ranks) | Low | Names were built from new themes (mammal registries, frontier guild money, the Hush); the verify role's overlap check and guard test cover them; the owner reviews this list |
 | The title *LodeStar* is a common word and used by other products | High | Treat it as a working title until a trademark search; two alternatives are ready |
 | Contraband themes (bonded sleepers, lotus resin) read as glorifying trafficking or drugs | Medium | Plain, unglamorous wording; no jokes; the law punishes them; the owner decides (choice 4) |
-| UI-DESIGN's market stepper and equip panel differ from RULES' prompt flows (A.10, D.6.9–D.6.13): number-entry quirks, whole-stack selling, the item-by-item buy order | High: a design gap now | Before wireframes, the owner decides: either the sim commands keep RULES' validations and the stepper is a recorded deliberate difference in RULES, or the panels drive the prompt flows. Selling stays whole-stack either way unless RULES changes |
+| UI-DESIGN's equip panel picks items from a list, where RULES' equipment shop uses number entry (D.6.13) | Low: input method only | The market is settled (RULES deliberate difference 12, owner 8 Nov 2026). The equip panel reaches the same purchases; the owner decides whether it too replaces number entry before wireframes |
 | The third-person camera makes fights easier (you see behind you) | Medium | Rules unchanged; play-test, then decide; any retune is logged here and in RULES |
 | The new stats or market make the game easier or harder than intended | Medium | Values were checked against the formulas (§ 5); play-testing may retune data only, logged in this decision log, and the parity baseline gets the same data |
 | One shared point in Reach 6 hides a system from the chart search | Low impact | RULES' tie rule decides; accepted as data |
@@ -647,6 +647,6 @@ All new: synthesised or recorded for LodeStar, no melody associated with the ori
 | 8 Nov 2026 | RULES 11: visual-only defects are done properly (beam lines, the Reach-jump message, a chart kept across a jump, condition labels in order) | Owner |
 | 8 Nov 2026 | RULES 12: saves in a LodeStar format with the baseline's accept and reject behaviour | Owner |
 | 8 Nov 2026 | The starting market is computed from the formula, not stored | Owner |
-| _pending_ | Title; the Grey Wolf's role; tone; the captives cargo; currency (Open choices) | Owner |
-| _pending_ | This GDD's names and data (§ 4, § 5) | Owner |
-| _pending_ | Market stepper versus RULES' prompt flows (Risks) | Owner |
+| 8 Nov 2026 | Open choices, all as recommended: the title stays **LodeStar** (a trademark clearance search before release); the **LPX-9 Grey Wolf** is the medium multi-role ship (types 5 and 7, the player's own hull); the tone is a **dry working frontier**; goods item 3 is **Bonded sleepers**; the currency is **scrip (SC)** | Owner |
+| 8 Nov 2026 | This GDD's names and data (§ 4, § 5) approved | Owner |
+| 8 Nov 2026 | The UI design's market panel wins over RULES' buy and sell prompts: any order, a stepper, partial sales. Checked to work with RULES' market rules (fixed prices per visit, no spread, no random draws); recorded as RULES deliberate difference 12. The equipment shop keeps number entry until decided otherwise | Owner |

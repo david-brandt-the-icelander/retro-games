@@ -30,6 +30,11 @@ The implementer reads this document, the GDD and the design documents, and nothi
 9. **Firing and locking need the flight scene.** With a chart, status, market or inventory panel open over the flight view, laser and missile input is ignored, as in the baseline (C).
 10. **Visual defects are done properly.** Beam lasers draw their lines, the galaxy-jump message shows, a chart open before a jump stays open after it, and the status screen's condition labels are in the right order (D.14). None of these touch the logic.
 11. **Saves** keep the baseline's accept and reject behaviour in a LodeStar format of its own (A.12).
+12. **The market panel replaces the buy and sell prompts** (decided 8 November 2026, after the UI design). The pilot picks any goods item in any order and sets a quantity with a stepper; Buy takes that quantity and Sell sells that quantity, so partial sales are allowed. Prices, availability, hold space and cash work exactly as A.9 to A.11 say:
+    - **Buy** accepts a quantity from 0 to the smallest of the item's availability, the room left in the hold for it (A.11.1), and the whole units the pilot's cash pays for at the current price; anything larger is refused before it reaches the sim. A buy of q units does exactly what step 6 of A.10.2 does for q.
+    - **Sell** accepts a quantity from 0 to the cargo held of that item and adds quantity × current price to cash; selling still never restores availability.
+    - Nothing in buying or selling draws a random number, so parity is unaffected; the parity harness drives these commands instead of the prompts' keys.
+    - The prompt-only behaviour of A.10.1 to A.10.3 (the 12-key number entry and its quirks, the fixed item order, the bad-quantity, hold-full and not-enough-cash notices with their one-second waits) does not apply to the market. Number entry still applies to the equipment shop until the owner decides otherwise.
 
 Kept as the baseline does them, for parity, and to revisit in play-testing: planet vectors are never re-normalised (Q-B1), the AI's roll-steering sign (C), hold sizes 22 and 37 tonnes and laser power as rules, with the fuel price as data (A open 6).
 
@@ -612,6 +617,8 @@ chosen start byte, or supply a list; prices on the first visit come from the sta
 
 #### A.10.1 Number entry (used by buying and by the equipment shop)
 
+> **LodeStar:** the market no longer uses number entry; the equipment shop still does (deliberate difference 12).
+
 Reads a whole number up to a maximum `max`:
 
 1. `r = 0`. Read up to **12 keys** in total (every key read counts, including ignored ones).
@@ -627,6 +634,8 @@ Reads a whole number up to a maximum `max`:
 Delete does not delete; it finishes.
 
 #### A.10.2 Buying (docked only)
+
+> **LodeStar:** buying is done from the market panel, in any order and any quantity the stepper allows; the purchase itself is step 6 below (deliberate difference 12).
 
 The buy screen goes through items 0..16 in order. For each item it shows that item's row (A.9.5);
 if the item's availability is greater than 0 it then asks for a quantity:
@@ -644,6 +653,8 @@ if the item's availability is greater than 0 it then asks for a quantity:
 Entering 0 (or just enter) buys nothing and moves on. After item 16, show the inventory screen.
 
 #### A.10.3 Selling (docked only)
+
+> **LodeStar:** selling is done from the market panel, and any quantity up to the cargo held may be sold (deliberate difference 12).
 
 The sell screen goes through items 0..16 in order, skipping items with no cargo. For each it shows
 the name and quantity and asks yes or no with a single key:
