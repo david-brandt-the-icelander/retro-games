@@ -29,6 +29,7 @@ var _veil: ColorRect
 var _bar_wrap: MarginContainer
 var _bar: HBoxContainer
 var _user_slot: HBoxContainer
+var _signed_in_only: Array[Button] = []   ## Friends and History: shown only to a signed-in player
 var _screen: Control
 var _screen_name := ""
 var _history_stack: Array[Dictionary] = []   ## {name, arg} of the screens visited, for "back"
@@ -82,7 +83,11 @@ func _ready() -> void:
 	logo.add_theme_color_override("font_hover_color", UI.GOLD)
 	_bar.add_child(logo)
 	for item in [["Play", "home"], ["Friends", "lobby"], ["History", "history"]]:
-		_bar.add_child(UI.button(item[0], func() -> void: go(item[1]), "Ghost"))
+		var b := UI.button(item[0], func() -> void: go(item[1]), "Ghost")
+		_bar.add_child(b)
+		if item[0] != "Play":
+			b.visible = false   # until we know someone is signed in (_render_user)
+			_signed_in_only.append(b)
 	_bar.add_child(UI.spacer())
 	var sound := UI.button("Sound on", func() -> void: pass, "Ghost")
 	sound.pressed.connect(func() -> void:
@@ -184,6 +189,8 @@ func _dev_args() -> void:
 
 func _render_user() -> void:
 	UI.clear(_user_slot)
+	for b in _signed_in_only:
+		b.visible = Api.signed_in()
 	if Api.signed_in():
 		_user_slot.add_child(Avatar.make(Api.me.get("avatar"), str(Api.me.name), 34))
 		_user_slot.add_child(UI.label(str(Api.me.name), "Strong"))
@@ -253,6 +260,37 @@ func go(name: String, arg: Variant = null) -> void:
 	add_child(_screen)
 	move_child(_screen, _bar_wrap.get_index() + 1)
 	Api.set_title("Gambit")
+
+
+## The list screens (sign-in, set-up, lobby, contact, history) are cards over the table. Escape, or a
+## click on the table around them (not on a card, button, field or the top bar), closes the page:
+## back to the title screen, or from a contact back to where it was opened. The click does nothing else.
+func _input(event: InputEvent) -> void:
+	if _screen == null or _screen_name in ["home", "game"]:
+		return
+	var close := event.is_action_pressed("ui_cancel")
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		close = not _on_something(event.position)
+	if close:
+		get_viewport().set_input_as_handled()
+		go("back" if _screen_name == "contact" else "home")
+
+
+## Whether the point is on something of the page or the top bar: a card, a button, a text field,
+## a slider or a scroll bar (or the toast), rather than the bare table between them.
+func _on_something(p: Vector2) -> bool:
+	var roots: Array[Node] = [_screen, _bar_wrap]
+	if is_instance_valid(_toast):
+		roots.append(_toast)
+	for root in roots:
+		var nodes: Array[Node] = root.find_children("", "Control", true, false)
+		nodes.append(root)
+		for n in nodes:
+			var c := n as Control
+			var solid := c is PanelContainer or c is BaseButton or c is LineEdit or c is Range
+			if solid and c.is_visible_in_tree() and c.get_global_rect().has_point(p):
+				return true
+	return false
 
 
 ## A centred column for list screens.
@@ -562,7 +600,6 @@ func _lobby() -> Control:
 	left.add_child(UI.card(active))
 	left.add_child(out_card)
 	right.add_child(UI.card(contacts))
-	right.add_child(UI.button("All your games", func() -> void: go("history"), "Ghost"))
 
 	fns.refresh = func() -> void:
 		var r := await Api.get_json("api/lobby")
@@ -630,7 +667,9 @@ func _fill_incoming(box: VBoxContainer, list: Array, holder: Control) -> void:
 
 func _fill_active(box: VBoxContainer, list: Array) -> void:
 	UI.clear(box)
-	box.add_child(UI.label("Your games", "Heading"))
+	# The heading, with the way to every finished game at its right.
+	box.add_child(UI.hbox(8, [UI.label("Your games", "Heading"), UI.spacer(),
+		UI.button("All your games", func() -> void: go("history"), "Ghost")]))
 	if list.is_empty():
 		box.add_child(UI.label("No games in play. Invite someone!", "Muted"))
 	for g in list:

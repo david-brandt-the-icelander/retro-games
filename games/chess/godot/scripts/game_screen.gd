@@ -527,16 +527,36 @@ func _on_promotion(from_sq: int, to_sq: int) -> void:
 	UI.clear(_promo_box)
 	var row := UI.hbox(10)
 	for p in [["Queen", "q"], ["Rook", "r"], ["Bishop", "b"], ["Knight", "n"]]:
-		row.add_child(UI.button(p[0], func() -> void:
-			_promo_box.visible = false
-			board.finish_promotion(from_sq, to_sq, p[1]), "Primary" if p[1] == "q" else ""))
-	row.add_child(UI.button("Cancel", func() -> void:
-		_promo_box.visible = false
-		board.finish_promotion(from_sq, to_sq, ""), "Ghost"))
+		row.add_child(UI.button(p[0], func() -> void: _close_promotion(p[1]), "Primary" if p[1] == "q" else ""))
+	row.add_child(UI.button("Cancel", func() -> void: _close_promotion(""), "Ghost"))
 	_promo_box.add_child(UI.vbox(12, [UI.label("Promote to", "Heading"), row]))
+	_promo_box.set_meta("move", [from_sq, to_sq])
 	_promo_box.visible = true
 	_promo_box.reset_size()
 	_promo_box.position = (size - _promo_box.size) / 2.0 - Vector2(200, 0)
+
+
+## Closes the promotion picker: with "q", "r", "b" or "n" the pawn promotes; with "" it goes back.
+func _close_promotion(piece: String) -> void:
+	if not _promo_box.visible:
+		return
+	_promo_box.visible = false
+	var move: Array = _promo_box.get_meta("move")
+	board.finish_promotion(move[0], move[1], piece)
+
+
+## While the promotion picker is open, Escape or a click anywhere outside it cancels, like Cancel.
+## The click is used up, so it doesn't also pick up a piece or turn the camera.
+func _input(event: InputEvent) -> void:
+	if not _promo_box.visible:
+		return
+	# A click (not a turn of the wheel) outside the card.
+	var outside: bool = event is InputEventMouseButton and event.pressed \
+		and event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE] \
+		and not _promo_box.get_global_rect().has_point(event.position)
+	if event.is_action_pressed("ui_cancel") or outside:
+		_close_promotion("")
+		get_viewport().set_input_as_handled()
 
 
 func _act(action: Dictionary) -> void:

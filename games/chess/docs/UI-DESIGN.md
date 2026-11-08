@@ -96,7 +96,7 @@ Gaps between siblings: 18 (page columns and cards, top bar), 14 (game panel), 12
 A band across the top of the window, **72 px tall including its 18 px top margin**: its row of controls starts 18 px below the top edge and is 54 px tall (so the controls' centre line is 45 px from the top), with 28 px margins left and right and gaps of 18. Nothing else is in the band: list pages start at 92 px and the game panel at 84 px, below it.
 
 1. **Gambit**: a Ghost button in Playfair Display Italic 28, ink (gold on hover). Goes to the title screen.
-2. Ghost buttons **Play** (title screen), **Friends** (lobby), **History**.
+2. Ghost buttons **Play** (title screen), and for a signed-in player only, **Friends** (lobby) and **History**. Signed out, the bar has no Friends or History: **Sign in** and **Play a friend** lead to the sign-in screen.
 3. A spacer.
 4. Ghost button **Sound on** / **Sound off** (toggles all sound).
 5. Signed in: avatar 34, the player's name (Strong), Ghost **Sign out** (gaps of 10). Signed out: Chip **Sign in** (goes to the lobby, which asks to sign in).
@@ -105,7 +105,7 @@ The bar is the same on every screen, including games.
 
 ## List screens: the page
 
-Sign-in, set-up, lobby, contact and history share a page: 92 px from the top, 24 px from the bottom, a single scrolling column of a fixed width (given per screen), centred horizontally (side margins = max(16, (window width − column width) / 2)), with cards stacked 18 apart. The column scrolls vertically if it's taller than the window.
+Sign-in, set-up, lobby, contact and history share a page: 92 px from the top, 24 px from the bottom, a single scrolling column of a fixed width (given per screen), centred horizontally (side margins = max(16, (window width − column width) / 2)), with cards stacked 18 apart. The column scrolls vertically if it's taller than the window. **Escape**, or a click on the table around the cards (anywhere that isn't a card, button, field or the top bar), closes the page: back to the title screen, or from a contact back to where it was opened. That click does nothing else.
 
 ## 1. Title screen
 
@@ -179,13 +179,12 @@ Column 1120, two columns side by side (gap 18): left takes 1.15 shares of the wi
    - Row (gap 8): Muted **You play**; Chips **White** · **Random** · **Black** (Random on).
    - After sending, below: Muted, wrapping, `Invitation emailed to {email}. You can also send them this link:` (when an email went out) or `Invitation waiting for {email}. You can also send them this link:`; then a row of a read-only text field with the link and a Button **Copy** (toast "Link copied."). The *notify* sound plays and the field empties.
 2. **Invitations for you** (card, gap 10; hidden when there are none). Heading, then a row per invitation, newest first: avatar 40 · name (Strong) over `{email} · you play {white|black|a random colour} · {ago}` (Muted; both truncate with "…") · Primary **Accept** (opens the new game) · Ghost **Decline**.
-3. **Your games** (card, gap 10). Heading, then a clickable row per game in play, most recently active first: avatar 40 of the opponent · name over `{N moves} · {ago}` plus ` · draw offered` if the opponent has offered one · side dot 12 for your colour · **Your move** (Strong, gold) or **Their move** (Muted). When empty: Muted "No games in play. Invite someone!". A click opens the game.
+3. **Your games** (card, gap 10). A row (gap 8) of the Heading, a spacer and a Ghost **All your games** (history), then a clickable row per game in play, most recently active first: avatar 40 of the opponent · name over `{N moves} · {ago}` plus ` · draw offered` if the opponent has offered one · side dot 12 for your colour · **Your move** (Strong, gold) or **Their move** (Muted). When empty: Muted "No games in play. Invite someone!". A click opens the game.
 4. **Waiting for an answer** (card, gap 10; hidden when none). A row per invitation you sent: the email over `sent {ago}` · Ghost **Copy link** · Ghost **Cancel**.
 
 **Right column:**
 
 1. **Contacts** (card, gap 10). Heading, then a clickable row per contact (most recently played first): avatar 40 · name over `{email} · {W}W {L}L {D}D`. When empty: Muted, wrapping "Everyone you play is kept here, with your record and your games against them." A click opens the contact.
-2. Ghost **All your games** (history).
 
 If the page was opened from an invitation link (`?challenge=ID`) and that invitation is open and addressed to this account, it is simply there under **Invitations for you**. If it was already accepted, its game opens; otherwise a toast says `That invitation was {declined|cancelled}.` or `That invitation was sent to a different address than {email}.` (error).
 
@@ -207,7 +206,7 @@ Signed in [11](screens/11-history.png) · signed out [06](screens/06-history-sig
 
 Column 820. One card: Heading **Your games**, then a game row per finished game (friends and computer), newest first, 30 at a time; a Ghost **More** under the card loads the next 30 (only shown when there may be more). Empty: Muted "No finished games yet."
 
-Signed out, the card first says (Muted, wrapping) "Games against the computer on this device. Sign in to keep every game, with friends too, wherever you play." and lists the games kept on the device.
+Signed out (no longer in the top bar since 2026-11-08, so only reached directly, e.g. `--goto=history`), the card first says (Muted, wrapping) "Games against the computer on this device. Sign in to keep every game, with friends too, wherever you play." and lists the games kept on the device.
 
 ## 7. Game
 
@@ -256,7 +255,7 @@ Veil 0. The camera sits behind the player's colour, at distance 15 with offset 0
    | Computer | **Take back** · Danger **Resign** | Primary **New game** (set-up) |
 10. A row: Ghost **Turn the board** (the camera swings to the other side), spacer, Ghost **Leave** (back to where the player came from: the lobby for online games).
 
-**Promotion** [15](screens/15-game-promotion.png): when a pawn reaches the last rank, a Card appears over the board, centred on the window then moved 200 px left: Heading **Promote to**, then a row (gap 10) of Primary **Queen** and Buttons **Rook**, **Bishop**, **Knight**, and a Ghost **Cancel** (puts the pawn back).
+**Promotion** [15](screens/15-game-promotion.png): when a pawn reaches the last rank, a Card appears over the board, centred on the window then moved 200 px left: Heading **Promote to**, then a row (gap 10) of Primary **Queen** and Buttons **Rook**, **Bishop**, **Knight**, and a Ghost **Cancel** (puts the pawn back). **Escape**, or a click anywhere outside the card, cancels too (and that click does nothing else).
 
 **Sounds:** see the art bible. The player's own moves and the opponent's play *move*/*capture*; an opponent's message plays *chat*; an incoming draw offer plays *notify*; the end plays *win*, *lose* or *draw*.
 
@@ -290,6 +289,7 @@ The texts:
 ## Keyboard and accessibility
 
 - Every button is focusable (gold focus ring) and works with Enter/Space. Enter sends in the invitation and chat fields.
+- Escape closes the promotion picker, as Cancel does, and closes a list page (sign-in, set-up, lobby, contact, history).
 - The board is driven by mouse or touch.
 - Text contrast (WCAG): ink on card 14.7 : 1, muted on card 5.7 : 1, gold on card 9.0 : 1, `#17140E` on gold 9.2 : 1.
 - Nothing is told by colour alone: results are words, and side dots sit next to names.
