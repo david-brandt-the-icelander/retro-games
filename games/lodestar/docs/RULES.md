@@ -1,10 +1,10 @@
 # LodeStar: rules
 
-Behaviour spec, 8 November 2026, phase 1 of `create-retro-game`. **Awaiting the owner's approval.**
+Behaviour spec, 8 November 2026, phase 1 of `create-retro-game`. **Approved by the owner on 8 November 2026**, with the spec's recommendation taken on all twelve decisions below.
 
 This document says what LodeStar does, tick by tick, so that it can be implemented in Rust without anyone looking at another game. It was written by the spec-and-verify role from the private faithful recreation that serves as the baseline, in our own words. It holds no original text, names, galaxy data, market data, ship geometry or code structure: messages appear as purpose, trigger and length budget; the galaxy generator and the market appear as structure, for the GDD to fill with new values; ship types appear by neutral role. The mechanics and their numbers (rates, thresholds, timings, probabilities, formulas, wrap-around and rounding behaviour, and the order of random draws) are kept exactly, because they are the game.
 
-The implementer reads this document, the GDD and the design documents, and nothing else of the baseline. Parity tests compare the Rust sim against a data-swapped copy of the baseline, so where the baseline behaves oddly this document says so in the quirks of each section and in the decisions below.
+The implementer reads this document, the GDD and the design documents, and nothing else of the baseline. Parity tests compare the Rust sim against a data-swapped copy of the baseline, patched with the same deliberate differences, so where the baseline behaves oddly this document says so in the quirks of each section. Where a decision below changes a rule, a **LodeStar** note at that rule says how; the note wins over the baseline description around it.
 
 ## Conventions
 
@@ -19,16 +19,25 @@ The implementer reads this document, the GDD and the design documents, and nothi
 
 ## Deliberate differences from the baseline
 
-1. **Camera and mounts.** A third-person orbit camera replaces the cockpit views. The four laser mounts (front, rear, left, right) remain; the player chooses the active mount (1–4), lasers fire only from it, and wherever the baseline depends on which view is on screen, LodeStar uses the active mount instead (sections B and C).
+1. **Camera and mounts.** A third-person orbit camera replaces the cockpit views. The four laser mounts (front, rear, left, right) remain; the player chooses the active mount (1–4), lasers fire only from it, and wherever the baseline depends on which view is on screen, LodeStar uses the active mount instead (B.20, C).
 2. **Names, text, galaxy and market data** are new and come from the GDD. Nothing in the rules below depends on a particular name or value of that data.
+3. **Cosmetic randomness has its own generator.** Stardust, the sun's edge, enemy beam lines and every other draw made only for the picture (B.4.4, C.2.4) come from a separate cosmetic generator, never from the main one. The main generator still takes the view-independent stardust draws on a flight-state reset (54) and on an ambush arrival (9), and discards them, so the logic stream keeps its length. The parity baseline is patched the same way.
+4. **Galaxy generator.** LodeStar keeps the generator's mechanics (the advance step, four steps per system, the galaxy rotation and the property formulas of A.3) with a new starting state and new name syllables from the GDD.
+5. **A countdown ends at death.** Dying cancels a running hyperspace countdown (A.14 item 4, Q-B3).
+6. **Retargeting during a countdown is range-checked.** Selecting a new system while counting down changes the destination only if it is within fuel range; otherwise the countdown keeps its old destination and distance. Fuel can never go negative (A.14 item 3, Q-B4).
+7. **The escape pod launches safely.** The abandoned hull takes no part in collision tests on the tick the pod launches, so launching the pod never damages the player (Q-B2).
+8. **Missile lock uses the active mount's axis**, as the lasers do (C).
+9. **Firing and locking need the flight scene.** With a chart, status, market or inventory panel open over the flight view, laser and missile input is ignored, as in the baseline (C).
+10. **Visual defects are done properly.** Beam lasers draw their lines, the galaxy-jump message shows, a chart open before a jump stays open after it, and the status screen's condition labels are in the right order (D.14). None of these touch the logic.
+11. **Saves** keep the baseline's accept and reject behaviour in a LodeStar format of its own (A.12).
 
-Any further difference is added here only after the owner decides it (see below).
+Kept as the baseline does them, for parity, and to revisit in play-testing: planet vectors are never re-normalised (Q-B1), the AI's roll-steering sign (C), hold sizes 22 and 37 tonnes and laser power as rules, with the fuel price as data (A open 6).
 
-## Decisions for the owner
+## Decisions (approved 8 November 2026)
 
-The four sections each end with their open questions. These are the ones that change behaviour or parity, with the spec's recommendation; until the owner decides, every rule below describes the baseline.
+The four sections each end with their open questions. These twelve change behaviour or parity; the owner took the recommendation on all of them, and the deliberate differences above record the result.
 
-| # | Question | Where | Recommendation |
+| # | Question | Where | Decision |
 | --- | --- | --- | --- |
 | 1 | **Cosmetic random draws.** The baseline draws stardust, the sun's edge and enemy beams from the same generator as the game logic, and those draws depend on which view is on screen, which an orbit camera cannot reproduce. | B.20, C open 1, D open 1–2 | Give LodeStar a separate cosmetic generator. Run parity against a baseline patched the same way. Keep the 54 and 9 view-independent stardust draws on a reset and an ambush as discarded draws. |
 | 2 | **Galaxy generator.** Keep the baseline's generator mechanics (advance step, four steps per system, the galaxy rotation) with new starting state and syllables, or invent a new algorithm that keeps only the property formulas? | A open 1 | Keep the mechanics with new state and syllables. Every system, name and position still changes, and system data stays testable by parity. |
@@ -43,7 +52,7 @@ The four sections each end with their open questions. These are the ones that ch
 | 11 | **Visual-only defects:** invisible beam-laser lines, an invisible galaxy-jump message, the chart not kept across a jump, two condition labels swapped. | D open 4–5, D.14 | Do these properly. They don't affect logic, so they stay outside parity. |
 | 12 | **Save format:** compatible with the baseline's records, or only the same accept and reject behaviour? | A open 8 | Same behaviour, a format of our own. |
 
-The quirks in each section that are not listed here are kept as described.
+The quirks in each section that are not listed here are kept as described. The open-questions lists at the end of each section are kept as the record of what was asked; the decisions above settle the ones listed here.
 
 
 ## A. Universe, pilot and trade
@@ -784,8 +793,10 @@ Wording is the designer's. Budgets are in characters on a 32-column screen.
    cursor. When the countdown ends the jump goes to the **newly** selected system and subtracts
    its distance with **no range check**, so fuel can go negative; if the new selection is the
    current system (distance 0), the jump still happens, uses no fuel and draws a new market byte.
+   **LodeStar:** the new selection replaces the destination only when it is within fuel range; otherwise the old destination and distance stay (deliberate difference 6).
 4. **Countdown during death.** The countdown keeps ticking during the death sequence, so a jump
    can begin during it (the baseline then shows the tunnel; see the open questions).
+   **LodeStar:** dying cancels the countdown (deliberate difference 5).
 5. **Galactic key clears legal status at the key press**, not at arrival, and consumes the drive
    even though the jump happens 85 ticks later.
 6. **Mis-jump position.** The position's y has its low 5 bits flipped; the stale selected
@@ -1015,6 +1026,8 @@ per canister spawned), damage that reaches the energy banks (1 draw for possible
 equipment), the AI's draws, an enemy laser beam being drawn (1 byte, B.4.4).
 
 #### B.4.4 Render-time draws (needed for parity)
+
+> **LodeStar:** these draws come from the separate cosmetic generator (deliberate difference 3); the main generator never sees them. They are described so the parity baseline can be patched to match.
 
 The baseline draws random numbers while drawing the flight scene, so the number of draws depends
 on what is on screen. To stay in step, LodeStar must count these draws exactly as the baseline
@@ -1692,15 +1705,18 @@ current one. The destination and out-of-range lines stay until the screen is cha
   (aborting the escape). The killed hull is never processed again in escape mode, so it keeps
   drifting and is drawn normally. If the player's missile was armed, the hull may become the lock.
   Periodic spawning and the hyperspace countdown also get one more tick here.
+  **LodeStar:** the abandoned hull is left out of collision tests on the launch tick, so none of this damage happens (deliberate difference 7).
 - **Q-B3 Countdown survives death.** Dying does not cancel a running hyperspace countdown, and the
   countdown keeps ticking in Death mode. If it completes during the 61 death ticks, the jump
   happens: the death sequence is abandoned, the hyperspace tunnel runs and the player arrives
   alive, with the reset's full shields and energy.
+  **LodeStar:** dying cancels the countdown (deliberate difference 5).
 - **Q-B4 Re-targeting a running jump.** The status screen, the system-data screen and the
   chart's show-distance key each re-select the system nearest the cursor and recompute the
   distance. Doing this during a countdown changes the destination and the fuel cost with **no
   range check** (fuel can go negative) and no update of the destination line; selecting the
   current system makes a zero-cost jump to it (with a new market).
+  **LodeStar:** range-checked, as deliberate difference 6 says.
 - **Q-B5 Station removal adjusts the missile lock.** When the station leaves (B.9.4) no slots
   shift, yet the player's missile lock on a slot above 1 is decremented, so it moves to a
   different object. Homing missiles are not retargeted in this case.
@@ -1871,6 +1887,8 @@ arrival (C.16.6), and every reset of the flight state, which regenerates the 18 
 3 draws each (54 draws) — the flight section owns that rule but it changes the sequence seen here.
 
 #### C.2.4 Where the baseline draws the main generator for cosmetic purposes
+
+> **LodeStar:** every draw listed here comes from the separate cosmetic generator (deliberate difference 3).
 
 The baseline also takes bytes from the main generator while drawing, which shifts every later logic
 draw:
