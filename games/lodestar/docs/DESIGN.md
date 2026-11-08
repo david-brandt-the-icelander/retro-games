@@ -1,0 +1,457 @@
+# Lodestar: design (Godot 4, web)
+
+Working design, 8 November 2026. `lodestar` is a working slug; the GDD phase chooses the title.
+
+## Summary
+
+The game is a new work in the public `retro-games` repo: it plays like a 1984 BBC Micro space trading game (same mechanics, same 12 Hz flight model, same AI), but with its own galaxy, market, names and text, a third-person camera that always shows your ship, and modern 3D art. It is built in Godot 4.7 for the web and stays behind the games sign-in while in development.
+
+The main decisions:
+
+| Decision | Choice | Why |
+| --- | --- | --- |
+| Repo and process | `retro-games/games/lodestar/`, made with the repo's `create-retro-game` skill: gated phases, clean-room roles | It is a remake, not a recreation; the repo is public during development |
+| Where the rules come from | A clean-room behaviour spec (`docs/RULES.md`) written from the private TypeScript recreation; the Godot code is written from the spec only | Nothing of the original or the faithful clone is copied |
+| Original data | Galaxy generation, market table, all text and all names are new **before the first push** | Your rule: the public repo never holds the original's data |
+| Simulation vs. picture | A pure sim at 12 Hz; a presentation layer that interpolates and decorates | Mechanics stay retro while art is free to be modern |
+| Hit detection, targeting, collisions | Spec'd from the original's maths; meshes are cosmetic | Changing them would change the game |
+| Camera | Third person, EVE-style orbit around your ship, with a limited zoom range | Your decision; the one deliberate change to how the game plays |
+| Ships | The ACNX-7 Cheetah GLB takes the heavy trader and pirate role, and stands in for every other ship until more models exist | One model for now |
+| Renderer | Compatibility (WebGL 2), the only one Godot exports to the web | Glow, MSAA, tonemapping and custom shaders are all available there |
+| Hosting | The game's own Worker at `games.icelander.net/retro/lodestar/`, checking the games sign-in until release; large files split into parts the Worker stitches back together | Private while in development, no 25 MiB problem, no new host |
+
+The title must not echo the original's. Choosing it is part of the GDD phase; `lodestar` is a working label.
+
+## What "retro gameplay" means
+
+The test for every feature: a player of the 1984 game should recognise every system and make the same kinds of decisions. The mechanics are kept; the data they run on is new; the camera is the one deliberate change.
+
+**Kept (specified in RULES, then implemented fresh):**
+
+- The shape of the universe: 8 galaxies of 256 procedurally generated systems, each with economy, government, tech level, population, productivity and size, nearest-system search, a galactic jump.
+- How trade works: goods whose price and availability depend on economy and a per-visit fluctuation, a cargo hold, equipment gated by tech level.
+- Flight: roll and pitch rates with damping and auto-centre, the speed range, the station safe zone, docking checks, in-system jump, sun heat and fuel scooping, altitude, hyperspace and the alien ambush mid-jump.
+- Combat: the AI's behaviour, lasers and laser heat, missiles and E.C.M., area blast, fore and aft shields and energy banks, damage, bounties, ranks, legal status and police, spawning rules.
+- At most 13 objects in the bubble, which is also what makes detailed 3D models affordable.
+
+**New (must exist before the first push):**
+
+- Galaxy generation: our own generator and seeds, so every system, name and position differs from the original's.
+- Market: our own goods, base prices, gradients and fluctuation ranges.
+- All text and names: ships, station, aliens, goods, ranks, legal statuses, messages, screen labels.
+
+**Changed on purpose:** you always see your own ship. A third-person, EVE-style camera orbits it within a limited zoom range. The four laser mounts (front, rear, left, right) remain and you choose which one fires; you no longer need to switch views to see behind you. RULES records this as a deliberate difference.
+
+**Presentation only:** 3D models, the HUD, the menu UI, sound, and rendering at display rate between 12 Hz ticks. Optional assists (target brackets, edge arrows) never change the sim.
+
+## Starting point: a clean room from the private recreation
+
+The faithful TypeScript recreation in the owner's private `recreations` repo is the *baseline*: it is read only by the spec-and-verify role, never copied. The Godot game is written only from documents in `docs/`, as `create-retro-game` prescribes.
+
+| Role | Reads | Writes |
+| --- | --- | --- |
+| Spec and verify | The baseline and the annotated original source | `docs/RULES.md` (mechanics in our own words, message *purposes* instead of text), the distinctiveness brief, parity and overlap reports |
+| Designer | RULES and the design docs | GDD (title, names, setting, the new galaxy and market), wireframes, art bible, UI design |
+| Implementer | Only `docs/` | GDScript, scenes, tests |
+
+**What RULES covers.** Every state, formula, threshold and timing the baseline implements: the flight model and its damping, the universe rotation, docking checks, sun heat, the AI's decisions, laser hit tests, missiles and E.C.M., damage and shields, spawning, legal status, ranks, and the order of random draws. It describes the galaxy generator and the market only as *structure* ("each system has an economy from 0–7 that sets…"), with no seeds, tables or names.
+
+**What the designer creates new.** A galaxy generator with its own algorithm and seeds and its own name syllables; a market of our own goods and numbers; every name and message, written to RULES' purposes and length budgets.
+
+**Ship stats** (energy, speed, laser power, missiles, bounty, target size) are rule numbers, which `create-retro-game` keeps by default. They are retuned too: the designer sets new values in the GDD, and the data-swapped baseline used for parity gets the same new values.
+
+**Parity without the original data.** The verify role makes a scratch copy of the baseline, swaps its galaxy, market and text for the new ones, and records traces from it: inputs per tick plus a state hash. The Godot sim must reproduce those traces. That proves the mechanics match while nothing of the original's data enters the public repo.
+
+## Architecture in Godot
+
+The game is two layers that talk one way: a **sim** that knows nothing about nodes, frames or meshes, and a **presentation** that reads the sim and makes it look good. The presentation never writes to the sim; input reaches the sim only through a per-tick input record.
+
+**The sim** is plain GDScript classes (`RefCounted`, no `Node`s): universe, pilot, the bubble of up to 13 objects, flight, AI, market. It advances only when `Sim.tick(input)` is called and draws random numbers from one injected RNG in the order RULES gives.
+
+**The loop** lives in one `Game` node:
+
+1. Each frame, read the keyboard into an `InputRecord`: held keys plus a queue of presses.
+2. Add `delta` to an accumulator; while it holds 1/12 s, keep the bubble's state as `previous`, run `Sim.tick()`, and collect the events it emitted.
+3. Hand the presentation `previous`, `current`, the events and `alpha = accumulator × 12`. It lerps positions and slerps orientations, so 12 Hz logic looks smooth at 60–120 fps.
+
+**Events** are how the art learns about gameplay: `laser_fired(slot)`, `missile_launched(slot)`, `hit(slot, shield)`, `exploded(slot)`, `ecm`, `area_blast`, `docked`, `launched`, `hyperspace_started`, `ambushed`, `message(id)`. Turrets, bay doors, flashes and sounds all key off these. Slot 0 is the player, so the player's own ship animates the same way.
+
+**Coordinates.** As in the original, the sim is player-centred: your ship sits at the origin, always facing forward, and the universe moves and rotates around it.
+
+- Sim axes are x right, y up, z forward (left-handed). Godot is right-handed with −Z forward, so positions map as `Vector3(x, y, -z) * UNIT_M`, and orientations get the same z flip.
+- `UNIT_M = 0.2` m per sim unit. Each model is scaled on import to fill its type's target box (within about 25%), so a hit in the sim also looks like a hit.
+- The planet and the sun are drawn as **scaled impostors**: beyond 2 km they are placed at 2 km along their true direction and scaled down by the same factor, so their angular size is exact and the depth buffer stays sane.
+
+### The camera
+
+The camera orbits your ship, EVE-style. Because the ship never moves or turns in the scene, the orbit is simple; what needs care is making the view feel anchored in space.
+
+- **Space-anchored orbit (default).** The camera holds its direction in space, not relative to the ship. Each tick the sim rotates the universe by our roll and pitch; the camera's orbit direction is rotated by the same amount, so when you turn, the ship swings under a steady camera and the stars hold still, as in EVE.
+- **Follow (option).** The camera eases back behind the active laser mount over about 1.5 s whenever you stop orbiting it. Closer to a classic chase view.
+- **Zoom range.** From 1.5× to 5× your ship's length (90–300 m with the Cheetah stand-in), default 2.5×. Field of view 60°.
+- **Mounts.** `1`–`4` choose the active laser mount (front, rear, left, right), and the camera swings to look along it. Lasers fire only from the active mount, as only the current view's laser fired in the original.
+- **Aiming.** The original hit test is a cylinder around the mount's axis. The HUD draws that axis as a reticle at range and marks any ship inside the cylinder as *in line of fire*. Without that mark, aiming from behind the ship would be guesswork.
+- **Obstacles.** If the station or a ship comes between the camera and your ship, the camera pulls in until it is clear.
+
+Docked, a second camera shows the hangar scene.
+
+**Project layout:**
+
+```
+games/lodestar/
+  README.md
+  docs/                    # PROVENANCE, RULES, GDD, WIREFRAMES, ART-BIBLE, UI-DESIGN, TEST-PLAN
+  project.godot            # Compatibility renderer, Web export preset
+  sim/                     # pure rules, no Nodes
+    universe/              # our galaxy generator, systems, distances
+    pilot/                 # cargo, equipment, legal, rank, save/load
+    flight/                # controls, ship state, universe rotation, docking, sun, hyperspace
+    ai/                    # tactics, missiles, spawning
+    sim.gd                 # tick(), events
+  game/                    # Game node: loop, input, interpolation, modes
+  space/                   # camera rig, ship pool, planet, sun, stardust, effects
+  ships/                   # one scene per ship type, wrapping its GLB
+  hud/  ui/  audio/
+  text/                    # every message and label, in one table
+  assets/                  # GLBs, textures, fonts, sounds
+  worker/                  # the game's Worker: sign-in gate, file stitching
+  tests/                   # unit tests and parity replays
+```
+
+## Ships
+
+One model for now: the ACNX-7 Cheetah GLB takes the heavy trader and pirate role, and stands in for every other ship, including yours, until more models exist. Later models come from the same scripted-Blender pipeline and follow the same rig contract.
+
+### What the Cheetah gives us
+
+|  | ACNX-7 Cheetah |
+| --- | --- |
+| Size (L × span × H) | About 59 × 19 × 8 m; the heavy trader's target box at 0.2 m per unit is 67 × 38 × 19 m |
+| Triangles | 35,280 |
+| Moving parts | 3 turrets, 4 missile-bay doors, 4 missiles, 2 airbrakes |
+| Rig data | glTF node extras: `kind` (turret, door, missile, brake) and `sign` |
+| Material | One PBR material: base, ORM, normal, emissive (running lights) |
+| Textures | WebP; base and normal 4096², ORM and emissive 2048², all on the second UV set |
+| File | 6.7 MB (4.6 MB geometry, 2.1 MB textures) |
+| Animation | None baked; the viewer drives the parts in code, which suits a game |
+
+### Rig contract (every ship GLB)
+
+- `static`: the hull. Forward +X, up +Y, as in the Cheetah; the import script turns this to Godot's −Z.
+- Moving parts as separate nodes with pivots at their hinge, tagged with `extras.kind`: `turret` (yaw about local Y), `door`, `missile`, `brake` (as now), plus `rotate` (`axis`, `amount` in degrees) and `slide` (`axis`, `amount` in metres) for future ships.
+- Marker empties to add to the Cheetah in Blender:
+  - `muzzle_N`: laser origin, child of its turret.
+  - `exhaust_N`: engine nozzle, pointing aft, `extras.radius` in metres.
+  - `beacon_N`: blinking light, `extras.color`, `extras.pattern` (steady, blink, strobe), `period`, `phase`.
+  - `launch_N`: where a launched missile or escape pod first appears (one per bay).
+  - `mount_front`, `mount_rear`, `mount_left`, `mount_right`: where each laser mount's beam starts when this is the player's ship.
+- Running lights stay in the emissive texture.
+- Textures baked to the **first** UV set. Godot's standard material reads albedo, normal and ORM from it; the Cheetah's are on the second.
+- One material per ship, named after the ship.
+
+### Import into Godot
+
+An `EditorScenePostImport` script (`ships/ship_import.gd`) runs on every ship GLB:
+
+1. Reads the extras into a `ShipRig` resource (parts by kind, markers, limits). If glTF extras do not arrive as node metadata, the Blender script also writes `<ship>.rig.json`.
+2. Rotates +X forward to −Z and scales the ship to its type's target box.
+3. Builds an `ORMMaterial3D` with emission driven at runtime, and turns on mesh LODs.
+4. Compresses textures with Basis Universal at 2048²; the 4096² sources stay in Blender.
+
+### Stand-ins until more models exist
+
+Every ship type the sim spawns uses the Cheetah, scaled to that type's target box and given a per-type tint and beacon colour, so the player can still tell police from pirates from traders. Its rig only animates parts a type would use (no missile bays on a type that carries no missiles). Non-ship objects get simple dedicated models early because a Cheetah-shaped cargo canister would read as wrong: station, missile, cargo canister, asteroid, escape pod.
+
+| Sim type (role) | Target size (L × W × H) | Model now |
+| --- | --- | --- |
+| Heavy trader, pirate | 67 × 38 × 19 m | **Cheetah** |
+| Player's ship, trader and bounty hunter | 26 × 51 × 10 m | Cheetah stand-in |
+| Police interceptor | 19 × 19 × 6 m | Cheetah stand-in, police beacons |
+| Small pirate fighters (two types) | 13–19 × 26 × 3–6 m | Cheetah stand-in |
+| Alien mothership and its drones | 66 m and 14 m | Cheetah stand-in, alien tint (a distinct model is the first one worth adding) |
+| Station | 64 m | Simple dedicated model |
+| Missile, escape pod, cargo canister, asteroid | 6–30 m | Simple dedicated models |
+
+## Other objects in space
+
+Everything the sim can put in the bubble gets a 3D treatment, and so do the effects the original drew as lines and dots. Sizes and positions always come from the sim.
+
+| Object | Built as | Driven by |
+| --- | --- | --- |
+| Station | GLB with the same rig contract: hull, docking slot with guide lights, launch-bay doors | Sim position and roll; slot lights chase inward while the docking computer is on |
+| Planet | Sphere with a procedural surface shader: terrain noise, oceans, clouds on their own layer, atmosphere rim | System seeds: economy picks the palette (agricultural greener, industrial greyer), tech level sets night-side city lights, the original's two styles become a ringed world (meridian) or a large impact crater |
+| Sun | Unlit sphere with animated granulation in HDR, a corona billboard, and the scene's only `DirectionalLight3D` | Sim position; colour picked from the system seed (presentation only) |
+| Starfield | Procedural panorama sky per galaxy, with a galactic band; also feeds ship reflections | Galaxy number |
+| Stardust | 300 points in a `MultiMesh` that streak with speed and swing with roll and pitch | Our speed, alpha and beta from the sim, as the original's dust did |
+| Lasers | Additive glowing beams: ours from the active `mount_*` marker along its axis, theirs from `muzzle_N` toward us | `laser_fired` events; colour by laser type |
+| Missiles | GLB with exhaust trail (ribbon mesh) and blinking seeker | Sim missile slots; lock and launch events |
+| Explosions | Light flash, hull debris chunks in the ship's material, sparks, a shock ring | `exploded` event; lasts as long as the sim's explosion cloud |
+| Area blast | Full-screen white flash, then every ship's explosion | `area_blast` event |
+| E.C.M. | Pale blue shell pulse around us, missiles flare as they die | `ecm` event and the sim's E.C.M. timer |
+| Launch | The station's bay tunnel with light rings rushing past, replacing the original's rectangles | `launched` event |
+| Hyperspace and ambush jumps | Tunnel shader of stretched stars; an ambush tints it green and cuts it short | `hyperspace_started`, `ambushed` events |
+
+The station stays the original's size relative to ships (64 m, about a Cheetah). A kilometre-scale station would look grander, but docking is checked against the sim's slot, so the art must match it.
+
+## Animation
+
+Every moving part is driven by something the sim knows, so the animation tells the player what a ship is doing. Nothing is a looping clip. Because you now watch your own ship all the time, it animates by the same rules and is the most-seen animation in the game.
+
+The mechanism is the one the Cheetah viewer already uses: each ship has named **channels** (`turrets`, `bays`, `brakes`, `lights`…), each with a target from 0 to 1 and a rate. Every frame a channel eases toward its target (`v += (target − v) × (1 − e^(−rate × dt))`), and the rig poses its parts from the channel values. The viewer's rates (turrets 3.5, bays 2.2, brakes 3, lights 6) are good defaults.
+
+| Part | Driven by (sim) | What it does |
+| --- | --- | --- |
+| Turrets: deploy | Other ships: hostile. Yours: condition red, or any laser fired in the last few seconds | Rise out of the hull (1.15 m), retract when calm |
+| Turrets: traverse | Other ships: direction to you. Yours: the active mount's direction, or the missile target | Yaw at up to 90°/s within ±150°; park at 0° when calm |
+| Muzzle flash | `laser_fired(slot)` | A turret flashes and recoils; the beam starts at its `muzzle_N` |
+| Missile bays | `missile_launched(slot)` | Doors open (to 105°), missile slides out, the sim's missile appears at `launch_N`, doors close |
+| Visible missiles | The ship's missile count | Hidden one by one as the count drops; on your ship this doubles as an ammunition gauge |
+| Airbrakes | Speed falling, or docking computer on | Extend up to 55° |
+| Running lights | Energy as a share of the type's maximum | Full at full energy; flicker below 25%; out when killed |
+| Beacons | Pattern from the rig | Blink or strobe; police alternate red and blue |
+| Engine exhaust | Speed and acceleration | Plume length and brightness scale with speed; a flare on acceleration; noise flicker |
+| Shield hits (yours) | `hit(0, fore or aft)` | A brief shimmer over the front or back half of a shield shell around your ship |
+| Station | Sim roll; docking computer on | Spins; slot lights chase inward |
+| Hangar idle | Docked | Your ship drifts gently on its pad |
+
+**Engine exhaust** is built per `exhaust_N` marker: a cone mesh with an additive, scrolling-noise shader for the plume, a bright core sprite at the nozzle that blooms, and, for your ship and the two nearest others, a small `OmniLight3D` that lights the hull. This stays within the Compatibility renderer's per-object light limit.
+
+Ship positions and orientations are never animated by the presentation: they come straight from the interpolated sim. No added banking or wobble in flight.
+
+## Lighting, the sun and bloom
+
+The sun's bloom comes from Godot's built-in glow, which the Compatibility renderer supports, fed by an HDR sun. The rule that makes it work: only things meant to glow are brighter than 1.0, so the glow threshold picks them out and nothing else smears.
+
+**Environment** (one `WorldEnvironment`):
+
+- Background: the procedural star panorama, which also lights and reflects on hulls.
+- Tonemapping: AgX (falls back to ACES), exposure 1.0.
+- Glow on: HDR threshold 1.0, intensity about 0.8, additive blend, levels 2–6 so the sun gets a wide halo and small lights a tight one. The viewers' bloom (strength 0.55, radius 0.35, threshold 0.92) is the look to match.
+- Ambient: very low, from the sky. Space should have hard light and deep shadow.
+
+**Brightness ladder** (emission energy, so bloom is ordered by importance):
+
+| Source | Energy | Bloom |
+| --- | --- | --- |
+| Sun surface | 30–40 | Huge halo that washes the screen near it |
+| Explosions, area blast flash | 10–20, brief | Strong flash |
+| Exhaust cores | 8–12 | Bright points at the nozzles |
+| Laser beams | 6–8 | Glowing lines |
+| Running lights, beacons | 4 (the viewers' value) | Small, crisp glints |
+| Hulls, planet, HUD | Below 1 | None |
+
+**The sun's light.** One `DirectionalLight3D` points from the sun's sim position. Shadows are on but limited to 400 m, so nearby ships self-shadow and cast onto each other. A ship in the planet's shadow (a ray-sphere test from the sim) gets its sun term faded out through a per-instance shader parameter, so night-side fights are lit only by engines and lights.
+
+**Glare.** When the sun is on screen and not hidden behind the planet or a ship (the same ray tests), a 2D overlay adds a soft glare and a few lens ghosts along the sun-to-centre line. Its strength also rises with the sim's cabin temperature, so flying close to the sun to scoop fuel feels hot.
+
+**The HUD never blooms.** It is drawn on a `CanvasLayer` after the 3D image, so instruments stay crisp.
+
+**Quality presets** (Low / Medium / High): MSAA off / 2× / 4×; glow levels 3 / 5 / 6; shadows off / ships only / ships and station; texture size 1K / 2K / 2K; render scale 0.75 / 1.0 / 1.0.
+
+## Keyboard controls
+
+Two built-in layouts, both fully remappable: **Modern** (the default) for WASD hands, kept clear of keys the browser owns, and **Classic**, which puts flight on the BBC Micro's keys for players who learned them. Both drive the same sim actions. The camera has its own keys in both, and the mouse can orbit and zoom too.
+
+| Action | Modern (default) | Classic |
+| --- | --- | --- |
+| Pitch: dive / climb | `W` / `S` | `S` / `X` |
+| Roll left / right | `A` / `D` | `,` / `.` |
+| Speed up / slow down | `R` / `F` | `Space` / `/` |
+| Fire lasers (active mount) | `Space` | `A` |
+| Active mount: front / rear / left / right | `1`–`4` | `1`–`4` |
+| **Camera orbit** | Arrow keys (or right-drag) | Arrow keys (or right-drag) |
+| **Camera zoom in / out** | `+` / `−` (or wheel) | `[` / `]` (or wheel) |
+| **Camera reset behind active mount** | `Home` | `Home` |
+| **Camera mode: space-anchored / follow** | `\` | `\` |
+| Target / fire / unarm missile | `Q` / `E` / `Z` | `T` / `M` / `U` |
+| E.C.M. | `C` | `E` |
+| Area blast | `B` | `Tab` |
+| Escape pod | Hold `Backspace` 1 s | Hold `Backspace` 1 s |
+| In-system jump | `J` | `J` |
+| Docking computer on / off | `K` | `C` |
+| Hyperspace / galaxy jump | `H` / `Shift`+`H` | `H` / `Shift`+`H` |
+| Galactic chart / local chart | `G` / `L` | `5` / `6` |
+| System data / market prices | `I` / `O` | `7` / `8` |
+| Status / inventory | `V` / `Y` | `9` / `0` |
+| Chart cursor, distance, home | Arrows, `Enter`, `Home` (on charts the arrows move the cursor) | Same |
+| Pause menu | `Esc` (or `P`) | `P` (or `Esc`) |
+
+**Browser-owned keys are avoided in both layouts.** In a tab, `F5` reloads the page, `F1` can open help, `Ctrl`+`H` opens history, and `Esc` leaves fullscreen and cannot be intercepted. So Classic uses the digit keys for its screens, as the faithful recreation already allows, and no layout puts anything on `F`-keys or `Ctrl` combinations.
+
+**How input reaches the sim.** Everything is a Godot `InputMap` action. Held actions (pitch, roll, speed, fire) are sampled at each 12 Hz tick. One-shot actions (mounts, missiles, E.C.M., jump) are queued on key-down and consumed by the next tick, so a quick tap between ticks is never lost. Key repeat is ignored. Camera input is presentation only: it is read every frame and never reaches the sim.
+
+**Rebinding.** Options → Controls lists every action with its keys; press a key to bind, with conflicts shown. Saved with the settings. The same action layer will take a gamepad later.
+
+**Focus on the web.** The page opens on a "Click to start" card, which gives the canvas keyboard focus and unlocks audio. If focus is lost mid-flight, the game pauses and shows the card again.
+
+## HUD
+
+The HUD carries the same information the original's dashboard did, but in a new layout built around a third-person view: it must not look like the original's bottom-third dashboard (a bar column on each side of a central scanner). The wireframe and UI-design phases settle the details; this is the starting concept.
+
+```
++----------------------------------------------------------------------+
+|                 [ message ticker: one line, fades ]                  |
+|                                                                      |
+|                     ( )  <- active-mount reticle at range            |
+|        speed                [in line of fire]          roll arc      |
+|        tape         ___/\___                           pitch arc     |
+|          |         /  your  \                                        |
+|          |         \__ship__/                                        |
+|                                                                      |
+|  .-------.                                         shield halves     |
+| ( sphere  )  heading   missiles: o o o .           energy: [][][][]  |
+|  '-------'   pip       ECM  SAFE                   heat: hull laser  |
+|  scanner                                           fuel, altitude    |
++----------------------------------------------------------------------+
+```
+
+| Information | Shown as | Source in the sim |
+| --- | --- | --- |
+| Contacts in range | A small tilted 3D sphere, bottom left, with contacts and height lines; it turns with the camera | Bubble positions, at the range RULES gives |
+| Heading to the planet, or the station in the safe zone | A pip on the sphere's rim, solid in front, hollow behind | Direction vector |
+| Fore and aft shields | The two halves of a ring around a small ship icon | Shield values |
+| Energy | Four cells | Energy, split as RULES gives |
+| Hull and laser heat, fuel, altitude | Compact labelled gauges; heat and altitude pulse near their limits | Heat counters, fuel, planet distance |
+| Speed | Vertical tape left of centre | Our speed |
+| Roll and pitch rates | Two short arcs right of centre | Control rates |
+| Missiles | A row of pips: armed, seeking, locked, spent | Missile count and state |
+| E.C.M., safe zone | Small badges that light up | E.C.M. timer, safe-zone flag |
+| Condition | Tint of the scanner sphere: calm, alert, danger, docked | Condition |
+| Aim | Reticle on the active mount's axis at range; a ship inside the hit cylinder gets an *in line of fire* mark | Mount, hit test |
+| Messages | One-line ticker, our own wording to RULES' message purposes | Message events |
+
+**Look.** Dark translucent glass, thin rules and a monospace font in the Cheetah viewer's palette: text `#e4e4e7` on `#0b0c0f`, gold `#c9a25c` for frames and labels, warning red and calm cyan as the only other colours. Anchored to the screen edges, so the centre stays clear for your ship; scales from 1280×720 to ultrawide.
+
+**Assists** (off by default): contacts coloured by kind, corner brackets with name and range on ships in view, edge arrows toward off-screen hostiles. No lead indicator: lasers are instant in the sim.
+
+**Build.** One `Hud` scene of `Control`s, each instrument a small node with a custom `_draw()`; the scanner sphere is a tiny 3D `SubViewport`. Everything reads the interpolated sim state every frame, and shares a `Theme` with the menus.
+
+## In-game UI
+
+Every screen the original had becomes a panel in one consistent UI, with the same information and the same actions but new layouts, names and wording. It is driven entirely from the keyboard (the mouse works too). The look is the Cheetah viewer's panel style: dark glass, numbered gold eyebrows (`01 MARKET`), monospace figures.
+
+**Out of the game**
+
+- **Title:** a slow flyby of the Cheetah against a planet and the sun (the bloom showcase), with New pilot, Load pilot, Options, About (with the credit line `create-retro-game` requires).
+- **Options:** graphics preset and individual settings, audio volumes, controls and rebinding, camera mode and default zoom, assists, HUD scale.
+- **Pause** (`Esc`/`P`): Resume, Options, Controls, Quit to title. The sim is frozen while paused.
+
+**Docked.** The background is a 3D hangar: your ship on its pad under hangar lights, which you can orbit with the camera keys. Fitted equipment shows on the model where the rig allows (missiles in the bays now; more mount points as models gain them), and the Equip panel's camera moves to where an item fits.
+
+| Panel | Modern / Classic key | What it holds |
+| --- | --- | --- |
+| Launch | `Enter` on Launch / `1` | Plays the launch, then flight |
+| Market: buy and sell | Market tab / `2`, `3` | Our goods: price, unit, available, in hold. ↑↓ to pick, ←→ or digits for quantity, `Enter` to trade |
+| Equip | Equip tab / `4` | Items allowed at this tech level, prices, fitted state; a laser asks which mount |
+| Galactic chart | `G` / `5` | Every system of the current galaxy, the cursor, the fuel-range circle, the selected system |
+| Local chart | `L` / `6` | Systems in fuel range, with names and a travel line |
+| System data | `I` / `7` | Economy, government, tech level, population, productivity, size, inhabitants, and the planet itself rendered and turning |
+| Market prices | `O` / `8` | Prices here; also viewable in flight |
+| Status | `V` / `9` | Pilot, present and target systems, condition, fuel, credits, legal standing, rank, equipment |
+| Inventory | `Y` / `0` | Fuel, credits and cargo |
+| Save pilot | Save tab | Named save, docked only |
+
+**In flight** the charts, system data, prices, status and inventory panels cover the space view (the HUD stays), and the sim keeps running: reading a chart in a fight is still a risk.
+
+**Saving.** Pilots are saved as named slots in the browser, with export to and import from a file so a pilot can move between computers. Dying restarts from the last saved or loaded pilot.
+
+**Build.** A `ScreenHost` swaps panel scenes; each panel reads the sim and calls sim commands (`buy(item, qty)`, `fit(item, mount)`, `select_system(x, y)`) that validate exactly as RULES says. All words come from one text table in `text/`, written in the UI-design phase and checked with `overlap.py`.
+
+## Web build and hosting
+
+The game stays on the existing Cloudflare setup, free, behind the games sign-in: the build splits any file over 24 MiB into parts, tarball-style, and the game's Worker streams the parts back as one file. Godot never knows.
+
+**Where it lives.** Like Hivestorm, the game has its own Worker with the route `games.icelander.net/retro/lodestar*`, which runs before the games hub. The source is public in `retro-games`; secrets are set with `wrangler secret put`, never committed.
+
+**Private while in development.** The Worker reads the hub's `recreations_player` cookie (sent to every path on games.icelander.net), checks its HMAC with the same `PLAYER_SECRET`, and checks the address against the hub's player list through a binding to the `recreations-players` D1 database. Anyone else is sent to the hub's sign-in with a return path. A single `PRIVATE` setting turns the gate off at release.
+
+**The 25 MiB limit: split and stitch.** Godot 4.7.2's single-threaded `index.wasm` is about 39.5 MB, and Workers static assets cap each file at 25 MiB.
+
+1. After `godot --headless --export-release "Web"`, the build splits every file over 24 MiB, like `split -b 24m`: `index.wasm.000`, `index.wasm.001`, plus `index.wasm.parts.json` (part count, total size, SHA-256).
+2. When the browser asks for `index.wasm`, the Worker finds the manifest, fetches the parts from its assets in order, and streams them as one response with the right `Content-Type` (`application/wasm`, needed for streaming compilation) and `Content-Length`.
+3. The build also writes Brotli-compressed copies (the engine shrinks to about 9 MB). When the browser accepts Brotli, the Worker sends those with `Content-Encoding: br` instead. This is for speed, not for the limit.
+
+The same applies to `index.pck` if the game data ever passes 24 MiB, so no packing scheme has to be designed around the limit. A client-side alternative (a service worker that reassembles the parts) would also work, but stitching in the Worker needs no code in the page.
+
+**Free alternatives considered**
+
+| Host | Cost | Behind the games sign-in? | Verdict |
+| --- | --- | --- | --- |
+| Split and stitch in the game's Worker | Free (static assets) | Yes | **Chosen** |
+| Cloudflare R2, served through the same Worker | Free up to 10 GB stored, 1M writes and 10M reads a month, no egress fees | Yes | Good fallback; no splitting, but one more thing to deploy |
+| itch.io | Free; 200 MB per file, 500 MB per game | No, separate site | Possible mirror after release |
+| GitHub Pages | Free | No: anything there is public | Possible after release only |
+
+**Engine and export settings**
+
+- Godot 4.7.x (4.7.2 today), pinned, with matching export templates. GDScript only: C# projects cannot export to the web.
+- Compatibility renderer, the only one Godot exports to the web (WebGL 2.0).
+- Thread support off: Godot's default for the web since 4.3, and no cross-origin isolation headers needed.
+- Saves and settings in `user://`, which the web build keeps in IndexedDB.
+
+**In the repo.** `games/lodestar/` follows the layout `create-retro-game` gives (README, `docs/`, `worker/`, tests, `wrangler.jsonc`), but the game itself is a Godot project rather than the skill's TypeScript template. `npm run build` exports, splits and compresses; `npm run deploy` deploys the Worker. The hub's games page lists it only at release.
+
+**Browsers.** Current Chrome, Edge, Firefox and Safari on desktop. Phones and tablets are out of scope for the first release: the game needs a keyboard.
+
+## Testing
+
+The sim is proven to match the baseline's mechanics by replaying data-swapped traces; the clean-room checks prove nothing of the original got in; everything visual is tested for loading, contracts and speed.
+
+| Test | What it checks | How |
+| --- | --- | --- |
+| Unit tests | Every rule in RULES, as it is written | GDScript tests run headless with `godot --headless -s tests/run.gd` |
+| Parity | The sim's mechanics match the baseline | The verify role, in scratch only, gives a copy of the TypeScript baseline our galaxy, market, ship stats and text, records scripted games (launch, trade, fight, dock, hyperspace, the ambush, death) as inputs plus a state hash per tick; Godot replays them and stops at the first differing tick. Differences are bugs unless RULES lists them as deliberate |
+| Overlap check | No original text or names | `overlap.py` from `clean-room-rebuild` over `docs/` and `text/`, with the original's names as `--names`; must be clean before every push |
+| Guard test | No original name ever slips in later | The hash list from `make_guard_hashes.py`, checked against every text file in CI; proven once by planting a name |
+| Rig contract | Every ship GLB has its parts, markers and limits | The import script fails with a clear message; a test loads every ship scene |
+| Camera | Orbit, zoom limits, obstacle pull-in, both modes | Scripted camera paths around the station and a ship |
+| Busy-bubble benchmark | Frame rate in the worst case: 12 ships fighting near the sun, missiles, explosions, all effects | Scripted scene in the web build; 60 fps at 1920×1080 on High, M1 MacBook Air, Chrome |
+| Web smoke | Page loads through the sign-in gate, stitched files arrive intact, keys work, no console errors | Headless Chrome against `wrangler dev` |
+| Visual review | No screen could be mistaken for the original's | Contact sheet of every screen and the HUD, per `create-retro-game` |
+
+## Milestones
+
+The work follows `create-retro-game`'s phases, each ending at a gate where you approve before the next starts. One technical spike runs alongside the early phases, because it uses only the Cheetah and our own code, so it can be pushed before any rules exist.
+
+1. **Spike (in parallel with phases 0–2).** Godot 4.7 web export through the game's Worker: sign-in gate, split-and-stitch, Brotli. The Cheetah imported through the rig script (UV fix, Basis textures, parts moving), with exhaust, flying near a blooming sun under the orbit camera. *Gate:* it runs from games.icelander.net in Chrome and Safari; download size and frame rate measured.
+2. **Phase 0, provenance.** `docs/PROVENANCE.md` inventories what the baseline holds that must change. *Gate:* you confirm the slug and folder.
+3. **Phase 1, RULES.** The behaviour spec from the baseline, including the camera and mount changes as deliberate differences. *Gate:* overlap check clean; you approve.
+4. **Phase 2, GDD.** Three title proposals, setting, every name, the new galaxy generator, market and ship stats. *Gate:* you choose the title and names.
+5. **Phases 3–5, wireframes, art bible, UI design.** HUD, panels and flow, adapted from the skill's Spectrum grid to screen-relative layouts. *Gate:* contact sheet approved.
+6. **Phase 6, implementation.** Sim from RULES, then flight, HUD, panels, hangar, saving. Stand-in Cheetahs for every ship. *Gate:* the whole game plays end to end on the private URL.
+7. **Phase 7, testing.** Parity, clean-room checks, benchmark, browsers. *Gate:* you review the test plan's results.
+8. **More models, then phase 8, publish.** Station, missile, canister, asteroid and pod models first, then the alien ship, then the rest; then the sign-in gate comes off. *Gate:* your explicit "publish".
+
+The first push to `retro-games` contains only our own work: the spike's code and the Cheetah. RULES arrives in its own reviewed push, and nothing that holds original data ever does.
+
+## Risks and open questions
+
+The biggest design risk is now the camera: seeing all around your ship changes how fights play, which no other decision does.
+
+| Risk | Effect | Mitigation |
+| --- | --- | --- |
+| The third-person camera shows what the original hid (ships behind you) | Fights get easier than the original's | Keep the rules and scanner as they are, play-test, and only then decide on retuning; any change is logged in the GDD and RULES |
+| Aiming from behind the ship has parallax | Lasers feel inaccurate | Reticle on the mount's axis at range, and the *in line of fire* mark from the sim's own hit test |
+| The original's title and its ship and alien names are protected | Cannot publish under them | New title and names in the GDD; the overlap check and guard test enforce it |
+| Every ship is a Cheetah for now | Hard to tell ships apart | Per-type scale, tint and beacons; the alien ship and the non-ship objects are the first new models |
+| `create-retro-game`'s tools (template, contact-sheet renderer, parity kit) are TypeScript | They don't apply directly to a Godot game | The parity kit compares JSON traces, so Godot only has to write the same format; contact sheets come from headless Godot screenshots |
+| The sign-in gate relies on the hub's secret and player list | A misconfigured gate exposes or blocks the game | The gate fails closed, as the hub does; the web smoke test covers it |
+| Cheetah textures are on the second UV set | Textures map wrongly in Godot | Re-bake to UV0; checked in the spike |
+| glTF extras may not arrive as node metadata | Rigs don't load | Sidecar `<ship>.rig.json` from the Blender script |
+| Glow in the Compatibility renderer is weaker than the viewer's bloom | The sun looks flat | Tune in the spike; fallback is a custom fullscreen-quad bloom shader |
+| JavaScript and Godot maths can differ in the last bit | Parity traces drift | Hash values rounded to 6 decimals; investigate at the first differing tick |
+
+**Decided** (8 Nov): Cheetah only, in the heavy trader and pirate role; original galaxy, market, text and names replaced before the first push; private behind sign-in during development, public repo; the game lives in `retro-games`; you always see your ship, EVE-style, with limited zoom; working slug `lodestar` (until the GDD picks a title); ship stats retuned; 8 galaxies of 256 systems; camera space-anchored by default, with follow as an option and a zoom range of 1.5× to 5× the ship's length.
+
+## Sources
+
+- The `recreations` repo (private): the baseline's README and source, `docs/SIGN-IN.md`, `wrangler.jsonc`.
+- The [`retro-games` repo](https://github.com/david-brandt-the-icelander/retro-games): `README.md`, `.claude/skills/create-retro-game/SKILL.md`, `games/hivestorm/wrangler.jsonc`.
+- The Cheetah: `ACNX-7_Cheetah_viewer.html` (embedded GLB inspected) and the owner's comparison images.
+- [Godot 4.6 docs: Overview of renderers](https://docs.godotengine.org/en/4.6/tutorials/rendering/renderers.html) (glow supported in Compatibility).
+- [Godot 4.7 release coverage](https://app.cinevva.com/news/2026-06-19-godot-4-7-released) (web export still WebGL 2.0).
+- [endoflife.date: Godot](https://endoflife.date/godot) (4.7.2 current).
+- [Ziva: Exporting a Godot game to the web](https://ziva.sh/blogs/godot-web-export) (4.7.2 single-threaded `index.wasm` is 39,514,754 bytes).
+- [Cloudflare Workers limits](https://developers.cloudflare.com/workers/platform/limits/) (25 MiB per static asset).
+- [Cloudflare R2 free tier](https://flarecalc.com/calculators/r2) (10 GB storage, 1M Class A and 10M Class B operations a month, free egress).
+- [Summer Engine: Godot web export guide](https://www.summerengine.com/blog/godot-web-export-guide) (itch.io limits; single-threaded needs no special headers).
