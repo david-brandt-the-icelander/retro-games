@@ -60,8 +60,8 @@ fn power_on_is_the_title_and_start_docks_the_start_pilot() {
     assert_eq!(events, vec![Event::ModeChanged(ModeKind::Docked)]);
     assert_eq!((sim.mode(), sim.screen()), (Mode::Docked, Screen::Status));
     let mut expected = MainGenerator::new();
-    expected.discard(54);
-    assert_eq!(sim.random(), &expected, "the title's flight-state reset takes 54 draws");
+    expected.discard(108);
+    assert_eq!(sim.random(), &expected, "54 draws at power-on, 54 for the title's reset (RULES A.2.1, D.13)");
     assert_eq!(sim.pilot().availability[0], 27, "the start market (RULES A.9.7)");
 }
 
@@ -222,6 +222,18 @@ fn quit_from_pause_returns_to_the_title() {
     press(&mut sim, Press::Quit);
     assert_eq!(sim.mode(), Mode::Title);
     assert!(!sim.paused());
+}
+
+#[test]
+fn buying_fuel_sets_the_main_counter_to_zero() {
+    let mut sim = docked();
+    idle(&mut sim, 5);
+    assert_eq!(sim.cockpit().counter, 250, "the start tick and five more each count C down");
+    sim.pilots.playing.fuel = 40;
+    let events = press(&mut sim, Press::Equip { item: Item::Fuel, mount: None });
+    assert!(matches!(events.as_slice(), [Event::Equipped(Ok(_))]));
+    // The press is dispatched before this tick's chores, which then count C down once.
+    assert_eq!(sim.cockpit().counter, 255, "RULES A.12.4, D.14");
 }
 
 #[test]

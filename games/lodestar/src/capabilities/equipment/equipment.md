@@ -22,7 +22,7 @@ Between runs the pilot spends money on the ship: fuel, missiles, a bigger hold, 
 - ✅ A pulse laser needs an empty mount; a beam laser is refused only on a mount that already has a beam, and replacing a pulse laser gives back the pulse laser's price.
 - ✅ The panel picks from a list, so an item the system does not offer is refused as leaving the panel would be, and any refusal leaves the shop ready for the next purchase (deliberate difference 12).
 - ⚠️ The equipment panel is open only while docked, lists the offered items with their prices, asks for a mount for a laser, shows the not-enough-cash or the item's already-fitted notice on a refusal and stays open, and shows the cash remaining after a purchase.
-- ⚠️ Buying fuel also sets the main-loop counter to 0, which has no lasting effect because launching resets it.
+- ✅ Buying fuel also sets the main-loop counter to 0, which has no lasting effect because launching resets it; the [fly-in-system use case](../../use_cases/fly_in_system/fly_in_system.md) does this, since the counter lives in the cockpit.
 - ✅ An escape-pod rescue empties the hold, clears legal status, uses up the pod and fills the tank, keeping cash, kills, missiles and the other equipment ([RULES C.10.5](../../../docs/RULES.md#c105-the-players-escape-pod)).
 - ⚠️ The escape pod launches and is watched drifting away as [RULES C.10.5](../../../docs/RULES.md#c105-the-players-escape-pod) says; in mis-jump space the pilot dies instead of being rescued, and otherwise is docked at the current system's station.
 - ✅ With the fuel scoop fitted, scooping at the sun adds `⌊speed / 8⌋` to the fuel up to a full tank, and reports that the scooping message shows even when nothing was gained.

@@ -42,7 +42,9 @@ The pilot flies their ship from station to station: launching, turning, changing
 - ⚠️ The hyperspace countdown ticks only in Flight and Death modes, so a countdown cannot jump on the tick an escape pod is launched. The baseline would still run it that tick; RULES does not say what then happens, and this edge case is not covered by a test.
 - ⚠️ The title ship's approach and spin, the chart cursor's held movement, and the display frame counter are presentation, not sim; the presentation builds them ([RULES D.3.1](../../../docs/RULES.md#d31-title-sequence), [D.3.3](../../../docs/RULES.md#d33-docked-mode)).
 - ⚠️ Name entry on the title, prompts that capture the keyboard and the shop confirmation pause belong to the panels; the sim takes a loaded name and finished purchases instead (deliberate difference 12).
-- ⚠️ The parity harness, which replays recorded inputs through this tick and through the data-swapped baseline and compares the random stream and the bubble tick by tick, is not built.
+- ✅ Power-on takes the 54 stardust draws of the first fill from the main generator and discards them, before the title ([RULES A.2.1](../../../docs/RULES.md#a21-state)); buying fuel while docked sets the main counter to 0 ([RULES A.12.4](../../../docs/RULES.md#a124-the-shop-and-each-items-effect)).
+- ✅ Parity: 37 scripted and autopiloted scenarios, 354,807 ticks in all (the longest 101,069), replayed through this tick and through the baseline with LodeStar's data and deliberate differences patched in, match bit for bit on every tick: the random stream, the player's state, the pilot and every object in the bubble. The harness holds the baseline, so by the clean-room rule it runs only outside the repository, in the spec-and-verify role's workspace (8 November 2026).
+- ⚠️ The parity harness's scenarios have not reached the station leaving while the missile lock is on a slot above 1 (Q-B5), or the pause misalignment of Q-B15, which this tick's interface cannot produce; scooping, an AI escape pod and a manual docking were each reached only once.
 
 ### What the picture reads
 

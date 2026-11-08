@@ -46,7 +46,7 @@ impl Vec3 {
         if length == 0.0 {
             self
         } else {
-            self * (1.0 / length)
+            Vec3::new(self.x / length, self.y / length, self.z / length)
         }
     }
 

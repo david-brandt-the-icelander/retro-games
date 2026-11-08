@@ -8,7 +8,7 @@
 mod tick;
 
 use crate::capabilities::bubble::Bubble;
-use crate::capabilities::cockpit::Cockpit;
+use crate::capabilities::cockpit::{Cockpit, RESET_DUST_DRAWS};
 use crate::capabilities::combat::{Damage, MissileFired};
 use crate::capabilities::equipment::{self, Bought, Item, Refused};
 use crate::capabilities::market;
@@ -267,6 +267,14 @@ pub fn start_pilot() -> Pilot {
     pilot
 }
 
+/// The main generator after power-on: the stardust is filled once before the first title, and
+/// those 54 draws are discarded (RULES A.2.1, D.13, deliberate difference 3).
+fn power_on_generator() -> MainGenerator {
+    let mut random = MainGenerator::new();
+    random.discard(RESET_DUST_DRAWS);
+    random
+}
+
 /// The start system's economy (GDD § 5.2).
 const START_ECONOMY: u8 = 5;
 
@@ -282,7 +290,7 @@ impl FlyInSystem {
             navigation,
             countdown: Countdown::new(),
             delay: SpawnDelay::default(),
-            random: MainGenerator::new(),
+            random: power_on_generator(),
             mode: Mode::Title,
             screen: Screen::Space,
             paused: false,
@@ -444,7 +452,12 @@ impl FlyInSystem {
             }
             Press::Equip { item, mount } => {
                 let tech = self.navigation.current_system(pilot).tech_level;
-                self.events.push(Event::Equipped(equipment::buy_offered(pilot, tech, item, mount)));
+                let bought = equipment::buy_offered(pilot, tech, item, mount);
+                // Buying fuel sets the main counter to 0 (RULES A.12.4, D.14).
+                if matches!(bought, Ok(Bought { item: Item::Fuel, .. })) {
+                    self.cockpit.counter = 0;
+                }
+                self.events.push(Event::Equipped(bought));
             }
             _ => {}
         }

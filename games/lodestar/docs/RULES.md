@@ -24,11 +24,11 @@ The implementer reads this document, the GDD and the design documents, and nothi
 3. **Cosmetic randomness has its own generator.** Stardust, the sun's edge, enemy beam lines and every other draw made only for the picture (B.4.4, C.2.4) come from a separate cosmetic generator, never from the main one. The main generator still takes the view-independent stardust draws on a flight-state reset (54) and on an ambush arrival (9), and discards them, so the logic stream keeps its length. The parity baseline is patched the same way.
 4. **Galaxy generator.** LodeStar keeps the generator's mechanics (the advance step, four steps per system, the galaxy rotation and the property formulas of A.3) with a new starting state and new name syllables from the GDD.
 5. **A countdown ends at death.** Dying cancels a running hyperspace countdown (A.14 item 4, Q-B3).
-6. **Retargeting during a countdown is range-checked.** Selecting a new system while counting down changes the destination only if it is within fuel range; otherwise the countdown keeps its old destination and distance. Fuel can never go negative (A.14 item 3, Q-B4).
+6. **Retargeting during a countdown is range-checked.** Selecting a new system while counting down changes the destination only if it is in range, 0 < distance ≤ fuel (so never the current system, which would otherwise allow A.14 item 3's free re-jump); otherwise the countdown keeps its old destination and distance. Fuel can never go negative (A.14 item 3, Q-B4).
 7. **The escape pod launches safely.** The abandoned hull takes no part in collision tests on the tick the pod launches, so launching the pod never damages the player (Q-B2).
 8. **Missile lock uses the active mount's axis**, as the lasers do (C).
 9. **Firing and locking need the flight scene.** With a chart, status, market or inventory panel open over the flight view, laser and missile input is ignored, as in the baseline (C).
-10. **Visual defects are done properly.** Beam lasers draw their lines, the galaxy-jump message shows, a chart open before a jump stays open after it, and the status screen's condition labels are in the right order (D.14). None of these touch the logic.
+10. **Visual defects are done properly.** Beam lasers draw their lines, the galaxy-jump message shows, a chart open before a jump stays open after it, and the status screen's condition labels are in the right order (D.14). These are presentation only: the sim still clears the message timer and shows the space view at arrival (Q-B10), so bounties, losses (D.14 items 10–11) and firing (difference 9) behave as in the baseline; the presentation draws the message and the chart as overlays.
 11. **Saves** keep the baseline's accept and reject behaviour in a LodeStar format of its own (A.8).
 12. **Panels replace the shop prompts** (decided 8 November 2026, after the UI design). In the market panel The pilot picks any goods item in any order and sets a quantity with a stepper; Buy takes that quantity and Sell sells that quantity, so partial sales are allowed. Prices, availability, hold space and cash work exactly as A.9 to A.11 say:
     - **Buy** accepts a quantity from 0 to the smallest of the item's availability, the room left in the hold for it (A.11.1), and the whole units the pilot's cash pays for at the current price; anything larger is refused before it reaches the sim. A buy of q units does exactly what step 6 of A.10.2 does for q.
@@ -94,6 +94,11 @@ One shared generator serves the whole game (flight, combat, rendering, and the d
 section). Its state is four bytes `p0, m0, p1, m1` and a carry bit `k`. At program start the
 state is `p0 = 0x12, m0 = 0x34, p1 = 0x56, m1 = 0x78, k = 0`. Nothing reseeds it during play
 (tests may set the four bytes).
+
+At power-on, before the first title, the stardust is filled once: 54 draws (18 particles × 3).
+This happens once per program run, not on later returns to the title. **LodeStar:** these draws
+are taken from the main generator and discarded, as on a flight-state reset (deliberate
+difference 3).
 
 #### A.2.2 One draw
 
@@ -3708,6 +3713,7 @@ the flows in this section, in order:
 
 | Flow | Draws |
 |---|---|
+| power-on (once per run, before the first title) | 54 (dust: 18 particles x 3; A.2.1) |
 | flight-state reset | 54 (dust: 18 particles x 3) |
 | launch completion | reset (54); no other draws in this section |
 | common arrival | 1 (market value), then reset (54), then the solar set-up's draws (flight section) |
