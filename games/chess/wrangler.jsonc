@@ -1,0 +1,26 @@
+// The chess Worker at games.icelander.net/retro/chess: static assets, sign-in, the API, and a
+// Durable Object per online game, backed by the D1 database "chess" (schema: worker/schema.sql).
+//
+// Before the first deploy (owner actions; see README "Deploy"):
+//   npx wrangler d1 create chess        → put its id in database_id below
+//   npx wrangler d1 execute chess --remote --file worker/schema.sql
+//   npx wrangler secret put GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET
+//   (optional) npx wrangler secret put RESEND_API_KEY, and set MAIL_FROM below
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "chess",
+  "compatibility_date": "2025-01-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "games.icelander.net/retro/chess*", "zone_name": "icelander.net" }],
+  "main": "worker/index.ts",
+  // The Worker runs first for the API and sign-in; everything else is a static asset.
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": ["/retro/chess/api/*", "/retro/chess/auth/*"] },
+  "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "GameRoom" }] },
+  "migrations": [{ "tag": "rooms-v1", "new_sqlite_classes": ["GameRoom"] }],
+  "d1_databases": [{ "binding": "DB", "database_name": "chess", "database_id": "00000000-0000-0000-0000-000000000000" }],
+  "vars": {
+    // The sender of challenge emails, e.g. "Pixel Gambit <chess@icelander.net>"; empty sends none.
+    "MAIL_FROM": ""
+  }
+}
