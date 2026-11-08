@@ -1,0 +1,201 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Saving class diagram",
+  "folder": "games/lodestar/src/features/saving",
+  "description": "Saving and loading the pilot: the two copies, the name prompt, the record format with its accept and reject rules, and the store trait infrastructure implements.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/saving/name.rs",
+      "symbol": "NameKey"
+    },
+    {
+      "path": "games/lodestar/src/features/saving/name.rs",
+      "symbol": "NamePrompt"
+    },
+    {
+      "path": "games/lodestar/src/features/saving/record.rs",
+      "symbol": "LoadError"
+    },
+    {
+      "path": "games/lodestar/src/features/saving/record.rs",
+      "symbol": "encode"
+    },
+    {
+      "path": "games/lodestar/src/features/saving/record.rs",
+      "symbol": "decode_over"
+    },
+    {
+      "path": "games/lodestar/src/features/saving/pilots.rs",
+      "symbol": "PilotStore"
+    },
+    {
+      "path": "games/lodestar/src/features/saving/pilots.rs",
+      "symbol": "MemoryStore"
+    },
+    {
+      "path": "games/lodestar/src/features/saving/pilots.rs",
+      "symbol": "SaveOutcome"
+    },
+    {
+      "path": "games/lodestar/src/features/saving/pilots.rs",
+      "symbol": "Pilots"
+    }
+  ],
+  "types": [
+    {
+      "id": "name-key",
+      "name": "NameKey",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/features/saving/name.rs"
+      ],
+      "members": [
+        "Char(char)",
+        "Delete",
+        "Confirm",
+        "Cancel"
+      ]
+    },
+    {
+      "id": "name-prompt",
+      "name": "NamePrompt",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/features/saving/name.rs"
+      ],
+      "members": [
+        "new()",
+        "typed() -> &str",
+        "press(key) -> Option<String>"
+      ]
+    },
+    {
+      "id": "load-error",
+      "name": "LoadError",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/features/saving/record.rs"
+      ],
+      "members": [
+        "NotFound",
+        "NotARecord",
+        "UnsupportedVersion(String)",
+        "Malformed { line, key }",
+        "Duplicate { line, key }",
+        "MissingCheck",
+        "CheckMismatch"
+      ]
+    },
+    {
+      "id": "pilot-store",
+      "name": "PilotStore",
+      "kind": "interface",
+      "sources": [
+        "games/lodestar/src/features/saving/pilots.rs"
+      ],
+      "members": [
+        "read(name) -> Option<String>",
+        "write(name, record)"
+      ]
+    },
+    {
+      "id": "memory-store",
+      "name": "MemoryStore",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/features/saving/pilots.rs"
+      ],
+      "members": [
+        "new()",
+        "names() -> Iterator<&str>"
+      ]
+    },
+    {
+      "id": "save-outcome",
+      "name": "SaveOutcome",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/features/saving/pilots.rs"
+      ],
+      "members": [
+        "Saved",
+        "NotDocked",
+        "NoName"
+      ]
+    },
+    {
+      "id": "pilots",
+      "name": "Pilots",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/features/saving/pilots.rs"
+      ],
+      "members": [
+        "playing: Pilot",
+        "new(start)",
+        "saved() -> &Pilot",
+        "save(name, docked, store) -> SaveOutcome",
+        "load(name, store) -> Result<(), LoadError>",
+        "restore()",
+        "on_death()"
+      ]
+    },
+    {
+      "id": "pilot",
+      "name": "Pilot",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/pilot/mod.rs"
+      ],
+      "members": [
+        "start() -> Pilot"
+      ],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "name-prompt",
+      "to": "name-key",
+      "kind": "depends-on",
+      "description": "press() takes one key."
+    },
+    {
+      "from": "memory-store",
+      "to": "pilot-store",
+      "kind": "implements",
+      "description": "Keeps records in memory by name."
+    },
+    {
+      "from": "pilots",
+      "to": "pilot",
+      "kind": "depends-on",
+      "description": "Holds the playing, saved and start pilots."
+    },
+    {
+      "from": "pilots",
+      "to": "pilot-store",
+      "kind": "depends-on",
+      "description": "save() writes and load() reads records by name."
+    },
+    {
+      "from": "pilots",
+      "to": "name-prompt",
+      "kind": "depends-on",
+      "description": "Applies the prompt's name rules to the name it is given (validate_name)."
+    },
+    {
+      "from": "pilots",
+      "to": "save-outcome",
+      "kind": "depends-on",
+      "description": "save() reports what it did."
+    },
+    {
+      "from": "pilots",
+      "to": "load-error",
+      "kind": "depends-on",
+      "description": "load() reports why a record was not accepted."
+    }
+  ]
+}
