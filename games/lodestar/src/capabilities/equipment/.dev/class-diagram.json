@@ -1,0 +1,149 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Equipment class diagram",
+  "folder": "games/lodestar/src/capabilities/equipment",
+  "description": "The twelve equipment items, their tech gating and prices, and buying one for the equipment panel (RULES A.12, deliberate difference 12).",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+      "symbol": "Item"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+      "symbol": "Bought"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+      "symbol": "Refused"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+      "symbol": "equipment"
+    }
+  ],
+  "types": [
+    {
+      "id": "item",
+      "name": "Item",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/capabilities/equipment/mod.rs"
+      ],
+      "members": [
+        "Fuel .. GalaxyDrive (0..11)",
+        "ALL",
+        "number() -> usize",
+        "from_number(n) -> Option<Item>",
+        "name() -> &str",
+        "hud_tag() -> Option<&str>",
+        "is_laser() -> bool",
+        "fixed_price() -> u32"
+      ]
+    },
+    {
+      "id": "bought",
+      "name": "Bought",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/equipment/mod.rs"
+      ],
+      "members": [
+        "item: Item",
+        "paid: u32",
+        "refund: u32",
+        "mount: Option<Mount>"
+      ]
+    },
+    {
+      "id": "refused",
+      "name": "Refused",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/capabilities/equipment/mod.rs"
+      ],
+      "members": [
+        "NotOffered",
+        "NotEnoughCash",
+        "NoMount",
+        "AtLimit"
+      ]
+    },
+    {
+      "id": "equipment",
+      "name": "mod equipment",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/equipment/mod.rs"
+      ],
+      "members": [
+        "FUEL_RATE",
+        "MOUNT_NAMES",
+        "MOUNT_TAGS",
+        "offered_count(tech_level) -> usize",
+        "offered(tech_level) -> &[Item]",
+        "is_offered(item, tech_level) -> bool",
+        "price(item, pilot) -> u32",
+        "listing(tech_level, pilot) -> Vec<(Item, u32)>",
+        "buy(pilot, item, mount) -> Result<Bought, Refused>",
+        "buy_offered(pilot, tech_level, item, mount) -> Result<Bought, Refused>",
+        "laser_name(laser) -> Option<&str>",
+        "escape_pod_rescue(pilot)",
+        "scoop_sun_fuel(pilot, speed) -> bool",
+        "energy_recharge(pilot) -> u8"
+      ]
+    },
+    {
+      "id": "pilot",
+      "name": "Pilot",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/pilot/mod.rs"
+      ],
+      "members": [
+        "cash",
+        "fuel",
+        "lasers",
+        "hold",
+        "cargo",
+        "fitted",
+        "missiles",
+        "availability",
+        "market_byte"
+      ],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "equipment",
+      "to": "item",
+      "kind": "depends-on",
+      "description": "Offers, prices and fits the items."
+    },
+    {
+      "from": "equipment",
+      "to": "bought",
+      "kind": "depends-on",
+      "description": "buy reports a purchase."
+    },
+    {
+      "from": "equipment",
+      "to": "refused",
+      "kind": "depends-on",
+      "description": "buy reports a refusal."
+    },
+    {
+      "from": "bought",
+      "to": "item",
+      "kind": "depends-on",
+      "description": "Names the item bought."
+    },
+    {
+      "from": "equipment",
+      "to": "pilot",
+      "kind": "depends-on",
+      "description": "Takes cash and changes fuel, missiles, hold, lasers and fitted equipment."
+    }
+  ]
+}

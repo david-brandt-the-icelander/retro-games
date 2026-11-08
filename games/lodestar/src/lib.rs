@@ -6,4 +6,5 @@
 //! in a server.
 
 pub mod capabilities;
+pub mod features;
 pub mod use_cases;
