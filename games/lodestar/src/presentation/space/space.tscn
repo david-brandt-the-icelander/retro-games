@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/presentation/space/space.gd" id="1"]
+[ext_resource type="Script" path="res://src/presentation/space/orbit_camera.gd" id="2"]
+
+[node name="Space" type="Node3D"]
+script = ExtResource("1")
+
+[node name="SimHost" type="SimHost" parent="."]
+
+[node name="OrbitCamera" type="Camera3D" parent="."]
+script = ExtResource("2")
+
+[node name="Hud" type="CanvasLayer" parent="."]
+
+[node name="Readout" type="Label" parent="Hud"]
+offset_left = 32.0
+offset_top = 28.0
+offset_right = 900.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(0.788, 0.635, 0.361, 1)
+theme_override_font_sizes/font_size = 18
+text = "TICK 0"

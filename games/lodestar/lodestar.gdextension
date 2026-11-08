@@ -1,0 +1,14 @@
+; Loads LodeStar's Rust library (src/hosting/godot). Build it with `cargo build` (debug) or
+; `cargo build --release` before opening the project.
+[configuration]
+entry_symbol = "gdext_rust_init"
+compatibility_minimum = 4.7
+reloadable = true
+
+[libraries]
+linux.debug.x86_64 = "res://target/debug/liblodestar_godot.so"
+linux.release.x86_64 = "res://target/release/liblodestar_godot.so"
+windows.debug.x86_64 = "res://target/debug/lodestar_godot.dll"
+windows.release.x86_64 = "res://target/release/lodestar_godot.dll"
+macos.debug = "res://target/debug/liblodestar_godot.dylib"
+macos.release = "res://target/release/liblodestar_godot.dylib"

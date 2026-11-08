@@ -1,0 +1,11 @@
+[package]
+name = "lodestar-bridge"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+description = "The Rust classes LodeStar's Godot presentation calls: SimHost, its snapshots and commands."
+
+[dependencies]
+godot.workspace = true
+lodestar-core.workspace = true

@@ -1,0 +1,156 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Fly in a system class diagram",
+  "folder": "games/lodestar/src/use_cases/fly_in_system",
+  "description": "The flying use case so far: the 12 Hz tick clock, the per-tick input record, the events a tick reports, and FlyInSystem, which runs the ticks.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "TickClock"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "InputRecord"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "HeldActions"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "Press"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "Event"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "FlyInSystem"
+    }
+  ],
+  "types": [
+    {
+      "id": "clock",
+      "name": "TickClock",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+      ],
+      "members": [
+        "advance(frame_seconds) -> u32",
+        "alpha() -> f64"
+      ]
+    },
+    {
+      "id": "input",
+      "name": "InputRecord",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+      ],
+      "members": [
+        "held: HeldActions",
+        "presses: Vec<Press>"
+      ]
+    },
+    {
+      "id": "held",
+      "name": "HeldActions",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+      ],
+      "members": [
+        "dive",
+        "climb",
+        "roll_left",
+        "roll_right",
+        "speed_up",
+        "slow_down",
+        "fire"
+      ]
+    },
+    {
+      "id": "press",
+      "name": "Press",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+      ],
+      "members": [
+        "Mount(u8)"
+      ]
+    },
+    {
+      "id": "event",
+      "name": "Event",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+      ],
+      "members": [
+        "MountSelected(u8)"
+      ]
+    },
+    {
+      "id": "fly",
+      "name": "FlyInSystem",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+      ],
+      "members": [
+        "tick(input) -> Vec<Event>",
+        "ticks() -> u64",
+        "active_mount() -> u8",
+        "random() -> &mut MainGenerator"
+      ]
+    },
+    {
+      "id": "main-generator",
+      "name": "MainGenerator",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/random/mod.rs"
+      ],
+      "members": [
+        "draw() -> Draw"
+      ],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "input",
+      "to": "held",
+      "kind": "depends-on",
+      "description": "Holds the actions sampled at the tick."
+    },
+    {
+      "from": "input",
+      "to": "press",
+      "kind": "depends-on",
+      "description": "Queues one-shot presses."
+    },
+    {
+      "from": "fly",
+      "to": "input",
+      "kind": "depends-on",
+      "description": "tick() reads one record."
+    },
+    {
+      "from": "fly",
+      "to": "event",
+      "kind": "depends-on",
+      "description": "tick() returns the events it caused."
+    },
+    {
+      "from": "fly",
+      "to": "main-generator",
+      "kind": "depends-on",
+      "description": "Owns the main generator the rules draw from."
+    }
+  ]
+}

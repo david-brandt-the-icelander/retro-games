@@ -1,0 +1,145 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "LodeStar component diagram",
+  "folder": "games/lodestar",
+  "description": "LodeStar, a desktop space trading and combat game: the rules are a Rust crate with no engine dependency, and Godot draws them through a GDExtension library that registers the bridge's classes.",
+  "sources": [
+    {
+      "path": "games/lodestar/Cargo.toml",
+      "symbol": "workspace"
+    },
+    {
+      "path": "games/lodestar/src/lib.rs",
+      "symbol": "lodestar_core"
+    },
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+      "symbol": "SimHost"
+    },
+    {
+      "path": "games/lodestar/src/hosting/godot/src/lib.rs",
+      "symbol": "LodeStarExtension"
+    },
+    {
+      "path": "games/lodestar/lodestar.gdextension",
+      "symbol": "entry_symbol"
+    },
+    {
+      "path": "games/lodestar/project.godot",
+      "symbol": "run/main_scene"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "LodeStar",
+      "responsibility": "The whole game: the Rust workspace and the Godot project, built and shipped together.",
+      "folder": "games/lodestar"
+    },
+    {
+      "id": "capabilities",
+      "name": "Capabilities",
+      "responsibility": "Reusable rules with no outward dependencies; so far the main and cosmetic random generators.",
+      "folder": "games/lodestar/src/capabilities"
+    },
+    {
+      "id": "use-cases",
+      "name": "Use cases",
+      "responsibility": "A pilot's goals; so far flying in a system, which owns the 12 Hz tick.",
+      "folder": "games/lodestar/src/use_cases"
+    },
+    {
+      "id": "bridge",
+      "name": "Presentation bridge (lodestar-bridge)",
+      "responsibility": "SimHost: runs the sim under Godot's frame loop, reads input actions and emits tick and mount signals.",
+      "folder": "games/lodestar/src/presentation/bridge"
+    },
+    {
+      "id": "scenes",
+      "name": "Godot presentation",
+      "responsibility": "The flight scene, the orbit camera, the rigged ship and its post-import script, and the shaders.",
+      "folder": "games/lodestar/src/presentation"
+    },
+    {
+      "id": "extension",
+      "name": "GDExtension library (lodestar-godot)",
+      "responsibility": "The cdylib Godot loads; registers the bridge's classes.",
+      "folder": "games/lodestar/src/hosting/godot"
+    },
+    {
+      "id": "godot",
+      "name": "Godot 4.7 engine",
+      "responsibility": "Renders, reads input and runs the scenes; loads the extension library.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "capabilities",
+      "kind": "contains",
+      "description": "Part of the lodestar-core crate (src/lib.rs)."
+    },
+    {
+      "from": "game",
+      "to": "use-cases",
+      "kind": "contains",
+      "description": "Part of the lodestar-core crate (src/lib.rs)."
+    },
+    {
+      "from": "game",
+      "to": "bridge",
+      "kind": "contains",
+      "description": "A workspace member crate."
+    },
+    {
+      "from": "game",
+      "to": "scenes",
+      "kind": "contains",
+      "description": "The Godot project's scenes and scripts."
+    },
+    {
+      "from": "game",
+      "to": "extension",
+      "kind": "contains",
+      "description": "A workspace member crate."
+    },
+    {
+      "from": "use-cases",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "FlyInSystem owns a MainGenerator."
+    },
+    {
+      "from": "bridge",
+      "to": "use-cases",
+      "kind": "depends-on",
+      "description": "SimHost ticks FlyInSystem with a TickClock and an InputRecord."
+    },
+    {
+      "from": "extension",
+      "to": "bridge",
+      "kind": "depends-on",
+      "description": "Re-exports SimHost so its registration is linked in."
+    },
+    {
+      "from": "scenes",
+      "to": "bridge",
+      "kind": "depends-on",
+      "description": "space.tscn holds a SimHost and connects to its ticked and mount_selected signals."
+    },
+    {
+      "from": "godot",
+      "to": "extension",
+      "kind": "depends-on",
+      "description": "Loads it through lodestar.gdextension."
+    },
+    {
+      "from": "godot",
+      "to": "scenes",
+      "kind": "depends-on",
+      "description": "Runs the main scene set in project.godot."
+    }
+  ]
+}

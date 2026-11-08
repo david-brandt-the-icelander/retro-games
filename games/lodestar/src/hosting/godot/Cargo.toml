@@ -1,0 +1,14 @@
+[package]
+name = "lodestar-godot"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+description = "LodeStar's GDExtension library: registers the bridge's classes with Godot."
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+godot.workspace = true
+lodestar-bridge.workspace = true
