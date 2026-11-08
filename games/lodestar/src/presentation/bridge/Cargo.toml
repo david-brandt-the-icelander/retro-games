@@ -9,3 +9,4 @@ description = "The Rust classes LodeStar's Godot presentation calls: SimHost, it
 [dependencies]
 godot.workspace = true
 lodestar-core.workspace = true
+lodestar-infrastructure.workspace = true
