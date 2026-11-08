@@ -170,6 +170,23 @@ static func button(text: String, on_press: Callable, variation := "") -> Button:
 	return b
 
 
+## A Danger button that asks first: the first press shows "Sure? {text}" for 3 seconds; a second press acts.
+static func sure_button(text: String, act: Callable) -> Button:
+	var b := button(text, func() -> void: pass, "Danger")
+	var armed := [false]
+	b.pressed.connect(func() -> void:
+		if armed[0]:
+			act.call()
+		else:
+			armed[0] = true
+			b.text = "Sure? " + text
+			b.get_tree().create_timer(3.0).timeout.connect(func() -> void:
+				if is_instance_valid(b):
+					armed[0] = false
+					b.text = text))
+	return b
+
+
 static func vbox(gap := 12, kids: Array = []) -> VBoxContainer:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", gap)

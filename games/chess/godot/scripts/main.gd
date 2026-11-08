@@ -692,11 +692,11 @@ func _contact(c: Dictionary) -> Control:
 	var list := UI.vbox(10, [UI.label("Your games together", "Heading")])
 	col.add_child(UI.card(list))
 	col.add_child(UI.hbox(8, [UI.button("Back", func() -> void: go("back"), "Ghost"), UI.spacer(),
-		UI.button("Remove from contacts", func() -> void:
+		UI.sure_button("Remove from contacts", func() -> void:
 			var r := await Api.post_json("api/contacts/remove", {email = c.email})
 			if r.ok:
 				toast("Removed.")
-				go("lobby"), "Danger")]))
+				go("lobby"))]))
 	_load_contact_games(list, str(c.id))
 	return p[0]
 

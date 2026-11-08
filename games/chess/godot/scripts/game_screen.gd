@@ -328,7 +328,7 @@ func _update_actions() -> void:
 		if not over:
 			if game.get("drawOffer") == null:
 				_actions.add_child(UI.button("Offer draw", func() -> void: _act({type = "draw-offer"})))
-			_actions.add_child(_sure_button("Resign", func() -> void: _act({type = "resign"})))
+			_actions.add_child(UI.sure_button("Resign", func() -> void: _act({type = "resign"})))
 		else:
 			var opp: Dictionary = game.black if my_side == 0 else game.white
 			if opp.get("email") != null:
@@ -336,27 +336,10 @@ func _update_actions() -> void:
 	elif mode == "computer":
 		if not over:
 			_actions.add_child(UI.button("Take back", _take_back))
-			_actions.add_child(_sure_button("Resign", func() -> void: _computer_end({result = "0-1" if my_side == 0 else "1-0", reason = "resign"})))
+			_actions.add_child(UI.sure_button("Resign", func() -> void: _computer_end({result = "0-1" if my_side == 0 else "1-0", reason = "resign"})))
 		else:
 			_actions.add_child(UI.button("New game", func() -> void: leave.emit("setup"), "Primary"))
 	_actions.visible = _actions.get_child_count() > 0
-
-
-## A button that asks "Sure?" first.
-func _sure_button(text: String, act: Callable) -> Button:
-	var b := UI.button(text, func() -> void: pass, "Danger")
-	var armed := [false]
-	b.pressed.connect(func() -> void:
-		if armed[0]:
-			act.call()
-		else:
-			armed[0] = true
-			b.text = "Sure? " + text
-			get_tree().create_timer(3.0).timeout.connect(func() -> void:
-				if is_instance_valid(b):
-					armed[0] = false
-					b.text = text))
-	return b
 
 
 # ── The transcript ──
@@ -672,14 +655,17 @@ func _seek(n: int) -> void:
 	_slider.max_value = events.size()
 	_slider.set_value_no_signal(cursor)
 	var names := [str(game.white.name), str(game.black.name)]
+	_status.remove_theme_color_override("font_color")
 	if cursor >= events.size():
 		_status.text = Chess.describe(str(game.result), str(game.reason), names[0], names[1])
+		_status.add_theme_color_override("font_color", UI.GOLD)
 	elif cursor == 0:
 		_status.text = "Replay · %s" % UI.clock(float(events[0].at)) if events.size() else "Replay"
 	else:
 		var e: Dictionary = events[cursor - 1]
 		var gone := float(e.at) - float(events[0].at)
-		var label := "%d.%s %s" % [(ply + 1) / 2, "" if ply % 2 == 1 else "..", chess.sans[ply - 1]] if ply > 0 else "Before the first move"
+		# White's moves "3. Qh5", Black's "3… Nf6", as in the transcript.
+		var label := "%d%s %s" % [(ply + 1) / 2, "." if ply % 2 == 1 else "…", chess.sans[ply - 1]] if ply > 0 else "Before the first move"
 		_status.text = "%s · %s in" % [label, UI.duration(gone)]
 	_render_transcript()
 

@@ -140,7 +140,6 @@ func _build_world() -> void:
 	_mat.last = _glow(GOLD, 0.22)
 	_mat.hint = _glow(GOLD, 0.75)
 	_mat.check = _glow(Color("ff3b4e"), 0.5)
-	_mat.hint.emission_enabled = true
 
 
 func _build_board() -> void:
@@ -201,7 +200,6 @@ func _label(text: String, font: Font) -> Label3D:
 	l.pixel_size = 0.004
 	l.modulate = Color(GOLD, 0.75)
 	l.rotation_degrees = Vector3(-90, 0, 0)
-	l.position.y = 0.002
 	return l
 
 
