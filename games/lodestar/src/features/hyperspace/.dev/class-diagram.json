@@ -1,0 +1,152 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Hyperspace class diagram",
+  "folder": "games/lodestar/src/features/hyperspace",
+  "description": "The selected system, the hyperspace and galaxy-drive keys, the countdown, the jump and the arrival, including the mis-jump into the Deep (RULES A.5, B.16, C.16.6).",
+  "sources": [
+    { "path": "games/lodestar/src/features/hyperspace/navigation.rs", "symbol": "Navigation" },
+    { "path": "games/lodestar/src/features/hyperspace/countdown.rs", "symbol": "Countdown" },
+    { "path": "games/lodestar/src/features/hyperspace/countdown.rs", "symbol": "Destination" },
+    { "path": "games/lodestar/src/features/hyperspace/jump.rs", "symbol": "HyperspaceKey" },
+    { "path": "games/lodestar/src/features/hyperspace/jump.rs", "symbol": "GalaxyDriveKey" },
+    { "path": "games/lodestar/src/features/hyperspace/jump.rs", "symbol": "Tunnel" },
+    { "path": "games/lodestar/src/features/hyperspace/jump.rs", "symbol": "Arrived" },
+    { "path": "games/lodestar/src/features/hyperspace/jump.rs", "symbol": "arrive" }
+  ],
+  "types": [
+    {
+      "id": "navigation",
+      "name": "Navigation",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/features/hyperspace/navigation.rs"],
+      "members": [
+        "cursor: ChartCursor",
+        "selected: Selection",
+        "current: u8",
+        "start(pilot) -> Navigation",
+        "select(pilot, countdown) -> Selection",
+        "current_system(pilot) -> System"
+      ]
+    },
+    {
+      "id": "countdown",
+      "name": "Countdown",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/features/hyperspace/countdown.rs"],
+      "members": [
+        "start(destination)",
+        "running() -> bool",
+        "shown() -> u8",
+        "destination() -> Option<Destination>",
+        "cancel()",
+        "retarget(selection, fuel) -> bool",
+        "tick() -> Option<Destination>"
+      ]
+    },
+    {
+      "id": "destination",
+      "name": "Destination",
+      "kind": "enum",
+      "sources": ["games/lodestar/src/features/hyperspace/countdown.rs"],
+      "members": ["System(Selection)", "NextGalaxy"]
+    },
+    {
+      "id": "hyperspace-key",
+      "name": "HyperspaceKey",
+      "kind": "enum",
+      "sources": ["games/lodestar/src/features/hyperspace/jump.rs"],
+      "members": ["NotWhileDocked", "CountingDown", "AlreadyHere(Selection)", "OutOfRange(Selection)", "Started(Selection)"]
+    },
+    {
+      "id": "galaxy-drive-key",
+      "name": "GalaxyDriveKey",
+      "kind": "enum",
+      "sources": ["games/lodestar/src/features/hyperspace/jump.rs"],
+      "members": ["NotWhileDocked", "CountingDown", "NotFitted", "Started"]
+    },
+    {
+      "id": "tunnel",
+      "name": "Tunnel",
+      "kind": "enum",
+      "sources": ["games/lodestar/src/features/hyperspace/jump.rs"],
+      "members": ["Arrival(Selection)", "Misjump", "Galactic"]
+    },
+    {
+      "id": "arrived",
+      "name": "Arrived",
+      "kind": "enum",
+      "sources": ["games/lodestar/src/features/hyperspace/jump.rs"],
+      "members": ["InSystem", "InTheDeep"]
+    },
+    {
+      "id": "jump",
+      "name": "mod jump",
+      "kind": "type",
+      "sources": ["games/lodestar/src/features/hyperspace/jump.rs"],
+      "members": [
+        "press_hyperspace(navigation, countdown, pilot, docked) -> HyperspaceKey",
+        "press_galaxy_drive(countdown, pilot, docked) -> GalaxyDriveKey",
+        "jump(destination, pilot, navigation, cockpit, random) -> Tunnel",
+        "arrive(tunnel, pilot, cockpit, bubble, navigation, delay, random) -> Arrived"
+      ]
+    },
+    {
+      "id": "universe",
+      "name": "mod universe",
+      "kind": "type",
+      "sources": ["games/lodestar/src/capabilities/universe/mod.rs"],
+      "members": ["ChartCursor", "Selection", "in_range", "fuel_after_jump", "is_misjump", "misjump_position", "reach_jump"],
+      "external": true
+    },
+    {
+      "id": "market",
+      "name": "mod market",
+      "kind": "type",
+      "sources": ["games/lodestar/src/capabilities/market/mod.rs"],
+      "members": ["draw_and_arrive(pilot, economy, random) -> u8"],
+      "external": true
+    },
+    {
+      "id": "cockpit",
+      "name": "Cockpit",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/capabilities/cockpit/mod.rs"],
+      "members": ["misjump", "active_mount", "reset(random)", "show(message)"],
+      "external": true
+    },
+    {
+      "id": "planet-and-sun",
+      "name": "mod planet_and_sun",
+      "kind": "type",
+      "sources": ["games/lodestar/src/features/planet_and_sun/mod.rs"],
+      "members": ["place_on_arrival(bubble, system, legal_low_bit)"],
+      "external": true
+    },
+    {
+      "id": "spawning",
+      "name": "mod spawning",
+      "kind": "type",
+      "sources": ["games/lodestar/src/features/spawning/mod.rs"],
+      "members": ["SpawnDelay", "alien_group(bubble, random) -> bool"],
+      "external": true
+    }
+  ],
+  "relationships": [
+    { "from": "countdown", "to": "destination", "kind": "depends-on", "description": "Holds where the running countdown leads." },
+    { "from": "countdown", "to": "universe", "kind": "depends-on", "description": "Range-checks a retarget with in_range (deliberate difference 6)." },
+    { "from": "navigation", "to": "countdown", "kind": "depends-on", "description": "Each selection may retarget a running countdown." },
+    { "from": "navigation", "to": "universe", "kind": "depends-on", "description": "The cursor selects the nearest system and measures its distance." },
+    { "from": "jump", "to": "hyperspace-key", "kind": "depends-on", "description": "Reports what the hyperspace key did." },
+    { "from": "jump", "to": "galaxy-drive-key", "kind": "depends-on", "description": "Reports what the galaxy-drive key did." },
+    { "from": "jump", "to": "tunnel", "kind": "depends-on", "description": "The jump returns the tunnel; the arrival takes it back." },
+    { "from": "jump", "to": "arrived", "kind": "depends-on", "description": "Reports where the arrival left the pilot." },
+    { "from": "jump", "to": "navigation", "kind": "depends-on", "description": "Selects, and updates the current system on arrival." },
+    { "from": "jump", "to": "countdown", "kind": "depends-on", "description": "Starts the countdown from the keys." },
+    { "from": "jump", "to": "universe", "kind": "depends-on", "description": "Fuel, the mis-jump test and position, and the Reach jump." },
+    { "from": "jump", "to": "market", "kind": "depends-on", "description": "The common arrival draws the market byte." },
+    { "from": "jump", "to": "cockpit", "kind": "depends-on", "description": "Resets the flight state and enters the Deep." },
+    { "from": "jump", "to": "planet-and-sun", "kind": "depends-on", "description": "Places the planet and sun on arrival." },
+    { "from": "jump", "to": "spawning", "kind": "depends-on", "description": "Fills the Deep with alien groups; resets the spawn delay on arrival." }
+  ]
+}

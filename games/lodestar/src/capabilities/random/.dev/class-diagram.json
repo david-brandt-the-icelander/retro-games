@@ -62,7 +62,8 @@
         "draw() -> Draw",
         "draw_carry_cleared() -> Draw",
         "byte() -> u8",
-        "discard(count)"
+        "discard(count)",
+        "carry() -> bool"
       ]
     },
     {

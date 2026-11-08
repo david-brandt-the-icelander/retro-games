@@ -95,6 +95,12 @@ impl MainGenerator {
             self.draw();
         }
     }
+
+    /// The carry the last draw left, which feeds the next one. One rule reads it: the benign
+    /// spawn's x offset (RULES B.4.1, B.10.8, C.16.5).
+    pub fn carry(&self) -> bool {
+        self.state.carry
+    }
 }
 
 impl Default for MainGenerator {
