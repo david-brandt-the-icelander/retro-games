@@ -1,0 +1,85 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Escape pod class diagram",
+  "folder": "games/lodestar/src/features/escape_pod",
+  "description": "The escape pod: the launch, the 97 ticks of the abandoned hull drifting, and the rescue or death in the Deep (RULES B.17, C.10.5, D.3.9, deliberate difference 7).",
+  "sources": [
+    { "path": "games/lodestar/src/features/escape_pod/mod.rs", "symbol": "Escape" },
+    { "path": "games/lodestar/src/features/escape_pod/mod.rs", "symbol": "Aftermath" },
+    { "path": "games/lodestar/src/features/escape_pod/mod.rs", "symbol": "launch_pod" },
+    { "path": "games/lodestar/src/features/escape_pod/mod.rs", "symbol": "aftermath" }
+  ],
+  "types": [
+    {
+      "id": "escape",
+      "name": "Escape",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/features/escape_pod/mod.rs"],
+      "members": [
+        "from_the_deep: bool",
+        "hull: Option<usize>",
+        "tick(bubble) -> bool",
+        "ticks_left() -> u8",
+        "spares(slot) -> bool"
+      ]
+    },
+    {
+      "id": "aftermath-kind",
+      "name": "Aftermath",
+      "kind": "enum",
+      "sources": ["games/lodestar/src/features/escape_pod/mod.rs"],
+      "members": ["Docked(Selection)", "Died(Dying)"]
+    },
+    {
+      "id": "escape-pod",
+      "name": "mod escape_pod",
+      "kind": "type",
+      "sources": ["games/lodestar/src/features/escape_pod/mod.rs"],
+      "members": [
+        "launch_pod(pilot, cockpit, bubble) -> Option<Escape>",
+        "aftermath(escape, pilot, cockpit, bubble, navigation, countdown, random) -> Aftermath"
+      ]
+    },
+    {
+      "id": "dying",
+      "name": "Dying",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/features/death/mod.rs"],
+      "members": ["die(cause, cockpit, bubble, countdown, random) -> Dying"],
+      "external": true
+    },
+    {
+      "id": "docking",
+      "name": "mod docking",
+      "kind": "type",
+      "sources": ["games/lodestar/src/features/docking/mod.rs"],
+      "members": ["enter_docked(pilot, navigation, countdown) -> Selection"],
+      "external": true
+    },
+    {
+      "id": "spawning",
+      "name": "mod spawning",
+      "kind": "type",
+      "sources": ["games/lodestar/src/features/spawning/mod.rs"],
+      "members": ["launch_straight_ahead(kind, target_slot, player_speed) -> Object"],
+      "external": true
+    },
+    {
+      "id": "equipment",
+      "name": "mod equipment",
+      "kind": "type",
+      "sources": ["games/lodestar/src/capabilities/equipment/mod.rs"],
+      "members": ["escape_pod_rescue(pilot)"],
+      "external": true
+    }
+  ],
+  "relationships": [
+    { "from": "escape-pod", "to": "escape", "kind": "depends-on", "description": "The launch returns the escape sequence." },
+    { "from": "escape-pod", "to": "aftermath-kind", "kind": "depends-on", "description": "Reports how the escape ended." },
+    { "from": "aftermath-kind", "to": "dying", "kind": "depends-on", "description": "From the Deep the escape ends in death." },
+    { "from": "escape-pod", "to": "docking", "kind": "depends-on", "description": "The rescue enters the docked state." },
+    { "from": "escape-pod", "to": "spawning", "kind": "depends-on", "description": "The abandoned hull is launched straight ahead." },
+    { "from": "escape-pod", "to": "equipment", "kind": "depends-on", "description": "The rescue empties the hold, clears the record, uses the pod and fills the tank." }
+  ]
+}
