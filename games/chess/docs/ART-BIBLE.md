@@ -2,7 +2,7 @@
 
 The look of the 3D table and the pieces, the motion, and the sound. The screens around the table are in [UI-DESIGN.md](UI-DESIGN.md); the exact values for both are also in [design-tokens.json](design-tokens.json). Reference renders are in [screens/](screens/) (see [DESIGN.md](DESIGN.md) for how to compare against them).
 
-**Mood:** a quiet, expensive chess table at night. A near-black room, one warm key light from the player's front left, a cool blue rim light from behind, a faint warm fill. Ivory pieces with a soft satin finish; black pieces like polished obsidian with sharp highlights. A slate-and-bone board in a black lacquered frame with a thin gold inlay. Nothing glows except the move hints and the check warning.
+**Mood:** a quiet, expensive chess table at night. A near-black room, one warm key light from the player's front left, a cool blue rim light from behind, a faint warm fill. Ivory pieces with a soft satin finish; black pieces like polished obsidian with sharp highlights. A slate-and-bone board in a black lacquered frame with a thin gold inlay. Nothing in the room is a light source: the move hints and the check warning are bright, flat (unshaded) marks that sit on the board, not glowing objects, and they don't bloom.
 
 ## World units
 
@@ -24,9 +24,9 @@ so White's first rank is at +Z (towards the camera when playing White) and the a
 | Ambient light | from the sky, energy 0.55 |
 | Reflections | from the sky |
 | Tone mapping | Filmic, exposure 1.05 |
-| Glow | on: intensity 0.5, bloom 0.04, HDR threshold 1.1 |
+| Glow | on: intensity 0.5, bloom 0.04, HDR threshold 1.1. In practice only the brightest specular highlights on the pieces and the inlay pass the threshold; no material is emissive |
 | Anti-aliasing | MSAA 4× on the 3D viewport |
-| Shadows | directional shadow map 4096, soft shadow filter quality "high" (3) |
+| Shadows | directional shadow map 4096, soft shadow filter quality **Medium** (Godot's enum value 3: 0 hard, 1 very low, 2 low, 3 medium, 4 high, 5 ultra) |
 
 ## Lights
 
@@ -46,7 +46,7 @@ All three lights sit in one **light rig** that turns about the Y axis with the c
 | Board frame | box 9.5 × 0.4 × 9.5, centre y = −0.22 (top face at −0.02) | black lacquer: albedo `#17181D`, roughness 0.16, metallic 0.2 |
 | Gold inlay | four bars, 0.035 wide × 0.012 high, 8.32 long, centred 4.13 from the middle on each side, at y = −0.015 | albedo `#D9B26B`, roughness 0.3, metallic 1.0 |
 | Squares | 64 boxes 1 × 0.04 × 1, top face at y = 0 | light (bone): `#B3AB9B`, roughness 0.55. Dark (slate): `#353A42`, roughness 0.26, metallic 0.15. a1 is **dark**: a square is light when (f + r) is odd |
-| Coordinates | the letters a–h along both long edges at z = ±4.45, the numbers 1–8 along both side edges at x = ±4.45, lying flat 0.002 above the frame | Inter SemiBold, font size 48, pixel size 0.004 (≈ 0.19 units tall), colour `#D9B26B` at 75 % opacity. They always read upright from the player's side: turned 180° about Y when the camera is behind Black |
+| Coordinates | the letters a–h along both long edges at z = ±4.45, the numbers 1–8 along both side edges at x = ±4.45, lying flat at **y = 0** (level with the squares' tops, 0.02 above the frame's top face) | Inter SemiBold, font size 48, pixel size 0.004 (≈ 0.19 units tall), colour `#D9B26B` at 75 % opacity. They always read upright from the player's side: turned 180° about Y when the camera is behind Black |
 
 ## Pieces
 
@@ -102,14 +102,14 @@ Reference: [screens/23-pieces.png](screens/23-pieces.png).
 
 ## Marks on the board
 
-All marks are unshaded, transparent, double-sided, drawn just above the squares.
+All marks are unshaded (no emission, no bloom), transparent, double-sided, drawn just above the squares.
 
 | Mark | Shape | Colour | Height |
 |---|---|---|---|
 | Last move | the from and to squares, planes 1 × 1 | gold `#D9B26B` at 22 % | y = 0.003 |
 | Selected piece | its square, plane 0.98 × 0.98 | gold at 55 % | y = 0.004 |
-| A move to an empty square | disc: cylinder radius 0.11, height 0.01 | gold at 75 %, emissive | y = 0.01 |
-| A capture | ring: torus inner radius 0.36, outer 0.44, 32 rings | gold at 75 %, emissive | y = 0.01 |
+| A move to an empty square | disc: cylinder radius 0.11, height 0.01 | gold at 75 % | y = 0.01 |
+| A capture | ring: torus inner radius 0.36, outer 0.44, 32 rings | gold at 75 % | y = 0.01 |
 | King in check | its square, plane 0.96 × 0.96 | `#FF3B4E`, opacity pulsing 0.35 ± 0.2 (sine, 5 rad/s) | y = 0.004 |
 
 Reference: [screens/14-game-piece-selected.png](screens/14-game-piece-selected.png) (dots), [screens/13-game-check.png](screens/13-game-check.png) (check, last move).

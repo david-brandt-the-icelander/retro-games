@@ -1,0 +1,152 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Stockfish engine state diagram",
+  "folder": "games/chess/bridge",
+  "description": "The one Engine the page bridge keeps (bridge/engine.ts): Stockfish in a Web Worker, started on first use. The game asks for one move at a time through chessBridge.bestMove, which calls back with the move, or with an empty string when the engine fails; a cancelled answer is not passed on. generation tells a current search from a cancelled one; stale counts bestmove answers still to come from searches stopped mid-way, which are thrown away. A cancelled search's promise is left unsettled.",
+  "sources": [
+    {
+      "path": "games/chess/bridge/engine.ts",
+      "symbol": "Engine.start"
+    },
+    {
+      "path": "games/chess/bridge/engine.ts",
+      "symbol": "Engine.bestMove"
+    },
+    {
+      "path": "games/chess/bridge/engine.ts",
+      "symbol": "Engine.cancel"
+    },
+    {
+      "path": "games/chess/bridge/engine.ts",
+      "symbol": "Engine.preload"
+    },
+    {
+      "path": "games/chess/bridge/main.ts",
+      "symbol": "bestMove"
+    }
+  ],
+  "machine": "Engine (bridge/engine.ts): ready, waiting, generation and stale",
+  "initialState": "unstarted",
+  "states": [
+    {
+      "id": "unstarted",
+      "description": "No Worker yet (ready = null)."
+    },
+    {
+      "id": "starting",
+      "description": "The Worker from engine/stockfish.js was created and sent \"uci\"; waiting for \"uciok\"."
+    },
+    {
+      "id": "failed",
+      "description": "The Worker couldn't be created or reported an error before \"uciok\": ready stays rejected, so every later bestMove rejects and the game gets an empty move.",
+      "terminal": true
+    },
+    {
+      "id": "idle",
+      "description": "Ready, and no answer awaited (waiting = null). A stopped search may still be finishing in the Worker."
+    },
+    {
+      "id": "searching",
+      "description": "Skill Level, position and go have been sent; waiting for bestmove."
+    },
+    {
+      "id": "pausing",
+      "description": "bestmove arrived; waiting out the rest of the strength's minimum pause (450 ms at level 1 down to none at levels 7 and 8) before answering."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "unstarted",
+      "to": "starting",
+      "trigger": "preload() or bestMove()",
+      "action": "start(): new Worker; post \"uci\"."
+    },
+    {
+      "from": "unstarted",
+      "to": "failed",
+      "trigger": "preload() or bestMove()",
+      "guard": "new Worker throws",
+      "action": "Reject ready."
+    },
+    {
+      "from": "starting",
+      "to": "failed",
+      "trigger": "the Worker's error event",
+      "action": "Reject ready with \"The engine couldn't start.\"; a waiting bestMove rejects."
+    },
+    {
+      "from": "starting",
+      "to": "idle",
+      "trigger": "\"uciok\"",
+      "guard": "no bestMove is waiting",
+      "action": "Resolve ready."
+    },
+    {
+      "from": "starting",
+      "to": "searching",
+      "trigger": "\"uciok\"",
+      "guard": "a bestMove is waiting for start()",
+      "action": "Resolve ready; generation++; post the commands for its level and moves."
+    },
+    {
+      "from": "idle",
+      "to": "searching",
+      "trigger": "bestMove(moves, level)",
+      "action": "generation++; set waiting; post setoption Skill Level, position startpos moves …, go depth or movetime."
+    },
+    {
+      "from": "searching",
+      "to": "pausing",
+      "trigger": "\"bestmove X\"",
+      "guard": "stale = 0",
+      "action": "waiting = null; keep X."
+    },
+    {
+      "from": "searching",
+      "to": "searching",
+      "trigger": "\"bestmove X\"",
+      "guard": "stale > 0",
+      "action": "stale--; ignore it: it answers a cancelled search."
+    },
+    {
+      "from": "idle",
+      "to": "idle",
+      "trigger": "\"bestmove X\"",
+      "guard": "stale > 0",
+      "action": "stale--; ignore it."
+    },
+    {
+      "from": "searching",
+      "to": "idle",
+      "trigger": "cancel()",
+      "action": "generation++; waiting = null; stale++; post \"stop\". The call's promise never settles."
+    },
+    {
+      "from": "pausing",
+      "to": "pausing",
+      "trigger": "cancel()",
+      "action": "generation++."
+    },
+    {
+      "from": "idle",
+      "to": "idle",
+      "trigger": "cancel()",
+      "action": "generation++."
+    },
+    {
+      "from": "pausing",
+      "to": "idle",
+      "trigger": "the pause is over",
+      "guard": "generation unchanged",
+      "action": "Resolve with X; the bridge calls the game back with it."
+    },
+    {
+      "from": "pausing",
+      "to": "idle",
+      "trigger": "the pause is over",
+      "guard": "generation changed (cancelled during the pause)",
+      "action": "Reject with \"cancelled\"; the bridge doesn't call back."
+    }
+  ]
+}

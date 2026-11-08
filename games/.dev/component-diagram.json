@@ -3,7 +3,7 @@
   "kind": "component",
   "title": "Retro games component diagram",
   "folder": "games",
-  "description": "The games folder groups four independent browser games. Each is its own npm project with an engine, a page, a Cloudflare Worker and a replay-checked high-score table; they share no code at build time, and three carry identical copies of the online module.",
+  "description": "The games folder groups five independent browser games, each its own npm project with its own Cloudflare Worker. Four have an engine, a page and a replay-checked high-score table; Gambit is a Godot client whose Worker handles sign-in, games and history. They share no code at build time, and three carry identical copies of the online module.",
   "sources": [
     {
       "path": "README.md",
@@ -20,13 +20,17 @@
     {
       "path": "games/dictator/src/scores.ts",
       "symbol": "defaultName"
+    },
+    {
+      "path": "games/chess/README.md",
+      "symbol": "How it works"
     }
   ],
   "components": [
     {
       "id": "games",
       "name": "Retro games",
-      "responsibility": "The four browser games, side by side.",
+      "responsibility": "The five browser games, side by side.",
       "folder": "games"
     },
     {
@@ -56,6 +60,13 @@
       "responsibility": "A remake of a 1983 ZX Spectrum strategy game, played screen by screen.",
       "folder": "games/dictator",
       "diagram": "games/dictator/.dev/component-diagram.json"
+    },
+    {
+      "id": "gambit",
+      "name": "Gambit",
+      "responsibility": "3D chess in Godot: friends invited by email and played at their own pace with chat, or Stockfish at eight strengths; every game kept and replayable.",
+      "folder": "games/chess",
+      "diagram": "games/chess/.dev/component-diagram.json"
     },
     {
       "id": "hub",
@@ -88,6 +99,12 @@
       "to": "samosa",
       "kind": "contains",
       "description": "Samosa is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "gambit",
+      "kind": "contains",
+      "description": "Gambit is one of the games."
     },
     {
       "from": "rally",

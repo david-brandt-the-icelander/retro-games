@@ -40,7 +40,7 @@ Two families, both SIL OFL, embedded as WOFF2 (Latin subset):
 | Body (default) | Inter Regular 400 | 16 | ink |
 | Strong | Inter SemiBold 600 | 16 | ink |
 | Muted | Inter Regular | 14 | muted |
-| Eyebrow | Inter SemiBold | 12, ALL CAPS in the text itself | gold |
+| Eyebrow | Inter SemiBold | 12 (no automatic capitals: headings like STRENGTH are written in capitals; names keep their own case) | gold |
 | Button | Inter SemiBold | 15 | per variant |
 | Heading | Playfair Display SemiBold 600 | 22 | ink |
 | Title | Playfair Display Italic 400 | 64 (the title screen uses 96) | ink |
@@ -71,7 +71,7 @@ All corner radii are in px; padding is left, top, right, bottom.
 | **Scrollbar** | invisible track; grabber white at 12 %, 6 px wide, radius 3 | grabber 22 % | 22 % | |
 | **Toast** | bg raised, radius 12, padding 18 12 18 12, 1 px border gold (information) or red (error), body text | | | centred, 28 px above the bottom edge; fades in 0.2 s, stays 3.5 s, fades out 0.4 s; a new toast replaces the old |
 
-**"Sure?" buttons.** Resign (and anything else final) is a Danger button that asks first: the first press changes its label to "Sure? Resign" for 3 s; a second press within that time acts; otherwise it reverts.
+**"Sure?" buttons.** Every Danger button asks first (in this design: **Resign** and **Remove from contacts**): the first press changes its label to "Sure? Resign" for 3 s; a second press within that time acts; otherwise it reverts.
 
 ### Spacing
 
@@ -93,7 +93,7 @@ Gaps between siblings: 18 (page columns and cards, top bar), 14 (game panel), 12
 
 [screens/07-home-signed-in.png](screens/07-home-signed-in.png), [screens/01-home-signed-out.png](screens/01-home-signed-out.png)
 
-Across the top, 28 px from the left and right edges, 18 px from the top, 72 px tall, one row with gaps of 18, vertically centred:
+A band across the top of the window, **72 px tall including its 18 px top margin**: its row of controls starts 18 px below the top edge and is 54 px tall (so the controls' centre line is 45 px from the top), with 28 px margins left and right and gaps of 18. Nothing else is in the band: list pages start at 92 px and the game panel at 84 px, below it.
 
 1. **Gambit**: a Ghost button in Playfair Display Italic 28, ink (gold on hover). Goes to the title screen.
 2. Ghost buttons **Play** (title screen), **Friends** (lobby), **History**.
@@ -197,7 +197,7 @@ Column 820:
 
 1. Card: row (gap 18): avatar 72 · a column (gap 2) of the name (Heading at 30), the email (Muted), the record in words (Strong, e.g. "1 win · 0 losses · 0 draws") · spacer · Primary **Invite to a game** (sends an invitation with Random colour; toast "Invitation sent." or the error).
 2. Card: Heading **Your games together**, then a game row per game (in play and finished, newest first); "No games yet." when empty.
-3. Row: Ghost **Back**, spacer, Danger **Remove from contacts** (toast "Removed.", back to the lobby).
+3. Row: Ghost **Back**, spacer, Danger **Remove from contacts**, which asks first ("Sure? Remove from contacts", see "Sure?" buttons); then toast "Removed." and back to the lobby.
 
 **Game row** (also used by History): clickable Row, gap 12: the outcome, Strong, 64 px wide: **Won** (green) · **Lost** (red) · **Draw** (muted) · **In play** (gold) · avatar 34 of the opponent · `vs {name}` over `{result or Your move/Their move} · {N moves} · {ago}` · side dot 12 for the player's colour. Finished games open as a replay; games in play open live.
 
@@ -241,7 +241,7 @@ Veil 0. The camera sits behind the player's colour, at distance 15 with offset 0
    | Every other entry | starts with the clock time (Muted 12, 44 px wide, top-aligned), then a gap of 10 (8 for moves) |
    | Game started | Playfair Display Italic 15, muted: "Game started" |
    | A move | the move number (Muted 13, 34 px, right-aligned: `N.` or `N…`) · side dot 9 · the move in SAN as a Ghost button in Inter SemiBold, ink, left-aligned, filling the width, padding 8 3 8 3, radius 8 (highlighted gold at 18 % when it's the position being looked at) · how long it took (Muted 12), measured from the previous move (the first from the start) |
-   | Chat | avatar 26 · a bubble filling the width: radius 12, padding 12 8 12 8, bg gold at 12 % for the player's own messages and `#22252C` for the opponent's; inside, the sender's name (Eyebrow) over the message (body, wrapping) |
+   | Chat | avatar 26 · a bubble filling the width: radius 12, padding 12 8 12 8, bg gold at 12 % for the player's own messages and `#22252C` for the opponent's; inside, the sender's name as given (Eyebrow style, not capitalised) over the message (body, wrapping) |
    | Draw offered / declined | italic note: `{name} offers a draw` · `{name} declines the draw` |
    | Resigned | italic note: `{name} resigns` |
    | The end | Strong, gold: the result text |
@@ -273,8 +273,8 @@ The game screen, with these differences: no chat field, no actions, and a **repl
 3. A row (gap 8): Muted **Pace** · Chips **1×** · **4×** · **16×** (4× on) · spacer · Muted **as played, sped up**.
 
 - Entries after the current point are shown at **28 % opacity**, including day headings; the transcript scrolls to keep the current one in view. The board shows the position at that point (moves glide when stepping forward by one).
-- Status: before anything, `Replay · {clock time of the start}`; partway, `{N}. {SAN} · {elapsed} in` for a White move or `{N}.. {SAN} · {elapsed} in` for Black (elapsed since the start, as a duration); at the end, the result.
-- **Play** steps through the entries, waiting between them as long as the players did divided by the pace, but at least 0.35 s and at most 3 s. It stops at the end (pressing Play again restarts from the beginning). Any other control, or dragging the slider, stops it.
+- Status (Heading): before anything, `Replay · {clock time of the start}`; partway, `{N}. {SAN} · {elapsed} in` for a White move or `{N}… {SAN} · {elapsed} in` for Black, with the same `N.`/`N…` numbering as the transcript (elapsed since the start, as a duration); these are in ink. At the end, the result, in **gold**.
+- **Play** steps through the entries, waiting between them as long as the players did divided by the pace, but at least 0.35 s and at most 3 s. It stops at the end (pressing Play again restarts from the beginning). Start, Back, Next, End, dragging the slider and clicking a move all stop it. The pace chips do **not**: a new pace applies from the next wait.
 - Clicking a move in the transcript jumps to just after it.
 
 ## 9. Toasts

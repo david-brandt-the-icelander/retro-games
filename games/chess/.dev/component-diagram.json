@@ -1,0 +1,149 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Gambit component diagram",
+  "folder": "games/chess",
+  "description": "Gambit, 3D chess for the browser. Unlike the other games it has no TypeScript engine or high-score table: the client is a Godot 4 project exported to WebAssembly, a small TypeScript bridge runs in the page around it (Stockfish included), and its own Worker handles sign-in, invitations, online games with a Durable Object per game, contacts and history. The Worker and the TypeScript tests share the API types and chess.js rules in shared/.",
+  "sources": [
+    {
+      "path": "games/chess/README.md",
+      "symbol": "How it works"
+    },
+    {
+      "path": "games/chess/wrangler.jsonc",
+      "symbol": "chess"
+    },
+    {
+      "path": "games/chess/build.mjs",
+      "symbol": "SITE"
+    },
+    {
+      "path": "games/chess/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/chess/godot/project.godot",
+      "symbol": "autoload"
+    },
+    {
+      "path": "games/chess/bridge/main.ts",
+      "symbol": "chessBridge"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Gambit",
+      "responsibility": "One game: the Godot client, its page bridge, the shared TypeScript and the Worker, built by build.mjs and deployed together with wrangler.",
+      "folder": "games/chess"
+    },
+    {
+      "id": "client",
+      "name": "Godot client",
+      "responsibility": "The game itself: the 3D table and pieces, the screens, games online, against the computer and in replay, and the client of the Worker's API.",
+      "folder": "games/chess/godot",
+      "diagram": "games/chess/godot/.dev/component-diagram.json"
+    },
+    {
+      "id": "bridge",
+      "name": "Page bridge",
+      "responsibility": "TypeScript in the page around the Godot export: boots the engine with a loading screen, runs Stockfish in a Web Worker, and exposes window.chessBridge (navigation, the invitation in the address, the title, the clipboard).",
+      "folder": "games/chess/bridge",
+      "diagram": "games/chess/bridge/.dev/component-diagram.json"
+    },
+    {
+      "id": "shared",
+      "name": "Shared protocol and rules",
+      "responsibility": "The API's types and the server's chess rules (chess.js), shared by the Worker and the TypeScript tests.",
+      "folder": "games/chess/shared",
+      "diagram": "games/chess/shared/.dev/component-diagram.json"
+    },
+    {
+      "id": "worker",
+      "name": "Chess Worker",
+      "responsibility": "Static assets (joining the split engine .wasm), Google and GitHub sign-in, the JSON API, and the GameRoom Durable Object that checks and broadcasts every online action.",
+      "folder": "games/chess/worker",
+      "diagram": "games/chess/worker/.dev/component-diagram.json"
+    },
+    {
+      "id": "db",
+      "name": "D1 database chess",
+      "responsibility": "Users, sessions, challenges, games with their transcripts (game_events) and contacts.",
+      "external": true
+    },
+    {
+      "id": "providers",
+      "name": "Google and GitHub",
+      "responsibility": "OAuth sign-in and profile (verified email, name, picture), and the image hosts the profile pictures come from.",
+      "external": true
+    },
+    {
+      "id": "resend",
+      "name": "Resend",
+      "responsibility": "Sends invitation emails, when RESEND_API_KEY and MAIL_FROM are set.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "client",
+      "kind": "contains",
+      "description": "Exported by Godot (build.mjs) into dist/retro/chess/."
+    },
+    {
+      "from": "game",
+      "to": "bridge",
+      "kind": "contains",
+      "description": "Bundled by esbuild into bridge.js."
+    },
+    {
+      "from": "game",
+      "to": "shared",
+      "kind": "contains",
+      "description": "Bundled into the Worker and the tests."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Deployed with wrangler."
+    },
+    {
+      "from": "client",
+      "to": "bridge",
+      "kind": "depends-on",
+      "description": "In the browser, calls window.chessBridge through JavaScriptBridge (scripts/api.gd): base URL, sign-in navigation, invitation, title, clipboard and Stockfish moves."
+    },
+    {
+      "from": "client",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "HTTP under api/ and auth/, and the WebSocket api/games/{id}/live for online games."
+    },
+    {
+      "from": "worker",
+      "to": "shared",
+      "kind": "depends-on",
+      "description": "Types, BASE, email and name cleaning, LEVELS, and replay/boardOutcome to judge moves."
+    },
+    {
+      "from": "worker",
+      "to": "db",
+      "kind": "depends-on",
+      "description": "D1 binding DB."
+    },
+    {
+      "from": "worker",
+      "to": "providers",
+      "kind": "depends-on",
+      "description": "OAuth code flow with PKCE; profile pictures fetched through api/avatar/{id}."
+    },
+    {
+      "from": "worker",
+      "to": "resend",
+      "kind": "depends-on",
+      "description": "POST /emails for an invitation, best effort."
+    }
+  ]
+}

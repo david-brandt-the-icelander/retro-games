@@ -1,0 +1,102 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Gambit page bridge component diagram",
+  "folder": "games/chess/bridge",
+  "description": "TypeScript for the page around the Godot web export (godot/web_shell/shell.html), bundled into bridge.js. It starts the engine behind a loading bar and gives the game, as window.chessBridge, what only the page can do; the game reaches it through JavaScriptBridge in godot/scripts/api.gd.",
+  "sources": [
+    {
+      "path": "games/chess/bridge/main.ts",
+      "symbol": "chessBridge"
+    },
+    {
+      "path": "games/chess/bridge/engine.ts",
+      "symbol": "Engine"
+    },
+    {
+      "path": "games/chess/bridge/engine.ts",
+      "symbol": "STRENGTH"
+    },
+    {
+      "path": "games/chess/godot/web_shell/shell.html",
+      "symbol": "godot-config"
+    }
+  ],
+  "components": [
+    {
+      "id": "bridge",
+      "name": "Page bridge",
+      "responsibility": "Everything bridge.js does in the page.",
+      "folder": "games/chess/bridge"
+    },
+    {
+      "id": "page",
+      "name": "Page glue (main.ts)",
+      "responsibility": "Boots the Godot engine from the shell's config with a progress bar and a failure notice; window.chessBridge: baseUrl, returnPath, navigate, takeChallenge (an ?challenge=ID in the address, once), setTitle, copy, bestMove, cancelEngine, preloadEngine.",
+      "folder": "games/chess/bridge"
+    },
+    {
+      "id": "engine",
+      "name": "Computer opponent (engine.ts)",
+      "responsibility": "Engine: starts Stockfish in a Web Worker on first use, speaks UCI, maps strengths 1–8 to a Skill Level and a depth or move time, pauses the weakest levels so they feel like an opponent, and cancels searches.",
+      "folder": "games/chess/bridge"
+    },
+    {
+      "id": "scripts",
+      "name": "Godot scripts",
+      "responsibility": "The game's Api autoload, which calls window.chessBridge.",
+      "folder": "games/chess/godot/scripts",
+      "diagram": "games/chess/godot/scripts/.dev/component-diagram.json"
+    },
+    {
+      "id": "godotengine",
+      "name": "Godot web engine",
+      "responsibility": "The export's index.js loader (global Engine) with index.wasm and index.pck, from Godot's web export template.",
+      "external": true
+    },
+    {
+      "id": "stockfish",
+      "name": "Stockfish 19 (stockfish npm package)",
+      "responsibility": "The lite, single-threaded WebAssembly build, served as engine/stockfish.js and stockfish.wasm; GPL-3.0.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "bridge",
+      "to": "page",
+      "kind": "contains",
+      "description": "The entry point."
+    },
+    {
+      "from": "bridge",
+      "to": "engine",
+      "kind": "contains",
+      "description": "The Stockfish wrapper."
+    },
+    {
+      "from": "page",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "bestMove, cancel and preload behind chessBridge."
+    },
+    {
+      "from": "page",
+      "to": "godotengine",
+      "kind": "depends-on",
+      "description": "new Engine(config).startGame() with progress."
+    },
+    {
+      "from": "engine",
+      "to": "stockfish",
+      "kind": "depends-on",
+      "description": "new Worker(engine/stockfish.js); UCI over postMessage."
+    },
+    {
+      "from": "scripts",
+      "to": "page",
+      "kind": "depends-on",
+      "description": "JavaScriptBridge.get_interface(\"chessBridge\") and its calls; bestMove answers through a JavaScriptBridge callback."
+    }
+  ]
+}

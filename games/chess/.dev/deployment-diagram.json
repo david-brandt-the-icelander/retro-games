@@ -1,0 +1,215 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "Gambit deployment diagram",
+  "folder": "games/chess",
+  "description": "How Gambit runs: one Cloudflare Worker with static assets, a Durable Object class and a D1 database. The browser runs the Godot WebAssembly export and, for games against the computer, Stockfish in a Web Worker. The Godot engine's .wasm is larger than Cloudflare's 25 MiB limit for a static file, so build.mjs splits it into index.wasm.0, .1, … and the Worker streams the parts back as one index.wasm.",
+  "sources": [
+    {
+      "path": "games/chess/wrangler.jsonc",
+      "symbol": "chess"
+    },
+    {
+      "path": "games/chess/build.mjs",
+      "symbol": "PART"
+    },
+    {
+      "path": "games/chess/worker/index.ts",
+      "symbol": "joinedWasm"
+    },
+    {
+      "path": "games/chess/godot/export_presets.cfg",
+      "symbol": "preset.0"
+    },
+    {
+      "path": "games/chess/package.json",
+      "symbol": "scripts.deploy"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "browser",
+      "name": "Player's browser",
+      "kind": "client",
+      "description": "Runs the Godot WebAssembly export (WebGL 2) and the page bridge."
+    },
+    {
+      "id": "stockfish",
+      "name": "Stockfish Web Worker",
+      "kind": "process",
+      "description": "Stockfish 19 lite single-threaded WebAssembly, started on demand by bridge/engine.ts and spoken to in UCI.",
+      "condition": "Games against the computer"
+    },
+    {
+      "id": "edge",
+      "name": "Cloudflare edge",
+      "kind": "host",
+      "description": "Runs the Worker on the route games.icelander.net/retro/chess* and serves static assets from ./dist."
+    },
+    {
+      "id": "worker",
+      "name": "chess Worker",
+      "kind": "process",
+      "description": "worker/index.ts. Runs first for /retro/chess/api/*, /retro/chess/auth/* and /retro/chess/index.wasm; every other path is a static asset."
+    },
+    {
+      "id": "room",
+      "name": "GameRoom Durable Objects",
+      "kind": "process",
+      "description": "Binding ROOMS, class GameRoom (SQLite-backed, migration rooms-v1): one object per online game, named by the game's id. Hibernatable WebSockets to the two players."
+    },
+    {
+      "id": "db",
+      "name": "D1 chess",
+      "kind": "database",
+      "description": "Users, sessions, challenges, games, game_events and contacts (worker/schema.sql)."
+    },
+    {
+      "id": "oauth",
+      "name": "Google and GitHub OAuth",
+      "kind": "external-service",
+      "description": "Authorization, token and profile endpoints of accounts.google.com, oauth2.googleapis.com, openidconnect.googleapis.com, github.com and api.github.com.",
+      "condition": "A provider is offered only when its client ID and secret are set as Worker secrets"
+    },
+    {
+      "id": "pictures",
+      "name": "Profile picture hosts",
+      "kind": "external-service",
+      "description": "lh3.googleusercontent.com and avatars.githubusercontent.com, the only hosts api/avatar/{id} fetches from.",
+      "condition": "A player with a profile picture"
+    },
+    {
+      "id": "resend",
+      "name": "Resend",
+      "kind": "external-service",
+      "description": "api.resend.com, for invitation emails.",
+      "condition": "RESEND_API_KEY and MAIL_FROM set; otherwise the inviter sends the link"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "export",
+      "name": "index.html, index.js, index.pck",
+      "source": "games/chess/godot/export_presets.cfg",
+      "deployedTo": "edge",
+      "description": "Godot's Web export (preset Web, release), with web_shell/shell.html as the page; tests/ and web_shell/ are left out of the pack."
+    },
+    {
+      "id": "wasm",
+      "name": "index.wasm.0, index.wasm.1",
+      "source": "games/chess/build.mjs",
+      "deployedTo": "edge",
+      "description": "The Godot engine's WebAssembly, cut into 20 MiB parts; the Worker joins them for /retro/chess/index.wasm."
+    },
+    {
+      "id": "bridge",
+      "name": "bridge.js",
+      "source": "games/chess/bridge/main.ts",
+      "deployedTo": "edge",
+      "description": "esbuild bundle of bridge/main.ts and bridge/engine.ts, minified; run in the page."
+    },
+    {
+      "id": "engine",
+      "name": "engine/stockfish.js, stockfish.wasm, COPYING.txt",
+      "source": "games/chess/package.json",
+      "deployedTo": "edge",
+      "description": "Copied from the stockfish npm package; loaded into the Stockfish Web Worker."
+    },
+    {
+      "id": "web",
+      "name": "_headers, shell.css, favicon.svg",
+      "source": "games/chess/web/_headers",
+      "deployedTo": "edge",
+      "description": "The Content-Security-Policy and other headers, the loading screen's styles and the icon."
+    },
+    {
+      "id": "script",
+      "name": "Worker script",
+      "source": "games/chess/worker/index.ts",
+      "deployedTo": "worker",
+      "description": "The fetch handler with auth, the API and shared/, bundled by wrangler."
+    },
+    {
+      "id": "roomclass",
+      "name": "GameRoom class",
+      "source": "games/chess/worker/room.ts",
+      "deployedTo": "room",
+      "description": "Exported from the Worker script and bound as ROOMS."
+    },
+    {
+      "id": "schema",
+      "name": "schema.sql",
+      "source": "games/chess/worker/schema.sql",
+      "deployedTo": "db",
+      "description": "Applied by hand with wrangler d1 execute; every statement can run again."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "edge",
+      "to": "worker",
+      "kind": "hosts",
+      "description": "Routes games.icelander.net/retro/chess* to the Worker."
+    },
+    {
+      "from": "edge",
+      "to": "room",
+      "kind": "hosts",
+      "description": "Runs each game's Durable Object."
+    },
+    {
+      "from": "browser",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "HTTPS: the page, its assets, the joined index.wasm, auth/ and api/; a WebSocket to api/games/{id}/live during an online game."
+    },
+    {
+      "from": "browser",
+      "to": "stockfish",
+      "kind": "hosts",
+      "description": "new Worker(engine/stockfish.js) in the page."
+    },
+    {
+      "from": "worker",
+      "to": "room",
+      "kind": "routes",
+      "description": "ROOMS.idFromName(game id): POST /action and the /live WebSocket upgrade, with X-User and X-Game headers."
+    },
+    {
+      "from": "worker",
+      "to": "db",
+      "kind": "connects-to",
+      "description": "D1 binding DB."
+    },
+    {
+      "from": "room",
+      "to": "db",
+      "kind": "connects-to",
+      "description": "D1 binding DB: loads and saves the game it guards."
+    },
+    {
+      "from": "worker",
+      "to": "oauth",
+      "kind": "connects-to",
+      "description": "HTTPS: token exchange and profile, after the browser is redirected to the provider."
+    },
+    {
+      "from": "browser",
+      "to": "oauth",
+      "kind": "connects-to",
+      "description": "Redirected to the provider's sign-in page and back to auth/callback/{provider}."
+    },
+    {
+      "from": "worker",
+      "to": "pictures",
+      "kind": "connects-to",
+      "description": "HTTPS fetch for api/avatar/{id}, cached for a day."
+    },
+    {
+      "from": "worker",
+      "to": "resend",
+      "kind": "connects-to",
+      "description": "HTTPS POST /emails."
+    }
+  ]
+}

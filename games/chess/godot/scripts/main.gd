@@ -26,11 +26,12 @@ const LOCAL_HISTORY := "user://history.json"
 var board: Board3D
 var _viewport_box: SubViewportContainer
 var _veil: ColorRect
+var _bar_wrap: MarginContainer
 var _bar: HBoxContainer
 var _user_slot: HBoxContainer
 var _screen: Control
 var _screen_name := ""
-var _history_stack: Array[String] = []
+var _history_stack: Array[Dictionary] = []   ## {name, arg} of the screens visited, for "back"
 var _toast: PanelContainer
 var _pending_challenge := ""
 var _lobby_timer: Timer
@@ -52,6 +53,9 @@ func _ready() -> void:
 	board = Board3D.new()
 	vp.add_child(board)
 	add_child(_viewport_box)
+	# Framed for the title screen from the first frame, while we find out who is signed in.
+	board.showcase = true
+	board.frame_offset(-0.2, 15.5, true)
 
 	# A veil over the table, darker behind lists, gone during a game.
 	_veil = ColorRect.new()
@@ -61,6 +65,7 @@ func _ready() -> void:
 	add_child(_veil)
 
 	var bar_wrap := MarginContainer.new()
+	_bar_wrap = bar_wrap
 	bar_wrap.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	bar_wrap.offset_bottom = 72
 	bar_wrap.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -73,6 +78,7 @@ func _ready() -> void:
 	logo.add_theme_font_override("font", UI.italic)
 	logo.add_theme_font_size_override("font_size", 28)
 	logo.add_theme_color_override("font_color", UI.INK)
+	logo.add_theme_color_override("font_focus_color", UI.INK)
 	logo.add_theme_color_override("font_hover_color", UI.GOLD)
 	_bar.add_child(logo)
 	for item in [["Play", "home"], ["Friends", "lobby"], ["History", "history"]]:
@@ -185,7 +191,9 @@ func _render_user() -> void:
 			await Api.logout()
 			go("home"), "Ghost"))
 	else:
-		_user_slot.add_child(UI.button("Sign in", func() -> void: go("lobby"), "Chip"))
+		var sign_in := UI.button("Sign in", func() -> void: go("lobby"), "Chip")
+		sign_in.size_flags_vertical = Control.SIZE_SHRINK_CENTER   # chip-sized, centred in the bar
+		_user_slot.add_child(sign_in)
 
 
 # ── Navigation ──
@@ -194,11 +202,21 @@ func go(name: String, arg: Variant = null) -> void:
 	if not Api.loaded and name in ["lobby", "history", "contact"]:
 		await Api.me_changed
 	if name == "back":
-		name = "lobby" if _screen_name == "game" and Api.signed_in() and _history_stack.size() < 2 else (_history_stack[-2] if _history_stack.size() >= 2 else "home")
+		# Where the player came from, with what that screen showed (a contact page keeps its contact).
+		# A game left behind isn't reopened: its screen is gone, so that goes to the lobby instead.
+		# A game that was the first thing shown (from an invitation link) leaves to the lobby.
+		var first_game := _screen_name == "game" and Api.signed_in() and _history_stack.size() < 2
+		var to: Dictionary = _history_stack[-2] if _history_stack.size() >= 2 else {name = "home", arg = null}
 		if _history_stack.size() >= 1:
 			_history_stack.pop_back()
+		name = to.name
+		arg = to.arg
+		if first_game or name == "game":
+			name = "lobby" if Api.signed_in() else "home"
+			arg = null
 	else:
-		_history_stack.append(name)
+		# A game screen is freed when it closes, so only its name is kept.
+		_history_stack.append({name = name, arg = null if name == "game" else arg})
 		if _history_stack.size() > 12:
 			_history_stack.pop_front()
 	if _screen:
@@ -209,7 +227,7 @@ func go(name: String, arg: Variant = null) -> void:
 		_lobby_timer.timeout.disconnect(c.callable)
 	_screen_name = name
 	var veil := 0.62
-	board.showcase = name != "game"
+	board.showcase = name == "home"   # only the title screen's table turns; behind lists it rests
 	match name:
 		"home":
 			veil = 0.18
@@ -219,7 +237,7 @@ func go(name: String, arg: Variant = null) -> void:
 		"lobby":
 			_screen = _lobby() if Api.signed_in() else _signin("Sign in to play friends. Invite anyone by email; they sign in too, and your games, contacts and history are kept.")
 		"contact":
-			_screen = _contact(arg)
+			_screen = _contact(arg) if arg is Dictionary else _lobby()
 		"history":
 			_screen = _history()
 		"game":
@@ -231,8 +249,9 @@ func go(name: String, arg: Variant = null) -> void:
 		board.movable = -1
 		board.frame_offset(-0.2 if name == "home" else 0.0, 15.5 if name == "home" else 14.0)
 	create_tween().tween_property(_veil, "color:a", veil, 0.4)
+	# Back to front: the table, the veil, the top bar, the screen, the toast.
 	add_child(_screen)
-	move_child(_screen, _veil.get_index() + 1)
+	move_child(_screen, _bar_wrap.get_index() + 1)
 	Api.set_title("Gambit")
 
 
@@ -307,7 +326,9 @@ func _home() -> Control:
 	col.add_child(title)
 	col.add_child(UI.wrap("Play a friend anywhere — invite them by email and take your time. Or face Stockfish, from gentle to merciless.", "Muted"))
 	(col.get_child(2) as Label).add_theme_font_size_override("font_size", 18)
-	col.add_child(Control.new())
+	var gap := Control.new()   # an empty row: one more gap before the buttons
+	gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_child(gap)
 	var friend := UI.button("Play a friend", func() -> void: go("lobby"), "Primary")
 	friend.custom_minimum_size = Vector2(220, 52)
 	var cpu := UI.button("Play the computer", func() -> void: go("setup"))
@@ -341,7 +362,8 @@ func _signin(reason: String) -> Control:
 			await Api.sign_in("dev", email.text.strip_edges())
 			if Api.signed_in():
 				go("lobby"))]))
-	if Api.providers.is_empty():
+	# Neither Google nor GitHub set up (the development sign-in doesn't count).
+	if not ("google" in Api.providers or "github" in Api.providers):
 		c.add_child(UI.wrap("Sign-in isn't available right now. You can still play the computer.", "Muted"))
 	c.add_child(UI.wrap("We keep your name, email address and profile picture from Google or GitHub, so friends can find you, and your games. Nothing else.", "Muted"))
 	col.add_child(UI.card(c))
@@ -368,6 +390,7 @@ func _setup() -> Control:
 		b.theme_type_variation = "Chip"
 		b.toggle_mode = true
 		b.custom_minimum_size = Vector2(190, 92)
+		b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.text = "%d  %s\n%s\n%s" % [i + 1, LEVELS[i][0], LEVELS[i][1], LEVELS[i][2]]
 		b.add_theme_font_size_override("font_size", 13)
@@ -401,7 +424,7 @@ func _setup() -> Control:
 		var white: bool = chosen.color == "white" or (chosen.color == "random" and randf() < 0.5)
 		go("game", GameScreen.new("computer", _new_computer_game(chosen.level, white), board)), "Primary")
 	start.custom_minimum_size = Vector2(220, 50)
-	c.add_child(UI.hbox(12, [UI.button("Back", func() -> void: go("home"), "Ghost"), UI.spacer(), start]))
+	c.add_child(UI.hbox(8, [UI.button("Back", func() -> void: go("home"), "Ghost"), UI.spacer(), start]))
 	c.add_child(UI.wrap("Stockfish 19 runs in your browser; the ratings are rough guides.", "Muted"))
 	col.add_child(UI.card(c))
 	return p[0]
@@ -563,7 +586,7 @@ func _lobby() -> Control:
 				var c := await Api.get_json("api/challenges/" + id)
 				if c.ok and c.data.challenge.status == "accepted" and c.data.challenge.gameId != null:
 					_open_game(str(c.data.challenge.gameId))
-				elif c.ok:
+				elif c.ok and str(c.data.challenge.status) in ["declined", "cancelled"]:
 					toast("That invitation was %s." % c.data.challenge.status)
 				else:
 					toast("That invitation was sent to a different address than %s." % Api.me.email if c.status == 403 else c.error, true)
@@ -584,7 +607,7 @@ func _row(kids: Array, on_click := Callable()) -> PanelContainer:
 
 
 func _who(name: String, detail: String) -> VBoxContainer:
-	var v := UI.vbox(0, [UI.label(name, "Strong"), UI.label(detail, "Muted")])
+	var v := UI.vbox(2, [UI.label(name, "Strong"), UI.label(detail, "Muted")])
 	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	(v.get_child(0) as Label).text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	(v.get_child(1) as Label).text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
@@ -614,12 +637,14 @@ func _fill_active(box: VBoxContainer, list: Array) -> void:
 		var mine := GameScreen._mine(g)
 		var opp: Dictionary = g.black if mine == 0 else g.white
 		var your_move: bool = (g.moves.size() % 2) == mine
+		# Only the opponent's offer is news here; your own shows in the game.
+		var offered: bool = g.get("drawOffer") != null and str(g.drawOffer) != ["white", "black"][mine]
 		var tag := UI.label("Your move" if your_move else "Their move", "Strong" if your_move else "Muted")
 		if your_move:
 			tag.add_theme_color_override("font_color", UI.GOLD)
 		box.add_child(_row([
 			Avatar.make(opp.get("avatar"), str(opp.name), 40),
-			_who(str(opp.name), "%s · %s%s" % [UI.moves_text(g.moves.size()), UI.ago(float(g.updated)), " · draw offered" if g.get("drawOffer") != null else ""]),
+			_who(str(opp.name), "%s · %s%s" % [UI.moves_text(g.moves.size()), UI.ago(float(g.updated)), " · draw offered" if offered else ""]),
 			UI.side_dot(mine == 0, 12), tag,
 		], func() -> void: _open_game(str(g.id))))
 
@@ -687,16 +712,17 @@ func _contact(c: Dictionary) -> Control:
 	var invite := UI.button("Invite to a game", func() -> void:
 		var r := await Api.post_json("api/challenges", {email = c.email, color = "random"})
 		toast("Invitation sent." if r.ok else r.error, not r.ok), "Primary")
+	invite.size_flags_vertical = Control.SIZE_SHRINK_CENTER   # button-sized, not as tall as the avatar
 	head.add_child(invite)
 	col.add_child(UI.card(head))
 	var list := UI.vbox(10, [UI.label("Your games together", "Heading")])
 	col.add_child(UI.card(list))
 	col.add_child(UI.hbox(8, [UI.button("Back", func() -> void: go("back"), "Ghost"), UI.spacer(),
-		UI.button("Remove from contacts", func() -> void:
+		UI.sure_button("Remove from contacts", func() -> void:
 			var r := await Api.post_json("api/contacts/remove", {email = c.email})
 			if r.ok:
 				toast("Removed.")
-				go("lobby"), "Danger")]))
+				go("lobby"))]))
 	_load_contact_games(list, str(c.id))
 	return p[0]
 
