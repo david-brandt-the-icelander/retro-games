@@ -1,0 +1,103 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "Hivestorm deployment diagram",
+  "folder": "games/hivestorm",
+  "description": "How Hivestorm runs: one Cloudflare Worker with static assets and a D1 database. The browser runs the whole game; the Worker only issues seeds, replays submissions and serves the files.",
+  "sources": [
+    {
+      "path": "games/hivestorm/wrangler.jsonc",
+      "symbol": "hivestorm"
+    },
+    {
+      "path": "games/hivestorm/build.mjs",
+      "symbol": "BASE_PATH"
+    },
+    {
+      "path": "games/hivestorm/worker/index.ts",
+      "symbol": "default.fetch"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "browser",
+      "name": "Player's browser",
+      "kind": "client",
+      "description": "Runs the game itself; one player per device."
+    },
+    {
+      "id": "edge",
+      "name": "Cloudflare edge",
+      "kind": "host",
+      "description": "Runs the Worker on games.icelander.net/retro/hivestorm*, ahead of the games hub's custom domain."
+    },
+    {
+      "id": "worker",
+      "name": "hivestorm Worker",
+      "kind": "process",
+      "description": "worker/index.ts: the high-score API and scores page; every other path is a static asset from ./dist."
+    },
+    {
+      "id": "db",
+      "name": "D1 hivestorm-scores",
+      "kind": "database",
+      "description": "Issued seeds and verified scores (worker/schema.sql)."
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "kind": "external-service",
+      "description": "The games hub at games.icelander.net (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "condition": "Online games (opened with ?match=ID)"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "bundle",
+      "name": "game.js",
+      "source": "games/hivestorm/src/main.ts",
+      "deployedTo": "edge",
+      "description": "esbuild bundle of src/main.ts, minified; served as a static asset and run in the browser."
+    },
+    {
+      "id": "page",
+      "name": "index.html and styles",
+      "source": "games/hivestorm/public/index.html",
+      "deployedTo": "edge",
+      "description": "The page, its CSS and _headers (a strict Content-Security-Policy), copied into dist/."
+    },
+    {
+      "id": "script",
+      "name": "Worker script",
+      "source": "games/hivestorm/worker/index.ts",
+      "deployedTo": "worker",
+      "description": "The fetch handler, bundled by wrangler with the engine it replays."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "edge",
+      "to": "worker",
+      "kind": "hosts",
+      "description": "Routes games.icelander.net/retro/hivestorm* to the Worker."
+    },
+    {
+      "from": "browser",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "HTTPS: the page, its assets and the API under api/."
+    },
+    {
+      "from": "worker",
+      "to": "db",
+      "kind": "connects-to",
+      "description": "D1 binding DB."
+    },
+    {
+      "from": "browser",
+      "to": "hub",
+      "kind": "connects-to",
+      "description": "WebSocket /multiplayer/match/{id} for online games."
+    }
+  ]
+}

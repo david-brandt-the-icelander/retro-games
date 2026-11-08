@@ -1,0 +1,117 @@
+{
+  "$schema": "../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Retro games component diagram",
+  "folder": "games",
+  "description": "The games folder groups four independent browser games. Each is its own npm project with an engine, a page, a Cloudflare Worker and a replay-checked high-score table; they share no code at build time, and three carry identical copies of the online module.",
+  "sources": [
+    {
+      "path": "README.md",
+      "symbol": "Games"
+    },
+    {
+      "path": "games/rally/src/online.ts",
+      "symbol": "Room.open"
+    },
+    {
+      "path": "games/rally/src/scores.ts",
+      "symbol": "defaultName"
+    },
+    {
+      "path": "games/dictator/src/scores.ts",
+      "symbol": "defaultName"
+    }
+  ],
+  "components": [
+    {
+      "id": "games",
+      "name": "Retro games",
+      "responsibility": "The four browser games, side by side.",
+      "folder": "games"
+    },
+    {
+      "id": "rally",
+      "name": "Rally",
+      "responsibility": "Table tennis against the computer, or a friend online on their own device.",
+      "folder": "games/rally",
+      "diagram": "games/rally/.dev/component-diagram.json"
+    },
+    {
+      "id": "hivestorm",
+      "name": "Hivestorm",
+      "responsibility": "An arcade shooter for one player, or two online taking turns.",
+      "folder": "games/hivestorm",
+      "diagram": "games/hivestorm/.dev/component-diagram.json"
+    },
+    {
+      "id": "shatterbelt",
+      "name": "Shatterbelt",
+      "responsibility": "A rock-breaking shooter for one pilot, or up to nine online, co-op or versus.",
+      "folder": "games/shatterbelt",
+      "diagram": "games/shatterbelt/.dev/component-diagram.json"
+    },
+    {
+      "id": "samosa",
+      "name": "Samosa",
+      "responsibility": "A remake of a 1983 ZX Spectrum strategy game, played screen by screen.",
+      "folder": "games/dictator",
+      "diagram": "games/dictator/.dev/component-diagram.json"
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "responsibility": "The games hub at games.icelander.net (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "games",
+      "to": "rally",
+      "kind": "contains",
+      "description": "Rally is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "hivestorm",
+      "kind": "contains",
+      "description": "Hivestorm is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "shatterbelt",
+      "kind": "contains",
+      "description": "Shatterbelt is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "samosa",
+      "kind": "contains",
+      "description": "Samosa is one of the games."
+    },
+    {
+      "from": "rally",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Online matches use the hub's relay; the default table name comes from /me."
+    },
+    {
+      "from": "hivestorm",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Online games use the hub's relay."
+    },
+    {
+      "from": "shatterbelt",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Online games use the hub's relay."
+    },
+    {
+      "from": "samosa",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "The default table name comes from /me."
+    }
+  ]
+}

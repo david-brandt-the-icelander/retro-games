@@ -1,0 +1,138 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Hivestorm Worker component diagram",
+  "folder": "games/hivestorm/worker",
+  "description": "The Hivestorm Worker: the high-score API, the public scores page and, for every other path, the static game. Scores are never trusted from the browser.",
+  "sources": [
+    {
+      "path": "games/hivestorm/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/hivestorm/worker/scores.ts",
+      "symbol": "json"
+    },
+    {
+      "path": "games/hivestorm/worker/scores-page.ts",
+      "symbol": "scoresPage"
+    },
+    {
+      "path": "games/hivestorm/worker/look.ts",
+      "symbol": "sitePage"
+    }
+  ],
+  "components": [
+    {
+      "id": "worker",
+      "name": "Hivestorm Worker",
+      "responsibility": "Routes requests to the API, the scores page or the static assets.",
+      "folder": "games/hivestorm/worker"
+    },
+    {
+      "id": "api",
+      "name": "API routes (index.ts)",
+      "responsibility": "POST api/game issues a seed, POST api/score replays and records, GET api/scores lists the table; other paths go to the static assets.",
+      "folder": "games/hivestorm/worker"
+    },
+    {
+      "id": "helpers",
+      "name": "Score helpers (scores.ts)",
+      "responsibility": "Re-exports replay() and cleanName(), and holds the API's limits and JSON responses.",
+      "folder": "games/hivestorm/worker"
+    },
+    {
+      "id": "page",
+      "name": "Scores page (scores-page.ts)",
+      "responsibility": "The public table as a web page.",
+      "folder": "games/hivestorm/worker"
+    },
+    {
+      "id": "look",
+      "name": "Site look (look.ts)",
+      "responsibility": "icelander.net's page shell, with inline CSS and a strict Content-Security-Policy.",
+      "folder": "games/hivestorm/worker"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "The same engine the browser runs.",
+      "folder": "games/hivestorm/src/engine",
+      "diagram": "games/hivestorm/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "names",
+      "name": "Name rules (src/name.ts)",
+      "responsibility": "Cleans names the same way as the browser.",
+      "folder": "games/hivestorm/src"
+    },
+    {
+      "id": "db",
+      "name": "D1 database",
+      "responsibility": "Issued seeds and verified scores.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "worker",
+      "to": "api",
+      "kind": "contains",
+      "description": "The fetch handler."
+    },
+    {
+      "from": "worker",
+      "to": "helpers",
+      "kind": "contains",
+      "description": "Shared by the handler and the tests."
+    },
+    {
+      "from": "worker",
+      "to": "page",
+      "kind": "contains",
+      "description": "Renders the public table."
+    },
+    {
+      "from": "worker",
+      "to": "look",
+      "kind": "contains",
+      "description": "The page shell."
+    },
+    {
+      "from": "api",
+      "to": "helpers",
+      "kind": "depends-on",
+      "description": "Validates submissions and verifies them by replay."
+    },
+    {
+      "from": "api",
+      "to": "page",
+      "kind": "depends-on",
+      "description": "Serves /scores/."
+    },
+    {
+      "from": "api",
+      "to": "db",
+      "kind": "depends-on",
+      "description": "Prepared statements on the games and scores tables."
+    },
+    {
+      "from": "page",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Wraps the table in the site look."
+    },
+    {
+      "from": "helpers",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "replay() from src/engine/replay.ts."
+    },
+    {
+      "from": "helpers",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "cleanName() for submitted names."
+    }
+  ]
+}

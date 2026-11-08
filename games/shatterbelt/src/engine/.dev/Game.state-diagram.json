@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Shatterbelt wave state diagram",
+  "folder": "games/shatterbelt/src/engine",
+  "description": "The waves of one Game. Separately, Game.over turns true, once and for good, in the step where every ship is out; the field goes on moving behind the game-over scenes. An attract game has no ships and never ends.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/src/engine/game.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/game.ts",
+      "symbol": "startWave"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/game.ts",
+      "symbol": "newGame"
+    }
+  ],
+  "machine": "Game.waveTimer (src/engine/game.ts)",
+  "initialState": "betweenWaves",
+  "states": [
+    {
+      "id": "betweenWaves",
+      "description": "waveTimer ≥ 0: counting down to the next wave, WAVE.opening before the first and WAVE.pause after each cleared field."
+    },
+    {
+      "id": "waveOn",
+      "description": "waveTimer = −1: rocks are on the field."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "betweenWaves",
+      "to": "waveOn",
+      "trigger": "step(): waveTimer drops below 0",
+      "action": "startWave(wave + 1): large rocks along the edges, away from ships; emit wave."
+    },
+    {
+      "from": "waveOn",
+      "to": "betweenWaves",
+      "trigger": "step(): no rocks left",
+      "action": "waveTimer = WAVE.pause; emit clear."
+    }
+  ]
+}

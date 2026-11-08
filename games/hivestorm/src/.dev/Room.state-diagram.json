@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Online room connection state diagram",
+  "folder": "games/hivestorm/src",
+  "description": "The life of one connection to a match relay. The connecting state is the promise Room.open returns; callers get a Room only once the relay has welcomed it. The relay that sends welcome, join and leave belongs to the games hub, outside this repository.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/online.ts",
+      "symbol": "Room.open"
+    },
+    {
+      "path": "games/hivestorm/src/online.ts",
+      "symbol": "Room.close"
+    },
+    {
+      "path": "games/hivestorm/src/online.ts",
+      "symbol": "Room.lost"
+    }
+  ],
+  "machine": "Room (src/online.ts)",
+  "initialState": "connecting",
+  "states": [
+    {
+      "id": "connecting",
+      "description": "A WebSocket to /multiplayer/match/{id} is opening; it waits up to 8 seconds for the relay's first message."
+    },
+    {
+      "id": "open",
+      "description": "Welcomed: it knows its slot, the match size, the players' names and who is in the room, and pings every 3 seconds."
+    },
+    {
+      "id": "refused",
+      "description": "The relay's first message wasn't a welcome, or the socket closed or timed out first; open() rejects with the reason.",
+      "terminal": true
+    },
+    {
+      "id": "closed",
+      "description": "This browser left the room.",
+      "terminal": true
+    },
+    {
+      "id": "lost",
+      "description": "The socket closed while the room was open.",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "connecting",
+      "to": "open",
+      "trigger": "message welcome",
+      "action": "Record the slot, size, names and peers; start pinging; resolve with the Room."
+    },
+    {
+      "from": "connecting",
+      "to": "refused",
+      "trigger": "first message other than welcome",
+      "action": "Reject with the message's reason (missing, not-yours); close the socket."
+    },
+    {
+      "from": "connecting",
+      "to": "refused",
+      "trigger": "8-second timeout, a socket close or a failed WebSocket constructor",
+      "action": "Reject with unreachable."
+    },
+    {
+      "from": "open",
+      "to": "open",
+      "trigger": "message join, leave or rtt",
+      "action": "Update the peers and their round trips; notify listeners."
+    },
+    {
+      "from": "open",
+      "to": "open",
+      "trigger": "pong",
+      "action": "Round trip = best of the last five; tell the others when it moved by 5 ms or more."
+    },
+    {
+      "from": "open",
+      "to": "closed",
+      "trigger": "close()",
+      "action": "Stop pinging; close the socket with 1000 bye."
+    },
+    {
+      "from": "open",
+      "to": "lost",
+      "trigger": "socket close event",
+      "guard": "close() wasn't called",
+      "action": "Stop pinging; notify listeners with closed, reason lost."
+    }
+  ]
+}

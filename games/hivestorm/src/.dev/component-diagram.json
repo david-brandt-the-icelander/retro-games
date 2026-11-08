@@ -1,0 +1,170 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Hivestorm browser game component diagram",
+  "folder": "games/hivestorm/src",
+  "description": "The browser side of Hivestorm: the engine, the page loop, the canvas UI, the high-score client and online play.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/main.ts",
+      "symbol": "frame"
+    },
+    {
+      "path": "games/hivestorm/src/online.ts",
+      "symbol": "Lockstep"
+    },
+    {
+      "path": "games/hivestorm/src/scores.ts",
+      "symbol": "submitGame"
+    },
+    {
+      "path": "games/hivestorm/src/name.ts",
+      "symbol": "cleanName"
+    }
+  ],
+  "components": [
+    {
+      "id": "client",
+      "name": "Hivestorm browser game",
+      "responsibility": "Everything that runs in the browser.",
+      "folder": "games/hivestorm/src"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "The Game class, its rules, its seeded generator and replay; no DOM.",
+      "folder": "games/hivestorm/src/engine",
+      "diagram": "games/hivestorm/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "ui",
+      "name": "UI",
+      "responsibility": "Sprites and font, canvas drawing, controls and sound.",
+      "folder": "games/hivestorm/src/ui",
+      "diagram": "games/hivestorm/src/ui/.dev/component-diagram.json"
+    },
+    {
+      "id": "page",
+      "name": "Page (main.ts)",
+      "responsibility": "The 60 Hz loop, recording, the name form, online games taking turns, and the title and table screens.",
+      "folder": "games/hivestorm/src"
+    },
+    {
+      "id": "online",
+      "name": "Online play (online.ts)",
+      "responsibility": "The match's WebSocket (Room) and the lockstep of every player's controls (Lockstep). Identical in Rally, Hivestorm and Shatterbelt.",
+      "folder": "games/hivestorm/src"
+    },
+    {
+      "id": "scores",
+      "name": "High-score client (scores.ts)",
+      "responsibility": "Seeds (tickets), submitting games and loading the table.",
+      "folder": "games/hivestorm/src"
+    },
+    {
+      "id": "names",
+      "name": "Name rules (name.ts)",
+      "responsibility": "Cleans names for the table.",
+      "folder": "games/hivestorm/src"
+    },
+    {
+      "id": "worker",
+      "name": "High-score Worker",
+      "responsibility": "The server side of the table.",
+      "folder": "games/hivestorm/worker",
+      "diagram": "games/hivestorm/worker/.dev/component-diagram.json"
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "responsibility": "The games hub at games.icelander.net (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "client",
+      "to": "engine",
+      "kind": "contains",
+      "description": "The pure game."
+    },
+    {
+      "from": "client",
+      "to": "ui",
+      "kind": "contains",
+      "description": "Drawing, input and sound."
+    },
+    {
+      "from": "client",
+      "to": "page",
+      "kind": "contains",
+      "description": "The entry point."
+    },
+    {
+      "from": "client",
+      "to": "online",
+      "kind": "contains",
+      "description": "Online play."
+    },
+    {
+      "from": "client",
+      "to": "scores",
+      "kind": "contains",
+      "description": "The table's client."
+    },
+    {
+      "from": "client",
+      "to": "names",
+      "kind": "contains",
+      "description": "Name rules."
+    },
+    {
+      "from": "page",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Steps the Game and records each frame's Input."
+    },
+    {
+      "from": "page",
+      "to": "ui",
+      "kind": "depends-on",
+      "description": "Reads Controls, renders the Game and plays its events."
+    },
+    {
+      "from": "page",
+      "to": "online",
+      "kind": "depends-on",
+      "description": "Joins the match in ?match=ID and plays it in lockstep."
+    },
+    {
+      "from": "page",
+      "to": "scores",
+      "kind": "depends-on",
+      "description": "Fetches a ticket ahead of each game, submits it and loads the table."
+    },
+    {
+      "from": "page",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "Cleans the typed name."
+    },
+    {
+      "from": "ui",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Draws a Game, produces its Input and sounds its events."
+    },
+    {
+      "from": "scores",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "HTTP: api/game, api/score and api/scores."
+    },
+    {
+      "from": "online",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "WebSocket /multiplayer/match/{id}."
+    }
+  ]
+}

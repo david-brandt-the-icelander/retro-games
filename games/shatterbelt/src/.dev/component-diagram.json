@@ -1,0 +1,259 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Shatterbelt browser game component diagram",
+  "folder": "games/shatterbelt/src",
+  "description": "The browser side of Shatterbelt. It has no ui folder: input, drawing and sound sit beside the page, with the high-score client, the local table and online play.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/src/main.ts",
+      "symbol": "frame"
+    },
+    {
+      "path": "games/shatterbelt/src/online.ts",
+      "symbol": "Lockstep"
+    },
+    {
+      "path": "games/shatterbelt/src/net.ts",
+      "symbol": "submitGame"
+    },
+    {
+      "path": "games/shatterbelt/src/scores.ts",
+      "symbol": "addScore"
+    }
+  ],
+  "components": [
+    {
+      "id": "client",
+      "name": "Shatterbelt browser game",
+      "responsibility": "Everything that runs in the browser.",
+      "folder": "games/shatterbelt/src"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "The pure simulation, its tuning, deterministic maths and replay.",
+      "folder": "games/shatterbelt/src/engine",
+      "diagram": "games/shatterbelt/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "page",
+      "name": "Page (main.ts)",
+      "responsibility": "The scenes (title, play, over, entry, saving, saved), the frame loop, recording, the name form and online games.",
+      "folder": "games/shatterbelt/src"
+    },
+    {
+      "id": "input",
+      "name": "Input (input.ts)",
+      "responsibility": "Keyboard, gamepads and touch as Controls, and a queue of presses for menus.",
+      "folder": "games/shatterbelt/src"
+    },
+    {
+      "id": "render",
+      "name": "Renderer (render.ts)",
+      "responsibility": "Draws the field, ships, rocks, effects, the HUD and every scene.",
+      "folder": "games/shatterbelt/src"
+    },
+    {
+      "id": "sound",
+      "name": "Sound (sound.ts)",
+      "responsibility": "Synthesised effects, an engine rumble while anyone thrusts and a warble while a drone is out.",
+      "folder": "games/shatterbelt/src"
+    },
+    {
+      "id": "net",
+      "name": "High-score client (net.ts)",
+      "responsibility": "Seeds, submitting recordings and loading the public table.",
+      "folder": "games/shatterbelt/src"
+    },
+    {
+      "id": "scores",
+      "name": "Local table (scores.ts)",
+      "responsibility": "The top ten kept in this browser's storage.",
+      "folder": "games/shatterbelt/src"
+    },
+    {
+      "id": "online",
+      "name": "Online play (online.ts)",
+      "responsibility": "The match's WebSocket (Room) and the lockstep of every player's controls (Lockstep). Identical in Rally, Hivestorm and Shatterbelt.",
+      "folder": "games/shatterbelt/src"
+    },
+    {
+      "id": "names",
+      "name": "Name rules (name.ts)",
+      "responsibility": "Cleans names for the tables.",
+      "folder": "games/shatterbelt/src"
+    },
+    {
+      "id": "worker",
+      "name": "High-score Worker",
+      "responsibility": "The server side of the public table.",
+      "folder": "games/shatterbelt/worker",
+      "diagram": "games/shatterbelt/worker/.dev/component-diagram.json"
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "responsibility": "The games hub at games.icelander.net (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "client",
+      "to": "engine",
+      "kind": "contains",
+      "description": "The pure game."
+    },
+    {
+      "from": "client",
+      "to": "page",
+      "kind": "contains",
+      "description": "The entry point."
+    },
+    {
+      "from": "client",
+      "to": "input",
+      "kind": "contains",
+      "description": "Input."
+    },
+    {
+      "from": "client",
+      "to": "render",
+      "kind": "contains",
+      "description": "Drawing."
+    },
+    {
+      "from": "client",
+      "to": "sound",
+      "kind": "contains",
+      "description": "Sound."
+    },
+    {
+      "from": "client",
+      "to": "net",
+      "kind": "contains",
+      "description": "The public table's client."
+    },
+    {
+      "from": "client",
+      "to": "scores",
+      "kind": "contains",
+      "description": "The local table."
+    },
+    {
+      "from": "client",
+      "to": "online",
+      "kind": "contains",
+      "description": "Online play."
+    },
+    {
+      "from": "client",
+      "to": "names",
+      "kind": "contains",
+      "description": "Name rules."
+    },
+    {
+      "from": "page",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "newGame(), step() and standings(); records and replays controls."
+    },
+    {
+      "from": "page",
+      "to": "input",
+      "kind": "depends-on",
+      "description": "Reads Controls and menu presses."
+    },
+    {
+      "from": "page",
+      "to": "render",
+      "kind": "depends-on",
+      "description": "Draws each scene."
+    },
+    {
+      "from": "page",
+      "to": "sound",
+      "kind": "depends-on",
+      "description": "Plays each step's events."
+    },
+    {
+      "from": "page",
+      "to": "net",
+      "kind": "depends-on",
+      "description": "Seeds, submissions and the public table."
+    },
+    {
+      "from": "page",
+      "to": "scores",
+      "kind": "depends-on",
+      "description": "The local table."
+    },
+    {
+      "from": "page",
+      "to": "online",
+      "kind": "depends-on",
+      "description": "Joins the match in ?match=ID and plays it in lockstep."
+    },
+    {
+      "from": "page",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "Cleans the typed name."
+    },
+    {
+      "from": "input",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Produces the engine's Controls."
+    },
+    {
+      "from": "render",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Reads the Game and its config."
+    },
+    {
+      "from": "render",
+      "to": "net",
+      "kind": "depends-on",
+      "description": "Shows the server's Results."
+    },
+    {
+      "from": "sound",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Plays GameEvents and follows the Game."
+    },
+    {
+      "from": "net",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Sends a Recording."
+    },
+    {
+      "from": "scores",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Entries carry the game Mode."
+    },
+    {
+      "from": "scores",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "Cleans stored names."
+    },
+    {
+      "from": "net",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "HTTP: api/game, api/score and api/scores."
+    },
+    {
+      "from": "online",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "WebSocket /multiplayer/match/{id}."
+    }
+  ]
+}

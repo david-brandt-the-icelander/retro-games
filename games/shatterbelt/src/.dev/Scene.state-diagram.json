@@ -1,0 +1,159 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Shatterbelt scene state diagram",
+  "folder": "games/shatterbelt/src",
+  "description": "What the Shatterbelt page is doing, as the Scene union in src/main.ts. beginOnline() replaces any scene with an online play scene when the host's start message arrives.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/src/main.ts",
+      "symbol": "Scene"
+    },
+    {
+      "path": "games/shatterbelt/src/main.ts",
+      "symbol": "launch"
+    },
+    {
+      "path": "games/shatterbelt/src/main.ts",
+      "symbol": "tick"
+    },
+    {
+      "path": "games/shatterbelt/src/main.ts",
+      "symbol": "afterGame"
+    },
+    {
+      "path": "games/shatterbelt/src/main.ts",
+      "symbol": "afterOnline"
+    },
+    {
+      "path": "games/shatterbelt/src/main.ts",
+      "symbol": "submit"
+    },
+    {
+      "path": "games/shatterbelt/src/main.ts",
+      "symbol": "handle"
+    }
+  ],
+  "machine": "scene (src/main.ts)",
+  "initialState": "title",
+  "states": [
+    {
+      "id": "title",
+      "description": "The title and table over an attract game; launching while a seed is requested."
+    },
+    {
+      "id": "play",
+      "description": "A game, solo or online; a solo game can be paused."
+    },
+    {
+      "id": "over",
+      "description": "The game-over scene."
+    },
+    {
+      "id": "entry",
+      "description": "The name form for a pilot whose score makes a table."
+    },
+    {
+      "id": "saving",
+      "description": "Sending the game to the server, or online, waiting for the host's results."
+    },
+    {
+      "id": "saved",
+      "description": "The public table's answer, or why it couldn't be reached."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "title",
+      "to": "play",
+      "trigger": "launch(): Space, Enter, fire, or a tap on LAUNCH",
+      "guard": "not already launching, and not waiting to join an online game",
+      "action": "Ask for a seed; newGame(coop, 1, seed); a Recorder."
+    },
+    {
+      "from": "title",
+      "to": "play",
+      "trigger": "beginOnline(): the host's start message",
+      "action": "newGame(mode, players, seed); a Lockstep."
+    },
+    {
+      "from": "play",
+      "to": "play",
+      "trigger": "a pause press, a window blur or a hidden tab",
+      "guard": "solo",
+      "action": "Toggle paused."
+    },
+    {
+      "from": "play",
+      "to": "over",
+      "trigger": "tick(): game.over",
+      "action": "Online, stop the lockstep."
+    },
+    {
+      "from": "play",
+      "to": "title",
+      "trigger": "Escape while paused, or Back on a gamepad",
+      "guard": "solo"
+    },
+    {
+      "from": "play",
+      "to": "title",
+      "trigger": "Escape twice within 2 seconds",
+      "guard": "online",
+      "action": "leaveRoom()"
+    },
+    {
+      "from": "play",
+      "to": "title",
+      "trigger": "message closed, or the games fall out of step",
+      "guard": "online",
+      "action": "Stop the lockstep."
+    },
+    {
+      "from": "over",
+      "to": "entry",
+      "trigger": "afterGame(), on a key or tap after 1.2 s",
+      "guard": "this browser's pilot made the public or the local table"
+    },
+    {
+      "from": "over",
+      "to": "title",
+      "trigger": "afterGame()",
+      "guard": "solo, and no seed or no names"
+    },
+    {
+      "from": "over",
+      "to": "saving",
+      "trigger": "afterGame() then afterOnline()",
+      "guard": "online, with a seed"
+    },
+    {
+      "from": "entry",
+      "to": "saving",
+      "trigger": "a name, or skip",
+      "guard": "solo with a seed and a name, or online with a seed",
+      "action": "submit(), or online, send the name to the others."
+    },
+    {
+      "from": "entry",
+      "to": "title",
+      "trigger": "a name, or skip",
+      "guard": "no seed, or solo with no name"
+    },
+    {
+      "from": "saving",
+      "to": "saved",
+      "trigger": "submitGame() answers, or the host's results arrive"
+    },
+    {
+      "from": "saving",
+      "to": "title",
+      "trigger": "online: nobody gave a name, or the host found none"
+    },
+    {
+      "from": "saved",
+      "to": "title",
+      "trigger": "a key or tap after 0.8 s"
+    }
+  ]
+}

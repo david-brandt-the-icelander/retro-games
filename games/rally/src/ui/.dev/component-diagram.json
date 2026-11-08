@@ -1,0 +1,120 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Rally UI component diagram",
+  "folder": "games/rally/src/ui",
+  "description": "Drawing, input, sound and the name-entry keyboard: everything between the engine and the page's DOM.",
+  "sources": [
+    {
+      "path": "games/rally/src/ui/render.ts",
+      "symbol": "Renderer"
+    },
+    {
+      "path": "games/rally/src/ui/input.ts",
+      "symbol": "Input"
+    },
+    {
+      "path": "games/rally/src/ui/sound.ts",
+      "symbol": "Sound"
+    },
+    {
+      "path": "games/rally/src/ui/entry.ts",
+      "symbol": "NameEntry"
+    }
+  ],
+  "components": [
+    {
+      "id": "ui",
+      "name": "Rally UI",
+      "responsibility": "The browser-facing pieces the page wires together.",
+      "folder": "games/rally/src/ui"
+    },
+    {
+      "id": "render",
+      "name": "Renderer (render.ts)",
+      "responsibility": "Draws the table, paddles, ball and trail on the canvas, at most 2 pixels per CSS pixel.",
+      "folder": "games/rally/src/ui"
+    },
+    {
+      "id": "input",
+      "name": "Input (input.ts)",
+      "responsibility": "Keys, touch and the mouse as one Control per step.",
+      "folder": "games/rally/src/ui"
+    },
+    {
+      "id": "sound",
+      "name": "Sound (sound.ts)",
+      "responsibility": "Short synthesised blips for game events.",
+      "folder": "games/rally/src/ui"
+    },
+    {
+      "id": "entry",
+      "name": "Name entry (entry.ts)",
+      "responsibility": "Twelve underlined slots, a blinking cursor and an on-screen keyboard.",
+      "folder": "games/rally/src/ui"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "The match rules and their types.",
+      "folder": "games/rally/src/engine",
+      "diagram": "games/rally/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "names",
+      "name": "Name rules (src/name.ts)",
+      "responsibility": "Which characters a name may hold.",
+      "folder": "games/rally/src"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "ui",
+      "to": "render",
+      "kind": "contains",
+      "description": "Drawing."
+    },
+    {
+      "from": "ui",
+      "to": "input",
+      "kind": "contains",
+      "description": "Input."
+    },
+    {
+      "from": "ui",
+      "to": "sound",
+      "kind": "contains",
+      "description": "Sound."
+    },
+    {
+      "from": "ui",
+      "to": "entry",
+      "kind": "contains",
+      "description": "Name entry."
+    },
+    {
+      "from": "render",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Reads State and GameEvent to draw."
+    },
+    {
+      "from": "input",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Produces a Control in table coordinates."
+    },
+    {
+      "from": "sound",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Plays GameEvents; faster balls click higher."
+    },
+    {
+      "from": "entry",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "Accepts only name characters, up to NAME_MAX."
+    }
+  ]
+}

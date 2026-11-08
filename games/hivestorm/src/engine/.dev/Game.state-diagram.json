@@ -1,0 +1,163 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Hivestorm game phase state diagram",
+  "folder": "games/hivestorm/src/engine",
+  "description": "The phase of the Game. Pausing is a separate flag: a pause press toggles it in every phase but attract, and while it is set step() changes nothing. The page (src/main.ts) also sets the phase to attract itself when an online game begins, and when one is cut short.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/engine/game.ts",
+      "symbol": "Game.step"
+    },
+    {
+      "path": "games/hivestorm/src/engine/game.ts",
+      "symbol": "Game.afterDeath"
+    },
+    {
+      "path": "games/hivestorm/src/engine/game.ts",
+      "symbol": "Game.nextTurn"
+    },
+    {
+      "path": "games/hivestorm/src/main.ts",
+      "symbol": "endOnline"
+    }
+  ],
+  "machine": "Game.phase (src/engine/game.ts)",
+  "initialState": "attract",
+  "states": [
+    {
+      "id": "attract",
+      "description": "The title and table screens; the hive sways."
+    },
+    {
+      "id": "ready",
+      "description": "A player's turn begins: the hive loads from that player's survivors and holds still."
+    },
+    {
+      "id": "play",
+      "description": "The player moves and fires; aliens dive and shoot."
+    },
+    {
+      "id": "dying",
+      "description": "The ship was hit; effects play out."
+    },
+    {
+      "id": "waveClear",
+      "description": "The hive is cleared; the next wave is announced."
+    },
+    {
+      "id": "playerOver",
+      "description": "Two players: this one has no ships left, and the other plays on."
+    },
+    {
+      "id": "gameOver",
+      "description": "Every player is out; after a pause it returns to attract."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "attract",
+      "to": "ready",
+      "trigger": "step(): 1 or 2 pressed",
+      "action": "start(players): reseed from nextSeed, new players; enterReady()."
+    },
+    {
+      "from": "ready",
+      "to": "play",
+      "trigger": "step(): the timer reaches 0"
+    },
+    {
+      "from": "play",
+      "to": "waveClear",
+      "trigger": "step(): no aliens left",
+      "action": "wave++; clear bullets; emit wave."
+    },
+    {
+      "from": "play",
+      "to": "dying",
+      "trigger": "a bullet or a diving alien hits the ship",
+      "action": "killPlayer(): lives−−; clear bullets; emit die."
+    },
+    {
+      "from": "dying",
+      "to": "ready",
+      "trigger": "step(): the timer reaches 0",
+      "guard": "the player has ships left",
+      "action": "Save the survivors; nextTurn() passes the turn unless the other player is out."
+    },
+    {
+      "from": "dying",
+      "to": "gameOver",
+      "trigger": "step(): the timer reaches 0",
+      "guard": "no ships left, one player",
+      "action": "endGame()"
+    },
+    {
+      "from": "dying",
+      "to": "playerOver",
+      "trigger": "step(): the timer reaches 0",
+      "guard": "no ships left, two players",
+      "action": "Emit over."
+    },
+    {
+      "from": "playerOver",
+      "to": "ready",
+      "trigger": "step(): the timer reaches 0",
+      "guard": "the other player has ships left",
+      "action": "nextTurn()"
+    },
+    {
+      "from": "playerOver",
+      "to": "gameOver",
+      "trigger": "step(): the timer reaches 0",
+      "guard": "both players are out",
+      "action": "endGame()"
+    },
+    {
+      "from": "waveClear",
+      "to": "play",
+      "trigger": "step(): the timer reaches 0",
+      "action": "A fresh hive for the player."
+    },
+    {
+      "from": "gameOver",
+      "to": "attract",
+      "trigger": "step(): the timer reaches 0"
+    },
+    {
+      "from": "ready",
+      "to": "attract",
+      "trigger": "endOnline(why) in src/main.ts",
+      "guard": "online, cut short",
+      "action": "Drop the recording."
+    },
+    {
+      "from": "play",
+      "to": "attract",
+      "trigger": "endOnline(why) in src/main.ts",
+      "guard": "online, cut short",
+      "action": "Drop the recording."
+    },
+    {
+      "from": "dying",
+      "to": "attract",
+      "trigger": "endOnline(why) in src/main.ts",
+      "guard": "online, cut short",
+      "action": "Drop the recording."
+    },
+    {
+      "from": "waveClear",
+      "to": "attract",
+      "trigger": "endOnline(why) in src/main.ts",
+      "guard": "online, cut short",
+      "action": "Drop the recording."
+    },
+    {
+      "from": "playerOver",
+      "to": "attract",
+      "trigger": "endOnline(why) in src/main.ts",
+      "guard": "online, cut short",
+      "action": "Drop the recording."
+    }
+  ]
+}

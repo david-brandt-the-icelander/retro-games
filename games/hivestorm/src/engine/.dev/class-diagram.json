@@ -1,0 +1,195 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Hivestorm engine classes",
+  "folder": "games/hivestorm/src/engine",
+  "description": "The Game, its generator and the recorder, with the data the Game holds.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/engine/game.ts",
+      "symbol": "Game"
+    },
+    {
+      "path": "games/hivestorm/src/engine/rng.ts",
+      "symbol": "Rng"
+    },
+    {
+      "path": "games/hivestorm/src/engine/replay.ts",
+      "symbol": "Recorder"
+    }
+  ],
+  "types": [
+    {
+      "id": "engine.Game",
+      "name": "Game",
+      "kind": "class",
+      "sources": [
+        "games/hivestorm/src/engine/game.ts"
+      ],
+      "members": [
+        "phase: Phase",
+        "timer: number",
+        "frame: number",
+        "paused: boolean",
+        "numPlayers: number",
+        "current: number",
+        "players: PlayerState[]",
+        "hiScore: number",
+        "aliens: Alien[]",
+        "rng: Rng",
+        "nextSeed: number",
+        "constructor(seed = Date.now())",
+        "get player(): PlayerState | undefined",
+        "get wave(): number",
+        "get aliveCount(): number",
+        "get swarm(): boolean",
+        "home(a: { row: number; col: number }): { x: number; y: number }",
+        "start(players: 1 | 2): void",
+        "step(input: Input): GameEvent[]",
+        "pointsFor(a: Alien): number"
+      ]
+    },
+    {
+      "id": "engine.Rng",
+      "name": "Rng",
+      "kind": "class",
+      "sources": [
+        "games/hivestorm/src/engine/rng.ts"
+      ],
+      "members": [
+        "constructor(seed: number)",
+        "next(): number",
+        "int(n: number): number",
+        "chance(p: number): boolean",
+        "pick<T>(xs: T[]): T"
+      ]
+    },
+    {
+      "id": "engine.Recorder",
+      "name": "Recorder",
+      "kind": "class",
+      "sources": [
+        "games/hivestorm/src/engine/replay.ts"
+      ],
+      "members": [
+        "runs: number[]",
+        "frames: number",
+        "push(input: Input): void"
+      ]
+    },
+    {
+      "id": "engine.Input",
+      "name": "Input",
+      "kind": "interface",
+      "sources": [
+        "games/hivestorm/src/engine/game.ts"
+      ],
+      "members": [
+        "left: boolean",
+        "right: boolean",
+        "fire: boolean",
+        "start1: boolean",
+        "start2: boolean",
+        "pause: boolean"
+      ]
+    },
+    {
+      "id": "engine.Alien",
+      "name": "Alien",
+      "kind": "interface",
+      "sources": [
+        "games/hivestorm/src/engine/game.ts"
+      ],
+      "members": [
+        "id: number",
+        "kind: Kind",
+        "alive: boolean",
+        "mode: Mode",
+        "leader: number",
+        "escortsLost: number"
+      ]
+    },
+    {
+      "id": "engine.PlayerState",
+      "name": "PlayerState",
+      "kind": "interface",
+      "sources": [
+        "games/hivestorm/src/engine/game.ts"
+      ],
+      "members": [
+        "score: number",
+        "lives: number",
+        "wave: number",
+        "alive: boolean[]",
+        "extraGiven: boolean",
+        "over: boolean"
+      ]
+    },
+    {
+      "id": "engine.Phase",
+      "name": "Phase",
+      "kind": "type",
+      "sources": [
+        "games/hivestorm/src/engine/game.ts"
+      ],
+      "members": [
+        "attract | ready | play | dying | waveClear | playerOver | gameOver"
+      ]
+    },
+    {
+      "id": "engine.Mode",
+      "name": "Mode",
+      "kind": "type",
+      "sources": [
+        "games/hivestorm/src/engine/game.ts"
+      ],
+      "members": [
+        "home | peel | dive | return"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "engine.Game",
+      "to": "engine.Rng",
+      "kind": "depends-on",
+      "description": "Every random choice."
+    },
+    {
+      "from": "engine.Game",
+      "to": "engine.Input",
+      "kind": "depends-on",
+      "description": "step() takes one frame's Input."
+    },
+    {
+      "from": "engine.Game",
+      "to": "engine.Alien",
+      "kind": "depends-on",
+      "description": "Holds the hive."
+    },
+    {
+      "from": "engine.Game",
+      "to": "engine.PlayerState",
+      "kind": "depends-on",
+      "description": "One per player, kept across turns."
+    },
+    {
+      "from": "engine.Game",
+      "to": "engine.Phase",
+      "kind": "depends-on",
+      "description": "Its phase."
+    },
+    {
+      "from": "engine.Alien",
+      "to": "engine.Mode",
+      "kind": "depends-on",
+      "description": "Its flight mode."
+    },
+    {
+      "from": "engine.Recorder",
+      "to": "engine.Input",
+      "kind": "depends-on",
+      "description": "Packs each Input into runs."
+    }
+  ]
+}

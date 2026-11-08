@@ -1,0 +1,129 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Shatterbelt engine component diagram",
+  "folder": "games/shatterbelt/src/engine",
+  "description": "The whole game as a pure simulation: no DOM, no timers and no Math.random, so the same seed and inputs always give the same game, in any browser and on the server.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/src/engine/game.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/config.ts",
+      "symbol": "SHIP"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/dmath.ts",
+      "symbol": "sin"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/replay.ts",
+      "symbol": "replay"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/rng.ts",
+      "symbol": "rand"
+    }
+  ],
+  "components": [
+    {
+      "id": "engine",
+      "name": "Shatterbelt engine",
+      "responsibility": "The simulation.",
+      "folder": "games/shatterbelt/src/engine"
+    },
+    {
+      "id": "game",
+      "name": "Game (game.ts)",
+      "responsibility": "Ships, rocks, drones, pods, waves, combos and scoring; newGame() makes a state and step() advances it by DT.",
+      "folder": "games/shatterbelt/src/engine"
+    },
+    {
+      "id": "config",
+      "name": "Config (config.ts)",
+      "responsibility": "Every tuning number: the field, ships, guns, rocks, waves, drones and pods.",
+      "folder": "games/shatterbelt/src/engine"
+    },
+    {
+      "id": "dmath",
+      "name": "Deterministic maths (dmath.ts)",
+      "responsibility": "sin, cos, atan2 and hypot from + − × ÷ and √ only.",
+      "folder": "games/shatterbelt/src/engine"
+    },
+    {
+      "id": "replay",
+      "name": "Replay (replay.ts)",
+      "responsibility": "Records every change of anyone's controls, validates a recording and plays it again.",
+      "folder": "games/shatterbelt/src/engine"
+    },
+    {
+      "id": "rng",
+      "name": "Seeded generator (rng.ts)",
+      "responsibility": "Random numbers from a 32-bit state kept in the game.",
+      "folder": "games/shatterbelt/src/engine"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "engine",
+      "to": "game",
+      "kind": "contains",
+      "description": "The simulation."
+    },
+    {
+      "from": "engine",
+      "to": "config",
+      "kind": "contains",
+      "description": "Its numbers."
+    },
+    {
+      "from": "engine",
+      "to": "dmath",
+      "kind": "contains",
+      "description": "Maths."
+    },
+    {
+      "from": "engine",
+      "to": "replay",
+      "kind": "contains",
+      "description": "Recording and replay."
+    },
+    {
+      "from": "engine",
+      "to": "rng",
+      "kind": "contains",
+      "description": "Random numbers."
+    },
+    {
+      "from": "game",
+      "to": "config",
+      "kind": "depends-on",
+      "description": "Every tuning number."
+    },
+    {
+      "from": "game",
+      "to": "dmath",
+      "kind": "depends-on",
+      "description": "Angles and distances."
+    },
+    {
+      "from": "game",
+      "to": "rng",
+      "kind": "depends-on",
+      "description": "Rock kinds, spawns, drones and pods."
+    },
+    {
+      "from": "replay",
+      "to": "game",
+      "kind": "depends-on",
+      "description": "newGame() and step()."
+    },
+    {
+      "from": "replay",
+      "to": "config",
+      "kind": "depends-on",
+      "description": "MAX_PLAYERS."
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Samosa reign state diagram",
+  "folder": "games/dictator/src/engine",
+  "description": "Whether the President is still in office. playGame() sets alive or escaped and throws ReignOver to end the reign; a dead President gets the funeral screen, and every reign ends with the rating and the final report.",
+  "sources": [
+    {
+      "path": "games/dictator/src/engine/flow.ts",
+      "symbol": "playGame"
+    },
+    {
+      "path": "games/dictator/src/engine/flow.ts",
+      "symbol": "die"
+    },
+    {
+      "path": "games/dictator/src/engine/flow.ts",
+      "symbol": "getAway"
+    },
+    {
+      "path": "games/dictator/src/engine/state.ts",
+      "symbol": "GameState"
+    }
+  ],
+  "machine": "GameState.alive and GameState.escaped (src/engine/state.ts), set by playGame (src/engine/flow.ts)",
+  "initialState": "inOffice",
+  "states": [
+    {
+      "id": "inOffice",
+      "description": "alive and not escaped: the reign goes on, month by month."
+    },
+    {
+      "id": "dead",
+      "description": "alive = false.",
+      "terminal": true
+    },
+    {
+      "id": "escaped",
+      "description": "escaped = true: away by helicopter, or over the mountains on foot.",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "inOffice",
+      "to": "dead",
+      "trigger": "assassination(): an assassin strikes",
+      "guard": "attemptKills()",
+      "action": "The assassination result screen."
+    },
+    {
+      "from": "inOffice",
+      "to": "escaped",
+      "trigger": "war(): the invasion is lost",
+      "guard": "the helicopter was bought and starts",
+      "action": "The helicopter escape screen."
+    },
+    {
+      "from": "inOffice",
+      "to": "dead",
+      "trigger": "war(): the invasion is lost",
+      "guard": "no helicopter, or it fails to start",
+      "action": "The execution screen."
+    },
+    {
+      "from": "inOffice",
+      "to": "escaped",
+      "trigger": "revolution(): fleeing, by choice or after choosing a helper who won't help",
+      "guard": "the helicopter starts, or the escape on foot isn't caught"
+    },
+    {
+      "from": "inOffice",
+      "to": "dead",
+      "trigger": "revolution(): fleeing on foot, or choosing a helper who won't help",
+      "guard": "caughtOnFoot()",
+      "action": "The caught screen."
+    },
+    {
+      "from": "inOffice",
+      "to": "dead",
+      "trigger": "revolution(): fight()",
+      "guard": "the revolt isn't crushed",
+      "action": "The overthrown screen."
+    },
+    {
+      "from": "inOffice",
+      "to": "inOffice",
+      "trigger": "revolution(): fight()",
+      "guard": "the revolt is crushed",
+      "action": "Punish the rebels if asked; afterVictory() pauses plots for two months."
+    }
+  ]
+}

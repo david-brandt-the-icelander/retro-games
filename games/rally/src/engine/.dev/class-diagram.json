@@ -1,0 +1,138 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Rally engine classes",
+  "folder": "games/rally/src/engine",
+  "description": "The computer player and the recorder, with the engine's plain data types.",
+  "sources": [
+    {
+      "path": "games/rally/src/engine/ai.ts",
+      "symbol": "Cpu"
+    },
+    {
+      "path": "games/rally/src/engine/match.ts",
+      "symbol": "Recorder"
+    },
+    {
+      "path": "games/rally/src/engine/rules.ts",
+      "symbol": "State"
+    }
+  ],
+  "types": [
+    {
+      "id": "engine.Cpu",
+      "name": "Cpu",
+      "kind": "class",
+      "sources": [
+        "games/rally/src/engine/ai.ts"
+      ],
+      "members": [
+        "constructor(readonly side: Side, readonly level: Level, seed: number)",
+        "control(s: State, dt: number): Control"
+      ]
+    },
+    {
+      "id": "engine.Recorder",
+      "name": "Recorder",
+      "kind": "class",
+      "sources": [
+        "games/rally/src/engine/match.ts"
+      ],
+      "members": [
+        "readonly moves: Move[]",
+        "ticks: number",
+        "record(c: Control): void",
+        "get recording(): Recording"
+      ]
+    },
+    {
+      "id": "engine.Level",
+      "name": "Level",
+      "kind": "interface",
+      "sources": [
+        "games/rally/src/engine/ai.ts"
+      ],
+      "members": [
+        "speed: number",
+        "reaction: number",
+        "error: number",
+        "aim: number"
+      ]
+    },
+    {
+      "id": "engine.Recording",
+      "name": "Recording",
+      "kind": "interface",
+      "sources": [
+        "games/rally/src/engine/match.ts"
+      ],
+      "members": [
+        "ticks: number",
+        "moves: Move[]"
+      ]
+    },
+    {
+      "id": "engine.State",
+      "name": "State",
+      "kind": "interface",
+      "sources": [
+        "games/rally/src/engine/rules.ts"
+      ],
+      "members": [
+        "paddles: [Paddle, Paddle]",
+        "ball: Ball",
+        "score: [number, number]",
+        "server: Side",
+        "phase: Phase",
+        "timer: number",
+        "winner: Side | null",
+        "rally: number"
+      ]
+    },
+    {
+      "id": "engine.Control",
+      "name": "Control",
+      "kind": "interface",
+      "sources": [
+        "games/rally/src/engine/rules.ts"
+      ],
+      "members": [
+        "dir: -1 | 0 | 1",
+        "target: number | null",
+        "maxSpeed?: number"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "engine.Cpu",
+      "to": "engine.Level",
+      "kind": "depends-on",
+      "description": "Its speed, reaction, error and aim."
+    },
+    {
+      "from": "engine.Cpu",
+      "to": "engine.State",
+      "kind": "depends-on",
+      "description": "Looks at the ball and the phase."
+    },
+    {
+      "from": "engine.Cpu",
+      "to": "engine.Control",
+      "kind": "depends-on",
+      "description": "Returns a target and a capped speed."
+    },
+    {
+      "from": "engine.Recorder",
+      "to": "engine.Control",
+      "kind": "depends-on",
+      "description": "Records one Move per change of control."
+    },
+    {
+      "from": "engine.Recorder",
+      "to": "engine.Recording",
+      "kind": "depends-on",
+      "description": "Exposes what it recorded."
+    }
+  ]
+}
