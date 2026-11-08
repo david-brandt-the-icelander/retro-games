@@ -256,7 +256,7 @@ Veil 0. The camera sits behind the player's colour, at distance 15 with offset 0
    | Computer | **Take back** · Danger **Resign** | Primary **New game** (set-up) |
 10. A row: Ghost **Turn the board** (the camera swings to the other side), spacer, Ghost **Leave** (back to where the player came from: the lobby for online games).
 
-**Promotion** [15](screens/15-game-promotion.png): when a pawn reaches the last rank, a Card appears over the board, centred on the window then moved 200 px left: Heading **Promote to**, then a row (gap 10) of Primary **Queen** and Buttons **Rook**, **Bishop**, **Knight**, and a Ghost **Cancel** (puts the pawn back).
+**Promotion** [15](screens/15-game-promotion.png): when a pawn reaches the last rank, a Card appears over the board, centred on the window then moved 200 px left: Heading **Promote to**, then a row (gap 10) of Primary **Queen** and Buttons **Rook**, **Bishop**, **Knight**, and a Ghost **Cancel** (puts the pawn back). **Escape**, or a click anywhere outside the card, cancels too (and that click does nothing else).
 
 **Sounds:** see the art bible. The player's own moves and the opponent's play *move*/*capture*; an opponent's message plays *chat*; an incoming draw offer plays *notify*; the end plays *win*, *lose* or *draw*.
 
@@ -290,6 +290,7 @@ The texts:
 ## Keyboard and accessibility
 
 - Every button is focusable (gold focus ring) and works with Enter/Space. Enter sends in the invitation and chat fields.
+- Escape closes the promotion picker (the only popup), as Cancel does.
 - The board is driven by mouse or touch.
 - Text contrast (WCAG): ink on card 14.7 : 1, muted on card 5.7 : 1, gold on card 9.0 : 1, `#17140E` on gold 9.2 : 1.
 - Nothing is told by colour alone: results are words, and side dots sit next to names.
