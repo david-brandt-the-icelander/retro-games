@@ -40,15 +40,16 @@ The pilot flies their ship from station to station: launching, turning, changing
 - ✅ The same inputs always give the same game: two runs of 3,000 ticks with the same held keys end in identical states.
 - ✅ A 40,000-tick game with every kind of press passes through flight, the tunnels, docking, the escape pod and death without a panic (debug builds check every overflow).
 - ⚠️ The hyperspace countdown ticks only in Flight and Death modes, so a countdown cannot jump on the tick an escape pod is launched. The baseline would still run it that tick; RULES does not say what then happens, and this edge case is not covered by a test.
-- ⚠️ The title ship's approach and spin, the chart cursor's held movement, and the display frame counter are presentation, not sim; the presentation builds them ([RULES D.3.1](../../../docs/RULES.md#d31-title-sequence), [D.3.3](../../../docs/RULES.md#d33-docked-mode)).
-- ⚠️ Name entry on the title, prompts that capture the keyboard and the shop confirmation pause belong to the panels; the sim takes a loaded name and finished purchases instead (deliberate difference 12).
+- ✅ The chart cursor's held movement is the presentation's ([charts](../../presentation/ui/ui.md)); RULES D.3.3's held repeat runs there.
+- ⚠️ The title ship's approach from 96 × 256 sim units and its spin, and the display frame counter that times the flashing, are presentation, not sim; the presentation builds them ([RULES D.3.1](../../../docs/RULES.md#d31-title-sequence), [D.3.3](../../../docs/RULES.md#d33-docked-mode)).
+- ✅ Name entry on the title and the pilot page, and the market and equipment panels, belong to the presentation; the sim takes a loaded name and finished purchases instead (deliberate difference 12).
 - ⚠️ The parity harness, which replays recorded inputs through this tick and through the data-swapped baseline and compares the random stream and the bubble tick by tick, is not built.
 
 ### What the picture reads
 
 - ✅ After each tick the presentation reads the mode, the screen, the pilot, the cockpit, the bubble, the navigation and the countdown, and receives the tick's events in order: mode changes, keys' outcomes, laser fire and hits, missile and E.C.M. events, damage, explosions with their bounty, scooping and trades.
-- ⚠️ The picture draws every object between its previous and current tick positions, interpolated by how far the frame is between ticks, so 12 Hz logic looks smooth at any frame rate.
-- ⚠️ Until the title and docked panels exist, the Godot host starts a game and launches straight away.
+- ✅ The picture draws every object between its previous and current tick positions, interpolated by how far the frame is between ticks, so 12 Hz logic looks smooth at any frame rate ([bridge](../../presentation/bridge/bridge.md), [space scene](../../presentation/space/space.md)).
+- ✅ The Godot host starts on the title, and the pilot plays every mode through the [plain client](../../presentation/game/game.md).
 
 ## How it fails
 

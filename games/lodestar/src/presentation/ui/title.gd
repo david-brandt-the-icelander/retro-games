@@ -31,7 +31,18 @@ func _ready() -> void:
 	_entry.add_theme_font_override("font", Look.mono())
 	_entry.add_theme_font_size_override("font_size", 22)
 	_entry.text_changed.connect(_on_text_changed)
+	# A refused load keeps the name entry open to show why.
+	if "keep_editing_on_text_submit" in _entry:
+		_entry.set("keep_editing_on_text_submit", true)
 	_entry.text_submitted.connect(func(text: String) -> void: load_and_start(text))
+	# `Esc` ends the line edit's editing itself, without the key reaching the title.
+	_entry.focus_exited.connect(func() -> void:
+		if page == "load":
+			_close_load())
+	if _entry.has_signal("editing_toggled"):
+		_entry.connect("editing_toggled", func(on: bool) -> void:
+			if not on and page == "load":
+				_close_load())
 	add_child(_entry)
 
 
@@ -101,6 +112,8 @@ func _choose(index: int) -> void:
 			_entry.text = ""
 			_entry.visible = true
 			_entry.grab_focus()
+			if _entry.has_method("edit"):
+				_entry.call("edit")
 		2:
 			page = "about"
 		3:

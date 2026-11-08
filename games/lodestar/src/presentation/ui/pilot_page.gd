@@ -22,6 +22,12 @@ func _ready() -> void:
 	_entry.add_theme_font_size_override("font_size", 20)
 	_entry.text_changed.connect(_on_text_changed)
 	_entry.text_submitted.connect(_on_submitted)
+	# `Esc` ends the line edit's editing itself, without the key reaching the page.
+	_entry.focus_exited.connect(_close_entry)
+	if _entry.has_signal("editing_toggled"):
+		_entry.connect("editing_toggled", func(on: bool) -> void:
+			if not on:
+				_close_entry())
 	add_child(_entry)
 
 
@@ -61,6 +67,8 @@ func start_save() -> void:
 	_entry.text = hub.sim.pilot()["name"]
 	_entry.visible = true
 	_entry.grab_focus()
+	if _entry.has_method("edit"):
+		_entry.call("edit")
 	_entry.select_all()
 
 
@@ -69,6 +77,12 @@ func save(name: String) -> String:
 	var outcome: String = hub.sim.save_pilot(name)
 	_result = Words.SAVE_RESULTS.get(outcome, outcome)
 	return outcome
+
+
+func _close_entry() -> void:
+	if _entry.visible:
+		_entry.visible = false
+		_entry.release_focus()
 
 
 func _on_text_changed(text: String) -> void:
