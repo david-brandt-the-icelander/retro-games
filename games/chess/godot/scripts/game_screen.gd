@@ -315,9 +315,9 @@ func _update_status() -> void:
 		if _side_index(offer) == my_side:
 			_banner.add_child(UI.wrap("You offered a draw. Your opponent can accept, or answer with a move."))
 		else:
-			_banner.add_child(UI.hbox(8, [UI.wrap("%s offers a draw." % names[1 - my_side]), UI.spacer(),
+			_banner.add_child(UI.vbox(10, [UI.wrap("%s offers a draw." % names[1 - my_side]), UI.hbox(8, [
 				UI.button("Accept", func() -> void: _act({type = "draw-accept"}), "Primary"),
-				UI.button("Decline", func() -> void: _act({type = "draw-decline"}))]))
+				UI.button("Decline", func() -> void: _act({type = "draw-decline"}))])]))
 		(_banner.get_child(0) as Control).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 
@@ -367,9 +367,20 @@ func _render_transcript() -> void:
 	var ply := 0
 	var last_move_at: float = events[0].at if events.size() > 0 else 0.0
 	var names := {white = str(game.white.name), black = str(game.black.name)}
+	var day := ""
 	for i in events.size():
 		var e: Dictionary = events[i]
 		var row: Control
+		# A quiet heading wherever the date changes: "Today", "Yesterday", "Friday 6 November".
+		var d := UI.day(float(e.at))
+		if d != day:
+			day = d
+			var head := UI.label(d.to_upper(), "Eyebrow", 11)
+			head.add_theme_color_override("font_color", UI.MUTED)
+			head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			if mode == "replay" and i >= cursor:
+				head.modulate.a = 0.28
+			_list.add_child(head)
 		match str(e.kind):
 			"start":
 				row = _note("Game started", e)
@@ -405,7 +416,7 @@ func _render_transcript() -> void:
 
 
 func _time_label(e: Dictionary) -> Label:
-	var t := UI.label(UI.clock(float(e.at)), "Muted", 12)
+	var t := UI.label(UI.hhmm(float(e.at)), "Muted", 12)
 	t.custom_minimum_size.x = 44
 	t.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	return t
@@ -473,7 +484,7 @@ func _jump_to_ply(ply: int) -> void:
 	UI.clear(_viewing)
 	_viewing.visible = view_ply >= 0
 	if _viewing.visible:
-		_viewing.add_child(UI.hbox(8, [UI.label("Looking at move %d of %d" % [view_ply, chess.moves.size()]), UI.spacer(),
+		_viewing.add_child(UI.hbox(8, [UI.label("Looking at move %d of %d" % [(view_ply + 1) / 2, (chess.moves.size() + 1) / 2]), UI.spacer(),
 			UI.button("Back to the game", func() -> void: _jump_to_ply(chess.moves.size()), "Primary")]))
 
 

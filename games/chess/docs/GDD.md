@@ -11,7 +11,7 @@ An original chess game, not a remake, so the clean-room phases of `create-retro-
 
 ## Screens
 
-Home (title over a slowly turning board) · Sign-in · Computer set-up · Lobby (invite, invitations for you, your games, waiting for an answer, contacts) · Contact (record and every game together) · History · Game (online, computer) · Replay.
+Home (title over a slowly turning board) · Sign-in · Computer set-up · Lobby (invite, invitations for you, your games, waiting for an answer, contacts) · Contact (record and every game together) · History · Game (online, computer) · Replay. Each is specified in [UI-DESIGN.md](UI-DESIGN.md), the table and pieces in [ART-BIBLE.md](ART-BIBLE.md), and how to check an implementation against the reference renders in [DESIGN.md](DESIGN.md).
 
 ## Decision log
 
@@ -24,6 +24,7 @@ Home (title over a slowly turning board) · Sign-in · Computer set-up · Lobby 
 | 2026-11-08 | Kept from the first version: the Worker, D1 and a Durable Object per game; Google and GitHub sign-in; Stockfish 19 at eight strengths (now driven from the page through a small JavaScript bridge); playing the computer without signing in. Dropped: pass & play on one screen, and adding contacts by hand (contacts are now only people you have played). | Claude, open for the owner |
 | 2026-11-08 | Working title **Gambit**; slug and path stay `chess` (`/retro/chess`). | Claude, open for the owner |
 | 2026-11-08 | Replays play back at the game's own pace, sped up 1×, 4× or 16×, with pauses capped at 3 s. | Claude |
+| 2026-11-08 | The design is written down to be built from: DESIGN.md (acceptance), UI-DESIGN.md, ART-BIBLE.md, design-tokens.json, and 23 reference renders. Writing it fixed four things the renders showed: the lights now turn with the camera (seen from Black the board was glaring), the coordinates read upright from either side, the draw-offer banner puts its buttons under the text, and the transcript shows day headings with plain HH:MM times. Also "1 win" (not "1 wins"). | Owner asked for the designs in the repo; Claude |
 | 2026-11-08 | No clocks: correspondence-style games. Email only for new invitations, not for each move. | Claude, open for the owner |
 
 ## Non-goals (for now)

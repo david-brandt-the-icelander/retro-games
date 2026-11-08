@@ -103,8 +103,10 @@ func _ready() -> void:
 		_dev_args()
 
 
-## Desktop-only switches for development and screenshots:
-##   --goto=setup|lobby|history|computer   --moves=e2e4,e7e5   --shot=file.png --shot-after=3
+## Desktop-only switches for development and the design's reference renders (docs/screens/):
+##   --goto=setup|lobby|history|computer|game|contact   --id=GAME   --contact=EMAIL   --moves=e2e4,e7e5
+##   --select=e2   --promote=b7a8   --view=PLY   --seek=ENTRY   --play   --face=1   --toast=TEXT   --error-toast=TEXT
+##   --click=X,Y;X,Y   --invite=EMAIL   --shot=file.png --shot-after=SECONDS
 func _dev_args() -> void:
 	var opts := {}
 	for a in OS.get_cmdline_user_args():
@@ -120,7 +122,32 @@ func _dev_args() -> void:
 				g.events.append({seq = g.events.size() + 1, at = g.created + 1000.0 * g.moves.size(), kind = "move", side = "white" if g.moves.size() % 2 else "black", text = m})
 			go("game", GameScreen.new("computer", g, board))
 		"game":
-			_open_game(str(opts.get("id", "")))
+			_open_game(str(opts.get("id", "")), str(opts.get("mode", "")))
+		"contact":
+			var r := await Api.get_json("api/lobby")
+			for c in r.data.get("contacts", []):
+				if c.email == opts.get("contact"):
+					go("contact", c)
+	if opts.has("select") or opts.has("promote") or opts.has("view") or opts.has("seek") or opts.has("play") or opts.has("face"):
+		await get_tree().create_timer(2.5).timeout
+		var gs := _screen as GameScreen
+		if opts.has("face"):
+			board.face(int(opts.face), true)
+		if opts.has("view"):
+			gs._jump_to_ply(int(opts.view))
+		if opts.has("seek"):
+			gs._stop_and_seek(int(opts.seek))
+		if opts.has("play"):
+			gs._toggle_play()
+		if opts.has("select"):
+			board._select(Chess.square(str(opts.select)))
+		if opts.has("promote"):
+			board._select(Chess.square(str(opts.promote).substr(0, 2)))
+			board._try(Chess.square(str(opts.promote).substr(2, 2)))
+	if opts.has("toast"):
+		toast(str(opts.toast))
+	if opts.has("error-toast"):
+		toast(str(opts.get("error-toast")), true)
 	if opts.has("cycle"):
 		for i in int(opts.cycle):
 			for screen in ["lobby", "home", "history", "lobby", "setup"]:
@@ -637,13 +664,15 @@ func _answer(id: String, what: String) -> void:
 		_history_stack.pop_back()
 
 
-func _open_game(id: String) -> void:
+func _open_game(id: String, mode := "") -> void:
 	var r := await Api.get_json("api/games/" + id)
 	if not r.ok:
 		toast(r.error, true)
 		return
 	var g: Dictionary = r.data.game
-	go("game", GameScreen.new("online" if g.result == "*" else "replay", g, board))
+	if mode == "":
+		mode = "online" if g.result == "*" else "replay"
+	go("game", GameScreen.new(mode, g, board))
 
 
 # ── One contact ──
@@ -653,7 +682,7 @@ func _contact(c: Dictionary) -> Control:
 	var col: VBoxContainer = p[1]
 	var head := UI.hbox(18, [Avatar.make(c.get("avatar"), str(c.name), 72),
 		UI.vbox(2, [UI.label(str(c.name), "Heading", 30), UI.label(str(c.email), "Muted"),
-			UI.label("%d wins · %d losses · %d draws" % [c.wins, c.losses, c.draws], "Strong")]),
+			UI.label(UI.record(int(c.wins), int(c.losses), int(c.draws)), "Strong")]),
 		UI.spacer()])
 	var invite := UI.button("Invite to a game", func() -> void:
 		var r := await Api.post_json("api/challenges", {email = c.email, color = "random"})

@@ -32,6 +32,10 @@ It will live at <https://games.icelander.net/retro/chess/> once deployed (see **
 
 The ratings shown in the game are rough guides, not measured.
 
+## Design
+
+The whole design (every screen and state, the 3D table and pieces with their exact dimensions, colours, type, motion and sound) is in [docs/DESIGN.md](docs/DESIGN.md), with reference renders of every state in [docs/screens/](docs/screens/) and on one [contact sheet](docs/contact-sheet.png). The game can be built from `docs/` alone; `scripts/reference/` recreates the reference scenario and renders it for comparison.
+
 ## How it works
 
 ```

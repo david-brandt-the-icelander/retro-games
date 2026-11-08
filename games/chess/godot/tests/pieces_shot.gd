@@ -1,5 +1,5 @@
 extends SceneTree
-## Renders every piece in a row, for looking at the models:
+## Renders every piece in a row (docs/screens/23-pieces.png), for looking at the models:
 ## xvfb-run godot --rendering-driver opengl3 --path godot -s tests/pieces_shot.gd -- --out=/tmp/pieces.png
 
 func _init() -> void:
@@ -16,9 +16,15 @@ func _init() -> void:
 	root.add_child(we)
 	var sun := DirectionalLight3D.new()
 	sun.rotation_degrees = Vector3(-40, -30, 0)
+	var rim := OmniLight3D.new()
+	rim.position = Vector3(-4, 4, -5)
+	rim.light_color = Color("8fb3ff")
+	rim.light_energy = 1.4
+	rim.omni_range = 22.0
+	root.add_child(rim)
 	root.add_child(sun)
 	var white := StandardMaterial3D.new()
-	white.albedo_color = Color("ece6d8")
+	white.albedo_color = Color("e0d8c6")
 	white.roughness = 0.3
 	var black := StandardMaterial3D.new()
 	black.albedo_color = Color("1d1e24")
@@ -29,15 +35,15 @@ func _init() -> void:
 			var m := MeshInstance3D.new()
 			m.mesh = PieceMeshes.mesh(i + 1)
 			m.material_override = white if c == 0 else black
-			m.position = Vector3(i * 0.9 - 2.25, 0, c * -1.0)
+			# One row: the white set, then the black set, each pawn to king.
+			m.position = Vector3((c * 6 + i) * 0.82 - 4.51, 0, 0)
 			if i + 1 == Chess.KNIGHT:
-				m.rotation.y = deg_to_rad(-38) if c == 0 else deg_to_rad(-142)
+				m.rotation.y = deg_to_rad(38) if c == 0 else deg_to_rad(142)
 			root.add_child(m)
 	var cam := Camera3D.new()
-	cam.position = Vector3(0, 1.3, 5.6)
-	cam.fov = 40
+	cam.fov = 34
 	root.add_child(cam)
-	cam.look_at(Vector3(0, 0.5, -0.5))
+	cam.look_at_from_position(Vector3(0, 2.4, 11.5), Vector3(0, 0.55, 0))
 	for i in 5:
 		await process_frame
 	var out := "/tmp/pieces.png"

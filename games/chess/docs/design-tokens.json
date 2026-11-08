@@ -1,0 +1,93 @@
+{
+  "$comment": "Gambit design tokens. Colours are sRGB hex; alpha as 0-1. Sizes in px at the 1440x900 design size; 3D values in world units (1 = one square). Prose and rules: UI-DESIGN.md and ART-BIBLE.md.",
+  "canvas": { "width": 1440, "height": 900, "stretch": "canvas_items", "aspect": "expand" },
+  "color": {
+    "bg": "#0B0C0F", "card": "#15171C", "cardAlpha": 0.94, "raised": "#1D2026", "line": "#2B2E36",
+    "ink": "#ECE8DF", "muted": "#8D919B", "gold": "#D9B26B", "goldDark": "#A8843F", "goldHover": "#E6C27E",
+    "onGold": "#17140E", "red": "#E5566A", "green": "#6FCF97", "inset": "#101216",
+    "buttonHover": "#262A32", "buttonHoverLine": "#3B3F4A", "buttonPressed": "#17191E",
+    "bubbleTheirs": "#22252C", "sideWhite": "#ECE6D8", "sideBlack": "#1D1E24", "sideDotLine": "#5A5D66"
+  },
+  "veilAlpha": { "home": 0.18, "lists": 0.62, "game": 0.0, "fadeSeconds": 0.4 },
+  "font": {
+    "regular": { "family": "Inter", "weight": 400, "file": "godot/fonts/inter-latin-400-normal.woff2" },
+    "bold": { "family": "Inter", "weight": 600, "file": "godot/fonts/inter-latin-600-normal.woff2" },
+    "display": { "family": "Playfair Display", "weight": 600, "file": "godot/fonts/playfair-display-latin-600-normal.woff2" },
+    "italic": { "family": "Playfair Display", "weight": 400, "style": "italic", "file": "godot/fonts/playfair-display-latin-400-italic.woff2" }
+  },
+  "text": {
+    "body": { "font": "regular", "size": 16, "color": "ink" },
+    "strong": { "font": "bold", "size": 16, "color": "ink" },
+    "muted": { "font": "regular", "size": 14, "color": "muted" },
+    "eyebrow": { "font": "bold", "size": 12, "color": "gold" },
+    "button": { "font": "bold", "size": 15 },
+    "heading": { "font": "display", "size": 22, "color": "ink" },
+    "title": { "font": "italic", "size": 64, "color": "ink" },
+    "homeTitle": { "font": "italic", "size": 96 },
+    "logo": { "font": "italic", "size": 28 }
+  },
+  "radius": { "button": 10, "chip": 18, "card": 18, "row": 12, "inset": 12, "banner": 12, "field": 10, "toast": 12, "levelTile": 12, "chatBubble": 12, "sanButton": 8 },
+  "padding": {
+    "button": [16, 10, 16, 10], "chip": [14, 8, 14, 8], "field": [14, 10, 14, 10], "card": [22, 20, 22, 20],
+    "row": [12, 10, 12, 10], "inset": [12, 10, 12, 10], "banner": [14, 10, 14, 10], "toast": [18, 12, 18, 12],
+    "levelTile": [14, 10, 14, 10], "chatBubble": [12, 8, 12, 8], "sanButton": [8, 3, 8, 3]
+  },
+  "layout": {
+    "topBar": { "left": 28, "right": 28, "top": 18, "height": 72, "gap": 18 },
+    "page": { "top": 92, "bottom": 24, "minSideMargin": 16, "gap": 18, "width": { "signIn": 520, "setup": 860, "lobby": 1120, "contact": 820, "history": 820 } },
+    "home": { "left": 72, "topFromMiddle": -190, "width": 460, "gap": 18, "buttonSize": [220, 52] },
+    "gamePanel": { "right": 24, "width": 416, "top": 84, "bottom": 24, "gap": 14 },
+    "levelTile": [190, 92],
+    "avatar": { "chat": 26, "topBar": 34, "gameRow": 34, "lobbyRow": 40, "plate": 44, "contact": 72, "initialScale": 0.42, "discSaturation": 0.35, "discValue": 0.42 },
+    "transcript": { "timeWidth": 44, "moveNumberWidth": 34, "entryGap": 2 },
+    "toast": { "bottom": 28, "fadeIn": 0.2, "hold": 3.5, "fadeOut": 0.4 }
+  },
+  "scene": {
+    "background": "#0B0C0F",
+    "sky": { "top": "#2A2F3A", "horizon": "#5A5248", "groundHorizon": "#3A342E", "groundBottom": "#0C0D10", "sunAngleMax": 30 },
+    "ambientEnergy": 0.55, "tonemap": "filmic", "exposure": 1.05,
+    "glow": { "intensity": 0.5, "bloom": 0.04, "hdrThreshold": 1.1 },
+    "msaa": 4, "shadowMapSize": 4096,
+    "lights": {
+      "followCameraYaw": true,
+      "key": { "type": "directional", "rotationDeg": [-58, -32, 0], "color": "#FFF1DC", "energy": 1.15, "shadow": true, "shadowBlur": 1.6, "shadowMaxDistance": 30, "shadowBias": 0.03 },
+      "rim": { "type": "omni", "position": [-6, 5, -7], "color": "#8FB3FF", "energy": 1.4, "range": 22 },
+      "fill": { "type": "omni", "position": [7, 4, 6], "color": "#FFCF8A", "energy": 0.7, "range": 20 }
+    },
+    "materials": {
+      "table": { "albedo": "#121317", "roughness": 0.55 },
+      "frame": { "albedo": "#17181D", "roughness": 0.16, "metallic": 0.2 },
+      "inlay": { "albedo": "#D9B26B", "roughness": 0.3, "metallic": 1.0 },
+      "lightSquare": { "albedo": "#B3AB9B", "roughness": 0.55 },
+      "darkSquare": { "albedo": "#353A42", "roughness": 0.26, "metallic": 0.15 },
+      "whitePiece": { "albedo": "#E0D8C6", "roughness": 0.3, "metallic": 0.0 },
+      "blackPiece": { "albedo": "#1D1E24", "roughness": 0.18, "metallic": 0.35 }
+    },
+    "geometry": {
+      "table": { "size": [80, 80], "y": -0.42 },
+      "frame": { "size": [9.5, 0.4, 9.5], "centerY": -0.22 },
+      "inlay": { "length": 8.32, "width": 0.035, "height": 0.012, "offset": 4.13, "y": -0.015 },
+      "square": { "size": [1, 0.04, 1], "topY": 0 },
+      "coordinates": { "offset": 4.45, "fontSize": 48, "pixelSize": 0.004, "color": "#D9B26B", "alpha": 0.75 }
+    },
+    "marks": {
+      "lastMove": { "color": "#D9B26B", "alpha": 0.22, "size": 1.0, "y": 0.003 },
+      "selected": { "color": "#D9B26B", "alpha": 0.55, "size": 0.98, "y": 0.004 },
+      "moveDot": { "color": "#D9B26B", "alpha": 0.75, "radius": 0.11, "height": 0.01, "y": 0.01, "emissive": true },
+      "captureRing": { "color": "#D9B26B", "alpha": 0.75, "innerRadius": 0.36, "outerRadius": 0.44, "y": 0.01, "emissive": true },
+      "check": { "color": "#FF3B4E", "alphaMid": 0.35, "alphaSwing": 0.2, "pulseRadPerSec": 5, "size": 0.96, "y": 0.004 }
+    },
+    "camera": {
+      "fovDeg": 34, "pitchDeg": 52, "pitchRangeDeg": [28, 82], "distanceRange": [8, 18], "wheelStep": 0.6,
+      "hOffsetFactor": 0.62,
+      "screens": { "game": { "distance": 15, "offset": 0.2 }, "home": { "distance": 15.5, "offset": -0.2, "spinRadPerSec": 0.08 }, "lists": { "distance": 14, "offset": 0 } },
+      "yawFollowRate": 5, "distanceFollowRate": 6, "offsetTweenSeconds": 0.6, "dragYawPerPx": 0.006, "dragPitchPerPx": 0.004
+    },
+    "motion": {
+      "glideSeconds": 0.38, "glideEase": -2.2, "hopHeight": 0.55, "castlingRookHop": 0.15,
+      "captureDelay": 0.18, "captureSinkTo": -0.9, "captureSinkSeconds": 0.5, "captureFadeDelay": 0.2, "captureFadeSeconds": 0.45,
+      "liftHeight": 0.14, "liftSeconds": 0.12, "dragHeight": 0.34, "dragClamp": 4.3
+    }
+  },
+  "replay": { "paces": [1, 4, 16], "defaultPace": 4, "minWaitSeconds": 0.35, "maxWaitSeconds": 3.0, "unplayedAlpha": 0.28 }
+}

@@ -33,6 +33,8 @@ var facing := 0                    ## the side the camera is behind
 var showcase := false               ## turns slowly, for the title screen
 
 var _mat := {}
+var _light_rig := Node3D.new()      ## the lights turn with the camera, so the board looks the same from either side
+var _labels: Array[Label3D] = []
 var _hints := Node3D.new()
 var _marks := Node3D.new()
 var _check_mark: MeshInstance3D
@@ -98,6 +100,7 @@ func _build_world() -> void:
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
+	add_child(_light_rig)
 
 	var key := DirectionalLight3D.new()
 	key.rotation_degrees = Vector3(-58, -32, 0)
@@ -107,21 +110,21 @@ func _build_world() -> void:
 	key.shadow_blur = 1.6
 	key.directional_shadow_max_distance = 30.0
 	key.shadow_bias = 0.03
-	add_child(key)
+	_light_rig.add_child(key)
 
 	var rim := OmniLight3D.new()
 	rim.position = Vector3(-6, 5, -7)
 	rim.light_color = Color("8fb3ff")
 	rim.light_energy = 1.4
 	rim.omni_range = 22.0
-	add_child(rim)
+	_light_rig.add_child(rim)
 
 	var warm := OmniLight3D.new()
 	warm.position = Vector3(7, 4, 6)
 	warm.light_color = Color("ffcf8a")
 	warm.light_energy = 0.7
 	warm.omni_range = 20.0
-	add_child(warm)
+	_light_rig.add_child(warm)
 
 	var table := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
@@ -176,9 +179,11 @@ func _build_board() -> void:
 			var file := _label(Chess.FILES[i], font)
 			file.position = Vector3(i - 3.5, 0.0, side * 4.45)
 			add_child(file)
+			_labels.append(file)
 			var rank := _label(str(i + 1), font)
 			rank.position = Vector3(side * 4.45, 0.0, 3.5 - i)
 			add_child(rank)
+			_labels.append(rank)
 	_check_mark = MeshInstance3D.new()
 	var cm := PlaneMesh.new()
 	cm.size = Vector2(0.96, 0.96)
@@ -524,6 +529,11 @@ func frame_offset(fraction: float, distance := 12.6) -> void:
 
 func _place_camera() -> void:
 	_pivot.rotation = Vector3(0, _yaw, 0)
+	_light_rig.rotation = Vector3(0, _yaw, 0)
+	# Coordinates read upright from whichever side the camera is on.
+	var upright := 0.0 if cos(_yaw) >= 0.0 else PI
+	for l in _labels:
+		l.rotation = Vector3(-PI / 2, upright, 0)
 	_camera.position = Vector3(0, sin(_pitch) * _dist, cos(_pitch) * _dist)
 	_camera.look_at(Vector3.ZERO, Vector3.UP)
 
