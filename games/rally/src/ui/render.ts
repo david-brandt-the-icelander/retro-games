@@ -25,9 +25,13 @@ export class Renderer {
     this.ctx = ctx;
   }
 
-  /** Matches the canvas's pixels to its size on screen, for sharp edges on any display. */
+  /**
+   * Matches the canvas's pixels to its size on screen, for sharp edges on any display. At most 2
+   * pixels per CSS pixel: a 3x phone would otherwise fill more than twice the pixels every frame
+   * (3.5 million at full width) for no visible gain on flat shapes.
+   */
   resize(cssWidth: number): void {
-    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const w = Math.round(cssWidth * dpr);
     const h = Math.round((cssWidth * H / W) * dpr);
     if (this.canvas.width !== w || this.canvas.height !== h) {

@@ -77,11 +77,10 @@ body.menu #table { cursor: default; }
   gap: clamp(8px, 2.2vw, 18px);
   padding: 16px;
   text-align: center;
-  background: #071226d0;
+  /* No backdrop-filter: blurring the demo match playing behind the menu cost a third of the frames. */
+  background: #071226d8;
   border-radius: 14px;
   overflow: auto;
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
 }
 .panel[hidden] { display: none; }
 .panel h1, .panel h2 { margin: 0; font-weight: 900; letter-spacing: .25em; }
