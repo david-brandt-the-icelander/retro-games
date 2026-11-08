@@ -1,0 +1,150 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Picking and moving a piece state diagram",
+  "folder": "games/chess/godot/scripts",
+  "description": "How the player moves a piece on the 3D table, by clicking a piece and then a square, or by dragging it. A piece can be picked only when it belongs to the side in movable (set by the game screen; -1 when nobody may move) and that side is to move. Targets are the piece's legal moves from Chess.legal_moves. A press that picks nothing turns the camera instead (_orbiting), which is a separate concern left out here, as are the right button and the wheel. A move leaves the table as the move_made signal; the game screen decides what follows and shows the next position.",
+  "sources": [
+    {
+      "path": "games/chess/godot/scripts/board3d.gd",
+      "symbol": "Board3D._down"
+    },
+    {
+      "path": "games/chess/godot/scripts/board3d.gd",
+      "symbol": "Board3D._up"
+    },
+    {
+      "path": "games/chess/godot/scripts/board3d.gd",
+      "symbol": "Board3D._unhandled_input"
+    },
+    {
+      "path": "games/chess/godot/scripts/board3d.gd",
+      "symbol": "Board3D._try"
+    },
+    {
+      "path": "games/chess/godot/scripts/board3d.gd",
+      "symbol": "Board3D.finish_promotion"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen._on_promotion"
+    }
+  ],
+  "machine": "Board3D._selected and _drag (godot/scripts/board3d.gd)",
+  "initialState": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "description": "_selected = -1 and no drag: nothing lifted, no hints."
+    },
+    {
+      "id": "selected",
+      "description": "A piece is lifted, its square marked, gold dots on its quiet moves and rings on its captures."
+    },
+    {
+      "id": "pressed",
+      "description": "The left button is down on the selected piece (_drag.moved = false)."
+    },
+    {
+      "id": "dragging",
+      "description": "The pointer has moved more than 6 pixels since the press (_drag.moved = true): the piece follows it above the board."
+    },
+    {
+      "id": "promoting",
+      "description": "A pawn's move to the last rank was chosen: promotion_needed(from, to) was emitted and the piece stays selected while the game screen asks for the new piece."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "idle",
+      "to": "pressed",
+      "trigger": "left press on a square",
+      "guard": "a piece of the movable side, which is to move",
+      "action": "_select(sq): lift it, show its targets, select sound; start a drag."
+    },
+    {
+      "from": "selected",
+      "to": "pressed",
+      "trigger": "left press on the selected piece, or on another piece the player may move",
+      "action": "Select the other piece if it is another; start a drag."
+    },
+    {
+      "from": "selected",
+      "to": "idle",
+      "trigger": "left press on one of the piece's target squares",
+      "guard": "not a promotion",
+      "action": "_try(to): deselect; emit move_made(uci)."
+    },
+    {
+      "from": "selected",
+      "to": "promoting",
+      "trigger": "left press on one of the piece's target squares",
+      "guard": "a pawn reaching the last rank",
+      "action": "emit promotion_needed(from, to)."
+    },
+    {
+      "from": "selected",
+      "to": "idle",
+      "trigger": "left press anywhere else, on or off the board",
+      "action": "Illegal sound; deselect; the drag turns the camera."
+    },
+    {
+      "from": "pressed",
+      "to": "selected",
+      "trigger": "left release",
+      "guard": "the pointer moved 6 pixels or less",
+      "action": "End the drag; the piece stays selected for a click on its target."
+    },
+    {
+      "from": "pressed",
+      "to": "dragging",
+      "trigger": "mouse motion",
+      "guard": "more than 6 pixels from the press",
+      "action": "The piece follows the pointer, kept over the table."
+    },
+    {
+      "from": "dragging",
+      "to": "idle",
+      "trigger": "left release over one of the piece's target squares",
+      "guard": "not a promotion",
+      "action": "_try(to): deselect; emit move_made(uci)."
+    },
+    {
+      "from": "dragging",
+      "to": "promoting",
+      "trigger": "left release over one of the piece's target squares",
+      "guard": "a pawn reaching the last rank",
+      "action": "emit promotion_needed(from, to)."
+    },
+    {
+      "from": "dragging",
+      "to": "selected",
+      "trigger": "left release anywhere else",
+      "action": "Glide the piece back to its square, still lifted; illegal sound unless it was dropped on its own square."
+    },
+    {
+      "from": "promoting",
+      "to": "idle",
+      "trigger": "finish_promotion(from, to, piece) from the game screen's Queen, Rook, Bishop or Knight",
+      "action": "Deselect; emit move_made(from + to + piece)."
+    },
+    {
+      "from": "promoting",
+      "to": "idle",
+      "trigger": "finish_promotion(from, to, \"\") from the game screen's Cancel",
+      "action": "Deselect; no move."
+    },
+    {
+      "from": "selected",
+      "to": "idle",
+      "trigger": "show_position()",
+      "action": "Deselect, then show the new position."
+    },
+    {
+      "from": "promoting",
+      "to": "idle",
+      "trigger": "show_position()",
+      "action": "Deselect, then show the new position."
+    }
+  ]
+}

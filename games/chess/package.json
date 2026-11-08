@@ -8,7 +8,7 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit && node build.mjs",
     "test": "tsc --noEmit && node build.mjs --test && node --no-warnings --test dist-test/*.test.mjs",
-    "test:godot": "godot --headless --path godot --import && godot --headless --path godot -s tests/test_rules.gd",
+    "test:godot": "godot --headless --path godot --import && godot --headless --path godot -s tests/test_rules.gd && godot --headless --path godot -s tests/test_formats.gd",
     "dev": "node build.mjs && wrangler dev",
     "deploy": "npm test && npm run test:godot && npm run build && wrangler deploy"
   },

@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Gambit shared TypeScript component diagram",
+  "folder": "games/chess/shared",
+  "description": "TypeScript shared by the Worker and the TypeScript tests: what the browser and the Worker say to each other, and the server's rules of chess on chess.js. The Godot client speaks the same JSON but has its own GDScript rules (godot/chess).",
+  "sources": [
+    {
+      "path": "games/chess/shared/protocol.ts",
+      "symbol": "GameView"
+    },
+    {
+      "path": "games/chess/shared/protocol.ts",
+      "symbol": "Action"
+    },
+    {
+      "path": "games/chess/shared/rules.ts",
+      "symbol": "replay"
+    },
+    {
+      "path": "games/chess/shared/rules.ts",
+      "symbol": "boardOutcome"
+    }
+  ],
+  "components": [
+    {
+      "id": "shared",
+      "name": "Shared TypeScript",
+      "responsibility": "The API's contract and the server's rules.",
+      "folder": "games/chess/shared"
+    },
+    {
+      "id": "protocol",
+      "name": "Protocol (protocol.ts)",
+      "responsibility": "BASE; User, Me, PlayerRef, GameEvent, GameView, Challenge, Contact, Lobby, Action and LiveMessage; MAX_CHAT; cleanEmail and cleanDisplayName; the computer's eight LEVELS.",
+      "folder": "games/chess/shared"
+    },
+    {
+      "id": "rules",
+      "name": "Rules (rules.ts)",
+      "responsibility": "Side, Result, Reason and Outcome; plays UCI moves on chess.js, replays a move list, decides the board's result, resignation, scoring and describing a result, and validates move lists.",
+      "folder": "games/chess/shared"
+    },
+    {
+      "id": "chessjs",
+      "name": "chess.js",
+      "responsibility": "Move legality, SAN, and mate and draw detection (npm package, BSD-2-Clause).",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "shared",
+      "to": "protocol",
+      "kind": "contains",
+      "description": "The contract."
+    },
+    {
+      "from": "shared",
+      "to": "rules",
+      "kind": "contains",
+      "description": "The rules."
+    },
+    {
+      "from": "protocol",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Side, Result and Reason in the game types."
+    },
+    {
+      "from": "rules",
+      "to": "chessjs",
+      "kind": "depends-on",
+      "description": "new Chess(), move(), and the isCheckmate/isStalemate/… checks."
+    }
+  ]
+}

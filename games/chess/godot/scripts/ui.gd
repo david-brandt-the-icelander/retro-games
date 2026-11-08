@@ -46,7 +46,9 @@ static func make_theme() -> Theme:
 	t.set_stylebox("pressed", "Button", box(Color("17191e"), 10, LINE))
 	t.set_stylebox("disabled", "Button", box(Color("17191e"), 10, LINE))
 	t.set_stylebox("focus", "Button", box(Color(0, 0, 0, 0), 10, GOLD))
+	# Keyboard focus only adds the gold ring: the text keeps each variant's normal colour.
 	t.set_color("font_color", "Button", INK)
+	t.set_color("font_focus_color", "Button", INK)
 	t.set_color("font_hover_color", "Button", Color.WHITE)
 	t.set_color("font_disabled_color", "Button", MUTED)
 	t.set_font("font", "Button", bold)
@@ -56,30 +58,35 @@ static func make_theme() -> Theme:
 	t.set_stylebox("normal", "Primary", box(GOLD, 10))
 	t.set_stylebox("hover", "Primary", box(Color("e6c27e"), 10))
 	t.set_stylebox("pressed", "Primary", box(GOLD_DARK, 10))
-	t.set_color("font_color", "Primary", Color("17140e"))
-	t.set_color("font_hover_color", "Primary", Color("17140e"))
-	t.set_color("font_pressed_color", "Primary", Color("17140e"))
+	for state in ["font_color", "font_focus_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
+		t.set_color(state, "Primary", Color("17140e"))
 
 	t.set_type_variation("Ghost", "Button")
 	t.set_stylebox("normal", "Ghost", box(Color(0, 0, 0, 0), 10))
 	t.set_stylebox("hover", "Ghost", box(Color(1, 1, 1, 0.06), 10))
 	t.set_stylebox("pressed", "Ghost", box(Color(1, 1, 1, 0.03), 10))
 	t.set_color("font_color", "Ghost", MUTED)
+	t.set_color("font_focus_color", "Ghost", MUTED)
 
 	t.set_type_variation("Danger", "Button")
 	t.set_stylebox("normal", "Danger", box(Color(0, 0, 0, 0), 10, Color(RED, 0.6)))
 	t.set_stylebox("hover", "Danger", box(Color(RED, 0.15), 10, RED))
-	t.set_color("font_color", "Danger", RED)
+	for state in ["font_color", "font_focus_color", "font_hover_color", "font_pressed_color"]:
+		t.set_color(state, "Danger", RED)
 
 	t.set_type_variation("Chip", "Button")
 	t.set_stylebox("normal", "Chip", box(Color(0, 0, 0, 0), 18, LINE, Vector4(14, 8, 14, 8)))
 	t.set_stylebox("hover", "Chip", box(Color(1, 1, 1, 0.05), 18, Color("3b3f4a"), Vector4(14, 8, 14, 8)))
 	t.set_stylebox("pressed", "Chip", box(Color(GOLD, 0.16), 18, GOLD, Vector4(14, 8, 14, 8)))
+	# An "on" chip stays gold under the mouse too.
 	t.set_color("font_pressed_color", "Chip", GOLD)
+	t.set_color("font_hover_pressed_color", "Chip", GOLD)
 
 	t.set_stylebox("normal", "LineEdit", box(Color("101216"), 10, LINE, Vector4(14, 10, 14, 10)))
+	t.set_stylebox("read_only", "LineEdit", box(Color("101216"), 10, LINE, Vector4(14, 10, 14, 10)))
 	t.set_stylebox("focus", "LineEdit", box(Color(0, 0, 0, 0), 10, GOLD, Vector4(14, 10, 14, 10)))
 	t.set_color("font_color", "LineEdit", INK)
+	t.set_color("font_uneditable_color", "LineEdit", INK)
 	t.set_color("font_placeholder_color", "LineEdit", Color(MUTED, 0.7))
 	t.set_color("caret_color", "LineEdit", GOLD)
 	t.set_color("selection_color", "LineEdit", Color(GOLD, 0.3))
@@ -187,8 +194,11 @@ static func sure_button(text: String, act: Callable) -> Button:
 	return b
 
 
+## Boxes only lay things out, so they ignore the mouse: clicks and drags on the empty table behind
+## them reach the board, while their buttons and rows still take their own.
 static func vbox(gap := 12, kids: Array = []) -> VBoxContainer:
 	var v := VBoxContainer.new()
+	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_theme_constant_override("separation", gap)
 	for k in kids:
 		if k:
@@ -198,6 +208,7 @@ static func vbox(gap := 12, kids: Array = []) -> VBoxContainer:
 
 static func hbox(gap := 12, kids: Array = []) -> HBoxContainer:
 	var h := HBoxContainer.new()
+	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	h.add_theme_constant_override("separation", gap)
 	h.alignment = BoxContainer.ALIGNMENT_BEGIN
 	for k in kids:
@@ -232,18 +243,6 @@ static func scroll(content: Control) -> ScrollContainer:
 static func clear(node: Node) -> void:
 	for c in node.get_children():
 		c.queue_free()
-
-
-## "14:05", or "3 Nov, 14:05" if not today.
-static func clock(ms: float) -> String:
-	var bias: int = Time.get_time_zone_from_system().bias
-	var d := Time.get_datetime_dict_from_unix_time(int(ms / 1000.0) + bias * 60)
-	var now := Time.get_datetime_dict_from_unix_time(int(Time.get_unix_time_from_system()) + bias * 60)
-	var hm := "%02d:%02d" % [d.hour, d.minute]
-	if d.year == now.year and d.month == now.month and d.day == now.day:
-		return hm
-	var months := ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-	return "%d %s, %s" % [d.day, months[d.month - 1], hm]
 
 
 ## "14:05", in the player's time zone.
@@ -283,6 +282,7 @@ static func duration(ms: float) -> String:
 	return "%dd %dh" % [s / 86400, (s % 86400) / 3600]
 
 
+## How long ago: "just now", "44 min ago", "3 h ago", then "6 Nov, 10:35" ("6 Nov 2025, 10:35" in another year).
 static func ago(ms: float) -> String:
 	var s := Time.get_unix_time_from_system() - ms / 1000.0
 	if s < 60:
@@ -291,7 +291,17 @@ static func ago(ms: float) -> String:
 		return "%d min ago" % int(s / 60)
 	if s < 86400:
 		return "%d h ago" % int(s / 3600)
-	return clock(ms)
+	var bias: int = Time.get_time_zone_from_system().bias
+	var d := Time.get_datetime_dict_from_unix_time(int(ms / 1000.0) + bias * 60)
+	var year: int = Time.get_datetime_dict_from_unix_time(int(Time.get_unix_time_from_system()) + bias * 60).year
+	var months := ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+	var date := "%d %s" % [d.day, months[d.month - 1]] + ("" if d.year == year else " %d" % d.year)
+	return "%s, %02d:%02d" % [date, d.hour, d.minute]
+
+
+## The number before half-move `ply` (counted from 1): "3." for White's third move, "3…" for Black's.
+static func move_number(ply: int) -> String:
+	return "%d." % ((ply + 1) / 2) if ply % 2 == 1 else "%d…" % (ply / 2)
 
 
 ## "No moves yet", "1 move", "12 moves": counted the chess way, a move by each side being one.
@@ -308,6 +318,7 @@ static func record(w: int, l: int, d: int) -> String:
 ## A small dot in a side's colour.
 static func side_dot(white: bool, size := 10) -> Control:
 	var c := Panel.new()
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE   # a click on it belongs to the row it sits in
 	c.custom_minimum_size = Vector2(size, size)
 	var s := box(Color("ece6d8") if white else Color("1d1e24"), size, Color("5a5d66"), Vector4.ZERO)
 	c.add_theme_stylebox_override("panel", s)

@@ -1,0 +1,146 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Game against the computer state diagram",
+  "folder": "games/chess/godot/scripts",
+  "description": "A game against Stockfish on a GameScreen in mode \"computer\". The game is a Dictionary in the server's GameView shape, kept in user://computer.json after every move, so leaving the screen (which cancels any search) and coming back with Continue resumes it. The board decides results through Chess.Game; the player can also resign. Stockfish answers through Api.engine_move, which on the desktop (no page bridge) answers at once with nothing. An answer that arrives after the screen left, the ply changed or the game ended is ignored. Take back with no move of the player's on the board (playing Black, before the computer's first move) does nothing, so the search carries on.",
+  "sources": [
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen._computer_turn"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen._computer_play"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen._take_back"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen._computer_end"
+    },
+    {
+      "path": "games/chess/godot/scripts/main.gd",
+      "symbol": "Main.finish_computer"
+    },
+    {
+      "path": "games/chess/godot/scripts/api.gd",
+      "symbol": "engine_move"
+    }
+  ],
+  "machine": "GameScreen in mode \"computer\" (godot/scripts/game_screen.gd): game.result, whose move it is, and _thinking",
+  "initialState": "opened",
+  "states": [
+    {
+      "id": "opened",
+      "description": "_ready() has applied a new game or the saved one, and calls _computer_turn()."
+    },
+    {
+      "id": "yourMove",
+      "description": "The player's move: the board lets them move their side; Take back and Resign are offered."
+    },
+    {
+      "id": "thinking",
+      "description": "_thinking = true: the board is locked and Stockfish is searching at the game's level."
+    },
+    {
+      "id": "noEngine",
+      "description": "The engine answered with nothing or an illegal move (for example on the desktop): the status says the computer needs the web version. Take back and Resign still work."
+    },
+    {
+      "id": "over",
+      "description": "game.result is set: the end entry is in the transcript, the game was handed to Main.finish_computer, and New game is offered.",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "opened",
+      "to": "yourMove",
+      "trigger": "_computer_turn()",
+      "guard": "it is the player's move"
+    },
+    {
+      "from": "opened",
+      "to": "thinking",
+      "trigger": "_computer_turn()",
+      "guard": "it is the computer's move",
+      "action": "_thinking = true; movable = -1; Api.engine_move(moves, level)."
+    },
+    {
+      "from": "yourMove",
+      "to": "thinking",
+      "trigger": "Board3D move_made(uci)",
+      "guard": "legal, and the game goes on",
+      "action": "_computer_play(): add the move and a timed move entry, animate it, save to user://computer.json, then _computer_turn()."
+    },
+    {
+      "from": "yourMove",
+      "to": "over",
+      "trigger": "Board3D move_made(uci)",
+      "guard": "the move ends the game (checkmate, stalemate, material, threefold repetition, fifty moves)",
+      "action": "_computer_end(): add the end entry, set the result, play the result sound, Main.finish_computer()."
+    },
+    {
+      "from": "thinking",
+      "to": "yourMove",
+      "trigger": "Stockfish answers a legal move",
+      "guard": "still on this screen, at the same ply, and the game in play",
+      "action": "_thinking = false; _computer_play(uci)."
+    },
+    {
+      "from": "thinking",
+      "to": "over",
+      "trigger": "Stockfish answers a legal move",
+      "guard": "the move ends the game",
+      "action": "_computer_play(uci), then _computer_end()."
+    },
+    {
+      "from": "thinking",
+      "to": "noEngine",
+      "trigger": "Stockfish answers an empty or illegal move",
+      "action": "_thinking = false; say that the computer needs the web version."
+    },
+    {
+      "from": "yourMove",
+      "to": "yourMove",
+      "trigger": "Take back",
+      "guard": "the player has a move to take back",
+      "action": "Remove the player's last move and the computer's answer, and their transcript entries; save."
+    },
+    {
+      "from": "thinking",
+      "to": "yourMove",
+      "trigger": "Take back",
+      "action": "Api.engine_cancel(); _thinking = false; remove the player's last move and its entry; save.",
+      "guard": "the player has a move on the board"
+    },
+    {
+      "from": "noEngine",
+      "to": "yourMove",
+      "trigger": "Take back",
+      "action": "Remove the player's last move and its entry; save.",
+      "guard": "the player has a move on the board"
+    },
+    {
+      "from": "yourMove",
+      "to": "over",
+      "trigger": "Resign, pressed twice (Sure? Resign)",
+      "action": "_computer_end(): add resign and end entries; the computer wins; Main.finish_computer()."
+    },
+    {
+      "from": "thinking",
+      "to": "over",
+      "trigger": "Resign, pressed twice (Sure? Resign)",
+      "action": "Api.engine_cancel(); _computer_end() with resign."
+    },
+    {
+      "from": "noEngine",
+      "to": "over",
+      "trigger": "Resign, pressed twice (Sure? Resign)",
+      "action": "_computer_end() with resign."
+    }
+  ]
+}

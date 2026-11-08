@@ -1,0 +1,153 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Online game state diagram",
+  "folder": "games/chess/worker",
+  "description": "One online game in the D1 table games (kind online): its result and draw_offer. Every change comes from a player's POST games/{id}/action, which the game's GameRoom runs one at a time through RoomCore: applyAction decides, saveGame writes only if the row's updated time is unchanged (otherwise 409 \"The board changed; try again.\" with the current game), and the new game goes to both players' WebSockets. Each accepted action also appends to the transcript (game_events). Only the game's two players may act (403 otherwise). A game against the computer is inserted already finished by POST games/computer and never changes; the reason abandoned exists in the types but no code sets it.",
+  "sources": [
+    {
+      "path": "games/chess/worker/actions.ts",
+      "symbol": "applyAction"
+    },
+    {
+      "path": "games/chess/worker/room.ts",
+      "symbol": "RoomCore.act"
+    },
+    {
+      "path": "games/chess/worker/db.ts",
+      "symbol": "saveGame"
+    },
+    {
+      "path": "games/chess/worker/api.ts",
+      "symbol": "handleApi"
+    },
+    {
+      "path": "games/chess/shared/rules.ts",
+      "symbol": "boardOutcome"
+    },
+    {
+      "path": "games/chess/worker/schema.sql",
+      "symbol": "games"
+    }
+  ],
+  "machine": "games.result and games.draw_offer for kind online (worker/schema.sql), changed only by applyAction (worker/actions.ts) inside the game's GameRoom",
+  "initialState": "inPlay",
+  "states": [
+    {
+      "id": "inPlay",
+      "description": "result = '*', draw_offer NULL. Inserted when an invitation is accepted, with a start entry."
+    },
+    {
+      "id": "drawOffered",
+      "description": "result = '*', draw_offer = the side that offered; only the other side can accept or decline."
+    },
+    {
+      "id": "over",
+      "description": "result is 1-0, 0-1 or 1/2-1/2 with its reason, draw_offer NULL, and an end entry in the transcript. Chat still works.",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "inPlay",
+      "to": "inPlay",
+      "trigger": "move { uci, ply }",
+      "guard": "ply is the number of moves so far, it is the player's turn, chess.js finds it legal, and the board does not end the game",
+      "action": "Append the move; log a move entry."
+    },
+    {
+      "from": "inPlay",
+      "to": "over",
+      "trigger": "move { uci, ply }",
+      "guard": "as above, and the board ends the game: checkmate, stalemate, insufficient material, threefold repetition or fifty moves",
+      "action": "Append the move; log move and end entries."
+    },
+    {
+      "from": "inPlay",
+      "to": "inPlay",
+      "trigger": "move, draw-accept or draw-decline",
+      "guard": "a stale ply, not the player's turn, an illegal move, or no offer to answer",
+      "action": "409 with the error; nothing saved."
+    },
+    {
+      "from": "inPlay",
+      "to": "drawOffered",
+      "trigger": "draw-offer",
+      "action": "draw_offer = the player's side; log a draw-offer entry."
+    },
+    {
+      "from": "inPlay",
+      "to": "over",
+      "trigger": "resign",
+      "action": "The other side wins, reason resign; log resign and end entries."
+    },
+    {
+      "from": "drawOffered",
+      "to": "over",
+      "trigger": "draw-accept, or draw-offer",
+      "guard": "from the side that did not offer",
+      "action": "1/2-1/2 by agreement; log an end entry."
+    },
+    {
+      "from": "drawOffered",
+      "to": "inPlay",
+      "trigger": "draw-decline",
+      "guard": "from the side that did not offer",
+      "action": "draw_offer = NULL; log a draw-decline entry."
+    },
+    {
+      "from": "drawOffered",
+      "to": "inPlay",
+      "trigger": "move",
+      "guard": "a legal move on the player's turn that does not end the game",
+      "action": "draw_offer = NULL (a move refuses the other side's offer and withdraws one's own); log a move entry."
+    },
+    {
+      "from": "drawOffered",
+      "to": "over",
+      "trigger": "move",
+      "guard": "a legal move that ends the game",
+      "action": "Log move and end entries."
+    },
+    {
+      "from": "drawOffered",
+      "to": "over",
+      "trigger": "resign",
+      "action": "The other side wins; log resign and end entries."
+    },
+    {
+      "from": "drawOffered",
+      "to": "drawOffered",
+      "trigger": "move, draw-offer, draw-accept or draw-decline",
+      "guard": "a stale ply, not the player's turn or an illegal move; or an offer, acceptance or refusal from the side that offered",
+      "action": "409 with the error (\"You have already offered a draw.\" for a second offer); nothing saved."
+    },
+    {
+      "from": "inPlay",
+      "to": "inPlay",
+      "trigger": "chat { text }",
+      "guard": "something left after cleaning",
+      "action": "Log a chat entry."
+    },
+    {
+      "from": "drawOffered",
+      "to": "drawOffered",
+      "trigger": "chat { text }",
+      "guard": "something left after cleaning",
+      "action": "Log a chat entry."
+    },
+    {
+      "from": "over",
+      "to": "over",
+      "trigger": "chat { text }",
+      "guard": "something left after cleaning",
+      "action": "Log a chat entry."
+    },
+    {
+      "from": "over",
+      "to": "over",
+      "trigger": "any other action",
+      "action": "409 \"The game is over.\""
+    }
+  ]
+}

@@ -71,7 +71,7 @@ You need Node 22 and [Godot 4.7.2](https://godotengine.org/download) with its we
 ```bash
 npm install
 npm test                 # TypeScript: rules, transcript actions, and the whole API on an in-memory SQLite
-npm run test:godot       # GDScript: move generation (perft), SAN, mate and draws
+npm run test:godot       # GDScript: move generation (perft), SAN, mate and draws; the text formats
 cp .dev.vars.example .dev.vars          # DEV_LOGIN=1: sign in as any email, for testing two players
 npx wrangler d1 execute chess --local --file worker/schema.sql
 npm run dev              # exports the game, then wrangler dev at http://localhost:8787/retro/chess/

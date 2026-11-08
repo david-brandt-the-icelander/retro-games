@@ -1,0 +1,270 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Gambit Worker component diagram",
+  "folder": "games/chess/worker",
+  "description": "The chess Worker at games.icelander.net/retro/chess: sign-in with Google or GitHub, the JSON API (lobby, invitations, contacts, games, history, profile pictures), one Durable Object per online game that takes its actions one at a time, and the static game, with the Godot engine's .wasm joined from its parts. Every move is checked with chess.js through shared/rules.ts.",
+  "sources": [
+    {
+      "path": "games/chess/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/chess/worker/api.ts",
+      "symbol": "handleApi"
+    },
+    {
+      "path": "games/chess/worker/auth.ts",
+      "symbol": "handleAuth"
+    },
+    {
+      "path": "games/chess/worker/room.ts",
+      "symbol": "GameRoom"
+    },
+    {
+      "path": "games/chess/worker/actions.ts",
+      "symbol": "applyAction"
+    },
+    {
+      "path": "games/chess/worker/db.ts",
+      "symbol": "saveGame"
+    },
+    {
+      "path": "games/chess/worker/mail.ts",
+      "symbol": "sendMail"
+    }
+  ],
+  "components": [
+    {
+      "id": "worker",
+      "name": "Chess Worker",
+      "responsibility": "Everything that runs on Cloudflare for Gambit.",
+      "folder": "games/chess/worker"
+    },
+    {
+      "id": "router",
+      "name": "Routes (index.ts)",
+      "responsibility": "Redirects /retro/chess to /retro/chess/, sends api/ and auth/ to their handlers (a thrown error becomes a JSON 500), streams index.wasm.0, .1, … as one index.wasm, and serves every other path from the static assets; exports GameRoom.",
+      "folder": "games/chess/worker"
+    },
+    {
+      "id": "auth",
+      "name": "Sign-in (auth.ts)",
+      "responsibility": "Google and GitHub OAuth (authorization code with PKCE, state in a short-lived cookie), the verified email as the user, session cookies stored as SHA-256 hashes, Bearer tokens for desktop builds, logout, and a development sign-in when DEV_LOGIN is 1.",
+      "folder": "games/chess/worker"
+    },
+    {
+      "id": "api",
+      "name": "JSON API (api.ts)",
+      "responsibility": "me, lobby, challenges and their answers, contacts, finished games, one game, profile pictures, saving a finished game against the computer after replaying it; passes online actions and the live WebSocket to the game's Durable Object. Refuses cross-site writes and non-JSON POSTs.",
+      "folder": "games/chess/worker"
+    },
+    {
+      "id": "room",
+      "name": "Game rooms (room.ts)",
+      "responsibility": "GameRoom, a Durable Object per online game: RoomCore queues actions so they run one at a time, saves the result and broadcasts the whole game over the players' hibernatable WebSockets; answers ping with pong.",
+      "folder": "games/chess/worker"
+    },
+    {
+      "id": "actions",
+      "name": "Game actions (actions.ts)",
+      "responsibility": "Pure: what a move, resignation, draw offer, acceptance, refusal or chat message does to an online game and its transcript; validates actions from the browser and cleans chat.",
+      "folder": "games/chess/worker"
+    },
+    {
+      "id": "db",
+      "name": "Queries (db.ts, schema.sql)",
+      "responsibility": "The D1 schema and every query: users, sessions, challenges, games with their game_events, contacts and records. Saving a game only succeeds if it hasn't changed since it was loaded.",
+      "folder": "games/chess/worker"
+    },
+    {
+      "id": "mail",
+      "name": "Invitation email (mail.ts)",
+      "responsibility": "Builds the invitation email and sends it through Resend, best effort, when it is set up.",
+      "folder": "games/chess/worker"
+    },
+    {
+      "id": "shared",
+      "name": "Shared protocol and rules",
+      "responsibility": "API types, BASE, email and name cleaning, LEVELS, and the chess.js rules.",
+      "folder": "games/chess/shared",
+      "diagram": "games/chess/shared/.dev/component-diagram.json"
+    },
+    {
+      "id": "d1",
+      "name": "D1 database chess",
+      "responsibility": "Users, sessions, challenges, games, game_events and contacts.",
+      "external": true
+    },
+    {
+      "id": "providers",
+      "name": "Google and GitHub",
+      "responsibility": "OAuth endpoints, profile APIs and the profile picture hosts.",
+      "external": true
+    },
+    {
+      "id": "resend",
+      "name": "Resend",
+      "responsibility": "The email API.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "worker",
+      "to": "router",
+      "kind": "contains",
+      "description": "The fetch handler."
+    },
+    {
+      "from": "worker",
+      "to": "auth",
+      "kind": "contains",
+      "description": "Sign-in."
+    },
+    {
+      "from": "worker",
+      "to": "api",
+      "kind": "contains",
+      "description": "The API."
+    },
+    {
+      "from": "worker",
+      "to": "room",
+      "kind": "contains",
+      "description": "The Durable Object class."
+    },
+    {
+      "from": "worker",
+      "to": "actions",
+      "kind": "contains",
+      "description": "Game logic."
+    },
+    {
+      "from": "worker",
+      "to": "db",
+      "kind": "contains",
+      "description": "Storage."
+    },
+    {
+      "from": "worker",
+      "to": "mail",
+      "kind": "contains",
+      "description": "Email."
+    },
+    {
+      "from": "router",
+      "to": "api",
+      "kind": "depends-on",
+      "description": "handleApi for /retro/chess/api/*."
+    },
+    {
+      "from": "router",
+      "to": "auth",
+      "kind": "depends-on",
+      "description": "handleAuth for /retro/chess/auth/*."
+    },
+    {
+      "from": "router",
+      "to": "shared",
+      "kind": "depends-on",
+      "description": "BASE."
+    },
+    {
+      "from": "api",
+      "to": "auth",
+      "kind": "depends-on",
+      "description": "currentUser, providers and PICTURE_HOSTS."
+    },
+    {
+      "from": "api",
+      "to": "room",
+      "kind": "depends-on",
+      "description": "ROOMS.get(idFromName(game id)).fetch: POST /action and the /live upgrade, with X-User and X-Game."
+    },
+    {
+      "from": "api",
+      "to": "actions",
+      "kind": "depends-on",
+      "description": "validAction before passing an action on."
+    },
+    {
+      "from": "api",
+      "to": "db",
+      "kind": "depends-on",
+      "description": "Challenges, games, contacts and users."
+    },
+    {
+      "from": "api",
+      "to": "mail",
+      "kind": "depends-on",
+      "description": "Emails a new invitation."
+    },
+    {
+      "from": "api",
+      "to": "shared",
+      "kind": "depends-on",
+      "description": "Types, cleanEmail, and replay, boardOutcome, resignation and validMoveList to check a game against the computer."
+    },
+    {
+      "from": "api",
+      "to": "providers",
+      "kind": "depends-on",
+      "description": "Fetches profile pictures for api/avatar/{id}, only from the providers' image hosts."
+    },
+    {
+      "from": "auth",
+      "to": "db",
+      "kind": "depends-on",
+      "description": "upsertUser, createSession, sessionUser and deleteSession."
+    },
+    {
+      "from": "auth",
+      "to": "shared",
+      "kind": "depends-on",
+      "description": "BASE, cleanEmail and cleanDisplayName."
+    },
+    {
+      "from": "auth",
+      "to": "providers",
+      "kind": "depends-on",
+      "description": "Redirects to the provider; exchanges the code for a token; reads the verified email, name and picture."
+    },
+    {
+      "from": "room",
+      "to": "actions",
+      "kind": "depends-on",
+      "description": "sideOf and applyAction."
+    },
+    {
+      "from": "room",
+      "to": "db",
+      "kind": "depends-on",
+      "description": "gameById and saveGame."
+    },
+    {
+      "from": "actions",
+      "to": "shared",
+      "kind": "depends-on",
+      "description": "replay, boardOutcome, resignation, sideToMove, other and MAX_CHAT."
+    },
+    {
+      "from": "db",
+      "to": "shared",
+      "kind": "depends-on",
+      "description": "The protocol types and LEVELS for the computer's name."
+    },
+    {
+      "from": "db",
+      "to": "d1",
+      "kind": "depends-on",
+      "description": "Prepared statements and batches through the DB binding."
+    },
+    {
+      "from": "mail",
+      "to": "resend",
+      "kind": "depends-on",
+      "description": "POST https://api.resend.com/emails."
+    }
+  ]
+}

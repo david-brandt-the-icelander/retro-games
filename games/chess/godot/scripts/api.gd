@@ -72,7 +72,7 @@ func request(path: String, method := HTTPClient.METHOD_GET, body: Variant = null
 	var err := http.request(base + path, headers, method, "" if body == null else JSON.stringify(body))
 	if err != OK:
 		http.queue_free()
-		return {ok = false, status = 0, data = {}, error = "Can't reach the server."}
+		return {ok = false, status = 0, data = {}, error = "Can't reach the server. Are you online?"}
 	var r: Array = await http.request_completed
 	http.queue_free()
 	var status: int = r[1]
@@ -228,6 +228,7 @@ class Live:
 	var _wait := 0.0
 	var _ping := 0.0
 	var _was_open := false
+	var _said_down := false    ## whether connection(false) has been sent since the last time it was up
 
 	func _init(id: String) -> void:
 		game_id = id
@@ -253,6 +254,7 @@ class Live:
 			WebSocketPeer.STATE_OPEN:
 				if not _was_open:
 					_was_open = true
+					_said_down = false
 					_retry = 0.5
 					connection.emit(true)
 				_ping += delta
@@ -264,7 +266,9 @@ class Live:
 					if msg is Dictionary and msg.get("t") == "state":
 						state.emit(msg.game)
 			WebSocketPeer.STATE_CLOSED:
-				if _was_open:
+				# Down: after being open, or when even the first attempt fails.
+				if not _said_down:
+					_said_down = true
 					connection.emit(false)
 				_was_open = false
 				_wait = _retry

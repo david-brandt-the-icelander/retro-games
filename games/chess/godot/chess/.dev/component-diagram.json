@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Gambit rules component diagram",
+  "folder": "games/chess/godot/chess",
+  "description": "The rules of chess in GDScript, for the board in the game: squares 0..63, pieces as ints, moves packed into an int. The server judges online games with chess.js (shared/rules.ts); this is the same rules on the client, tested against the standard perft counts by godot/tests/test_rules.gd.",
+  "sources": [
+    {
+      "path": "games/chess/godot/chess/rules.gd",
+      "symbol": "Chess"
+    },
+    {
+      "path": "games/chess/godot/chess/rules.gd",
+      "symbol": "Chess.legal_moves"
+    },
+    {
+      "path": "games/chess/godot/chess/rules.gd",
+      "symbol": "Chess.Game"
+    },
+    {
+      "path": "games/chess/godot/tests/test_rules.gd",
+      "symbol": "_init"
+    }
+  ],
+  "components": [
+    {
+      "id": "rules",
+      "name": "Chess rules (rules.gd)",
+      "responsibility": "The global class Chess: no scene tree, no I/O.",
+      "folder": "games/chess/godot/chess"
+    },
+    {
+      "id": "moves",
+      "name": "Positions and moves",
+      "responsibility": "Chess.Position, start() and from_fen(), attack detection, pseudo-legal and legal_moves(), make(), UCI and SAN, repetition keys, insufficient material and perft.",
+      "folder": "games/chess/godot/chess"
+    },
+    {
+      "id": "game",
+      "name": "Game record (Chess.Game)",
+      "responsibility": "A game as its UCI moves, with every position, the SAN of each move and the result the board decides (mate, stalemate, material, threefold repetition, fifty moves); describe() puts a result in words.",
+      "folder": "games/chess/godot/chess"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "rules",
+      "to": "moves",
+      "kind": "contains",
+      "description": "Static functions and the Position class."
+    },
+    {
+      "from": "rules",
+      "to": "game",
+      "kind": "contains",
+      "description": "The Game class."
+    },
+    {
+      "from": "game",
+      "to": "moves",
+      "kind": "depends-on",
+      "description": "parse_uci, san, make and legal_moves for each move played, then judges the new position."
+    }
+  ]
+}
