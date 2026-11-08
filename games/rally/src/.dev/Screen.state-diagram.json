@@ -1,0 +1,192 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Rally page screen state diagram",
+  "folder": "games/rally/src",
+  "description": "Which panel the Rally page shows. It is a module variable in src/main.ts that only show() changes. BACK TO MULTIPLAYER after an online match leaves the page for the multiplayer page.",
+  "sources": [
+    {
+      "path": "games/rally/src/main.ts",
+      "symbol": "show"
+    },
+    {
+      "path": "games/rally/src/main.ts",
+      "symbol": "start"
+    },
+    {
+      "path": "games/rally/src/main.ts",
+      "symbol": "gameOver"
+    },
+    {
+      "path": "games/rally/src/main.ts",
+      "symbol": "entryKey"
+    },
+    {
+      "path": "games/rally/src/main.ts",
+      "symbol": "joinMatch"
+    }
+  ],
+  "machine": "screen (src/main.ts)",
+  "initialState": "title",
+  "states": [
+    {
+      "id": "title",
+      "description": "The title, with a computer match playing behind it."
+    },
+    {
+      "id": "help",
+      "description": "How to play."
+    },
+    {
+      "id": "play",
+      "description": "A match: against the computer, or online."
+    },
+    {
+      "id": "paused",
+      "description": "Paused; online, a menu over a match that goes on."
+    },
+    {
+      "id": "over",
+      "description": "The result."
+    },
+    {
+      "id": "entry",
+      "description": "Typing a name for the high-score table."
+    },
+    {
+      "id": "scores",
+      "description": "The high-score table."
+    },
+    {
+      "id": "online",
+      "description": "Connecting to an online match and waiting for the other player."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "title",
+      "to": "play",
+      "trigger": "1 key or the one-player button",
+      "action": "start(): ask for a seed, new match and Cpu."
+    },
+    {
+      "from": "title",
+      "to": "help",
+      "trigger": "H key or HELP"
+    },
+    {
+      "from": "help",
+      "to": "title",
+      "trigger": "Escape or H"
+    },
+    {
+      "from": "title",
+      "to": "scores",
+      "trigger": "S key or SCORES",
+      "action": "Load the table."
+    },
+    {
+      "from": "scores",
+      "to": "title",
+      "trigger": "Escape or MENU"
+    },
+    {
+      "from": "scores",
+      "to": "play",
+      "trigger": "PLAY AGAIN",
+      "guard": "shown after an entry",
+      "action": "start()"
+    },
+    {
+      "from": "title",
+      "to": "online",
+      "trigger": "page opened with ?match=ID",
+      "action": "joinMatch(id)"
+    },
+    {
+      "from": "online",
+      "to": "play",
+      "trigger": "the host's start message, or startOnline()",
+      "action": "beginOnline(): new match from the shared seed; a Lockstep."
+    },
+    {
+      "from": "online",
+      "to": "title",
+      "trigger": "Escape",
+      "action": "leaveOnline()"
+    },
+    {
+      "from": "play",
+      "to": "paused",
+      "trigger": "P or Escape, or the tab hidden or window blurred",
+      "guard": "P and leaving the tab pause only offline; Escape opens the menu online too"
+    },
+    {
+      "from": "paused",
+      "to": "play",
+      "trigger": "P, Escape, Space or RESUME"
+    },
+    {
+      "from": "paused",
+      "to": "title",
+      "trigger": "QUIT TO MENU or LEAVE THE MATCH",
+      "action": "leaveOnline(); a new demo match."
+    },
+    {
+      "from": "play",
+      "to": "entry",
+      "trigger": "gameOver() on a win event",
+      "guard": "one player, a server seed, and more than 0 points",
+      "action": "offerEntry(): suggest the session or /me name."
+    },
+    {
+      "from": "play",
+      "to": "over",
+      "trigger": "gameOver() or endOnline()",
+      "guard": "no score to enter, or an online match ended or was cut short"
+    },
+    {
+      "from": "paused",
+      "to": "over",
+      "trigger": "endOnline() or an online win",
+      "guard": "online: the match goes on behind the menu"
+    },
+    {
+      "from": "entry",
+      "to": "over",
+      "trigger": "SKIP or Escape"
+    },
+    {
+      "from": "entry",
+      "to": "scores",
+      "trigger": "ENTER",
+      "guard": "a name, and the table accepted the match",
+      "action": "submitMatch(); saveName(); show the rank."
+    },
+    {
+      "from": "entry",
+      "to": "entry",
+      "trigger": "ENTER",
+      "guard": "no name, or the table can't be reached",
+      "action": "Say so; ENTER tries again."
+    },
+    {
+      "from": "over",
+      "to": "over",
+      "trigger": "message leave or closed",
+      "action": "showOver() updates the note."
+    },
+    {
+      "from": "over",
+      "to": "play",
+      "trigger": "PLAY AGAIN",
+      "guard": "not online",
+      "action": "start()"
+    },
+    {
+      "from": "over",
+      "to": "title",
+      "trigger": "Escape or MENU"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Shatterbelt ship state diagram",
+  "folder": "games/shatterbelt/src/engine",
+  "description": "One player's ship. newGame() places every ship, so a ship starts alive. Hits come from rocks, drones and drone shots, and in versus from other ships and their shots. Extra ships come from award() every SHIP.extraEvery points.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/src/engine/game.ts",
+      "symbol": "killShip"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/game.ts",
+      "symbol": "hurtShip"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/game.ts",
+      "symbol": "updateShip"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/game.ts",
+      "symbol": "placeShip"
+    }
+  ],
+  "machine": "Ship.alive and Ship.out (src/engine/game.ts)",
+  "initialState": "alive",
+  "states": [
+    {
+      "id": "alive",
+      "description": "In play. While guard > 0 (after a spawn, a blink or a shield hit) it can't be hurt."
+    },
+    {
+      "id": "respawning",
+      "description": "Lost, with ships left; respawn counts down from SHIP.respawn."
+    },
+    {
+      "id": "out",
+      "description": "No ships left: this player is out.",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "alive",
+      "to": "alive",
+      "trigger": "hurtShip()",
+      "guard": "not guarded, shield up",
+      "action": "The shield is lost; guard = 1 s; emit shieldHit."
+    },
+    {
+      "from": "alive",
+      "to": "respawning",
+      "trigger": "hurtShip() then killShip()",
+      "guard": "not guarded, no shield, ships left after this one",
+      "action": "lives−−; lose the combo and power-ups; respawn = SHIP.respawn; emit die. Another player's hit scores TAKEDOWN."
+    },
+    {
+      "from": "alive",
+      "to": "out",
+      "trigger": "hurtShip() then killShip()",
+      "guard": "not guarded, no shield, the last ship",
+      "action": "lives−−; out = true; emit die."
+    },
+    {
+      "from": "respawning",
+      "to": "alive",
+      "trigger": "updateShip(): respawn reaches 0",
+      "action": "placeShip(): back at its spawn point, guard = SHIP.spawnGuard; emit spawn."
+    }
+  ]
+}

@@ -10,6 +10,10 @@ Recreations of retro-games that I have made with the help of AI
 | Hivestorm: an arcade shooter for one player, or two online each on their own device, with a high-score table | [games.icelander.net/retro/hivestorm](https://games.icelander.net/retro/hivestorm/) ([high scores](https://games.icelander.net/retro/hivestorm/scores/)) | [games/hivestorm](games/hivestorm) |
 | Samosa: a remake of a 1983 ZX Spectrum strategy game | [games.icelander.net/retro/samosa](https://games.icelander.net/retro/samosa/) ([high scores](https://games.icelander.net/retro/samosa/scores/)) | [games/dictator](games/dictator) |
 
+## Architecture
+
+Each folder with something architectural to say has a `.dev/` directory of JSON diagrams (component, class, state and deployment), drawn from the code and checked by `Meta/Agents/Skills/validate_diagrams.py`. They can be browsed at [icelander.net/v1/apps/architecture-browser](https://icelander.net/v1/apps/architecture-browser?url=https://github.com/david-brandt-the-icelander/retro-games). Agents read `AGENTS.md`.
+
 ## Agent skills
 
 `.claude/skills/` holds Claude Code skills for turning a faithful clone into a remake that is safe to publish. Each skill keeps the original's rules and mechanics and replaces anything copied as written:

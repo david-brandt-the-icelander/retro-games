@@ -1,0 +1,82 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Hivestorm UI classes",
+  "folder": "games/hivestorm/src/ui",
+  "description": "The controls and the sound, with the engine types they produce and consume.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/ui/input.ts",
+      "symbol": "Controls"
+    },
+    {
+      "path": "games/hivestorm/src/ui/sound.ts",
+      "symbol": "Sound"
+    }
+  ],
+  "types": [
+    {
+      "id": "ui.Controls",
+      "name": "Controls",
+      "kind": "class",
+      "sources": [
+        "games/hivestorm/src/ui/input.ts"
+      ],
+      "members": [
+        "onActivity: () => void",
+        "onMute: () => void",
+        "constructor(root: Document)",
+        "bindButton(el: HTMLElement, action: string): void",
+        "queuePause(): void",
+        "read(): Input"
+      ]
+    },
+    {
+      "id": "ui.Sound",
+      "name": "Sound",
+      "kind": "class",
+      "sources": [
+        "games/hivestorm/src/ui/sound.ts"
+      ],
+      "members": [
+        "on: boolean",
+        "unlock(): void",
+        "play(e: GameEvent): void"
+      ]
+    },
+    {
+      "id": "engine.Input",
+      "name": "Input",
+      "kind": "interface",
+      "sources": [
+        "games/hivestorm/src/engine/game.ts"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "engine.GameEvent",
+      "name": "GameEvent",
+      "kind": "type",
+      "sources": [
+        "games/hivestorm/src/engine/game.ts"
+      ],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "ui.Controls",
+      "to": "engine.Input",
+      "kind": "depends-on",
+      "description": "read() returns this frame's Input; presses are used up."
+    },
+    {
+      "from": "ui.Sound",
+      "to": "engine.GameEvent",
+      "kind": "depends-on",
+      "description": "One effect per event."
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Rally component diagram",
+  "folder": "games/rally",
+  "description": "Rally, table tennis for the browser: the client plays matches, and the Worker replays one-player matches before they go on the table.",
+  "sources": [
+    {
+      "path": "games/rally/wrangler.jsonc",
+      "symbol": "rally"
+    },
+    {
+      "path": "games/rally/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/rally/src/main.ts",
+      "symbol": "joinMatch"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Rally",
+      "responsibility": "One game: the browser client and its Worker, built and deployed together.",
+      "folder": "games/rally"
+    },
+    {
+      "id": "client",
+      "name": "Browser game",
+      "responsibility": "The engine, drawing, input, sound, menus and, where it has them, online play.",
+      "folder": "games/rally/src",
+      "diagram": "games/rally/src/.dev/component-diagram.json"
+    },
+    {
+      "id": "worker",
+      "name": "High-score Worker",
+      "responsibility": "The high-score API and public scores page; replays each game before listing it.",
+      "folder": "games/rally/worker",
+      "diagram": "games/rally/worker/.dev/component-diagram.json"
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "responsibility": "The games hub at games.icelander.net (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "external": true
+    },
+    {
+      "id": "db",
+      "name": "D1 database rally-scores",
+      "responsibility": "Issued seeds and verified scores.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "client",
+      "kind": "contains",
+      "description": "Built by build.mjs into dist/."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Deployed with wrangler."
+    },
+    {
+      "from": "client",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "Asks for a seed (POST api/game), submits the game (POST api/score) and loads the table (GET api/scores)."
+    },
+    {
+      "from": "worker",
+      "to": "client",
+      "kind": "depends-on",
+      "description": "Replays matches with src/engine/match.ts and cleans names with src/name.ts."
+    },
+    {
+      "from": "client",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Joins online matches through the relay WebSocket, and reads /me for a signed-in player's name."
+    },
+    {
+      "from": "worker",
+      "to": "db",
+      "kind": "depends-on",
+      "description": "Stores seeds and verified scores."
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Rally browser game component diagram",
+  "folder": "games/rally/src",
+  "description": "The browser side of Rally: a pure engine, the page that wires it to the DOM, drawing and input, the high-score client and online play.",
+  "sources": [
+    {
+      "path": "games/rally/src/main.ts",
+      "symbol": "frame"
+    },
+    {
+      "path": "games/rally/src/online.ts",
+      "symbol": "Lockstep"
+    },
+    {
+      "path": "games/rally/src/scores.ts",
+      "symbol": "submitMatch"
+    },
+    {
+      "path": "games/rally/src/name.ts",
+      "symbol": "cleanName"
+    }
+  ],
+  "components": [
+    {
+      "id": "client",
+      "name": "Rally browser game",
+      "responsibility": "Everything that runs in the browser.",
+      "folder": "games/rally/src"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "The pure match simulation, the computer player and replay; no DOM, no timers.",
+      "folder": "games/rally/src/engine",
+      "diagram": "games/rally/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "ui",
+      "name": "UI",
+      "responsibility": "Canvas drawing, keys, touch and mouse, synthesised sound and the name-entry keyboard.",
+      "folder": "games/rally/src/ui",
+      "diagram": "games/rally/src/ui/.dev/component-diagram.json"
+    },
+    {
+      "id": "page",
+      "name": "Page (main.ts)",
+      "responsibility": "Menus and screens, the 120 Hz fixed-step loop, recording, name entry, the table, the scoreboard and online matches.",
+      "folder": "games/rally/src"
+    },
+    {
+      "id": "online",
+      "name": "Online play (online.ts)",
+      "responsibility": "The match's WebSocket (Room) and the lockstep of every player's controls (Lockstep). Identical in Rally, Hivestorm and Shatterbelt.",
+      "folder": "games/rally/src"
+    },
+    {
+      "id": "scores",
+      "name": "High-score client (scores.ts)",
+      "responsibility": "Seeds, submitting matches, loading the table and the session name.",
+      "folder": "games/rally/src"
+    },
+    {
+      "id": "names",
+      "name": "Name rules (name.ts)",
+      "responsibility": "Cleans names for the table, the same as Samosa's rules.",
+      "folder": "games/rally/src"
+    },
+    {
+      "id": "worker",
+      "name": "High-score Worker",
+      "responsibility": "The server side of the table.",
+      "folder": "games/rally/worker",
+      "diagram": "games/rally/worker/.dev/component-diagram.json"
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "responsibility": "The games hub at games.icelander.net (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "client",
+      "to": "engine",
+      "kind": "contains",
+      "description": "The pure game."
+    },
+    {
+      "from": "client",
+      "to": "ui",
+      "kind": "contains",
+      "description": "Drawing, input and sound."
+    },
+    {
+      "from": "client",
+      "to": "page",
+      "kind": "contains",
+      "description": "The entry point."
+    },
+    {
+      "from": "client",
+      "to": "online",
+      "kind": "contains",
+      "description": "Online play."
+    },
+    {
+      "from": "client",
+      "to": "scores",
+      "kind": "contains",
+      "description": "The table's client."
+    },
+    {
+      "from": "client",
+      "to": "names",
+      "kind": "contains",
+      "description": "Name rules."
+    },
+    {
+      "from": "page",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Steps matches, drives the computer, records the player's controls and scores the match."
+    },
+    {
+      "from": "page",
+      "to": "ui",
+      "kind": "depends-on",
+      "description": "Draws, reads input, plays sounds and shows the name entry."
+    },
+    {
+      "from": "page",
+      "to": "online",
+      "kind": "depends-on",
+      "description": "Joins the match in ?match=ID and plays it in lockstep."
+    },
+    {
+      "from": "page",
+      "to": "scores",
+      "kind": "depends-on",
+      "description": "Starts ranked matches, submits them and shows the table."
+    },
+    {
+      "from": "page",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "Cleans the typed name."
+    },
+    {
+      "from": "ui",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Draws a State, produces a Control and sounds GameEvents."
+    },
+    {
+      "from": "ui",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "The on-screen keyboard types only name characters."
+    },
+    {
+      "from": "scores",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "Cleans the session name and the /me name."
+    },
+    {
+      "from": "scores",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Sends a Recording for a LevelName."
+    },
+    {
+      "from": "scores",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "HTTP: api/game, api/score and api/scores."
+    },
+    {
+      "from": "scores",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "GET /me for the signed-in player's name."
+    },
+    {
+      "from": "online",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "WebSocket /multiplayer/match/{id}."
+    }
+  ]
+}

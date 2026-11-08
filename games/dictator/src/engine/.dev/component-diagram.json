@@ -1,0 +1,197 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Samosa engine component diagram",
+  "folder": "games/dictator/src/engine",
+  "description": "The pure game. playGame(io, state, best) plays one reign month by month in the order docs/RULES.md gives, showing each screen through io.show(), which resolves with the key pressed.",
+  "sources": [
+    {
+      "path": "games/dictator/src/engine/index.ts",
+      "symbol": "playGame"
+    },
+    {
+      "path": "games/dictator/src/engine/flow.ts",
+      "symbol": "playGame"
+    },
+    {
+      "path": "games/dictator/src/engine/rules.ts",
+      "symbol": "checkPlots"
+    },
+    {
+      "path": "games/dictator/src/engine/state.ts",
+      "symbol": "newGame"
+    }
+  ],
+  "components": [
+    {
+      "id": "engine",
+      "name": "Samosa engine",
+      "responsibility": "One reign, with no DOM and no timers.",
+      "folder": "games/dictator/src/engine"
+    },
+    {
+      "id": "index",
+      "name": "Entry point (index.ts)",
+      "responsibility": "Exports newGame, playGame, snapshot and the screen types.",
+      "folder": "games/dictator/src/engine"
+    },
+    {
+      "id": "flow",
+      "name": "Reign flow (flow.ts)",
+      "responsibility": "playGame: the welcome, then each month's steps, then the rating, as one async script over IO.",
+      "folder": "games/dictator/src/engine"
+    },
+    {
+      "id": "rules",
+      "name": "Rules (rules.ts)",
+      "responsibility": "Small pure functions over GameState, each changing only what RULES says.",
+      "folder": "games/dictator/src/engine"
+    },
+    {
+      "id": "state",
+      "name": "State (state.ts)",
+      "responsibility": "GameState in one plain object, with its own seeded generator.",
+      "folder": "games/dictator/src/engine"
+    },
+    {
+      "id": "data",
+      "name": "Data tables (data.ts)",
+      "responsibility": "Requests, decisions, sections and headlines, with named fields.",
+      "folder": "games/dictator/src/engine"
+    },
+    {
+      "id": "screens",
+      "name": "Screens (screens.ts)",
+      "responsibility": "Every Screen the engine shows, and the IO interface it shows them through.",
+      "folder": "games/dictator/src/engine"
+    },
+    {
+      "id": "snapshot",
+      "name": "Snapshot (snapshot.ts)",
+      "responsibility": "The state in RULES' own terms, for comparison with a reference model.",
+      "folder": "games/dictator/src/engine"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "engine",
+      "to": "index",
+      "kind": "contains",
+      "description": "Its exports."
+    },
+    {
+      "from": "engine",
+      "to": "flow",
+      "kind": "contains",
+      "description": "The reign."
+    },
+    {
+      "from": "engine",
+      "to": "rules",
+      "kind": "contains",
+      "description": "The rules."
+    },
+    {
+      "from": "engine",
+      "to": "state",
+      "kind": "contains",
+      "description": "The state."
+    },
+    {
+      "from": "engine",
+      "to": "data",
+      "kind": "contains",
+      "description": "The tables."
+    },
+    {
+      "from": "engine",
+      "to": "screens",
+      "kind": "contains",
+      "description": "The screens."
+    },
+    {
+      "from": "engine",
+      "to": "snapshot",
+      "kind": "contains",
+      "description": "Parity testing."
+    },
+    {
+      "from": "index",
+      "to": "flow",
+      "kind": "depends-on",
+      "description": "Re-exports playGame."
+    },
+    {
+      "from": "index",
+      "to": "state",
+      "kind": "depends-on",
+      "description": "Re-exports newGame."
+    },
+    {
+      "from": "index",
+      "to": "snapshot",
+      "kind": "depends-on",
+      "description": "Re-exports snapshot."
+    },
+    {
+      "from": "index",
+      "to": "screens",
+      "kind": "depends-on",
+      "description": "Re-exports the screen types."
+    },
+    {
+      "from": "flow",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Every change of state."
+    },
+    {
+      "from": "flow",
+      "to": "data",
+      "kind": "depends-on",
+      "description": "Requests, decisions and sections."
+    },
+    {
+      "from": "flow",
+      "to": "screens",
+      "kind": "depends-on",
+      "description": "Builds Screens and shows them through IO."
+    },
+    {
+      "from": "flow",
+      "to": "state",
+      "kind": "depends-on",
+      "description": "GameState."
+    },
+    {
+      "from": "rules",
+      "to": "data",
+      "kind": "depends-on",
+      "description": "Effects and headlines."
+    },
+    {
+      "from": "rules",
+      "to": "state",
+      "kind": "depends-on",
+      "description": "GameState and its generator."
+    },
+    {
+      "from": "screens",
+      "to": "state",
+      "kind": "depends-on",
+      "description": "The Plot type."
+    },
+    {
+      "from": "screens",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "The Power type."
+    },
+    {
+      "from": "snapshot",
+      "to": "state",
+      "kind": "depends-on",
+      "description": "Reads GameState."
+    }
+  ]
+}

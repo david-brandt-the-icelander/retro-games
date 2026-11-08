@@ -1,0 +1,120 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Hivestorm UI component diagram",
+  "folder": "games/hivestorm/src/ui",
+  "description": "The canvas drawing, the pixel art, the controls and the sound effects.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/ui/render.ts",
+      "symbol": "render"
+    },
+    {
+      "path": "games/hivestorm/src/ui/art.ts",
+      "symbol": "alienSprite"
+    },
+    {
+      "path": "games/hivestorm/src/ui/input.ts",
+      "symbol": "Controls"
+    },
+    {
+      "path": "games/hivestorm/src/ui/sound.ts",
+      "symbol": "Sound"
+    }
+  ],
+  "components": [
+    {
+      "id": "ui",
+      "name": "Hivestorm UI",
+      "responsibility": "The browser-facing pieces the page wires together.",
+      "folder": "games/hivestorm/src/ui"
+    },
+    {
+      "id": "render",
+      "name": "Renderer (render.ts)",
+      "responsibility": "Draws a Game onto the 224×288 canvas; reads the game and never changes it.",
+      "folder": "games/hivestorm/src/ui"
+    },
+    {
+      "id": "art",
+      "name": "Art (art.ts)",
+      "responsibility": "Pixel sprites, palettes and the 5×7 font, all drawn for this game.",
+      "folder": "games/hivestorm/src/ui"
+    },
+    {
+      "id": "input",
+      "name": "Controls (input.ts)",
+      "responsibility": "Keys and on-screen buttons as one Input per frame.",
+      "folder": "games/hivestorm/src/ui"
+    },
+    {
+      "id": "sound",
+      "name": "Sound (sound.ts)",
+      "responsibility": "Web Audio effects made on the fly, one per game event.",
+      "folder": "games/hivestorm/src/ui"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "The Game and its rules.",
+      "folder": "games/hivestorm/src/engine",
+      "diagram": "games/hivestorm/src/engine/.dev/component-diagram.json"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "ui",
+      "to": "render",
+      "kind": "contains",
+      "description": "Drawing."
+    },
+    {
+      "from": "ui",
+      "to": "art",
+      "kind": "contains",
+      "description": "Pixel art."
+    },
+    {
+      "from": "ui",
+      "to": "input",
+      "kind": "contains",
+      "description": "Input."
+    },
+    {
+      "from": "ui",
+      "to": "sound",
+      "kind": "contains",
+      "description": "Sound."
+    },
+    {
+      "from": "render",
+      "to": "art",
+      "kind": "depends-on",
+      "description": "Sprites, colours and glyphs."
+    },
+    {
+      "from": "render",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Reads the Game and RULES."
+    },
+    {
+      "from": "art",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Sprites per alien Kind."
+    },
+    {
+      "from": "input",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Produces the engine's Input."
+    },
+    {
+      "from": "sound",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Plays GameEvents."
+    }
+  ]
+}
