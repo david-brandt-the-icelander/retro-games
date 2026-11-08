@@ -229,6 +229,31 @@ static func clock(ms: float) -> String:
 	return "%d %s, %s" % [d.day, months[d.month - 1], hm]
 
 
+## "14:05", in the player's time zone.
+static func hhmm(ms: float) -> String:
+	var bias: int = Time.get_time_zone_from_system().bias
+	var d := Time.get_datetime_dict_from_unix_time(int(ms / 1000.0) + bias * 60)
+	return "%02d:%02d" % [d.hour, d.minute]
+
+
+## "Today", "Yesterday", or "Friday 6 November" (with the year if it isn't this year).
+static func day(ms: float) -> String:
+	var bias: int = Time.get_time_zone_from_system().bias
+	var t := int(ms / 1000.0) + bias * 60
+	var now := int(Time.get_unix_time_from_system()) + bias * 60
+	var diff := now / 86400 - t / 86400
+	if diff == 0:
+		return "Today"
+	if diff == 1:
+		return "Yesterday"
+	var d := Time.get_datetime_dict_from_unix_time(t)
+	var days := ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+	var months := ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+	var s := "%s %d %s" % [days[d.weekday], d.day, months[d.month - 1]]
+	var y: int = Time.get_datetime_dict_from_unix_time(now).year
+	return s if d.year == y else "%s %d" % [s, d.year]
+
+
 ## How long something took: "7s", "2m 05s", "3h 10m", "2d 4h".
 static func duration(ms: float) -> String:
 	var s := int(ms / 1000.0)
@@ -256,6 +281,11 @@ static func ago(ms: float) -> String:
 static func moves_text(plies: int) -> String:
 	var n := (plies + 1) / 2
 	return "No moves yet" if n == 0 else ("1 move" if n == 1 else "%d moves" % n)
+
+
+## "1 win · 2 losses · 0 draws"
+static func record(w: int, l: int, d: int) -> String:
+	return "%d %s · %d %s · %d %s" % [w, "win" if w == 1 else "wins", l, "loss" if l == 1 else "losses", d, "draw" if d == 1 else "draws"]
 
 
 ## A small dot in a side's colour.
