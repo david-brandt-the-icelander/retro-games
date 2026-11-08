@@ -30,11 +30,13 @@ The implementer reads this document, the GDD and the design documents, and nothi
 9. **Firing and locking need the flight scene.** With a chart, status, market or inventory panel open over the flight view, laser and missile input is ignored, as in the baseline (C).
 10. **Visual defects are done properly.** Beam lasers draw their lines, the galaxy-jump message shows, a chart open before a jump stays open after it, and the status screen's condition labels are in the right order (D.14). None of these touch the logic.
 11. **Saves** keep the baseline's accept and reject behaviour in a LodeStar format of its own (A.12).
-12. **The market panel replaces the buy and sell prompts** (decided 8 November 2026, after the UI design). The pilot picks any goods item in any order and sets a quantity with a stepper; Buy takes that quantity and Sell sells that quantity, so partial sales are allowed. Prices, availability, hold space and cash work exactly as A.9 to A.11 say:
+12. **Panels replace the shop prompts** (decided 8 November 2026, after the UI design). In the market panel The pilot picks any goods item in any order and sets a quantity with a stepper; Buy takes that quantity and Sell sells that quantity, so partial sales are allowed. Prices, availability, hold space and cash work exactly as A.9 to A.11 say:
     - **Buy** accepts a quantity from 0 to the smallest of the item's availability, the room left in the hold for it (A.11.1), and the whole units the pilot's cash pays for at the current price; anything larger is refused before it reaches the sim. A buy of q units does exactly what step 6 of A.10.2 does for q.
     - **Sell** accepts a quantity from 0 to the cargo held of that item and adds quantity × current price to cash; selling still never restores availability.
     - Nothing in buying or selling draws a random number, so parity is unaffected; the parity harness drives these commands instead of the prompts' keys.
-    - The prompt-only behaviour of A.10.1 to A.10.3 (the 12-key number entry and its quirks, the fixed item order, the bad-quantity, hold-full and not-enough-cash notices with their one-second waits) does not apply to the market. Number entry still applies to the equipment shop until the owner decides otherwise.
+    - **The equipment panel** lists the offered items (A.12.2) with their prices; the pilot picks one and confirms to buy it, and leaving the panel takes the place of an abort, 0 or too-big entry. Everything after the choice works exactly as A.12.4 says: the cash check, the at-limit refusal and refund, each item's effect, the mount choice for lasers and the pulse-laser refund. A refused or unaffordable item shows its notice and the panel stays open rather than returning to the status screen; that changes only what is on screen.
+    - Nothing in the equipment shop draws a random number either, and the parity harness drives its commands the same way.
+    - The prompt-only behaviour of A.10.1 to A.10.3, D.6.9 to D.6.11 and D.6.13 (the 12-key number entry and its quirks, the fixed item order, the notices' one-second waits, leaving the shop after each refusal) does not apply in LodeStar.
 
 Kept as the baseline does them, for parity, and to revisit in play-testing: planet vectors are never re-normalised (Q-B1), the AI's roll-steering sign (C), hold sizes 22 and 37 tonnes and laser power as rules, with the fuel price as data (A open 6).
 
@@ -617,7 +619,7 @@ chosen start byte, or supply a list; prices on the first visit come from the sta
 
 #### A.10.1 Number entry (used by buying and by the equipment shop)
 
-> **LodeStar:** the market no longer uses number entry; the equipment shop still does (deliberate difference 12).
+> **LodeStar:** neither the market nor the equipment shop uses number entry; their panels choose the item and quantity (deliberate difference 12).
 
 Reads a whole number up to a maximum `max`:
 
@@ -720,6 +722,8 @@ twelve are offered from `T = 9` (shown 10) upward. This is a rule.
 - The beam laser's refund for a replaced pulse laser equals the pulse laser's price.
 
 #### A.12.4 The shop and each item's effect
+
+> **LodeStar:** the item is picked from the equipment panel's list instead of by number; steps 2 to 5, the table and the mount choice apply unchanged, and the panel stays open after a refusal (deliberate difference 12).
 
 The shop (docked only) lists the offered items numbered from 1, each with its price (fuel's price
 recomputed from the current fuel), and asks for a number with `max` = the number of items offered.
@@ -3447,6 +3451,8 @@ Clears the view and asks for the commander's name. Accepts:
 All other keys are ignored.
 
 #### D.6.13 Number entry (shops)
+
+> **LodeStar:** not used; the market and equipment panels replace it (deliberate difference 12).
 
 1. Start with value r = 0. Read up to 12 key presses in total (every press, including ignored
    ones, counts towards the 12); after the 12th the entry ends with the current value.
