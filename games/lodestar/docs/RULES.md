@@ -29,7 +29,7 @@ The implementer reads this document, the GDD and the design documents, and nothi
 8. **Missile lock uses the active mount's axis**, as the lasers do (C).
 9. **Firing and locking need the flight scene.** With a chart, status, market or inventory panel open over the flight view, laser and missile input is ignored, as in the baseline (C).
 10. **Visual defects are done properly.** Beam lasers draw their lines, the galaxy-jump message shows, a chart open before a jump stays open after it, and the status screen's condition labels are in the right order (D.14). None of these touch the logic.
-11. **Saves** keep the baseline's accept and reject behaviour in a LodeStar format of its own (A.12).
+11. **Saves** keep the baseline's accept and reject behaviour in a LodeStar format of its own (A.8).
 12. **Panels replace the shop prompts** (decided 8 November 2026, after the UI design). In the market panel The pilot picks any goods item in any order and sets a quantity with a stepper; Buy takes that quantity and Sell sells that quantity, so partial sales are allowed. Prices, availability, hold space and cash work exactly as A.9 to A.11 say:
     - **Buy** accepts a quantity from 0 to the smallest of the item's availability, the room left in the hold for it (A.11.1), and the whole units the pilot's cash pays for at the current price; anything larger is refused before it reaches the sim. A buy of q units does exactly what step 6 of A.10.2 does for q.
     - **Sell** accepts a quantity from 0 to the cargo held of that item and adds quantity × current price to cash; selling still never restores availability.
