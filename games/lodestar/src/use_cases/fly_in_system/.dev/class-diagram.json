@@ -3,7 +3,7 @@
   "kind": "class",
   "title": "Fly in a system class diagram",
   "folder": "games/lodestar/src/use_cases/fly_in_system",
-  "description": "The flying use case so far: the 12 Hz tick clock, the per-tick input record, the events a tick reports, and FlyInSystem, which runs the ticks.",
+  "description": "The game session: the 12 Hz tick clock, the per-tick input record, the modes and screens, the events a tick reports, and FlyInSystem, which runs the substeps, the mode machine (mod.rs) and the flight tick (tick.rs).",
   "sources": [
     {
       "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
@@ -23,11 +23,27 @@
     },
     {
       "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "Screen"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "Mode"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "TunnelKind"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
       "symbol": "Event"
     },
     {
       "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
       "symbol": "FlyInSystem"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+      "symbol": "FlyInSystem::flight_logic"
     }
   ],
   "types": [
@@ -80,7 +96,59 @@
         "games/lodestar/src/use_cases/fly_in_system/mod.rs"
       ],
       "members": [
-        "Mount(u8)"
+        "Mount, Screen, Cursor, Start, Launch",
+        "Hyperspace, GalaxyDrive",
+        "UnarmMissile, ArmMissile, FireMissile, AreaBlast, EscapePod, InSystemJump, Ecm, AutoDock (queued to the tick)",
+        "Buy, Sell, Equip (docked)",
+        "Pause, Resume, Quit, ToggleAutoCentre, ToggleDamping"
+      ]
+    },
+    {
+      "id": "screen",
+      "name": "Screen",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+      ],
+      "members": [
+        "Space",
+        "GalaxyChart",
+        "LocalChart",
+        "SystemData",
+        "Status",
+        "Market",
+        "Inventory",
+        "Equipment"
+      ]
+    },
+    {
+      "id": "mode",
+      "name": "Mode",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+      ],
+      "members": [
+        "Title",
+        "Docked",
+        "Tunnel { kind, steps }",
+        "Flight",
+        "Dying(Dying)",
+        "Escape(Escape)",
+        "kind() -> ModeKind"
+      ]
+    },
+    {
+      "id": "tunnel-kind",
+      "name": "TunnelKind",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+      ],
+      "members": [
+        "Launch",
+        "Docking",
+        "Hyperspace(Tunnel)"
       ]
     },
     {
@@ -91,22 +159,67 @@
         "games/lodestar/src/use_cases/fly_in_system/mod.rs"
       ],
       "members": [
-        "MountSelected(u8)"
+        "MountSelected, ModeChanged, Paused",
+        "Hyperspace, GalaxyDrive",
+        "LaserFired, LaserHit, MissileArmed, MissileUnarmed, MissileLocked, MissileFired",
+        "EcmStarted, EcmStopped, AreaBlast, InSystemJump",
+        "Damaged, Exploded, Scooped",
+        "Bought, Sold, Equipped"
       ]
     },
     {
-      "id": "fly",
+      "id": "session",
       "name": "FlyInSystem",
       "kind": "struct",
       "sources": [
-        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+        "games/lodestar/src/use_cases/fly_in_system/tick.rs"
       ],
       "members": [
-        "tick(input) -> Vec<Event>",
-        "ticks() -> u64",
-        "active_mount() -> u8",
-        "random() -> &mut MainGenerator"
+        "pilots, cockpit, bubble, navigation, countdown, delay, random",
+        "mode, screen, paused, substeps, ticks",
+        "new()",
+        "tick(&InputRecord) -> Vec<Event>",
+        "load(name, store), save(name, store)",
+        "flight_logic(held, dying) (tick.rs)",
+        "mode(), screen(), pilot(), cockpit(), bubble(), navigation(), countdown()"
       ]
+    },
+    {
+      "id": "pilots",
+      "name": "Pilots",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/features/saving/pilots.rs"
+      ],
+      "members": [
+        "playing: Pilot"
+      ],
+      "external": true
+    },
+    {
+      "id": "cockpit",
+      "name": "Cockpit",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/cockpit/mod.rs"
+      ],
+      "members": [
+        "the player's in-flight state"
+      ],
+      "external": true
+    },
+    {
+      "id": "bubble",
+      "name": "Bubble",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/bubble/mod.rs"
+      ],
+      "members": [
+        "the objects near the player"
+      ],
+      "external": true
     },
     {
       "id": "main-generator",
@@ -135,22 +248,58 @@
       "description": "Queues one-shot presses."
     },
     {
-      "from": "fly",
+      "from": "session",
       "to": "input",
       "kind": "depends-on",
-      "description": "tick() reads one record."
+      "description": "Runs one tick per input record."
     },
     {
-      "from": "fly",
+      "from": "session",
       "to": "event",
       "kind": "depends-on",
-      "description": "tick() returns the events it caused."
+      "description": "Reports what each tick did, in order."
     },
     {
-      "from": "fly",
+      "from": "session",
+      "to": "mode",
+      "kind": "depends-on",
+      "description": "Is in exactly one mode."
+    },
+    {
+      "from": "mode",
+      "to": "tunnel-kind",
+      "kind": "depends-on",
+      "description": "A tunnel knows what its completion does."
+    },
+    {
+      "from": "session",
+      "to": "screen",
+      "kind": "depends-on",
+      "description": "Lasers fire only from the space view."
+    },
+    {
+      "from": "session",
+      "to": "pilots",
+      "kind": "depends-on",
+      "description": "Plays the playing pilot; death restores the saved one."
+    },
+    {
+      "from": "session",
+      "to": "cockpit",
+      "kind": "depends-on",
+      "description": "Keeps the player's in-flight state."
+    },
+    {
+      "from": "session",
+      "to": "bubble",
+      "kind": "depends-on",
+      "description": "Keeps the objects near the player."
+    },
+    {
+      "from": "session",
       "to": "main-generator",
       "kind": "depends-on",
-      "description": "Owns the main generator the rules draw from."
+      "description": "Every rule that draws, draws from it."
     }
   ]
 }

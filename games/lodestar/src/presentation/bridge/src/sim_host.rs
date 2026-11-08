@@ -19,7 +19,10 @@ pub struct SimHost {
 #[godot_api]
 impl INode for SimHost {
     fn init(base: Base<Node>) -> Self {
-        Self { base, clock: TickClock::new(), sim: FlyInSystem::new(), queued: Vec::new() }
+        // Until the title and docked panels exist, the host starts a game and launches at once.
+        let mut sim = FlyInSystem::new();
+        sim.tick(&InputRecord { presses: vec![Press::Start], ..Default::default() });
+        Self { base, clock: TickClock::new(), sim, queued: vec![Press::Launch] }
     }
 
     fn process(&mut self, delta: f64) {
@@ -30,10 +33,8 @@ impl INode for SimHost {
             let events = self.sim.tick(&input);
             let tick = self.sim.ticks() as i64;
             for event in events {
-                match event {
-                    Event::MountSelected(mount) => {
-                        self.base_mut().emit_signal("mount_selected", &[i64::from(mount).to_variant()]);
-                    }
+                if let Event::MountSelected(mount) = event {
+                    self.base_mut().emit_signal("mount_selected", &[i64::from(mount).to_variant()]);
                 }
             }
             self.base_mut().emit_signal("ticked", &[tick.to_variant()]);

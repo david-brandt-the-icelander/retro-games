@@ -2,7 +2,7 @@
 
 A space trading and combat game for the desktop (Windows, macOS, Linux), with its rules in Rust and its picture in Godot 4: the mechanics of a 1984 BBC Micro classic, with its own galaxy, market, names and text, a third-person camera that always shows your ship, and modern 3D art.
 
-**Status:** design (overall design, rules, art bible, UI design; the GDD awaits approval) and the spike: the sim ticks at 12 Hz inside Godot, and the Cheetah flies under the orbit camera near a blooming sun. Nothing is playable yet. LodeStar is the working title and `lodestar` its slug; the GDD phase confirms the title. The first deliverable is a working base: the Rust sim built from `docs/RULES.md` under a plain playable client.
+**Status:** design approved (overall design, rules, GDD, art bible, UI design). The working base's sim is built from `docs/RULES.md`: the universe, trading and equipment, saving, flight, combat and the ship AI, spawning, docking, hyperspace, death and the escape pod, driven by a 12 Hz tick through every game mode, with 409 tests. The plain playable client on top of it is next; for now the Godot scene launches straight into flight with the Cheetah under the orbit camera near a blooming sun. LodeStar is the working title and `lodestar` its slug.
 
 - [docs/DESIGN.md](docs/DESIGN.md): the overall design: the sim and presentation split, the camera, ships and their rig contract, animation, lighting and bloom, controls, HUD, UI, the desktop build, the layered source layout, testing and milestones.
 - [docs/RULES.md](docs/RULES.md): the clean-room behaviour spec (phase 1, approved): universe and trade, flight, combat and AI, game modes and messages, tick by tick, with the owner's decisions and the deliberate differences they make.

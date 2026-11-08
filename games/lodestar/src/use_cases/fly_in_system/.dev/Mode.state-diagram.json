@@ -1,0 +1,161 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "LodeStar game modes",
+  "folder": "games/lodestar/src/use_cases/fly_in_system",
+  "description": "The game's modes (RULES D.2) as FlyInSystem drives them, one substep at a time.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "FlyInSystem::substep"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+      "symbol": "FlyInSystem::flight_logic"
+    }
+  ],
+  "machine": "FlyInSystem.mode and FlyInSystem.paused (src/use_cases/fly_in_system/mod.rs)",
+  "initialState": "title",
+  "states": [
+    {
+      "id": "title",
+      "description": "The title: waits for the start press; loading a pilot happens here."
+    },
+    {
+      "id": "docked",
+      "description": "Docked at the current system's station: trading, equipment, charts, saving."
+    },
+    {
+      "id": "launch-tunnel",
+      "description": "The 16-step launch tunnel."
+    },
+    {
+      "id": "docking-tunnel",
+      "description": "The 16-step docking tunnel."
+    },
+    {
+      "id": "hyperspace-tunnel",
+      "description": "The 16-step hyperspace tunnel."
+    },
+    {
+      "id": "flight",
+      "description": "Flying: half-moves every substep, the flight tick logic on every logic substep."
+    },
+    {
+      "id": "dying",
+      "description": "The death sequence: 61 ticks of dying flight logic, then the title."
+    },
+    {
+      "id": "escape",
+      "description": "The escape pod: the abandoned hull drifts for 97 ticks."
+    },
+    {
+      "id": "paused",
+      "description": "Pause is a flag over docked and flight: nothing runs; presses go to the pause handler."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "title",
+      "to": "docked",
+      "trigger": "Press::Start",
+      "guard": "first press in the substep",
+      "action": "Restore the saved pilot, reset the flight state, enter the docked state (RULES D.3.1)."
+    },
+    {
+      "from": "docked",
+      "to": "launch-tunnel",
+      "trigger": "Press::Launch"
+    },
+    {
+      "from": "launch-tunnel",
+      "to": "flight",
+      "trigger": "16th tunnel step",
+      "action": "station::launch: planet ahead, station behind, speed 12, legal OR contraband."
+    },
+    {
+      "from": "flight",
+      "to": "docking-tunnel",
+      "trigger": "contact docks, or Press::AutoDock succeeds",
+      "action": "Clear the countdown; the rest of the tick still runs (Q-B13)."
+    },
+    {
+      "from": "docking-tunnel",
+      "to": "docked",
+      "trigger": "16th tunnel step",
+      "action": "finish_docking: reset the flight state, enter the docked state."
+    },
+    {
+      "from": "flight",
+      "to": "hyperspace-tunnel",
+      "trigger": "the countdown reaches 0 (tick step 11)",
+      "action": "hyperspace::jump: fuel, the mis-jump roll or the galaxy transform."
+    },
+    {
+      "from": "hyperspace-tunnel",
+      "to": "flight",
+      "trigger": "16th tunnel step",
+      "action": "hyperspace::arrive: the market draw, the reset, the new system or the ambush."
+    },
+    {
+      "from": "flight",
+      "to": "escape",
+      "trigger": "Press::EscapePod",
+      "guard": "an escape pod is fitted",
+      "action": "Later queued actions and the laser are skipped; the rest of the tick runs."
+    },
+    {
+      "from": "escape",
+      "to": "docked",
+      "trigger": "97 ticks pass",
+      "guard": "not from the Deep",
+      "action": "The rescue: hold emptied, legal clean, pod used, full tank."
+    },
+    {
+      "from": "escape",
+      "to": "dying",
+      "trigger": "97 ticks pass",
+      "guard": "used in the Deep"
+    },
+    {
+      "from": "flight",
+      "to": "dying",
+      "trigger": "energy 0, a crash, a burn, or a fatal docking",
+      "action": "death::die: countdown cancelled, reset, four wreck canisters."
+    },
+    {
+      "from": "dying",
+      "to": "title",
+      "trigger": "61 ticks pass",
+      "action": "return_to_title: the saved pilot is restored."
+    },
+    {
+      "from": "flight",
+      "to": "paused",
+      "trigger": "Press::Pause"
+    },
+    {
+      "from": "docked",
+      "to": "paused",
+      "trigger": "Press::Pause"
+    },
+    {
+      "from": "paused",
+      "to": "flight",
+      "trigger": "Press::Resume",
+      "guard": "was flying"
+    },
+    {
+      "from": "paused",
+      "to": "docked",
+      "trigger": "Press::Resume",
+      "guard": "was docked"
+    },
+    {
+      "from": "paused",
+      "to": "title",
+      "trigger": "Press::Quit",
+      "action": "Reset the flight state."
+    }
+  ]
+}
