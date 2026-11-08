@@ -600,7 +600,6 @@ func _lobby() -> Control:
 	left.add_child(UI.card(active))
 	left.add_child(out_card)
 	right.add_child(UI.card(contacts))
-	right.add_child(UI.button("All your games", func() -> void: go("history"), "Ghost"))
 
 	fns.refresh = func() -> void:
 		var r := await Api.get_json("api/lobby")
@@ -668,7 +667,9 @@ func _fill_incoming(box: VBoxContainer, list: Array, holder: Control) -> void:
 
 func _fill_active(box: VBoxContainer, list: Array) -> void:
 	UI.clear(box)
-	box.add_child(UI.label("Your games", "Heading"))
+	# The heading, with the way to every finished game at its right.
+	box.add_child(UI.hbox(8, [UI.label("Your games", "Heading"), UI.spacer(),
+		UI.button("All your games", func() -> void: go("history"), "Ghost")]))
 	if list.is_empty():
 		box.add_child(UI.label("No games in play. Invite someone!", "Muted"))
 	for g in list:

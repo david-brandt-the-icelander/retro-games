@@ -179,13 +179,12 @@ Column 1120, two columns side by side (gap 18): left takes 1.15 shares of the wi
    - Row (gap 8): Muted **You play**; Chips **White** · **Random** · **Black** (Random on).
    - After sending, below: Muted, wrapping, `Invitation emailed to {email}. You can also send them this link:` (when an email went out) or `Invitation waiting for {email}. You can also send them this link:`; then a row of a read-only text field with the link and a Button **Copy** (toast "Link copied."). The *notify* sound plays and the field empties.
 2. **Invitations for you** (card, gap 10; hidden when there are none). Heading, then a row per invitation, newest first: avatar 40 · name (Strong) over `{email} · you play {white|black|a random colour} · {ago}` (Muted; both truncate with "…") · Primary **Accept** (opens the new game) · Ghost **Decline**.
-3. **Your games** (card, gap 10). Heading, then a clickable row per game in play, most recently active first: avatar 40 of the opponent · name over `{N moves} · {ago}` plus ` · draw offered` if the opponent has offered one · side dot 12 for your colour · **Your move** (Strong, gold) or **Their move** (Muted). When empty: Muted "No games in play. Invite someone!". A click opens the game.
+3. **Your games** (card, gap 10). A row (gap 8) of the Heading, a spacer and a Ghost **All your games** (history), then a clickable row per game in play, most recently active first: avatar 40 of the opponent · name over `{N moves} · {ago}` plus ` · draw offered` if the opponent has offered one · side dot 12 for your colour · **Your move** (Strong, gold) or **Their move** (Muted). When empty: Muted "No games in play. Invite someone!". A click opens the game.
 4. **Waiting for an answer** (card, gap 10; hidden when none). A row per invitation you sent: the email over `sent {ago}` · Ghost **Copy link** · Ghost **Cancel**.
 
 **Right column:**
 
 1. **Contacts** (card, gap 10). Heading, then a clickable row per contact (most recently played first): avatar 40 · name over `{email} · {W}W {L}L {D}D`. When empty: Muted, wrapping "Everyone you play is kept here, with your record and your games against them." A click opens the contact.
-2. Ghost **All your games** (history).
 
 If the page was opened from an invitation link (`?challenge=ID`) and that invitation is open and addressed to this account, it is simply there under **Invitations for you**. If it was already accepted, its game opens; otherwise a toast says `That invitation was {declined|cancelled}.` or `That invitation was sent to a different address than {email}.` (error).
 
