@@ -6,6 +6,7 @@ use super::countdown::{Countdown, Destination};
 use super::navigation::{galaxy, Navigation};
 use crate::capabilities::bubble::Bubble;
 use crate::capabilities::cockpit::{Cockpit, Message};
+use crate::capabilities::combat;
 use crate::capabilities::market;
 use crate::capabilities::pilot::Pilot;
 use crate::capabilities::random::MainGenerator;
@@ -90,7 +91,7 @@ pub fn press_galaxy_drive(countdown: &mut Countdown, pilot: &mut Pilot, docked: 
         return GalaxyDriveKey::NotFitted;
     }
     pilot.fitted.galaxy_drive = false;
-    pilot.legal = 0;
+    combat::on_galaxy_jump(pilot);
     countdown.start(Destination::NextGalaxy);
     GalaxyDriveKey::Started
 }
@@ -215,8 +216,7 @@ fn common_arrival(
     market::draw_and_arrive(pilot, system.economy, random);
     cockpit.reset(random);
     bubble.clear();
-    let legal_low_bit = pilot.legal & 1 == 1;
-    pilot.legal >>= 1;
+    let legal_low_bit = combat::on_hyperspace_arrival(pilot) == 1;
     place_on_arrival(bubble, &system, legal_low_bit);
     cockpit.active_mount = 0;
 }

@@ -4,6 +4,7 @@
 
 use crate::capabilities::bubble::{Bubble, Object};
 use crate::capabilities::cockpit::{Cockpit, Message};
+use crate::capabilities::combat;
 use crate::capabilities::flight::LAUNCH_SPEED;
 use crate::capabilities::pilot::Pilot;
 use crate::capabilities::random::MainGenerator;
@@ -127,7 +128,7 @@ pub fn launch(
     ));
     cockpit.station_present = true;
     cockpit.speed = LAUNCH_SPEED;
-    pilot.legal |= pilot.contraband();
+    combat::on_launch(pilot);
     cockpit.active_mount = 0;
     selection
 }

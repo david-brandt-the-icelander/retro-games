@@ -54,7 +54,7 @@
     {
       "id": "features",
       "name": "Features",
-      "responsibility": "Behaviours built from capabilities: saving and loading the pilot, and trading at the market panel.",
+      "responsibility": "Behaviours built from capabilities: hyperspace, spawning, the station, docking, the planet and sun, the in-system jump, the escape pod, death, saving and loading the pilot, and trading at the market panel.",
       "folder": "games/lodestar/src/features"
     },
     {
