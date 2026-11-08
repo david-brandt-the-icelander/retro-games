@@ -1,0 +1,111 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Samosa platform layer component diagram",
+  "folder": "games/dictator/src/zx",
+  "description": "A model of the ZX Spectrum, for this game's look: the display as a bitmap and attribute grid, its own font, one-key-at-a-time input and beeper sound. Nothing here knows the game.",
+  "sources": [
+    {
+      "path": "games/dictator/src/zx/screen.ts",
+      "symbol": "ZXScreen"
+    },
+    {
+      "path": "games/dictator/src/zx/display.ts",
+      "symbol": "Display"
+    },
+    {
+      "path": "games/dictator/src/zx/input.ts",
+      "symbol": "Input"
+    },
+    {
+      "path": "games/dictator/src/zx/sound.ts",
+      "symbol": "Sound"
+    },
+    {
+      "path": "games/dictator/src/zx/font.ts",
+      "symbol": "glyph"
+    }
+  ],
+  "components": [
+    {
+      "id": "zx",
+      "name": "Samosa platform layer",
+      "responsibility": "The emulated Spectrum.",
+      "folder": "games/dictator/src/zx"
+    },
+    {
+      "id": "screen",
+      "name": "ZXScreen (screen.ts)",
+      "responsibility": "256×192 one-bit bitmap, 32×24 attributes (INK, PAPER, BRIGHT, FLASH) and a border; renders to RGBA as a pure function.",
+      "folder": "games/dictator/src/zx"
+    },
+    {
+      "id": "display",
+      "name": "Display (display.ts)",
+      "responsibility": "Shows a ZXScreen on a canvas, toggles FLASH every 0.32 s and scales to fit.",
+      "folder": "games/dictator/src/zx"
+    },
+    {
+      "id": "font",
+      "name": "Font (font.ts)",
+      "responsibility": "An 8×8 character set drawn for this project, not the Sinclair ROM font.",
+      "folder": "games/dictator/src/zx"
+    },
+    {
+      "id": "input",
+      "name": "Input (input.ts)",
+      "responsibility": "Every prompt waits for one key; on touch screens a keypad offers the keys that matter.",
+      "folder": "games/dictator/src/zx"
+    },
+    {
+      "id": "sound",
+      "name": "Sound (sound.ts)",
+      "responsibility": "Beeper-style square-wave notes, rests and noise.",
+      "folder": "games/dictator/src/zx"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "zx",
+      "to": "screen",
+      "kind": "contains",
+      "description": "The display model."
+    },
+    {
+      "from": "zx",
+      "to": "display",
+      "kind": "contains",
+      "description": "The canvas."
+    },
+    {
+      "from": "zx",
+      "to": "font",
+      "kind": "contains",
+      "description": "The font."
+    },
+    {
+      "from": "zx",
+      "to": "input",
+      "kind": "contains",
+      "description": "Input."
+    },
+    {
+      "from": "zx",
+      "to": "sound",
+      "kind": "contains",
+      "description": "Sound."
+    },
+    {
+      "from": "screen",
+      "to": "font",
+      "kind": "depends-on",
+      "description": "Prints glyphs."
+    },
+    {
+      "from": "display",
+      "to": "screen",
+      "kind": "depends-on",
+      "description": "Renders it."
+    }
+  ]
+}

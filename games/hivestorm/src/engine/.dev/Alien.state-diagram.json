@@ -1,0 +1,135 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Hivestorm alien flight state diagram",
+  "folder": "games/hivestorm/src/engine",
+  "description": "How one alien flies. The Game drives it in moveAliens(), launchDives(), wrap() and kill(). At the start of every turn and wave, loadHive() rebuilds every alien in home, alive or not as the player's survivors say.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/engine/game.ts",
+      "symbol": "Game.moveAliens"
+    },
+    {
+      "path": "games/hivestorm/src/engine/game.ts",
+      "symbol": "Game.launchDives"
+    },
+    {
+      "path": "games/hivestorm/src/engine/game.ts",
+      "symbol": "Game.wrap"
+    },
+    {
+      "path": "games/hivestorm/src/engine/game.ts",
+      "symbol": "Game.kill"
+    }
+  ],
+  "machine": "Alien.mode and Alien.alive (src/engine/game.ts)",
+  "initialState": "home",
+  "states": [
+    {
+      "id": "home",
+      "description": "In its slot in the swaying hive."
+    },
+    {
+      "id": "peel",
+      "description": "Turning out of the hive on a circular arc."
+    },
+    {
+      "id": "dive",
+      "description": "Flying down at the player, steering and firing; an escort flies in formation with its queen."
+    },
+    {
+      "id": "return",
+      "description": "Coming down from the top of the screen to its slot."
+    },
+    {
+      "id": "shot",
+      "description": "alive = false: shot, or it rammed the ship.",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "home",
+      "to": "peel",
+      "trigger": "launchDives(): chosen to dive",
+      "guard": "the dive cooldown is over and fewer than maxDivers(wave) are out, or it is a swarm",
+      "action": "startDive(): side, arc, shots and fire delay; emit dive."
+    },
+    {
+      "from": "home",
+      "to": "dive",
+      "trigger": "launchDives(): its queen dives",
+      "guard": "a guard within one column of the queen, at most two",
+      "action": "leader = the queen; keep its offset."
+    },
+    {
+      "from": "peel",
+      "to": "dive",
+      "trigger": "moveAliens(): the arc reaches RULES.peel.sweep"
+    },
+    {
+      "from": "dive",
+      "to": "dive",
+      "trigger": "moveAliens(): its queen is gone or home",
+      "guard": "an escort",
+      "action": "leader = −1; it carries on alone."
+    },
+    {
+      "from": "peel",
+      "to": "return",
+      "trigger": "wrap(): flew off the bottom",
+      "guard": "not a swarm, or the phase isn't play",
+      "action": "Re-enter at the top above its slot."
+    },
+    {
+      "from": "dive",
+      "to": "return",
+      "trigger": "wrap(): flew off the bottom",
+      "guard": "not a swarm, or the phase isn't play",
+      "action": "Re-enter at the top above its slot."
+    },
+    {
+      "from": "peel",
+      "to": "dive",
+      "trigger": "wrap(): flew off the bottom",
+      "guard": "a swarm in play",
+      "action": "Straight into another dive from the top."
+    },
+    {
+      "from": "dive",
+      "to": "dive",
+      "trigger": "wrap(): flew off the bottom",
+      "guard": "a swarm in play",
+      "action": "Straight into another dive from the top."
+    },
+    {
+      "from": "return",
+      "to": "home",
+      "trigger": "moveAliens(): reaches its slot"
+    },
+    {
+      "from": "home",
+      "to": "shot",
+      "trigger": "kill(): hit by the player's shot, or rams the ship",
+      "action": "Score pointsFor(); emit hit, or queen for a diving queen."
+    },
+    {
+      "from": "peel",
+      "to": "shot",
+      "trigger": "kill(): hit by the player's shot, or rams the ship",
+      "action": "Score pointsFor(); emit hit, or queen for a diving queen."
+    },
+    {
+      "from": "dive",
+      "to": "shot",
+      "trigger": "kill(): hit by the player's shot, or rams the ship",
+      "action": "Score pointsFor(); emit hit, or queen for a diving queen."
+    },
+    {
+      "from": "return",
+      "to": "shot",
+      "trigger": "kill(): hit by the player's shot, or rams the ship",
+      "action": "Score pointsFor(); emit hit, or queen for a diving queen."
+    }
+  ]
+}

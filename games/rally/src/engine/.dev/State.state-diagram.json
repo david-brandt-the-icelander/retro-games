@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Rally match state diagram",
+  "folder": "games/rally/src/engine",
+  "description": "The phase of one Rally match. newMatch(seed) starts in serve, and only step() changes the phase. The paddles move in every phase.",
+  "sources": [
+    {
+      "path": "games/rally/src/engine/rules.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/rally/src/engine/rules.ts",
+      "symbol": "score"
+    },
+    {
+      "path": "games/rally/src/engine/rules.ts",
+      "symbol": "serve"
+    }
+  ],
+  "machine": "State.phase (src/engine/rules.ts)",
+  "initialState": "serve",
+  "states": [
+    {
+      "id": "serve",
+      "description": "The ball rests on the server's paddle for SERVE_DELAY."
+    },
+    {
+      "id": "play",
+      "description": "The ball is in play, sub-stepped so it can't pass through a paddle."
+    },
+    {
+      "id": "point",
+      "description": "The pause after a point, POINT_PAUSE."
+    },
+    {
+      "id": "over",
+      "description": "A side has at least 11 points and leads by two; step() changes nothing more.",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "serve",
+      "to": "play",
+      "trigger": "step(): the timer reaches 0",
+      "action": "serve(): launch at SERVE_SPEED with a random slope; rally = 0; emit serve."
+    },
+    {
+      "from": "play",
+      "to": "play",
+      "trigger": "step(): the ball crosses a paddle's face",
+      "guard": "the paddle overlaps the ball",
+      "action": "returnBall(): steeper off-centre and 6% faster; emit paddle."
+    },
+    {
+      "from": "play",
+      "to": "point",
+      "trigger": "step(): the ball leaves the table",
+      "guard": "winnerOf(score) is null",
+      "action": "The other side scores; timer = POINT_PAUSE; emit point."
+    },
+    {
+      "from": "play",
+      "to": "over",
+      "trigger": "step(): the ball leaves the table",
+      "guard": "winnerOf(score) is a side",
+      "action": "winner = that side; emit point and win."
+    },
+    {
+      "from": "point",
+      "to": "serve",
+      "trigger": "step(): the timer reaches 0",
+      "action": "server = serverFor(score, firstServer); timer = SERVE_DELAY; rest the ball."
+    }
+  ]
+}

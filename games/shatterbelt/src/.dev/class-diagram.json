@@ -1,0 +1,238 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Shatterbelt browser classes",
+  "folder": "games/shatterbelt/src",
+  "description": "The page's helper classes: input, sound, the renderer, and the online room and lockstep.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/src/input.ts",
+      "symbol": "Input"
+    },
+    {
+      "path": "games/shatterbelt/src/sound.ts",
+      "symbol": "Sound"
+    },
+    {
+      "path": "games/shatterbelt/src/render.ts",
+      "symbol": "Renderer"
+    },
+    {
+      "path": "games/shatterbelt/src/online.ts",
+      "symbol": "Room"
+    }
+  ],
+  "types": [
+    {
+      "id": "Input",
+      "name": "Input",
+      "kind": "class",
+      "sources": [
+        "games/shatterbelt/src/input.ts"
+      ],
+      "members": [
+        "readonly touch: Controls",
+        "touchSeen: boolean",
+        "constructor(target: Window)",
+        "release(): void",
+        "setTouch(ctl: keyof Controls | \"pause\", on: boolean): void",
+        "poll(): void",
+        "drain(): Press[]",
+        "isDown(code: string): boolean",
+        "controls(): Controls"
+      ]
+    },
+    {
+      "id": "Press",
+      "name": "Press",
+      "kind": "interface",
+      "sources": [
+        "games/shatterbelt/src/input.ts"
+      ],
+      "members": [
+        "code: string",
+        "key: string"
+      ]
+    },
+    {
+      "id": "Sound",
+      "name": "Sound",
+      "kind": "class",
+      "sources": [
+        "games/shatterbelt/src/sound.ts"
+      ],
+      "members": [
+        "muted: boolean",
+        "unlock(): void",
+        "toggle(): boolean",
+        "follow(g: Game | null): void",
+        "play(events: GameEvent[]): void"
+      ]
+    },
+    {
+      "id": "Renderer",
+      "name": "Renderer",
+      "kind": "class",
+      "sources": [
+        "games/shatterbelt/src/render.ts"
+      ],
+      "members": [
+        "scale: number",
+        "constructor(canvas: HTMLCanvasElement)",
+        "fit(): void",
+        "toField(clientX: number, clientY: number): { x: number; y: number }",
+        "absorb(events: GameEvent[], g: Game): void",
+        "trails(g: Game): void",
+        "update(dt: number): void",
+        "clearEffects(): void",
+        "world(g: Game, t: number): void",
+        "hud(g: Game, best: number, offline = false): void",
+        "paused(): void",
+        "title(t: number, scores: TableRow[], isPublic: boolean, touch: boolean, keysLabel: string, busy: string | null = null): void",
+        "gameOver(g: Game, t: number): void",
+        "entry(id: number, score: number, ranked: boolean): void",
+        "saving(t: number): void",
+        "saved(results: Result[] | null, t: number): void"
+      ]
+    },
+    {
+      "id": "online.Room",
+      "name": "Room",
+      "kind": "class",
+      "sources": [
+        "games/shatterbelt/src/online.ts"
+      ],
+      "members": [
+        "you: number",
+        "size: number",
+        "names: string[]",
+        "readonly peers: Set<number>",
+        "rtt: number",
+        "readonly rtts: Map<number, number>",
+        "closed: boolean",
+        "static open(match: string): Promise<Room>",
+        "get host(): number",
+        "get isHost(): boolean",
+        "listen(fn: RoomListener): () => void",
+        "send(msg: object): void",
+        "close(): void"
+      ]
+    },
+    {
+      "id": "online.Lockstep",
+      "name": "Lockstep",
+      "kind": "class",
+      "sources": [
+        "games/shatterbelt/src/online.ts"
+      ],
+      "members": [
+        "frame: number",
+        "readonly me: number",
+        "waitingSince: number | null",
+        "onDesync: () => void",
+        "onLeave: (player: number) => void",
+        "static readonly CHECK_EVERY = 120",
+        "constructor(room: Room, start: Start, idle: number)",
+        "get players(): number",
+        "present(player: number): boolean",
+        "stop(): void",
+        "local(controls: number): void",
+        "ready(): boolean",
+        "waiting(): number[]",
+        "next(): (number | null)[]",
+        "flush(now: number): void",
+        "stalled(now: number, stuck: boolean): void",
+        "check(hash: number): void"
+      ]
+    },
+    {
+      "id": "online.Start",
+      "name": "Start",
+      "kind": "interface",
+      "sources": [
+        "games/shatterbelt/src/online.ts"
+      ],
+      "members": [
+        "slots: number[]",
+        "seed: number",
+        "delay: number"
+      ]
+    },
+    {
+      "id": "online.RoomMessage",
+      "name": "RoomMessage",
+      "kind": "type",
+      "sources": [
+        "games/shatterbelt/src/online.ts"
+      ],
+      "members": [
+        "t: string",
+        "from?: number"
+      ]
+    },
+    {
+      "id": "engine.Controls",
+      "name": "Controls",
+      "kind": "interface",
+      "sources": [
+        "games/shatterbelt/src/engine/game.ts"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "engine.Game",
+      "name": "Game",
+      "kind": "interface",
+      "sources": [
+        "games/shatterbelt/src/engine/game.ts"
+      ],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "Input",
+      "to": "engine.Controls",
+      "kind": "depends-on",
+      "description": "controls() returns the pilot's Controls."
+    },
+    {
+      "from": "Input",
+      "to": "Press",
+      "kind": "depends-on",
+      "description": "drain() returns menu presses."
+    },
+    {
+      "from": "Sound",
+      "to": "engine.Game",
+      "kind": "depends-on",
+      "description": "follow() sets the rumble from thrusting ships and the warble from drones."
+    },
+    {
+      "from": "Renderer",
+      "to": "engine.Game",
+      "kind": "depends-on",
+      "description": "Draws the world, the HUD and every scene from it."
+    },
+    {
+      "from": "online.Lockstep",
+      "to": "online.Room",
+      "kind": "depends-on",
+      "description": "Listens to the room for controls, fingerprints and departures, and sends its own through it."
+    },
+    {
+      "from": "online.Lockstep",
+      "to": "online.Start",
+      "kind": "depends-on",
+      "description": "Built from the host's start: the slots, the seed and the delay."
+    },
+    {
+      "from": "online.Room",
+      "to": "online.RoomMessage",
+      "kind": "depends-on",
+      "description": "Parses relay messages and passes them to listeners."
+    }
+  ]
+}

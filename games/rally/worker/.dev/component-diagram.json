@@ -1,0 +1,138 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Rally Worker component diagram",
+  "folder": "games/rally/worker",
+  "description": "The Rally Worker: the high-score API, the public scores page and, for every other path, the static game. Scores are never trusted from the browser.",
+  "sources": [
+    {
+      "path": "games/rally/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/rally/worker/scores.ts",
+      "symbol": "json"
+    },
+    {
+      "path": "games/rally/worker/scores-page.ts",
+      "symbol": "scoresPage"
+    },
+    {
+      "path": "games/rally/worker/look.ts",
+      "symbol": "sitePage"
+    }
+  ],
+  "components": [
+    {
+      "id": "worker",
+      "name": "Rally Worker",
+      "responsibility": "Routes requests to the API, the scores page or the static assets.",
+      "folder": "games/rally/worker"
+    },
+    {
+      "id": "api",
+      "name": "API routes (index.ts)",
+      "responsibility": "POST api/game issues a seed, POST api/score replays and records, GET api/scores lists the table; other paths go to the static assets.",
+      "folder": "games/rally/worker"
+    },
+    {
+      "id": "helpers",
+      "name": "Score helpers (scores.ts)",
+      "responsibility": "Parses submissions, cleans names, and verifies a match by replaying it.",
+      "folder": "games/rally/worker"
+    },
+    {
+      "id": "page",
+      "name": "Scores page (scores-page.ts)",
+      "responsibility": "The public table as a web page.",
+      "folder": "games/rally/worker"
+    },
+    {
+      "id": "look",
+      "name": "Site look (look.ts)",
+      "responsibility": "icelander.net's page shell, with inline CSS and a strict Content-Security-Policy.",
+      "folder": "games/rally/worker"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "The same engine the browser runs.",
+      "folder": "games/rally/src/engine",
+      "diagram": "games/rally/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "names",
+      "name": "Name rules (src/name.ts)",
+      "responsibility": "Cleans names the same way as the browser.",
+      "folder": "games/rally/src"
+    },
+    {
+      "id": "db",
+      "name": "D1 database",
+      "responsibility": "Issued seeds and verified scores.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "worker",
+      "to": "api",
+      "kind": "contains",
+      "description": "The fetch handler."
+    },
+    {
+      "from": "worker",
+      "to": "helpers",
+      "kind": "contains",
+      "description": "Shared by the handler and the tests."
+    },
+    {
+      "from": "worker",
+      "to": "page",
+      "kind": "contains",
+      "description": "Renders the public table."
+    },
+    {
+      "from": "worker",
+      "to": "look",
+      "kind": "contains",
+      "description": "The page shell."
+    },
+    {
+      "from": "api",
+      "to": "helpers",
+      "kind": "depends-on",
+      "description": "Validates submissions and verifies them by replay."
+    },
+    {
+      "from": "api",
+      "to": "page",
+      "kind": "depends-on",
+      "description": "Serves /scores/."
+    },
+    {
+      "from": "api",
+      "to": "db",
+      "kind": "depends-on",
+      "description": "Prepared statements on the games and scores tables."
+    },
+    {
+      "from": "page",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Wraps the table in the site look."
+    },
+    {
+      "from": "helpers",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "replay() from src/engine/match.ts and LEVELS from src/engine/ai.ts."
+    },
+    {
+      "from": "helpers",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "cleanName() for submitted names."
+    }
+  ]
+}

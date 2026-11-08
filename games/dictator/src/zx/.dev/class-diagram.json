@@ -1,0 +1,160 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Samosa platform layer classes",
+  "folder": "games/dictator/src/zx",
+  "description": "The four platform classes and the types they take.",
+  "sources": [
+    {
+      "path": "games/dictator/src/zx/screen.ts",
+      "symbol": "ZXScreen"
+    },
+    {
+      "path": "games/dictator/src/zx/display.ts",
+      "symbol": "Display"
+    },
+    {
+      "path": "games/dictator/src/zx/input.ts",
+      "symbol": "Input"
+    },
+    {
+      "path": "games/dictator/src/zx/sound.ts",
+      "symbol": "Sound"
+    }
+  ],
+  "types": [
+    {
+      "id": "zx.ZXScreen",
+      "name": "ZXScreen",
+      "kind": "class",
+      "sources": [
+        "games/dictator/src/zx/screen.ts"
+      ],
+      "members": [
+        "readonly pixels: Uint8Array",
+        "readonly attrs: Uint8Array",
+        "border: number",
+        "readonly chars: string[]",
+        "clipped: number",
+        "hasFooter: boolean",
+        "version: number",
+        "cls(attr: Attr, border = this.border): void",
+        "setBorder(colour: number): void",
+        "attrAt(col: number, row: number): Attr",
+        "fillAttr(col: number, row: number, w: number, h: number, attr: Attr): void",
+        "clearCells(col: number, row: number, w: number, h: number, attr?: Attr): void",
+        "cellBytes(col: number, row: number, bytes: readonly number[], attr?: Attr): void",
+        "print(col: number, row: number, text: string, attr?: Attr): number",
+        "textRows(): string[]",
+        "printCentered(row: number, text: string, attr?: Attr): void",
+        "picture(col: number, row: number, rows: readonly string[], attr?: Attr): void",
+        "plot(x: number, y: number, on = 1): void",
+        "hasFlash(): boolean",
+        "render(out: Uint32Array, flashOn: boolean): void"
+      ]
+    },
+    {
+      "id": "zx.Display",
+      "name": "Display",
+      "kind": "class",
+      "sources": [
+        "games/dictator/src/zx/display.ts"
+      ],
+      "members": [
+        "constructor(canvas: HTMLCanvasElement, screen: ZXScreen, room?: () => readonly [width: number, height: number])",
+        "fit(): void"
+      ]
+    },
+    {
+      "id": "zx.Input",
+      "name": "Input",
+      "kind": "class",
+      "sources": [
+        "games/dictator/src/zx/input.ts"
+      ],
+      "members": [
+        "constructor(target: HTMLElement, keypad: HTMLElement)",
+        "reserve(key: string, action: () => void): void",
+        "onKey(listener: (key: string) => void): void",
+        "waitKey(options: WaitOptions = {}): Promise<string>",
+        "idle(): void"
+      ]
+    },
+    {
+      "id": "zx.Sound",
+      "name": "Sound",
+      "kind": "class",
+      "sources": [
+        "games/dictator/src/zx/sound.ts"
+      ],
+      "members": [
+        "constructor(muted = false)",
+        "muted: boolean",
+        "unlock(): void",
+        "stop(): void",
+        "get unlocked(): boolean",
+        "play(notes: readonly Note[], volume = 0.05, stopFirst = true, delay = 0): void"
+      ]
+    },
+    {
+      "id": "zx.Attr",
+      "name": "Attr",
+      "kind": "interface",
+      "sources": [
+        "games/dictator/src/zx/screen.ts"
+      ],
+      "members": [
+        "ink: number",
+        "paper: number",
+        "bright?: boolean",
+        "flash?: boolean"
+      ]
+    },
+    {
+      "id": "zx.WaitOptions",
+      "name": "WaitOptions",
+      "kind": "interface",
+      "sources": [
+        "games/dictator/src/zx/input.ts"
+      ],
+      "members": []
+    },
+    {
+      "id": "zx.Note",
+      "name": "Note",
+      "kind": "type",
+      "sources": [
+        "games/dictator/src/zx/sound.ts"
+      ],
+      "members": [
+        "[seconds: number, pitch: number | null | \"noise\"]"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "zx.Display",
+      "to": "zx.ZXScreen",
+      "kind": "depends-on",
+      "description": "Renders it to the canvas when its version changes."
+    },
+    {
+      "from": "zx.ZXScreen",
+      "to": "zx.Attr",
+      "kind": "depends-on",
+      "description": "Cell colours."
+    },
+    {
+      "from": "zx.Input",
+      "to": "zx.WaitOptions",
+      "kind": "depends-on",
+      "description": "How the next key is read."
+    },
+    {
+      "from": "zx.Sound",
+      "to": "zx.Note",
+      "kind": "depends-on",
+      "description": "Plays notes."
+    }
+  ]
+}

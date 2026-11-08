@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Samosa component diagram",
+  "folder": "games/dictator",
+  "description": "Samosa, a remake of a 1983 ZX Spectrum strategy game. The folder is named dictator; the game and its Worker are named samosa. The Worker replays each reign from its key log before it goes on the table.",
+  "sources": [
+    {
+      "path": "games/dictator/wrangler.jsonc",
+      "symbol": "samosa"
+    },
+    {
+      "path": "games/dictator/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/dictator/src/main.ts",
+      "symbol": "offerTable"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Samosa",
+      "responsibility": "One game: the browser client and its Worker, built and deployed together.",
+      "folder": "games/dictator"
+    },
+    {
+      "id": "client",
+      "name": "Browser game",
+      "responsibility": "The engine, drawing, input, sound, menus and, where it has them, online play.",
+      "folder": "games/dictator/src",
+      "diagram": "games/dictator/src/.dev/component-diagram.json"
+    },
+    {
+      "id": "worker",
+      "name": "High-score Worker",
+      "responsibility": "The high-score API and public scores page; replays each game before listing it.",
+      "folder": "games/dictator/worker",
+      "diagram": "games/dictator/worker/.dev/component-diagram.json"
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "responsibility": "The games hub at games.icelander.net (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "external": true
+    },
+    {
+      "id": "db",
+      "name": "D1 database samosa-scores",
+      "responsibility": "Issued seeds and verified scores.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "client",
+      "kind": "contains",
+      "description": "Built by build.mjs into dist/."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Deployed with wrangler."
+    },
+    {
+      "from": "client",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "Asks for a seed (POST api/game), submits the game (POST api/score) and loads the table (GET api/scores)."
+    },
+    {
+      "from": "worker",
+      "to": "client",
+      "kind": "depends-on",
+      "description": "Replays reigns headless with playGame() from src/engine and cleans names with src/name.ts."
+    },
+    {
+      "from": "client",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Reads /me for a signed-in player's name."
+    },
+    {
+      "from": "worker",
+      "to": "db",
+      "kind": "depends-on",
+      "description": "Stores seeds and verified scores."
+    }
+  ]
+}

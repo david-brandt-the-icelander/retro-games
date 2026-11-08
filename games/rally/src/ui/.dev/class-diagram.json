@@ -1,0 +1,156 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Rally UI classes",
+  "folder": "games/rally/src/ui",
+  "description": "The four UI classes and the engine types they read or produce.",
+  "sources": [
+    {
+      "path": "games/rally/src/ui/render.ts",
+      "symbol": "Renderer"
+    },
+    {
+      "path": "games/rally/src/ui/input.ts",
+      "symbol": "Input"
+    },
+    {
+      "path": "games/rally/src/ui/sound.ts",
+      "symbol": "Sound"
+    },
+    {
+      "path": "games/rally/src/ui/entry.ts",
+      "symbol": "NameEntry"
+    }
+  ],
+  "types": [
+    {
+      "id": "ui.Renderer",
+      "name": "Renderer",
+      "kind": "class",
+      "sources": [
+        "games/rally/src/ui/render.ts"
+      ],
+      "members": [
+        "constructor(canvas: HTMLCanvasElement)",
+        "resize(cssWidth: number): void",
+        "events(events: GameEvent[]): void",
+        "draw(s: State, dt: number, hints: [string, string] | null): void"
+      ]
+    },
+    {
+      "id": "ui.Input",
+      "name": "Input",
+      "kind": "class",
+      "sources": [
+        "games/rally/src/ui/input.ts"
+      ],
+      "members": [
+        "constructor(canvas: HTMLCanvasElement)",
+        "key(code: string, down: boolean): boolean",
+        "reset(): void",
+        "one(): Control"
+      ]
+    },
+    {
+      "id": "ui.Sound",
+      "name": "Sound",
+      "kind": "class",
+      "sources": [
+        "games/rally/src/ui/sound.ts"
+      ],
+      "members": [
+        "constructor(on: boolean)",
+        "on: boolean",
+        "wake(): void",
+        "key(): void",
+        "play(e: GameEvent, cheer: boolean): void"
+      ]
+    },
+    {
+      "id": "ui.NameEntry",
+      "name": "NameEntry",
+      "kind": "class",
+      "sources": [
+        "games/rally/src/ui/entry.ts"
+      ],
+      "members": [
+        "constructor(slotBox: HTMLElement, keyboard: HTMLElement, onKey: (key: string) => void)",
+        "show(name: string): void",
+        "blink(key: string): void"
+      ]
+    },
+    {
+      "id": "ui.Action",
+      "name": "Action",
+      "kind": "type",
+      "sources": [
+        "games/rally/src/ui/entry.ts"
+      ],
+      "members": [
+        "kind: type | delete | skip | enter | none"
+      ]
+    },
+    {
+      "id": "engine.State",
+      "name": "State",
+      "kind": "interface",
+      "sources": [
+        "games/rally/src/engine/rules.ts"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "engine.Control",
+      "name": "Control",
+      "kind": "interface",
+      "sources": [
+        "games/rally/src/engine/rules.ts"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "engine.GameEvent",
+      "name": "GameEvent",
+      "kind": "type",
+      "sources": [
+        "games/rally/src/engine/rules.ts"
+      ],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "ui.Renderer",
+      "to": "engine.State",
+      "kind": "depends-on",
+      "description": "Draws the paddles and ball from it."
+    },
+    {
+      "from": "ui.Renderer",
+      "to": "engine.GameEvent",
+      "kind": "depends-on",
+      "description": "Paddle glow and trail resets."
+    },
+    {
+      "from": "ui.Input",
+      "to": "engine.Control",
+      "kind": "depends-on",
+      "description": "one() returns the player's Control."
+    },
+    {
+      "from": "ui.Sound",
+      "to": "engine.GameEvent",
+      "kind": "depends-on",
+      "description": "One sound per event."
+    },
+    {
+      "from": "ui.NameEntry",
+      "to": "ui.Action",
+      "kind": "depends-on",
+      "description": "Keys map to actions through actionFor()."
+    }
+  ]
+}

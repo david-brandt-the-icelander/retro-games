@@ -1,0 +1,142 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Samosa UI classes",
+  "folder": "games/dictator/src/ui",
+  "description": "The painter, the name entry and the sound overlay, all drawing on a ZXScreen.",
+  "sources": [
+    {
+      "path": "games/dictator/src/ui/paint.ts",
+      "symbol": "Painter"
+    },
+    {
+      "path": "games/dictator/src/ui/entry.ts",
+      "symbol": "NameEntry"
+    },
+    {
+      "path": "games/dictator/src/ui/overlay.ts",
+      "symbol": "SoundOverlay"
+    }
+  ],
+  "types": [
+    {
+      "id": "ui.Painter",
+      "name": "Painter",
+      "kind": "class",
+      "sources": [
+        "games/dictator/src/ui/paint.ts"
+      ],
+      "members": [
+        "constructor(readonly z: ZXScreen)",
+        "page(ink: number, paper: number, border: number, extra: Partial<Attr> = {}): this",
+        "fill(c0: number, r0: number, c1: number, r1: number, attr: Attr): this",
+        "clear(c0: number, r0: number, c1: number, r1: number, attr: Attr): this",
+        "print(col: number, row: number, s: string, attr?: Attr): this",
+        "text(row: number, c0: number, c1: number, s: string, attr?: Attr, align: Align = \"left\"): this",
+        "centre(row: number, s: string, attr?: Attr): this",
+        "big(row: number, c0: number, c1: number, s: string, attr: Attr): this",
+        "icon(col: number, row: number, picture: readonly string[], attr: Attr): this",
+        "letterhead(office: string, band: Attr, seal: readonly string[]): this",
+        "footer(prompt: string, second?: string): this"
+      ]
+    },
+    {
+      "id": "ui.NameEntry",
+      "name": "NameEntry",
+      "kind": "class",
+      "sources": [
+        "games/dictator/src/ui/entry.ts"
+      ],
+      "members": [
+        "constructor(readonly z: ZXScreen)",
+        "draw(score: number, name: string): this",
+        "start(): this",
+        "name(name: string): this",
+        "get cursorShown(): boolean",
+        "get cursorSlot(): number",
+        "message(text: string): this",
+        "blink(key: string): void"
+      ]
+    },
+    {
+      "id": "ui.SoundOverlay",
+      "name": "SoundOverlay",
+      "kind": "class",
+      "sources": [
+        "games/dictator/src/ui/overlay.ts"
+      ],
+      "members": [
+        "constructor(z: ZXScreen)",
+        "draw(on: boolean): void",
+        "restore(): void",
+        "get showing(): boolean"
+      ]
+    },
+    {
+      "id": "ui.Key",
+      "name": "Key",
+      "kind": "interface",
+      "sources": [
+        "games/dictator/src/ui/entry.ts"
+      ],
+      "members": [
+        "key: string",
+        "label: string",
+        "col: number",
+        "row: number",
+        "width: number"
+      ]
+    },
+    {
+      "id": "ui.Presentation",
+      "name": "Presentation",
+      "kind": "interface",
+      "sources": [
+        "games/dictator/src/ui/screens.ts"
+      ],
+      "members": []
+    },
+    {
+      "id": "zx.ZXScreen",
+      "name": "ZXScreen",
+      "kind": "class",
+      "sources": [
+        "games/dictator/src/zx/screen.ts"
+      ],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "ui.Painter",
+      "to": "zx.ZXScreen",
+      "kind": "depends-on",
+      "description": "Draws on it."
+    },
+    {
+      "from": "ui.NameEntry",
+      "to": "ui.Painter",
+      "kind": "depends-on",
+      "description": "Draws the entry screen with its own Painter."
+    },
+    {
+      "from": "ui.NameEntry",
+      "to": "ui.Key",
+      "kind": "depends-on",
+      "description": "The on-screen keys it lights."
+    },
+    {
+      "from": "ui.NameEntry",
+      "to": "zx.ZXScreen",
+      "kind": "depends-on",
+      "description": "The screen it draws on."
+    },
+    {
+      "from": "ui.SoundOverlay",
+      "to": "zx.ZXScreen",
+      "kind": "depends-on",
+      "description": "Saves, overdraws and restores cells."
+    }
+  ]
+}

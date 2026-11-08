@@ -1,0 +1,31 @@
+{
+  "$schema": "schema.json",
+  "kind": "deployment",
+  "title": "Example worker deployment diagram",
+  "folder": "src/ExampleWorker",
+  "description": "Fictional example; not a description of this repository.",
+  "sources": [
+    {
+      "path": "src/ExampleWorker/Worker.cs",
+      "symbol": "ExampleWorker.Worker"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "process",
+      "name": "Worker process",
+      "kind": "process",
+      "description": "Executes the worker application."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "worker",
+      "name": "ExampleWorker.dll",
+      "source": "src/ExampleWorker/ExampleWorker.csproj",
+      "deployedTo": "process",
+      "description": "Published application entry assembly."
+    }
+  ],
+  "relationships": []
+}

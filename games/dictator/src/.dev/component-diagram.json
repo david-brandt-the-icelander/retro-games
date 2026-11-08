@@ -1,0 +1,185 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Samosa browser game component diagram",
+  "folder": "games/dictator/src",
+  "description": "The browser side of Samosa: the engine plays a reign through io.show(screen); the UI paints each screen on an emulated Spectrum display; the page presents them, logs every key and offers the table.",
+  "sources": [
+    {
+      "path": "games/dictator/src/main.ts",
+      "symbol": "present"
+    },
+    {
+      "path": "games/dictator/src/scores.ts",
+      "symbol": "submitReign"
+    },
+    {
+      "path": "games/dictator/src/name.ts",
+      "symbol": "cleanName"
+    }
+  ],
+  "components": [
+    {
+      "id": "client",
+      "name": "Samosa browser game",
+      "responsibility": "Everything that runs in the browser.",
+      "folder": "games/dictator/src"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "One reign as pure rules and an async flow over an IO interface; no DOM, no timers.",
+      "folder": "games/dictator/src/engine",
+      "diagram": "games/dictator/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "ui",
+      "name": "UI",
+      "responsibility": "One painter per screen, the drawing vocabulary, every string, the art and the sound motifs.",
+      "folder": "games/dictator/src/ui",
+      "diagram": "games/dictator/src/ui/.dev/component-diagram.json"
+    },
+    {
+      "id": "zx",
+      "name": "Platform layer",
+      "responsibility": "The emulated Spectrum display, font, keyboard and touch input, and beeper sound.",
+      "folder": "games/dictator/src/zx",
+      "diagram": "games/dictator/src/zx/.dev/component-diagram.json"
+    },
+    {
+      "id": "page",
+      "name": "Page (main.ts)",
+      "responsibility": "The title, how to play, About and the sound toggle; presents each engine screen, logs every key and offers the table.",
+      "folder": "games/dictator/src"
+    },
+    {
+      "id": "scores",
+      "name": "High-score client (scores.ts)",
+      "responsibility": "Seeds (reigns), submitting the key log, the table and the session name.",
+      "folder": "games/dictator/src"
+    },
+    {
+      "id": "names",
+      "name": "Name rules (name.ts)",
+      "responsibility": "Cleans names for the table, the same as Rally's rules.",
+      "folder": "games/dictator/src"
+    },
+    {
+      "id": "worker",
+      "name": "High-score Worker",
+      "responsibility": "The server side of the table.",
+      "folder": "games/dictator/worker",
+      "diagram": "games/dictator/worker/.dev/component-diagram.json"
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "responsibility": "The games hub at games.icelander.net (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "client",
+      "to": "engine",
+      "kind": "contains",
+      "description": "The pure game."
+    },
+    {
+      "from": "client",
+      "to": "ui",
+      "kind": "contains",
+      "description": "Painters, text, art and motifs."
+    },
+    {
+      "from": "client",
+      "to": "zx",
+      "kind": "contains",
+      "description": "The platform layer."
+    },
+    {
+      "from": "client",
+      "to": "page",
+      "kind": "contains",
+      "description": "The entry point."
+    },
+    {
+      "from": "client",
+      "to": "scores",
+      "kind": "contains",
+      "description": "The table's client."
+    },
+    {
+      "from": "client",
+      "to": "names",
+      "kind": "contains",
+      "description": "Name rules."
+    },
+    {
+      "from": "page",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "playGame(io, newGame(seed)) drives a reign through io.show(screen)."
+    },
+    {
+      "from": "page",
+      "to": "ui",
+      "kind": "depends-on",
+      "description": "Paints each screen, the extras and the name entry; plays motifs."
+    },
+    {
+      "from": "page",
+      "to": "zx",
+      "kind": "depends-on",
+      "description": "The screen, display, input and sound."
+    },
+    {
+      "from": "page",
+      "to": "scores",
+      "kind": "depends-on",
+      "description": "Starts reigns, submits key logs and loads the table."
+    },
+    {
+      "from": "page",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "Cleans the typed name."
+    },
+    {
+      "from": "ui",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Paints engine Screens and reads the data tables."
+    },
+    {
+      "from": "ui",
+      "to": "zx",
+      "kind": "depends-on",
+      "description": "Draws on a ZXScreen with its font; motifs are beeper Notes."
+    },
+    {
+      "from": "ui",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "The name entry's length and characters."
+    },
+    {
+      "from": "scores",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "Cleans the session name and the /me name."
+    },
+    {
+      "from": "scores",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "HTTP: api/game, api/score and api/scores."
+    },
+    {
+      "from": "scores",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "GET /me for the signed-in player's name."
+    }
+  ]
+}

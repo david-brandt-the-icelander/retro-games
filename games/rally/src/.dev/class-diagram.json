@@ -1,0 +1,114 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Rally online classes",
+  "folder": "games/rally/src",
+  "description": "The online module's classes: the room connection and the lockstep that sits on it.",
+  "sources": [
+    {
+      "path": "games/rally/src/online.ts",
+      "symbol": "Room"
+    },
+    {
+      "path": "games/rally/src/online.ts",
+      "symbol": "Lockstep"
+    }
+  ],
+  "types": [
+    {
+      "id": "online.Room",
+      "name": "Room",
+      "kind": "class",
+      "sources": [
+        "games/rally/src/online.ts"
+      ],
+      "members": [
+        "you: number",
+        "size: number",
+        "names: string[]",
+        "readonly peers: Set<number>",
+        "rtt: number",
+        "readonly rtts: Map<number, number>",
+        "closed: boolean",
+        "static open(match: string): Promise<Room>",
+        "get host(): number",
+        "get isHost(): boolean",
+        "listen(fn: RoomListener): () => void",
+        "send(msg: object): void",
+        "close(): void"
+      ]
+    },
+    {
+      "id": "online.Lockstep",
+      "name": "Lockstep",
+      "kind": "class",
+      "sources": [
+        "games/rally/src/online.ts"
+      ],
+      "members": [
+        "frame: number",
+        "readonly me: number",
+        "waitingSince: number | null",
+        "onDesync: () => void",
+        "onLeave: (player: number) => void",
+        "static readonly CHECK_EVERY = 120",
+        "constructor(room: Room, start: Start, idle: number)",
+        "get players(): number",
+        "present(player: number): boolean",
+        "stop(): void",
+        "local(controls: number): void",
+        "ready(): boolean",
+        "waiting(): number[]",
+        "next(): (number | null)[]",
+        "flush(now: number): void",
+        "stalled(now: number, stuck: boolean): void",
+        "check(hash: number): void"
+      ]
+    },
+    {
+      "id": "online.Start",
+      "name": "Start",
+      "kind": "interface",
+      "sources": [
+        "games/rally/src/online.ts"
+      ],
+      "members": [
+        "slots: number[]",
+        "seed: number",
+        "delay: number"
+      ]
+    },
+    {
+      "id": "online.RoomMessage",
+      "name": "RoomMessage",
+      "kind": "type",
+      "sources": [
+        "games/rally/src/online.ts"
+      ],
+      "members": [
+        "t: string",
+        "from?: number"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "online.Lockstep",
+      "to": "online.Room",
+      "kind": "depends-on",
+      "description": "Listens to the room for controls, fingerprints and departures, and sends its own through it."
+    },
+    {
+      "from": "online.Lockstep",
+      "to": "online.Start",
+      "kind": "depends-on",
+      "description": "Built from the host's start: the slots, the seed and the delay."
+    },
+    {
+      "from": "online.Room",
+      "to": "online.RoomMessage",
+      "kind": "depends-on",
+      "description": "Parses relay messages and passes them to listeners."
+    }
+  ]
+}

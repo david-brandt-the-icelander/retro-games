@@ -1,0 +1,62 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Issued seed state diagram",
+  "folder": "games/hivestorm/worker",
+  "description": "One row of the D1 table games: the seed the server issues for a game, so it can replay the game before listing its score. A seed is claimed at most once.",
+  "sources": [
+    {
+      "path": "games/hivestorm/worker/index.ts",
+      "symbol": "issueGame"
+    },
+    {
+      "path": "games/hivestorm/worker/index.ts",
+      "symbol": "submitScore"
+    },
+    {
+      "path": "games/hivestorm/worker/schema.sql",
+      "symbol": "games"
+    }
+  ],
+  "machine": "A row of the D1 table games (worker/schema.sql), written by worker/index.ts",
+  "initialState": "issued",
+  "states": [
+    {
+      "id": "issued",
+      "description": "Inserted by POST api/game with used = 0; its id and seed go to the browser."
+    },
+    {
+      "id": "used",
+      "description": "used = 1: a verified submission claimed it, and its score is recorded.",
+      "terminal": true
+    },
+    {
+      "id": "deleted",
+      "description": "Removed while unused and more than 24 hours old.",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "issued",
+      "to": "used",
+      "trigger": "POST api/score",
+      "guard": "the row is unused and under 24 hours old, and the controls replay a whole game for as many players as names were sent",
+      "action": "UPDATE games SET used = 1 WHERE id = ? AND used = 0; insert the replayed score."
+    },
+    {
+      "from": "issued",
+      "to": "issued",
+      "trigger": "POST api/score",
+      "guard": "the submission does not replay",
+      "action": "Answer 422; the row stays unused."
+    },
+    {
+      "from": "issued",
+      "to": "deleted",
+      "trigger": "POST api/game, for any game",
+      "guard": "created more than SEED_LIFETIME_MS (24 hours) ago",
+      "action": "DELETE FROM games WHERE used = 0 AND created < now − 24 h."
+    }
+  ]
+}

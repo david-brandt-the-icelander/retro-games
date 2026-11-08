@@ -1,0 +1,113 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Rally engine component diagram",
+  "folder": "games/rally/src/engine",
+  "description": "The pure game: fixed-step rules, the computer player, and the one-player match the server replays. Only + − × ÷ and √, so every browser and the server compute the same match.",
+  "sources": [
+    {
+      "path": "games/rally/src/engine/rules.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/rally/src/engine/ai.ts",
+      "symbol": "Cpu"
+    },
+    {
+      "path": "games/rally/src/engine/match.ts",
+      "symbol": "replay"
+    },
+    {
+      "path": "games/rally/src/engine/rng.ts",
+      "symbol": "rng"
+    }
+  ],
+  "components": [
+    {
+      "id": "engine",
+      "name": "Rally engine",
+      "responsibility": "The match, with no DOM and no timers.",
+      "folder": "games/rally/src/engine"
+    },
+    {
+      "id": "rules",
+      "name": "Match rules (rules.ts)",
+      "responsibility": "Table, paddles, ball, serve, returns, scoring and win by two; step(state, controls, dt) advances a State and returns events.",
+      "folder": "games/rally/src/engine"
+    },
+    {
+      "id": "ai",
+      "name": "Computer player (ai.ts)",
+      "responsibility": "Cpu: three levels that predict the ball with an error and move at a capped speed.",
+      "folder": "games/rally/src/engine"
+    },
+    {
+      "id": "match",
+      "name": "One-player match (match.ts)",
+      "responsibility": "Scoring, the Recorder of the player's controls, and replay(seed, level, recording) for the server.",
+      "folder": "games/rally/src/engine"
+    },
+    {
+      "id": "rng",
+      "name": "Seeded generator (rng.ts)",
+      "responsibility": "mulberry32, so a seed replays a match exactly.",
+      "folder": "games/rally/src/engine"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "engine",
+      "to": "rules",
+      "kind": "contains",
+      "description": "The rules."
+    },
+    {
+      "from": "engine",
+      "to": "ai",
+      "kind": "contains",
+      "description": "The computer."
+    },
+    {
+      "from": "engine",
+      "to": "match",
+      "kind": "contains",
+      "description": "Scoring and replay."
+    },
+    {
+      "from": "engine",
+      "to": "rng",
+      "kind": "contains",
+      "description": "Random numbers."
+    },
+    {
+      "from": "rules",
+      "to": "rng",
+      "kind": "depends-on",
+      "description": "Chooses the first server and serve slopes."
+    },
+    {
+      "from": "ai",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Reads the State and returns a Control."
+    },
+    {
+      "from": "ai",
+      "to": "rng",
+      "kind": "depends-on",
+      "description": "Its errors and aims."
+    },
+    {
+      "from": "match",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Plays the match in a replay."
+    },
+    {
+      "from": "match",
+      "to": "ai",
+      "kind": "depends-on",
+      "description": "Replays against the same Cpu, seeded from the match seed."
+    }
+  ]
+}

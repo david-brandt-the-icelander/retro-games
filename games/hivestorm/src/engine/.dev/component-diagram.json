@@ -1,0 +1,123 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Hivestorm engine component diagram",
+  "folder": "games/hivestorm/src/engine",
+  "description": "The pure game, stepped at 60 frames a second. Deterministic trigonometry and one seeded generator let the server replay a game exactly.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/engine/game.ts",
+      "symbol": "Game"
+    },
+    {
+      "path": "games/hivestorm/src/engine/rules.ts",
+      "symbol": "RULES"
+    },
+    {
+      "path": "games/hivestorm/src/engine/replay.ts",
+      "symbol": "replay"
+    },
+    {
+      "path": "games/hivestorm/src/engine/rng.ts",
+      "symbol": "Rng"
+    },
+    {
+      "path": "games/hivestorm/src/engine/trig.ts",
+      "symbol": "dsin"
+    }
+  ],
+  "components": [
+    {
+      "id": "engine",
+      "name": "Hivestorm engine",
+      "responsibility": "The game, with no drawing, no sound and no DOM.",
+      "folder": "games/hivestorm/src/engine"
+    },
+    {
+      "id": "game",
+      "name": "Game (game.ts)",
+      "responsibility": "Phases, the swaying hive, dives, shots, turns and scoring; step(input) advances one frame and lists its events.",
+      "folder": "games/hivestorm/src/engine"
+    },
+    {
+      "id": "rules",
+      "name": "Rules (rules.ts)",
+      "responsibility": "Every number the game plays by: the hive layout, points, speeds and timings.",
+      "folder": "games/hivestorm/src/engine"
+    },
+    {
+      "id": "replay",
+      "name": "Replay (replay.ts)",
+      "responsibility": "Packs inputs into runs (Recorder) and replays a game from its seed for the server.",
+      "folder": "games/hivestorm/src/engine"
+    },
+    {
+      "id": "rng",
+      "name": "Rng (rng.ts)",
+      "responsibility": "mulberry32, so a seed replays a game.",
+      "folder": "games/hivestorm/src/engine"
+    },
+    {
+      "id": "trig",
+      "name": "Deterministic trigonometry (trig.ts)",
+      "responsibility": "dsin and dcos from + − × ÷ only.",
+      "folder": "games/hivestorm/src/engine"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "engine",
+      "to": "game",
+      "kind": "contains",
+      "description": "The game."
+    },
+    {
+      "from": "engine",
+      "to": "rules",
+      "kind": "contains",
+      "description": "Its numbers."
+    },
+    {
+      "from": "engine",
+      "to": "replay",
+      "kind": "contains",
+      "description": "Recording and replay."
+    },
+    {
+      "from": "engine",
+      "to": "rng",
+      "kind": "contains",
+      "description": "Random numbers."
+    },
+    {
+      "from": "engine",
+      "to": "trig",
+      "kind": "contains",
+      "description": "Sine and cosine."
+    },
+    {
+      "from": "game",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Layout, points and timings."
+    },
+    {
+      "from": "game",
+      "to": "rng",
+      "kind": "depends-on",
+      "description": "Dives, shots and spreads."
+    },
+    {
+      "from": "game",
+      "to": "trig",
+      "kind": "depends-on",
+      "description": "Peel arcs and dive weaving."
+    },
+    {
+      "from": "replay",
+      "to": "game",
+      "kind": "depends-on",
+      "description": "Plays a recorded game again."
+    }
+  ]
+}

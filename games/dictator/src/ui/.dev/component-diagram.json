@@ -1,0 +1,229 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Samosa UI component diagram",
+  "folder": "games/dictator/src/ui",
+  "description": "Everything the player sees and hears, drawn on the emulated Spectrum display: one painter per engine screen, the drawing vocabulary, the strings, the pixel art, the motifs, the name entry and the sound overlay.",
+  "sources": [
+    {
+      "path": "games/dictator/src/ui/screens.ts",
+      "symbol": "drawScreen"
+    },
+    {
+      "path": "games/dictator/src/ui/paint.ts",
+      "symbol": "Painter"
+    },
+    {
+      "path": "games/dictator/src/ui/entry.ts",
+      "symbol": "NameEntry"
+    },
+    {
+      "path": "games/dictator/src/ui/overlay.ts",
+      "symbol": "SoundOverlay"
+    }
+  ],
+  "components": [
+    {
+      "id": "ui",
+      "name": "Samosa UI",
+      "responsibility": "The game's presentation.",
+      "folder": "games/dictator/src/ui"
+    },
+    {
+      "id": "screens",
+      "name": "Screen painters (screens.ts)",
+      "responsibility": "One painter per engine Screen, plus the title, how to play, About and the table; each returns how it is presented.",
+      "folder": "games/dictator/src/ui"
+    },
+    {
+      "id": "paint",
+      "name": "Painter (paint.ts)",
+      "responsibility": "The drawing vocabulary over ZXScreen, keeping track of text and art cells for the layout tests.",
+      "folder": "games/dictator/src/ui"
+    },
+    {
+      "id": "text",
+      "name": "Text (text.ts)",
+      "responsibility": "Every player-facing and screen-reader string.",
+      "folder": "games/dictator/src/ui"
+    },
+    {
+      "id": "art",
+      "name": "Art (art.ts)",
+      "responsibility": "Pixel art drawn from the art bible.",
+      "folder": "games/dictator/src/ui"
+    },
+    {
+      "id": "sounds",
+      "name": "Motifs (sounds.ts)",
+      "responsibility": "The game's own melodies, parsed from the art bible's notation.",
+      "folder": "games/dictator/src/ui"
+    },
+    {
+      "id": "entry",
+      "name": "Name entry (entry.ts)",
+      "responsibility": "Underlined slots, a flashing cursor and a keyboard drawn on the screen.",
+      "folder": "games/dictator/src/ui"
+    },
+    {
+      "id": "overlay",
+      "name": "Sound overlay (overlay.ts)",
+      "responsibility": "SOUND: ON/OFF drawn over any screen, then restored.",
+      "folder": "games/dictator/src/ui"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "The Screens to paint and the data tables.",
+      "folder": "games/dictator/src/engine",
+      "diagram": "games/dictator/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "zx",
+      "name": "Platform layer",
+      "responsibility": "The display model, its font and beeper notes.",
+      "folder": "games/dictator/src/zx",
+      "diagram": "games/dictator/src/zx/.dev/component-diagram.json"
+    },
+    {
+      "id": "names",
+      "name": "Name rules (src/name.ts)",
+      "responsibility": "NAME_MAX.",
+      "folder": "games/dictator/src"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "ui",
+      "to": "screens",
+      "kind": "contains",
+      "description": "Painters."
+    },
+    {
+      "from": "ui",
+      "to": "paint",
+      "kind": "contains",
+      "description": "Drawing."
+    },
+    {
+      "from": "ui",
+      "to": "text",
+      "kind": "contains",
+      "description": "Strings."
+    },
+    {
+      "from": "ui",
+      "to": "art",
+      "kind": "contains",
+      "description": "Pictures."
+    },
+    {
+      "from": "ui",
+      "to": "sounds",
+      "kind": "contains",
+      "description": "Motifs."
+    },
+    {
+      "from": "ui",
+      "to": "entry",
+      "kind": "contains",
+      "description": "Name entry."
+    },
+    {
+      "from": "ui",
+      "to": "overlay",
+      "kind": "contains",
+      "description": "Sound overlay."
+    },
+    {
+      "from": "screens",
+      "to": "paint",
+      "kind": "depends-on",
+      "description": "Draws with a Painter."
+    },
+    {
+      "from": "screens",
+      "to": "text",
+      "kind": "depends-on",
+      "description": "Every string."
+    },
+    {
+      "from": "screens",
+      "to": "art",
+      "kind": "depends-on",
+      "description": "Pictures."
+    },
+    {
+      "from": "screens",
+      "to": "sounds",
+      "kind": "depends-on",
+      "description": "Motifs and tallies."
+    },
+    {
+      "from": "screens",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Screen, Item and the request table."
+    },
+    {
+      "from": "screens",
+      "to": "zx",
+      "kind": "depends-on",
+      "description": "ZXScreen, colours and Notes."
+    },
+    {
+      "from": "paint",
+      "to": "zx",
+      "kind": "depends-on",
+      "description": "ZXScreen and the font."
+    },
+    {
+      "from": "entry",
+      "to": "paint",
+      "kind": "depends-on",
+      "description": "Draws with a Painter."
+    },
+    {
+      "from": "entry",
+      "to": "screens",
+      "kind": "depends-on",
+      "description": "The palace frame."
+    },
+    {
+      "from": "entry",
+      "to": "text",
+      "kind": "depends-on",
+      "description": "Its strings."
+    },
+    {
+      "from": "entry",
+      "to": "zx",
+      "kind": "depends-on",
+      "description": "ZXScreen and colours."
+    },
+    {
+      "from": "entry",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "NAME_MAX."
+    },
+    {
+      "from": "overlay",
+      "to": "zx",
+      "kind": "depends-on",
+      "description": "Saves and restores ZXScreen cells."
+    },
+    {
+      "from": "overlay",
+      "to": "text",
+      "kind": "depends-on",
+      "description": "SOUND_STATE."
+    },
+    {
+      "from": "sounds",
+      "to": "zx",
+      "kind": "depends-on",
+      "description": "Note and TICK."
+    }
+  ]
+}

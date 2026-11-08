@@ -1,0 +1,142 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Samosa Worker component diagram",
+  "folder": "games/dictator/worker",
+  "description": "The Samosa Worker: the high-score API, the public scores page and, for every other path, the static game. Scores are never trusted from the browser.",
+  "sources": [
+    {
+      "path": "games/dictator/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/dictator/worker/scores.ts",
+      "symbol": "json"
+    },
+    {
+      "path": "games/dictator/worker/scores-page.ts",
+      "symbol": "scoresPage"
+    },
+    {
+      "path": "games/dictator/worker/look.ts",
+      "symbol": "sitePage"
+    },
+    {
+      "path": "games/dictator/worker/migrations/0002-drop-email.sql",
+      "symbol": "scores"
+    }
+  ],
+  "components": [
+    {
+      "id": "worker",
+      "name": "Samosa Worker",
+      "responsibility": "Routes requests to the API, the scores page or the static assets.",
+      "folder": "games/dictator/worker"
+    },
+    {
+      "id": "api",
+      "name": "API routes (index.ts)",
+      "responsibility": "POST api/game issues a seed, POST api/score replays and records, GET api/scores lists the table; other paths go to the static assets.",
+      "folder": "games/dictator/worker"
+    },
+    {
+      "id": "helpers",
+      "name": "Score helpers (scores.ts)",
+      "responsibility": "Replays a reign headless from its seed and key log, and holds the old path for the 308 redirect.",
+      "folder": "games/dictator/worker"
+    },
+    {
+      "id": "page",
+      "name": "Scores page (scores-page.ts)",
+      "responsibility": "The public table as a web page.",
+      "folder": "games/dictator/worker"
+    },
+    {
+      "id": "look",
+      "name": "Site look (look.ts)",
+      "responsibility": "icelander.net's page shell, with inline CSS and a strict Content-Security-Policy.",
+      "folder": "games/dictator/worker"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "The same engine the browser runs.",
+      "folder": "games/dictator/src/engine",
+      "diagram": "games/dictator/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "names",
+      "name": "Name rules (src/name.ts)",
+      "responsibility": "Cleans names the same way as the browser.",
+      "folder": "games/dictator/src"
+    },
+    {
+      "id": "db",
+      "name": "D1 database",
+      "responsibility": "Issued seeds and verified scores.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "worker",
+      "to": "api",
+      "kind": "contains",
+      "description": "The fetch handler."
+    },
+    {
+      "from": "worker",
+      "to": "helpers",
+      "kind": "contains",
+      "description": "Shared by the handler and the tests."
+    },
+    {
+      "from": "worker",
+      "to": "page",
+      "kind": "contains",
+      "description": "Renders the public table."
+    },
+    {
+      "from": "worker",
+      "to": "look",
+      "kind": "contains",
+      "description": "The page shell."
+    },
+    {
+      "from": "api",
+      "to": "helpers",
+      "kind": "depends-on",
+      "description": "Validates submissions and verifies them by replay."
+    },
+    {
+      "from": "api",
+      "to": "page",
+      "kind": "depends-on",
+      "description": "Serves /scores/."
+    },
+    {
+      "from": "api",
+      "to": "db",
+      "kind": "depends-on",
+      "description": "Prepared statements on the games and scores tables."
+    },
+    {
+      "from": "page",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Wraps the table in the site look."
+    },
+    {
+      "from": "helpers",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "newGame() and playGame() from src/engine."
+    },
+    {
+      "from": "helpers",
+      "to": "names",
+      "kind": "depends-on",
+      "description": "cleanName() for submitted names."
+    }
+  ]
+}
