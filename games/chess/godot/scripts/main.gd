@@ -29,6 +29,7 @@ var _veil: ColorRect
 var _bar_wrap: MarginContainer
 var _bar: HBoxContainer
 var _user_slot: HBoxContainer
+var _signed_in_only: Array[Button] = []   ## Friends and History: shown only to a signed-in player
 var _screen: Control
 var _screen_name := ""
 var _history_stack: Array[Dictionary] = []   ## {name, arg} of the screens visited, for "back"
@@ -82,7 +83,11 @@ func _ready() -> void:
 	logo.add_theme_color_override("font_hover_color", UI.GOLD)
 	_bar.add_child(logo)
 	for item in [["Play", "home"], ["Friends", "lobby"], ["History", "history"]]:
-		_bar.add_child(UI.button(item[0], func() -> void: go(item[1]), "Ghost"))
+		var b := UI.button(item[0], func() -> void: go(item[1]), "Ghost")
+		_bar.add_child(b)
+		if item[0] != "Play":
+			b.visible = false   # until we know someone is signed in (_render_user)
+			_signed_in_only.append(b)
 	_bar.add_child(UI.spacer())
 	var sound := UI.button("Sound on", func() -> void: pass, "Ghost")
 	sound.pressed.connect(func() -> void:
@@ -184,6 +189,8 @@ func _dev_args() -> void:
 
 func _render_user() -> void:
 	UI.clear(_user_slot)
+	for b in _signed_in_only:
+		b.visible = Api.signed_in()
 	if Api.signed_in():
 		_user_slot.add_child(Avatar.make(Api.me.get("avatar"), str(Api.me.name), 34))
 		_user_slot.add_child(UI.label(str(Api.me.name), "Strong"))

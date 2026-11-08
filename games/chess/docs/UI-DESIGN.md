@@ -96,7 +96,7 @@ Gaps between siblings: 18 (page columns and cards, top bar), 14 (game panel), 12
 A band across the top of the window, **72 px tall including its 18 px top margin**: its row of controls starts 18 px below the top edge and is 54 px tall (so the controls' centre line is 45 px from the top), with 28 px margins left and right and gaps of 18. Nothing else is in the band: list pages start at 92 px and the game panel at 84 px, below it.
 
 1. **Gambit**: a Ghost button in Playfair Display Italic 28, ink (gold on hover). Goes to the title screen.
-2. Ghost buttons **Play** (title screen), **Friends** (lobby), **History**.
+2. Ghost buttons **Play** (title screen), and for a signed-in player only, **Friends** (lobby) and **History**. Signed out, the bar has no Friends or History: **Sign in** and **Play a friend** lead to the sign-in screen.
 3. A spacer.
 4. Ghost button **Sound on** / **Sound off** (toggles all sound).
 5. Signed in: avatar 34, the player's name (Strong), Ghost **Sign out** (gaps of 10). Signed out: Chip **Sign in** (goes to the lobby, which asks to sign in).
@@ -207,7 +207,7 @@ Signed in [11](screens/11-history.png) · signed out [06](screens/06-history-sig
 
 Column 820. One card: Heading **Your games**, then a game row per finished game (friends and computer), newest first, 30 at a time; a Ghost **More** under the card loads the next 30 (only shown when there may be more). Empty: Muted "No finished games yet."
 
-Signed out, the card first says (Muted, wrapping) "Games against the computer on this device. Sign in to keep every game, with friends too, wherever you play." and lists the games kept on the device.
+Signed out (no longer in the top bar since 2026-11-08, so only reached directly, e.g. `--goto=history`), the card first says (Muted, wrapping) "Games against the computer on this device. Sign in to keep every game, with friends too, wherever you play." and lists the games kept on the device.
 
 ## 7. Game
 
