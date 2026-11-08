@@ -1,0 +1,31 @@
+# Gambit: game design document
+
+An original chess game, not a remake, so the clean-room phases of `create-retro-game` (provenance, behaviour spec, overlap checks) don't apply: chess's rules belong to nobody, and nothing here copies another chess program's look or text. This document keeps the parts of that process that do apply: the pillars, the screens and the decision log.
+
+## Pillars
+
+1. **Stylish, not retro.** A quiet, dark interface in charcoal and ivory with one warm gold accent; Playfair Display italic for titles, Inter for reading. A 3D table under soft key, rim and warm fill lights: ivory and glossy obsidian pieces on a slate and bone board with a thin gold inlay.
+2. **Play anyone, any time.** Invitations go to an email address; a game waits as long as it needs to. The computer needs no account.
+3. **A game is a conversation.** Moves and chat share one transcript, with times, kept forever and replayable.
+4. **The server is the referee.** Online moves are checked on the server.
+
+## Screens
+
+Home (title over a slowly turning board) · Sign-in · Computer set-up · Lobby (invite, invitations for you, your games, waiting for an answer, contacts) · Contact (record and every game together) · History · Game (online, computer) · Replay.
+
+## Decision log
+
+| Date | Decision | By |
+|---|---|---|
+| 2026-11-08 | Two-player online chess in this repo: OAuth login, invitations by email, contacts and history, TypeScript, plus Stockfish with a choice of strength. | Owner |
+| 2026-11-08 | First version: an 8-bit pixel-art web page ("Pixel Gambit"). | Claude |
+| 2026-11-08 | **Not a retro game:** very stylish, made in **Godot 4 as a 3D game**. Invitations by email; multiplayer requires OAuth sign-in for both players (so email, name and profile picture are known). Contacts are the people you have played, with your history against each. A chat area; chat and moves go into one transcript during play and into the game's history, with timing; historical games can be replayed. | Owner |
+| 2026-11-08 | Godot 4.7.2, GDScript, Compatibility renderer (WebGL 2), single-threaded web export (no cross-origin isolation needed). All models made in code; no art files. | Claude |
+| 2026-11-08 | Kept from the first version: the Worker, D1 and a Durable Object per game; Google and GitHub sign-in; Stockfish 19 at eight strengths (now driven from the page through a small JavaScript bridge); playing the computer without signing in. Dropped: pass & play on one screen, and adding contacts by hand (contacts are now only people you have played). | Claude, open for the owner |
+| 2026-11-08 | Working title **Gambit**; slug and path stay `chess` (`/retro/chess`). | Claude, open for the owner |
+| 2026-11-08 | Replays play back at the game's own pace, sped up 1×, 4× or 16×, with pauses capped at 3 s. | Claude |
+| 2026-11-08 | No clocks: correspondence-style games. Email only for new invitations, not for each move. | Claude, open for the owner |
+
+## Non-goals (for now)
+
+Clocks and time controls, ratings, spectators, puzzles, analysis with the engine, move notifications by email or push, phone-sized layouts (the game screen needs about 1000 px of width).

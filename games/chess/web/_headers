@@ -1,0 +1,9 @@
+# Cloudflare static-asset headers. Everything comes from this origin, except Cloudflare Web Analytics.
+# 'wasm-unsafe-eval' lets the browser compile the Godot engine and Stockfish (WebAssembly); it allows
+# no JavaScript eval. The live connection to a game is a WebSocket to this origin, named outright for
+# browsers whose 'self' leaves out wss:.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com; worker-src 'self'; connect-src 'self' wss://games.icelander.net https://cloudflareinsights.com; img-src 'self' data: blob:; font-src 'self'; style-src 'self'; media-src 'self' blob:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()

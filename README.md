@@ -9,6 +9,7 @@ Recreations of retro-games that I have made with the help of AI
 | Shatterbelt: an original rock-breaking shooter, alone or online with up to nine pilots each on their own computer, co-op or versus, with a high-score table | [games.icelander.net/retro/shatterbelt](https://games.icelander.net/retro/shatterbelt/) ([high scores](https://games.icelander.net/retro/shatterbelt/scores/)) | [games/shatterbelt](games/shatterbelt) |
 | Hivestorm: an arcade shooter for one player, or two online each on their own device, with a high-score table | [games.icelander.net/retro/hivestorm](https://games.icelander.net/retro/hivestorm/) ([high scores](https://games.icelander.net/retro/hivestorm/scores/)) | [games/hivestorm](games/hivestorm) |
 | Samosa: a remake of a 1983 ZX Spectrum strategy game | [games.icelander.net/retro/samosa](https://games.icelander.net/retro/samosa/) ([high scores](https://games.icelander.net/retro/samosa/scores/)) | [games/dictator](games/dictator) |
+| Gambit: 3D chess made in Godot 4. Invite a friend by email (Google or GitHub sign-in) and play with chat and a timed transcript, keep contacts and replay past games, or play Stockfish at eight strengths (not yet deployed) | games.icelander.net/retro/chess | [games/chess](games/chess) |
 
 ## Architecture
 

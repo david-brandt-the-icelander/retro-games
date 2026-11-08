@@ -1,0 +1,15 @@
+/* The page around the game: a full-window canvas, and a quiet loading screen in the game's colours. */
+html, body { margin: 0; height: 100%; background: #0b0c0f; overflow: hidden; touch-action: none; }
+#canvas { display: block; width: 100vw; height: 100vh; outline: none; }
+#status {
+  position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 40%, #1d2026 0%, #0b0c0f 70%); color: #ece8df;
+  font-family: Georgia, "Times New Roman", serif; transition: opacity 0.6s ease;
+}
+#status.done { opacity: 0; pointer-events: none; }
+#status h1 { font-style: italic; font-weight: 400; font-size: 72px; margin: 4px 0 28px; letter-spacing: 0.5px; }
+#status .eyebrow { font: 600 12px/1 system-ui, sans-serif; letter-spacing: 3px; color: #d9b26b; margin: 0; }
+.bar { width: 220px; height: 2px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; }
+#bar-fill { width: 0; height: 100%; background: #d9b26b; transition: width 0.2s; }
+#notice { font: 15px/1.4 system-ui, sans-serif; color: #e5566a; max-width: 480px; text-align: center; min-height: 1em; }
+#status.failed .bar { display: none; }
