@@ -105,7 +105,7 @@ The bar is the same on every screen, including games.
 
 ## List screens: the page
 
-Sign-in, set-up, lobby, contact and history share a page: 92 px from the top, 24 px from the bottom, a single scrolling column of a fixed width (given per screen), centred horizontally (side margins = max(16, (window width − column width) / 2)), with cards stacked 18 apart. The column scrolls vertically if it's taller than the window.
+Sign-in, set-up, lobby, contact and history share a page: 92 px from the top, 24 px from the bottom, a single scrolling column of a fixed width (given per screen), centred horizontally (side margins = max(16, (window width − column width) / 2)), with cards stacked 18 apart. The column scrolls vertically if it's taller than the window. **Escape**, or a click on the table around the cards (anywhere that isn't a card, button, field or the top bar), closes the page: back to the title screen, or from a contact back to where it was opened. That click does nothing else.
 
 ## 1. Title screen
 
@@ -290,7 +290,7 @@ The texts:
 ## Keyboard and accessibility
 
 - Every button is focusable (gold focus ring) and works with Enter/Space. Enter sends in the invitation and chat fields.
-- Escape closes the promotion picker (the only popup), as Cancel does.
+- Escape closes the promotion picker, as Cancel does, and closes a list page (sign-in, set-up, lobby, contact, history).
 - The board is driven by mouse or touch.
 - Text contrast (WCAG): ink on card 14.7 : 1, muted on card 5.7 : 1, gold on card 9.0 : 1, `#17140E` on gold 9.2 : 1.
 - Nothing is told by colour alone: results are words, and side dots sit next to names.

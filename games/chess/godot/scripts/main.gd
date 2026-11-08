@@ -262,6 +262,37 @@ func go(name: String, arg: Variant = null) -> void:
 	Api.set_title("Gambit")
 
 
+## The list screens (sign-in, set-up, lobby, contact, history) are cards over the table. Escape, or a
+## click on the table around them (not on a card, button, field or the top bar), closes the page:
+## back to the title screen, or from a contact back to where it was opened. The click does nothing else.
+func _input(event: InputEvent) -> void:
+	if _screen == null or _screen_name in ["home", "game"]:
+		return
+	var close := event.is_action_pressed("ui_cancel")
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		close = not _on_something(event.position)
+	if close:
+		get_viewport().set_input_as_handled()
+		go("back" if _screen_name == "contact" else "home")
+
+
+## Whether the point is on something of the page or the top bar: a card, a button, a text field,
+## a slider or a scroll bar (or the toast), rather than the bare table between them.
+func _on_something(p: Vector2) -> bool:
+	var roots: Array[Node] = [_screen, _bar_wrap]
+	if is_instance_valid(_toast):
+		roots.append(_toast)
+	for root in roots:
+		var nodes: Array[Node] = root.find_children("", "Control", true, false)
+		nodes.append(root)
+		for n in nodes:
+			var c := n as Control
+			var solid := c is PanelContainer or c is BaseButton or c is LineEdit or c is Range
+			if solid and c.is_visible_in_tree() and c.get_global_rect().has_point(p):
+				return true
+	return false
+
+
 ## A centred column for list screens.
 func _page(width := 1080.0) -> Array:
 	var root := MarginContainer.new()
