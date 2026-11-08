@@ -14,7 +14,7 @@ Every word the presentation shows lives in one table, [`words.gd`](words.gd), so
 - ✅ The timed messages M1–M11 and the notices N1–N6 written fresh to RULES D.9's purposes and the GDD § 9 budgets, in UI-DESIGN's voice (terse, plain, a little dry; an exclamation mark only for the kill milestone), with the energy-low and incoming-missile messages marked urgent ([RULES D.9](../../../docs/RULES.md#d9-messages)).
 - ✅ The remake's own text of GDD § 9.4: the equipment effects (60 characters at most), the epitaphs by cause of death, the system description made only from the data, and the key hints.
 - ✅ Numbers as UI-DESIGN asks: scrip with one decimal and thousands separators (`1,240.5`), light years and population with one decimal, and system names in word case (RULES D.10).
-- ⚠️ The table is checked with `overlap.py` from `clean-room-rebuild` before every push, with the original's names as `--names` ([DESIGN § Testing](../../../docs/DESIGN.md#testing)).
+- ✅ The table is checked with `overlap.py` from `clean-room-rebuild` before every push, with the original's names as `--names` ([DESIGN § Testing](../../../docs/DESIGN.md#testing)). The run of 8 November 2026 over the whole of `src/` and the README found no original strings and no shared passages; the only name hits are plain words (small, rear, black, green, large, blue).
 - ⚠️ The menus' option names (`ui.option.*`) and the focus-lost card's words.
 
 ## Where it lives

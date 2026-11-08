@@ -10,7 +10,7 @@ Between runs the pilot spends money on the ship: fuel, missiles, a bigger hold, 
 
 ## What it does
 
-- ✅ The twelve items keep RULES' fixed order (fuel, missile, hold extension, E.C.M., pulse laser, beam laser, fuel scoop, escape pod, area blast, energy booster, auto-dock, galaxy drive) with the GDD's names and HUD tags.
+- ✅ The twelve items keep RULES' fixed order (fuel, missile, hold extension, E.C.M., the pulse and then the beam laser, fuel scoop, escape pod, area blast, energy booster, auto-dock, galaxy drive) with the GDD's names and HUD tags.
 - ✅ A system with internal tech level `T` offers the first `min(T + 3, 12)` items ([RULES A.12.2](../../../docs/RULES.md#a122-availability-by-tech-level)), so each item's lowest shown tech level is the GDD's.
 - ✅ Every item but fuel has the GDD's fixed price; fuel costs `(70 − fuel) × 3` tenths, recomputed from the current tank, and nothing with a full tank ([RULES A.12.3](../../../docs/RULES.md#a123-prices)).
 - ✅ The equipment panel's rows are the offered items with their current prices.
