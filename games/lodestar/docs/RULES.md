@@ -3318,8 +3318,9 @@ nearest the cursor. Must present, in this order:
 2. the current system's name (blank in the ambush state);
 3. the selected (hyperspace) system's name;
 4. condition: code 0 docked; 1 when the bubble holds nothing except the planet, the sun/station
-   and asteroids (computed as entries - 2 - asteroids <= 0; note the station, canisters and pods
-   count, so being near the station is never code 1); otherwise 2 if energy >= 128, else 3. The
+   and asteroids (computed as entries - 2 - asteroids <= 0; the station takes the sun's slot, so
+   the planet and station alone give code 1, while canisters, pods and missiles count); otherwise
+   2 if energy >= 128, else 3. The
    label for each code is the designer's (see D.14 about the baseline's labels);
 5. fuel (light years, one decimal) and cash (credits, one decimal);
 6. legal status label: clean (0), offender (1-49), fugitive (50 or more);
