@@ -1,0 +1,221 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "LodeStar presentation component diagram",
+  "folder": "games/lodestar/src/presentation",
+  "description": "The picture and the controls: the Rust bridge that is the scenes' only door into the sim, and the Godot scenes and scripts that draw it and send it the pilot's presses.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+      "symbol": "SimHost"
+    },
+    {
+      "path": "games/lodestar/src/presentation/game/game.gd",
+      "symbol": "handle_key"
+    },
+    {
+      "path": "games/lodestar/src/presentation/space/space.gd",
+      "symbol": "setup"
+    },
+    {
+      "path": "games/lodestar/src/presentation/hud/hud.gd",
+      "symbol": "_draw"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ui/hub.gd",
+      "symbol": "open"
+    },
+    {
+      "path": "games/lodestar/src/presentation/text/words.gd",
+      "symbol": "MESSAGES"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ships/ship.gd",
+      "symbol": "set_channel"
+    }
+  ],
+  "components": [
+    {
+      "id": "presentation",
+      "name": "Presentation",
+      "responsibility": "Everything the pilot sees and presses, over the sim.",
+      "folder": "games/lodestar/src/presentation"
+    },
+    {
+      "id": "bridge",
+      "name": "Bridge (lodestar-bridge)",
+      "responsibility": "SimHost: runs the sim at 12 Hz, takes every press, samples the held actions, exposes the snapshots and emits the events.",
+      "folder": "games/lodestar/src/presentation/bridge"
+    },
+    {
+      "id": "game",
+      "name": "Game scene",
+      "responsibility": "The main scene: builds the rest around SimHost, routes the keys by mode and screen, and runs scripted games.",
+      "folder": "games/lodestar/src/presentation/game"
+    },
+    {
+      "id": "space",
+      "name": "Space scene",
+      "responsibility": "The 3D picture of the bubble, the hangar and the title, and the orbit camera.",
+      "folder": "games/lodestar/src/presentation/space"
+    },
+    {
+      "id": "ships",
+      "name": "Ships",
+      "responsibility": "The ship rig script and the GLB post-import script.",
+      "folder": "games/lodestar/src/presentation/ships"
+    },
+    {
+      "id": "hud",
+      "name": "HUD",
+      "responsibility": "The flight instruments.",
+      "folder": "games/lodestar/src/presentation/hud"
+    },
+    {
+      "id": "ui",
+      "name": "Panels",
+      "responsibility": "The title, the docked hub and its pages, the in-flight panels, pause and the tunnels.",
+      "folder": "games/lodestar/src/presentation/ui"
+    },
+    {
+      "id": "text",
+      "name": "Text table",
+      "responsibility": "Every word the presentation shows.",
+      "folder": "games/lodestar/src/presentation/text"
+    },
+    {
+      "id": "use-cases",
+      "name": "Use cases",
+      "responsibility": "FlyInSystem: the game and its 12 Hz tick.",
+      "folder": "games/lodestar/src/use_cases"
+    },
+    {
+      "id": "infrastructure",
+      "name": "Infrastructure (lodestar-infrastructure)",
+      "responsibility": "Pilot records as files.",
+      "folder": "games/lodestar/src/infrastructure"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "presentation",
+      "to": "bridge",
+      "kind": "contains",
+      "description": "A workspace crate."
+    },
+    {
+      "from": "presentation",
+      "to": "game",
+      "kind": "contains",
+      "description": "Godot scene and scripts."
+    },
+    {
+      "from": "presentation",
+      "to": "space",
+      "kind": "contains",
+      "description": "Godot scripts and shaders."
+    },
+    {
+      "from": "presentation",
+      "to": "ships",
+      "kind": "contains",
+      "description": "Godot scripts."
+    },
+    {
+      "from": "presentation",
+      "to": "hud",
+      "kind": "contains",
+      "description": "Godot script."
+    },
+    {
+      "from": "presentation",
+      "to": "ui",
+      "kind": "contains",
+      "description": "Godot scripts."
+    },
+    {
+      "from": "presentation",
+      "to": "text",
+      "kind": "contains",
+      "description": "Godot script."
+    },
+    {
+      "from": "bridge",
+      "to": "use-cases",
+      "kind": "depends-on",
+      "description": "Ticks FlyInSystem and reads its state."
+    },
+    {
+      "from": "bridge",
+      "to": "infrastructure",
+      "kind": "depends-on",
+      "description": "Saves and loads pilots through PilotFiles."
+    },
+    {
+      "from": "game",
+      "to": "bridge",
+      "kind": "depends-on",
+      "description": "game.tscn holds a SimHost; keys become its presses."
+    },
+    {
+      "from": "game",
+      "to": "space",
+      "kind": "depends-on",
+      "description": "Builds the space scene."
+    },
+    {
+      "from": "game",
+      "to": "hud",
+      "kind": "depends-on",
+      "description": "Builds the HUD and shows notices on it."
+    },
+    {
+      "from": "game",
+      "to": "ui",
+      "kind": "depends-on",
+      "description": "Builds the panels and routes keys to them."
+    },
+    {
+      "from": "space",
+      "to": "bridge",
+      "kind": "depends-on",
+      "description": "Reads the interpolated objects and the cockpit."
+    },
+    {
+      "from": "space",
+      "to": "ships",
+      "kind": "depends-on",
+      "description": "Every stand-in carries the rig script."
+    },
+    {
+      "from": "hud",
+      "to": "bridge",
+      "kind": "depends-on",
+      "description": "Reads the cockpit, the pilot and the navigation."
+    },
+    {
+      "from": "hud",
+      "to": "space",
+      "kind": "depends-on",
+      "description": "Reads the drawn objects and the camera for the reticle and scanner."
+    },
+    {
+      "from": "hud",
+      "to": "text",
+      "kind": "depends-on",
+      "description": "Messages and labels."
+    },
+    {
+      "from": "ui",
+      "to": "bridge",
+      "kind": "depends-on",
+      "description": "Reads the panels' rows and sends presses."
+    },
+    {
+      "from": "ui",
+      "to": "text",
+      "kind": "depends-on",
+      "description": "Labels, notices and refusals."
+    }
+  ]
+}

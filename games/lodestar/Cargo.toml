@@ -1,7 +1,7 @@
 # The LodeStar workspace. The root package is lodestar-core: the rules, with no engine dependency
 # (src/lib.rs: use cases, features and capabilities). See docs/DESIGN.md § Project layout.
 [workspace]
-members = [".", "src/presentation/bridge", "src/hosting/godot"]
+members = [".", "src/infrastructure", "src/presentation/bridge", "src/hosting/godot"]
 resolver = "2"
 
 [workspace.package]
@@ -14,6 +14,7 @@ license = "MIT"
 godot = "=0.5.5"
 lodestar-core = { path = "." }
 lodestar-bridge = { path = "src/presentation/bridge" }
+lodestar-infrastructure = { path = "src/infrastructure" }
 
 [package]
 name = "lodestar-core"

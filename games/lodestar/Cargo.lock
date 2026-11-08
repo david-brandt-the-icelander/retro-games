@@ -106,6 +106,7 @@ version = "0.1.0"
 dependencies = [
  "godot",
  "lodestar-core",
+ "lodestar-infrastructure",
 ]
 
 [[package]]
@@ -118,6 +119,13 @@ version = "0.1.0"
 dependencies = [
  "godot",
  "lodestar-bridge",
+]
+
+[[package]]
+name = "lodestar-infrastructure"
+version = "0.1.0"
+dependencies = [
+ "lodestar-core",
 ]
 
 [[package]]

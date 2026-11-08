@@ -36,6 +36,10 @@
     {
       "path": "games/lodestar/src/capabilities/mod.rs",
       "symbol": "capabilities"
+    },
+    {
+      "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+      "symbol": "PilotFiles"
     }
   ],
   "components": [
@@ -64,16 +68,23 @@
       "folder": "games/lodestar/src/use_cases"
     },
     {
+      "id": "infrastructure",
+      "name": "Infrastructure (lodestar-infrastructure)",
+      "responsibility": "Implements the traits the inner layers own on the real machine: pilot records as files (PilotStore).",
+      "folder": "games/lodestar/src/infrastructure"
+    },
+    {
       "id": "bridge",
       "name": "Presentation bridge (lodestar-bridge)",
-      "responsibility": "SimHost: runs the sim under Godot's frame loop, reads input actions and emits tick and mount signals.",
+      "responsibility": "SimHost: runs the sim at 12 Hz under Godot's frame loop, takes every press, samples the held input actions, exposes the scenes' snapshots and emits the tick's events.",
       "folder": "games/lodestar/src/presentation/bridge"
     },
     {
       "id": "scenes",
       "name": "Godot presentation",
-      "responsibility": "The flight scene, the orbit camera, the rigged ship and its post-import script, and the shaders.",
-      "folder": "games/lodestar/src/presentation"
+      "responsibility": "The plain playable client: the game scene and its keys, the space scene and orbit camera, the HUD, the panels, the text table, and the ship rig.",
+      "folder": "games/lodestar/src/presentation",
+      "diagram": "games/lodestar/src/presentation/.dev/component-diagram.json"
     },
     {
       "id": "extension",
@@ -89,6 +100,12 @@
     }
   ],
   "relationships": [
+    {
+      "from": "game",
+      "to": "infrastructure",
+      "kind": "contains",
+      "description": "A workspace member crate."
+    },
     {
       "from": "game",
       "to": "capabilities",
@@ -135,7 +152,7 @@
       "from": "bridge",
       "to": "use-cases",
       "kind": "depends-on",
-      "description": "SimHost ticks FlyInSystem with a TickClock and an InputRecord."
+      "description": "SimHost ticks FlyInSystem with a TickClock and an InputRecord, and reads its state."
     },
     {
       "from": "extension",
@@ -147,7 +164,7 @@
       "from": "scenes",
       "to": "bridge",
       "kind": "depends-on",
-      "description": "space.tscn holds a SimHost and connects to its ticked and mount_selected signals."
+      "description": "game.tscn holds a SimHost; the scenes read its snapshots and signals and send it every press."
     },
     {
       "from": "godot",
@@ -166,6 +183,18 @@
       "to": "capabilities",
       "kind": "depends-on",
       "description": "Trading uses the market and the pilot; saving uses the pilot."
+    },
+    {
+      "from": "infrastructure",
+      "to": "features",
+      "kind": "depends-on",
+      "description": "PilotFiles implements the saving feature's PilotStore."
+    },
+    {
+      "from": "bridge",
+      "to": "infrastructure",
+      "kind": "depends-on",
+      "description": "SimHost saves and loads pilots through PilotFiles under user://pilots."
     }
   ]
 }

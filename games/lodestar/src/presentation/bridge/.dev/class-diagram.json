@@ -1,0 +1,286 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Presentation bridge class diagram",
+  "folder": "games/lodestar/src/presentation/bridge",
+  "description": "SimHost, the Godot node that runs the sim at 12 Hz and is the scenes' only door into it, and the plain-Rust readouts in views.rs that it converts to Godot types.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+      "symbol": "SimHost"
+    },
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+      "symbol": "Pose"
+    },
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+      "symbol": "ObjectView"
+    },
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+      "symbol": "MarketRow"
+    },
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+      "symbol": "EquipmentRow"
+    },
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+      "symbol": "SystemView"
+    }
+  ],
+  "types": [
+    {
+      "id": "sim-host",
+      "name": "SimHost",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/bridge/src/sim_host.rs"
+      ],
+      "members": [
+        "signal ticked(tick)",
+        "signal mount_selected(mount)",
+        "signal sim_event(kind, data)",
+        "press(action) -> bool",
+        "press_mount(mount)",
+        "show_screen(screen) -> bool",
+        "move_cursor(x, y)",
+        "buy(item, quantity)",
+        "sell(item, quantity)",
+        "equip(item, mount)",
+        "save_pilot(name) -> String",
+        "load_pilot(name) -> String",
+        "pilot_names() -> PackedStringArray",
+        "set_running(running)",
+        "advance(ticks)",
+        "alpha() -> f64",
+        "mode() -> String",
+        "mode_count() -> i64",
+        "death_cause() -> String",
+        "screen() -> String",
+        "paused() -> bool",
+        "cockpit() -> Dictionary",
+        "pilot() -> Dictionary",
+        "navigation() -> Dictionary",
+        "system_data() -> Dictionary",
+        "nearest_system(x, y) -> Dictionary",
+        "galaxy_systems() -> Array",
+        "local_chart() -> Array",
+        "local_cursor(x, y) -> Vector2i",
+        "market_rows() -> Array",
+        "equipment_rows() -> Array",
+        "objects() -> Array",
+        "mount_names() -> PackedStringArray"
+      ]
+    },
+    {
+      "id": "pose",
+      "name": "Pose",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/presentation/bridge/src/sim_host.rs"
+      ],
+      "members": [
+        "kind",
+        "position",
+        "nose",
+        "roof"
+      ]
+    },
+    {
+      "id": "object-view",
+      "name": "ObjectView",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/presentation/bridge/src/views.rs"
+      ],
+      "members": [
+        "slot",
+        "kind",
+        "position",
+        "nose",
+        "roof",
+        "exploding",
+        "killed",
+        "firing",
+        "cloud",
+        "in_sights",
+        "locked",
+        "hostile_missile"
+      ]
+    },
+    {
+      "id": "market-row",
+      "name": "MarketRow",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/presentation/bridge/src/views.rs"
+      ],
+      "members": [
+        "item",
+        "name",
+        "unit",
+        "price",
+        "available",
+        "held",
+        "max_buy",
+        "max_sell",
+        "bulky",
+        "dear_here"
+      ]
+    },
+    {
+      "id": "equipment-row",
+      "name": "EquipmentRow",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/presentation/bridge/src/views.rs"
+      ],
+      "members": [
+        "item",
+        "name",
+        "price",
+        "laser",
+        "fitted"
+      ]
+    },
+    {
+      "id": "system-view",
+      "name": "SystemView",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/presentation/bridge/src/views.rs"
+      ],
+      "members": [
+        "index",
+        "name",
+        "position",
+        "distance",
+        "economy",
+        "government",
+        "tech_level",
+        "population",
+        "productivity",
+        "radius",
+        "inhabitants",
+        "dot_width"
+      ]
+    },
+    {
+      "id": "godot-node",
+      "name": "Node",
+      "kind": "class",
+      "sources": [],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "fly-in-system",
+      "name": "FlyInSystem",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+      ],
+      "members": [
+        "tick(input) -> Vec<Event>",
+        "save(name, store)",
+        "load(name, store)"
+      ],
+      "external": true
+    },
+    {
+      "id": "tick-clock",
+      "name": "TickClock",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+      ],
+      "members": [
+        "advance(frame_seconds) -> u32",
+        "alpha() -> f64"
+      ],
+      "external": true
+    },
+    {
+      "id": "pilot-files",
+      "name": "PilotFiles",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/infrastructure/src/pilot_files.rs"
+      ],
+      "members": [
+        "names() -> Vec<String>"
+      ],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "sim-host",
+      "to": "godot-node",
+      "kind": "inherits",
+      "description": "Registered with Godot as a Node (base = Node)."
+    },
+    {
+      "from": "sim-host",
+      "to": "fly-in-system",
+      "kind": "depends-on",
+      "description": "Owns the game and ticks it with the queued presses and the held actions."
+    },
+    {
+      "from": "sim-host",
+      "to": "tick-clock",
+      "kind": "depends-on",
+      "description": "Turns frame times into ticks and gives alpha."
+    },
+    {
+      "from": "sim-host",
+      "to": "pilot-files",
+      "kind": "depends-on",
+      "description": "The store saves and loads go through, under user://pilots."
+    },
+    {
+      "from": "sim-host",
+      "to": "pose",
+      "kind": "depends-on",
+      "description": "Keeps each object's pose before the last tick for interpolation."
+    },
+    {
+      "from": "sim-host",
+      "to": "object-view",
+      "kind": "depends-on",
+      "description": "objects() converts the views and interpolates them."
+    },
+    {
+      "from": "sim-host",
+      "to": "market-row",
+      "kind": "depends-on",
+      "description": "market_rows() converts them."
+    },
+    {
+      "from": "sim-host",
+      "to": "equipment-row",
+      "kind": "depends-on",
+      "description": "equipment_rows() converts them."
+    },
+    {
+      "from": "sim-host",
+      "to": "system-view",
+      "kind": "depends-on",
+      "description": "navigation(), system_data() and nearest_system() convert them."
+    },
+    {
+      "from": "object-view",
+      "to": "fly-in-system",
+      "kind": "depends-on",
+      "description": "views::objects reads the bubble and the cockpit."
+    },
+    {
+      "from": "market-row",
+      "to": "fly-in-system",
+      "kind": "depends-on",
+      "description": "views::market_rows reads the pilot and the current economy."
+    }
+  ]
+}
