@@ -3,7 +3,7 @@
 // it); the object checks each action (worker/actions.ts), saves the result and sends the new game
 // to everyone watching it over a WebSocket. Watchers are the two players; their sockets hibernate
 // between moves, so an idle game costs nothing.
-import type { Action, LiveMessage } from "../src/shared/protocol";
+import type { Action, LiveMessage } from "../shared/protocol";
 import { applyAction, sideOf } from "./actions";
 import { gameById, saveGame, type D1Database } from "./db";
 
@@ -26,7 +26,7 @@ export class RoomCore {
     if (!side || game.kind !== "online") return { status: 403, body: { error: "You don't play in this game." } };
     const r = applyAction(game, side, action, Date.now());
     if (!r.ok) return { status: 409, body: { error: r.error, game } };
-    if (!(await saveGame(this.db, r.game, game.updated))) return { status: 409, body: { error: "The board changed; try again.", game: await gameById(this.db, gameId) } };
+    if (!(await saveGame(this.db, r.game, game.updated, r.added))) return { status: 409, body: { error: "The board changed; try again.", game: await gameById(this.db, gameId) } };
     this.broadcast({ t: "state", game: r.game });
     return { status: 200, body: { game: r.game } };
   }

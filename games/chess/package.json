@@ -2,14 +2,15 @@
   "name": "chess",
   "version": "0.1.0",
   "private": true,
-  "description": "Pixel Chess: chess with friends online (challenge by email) or against Stockfish at eight strengths, with sign-in, contacts and game history.",
+  "description": "Gambit: 3D chess in Godot 4 for the web. Play friends by email invitation (Google or GitHub sign-in), with chat, a timed transcript, contacts, history and replays, or Stockfish at eight strengths.",
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit && node build.mjs",
     "test": "tsc --noEmit && node build.mjs --test && node --no-warnings --test dist-test/*.test.mjs",
+    "test:godot": "godot --headless --path godot --import && godot --headless --path godot -s tests/test_rules.gd",
     "dev": "node build.mjs && wrangler dev",
-    "deploy": "npm test && npm run build && wrangler deploy"
+    "deploy": "npm test && npm run test:godot && npm run build && wrangler deploy"
   },
   "license": "MPL-2.0",
   "dependencies": {
@@ -17,8 +18,8 @@
     "stockfish": "^19.0.1"
   },
   "devDependencies": {
-    "@fontsource/press-start-2p": "^5.3.0",
-    "@fontsource/vt323": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/playfair-display": "^5.3.0",
     "@types/node": "^22.20.5",
     "esbuild": "^0.25.12",
     "typescript": "^5.9.3",

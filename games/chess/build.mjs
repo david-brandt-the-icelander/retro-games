@@ -1,10 +1,15 @@
-// Builds the game into dist/<BASE_PATH>/ and the tests into dist-test/.
-// Stockfish (the lite, single-threaded WebAssembly build) and the two pixel fonts are copied from
-// node_modules with their licences.
-import { build, context } from "esbuild";
-import { cpSync, mkdirSync, readdirSync, renameSync, rmSync } from "node:fs";
+// Builds the game into dist/retro/chess/ and the tests into dist-test/.
+//
+//   node build.mjs          the whole site: the Godot web export, the page bridge, Stockfish, headers
+//   node build.mjs --test   the TypeScript tests
+//
+// The Godot export needs Godot 4.7.2 with its web export templates; set GODOT to its path if it
+// isn't on the PATH as "godot".
+import { build } from "esbuild";
+import { execFileSync } from "node:child_process";
+import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 
-const BASE_PATH = process.env.BASE_PATH ?? "retro/chess";
+const SITE = "dist/retro/chess";
 const args = process.argv.slice(2);
 
 if (args.includes("--test")) {
@@ -12,24 +17,23 @@ if (args.includes("--test")) {
   const tests = readdirSync("test").filter((f) => f.endsWith(".test.ts")).map((f) => `test/${f}`);
   await build({ entryPoints: tests, bundle: true, platform: "node", format: "esm", target: "node22", outdir: "dist-test", outExtension: { ".js": ".mjs" } });
 } else {
-  const site = BASE_PATH ? `dist/${BASE_PATH}` : "dist";
   rmSync("dist", { recursive: true, force: true });
-  mkdirSync(`${site}/engine`, { recursive: true });
-  mkdirSync(`${site}/fonts`, { recursive: true });
-  cpSync("public", site, { recursive: true });
-  if (BASE_PATH) renameSync(`${site}/_headers`, "dist/_headers"); // _headers must sit at the assets root
+  mkdirSync(`${SITE}/engine`, { recursive: true });
+  const godot = process.env.GODOT ?? "godot";
+  execFileSync(godot, ["--headless", "--path", "godot", "--import"], { stdio: "inherit" });
+  execFileSync(godot, ["--headless", "--path", "godot", "--export-release", "Web", `../${SITE}/index.html`], { stdio: "inherit" });
+  // Cloudflare serves static files of at most 25 MiB; the engine is bigger, so it goes up in parts
+  // and the Worker joins them again (worker/index.ts).
+  const wasm = readFileSync(`${SITE}/index.wasm`);
+  const PART = 20 * 1024 * 1024;
+  for (let i = 0; i * PART < wasm.length; i++) writeFileSync(`${SITE}/index.wasm.${i}`, wasm.subarray(i * PART, (i + 1) * PART));
+  rmSync(`${SITE}/index.wasm`);
+  cpSync("web/_headers", "dist/_headers");
+  cpSync("web/shell.css", `${SITE}/shell.css`);
+  cpSync("web/favicon.svg", `${SITE}/favicon.svg`);
   const sf = "node_modules/stockfish";
-  cpSync(`${sf}/bin/stockfish-19-lite-single.js`, `${site}/engine/stockfish.js`);
-  cpSync(`${sf}/bin/stockfish-19-lite-single.wasm`, `${site}/engine/stockfish.wasm`);
-  cpSync(`${sf}/Copying.txt`, `${site}/engine/COPYING.txt`);
-  for (const [pkg, file, out] of [
-    ["press-start-2p", "press-start-2p-latin-400-normal.woff2", "press-start-2p.woff2"],
-    ["vt323", "vt323-latin-400-normal.woff2", "vt323.woff2"],
-  ]) {
-    cpSync(`node_modules/@fontsource/${pkg}/files/${file}`, `${site}/fonts/${out}`);
-    cpSync(`node_modules/@fontsource/${pkg}/LICENSE`, `${site}/fonts/${pkg}-OFL.txt`);
-  }
-  const opts = { entryPoints: { game: "src/main.ts" }, bundle: true, minify: true, sourcemap: true, target: "es2020", outdir: site };
-  if (args.includes("--watch")) { const c = await context(opts); await c.watch(); console.log("watching…"); }
-  else await build(opts);
+  cpSync(`${sf}/bin/stockfish-19-lite-single.js`, `${SITE}/engine/stockfish.js`);
+  cpSync(`${sf}/bin/stockfish-19-lite-single.wasm`, `${SITE}/engine/stockfish.wasm`);
+  cpSync(`${sf}/Copying.txt`, `${SITE}/engine/COPYING.txt`);
+  await build({ entryPoints: { bridge: "bridge/main.ts" }, bundle: true, minify: true, target: "es2020", outdir: SITE });
 }

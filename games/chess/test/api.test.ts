@@ -5,7 +5,7 @@ import test from "node:test";
 import { handleApi, type ApiEnv } from "../worker/api";
 import { handleAuth, safeReturn } from "../worker/auth";
 import { RoomCore } from "../worker/room";
-import { BASE, type LiveMessage } from "../src/shared/protocol";
+import { BASE, type LiveMessage } from "../shared/protocol";
 import { fakeD1 } from "./fake-d1";
 
 const ORIGIN = "https://games.example";
@@ -101,18 +101,26 @@ test("a challenge by email, accepted, played to mate, in both players' history a
   assert.equal(end.reason, "checkmate");
   assert.equal((await ann("POST", `games/${g.id}/action`, { type: "resign" })).status, 409);
 
+  // Chat goes into the same transcript as the moves, with times.
+  assert.equal((await bo("POST", `games/${g.id}/action`, { type: "chat", text: "gg" })).status, 200);
+  const full = (await ann("GET", `games/${g.id}`)).body.game;
+  assert.deepEqual(full.events.map((e: any) => e.kind), ["start", "move", "move", "move", "move", "end", "chat"]);
+  assert.ok(full.events.every((e: any, i: number, a: any[]) => i === 0 || e.at >= a[i - 1].at));
+
   const annContacts = (await ann("GET", "lobby")).body.contacts;
-  assert.deepEqual(annContacts.map((c: any) => [c.email, c.wins, c.losses, c.joined]), [["bo@x.io", 0, 1, true]]);
+  assert.deepEqual(annContacts.map((c: any) => [c.email, c.name, c.wins, c.losses]), [["bo@x.io", "Bo", 0, 1]]);
+  const between = await ann("GET", `contacts/${annContacts[0].id}/games`);
+  assert.equal(between.body.games.length, 1);
+  assert.equal(between.body.contact.email, "bo@x.io");
   assert.deepEqual((await bo("GET", "lobby")).body.contacts.map((c: any) => [c.email, c.wins]), [["ann@x.io", 1]]);
+  assert.equal((await cy("GET", "lobby")).body.contacts.length, 0, "an invitation alone doesn't make a contact");
   assert.equal((await bo("GET", "games")).body.games.length, 1);
   assert.equal((await ann("GET", "lobby")).body.active.length, 0);
 });
 
-test("contacts: add, can't add yourself, remove; declining and cancelling challenges", async () => {
+test("declining and cancelling invitations; removing a contact", async () => {
   const { env } = setup();
   const ann = client(env, await signIn(env, "ann@x.io", "Ann"));
-  assert.equal((await ann("POST", "contacts", { email: "dee@x.io", name: "Dee" })).body.contacts[0].name, "Dee");
-  assert.equal((await ann("POST", "contacts", { email: "ann@x.io" })).status, 400);
   assert.equal((await ann("POST", "contacts/remove", { email: "dee@x.io" })).body.contacts.length, 0);
   const c1 = (await ann("POST", "challenges", { email: "dee@x.io", color: "random" })).body.challenge;
   assert.equal((await ann("POST", `challenges/${c1.id}/cancel`, {})).status, 200);
@@ -123,10 +131,22 @@ test("contacts: add, can't add yourself, remove; declining and cancelling challe
   assert.equal((await ann("GET", "lobby")).body.outgoing.length, 0);
 });
 
+test("profile pictures only from Google or GitHub; a Bearer token works like the cookie", async () => {
+  const { env } = setup();
+  const url = new URL(`${ORIGIN}${BASE}/auth/dev?email=pic@x.io&name=Pic&format=token&picture=${encodeURIComponent("https://avatars.githubusercontent.com/u/1")}`);
+  const res = (await handleAuth(new Request(url), env, url))!;
+  const { token, user } = (await res.json()) as any;
+  assert.equal(user.picture, "https://avatars.githubusercontent.com/u/1");
+  const viaBearer = await handleApi(new Request(`${ORIGIN}${BASE}/api/me`, { headers: { Authorization: `Bearer ${token}` } }), env, new URL(`${ORIGIN}${BASE}/api/me`));
+  assert.equal(((await viaBearer.json()) as any).user.avatar, `api/avatar/${user.id}`);
+  const bad = new URL(`${ORIGIN}${BASE}/auth/dev?email=evil@x.io&format=token&picture=${encodeURIComponent("https://evil.example/x.png")}`);
+  assert.equal(((await (await handleAuth(new Request(bad), env, bad))!.json()) as any).user.picture, null);
+});
+
 test("cross-site and non-JSON writes are refused", async () => {
   const { env } = setup();
   const ann = client(env, await signIn(env, "ann@x.io", "Ann"));
-  assert.equal((await ann("POST", "contacts", { email: "d@x.io" }, { Origin: "https://evil.example" })).status, 403);
+  assert.equal((await ann("POST", "contacts/remove", { email: "d@x.io" }, { Origin: "https://evil.example" })).status, 403);
 });
 
 test("games against the computer: saved only when finished and legal", async () => {
@@ -137,8 +157,11 @@ test("games against the computer: saved only when finished and legal", async () 
   const lost = await ann("POST", "games/computer", { level: 3, color: "white", moves: ["f2f3", "e7e5", "g2g4", "d8h4"], resigned: false });
   assert.equal(lost.status, 200);
   assert.equal(lost.body.game.black.name, "Stockfish · Club Novice");
-  const resigned = await ann("POST", "games/computer", { level: 8, color: "black", moves: ["e2e4"], resigned: true });
+  const resigned = await ann("POST", "games/computer", { level: 8, color: "black", moves: ["e2e4"], times: [4000], resigned: true });
   assert.equal(resigned.body.game.result, "1-0");
+  const ev = resigned.body.game.events;
+  assert.deepEqual(ev.map((e: any) => e.kind), ["start", "move", "resign", "end"]);
+  assert.equal(ev[1].at - ev[0].at, 4000, "move times are kept");
   const hist = (await ann("GET", "games")).body.games;
   assert.equal(hist.length, 2);
 });

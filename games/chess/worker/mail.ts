@@ -10,13 +10,14 @@ const escape = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)}
 
 export function challengeMail(fromName: string, fromEmail: string, link: string): { subject: string; text: string; html: string } {
   const who = `${fromName} (${fromEmail})`;
-  const subject = `${fromName} challenges you to a game of chess`;
-  const text = `${who} has challenged you to a game of chess.\n\nAccept or decline here: ${link}\n\nSign in with Google or GitHub using this email address to play.`;
-  const html = `<div style="font-family:monospace;background:#16142b;color:#f4e9cf;padding:24px">
-<p style="font-size:18px;color:#ffcf5a">♞ A CHALLENGER APPEARS</p>
-<p>${escape(who)} has challenged you to a game of chess.</p>
-<p><a href="${escape(link)}" style="display:inline-block;background:#ffcf5a;color:#16142b;padding:10px 16px;text-decoration:none;font-weight:bold">ACCEPT OR DECLINE</a></p>
-<p style="color:#a99fc9">Sign in with Google or GitHub using this email address to play.</p></div>`;
+  const subject = `${fromName} invites you to a game of chess`;
+  const text = `${who} has invited you to a game of chess on Gambit.\n\nAccept or decline here: ${link}\n\nSign in with Google or GitHub using this email address to play.`;
+  const html = `<div style="font-family:Georgia,serif;background:#0b0c0f;color:#ece8df;padding:32px">
+<p style="font:600 11px/1 sans-serif;letter-spacing:3px;color:#d9b26b;margin:0">AN INVITATION</p>
+<p style="font-style:italic;font-size:30px;margin:8px 0 16px">Gambit</p>
+<p style="font-family:sans-serif">${escape(who)} has invited you to a game of chess.</p>
+<p><a href="${escape(link)}" style="display:inline-block;background:#d9b26b;color:#17140e;padding:12px 20px;border-radius:10px;text-decoration:none;font:600 15px sans-serif">Accept or decline</a></p>
+<p style="font-family:sans-serif;color:#8d919b">Sign in with Google or GitHub using this email address to play.</p></div>`;
   return { subject, text, html };
 }
 

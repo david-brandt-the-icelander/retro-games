@@ -1,14 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { applyAction, validAction } from "../worker/actions";
-import type { GameView } from "../src/shared/protocol";
-import { boardOutcome, describe, replay, scoreFor, validMoveList } from "../src/shared/rules";
-import { commandsFor } from "../src/engine";
+import type { GameView } from "../shared/protocol";
+import { boardOutcome, describe, replay, scoreFor, validMoveList } from "../shared/rules";
+import { commandsFor } from "../bridge/engine";
 
 const game = (moves: string[] = []): GameView => ({
   id: "g1", kind: "online", level: null,
-  white: { id: "w", email: "w@x.io", name: "W" }, black: { id: "b", email: "b@x.io", name: "B" },
+  white: { id: "w", email: "w@x.io", name: "W", avatar: null }, black: { id: "b", email: "b@x.io", name: "B", avatar: null },
   moves, result: "*", reason: null, drawOffer: null, created: 1, updated: 1,
+  events: [{ seq: 1, at: 1, kind: "start", side: null, text: null }],
 });
 
 test("replay: legal moves give SAN, an illegal one gives null", () => {
@@ -43,6 +44,7 @@ test("actions: turn order, stale moves, mate ends the game", () => {
   const r = applyAction(game(["f2f3", "e7e5", "g2g4"]), "black", { type: "move", uci: "d8h4", ply: 3 }, 5);
   assert.ok(r.ok && r.game.result === "0-1" && r.game.reason === "checkmate");
   assert.ok(r.ok && r.game.updated > 1);
+  assert.deepEqual(r.ok && r.added.map((e) => [e.seq, e.kind, e.side, e.text]), [[2, "move", "black", "d8h4"], [3, "end", null, "0-1 checkmate"]]);
   assert.equal(applyAction(r.ok ? r.game : game(), "white", { type: "resign" }, 6).ok, false);
 });
 
@@ -61,6 +63,18 @@ test("actions: draw offers, accepting, declining, and a move answering one", () 
   assert.ok(mv.ok && mv.game.drawOffer === null);
   const res = applyAction(game(), "black", { type: "resign" }, 5);
   assert.ok(res.ok && res.game.result === "1-0" && res.game.reason === "resign");
+});
+
+test("chat: cleaned, logged with its side, allowed after the game too, never empty", () => {
+  const r = applyAction(game(), "black", { type: "chat", text: "  good luck\u0007!  " }, 50);
+  assert.ok(r.ok);
+  assert.deepEqual(r.ok && r.added, [{ seq: 2, at: 50, kind: "chat", side: "black", text: "good luck!" }]);
+  assert.equal(applyAction(game(), "white", { type: "chat", text: "   " }, 5).ok, false);
+  const over = applyAction(game(), "white", { type: "resign" }, 5);
+  assert.ok(over.ok && over.added.map((e) => e.kind).join() === "resign,end");
+  const gg = applyAction(over.ok ? over.game : game(), "black", { type: "chat", text: "gg" }, 6);
+  assert.ok(gg.ok && gg.game.events.at(-1)!.text === "gg");
+  assert.equal(applyAction(game(), "white", { type: "chat", text: "x".repeat(900) }, 5).ok && "trimmed", "trimmed");
 });
 
 test("validAction rejects malformed input", () => {

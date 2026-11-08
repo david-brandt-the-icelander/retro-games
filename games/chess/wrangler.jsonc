@@ -14,13 +14,13 @@
   "preview_urls": false,
   "routes": [{ "pattern": "games.icelander.net/retro/chess*", "zone_name": "icelander.net" }],
   "main": "worker/index.ts",
-  // The Worker runs first for the API and sign-in; everything else is a static asset.
-  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": ["/retro/chess/api/*", "/retro/chess/auth/*"] },
+  // The Worker runs first for the API, sign-in and the joined engine file; everything else is a static asset.
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": ["/retro/chess/api/*", "/retro/chess/auth/*", "/retro/chess/index.wasm"] },
   "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "GameRoom" }] },
   "migrations": [{ "tag": "rooms-v1", "new_sqlite_classes": ["GameRoom"] }],
   "d1_databases": [{ "binding": "DB", "database_name": "chess", "database_id": "00000000-0000-0000-0000-000000000000" }],
   "vars": {
-    // The sender of challenge emails, e.g. "Pixel Gambit <chess@icelander.net>"; empty sends none.
+    // The sender of challenge emails, e.g. "Gambit <chess@icelander.net>"; empty sends none.
     "MAIL_FROM": ""
   }
 }

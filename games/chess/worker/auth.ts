@@ -7,7 +7,7 @@
 //
 // A user is their verified email address: signing in with Google and with GitHub under the same
 // address is the same user. Only a SHA-256 hash of each session token is stored.
-import { BASE, cleanDisplayName, cleanEmail, type User } from "../src/shared/protocol";
+import { BASE, cleanDisplayName, cleanEmail, type User } from "../shared/protocol";
 import { createSession, deleteSession, sessionUser, upsertUser, type D1Database } from "./db";
 
 export interface AuthEnv {
@@ -31,7 +31,7 @@ interface Provider {
   id: (env: AuthEnv) => string | undefined;
   secret: (env: AuthEnv) => string | undefined;
   /** The user's verified email and name, from the access token. */
-  profile: (token: string) => Promise<{ email: string; name: string } | null>;
+  profile: (token: string) => Promise<{ email: string; name: string; picture: string | null } | null>;
 }
 
 const PROVIDERS: Record<string, Provider> = {
@@ -44,9 +44,9 @@ const PROVIDERS: Record<string, Provider> = {
     async profile(token) {
       const res = await fetch("https://openidconnect.googleapis.com/v1/userinfo", { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) return null;
-      const p = (await res.json()) as { email?: string; email_verified?: boolean; name?: string };
+      const p = (await res.json()) as { email?: string; email_verified?: boolean; name?: string; picture?: string };
       const email = cleanEmail(p.email);
-      return email && p.email_verified ? { email, name: cleanDisplayName(p.name) } : null;
+      return email && p.email_verified ? { email, name: cleanDisplayName(p.name), picture: safePicture(p.picture) } : null;
     },
   },
   github: {
@@ -59,11 +59,11 @@ const PROVIDERS: Record<string, Provider> = {
       const h = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "User-Agent": UA };
       const [u, em] = await Promise.all([fetch("https://api.github.com/user", { headers: h }), fetch("https://api.github.com/user/emails", { headers: h })]);
       if (!u.ok || !em.ok) return null;
-      const user = (await u.json()) as { name?: string | null; login?: string };
+      const user = (await u.json()) as { name?: string | null; login?: string; avatar_url?: string };
       const emails = (await em.json()) as { email: string; primary: boolean; verified: boolean }[];
       const best = emails.find((e) => e.primary && e.verified) ?? emails.find((e) => e.verified);
       const email = cleanEmail(best?.email);
-      return email ? { email, name: cleanDisplayName(user.name || user.login) } : null;
+      return email ? { email, name: cleanDisplayName(user.name || user.login), picture: safePicture(user.avatar_url) } : null;
     },
   },
 };
@@ -76,6 +76,18 @@ export function providers(env: AuthEnv): string[] {
 }
 
 // ── Small helpers ──
+
+/** Where profile pictures may come from: the providers' own image hosts, over HTTPS. */
+export const PICTURE_HOSTS = ["lh3.googleusercontent.com", "avatars.githubusercontent.com"];
+export function safePicture(x: unknown): string | null {
+  if (typeof x !== "string" || x.length > 1000) return null;
+  try {
+    const u = new URL(x);
+    return u.protocol === "https:" && PICTURE_HOSTS.includes(u.hostname) ? u.toString() : null;
+  } catch {
+    return null;
+  }
+}
 
 const b64url = (bytes: Uint8Array) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 const randomToken = (n = 32) => b64url(crypto.getRandomValues(new Uint8Array(n)));
@@ -112,17 +124,23 @@ function redirect(location: string, cookies: string[] = []): Response {
 
 // ── Sessions ──
 
+/**
+ * The signed-in user: from the session cookie (the web build, same origin), or from an
+ * "Authorization: Bearer" header with the same token (a desktop build talking to a dev server).
+ */
 export async function currentUser(req: Request, env: AuthEnv): Promise<User | null> {
-  const token = readCookie(req, SESSION_COOKIE);
+  const bearer = /^Bearer (\S+)$/.exec(req.headers.get("Authorization") ?? "")?.[1];
+  const token = bearer ?? readCookie(req, SESSION_COOKIE);
   if (!token || token.length > 100) return null;
   return sessionUser(env.DB, await sha256(token), Date.now());
 }
 
-async function startSession(env: AuthEnv, url: URL, email: string, name: string, back: string): Promise<Response> {
+async function startSession(env: AuthEnv, url: URL, email: string, name: string, picture: string | null, back: string, asToken = false): Promise<Response> {
   const now = Date.now();
-  const user = await upsertUser(env.DB, email, name, now);
+  const user = await upsertUser(env.DB, email, name, picture, now);
   const token = randomToken();
   await createSession(env.DB, await sha256(token), user.id, now, SESSION_MS);
+  if (asToken) return new Response(JSON.stringify({ token, user }), { headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
   return redirect(back, [
     cookie(SESSION_COOKIE, token, BASE, SESSION_MS / 1000, isSecure(url)),
     cookie(OAUTH_COOKIE, "", `${BASE}/auth`, 0, isSecure(url)),
@@ -147,7 +165,9 @@ export async function handleAuth(req: Request, env: AuthEnv, url: URL): Promise<
     if (env.DEV_LOGIN !== "1") return new Response("Not found", { status: 404 });
     const email = cleanEmail(url.searchParams.get("email"));
     if (!email) return new Response("Give ?email=", { status: 400 });
-    return startSession(env, url, email, cleanDisplayName(url.searchParams.get("name")), safeReturn(url.searchParams.get("return")));
+    // ?format=token answers with the token instead of a cookie, for a desktop build or the Godot editor.
+    return startSession(env, url, email, cleanDisplayName(url.searchParams.get("name")), safePicture(url.searchParams.get("picture")),
+      safeReturn(url.searchParams.get("return")), url.searchParams.get("format") === "token");
   }
 
   const p = PROVIDERS[name ?? ""];
@@ -185,7 +205,7 @@ export async function handleAuth(req: Request, env: AuthEnv, url: URL): Promise<
     const tok = res.ok ? ((await res.json()) as { access_token?: string }) : {};
     const profile = tok.access_token ? await p.profile(tok.access_token) : null;
     if (!profile) return redirect(`${BASE}/#signin-failed`);
-    return startSession(env, url, profile.email, profile.name, safeReturn(back ?? null));
+    return startSession(env, url, profile.email, profile.name, profile.picture, safeReturn(back ?? null));
   }
   return null;
 }

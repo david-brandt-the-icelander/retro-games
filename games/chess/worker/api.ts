@@ -1,23 +1,23 @@
 // The JSON API under {BASE}/api/. Everything except /api/me needs a signed-in user.
 //
 //   GET  me                               → Me
-//   POST me/name          { name }        renames yourself
 //   GET  lobby                            → Lobby: open challenges both ways, games in play, contacts
 //   POST challenges       { email, color } → { challenge, emailed, link }
 //   GET  challenges/{id}                  → { challenge }  (yours, or addressed to you)
 //   POST challenges/{id}/accept           → { game }
 //   POST challenges/{id}/decline | cancel
-//   POST contacts         { email, name? }
+//   GET  contacts/{userId}/games          → { contact, games }  every game against them
 //   POST contacts/remove  { email }
+//   GET  avatar/{userId}                  a player's profile picture, fetched from Google or GitHub
 //   GET  games?before=T                   → { games }  finished games, newest first, 30 at a time
-//   GET  games/{id}                       → { game }
-//   POST games/{id}/action  Action        → { game }  (through the game's Durable Object)
+//   GET  games/{id}                       → { game }   with its transcript
+//   POST games/{id}/action  Action        → { game }   (through the game's Durable Object)
 //   GET  games/{id}/live                  WebSocket: LiveMessage after every change
-//   POST games/computer   { level, color, moves, resigned } → { game }  a finished game against the computer
-import { BASE, cleanDisplayName, cleanEmail, type Me, type User } from "../src/shared/protocol";
-import { boardOutcome, replay, resignation, validMoveList, type Side } from "../src/shared/rules";
+//   POST games/computer   { level, color, moves, times, resigned } → { game }  a finished game against the computer
+import { BASE, cleanEmail, type GameEvent, type Me, type User } from "../shared/protocol";
+import { boardOutcome, replay, resignation, validMoveList, type Side } from "../shared/rules";
 import { validAction } from "./actions";
-import { currentUser, providers, type AuthEnv } from "./auth";
+import { currentUser, PICTURE_HOSTS, providers, type AuthEnv } from "./auth";
 import * as db from "./db";
 import { canMail, challengeMail, sendMail, type MailEnv } from "./mail";
 
@@ -25,7 +25,7 @@ export interface DurableObjectStub { fetch(req: Request): Promise<Response> }
 export interface DurableObjectNamespace { idFromName(name: string): unknown; get(id: unknown): DurableObjectStub }
 export interface ApiEnv extends AuthEnv, MailEnv { ROOMS: DurableObjectNamespace }
 
-const MAX_BODY = 20_000;
+const MAX_BODY = 40_000;
 const CHALLENGES_PER_HOUR = 30;
 
 export function json(body: unknown, status = 200): Response {
@@ -52,6 +52,7 @@ function sameOrigin(req: Request, url: URL): boolean {
 }
 
 export const challengeLink = (origin: string, id: string) => `${origin}${BASE}/?challenge=${id}`;
+const publicUser = (u: User) => ({ id: u.id, email: u.email, name: u.name, avatar: db.avatarPath(u.id, u.picture) });
 
 export async function handleApi(req: Request, env: ApiEnv, url: URL): Promise<Response> {
   const path = url.pathname.slice(`${BASE}/api/`.length).split("/").filter(Boolean);
@@ -60,20 +61,12 @@ export async function handleApi(req: Request, env: ApiEnv, url: URL): Promise<Re
   const user = await currentUser(req, env);
 
   if (path[0] === "me" && path.length === 1 && method === "GET") {
-    const me: Me = { user, providers: providers(env) };
-    return json(me);
+    return json({ user: user ? publicUser(user) : null, providers: providers(env) } satisfies Me);
   }
   if (!user) return fail("Sign in first.", 401);
   const now = Date.now();
 
-  // ── Yourself ──
-  if (path[0] === "me" && path[1] === "name" && method === "POST") {
-    const body = await readJson(req);
-    const name = cleanDisplayName(body?.name);
-    if (!name) return fail("Give a name.");
-    await db.renameUser(env.DB, user.id, name);
-    return json({ user: { ...user, name } });
-  }
+  if (path[0] === "avatar" && path[1] && method === "GET") return avatar(env, path[1]);
 
   // ── The lobby ──
   if (path[0] === "lobby" && method === "GET") {
@@ -100,26 +93,35 @@ export async function handleApi(req: Request, env: ApiEnv, url: URL): Promise<Re
       const gameId = db.newId();
       if (!(await db.closeChallenge(env.DB, c.id, "accepted", gameId))) return fail("The challenge was already answered.", 409);
       const challengerSide: Side = c.color === "random" ? (crypto.getRandomValues(new Uint8Array(1))[0] & 1 ? "white" : "black") : c.color;
-      const white = challengerSide === "white" ? c.from.id : user.id;
-      const black = challengerSide === "white" ? user.id : c.from.id;
-      await db.insertGame(env.DB, { id: gameId, kind: "online", level: null, white, black, moves: [], result: "*", reason: null, now });
-      await db.addContact(env.DB, user.id, c.from.email!, c.from.name, now);
+      const white = challengerSide === "white" ? c.from.id! : user.id;
+      const black = challengerSide === "white" ? user.id : c.from.id!;
+      await db.insertGame(env.DB, {
+        id: gameId, kind: "online", level: null, white, black, moves: [], result: "*", reason: null, now,
+        events: [{ seq: 1, at: now, kind: "start", side: null, text: null }],
+      });
+      // Both players now have each other as contacts.
+      await db.addContact(env.DB, user.id, c.from.email!, now);
+      await db.addContact(env.DB, c.from.id!, user.email, now);
       return json({ game: await db.gameById(env.DB, gameId) });
     }
     return fail("not found", 404);
   }
 
   // ── Contacts ──
-  if (path[0] === "contacts" && method === "POST") {
-    const body = await readJson(req);
-    const email = cleanEmail(body?.email);
-    if (!email) return fail("That doesn't look like an email address.");
-    if (path[1] === "remove") await db.removeContact(env.DB, user.id, email);
-    else if (path.length === 1) {
-      if (email === user.email) return fail("That's you.");
-      await db.addContact(env.DB, user.id, email, cleanDisplayName(body?.name) || null, now);
-    } else return fail("not found", 404);
-    return json({ contacts: await db.contacts(env.DB, user) });
+  if (path[0] === "contacts") {
+    if (path[1] === "remove" && method === "POST") {
+      const body = await readJson(req);
+      const email = cleanEmail(body?.email);
+      if (!email) return fail("That doesn't look like an email address.");
+      await db.removeContact(env.DB, user.id, email);
+      return json({ contacts: await db.contacts(env.DB, user) });
+    }
+    if (path[1] && path[2] === "games" && method === "GET") {
+      const other = await db.userById(env.DB, path[1]);
+      if (!other) return fail("No such player.", 404);
+      return json({ contact: publicUser(other), games: await db.gamesBetween(env.DB, user.id, other.id) });
+    }
+    return fail("not found", 404);
   }
 
   // ── Games ──
@@ -136,14 +138,12 @@ export async function handleApi(req: Request, env: ApiEnv, url: URL): Promise<Re
       if (!g || (g.white.id !== user.id && g.black.id !== user.id)) return fail("No such game.", 404);
       return json({ game: g });
     }
-    if ((path[2] === "action" && method === "POST") || (path[2] === "live" && method === "GET")) {
-      if (path[2] === "action") {
-        const body = await readJson(req);
-        if (!validAction(body)) return fail("bad action");
-        return toRoom(env, id, user, "action", req, JSON.stringify(body));
-      }
-      return toRoom(env, id, user, "live", req, null);
+    if (path[2] === "action" && method === "POST") {
+      const body = await readJson(req);
+      if (!validAction(body)) return fail("bad action");
+      return toRoom(env, id, user, "action", req, JSON.stringify(body));
     }
+    if (path[2] === "live" && method === "GET") return toRoom(env, id, user, "live", req, null);
   }
   return fail("not found", 404);
 }
@@ -160,6 +160,21 @@ function toRoom(env: ApiEnv, id: string, user: User, what: "action" | "live", re
   return stub.fetch(new Request(`https://room/${what}`, { method: "POST", headers, body }));
 }
 
+/** A player's profile picture, fetched from the provider (so the game loads it from its own origin) and cached for a day. */
+async function avatar(env: ApiEnv, userId: string): Promise<Response> {
+  const u = await db.userById(env.DB, userId);
+  if (!u?.picture) return new Response("No picture", { status: 404 });
+  const src = new URL(u.picture);
+  if (!PICTURE_HOSTS.includes(src.hostname)) return new Response("No picture", { status: 404 });
+  // Ask for a small square picture: Google takes "=s128-c", GitHub "?s=128".
+  if (src.hostname === "avatars.githubusercontent.com") src.searchParams.set("s", "128");
+  else src.pathname = src.pathname.replace(/=s\d+(-c)?$/, "") + "=s128-c";
+  const res = await fetch(src.toString(), { cf: { cacheTtl: 86400, cacheEverything: true } } as RequestInit);
+  const type = res.headers.get("Content-Type") ?? "";
+  if (!res.ok || !/^image\/(png|jpeg|webp)$/.test(type)) return new Response("No picture", { status: 404 });
+  return new Response(res.body, { headers: { "Content-Type": type, "Cache-Control": "private, max-age=86400" } });
+}
+
 async function createChallenge(req: Request, env: ApiEnv, url: URL, user: User, now: number): Promise<Response> {
   const body = await readJson(req);
   const email = cleanEmail(body?.email);
@@ -170,8 +185,6 @@ async function createChallenge(req: Request, env: ApiEnv, url: URL, user: User, 
   if ((await db.countOpenFrom(env.DB, user.id, now - 3600_000)) >= CHALLENGES_PER_HOUR) return fail("That's a lot of challenges. Try again in an hour.", 429);
   const id = db.newId();
   await db.insertChallenge(env.DB, { id, from: user.id, toEmail: email, color, now });
-  const known = await db.userByEmail(env.DB, email);
-  await db.addContact(env.DB, user.id, email, known?.name ?? null, now);
   const link = challengeLink(url.origin, id);
   const emailed = canMail(env) ? await sendMail(env, email, challengeMail(user.name, user.email, link)) : false;
   return json({ challenge: await db.challengeById(env.DB, id), emailed, link });
@@ -191,10 +204,18 @@ async function saveComputerGame(req: Request, env: ApiEnv, user: User, now: numb
     if (body.resigned !== true) return fail("The game isn't over.", 422);
     outcome = resignation(color);
   }
+  // When each move was made, in milliseconds after the game began: rising, and not in the future.
+  const times = Array.isArray(body.times) && body.times.length === body.moves.length && body.times.every((t, i, a) => Number.isFinite(t) && t >= 0 && (i === 0 || t >= a[i - 1]))
+    ? (body.times as number[]) : body.moves.map(() => 0);
+  const start = now - Math.min(times.at(-1) ?? 0, 30 * 86400_000);
+  const events: GameEvent[] = [{ seq: 1, at: start, kind: "start", side: null, text: null }];
+  body.moves.forEach((m, i) => events.push({ seq: i + 2, at: Math.min(now, start + times[i]), kind: "move", side: i % 2 ? "black" : "white", text: m }));
+  if (outcome.reason === "resign") events.push({ seq: events.length + 1, at: now, kind: "resign", side: color, text: null });
+  events.push({ seq: events.length + 1, at: now, kind: "end", side: null, text: `${outcome.result} ${outcome.reason}` });
   const id = db.newId();
   await db.insertGame(env.DB, {
     id, kind: "computer", level, white: color === "white" ? user.id : null, black: color === "black" ? user.id : null,
-    moves: body.moves, result: outcome.result, reason: outcome.reason, now,
+    moves: body.moves, result: outcome.result, reason: outcome.reason, now, events,
   });
   return json({ game: await db.gameById(env.DB, id) });
 }

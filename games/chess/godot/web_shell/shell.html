@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Gambit</title>
+  <meta name="description" content="Chess in 3D: play a friend by email, or Stockfish.">
+  <meta name="theme-color" content="#0b0c0f">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="shell.css">
+  <script id="godot-config" type="application/json">$GODOT_CONFIG</script>
+  $GODOT_HEAD_INCLUDE
+</head>
+<body>
+  <canvas id="canvas" tabindex="0">Your browser does not support the canvas element.</canvas>
+  <div id="status" role="status">
+    <p class="eyebrow">CHESS, BEAUTIFULLY</p>
+    <h1>Gambit</h1>
+    <div class="bar"><div id="bar-fill"></div></div>
+    <p id="notice"></p>
+  </div>
+  <noscript>Gambit needs JavaScript.</noscript>
+  <script src="$GODOT_URL"></script>
+  <script src="bridge.js"></script>
+</body>
+</html>

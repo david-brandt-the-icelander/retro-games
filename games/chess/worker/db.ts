@@ -1,37 +1,36 @@
 // The D1 queries. The interfaces are the subset of Cloudflare's D1 types this Worker uses, so the
 // tests can run the same queries on node:sqlite (test/fake-d1.ts).
-import type { Challenge, Contact, GameView, PlayerRef, User } from "../src/shared/protocol";
-import type { Reason, Result, Side } from "../src/shared/rules";
-import { LEVELS } from "../src/shared/protocol";
+import type { Challenge, Contact, GameEvent, GameView, PlayerRef, User } from "../shared/protocol";
+import type { Reason, Result, Side } from "../shared/rules";
+import { LEVELS } from "../shared/protocol";
 
 export interface D1Result<T> { results: T[]; meta: { changes: number } }
 export interface D1Statement { bind(...v: unknown[]): D1Statement; first<T>(): Promise<T | null>; all<T>(): Promise<D1Result<T>>; run(): Promise<D1Result<unknown>> }
 export interface D1Database { prepare(sql: string): D1Statement; batch(statements: D1Statement[]): Promise<unknown> }
 
 export const newId = () => crypto.randomUUID().replace(/-/g, "").slice(0, 20);
+export const avatarPath = (id: string, picture: string | null | undefined) => (picture ? `api/avatar/${id}` : null);
 
 // ── Users ──
 
-export async function upsertUser(db: D1Database, email: string, name: string, now: number): Promise<User> {
-  const existing = await db.prepare("SELECT id, email, name FROM users WHERE email = ?").bind(email).first<User>();
+/** Signs a user in: creates them, or refreshes their name and picture from the provider. */
+export async function upsertUser(db: D1Database, email: string, name: string, picture: string | null, now: number): Promise<User> {
+  const existing = await db.prepare("SELECT id, email, name, picture FROM users WHERE email = ?").bind(email).first<User>();
+  const display = name || existing?.name || email.split("@")[0];
   if (existing) {
-    await db.prepare("UPDATE users SET last_seen = ? WHERE id = ?").bind(now, existing.id).run();
-    return existing;
+    await db.prepare("UPDATE users SET name = ?, picture = COALESCE(?, picture), last_seen = ? WHERE id = ?").bind(display, picture, now, existing.id).run();
+    return { ...existing, name: display, picture: picture ?? existing.picture };
   }
-  const user = { id: newId(), email, name: name || email.split("@")[0] };
-  await db.prepare("INSERT INTO users (id, email, name, created, last_seen) VALUES (?, ?, ?, ?, ?)").bind(user.id, email, user.name, now, now).run();
+  const user: User = { id: newId(), email, name: display, picture };
+  await db.prepare("INSERT INTO users (id, email, name, picture, created, last_seen) VALUES (?, ?, ?, ?, ?, ?)").bind(user.id, email, display, picture, now, now).run();
   return user;
 }
 
 export const userById = (db: D1Database, id: string) =>
-  db.prepare("SELECT id, email, name FROM users WHERE id = ?").bind(id).first<User>();
+  db.prepare("SELECT id, email, name, picture FROM users WHERE id = ?").bind(id).first<User>();
 
 export const userByEmail = (db: D1Database, email: string) =>
-  db.prepare("SELECT id, email, name FROM users WHERE email = ?").bind(email).first<User>();
-
-export async function renameUser(db: D1Database, id: string, name: string): Promise<void> {
-  await db.prepare("UPDATE users SET name = ? WHERE id = ?").bind(name, id).run();
-}
+  db.prepare("SELECT id, email, name, picture FROM users WHERE email = ?").bind(email).first<User>();
 
 // ── Sessions ──
 
@@ -41,7 +40,7 @@ export async function createSession(db: D1Database, tokenHash: string, userId: s
 }
 
 export const sessionUser = (db: D1Database, tokenHash: string, now: number) =>
-  db.prepare("SELECT u.id, u.email, u.name FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ? AND s.expires > ?")
+  db.prepare("SELECT u.id, u.email, u.name, u.picture FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ? AND s.expires > ?")
     .bind(tokenHash, now).first<User>();
 
 export async function deleteSession(db: D1Database, tokenHash: string): Promise<void> {
@@ -53,70 +52,94 @@ export async function deleteSession(db: D1Database, tokenHash: string): Promise<
 interface GameRow {
   id: string; kind: string; level: number | null; white_user: string | null; black_user: string | null;
   moves: string; result: string; reason: string | null; draw_offer: string | null; created: number; updated: number;
-  w_email: string | null; w_name: string | null; b_email: string | null; b_name: string | null;
+  w_email: string | null; w_name: string | null; w_pic: string | null; b_email: string | null; b_name: string | null; b_pic: string | null;
 }
 
-const GAME_SELECT = `SELECT g.*, w.email AS w_email, w.name AS w_name, b.email AS b_email, b.name AS b_name
+const GAME_SELECT = `SELECT g.*, w.email AS w_email, w.name AS w_name, w.picture AS w_pic, b.email AS b_email, b.name AS b_name, b.picture AS b_pic
   FROM games g LEFT JOIN users w ON w.id = g.white_user LEFT JOIN users b ON b.id = g.black_user`;
 
-function player(id: string | null, email: string | null, name: string | null, level: number | null): PlayerRef {
-  if (id) return { id, email, name: name ?? email ?? "?" };
-  return { id: null, email: null, name: level ? `Stockfish · ${LEVELS[level - 1]?.name ?? level}` : "Stockfish" };
+function player(id: string | null, email: string | null, name: string | null, pic: string | null, level: number | null): PlayerRef {
+  if (id) return { id, email, name: name ?? email ?? "?", avatar: avatarPath(id, pic) };
+  return { id: null, email: null, name: level ? `Stockfish · ${LEVELS[level - 1]?.name ?? level}` : "Stockfish", avatar: null };
 }
 
-export function toView(r: GameRow): GameView {
+export function toView(r: GameRow, events: GameEvent[] = []): GameView {
   return {
     id: r.id,
     kind: r.kind === "computer" ? "computer" : "online",
     level: r.level,
-    white: player(r.white_user, r.w_email, r.w_name, r.level),
-    black: player(r.black_user, r.b_email, r.b_name, r.level),
+    white: player(r.white_user, r.w_email, r.w_name, r.w_pic, r.level),
+    black: player(r.black_user, r.b_email, r.b_name, r.b_pic, r.level),
     moves: r.moves ? r.moves.split(" ") : [],
     result: r.result as Result,
     reason: (r.reason as Reason | null) ?? null,
     drawOffer: (r.draw_offer as Side | null) ?? null,
     created: r.created,
     updated: r.updated,
+    events,
   };
 }
 
+export async function gameEvents(db: D1Database, id: string): Promise<GameEvent[]> {
+  const r = await db.prepare("SELECT seq, at, kind, side, text FROM game_events WHERE game_id = ? ORDER BY seq").bind(id).all<GameEvent>();
+  return r.results.map((e) => ({ seq: e.seq, at: e.at, kind: e.kind, side: e.side ?? null, text: e.text ?? null }));
+}
+
+/** A game with its whole transcript. */
 export async function gameById(db: D1Database, id: string): Promise<GameView | null> {
   const r = await db.prepare(`${GAME_SELECT} WHERE g.id = ?`).bind(id).first<GameRow>();
-  return r ? toView(r) : null;
+  return r ? toView(r, await gameEvents(db, id)) : null;
 }
 
-export async function insertGame(db: D1Database, g: { id: string; kind: "online" | "computer"; level: number | null; white: string | null; black: string | null; moves: string[]; result: Result; reason: Reason | null; now: number }): Promise<void> {
-  await db.prepare("INSERT INTO games (id, kind, level, white_user, black_user, moves, result, reason, draw_offer, created, updated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?)")
-    .bind(g.id, g.kind, g.level, g.white, g.black, g.moves.join(" "), g.result, g.reason, g.now, g.now).run();
+const insertEvent = (db: D1Database, gameId: string, e: GameEvent) =>
+  db.prepare("INSERT INTO game_events (game_id, seq, at, kind, side, text) VALUES (?, ?, ?, ?, ?, ?)").bind(gameId, e.seq, e.at, e.kind, e.side, e.text);
+
+export async function insertGame(db: D1Database, g: { id: string; kind: "online" | "computer"; level: number | null; white: string | null; black: string | null; moves: string[]; result: Result; reason: Reason | null; now: number; events: GameEvent[] }): Promise<void> {
+  await db.batch([
+    db.prepare("INSERT INTO games (id, kind, level, white_user, black_user, moves, result, reason, draw_offer, created, updated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?)")
+      .bind(g.id, g.kind, g.level, g.white, g.black, g.moves.join(" "), g.result, g.reason, g.now, g.now),
+    ...g.events.map((e) => insertEvent(db, g.id, e)),
+  ]);
 }
 
-/** Saves a game's new state, only if nobody changed it since `prevUpdated` (true when saved). */
-export async function saveGame(db: D1Database, g: GameView, prevUpdated: number): Promise<boolean> {
+/** Saves a game's new state and its new transcript entries, only if nobody changed it since `prevUpdated` (true when saved). */
+export async function saveGame(db: D1Database, g: GameView, prevUpdated: number, added: GameEvent[]): Promise<boolean> {
   const r = await db.prepare("UPDATE games SET moves = ?, result = ?, reason = ?, draw_offer = ?, updated = ? WHERE id = ? AND updated = ?")
     .bind(g.moves.join(" "), g.result, g.reason, g.drawOffer, g.updated, g.id, prevUpdated).run();
-  return r.meta.changes === 1;
+  if (r.meta.changes !== 1) return false;
+  if (added.length) await db.batch(added.map((e) => insertEvent(db, g.id, e)));
+  return true;
 }
 
 export async function activeGames(db: D1Database, userId: string): Promise<GameView[]> {
   const r = await db.prepare(`${GAME_SELECT} WHERE g.kind = 'online' AND g.result = '*' AND (g.white_user = ? OR g.black_user = ?) ORDER BY g.updated DESC LIMIT 50`)
     .bind(userId, userId).all<GameRow>();
-  return r.results.map(toView);
+  return r.results.map((row) => toView(row));
 }
 
-export async function finishedGames(db: D1Database, userId: string, before: number, limit: number): Promise<GameView[]> {
-  const r = await db.prepare(`${GAME_SELECT} WHERE g.result != '*' AND (g.white_user = ? OR g.black_user = ?) AND g.updated < ? ORDER BY g.updated DESC LIMIT ?`)
-    .bind(userId, userId, before, limit).all<GameRow>();
-  return r.results.map(toView);
+/** Finished games, newest first, without transcripts. With `opponent`, only those against that user. */
+export async function finishedGames(db: D1Database, userId: string, before: number, limit: number, opponent?: string): Promise<GameView[]> {
+  const vs = opponent ? " AND (g.white_user = ?4 OR g.black_user = ?4)" : "";
+  const r = await db.prepare(`${GAME_SELECT} WHERE g.result != '*' AND (g.white_user = ?1 OR g.black_user = ?1) AND g.updated < ?2${vs} ORDER BY g.updated DESC LIMIT ?3`)
+    .bind(...[userId, before, limit, ...(opponent ? [opponent] : [])]).all<GameRow>();
+  return r.results.map((row) => toView(row));
+}
+
+/** Every online game between two users, in play or finished, newest first. */
+export async function gamesBetween(db: D1Database, a: string, b: string): Promise<GameView[]> {
+  const r = await db.prepare(`${GAME_SELECT} WHERE g.kind = 'online' AND ((g.white_user = ?1 AND g.black_user = ?2) OR (g.white_user = ?2 AND g.black_user = ?1)) ORDER BY g.updated DESC LIMIT 200`)
+    .bind(a, b).all<GameRow>();
+  return r.results.map((row) => toView(row));
 }
 
 // ── Challenges ──
 
-interface ChallengeRow { id: string; from_user: string; to_email: string; color: string; status: string; game_id: string | null; created: number; f_email: string; f_name: string }
-const CHALLENGE_SELECT = "SELECT c.*, u.email AS f_email, u.name AS f_name FROM challenges c JOIN users u ON u.id = c.from_user";
+interface ChallengeRow { id: string; from_user: string; to_email: string; color: string; status: string; game_id: string | null; created: number; f_email: string; f_name: string; f_pic: string | null }
+const CHALLENGE_SELECT = "SELECT c.*, u.email AS f_email, u.name AS f_name, u.picture AS f_pic FROM challenges c JOIN users u ON u.id = c.from_user";
 
 const toChallenge = (r: ChallengeRow): Challenge => ({
   id: r.id,
-  from: { id: r.from_user, email: r.f_email, name: r.f_name },
+  from: { id: r.from_user, email: r.f_email, name: r.f_name, avatar: avatarPath(r.from_user, r.f_pic) },
   toEmail: r.to_email,
   color: r.color as Challenge["color"],
   status: r.status as Challenge["status"],
@@ -153,32 +176,30 @@ export async function countOpenFrom(db: D1Database, userId: string, since: numbe
   return r?.n ?? 0;
 }
 
-// ── Contacts ──
+// ── Contacts: people you have played against ──
 
-/** Adds a contact, or fills in their name if it was missing. */
-export async function addContact(db: D1Database, ownerId: string, email: string, name: string | null, now: number): Promise<void> {
-  await db.prepare("INSERT INTO contacts (owner_id, email, name, created) VALUES (?, ?, ?, ?) ON CONFLICT (owner_id, email) DO UPDATE SET name = COALESCE(excluded.name, contacts.name)")
-    .bind(ownerId, email, name, now).run();
+export async function addContact(db: D1Database, ownerId: string, email: string, now: number): Promise<void> {
+  await db.prepare("INSERT INTO contacts (owner_id, email, name, created) VALUES (?, ?, NULL, ?) ON CONFLICT (owner_id, email) DO NOTHING")
+    .bind(ownerId, email, now).run();
 }
 
 export async function removeContact(db: D1Database, ownerId: string, email: string): Promise<void> {
   await db.prepare("DELETE FROM contacts WHERE owner_id = ? AND email = ?").bind(ownerId, email).run();
 }
 
-interface ContactRow { email: string; name: string | null; user_name: string | null; user_id: string | null }
+interface ContactRow { email: string; id: string; name: string; picture: string | null }
 interface RecordRow { opp: string; result: string; me_white: number; last: number }
 
 export async function contacts(db: D1Database, owner: User): Promise<Contact[]> {
   const [list, games] = await Promise.all([
-    db.prepare("SELECT c.email, c.name, u.name AS user_name, u.id AS user_id FROM contacts c LEFT JOIN users u ON u.email = c.email WHERE c.owner_id = ? ORDER BY c.created DESC LIMIT 500")
+    db.prepare("SELECT c.email, u.id, u.name, u.picture FROM contacts c JOIN users u ON u.email = c.email WHERE c.owner_id = ? LIMIT 500")
       .bind(owner.id).all<ContactRow>(),
-    db.prepare(`SELECT CASE WHEN g.white_user = ?1 THEN b.email ELSE w.email END AS opp, g.result, (g.white_user = ?1) AS me_white, g.updated AS last
-      FROM games g JOIN users w ON w.id = g.white_user JOIN users b ON b.id = g.black_user
-      WHERE g.kind = 'online' AND (g.white_user = ?1 OR g.black_user = ?1)`).bind(owner.id).all<RecordRow>(),
+    db.prepare(`SELECT CASE WHEN g.white_user = ?1 THEN g.black_user ELSE g.white_user END AS opp, g.result, (g.white_user = ?1) AS me_white, g.updated AS last
+      FROM games g WHERE g.kind = 'online' AND (g.white_user = ?1 OR g.black_user = ?1)`).bind(owner.id).all<RecordRow>(),
   ]);
   const out = new Map<string, Contact>();
   for (const c of list.results) {
-    out.set(c.email, { email: c.email, name: c.user_name ?? c.name, wins: 0, losses: 0, draws: 0, lastPlayed: null, joined: c.user_id !== null });
+    out.set(c.id, { id: c.id, email: c.email, name: c.name, avatar: avatarPath(c.id, c.picture), wins: 0, losses: 0, draws: 0, lastPlayed: null });
   }
   for (const g of games.results) {
     const c = out.get(g.opp);

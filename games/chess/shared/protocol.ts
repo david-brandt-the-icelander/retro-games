@@ -3,11 +3,21 @@ import type { Reason, Result, Side } from "./rules";
 
 export const BASE = "/retro/chess";
 
-export interface User { id: string; email: string; name: string }
+export interface User { id: string; email: string; name: string; picture?: string | null }
 
 export interface Me { user: User | null; providers: string[] }
 
-export interface PlayerRef { id: string | null; email: string | null; name: string }
+/** A player in a game. `avatar` is a path under BASE that serves their profile picture, if they have one. */
+export interface PlayerRef { id: string | null; email: string | null; name: string; avatar: string | null }
+
+/** One entry in a game's transcript. `text` is the move in UCI, the chat message, or "RESULT REASON" for end. */
+export interface GameEvent {
+  seq: number;
+  at: number;
+  kind: "start" | "move" | "chat" | "draw-offer" | "draw-decline" | "resign" | "end";
+  side: Side | null;
+  text: string | null;
+}
 
 export interface GameView {
   id: string;
@@ -23,6 +33,8 @@ export interface GameView {
   drawOffer: Side | null;
   created: number;
   updated: number;
+  /** The transcript: moves, chat, offers and the result, in order, with their times. */
+  events: GameEvent[];
 }
 
 export interface Challenge {
@@ -37,15 +49,15 @@ export interface Challenge {
 }
 
 export interface Contact {
+  id: string;
   email: string;
-  name: string | null;
+  name: string;
+  avatar: string | null;
   /** Finished games against them, from the owner's side. */
   wins: number;
   losses: number;
   draws: number;
   lastPlayed: number | null;
-  /** True when they have signed in to the game at least once. */
-  joined: boolean;
 }
 
 export interface Lobby {
@@ -61,7 +73,10 @@ export type Action =
   | { type: "resign" }
   | { type: "draw-offer" }
   | { type: "draw-accept" }
-  | { type: "draw-decline" };
+  | { type: "draw-decline" }
+  | { type: "chat"; text: string };
+
+export const MAX_CHAT = 500;
 
 /** What the live connection sends: the whole game after every change. */
 export type LiveMessage = { t: "state"; game: GameView } | { t: "error"; error: string } | { t: "pong" };

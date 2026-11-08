@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
   id TEXT PRIMARY KEY,
   email TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
+  picture TEXT,                     -- profile picture URL from Google or GitHub
   created INTEGER NOT NULL,
   last_seen INTEGER NOT NULL
 );
@@ -50,7 +51,19 @@ CREATE TABLE IF NOT EXISTS games (
 CREATE INDEX IF NOT EXISTS games_white ON games (white_user, updated);
 CREATE INDEX IF NOT EXISTS games_black ON games (black_user, updated);
 
--- Each user's contacts: everyone they have challenged or been challenged by, and anyone they add.
+-- Everything that happens in a game, in order: the moves and the chat, offers and the result, each
+-- with its time. This is the game's transcript, shown during play and in the history.
+CREATE TABLE IF NOT EXISTS game_events (
+  game_id TEXT NOT NULL REFERENCES games(id),
+  seq INTEGER NOT NULL,
+  at INTEGER NOT NULL,              -- milliseconds since 1970
+  kind TEXT NOT NULL,               -- start, move, chat, draw-offer, draw-decline, resign, end
+  side TEXT,                        -- white or black: who did it (none for start and end)
+  text TEXT,                        -- the move in UCI, the chat message, or the result and reason
+  PRIMARY KEY (game_id, seq)
+);
+
+-- Each user's contacts: everyone they have played against online.
 CREATE TABLE IF NOT EXISTS contacts (
   owner_id TEXT NOT NULL REFERENCES users(id),
   email TEXT NOT NULL,
