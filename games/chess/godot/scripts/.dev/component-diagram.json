@@ -1,0 +1,228 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Gambit scripts component diagram",
+  "folder": "games/chess/godot/scripts",
+  "description": "The Godot client's scripts: the shell that shows one screen at a time over the 3D table, the game screen, the table and its code-built pieces, the look, sounds, and the Api autoload that talks to the Worker and, in the browser, to the page bridge.",
+  "sources": [
+    {
+      "path": "games/chess/godot/scripts/main.gd",
+      "symbol": "Main.go"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen"
+    },
+    {
+      "path": "games/chess/godot/scripts/board3d.gd",
+      "symbol": "Board3D"
+    },
+    {
+      "path": "games/chess/godot/scripts/api.gd",
+      "symbol": "Live"
+    },
+    {
+      "path": "games/chess/godot/project.godot",
+      "symbol": "autoload"
+    }
+  ],
+  "components": [
+    {
+      "id": "scripts",
+      "name": "Scripts",
+      "responsibility": "Everything in the client but the rules.",
+      "folder": "games/chess/godot/scripts"
+    },
+    {
+      "id": "shell",
+      "name": "Shell and screens (main.gd)",
+      "responsibility": "Main: the table behind everything, the top bar, toasts, and the screens home, sign-in, computer set-up, lobby, contact and history; go() switches screens and keeps a back stack. Saves the game against the computer and the signed-out history on the device (user://).",
+      "folder": "games/chess/godot/scripts"
+    },
+    {
+      "id": "gamescreen",
+      "name": "Game screen (game_screen.gd)",
+      "responsibility": "GameScreen: one game beside the board in mode online, computer or replay: players, the timed transcript, chat, draw offers, resign, take back, rematch, looking back at a move, and replay playback.",
+      "folder": "games/chess/godot/scripts"
+    },
+    {
+      "id": "table",
+      "name": "3D table (board3d.gd, pieces.gd)",
+      "responsibility": "Board3D: board, lights, camera and labels, showing and animating positions, picking and dragging pieces, promotion; PieceMeshes builds the pieces from lathe profiles and a lofted knight's head.",
+      "folder": "games/chess/godot/scripts"
+    },
+    {
+      "id": "api",
+      "name": "Server and page client (api.gd)",
+      "responsibility": "The Api autoload: who is signed in, JSON requests, sign-in and sign-out, cached profile pictures, the page bridge (title, clipboard, invitation, Stockfish), and Api.Live, the reconnecting WebSocket to an online game.",
+      "folder": "games/chess/godot/scripts"
+    },
+    {
+      "id": "look",
+      "name": "Look (ui.gd, avatar.gd)",
+      "responsibility": "UI: the theme, fonts, colours, widget helpers and text formats; Avatar: a round profile picture with an initial until it loads.",
+      "folder": "games/chess/godot/scripts"
+    },
+    {
+      "id": "sfx",
+      "name": "Sounds (sfx.gd)",
+      "responsibility": "The Sfx autoload: sounds synthesised at start-up, four voices, mute.",
+      "folder": "games/chess/godot/scripts"
+    },
+    {
+      "id": "rules",
+      "name": "Chess rules",
+      "responsibility": "The global class Chess.",
+      "folder": "games/chess/godot/chess",
+      "diagram": "games/chess/godot/chess/.dev/component-diagram.json"
+    },
+    {
+      "id": "bridge",
+      "name": "Page bridge",
+      "responsibility": "window.chessBridge in the page, with Stockfish.",
+      "folder": "games/chess/bridge",
+      "diagram": "games/chess/bridge/.dev/component-diagram.json"
+    },
+    {
+      "id": "worker",
+      "name": "Chess Worker",
+      "responsibility": "auth/, api/ and the live WebSocket.",
+      "folder": "games/chess/worker",
+      "diagram": "games/chess/worker/.dev/component-diagram.json"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "scripts",
+      "to": "shell",
+      "kind": "contains",
+      "description": "The main scene's script."
+    },
+    {
+      "from": "scripts",
+      "to": "gamescreen",
+      "kind": "contains",
+      "description": "A game."
+    },
+    {
+      "from": "scripts",
+      "to": "table",
+      "kind": "contains",
+      "description": "The 3D table."
+    },
+    {
+      "from": "scripts",
+      "to": "api",
+      "kind": "contains",
+      "description": "Autoload Api."
+    },
+    {
+      "from": "scripts",
+      "to": "look",
+      "kind": "contains",
+      "description": "The look."
+    },
+    {
+      "from": "scripts",
+      "to": "sfx",
+      "kind": "contains",
+      "description": "Autoload Sfx."
+    },
+    {
+      "from": "shell",
+      "to": "gamescreen",
+      "kind": "depends-on",
+      "description": "Creates a GameScreen for each game opened and follows its leave signal."
+    },
+    {
+      "from": "shell",
+      "to": "table",
+      "kind": "depends-on",
+      "description": "Owns the Board3D in a SubViewport; frames it for each screen and shows the start position behind lists."
+    },
+    {
+      "from": "shell",
+      "to": "api",
+      "kind": "depends-on",
+      "description": "Loads who is signed in; lobby, challenges, contacts, history and saving games against the computer."
+    },
+    {
+      "from": "shell",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Theme, widgets and avatars."
+    },
+    {
+      "from": "shell",
+      "to": "sfx",
+      "kind": "depends-on",
+      "description": "Mute switch, selection and notification sounds."
+    },
+    {
+      "from": "gamescreen",
+      "to": "table",
+      "kind": "depends-on",
+      "description": "Shows positions, sets which side may move, and takes move_made and promotion_needed."
+    },
+    {
+      "from": "gamescreen",
+      "to": "api",
+      "kind": "depends-on",
+      "description": "Posts actions, opens an Api.Live for an online game in play, asks Stockfish for moves."
+    },
+    {
+      "from": "gamescreen",
+      "to": "shell",
+      "kind": "depends-on",
+      "description": "Main.toast, Main.save_computer and Main.finish_computer."
+    },
+    {
+      "from": "gamescreen",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Chess.Game for the moves, positions, SAN and result shown."
+    },
+    {
+      "from": "gamescreen",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Widgets, avatars and time formats."
+    },
+    {
+      "from": "gamescreen",
+      "to": "sfx",
+      "kind": "depends-on",
+      "description": "Chat, offer, illegal-move and result sounds."
+    },
+    {
+      "from": "table",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Chess.Position, legal moves for the hints, move flags for animation."
+    },
+    {
+      "from": "table",
+      "to": "sfx",
+      "kind": "depends-on",
+      "description": "Move, capture, select and illegal sounds."
+    },
+    {
+      "from": "look",
+      "to": "api",
+      "kind": "depends-on",
+      "description": "Avatar loads pictures through Api.avatar."
+    },
+    {
+      "from": "api",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "HTTPRequest to api/ and auth/ (with a Bearer token on the desktop), WebSocketPeer to api/games/{id}/live."
+    },
+    {
+      "from": "api",
+      "to": "bridge",
+      "kind": "depends-on",
+      "description": "JavaScriptBridge calls to window.chessBridge, in the browser only."
+    }
+  ]
+}

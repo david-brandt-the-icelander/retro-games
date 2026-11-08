@@ -27,8 +27,8 @@ var _camera := Camera3D.new()
 var _yaw := 0.0
 var _yaw_target := 0.0
 var _pitch := deg_to_rad(52.0)
-var _dist := 12.6
-var _dist_target := 12.6
+var _dist := 15.5                   ## starts as the title screen frames it, so nothing jumps when it opens
+var _dist_target := 15.5
 var facing := 0                    ## the side the camera is behind
 var showcase := false               ## turns slowly, for the title screen
 
@@ -140,7 +140,6 @@ func _build_world() -> void:
 	_mat.last = _glow(GOLD, 0.22)
 	_mat.hint = _glow(GOLD, 0.75)
 	_mat.check = _glow(Color("ff3b4e"), 0.5)
-	_mat.hint.emission_enabled = true
 
 
 func _build_board() -> void:
@@ -201,7 +200,6 @@ func _label(text: String, font: Font) -> Label3D:
 	l.pixel_size = 0.004
 	l.modulate = Color(GOLD, 0.75)
 	l.rotation_degrees = Vector3(-90, 0, 0)
-	l.position.y = 0.002
 	return l
 
 
@@ -474,6 +472,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func _down(screen: Vector2) -> void:
 	var sq := _pick(screen)
 	if sq < 0:
+		# Off the board: puts a picked-up piece down (that wasn't a move), and turns the camera.
+		if _selected >= 0:
+			Sfx.play("illegal")
 		_deselect()
 		_orbiting = true
 		return
@@ -500,7 +501,9 @@ func _up(screen: Vector2) -> void:
 	var sq := _square_at(_on_board(screen, 0.0))
 	if sq >= 0 and sq != d.from and _try(sq):
 		return
-	# Not a move: back to its square.
+	# Not a move: back to its square (dropping it where it started is just putting it down).
+	if sq != d.from:
+		Sfx.play("illegal")
 	if _nodes.has(d.from):
 		_glide(_nodes[d.from], square_center(d.from) + Vector3(0, LIFT, 0), false)
 
@@ -522,8 +525,13 @@ func face(side: int, instant := false) -> void:
 
 
 ## Shifts the board across the screen (positive: to the left), and sets how far away the camera is.
-func frame_offset(fraction: float, distance := 12.6) -> void:
+func frame_offset(fraction: float, distance: float, instant := false) -> void:
 	_dist_target = distance
+	if instant:
+		_dist = distance
+		_camera.h_offset = fraction * distance * 0.62
+		_place_camera()
+		return
 	create_tween().tween_property(_camera, "h_offset", fraction * distance * 0.62, 0.6).set_trans(Tween.TRANS_CUBIC)
 
 

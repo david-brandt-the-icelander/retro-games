@@ -1,0 +1,139 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Gambit rules classes",
+  "folder": "games/chess/godot/chess",
+  "description": "The global class Chess and its two inner classes. Inner classes without extends are RefCounted in GDScript.",
+  "sources": [
+    {
+      "path": "games/chess/godot/chess/rules.gd",
+      "symbol": "Chess"
+    },
+    {
+      "path": "games/chess/godot/chess/rules.gd",
+      "symbol": "Chess.Position"
+    },
+    {
+      "path": "games/chess/godot/chess/rules.gd",
+      "symbol": "Chess.Game"
+    }
+  ],
+  "types": [
+    {
+      "id": "Chess",
+      "name": "Chess",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/chess/rules.gd"
+      ],
+      "members": [
+        "const EMPTY, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, BLACK",
+        "const F_CAPTURE, F_EP, F_CASTLE, F_DOUBLE",
+        "static func start() -> Position",
+        "static func from_fen(fen: String) -> Position",
+        "static func square(name: String) -> int",
+        "static func square_name(sq: int) -> String",
+        "static func piece_type(piece: int) -> int",
+        "static func is_black(piece: int) -> bool",
+        "static func move_from(m: int) -> int",
+        "static func move_to(m: int) -> int",
+        "static func move_promo(m: int) -> int",
+        "static func move_flags(m: int) -> int",
+        "static func attacked(p: Position, sq: int, by_white: bool) -> bool",
+        "static func king_square(p: Position, white: bool) -> int",
+        "static func in_check(p: Position) -> bool",
+        "static func make(p: Position, m: int) -> Position",
+        "static func legal_moves(p: Position) -> Array[int]",
+        "static func uci(m: int) -> String",
+        "static func parse_uci(p: Position, s: String) -> int",
+        "static func san(p: Position, m: int) -> String",
+        "static func repetition_key(p: Position) -> String",
+        "static func insufficient_material(p: Position) -> bool",
+        "static func perft(p: Position, depth: int) -> int",
+        "static func describe(result: String, reason: String, white := \"White\", black := \"Black\") -> String"
+      ]
+    },
+    {
+      "id": "Chess.Position",
+      "name": "Position",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/chess/rules.gd"
+      ],
+      "members": [
+        "var board: PackedInt32Array",
+        "var white: bool",
+        "var castling: int",
+        "var ep: int",
+        "var halfmove: int",
+        "var fullmove: int",
+        "func copy() -> Position"
+      ]
+    },
+    {
+      "id": "Chess.Game",
+      "name": "Game",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/chess/rules.gd"
+      ],
+      "members": [
+        "var moves: PackedStringArray",
+        "var positions: Array[Position]",
+        "var played: Array[int]",
+        "var sans: PackedStringArray",
+        "var result: String",
+        "var reason: String",
+        "var current: Position (get)",
+        "func play(u: String) -> bool",
+        "static func from_moves(list: PackedStringArray) -> Game"
+      ]
+    },
+    {
+      "id": "RefCounted",
+      "name": "RefCounted",
+      "kind": "class",
+      "sources": [],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "Chess",
+      "to": "RefCounted",
+      "kind": "inherits",
+      "description": "extends RefCounted; only static members are used."
+    },
+    {
+      "from": "Chess.Position",
+      "to": "RefCounted",
+      "kind": "inherits",
+      "description": "Implicitly, as an inner class without extends."
+    },
+    {
+      "from": "Chess.Game",
+      "to": "RefCounted",
+      "kind": "inherits",
+      "description": "Implicitly, as an inner class without extends."
+    },
+    {
+      "from": "Chess",
+      "to": "Chess.Position",
+      "kind": "depends-on",
+      "description": "Builds, reads and makes moves on positions."
+    },
+    {
+      "from": "Chess.Game",
+      "to": "Chess.Position",
+      "kind": "depends-on",
+      "description": "Keeps every position of the game."
+    },
+    {
+      "from": "Chess.Game",
+      "to": "Chess",
+      "kind": "depends-on",
+      "description": "Plays and judges moves with the static functions."
+    }
+  ]
+}

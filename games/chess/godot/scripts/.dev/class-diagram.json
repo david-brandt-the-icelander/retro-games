@@ -1,0 +1,455 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Gambit scripts classes",
+  "folder": "games/chess/godot/scripts",
+  "description": "The scripts' classes: six global classes (class_name), the two autoload scripts Api and Sfx (no class_name; reached through their autoload names), and Api's inner class Live. The rules' classes and Godot's base classes are lightweight external nodes.",
+  "sources": [
+    {
+      "path": "games/chess/godot/scripts/main.gd",
+      "symbol": "Main"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen"
+    },
+    {
+      "path": "games/chess/godot/scripts/board3d.gd",
+      "symbol": "Board3D"
+    },
+    {
+      "path": "games/chess/godot/scripts/pieces.gd",
+      "symbol": "PieceMeshes"
+    },
+    {
+      "path": "games/chess/godot/scripts/ui.gd",
+      "symbol": "UI"
+    },
+    {
+      "path": "games/chess/godot/scripts/avatar.gd",
+      "symbol": "Avatar"
+    },
+    {
+      "path": "games/chess/godot/scripts/api.gd",
+      "symbol": "Live"
+    },
+    {
+      "path": "games/chess/godot/scripts/sfx.gd",
+      "symbol": "play"
+    },
+    {
+      "path": "games/chess/godot/project.godot",
+      "symbol": "autoload"
+    }
+  ],
+  "types": [
+    {
+      "id": "Main",
+      "name": "Main",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/scripts/main.gd"
+      ],
+      "members": [
+        "static var instance: Main",
+        "const LEVELS",
+        "var board: Board3D",
+        "func go(name: String, arg: Variant = null) -> void",
+        "static func toast(text: String, error := false) -> void",
+        "static func save_computer(g: Dictionary) -> void",
+        "static func finish_computer(g: Dictionary) -> void"
+      ]
+    },
+    {
+      "id": "GameScreen",
+      "name": "GameScreen",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/scripts/game_screen.gd"
+      ],
+      "members": [
+        "signal leave(to: String)",
+        "var mode: String",
+        "var board: Board3D",
+        "var game: Dictionary",
+        "var chess: Chess.Game",
+        "var my_side: int",
+        "var view_ply: int",
+        "var cursor: int",
+        "func _init(screen_mode: String, data: Dictionary, the_board: Board3D) -> void",
+        "static func _mine(g: Dictionary) -> int",
+        "func _jump_to_ply(ply: int) -> void",
+        "func _stop_and_seek(n: int) -> void",
+        "func _toggle_play() -> void"
+      ]
+    },
+    {
+      "id": "Board3D",
+      "name": "Board3D",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/scripts/board3d.gd"
+      ],
+      "members": [
+        "signal move_made(uci: String)",
+        "signal promotion_needed(from_sq: int, to_sq: int)",
+        "var movable: int",
+        "var board_pos: Chess.Position",
+        "var facing: int",
+        "var showcase: bool",
+        "static func square_center(sq: int) -> Vector3",
+        "func show_position(pos: Chess.Position, last: int, animate: bool) -> void",
+        "func finish_promotion(from_sq: int, to_sq: int, piece: String) -> void",
+        "func face(side: int, instant := false) -> void",
+        "func frame_offset(fraction: float, distance: float, instant := false) -> void"
+      ]
+    },
+    {
+      "id": "PieceMeshes",
+      "name": "PieceMeshes",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/scripts/pieces.gd"
+      ],
+      "members": [
+        "const SEGMENTS",
+        "static func mesh(type: int) -> ArrayMesh"
+      ]
+    },
+    {
+      "id": "UI",
+      "name": "UI",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/scripts/ui.gd"
+      ],
+      "members": [
+        "const BG, CARD, RAISED, LINE, INK, MUTED, GOLD, GOLD_DARK, RED, GREEN",
+        "static var regular, bold, display, italic: Font",
+        "static func box(bg: Color, radius := 12, border := Color(0, 0, 0, 0), pad := Vector4(16, 10, 16, 10)) -> StyleBoxFlat",
+        "static func make_theme() -> Theme",
+        "static func label(text: String, variation := \"\", size := 0) -> Label",
+        "static func wrap(text: String, variation := \"\") -> Label",
+        "static func button(text: String, on_press: Callable, variation := \"\") -> Button",
+        "static func sure_button(text: String, act: Callable) -> Button",
+        "static func vbox(gap := 12, kids: Array = []) -> VBoxContainer",
+        "static func hbox(gap := 12, kids: Array = []) -> HBoxContainer",
+        "static func card(content: Control, variation := \"\") -> PanelContainer",
+        "static func spacer() -> Control",
+        "static func scroll(content: Control) -> ScrollContainer",
+        "static func clear(node: Node) -> void",
+        "static func hhmm(ms: float) -> String",
+        "static func day(ms: float) -> String",
+        "static func duration(ms: float) -> String",
+        "static func ago(ms: float) -> String",
+        "static func move_number(ply: int) -> String",
+        "static func moves_text(plies: int) -> String",
+        "static func record(w: int, l: int, d: int) -> String",
+        "static func side_dot(white: bool, size := 10) -> Control"
+      ]
+    },
+    {
+      "id": "Avatar",
+      "name": "Avatar",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/scripts/avatar.gd"
+      ],
+      "members": [
+        "var texture: Texture2D",
+        "var initial: String",
+        "var tint: Color",
+        "static func make(path: Variant, name: String, size := 40.0) -> Avatar"
+      ]
+    },
+    {
+      "id": "Api",
+      "name": "Api (autoload, api.gd)",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/scripts/api.gd"
+      ],
+      "members": [
+        "signal me_changed",
+        "var base: String",
+        "var token: String",
+        "var me: Dictionary",
+        "var loaded: bool",
+        "var providers: Array",
+        "var bridge: JavaScriptObject",
+        "func is_web() -> bool",
+        "func load_me() -> void",
+        "func signed_in() -> bool",
+        "func request(path: String, method := HTTPClient.METHOD_GET, body: Variant = null, is_api := true) -> Dictionary",
+        "func get_json(path: String) -> Dictionary",
+        "func post_json(path: String, body: Variant = {}) -> Dictionary",
+        "func logout() -> void",
+        "func sign_in(provider: String, email := \"\") -> void",
+        "func avatar(path: Variant, done: Callable) -> void",
+        "func challenge_in_address() -> String",
+        "func set_title(text: String) -> void",
+        "func copy(text: String) -> void",
+        "func engine_move(moves: PackedStringArray, level: int, done: Callable) -> void",
+        "func engine_cancel() -> void",
+        "func engine_preload() -> void"
+      ]
+    },
+    {
+      "id": "Api.Live",
+      "name": "Live",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/scripts/api.gd"
+      ],
+      "members": [
+        "signal state(game: Dictionary)",
+        "signal connection(up: bool)",
+        "var game_id: String",
+        "var ws: WebSocketPeer",
+        "func _init(id: String) -> void",
+        "func close() -> void"
+      ]
+    },
+    {
+      "id": "Sfx",
+      "name": "Sfx (autoload, sfx.gd)",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/scripts/sfx.gd"
+      ],
+      "members": [
+        "const RATE",
+        "var muted: bool",
+        "func play(name: String) -> void"
+      ]
+    },
+    {
+      "id": "Chess.Game",
+      "name": "Chess.Game",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/chess/rules.gd"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "Chess.Position",
+      "name": "Chess.Position",
+      "kind": "class",
+      "sources": [
+        "games/chess/godot/chess/rules.gd"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "godot.Control",
+      "name": "Control",
+      "kind": "class",
+      "sources": [],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "godot.Node3D",
+      "name": "Node3D",
+      "kind": "class",
+      "sources": [],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "godot.Node",
+      "name": "Node",
+      "kind": "class",
+      "sources": [],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "godot.RefCounted",
+      "name": "RefCounted",
+      "kind": "class",
+      "sources": [],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "Main",
+      "to": "godot.Control",
+      "kind": "inherits",
+      "description": "extends Control; the main scene's root."
+    },
+    {
+      "from": "GameScreen",
+      "to": "godot.Control",
+      "kind": "inherits",
+      "description": "extends Control."
+    },
+    {
+      "from": "Avatar",
+      "to": "godot.Control",
+      "kind": "inherits",
+      "description": "extends Control; draws itself."
+    },
+    {
+      "from": "Board3D",
+      "to": "godot.Node3D",
+      "kind": "inherits",
+      "description": "extends Node3D."
+    },
+    {
+      "from": "Api",
+      "to": "godot.Node",
+      "kind": "inherits",
+      "description": "extends Node; an autoload."
+    },
+    {
+      "from": "Api.Live",
+      "to": "godot.Node",
+      "kind": "inherits",
+      "description": "extends Node, so it polls its socket in _process."
+    },
+    {
+      "from": "Sfx",
+      "to": "godot.Node",
+      "kind": "inherits",
+      "description": "extends Node; an autoload."
+    },
+    {
+      "from": "PieceMeshes",
+      "to": "godot.RefCounted",
+      "kind": "inherits",
+      "description": "extends RefCounted; only static members are used."
+    },
+    {
+      "from": "UI",
+      "to": "godot.RefCounted",
+      "kind": "inherits",
+      "description": "extends RefCounted; only static members are used."
+    },
+    {
+      "from": "Main",
+      "to": "Board3D",
+      "kind": "depends-on",
+      "description": "Creates the table in a SubViewport and frames it for each screen."
+    },
+    {
+      "from": "Main",
+      "to": "GameScreen",
+      "kind": "depends-on",
+      "description": "Creates one per game opened; connects its leave signal to go()."
+    },
+    {
+      "from": "Main",
+      "to": "Api",
+      "kind": "depends-on",
+      "description": "Who is signed in, and every request of the lobby, contact and history screens."
+    },
+    {
+      "from": "Main",
+      "to": "UI",
+      "kind": "depends-on",
+      "description": "Theme and widgets."
+    },
+    {
+      "from": "Main",
+      "to": "Avatar",
+      "kind": "depends-on",
+      "description": "Pictures in the top bar and lists."
+    },
+    {
+      "from": "Main",
+      "to": "Sfx",
+      "kind": "depends-on",
+      "description": "Mute and sounds."
+    },
+    {
+      "from": "GameScreen",
+      "to": "Board3D",
+      "kind": "depends-on",
+      "description": "Shows positions, sets movable, takes move_made and promotion_needed."
+    },
+    {
+      "from": "GameScreen",
+      "to": "Chess.Game",
+      "kind": "depends-on",
+      "description": "The moves, positions, SAN and board result of the game shown."
+    },
+    {
+      "from": "GameScreen",
+      "to": "Api",
+      "kind": "depends-on",
+      "description": "Posts actions and chat, asks for Stockfish moves."
+    },
+    {
+      "from": "GameScreen",
+      "to": "Api.Live",
+      "kind": "depends-on",
+      "description": "Opens one for an online game in play; applies each state and shows Reconnecting… while it is down."
+    },
+    {
+      "from": "GameScreen",
+      "to": "Main",
+      "kind": "depends-on",
+      "description": "Main.toast, Main.save_computer and Main.finish_computer."
+    },
+    {
+      "from": "GameScreen",
+      "to": "UI",
+      "kind": "depends-on",
+      "description": "Widgets and formats."
+    },
+    {
+      "from": "GameScreen",
+      "to": "Avatar",
+      "kind": "depends-on",
+      "description": "Player plates."
+    },
+    {
+      "from": "GameScreen",
+      "to": "Sfx",
+      "kind": "depends-on",
+      "description": "Chat, offer, illegal and result sounds."
+    },
+    {
+      "from": "Board3D",
+      "to": "Chess.Position",
+      "kind": "depends-on",
+      "description": "The position shown, and its legal moves for selection."
+    },
+    {
+      "from": "Board3D",
+      "to": "PieceMeshes",
+      "kind": "depends-on",
+      "description": "A mesh per piece type."
+    },
+    {
+      "from": "Board3D",
+      "to": "Sfx",
+      "kind": "depends-on",
+      "description": "Move, capture, select and illegal sounds."
+    },
+    {
+      "from": "Avatar",
+      "to": "Api",
+      "kind": "depends-on",
+      "description": "Loads its picture with Api.avatar."
+    },
+    {
+      "from": "Avatar",
+      "to": "UI",
+      "kind": "depends-on",
+      "description": "The initial's font and colour."
+    },
+    {
+      "from": "Api.Live",
+      "to": "Api",
+      "kind": "depends-on",
+      "description": "Reads Api.base and Api.token for the socket's URL and header."
+    }
+  ]
+}

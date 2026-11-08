@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Live game connection state diagram",
+  "folder": "games/chess/godot/scripts",
+  "description": "The WebSocket an online game in play keeps to the Worker (api/games/{id}/live, answered by the game's GameRoom). Api.Live polls the socket every frame in _process and reconnects with back-off: half a second, doubling to at most 15 seconds, reset once a connection opens. It tells the game screen when the connection goes down (once per outage) and up again; the screen shows Reconnecting… meanwhile. The server sends the whole game on connecting and after every change, and pong to a ping; only state messages are used.",
+  "sources": [
+    {
+      "path": "games/chess/godot/scripts/api.gd",
+      "symbol": "Live._open"
+    },
+    {
+      "path": "games/chess/godot/scripts/api.gd",
+      "symbol": "Live._process"
+    },
+    {
+      "path": "games/chess/godot/scripts/api.gd",
+      "symbol": "Live.close"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen._ready"
+    },
+    {
+      "path": "games/chess/worker/room.ts",
+      "symbol": "GameRoom.fetch"
+    }
+  ],
+  "machine": "Api.Live (godot/scripts/api.gd): the WebSocketPeer's ready state with _wait, _retry, _was_open and _said_down",
+  "initialState": "connecting",
+  "states": [
+    {
+      "id": "connecting",
+      "description": "A new WebSocketPeer is connecting to the game's live URL (ws:// or wss:// from Api.base), with a Bearer header when Api.token is set (desktop)."
+    },
+    {
+      "id": "open",
+      "description": "Connected: every state message is emitted to the game screen, and \"ping\" goes out every 25 seconds."
+    },
+    {
+      "id": "waiting",
+      "description": "The socket closed or could not open: waiting _wait seconds before trying again."
+    },
+    {
+      "id": "stopped",
+      "description": "close() was called (the game screen left the tree): the socket is closed and polling stops.",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "connecting",
+      "to": "open",
+      "trigger": "ready state STATE_OPEN",
+      "guard": "not _was_open",
+      "action": "_was_open = true, _said_down = false, _retry = 0.5; emit connection(true)."
+    },
+    {
+      "from": "open",
+      "to": "open",
+      "trigger": "a packet arrives",
+      "guard": "it is JSON with t = \"state\"",
+      "action": "emit state(game); the screen applies it."
+    },
+    {
+      "from": "open",
+      "to": "open",
+      "trigger": "25 seconds of _process since the last ping",
+      "action": "send_text(\"ping\")."
+    },
+    {
+      "from": "connecting",
+      "to": "waiting",
+      "trigger": "ready state STATE_CLOSED",
+      "action": "emit connection(false) unless already said since the last time it was up; _was_open = false; _wait = _retry; _retry = min(15, _retry × 2)."
+    },
+    {
+      "from": "open",
+      "to": "waiting",
+      "trigger": "ready state STATE_CLOSED",
+      "action": "emit connection(false); _was_open = false; _wait = _retry; _retry = min(15, _retry × 2)."
+    },
+    {
+      "from": "waiting",
+      "to": "connecting",
+      "trigger": "_wait runs out in _process",
+      "action": "_open(): a fresh WebSocketPeer connects again."
+    },
+    {
+      "from": "connecting",
+      "to": "stopped",
+      "trigger": "close()",
+      "action": "ws.close(); set_process(false)."
+    },
+    {
+      "from": "open",
+      "to": "stopped",
+      "trigger": "close()",
+      "action": "ws.close(); set_process(false)."
+    },
+    {
+      "from": "waiting",
+      "to": "stopped",
+      "trigger": "close()",
+      "action": "ws.close(); set_process(false)."
+    }
+  ]
+}

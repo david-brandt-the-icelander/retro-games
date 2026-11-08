@@ -1,0 +1,394 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Gambit Worker classes",
+  "folder": "games/chess/worker",
+  "description": "The Worker's two classes, the Durable Object GameRoom and the RoomCore it wraps (which the tests use directly), with the local interfaces they and the handlers are built on: the environment bindings and the subsets of Cloudflare's D1 and Durable Object types the Worker uses. Protocol types from shared/ are lightweight external nodes.",
+  "sources": [
+    {
+      "path": "games/chess/worker/room.ts",
+      "symbol": "RoomCore"
+    },
+    {
+      "path": "games/chess/worker/room.ts",
+      "symbol": "GameRoom"
+    },
+    {
+      "path": "games/chess/worker/index.ts",
+      "symbol": "Env"
+    },
+    {
+      "path": "games/chess/worker/api.ts",
+      "symbol": "ApiEnv"
+    },
+    {
+      "path": "games/chess/worker/auth.ts",
+      "symbol": "AuthEnv"
+    },
+    {
+      "path": "games/chess/worker/mail.ts",
+      "symbol": "MailEnv"
+    },
+    {
+      "path": "games/chess/worker/db.ts",
+      "symbol": "D1Database"
+    },
+    {
+      "path": "games/chess/worker/actions.ts",
+      "symbol": "Applied"
+    }
+  ],
+  "types": [
+    {
+      "id": "room.RoomCore",
+      "name": "RoomCore",
+      "kind": "class",
+      "sources": [
+        "games/chess/worker/room.ts"
+      ],
+      "members": [
+        "private queue: Promise<unknown>",
+        "constructor(private db: D1Database, private broadcast: (msg: LiveMessage) => void)",
+        "act(gameId: string, userId: string, action: Action): Promise<{ status: number; body: unknown }>",
+        "private actNow(gameId: string, userId: string, action: Action): Promise<{ status: number; body: unknown }>"
+      ]
+    },
+    {
+      "id": "room.GameRoom",
+      "name": "GameRoom",
+      "kind": "class",
+      "sources": [
+        "games/chess/worker/room.ts"
+      ],
+      "members": [
+        "private core: RoomCore",
+        "private db: D1Database",
+        "constructor(private ctx: DurableObjectState, env: { DB: D1Database })",
+        "fetch(req: Request): Promise<Response>",
+        "webSocketMessage(ws: WebSocketLike, message: string | ArrayBuffer): void",
+        "webSocketClose(ws: WebSocketLike, code: number): void"
+      ]
+    },
+    {
+      "id": "room.DurableObjectState",
+      "name": "DurableObjectState",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/room.ts"
+      ],
+      "members": [
+        "acceptWebSocket(ws: WebSocketLike, tags?: string[]): void",
+        "getWebSockets(tag?: string): WebSocketLike[]"
+      ]
+    },
+    {
+      "id": "room.WebSocketLike",
+      "name": "WebSocketLike",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/room.ts"
+      ],
+      "members": [
+        "send(data: string): void",
+        "close(code?: number, reason?: string): void",
+        "accept?(): void"
+      ]
+    },
+    {
+      "id": "db.D1Database",
+      "name": "D1Database",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/db.ts"
+      ],
+      "members": [
+        "prepare(sql: string): D1Statement",
+        "batch(statements: D1Statement[]): Promise<unknown>"
+      ]
+    },
+    {
+      "id": "db.D1Statement",
+      "name": "D1Statement",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/db.ts"
+      ],
+      "members": [
+        "bind(...v: unknown[]): D1Statement",
+        "first<T>(): Promise<T | null>",
+        "all<T>(): Promise<D1Result<T>>",
+        "run(): Promise<D1Result<unknown>>"
+      ]
+    },
+    {
+      "id": "db.D1Result",
+      "name": "D1Result<T>",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/db.ts"
+      ],
+      "members": [
+        "results: T[]",
+        "meta: { changes: number }"
+      ]
+    },
+    {
+      "id": "index.Env",
+      "name": "Env",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/index.ts"
+      ],
+      "members": [
+        "ASSETS: Fetcher"
+      ]
+    },
+    {
+      "id": "index.Fetcher",
+      "name": "Fetcher",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/index.ts"
+      ],
+      "members": [
+        "fetch(req: Request): Promise<Response>"
+      ]
+    },
+    {
+      "id": "api.ApiEnv",
+      "name": "ApiEnv",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/api.ts"
+      ],
+      "members": [
+        "ROOMS: DurableObjectNamespace"
+      ]
+    },
+    {
+      "id": "api.DurableObjectNamespace",
+      "name": "DurableObjectNamespace",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/api.ts"
+      ],
+      "members": [
+        "idFromName(name: string): unknown",
+        "get(id: unknown): DurableObjectStub"
+      ]
+    },
+    {
+      "id": "api.DurableObjectStub",
+      "name": "DurableObjectStub",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/api.ts"
+      ],
+      "members": [
+        "fetch(req: Request): Promise<Response>"
+      ]
+    },
+    {
+      "id": "auth.AuthEnv",
+      "name": "AuthEnv",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/auth.ts"
+      ],
+      "members": [
+        "DB: D1Database",
+        "GOOGLE_CLIENT_ID?: string",
+        "GOOGLE_CLIENT_SECRET?: string",
+        "GITHUB_CLIENT_ID?: string",
+        "GITHUB_CLIENT_SECRET?: string",
+        "DEV_LOGIN?: string"
+      ]
+    },
+    {
+      "id": "auth.Provider",
+      "name": "Provider",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/auth.ts"
+      ],
+      "members": [
+        "authorize: string",
+        "token: string",
+        "scope: string",
+        "id: (env: AuthEnv) => string | undefined",
+        "secret: (env: AuthEnv) => string | undefined",
+        "profile: (token: string) => Promise<{ email: string; name: string; picture: string | null } | null>"
+      ]
+    },
+    {
+      "id": "mail.MailEnv",
+      "name": "MailEnv",
+      "kind": "interface",
+      "sources": [
+        "games/chess/worker/mail.ts"
+      ],
+      "members": [
+        "RESEND_API_KEY?: string",
+        "MAIL_FROM?: string"
+      ]
+    },
+    {
+      "id": "actions.Applied",
+      "name": "Applied",
+      "kind": "type",
+      "sources": [
+        "games/chess/worker/actions.ts"
+      ],
+      "members": [
+        "{ ok: true; game: GameView; added: GameEvent[] }",
+        "{ ok: false; error: string }"
+      ]
+    },
+    {
+      "id": "protocol.Action",
+      "name": "Action",
+      "kind": "type",
+      "sources": [
+        "games/chess/shared/protocol.ts"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "protocol.LiveMessage",
+      "name": "LiveMessage",
+      "kind": "type",
+      "sources": [
+        "games/chess/shared/protocol.ts"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "protocol.GameView",
+      "name": "GameView",
+      "kind": "interface",
+      "sources": [
+        "games/chess/shared/protocol.ts"
+      ],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "room.GameRoom",
+      "to": "room.RoomCore",
+      "kind": "depends-on",
+      "description": "Creates one with the DB binding and a broadcast to every accepted WebSocket; passes it /action requests."
+    },
+    {
+      "from": "room.GameRoom",
+      "to": "room.DurableObjectState",
+      "kind": "depends-on",
+      "description": "Accepts players' sockets (tagged with the user id) and lists them to broadcast."
+    },
+    {
+      "from": "room.GameRoom",
+      "to": "room.WebSocketLike",
+      "kind": "depends-on",
+      "description": "Sends the game on /live, pong to ping, and closes on close."
+    },
+    {
+      "from": "room.GameRoom",
+      "to": "db.D1Database",
+      "kind": "depends-on",
+      "description": "Loads the game to check a /live request comes from one of its players."
+    },
+    {
+      "from": "room.RoomCore",
+      "to": "db.D1Database",
+      "kind": "depends-on",
+      "description": "gameById and saveGame."
+    },
+    {
+      "from": "room.RoomCore",
+      "to": "protocol.Action",
+      "kind": "depends-on",
+      "description": "The action it runs."
+    },
+    {
+      "from": "room.RoomCore",
+      "to": "protocol.LiveMessage",
+      "kind": "depends-on",
+      "description": "Broadcasts { t: \"state\", game } after every saved action."
+    },
+    {
+      "from": "room.RoomCore",
+      "to": "actions.Applied",
+      "kind": "depends-on",
+      "description": "The result of applyAction: the new game and transcript entries, or an error."
+    },
+    {
+      "from": "actions.Applied",
+      "to": "protocol.GameView",
+      "kind": "depends-on",
+      "description": "The game after the action."
+    },
+    {
+      "from": "db.D1Database",
+      "to": "db.D1Statement",
+      "kind": "depends-on",
+      "description": "Prepares and batches statements."
+    },
+    {
+      "from": "db.D1Statement",
+      "to": "db.D1Result",
+      "kind": "depends-on",
+      "description": "all() and run() return results with the number of changed rows."
+    },
+    {
+      "from": "index.Env",
+      "to": "api.ApiEnv",
+      "kind": "inherits",
+      "description": "Env extends ApiEnv with the ASSETS binding."
+    },
+    {
+      "from": "index.Env",
+      "to": "index.Fetcher",
+      "kind": "depends-on",
+      "description": "ASSETS serves the static game and the engine's parts."
+    },
+    {
+      "from": "api.ApiEnv",
+      "to": "auth.AuthEnv",
+      "kind": "inherits",
+      "description": "ApiEnv extends AuthEnv."
+    },
+    {
+      "from": "api.ApiEnv",
+      "to": "mail.MailEnv",
+      "kind": "inherits",
+      "description": "ApiEnv extends MailEnv."
+    },
+    {
+      "from": "api.ApiEnv",
+      "to": "api.DurableObjectNamespace",
+      "kind": "depends-on",
+      "description": "ROOMS, the GameRoom namespace."
+    },
+    {
+      "from": "api.DurableObjectNamespace",
+      "to": "api.DurableObjectStub",
+      "kind": "depends-on",
+      "description": "get() returns a stub to fetch."
+    },
+    {
+      "from": "auth.AuthEnv",
+      "to": "db.D1Database",
+      "kind": "depends-on",
+      "description": "DB, the D1 binding."
+    },
+    {
+      "from": "auth.Provider",
+      "to": "auth.AuthEnv",
+      "kind": "depends-on",
+      "description": "Reads its client ID and secret from the environment."
+    }
+  ]
+}
