@@ -3,9 +3,15 @@ extends Node
 ## chimes for messages and results. No sound files.
 
 const RATE := 44100
-var muted := false
+## Sound off: nothing new plays, and whatever is playing stops.
+var muted := false:
+	set(value):
+		muted = value
+		if muted:
+			for p in _players:
+				p.stop()
 var _streams := {}
-var _players: Array[AudioStreamPlayer] = []
+var _players: Array[AudioStreamPlayer] = []   ## four voices; the front one started longest ago
 
 
 func _ready() -> void:
@@ -67,10 +73,14 @@ func _make(seconds: float, fn: Callable) -> AudioStreamWAV:
 func play(name: String) -> void:
 	if muted or not _streams.has(name):
 		return
+	# A free voice if there is one; otherwise the oldest sound gives way.
+	var voice: AudioStreamPlayer = _players[0]
 	for p in _players:
 		if not p.playing:
-			p.stream = _streams[name]
-			p.play()
-			return
-	_players[0].stream = _streams[name]
-	_players[0].play()
+			voice = p
+			break
+	# The voice goes to the back of the queue: it is now the newest.
+	_players.erase(voice)
+	_players.append(voice)
+	voice.stream = _streams[name]
+	voice.play()

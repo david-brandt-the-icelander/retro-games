@@ -143,10 +143,9 @@ func _build() -> void:
 		_slider.step = 1
 		_slider.value_changed.connect(func(v: float) -> void:
 			if int(v) != cursor:
-				_playing = false
-				_seek(int(v)))
+				_stop_and_seek(int(v)))
 		_play_btn = UI.button("Play", _toggle_play, "Primary")
-		var speeds := UI.hbox(6)
+		var speeds := UI.hbox(8)
 		for s in [1.0, 4.0, 16.0]:
 			var b := UI.button("%d×" % int(s), func() -> void: _set_speed(s), "Chip")
 			b.toggle_mode = true
@@ -163,7 +162,9 @@ func _build() -> void:
 		_replay_bar.add_child(UI.hbox(8, [UI.label("Pace", "Muted"), speeds, UI.spacer(), UI.label("as played, sped up", "Muted")]))
 		col.add_child(_replay_bar)
 
+	# Hidden until there is something in it; a replay never has any.
 	_actions = UI.hbox(8)
+	_actions.visible = false
 	col.add_child(_actions)
 	col.add_child(UI.hbox(8, [
 		UI.button("Turn the board", func() -> void: board.face(1 - board.facing), "Ghost"),
@@ -179,7 +180,7 @@ func _build() -> void:
 func _player_plate(box: HBoxContainer, p: Dictionary, white: bool) -> void:
 	UI.clear(box)
 	box.add_child(Avatar.make(p.get("avatar"), str(p.name), 44))
-	var who := UI.vbox(0, [UI.label(str(p.name), "Strong")])
+	var who := UI.vbox(2, [UI.label(str(p.name), "Strong")])
 	if p.get("email") != null and str(p.email) != "":
 		who.add_child(UI.label(str(p.email), "Muted"))
 	for l in who.get_children():
@@ -248,6 +249,7 @@ func _apply(g: Dictionary, animate: bool) -> void:
 		_render_transcript()
 		_update_status()
 		_update_actions()
+		_update_viewing()
 		if animate and _events().size() > old_events:
 			var last: Dictionary = _events()[-1]
 			if last.kind == "chat" and _side_index(last.side) != my_side:
@@ -322,8 +324,13 @@ func _update_status() -> void:
 
 
 func _update_actions() -> void:
-	UI.clear(_actions)
 	var over := str(game.result) != "*"
+	# Rebuild only when the buttons change, so a "Sure? Resign" isn't reset by a chat message arriving.
+	var key := "%s %s %s" % [mode, over, game.get("drawOffer") == null]
+	if _actions.get_meta("key", "") == key:
+		return
+	_actions.set_meta("key", key)
+	UI.clear(_actions)
 	if mode == "online":
 		if not over:
 			if game.get("drawOffer") == null:
@@ -344,8 +351,12 @@ func _update_actions() -> void:
 
 # ── The transcript ──
 
-func _render_transcript() -> void:
+## Rebuilds the transcript. It then scrolls to the newest entry (to the current one in a replay),
+## unless `follow` is false (looking back at a move), which keeps the move looked at in view.
+func _render_transcript(follow := true) -> void:
 	UI.clear(_list)
+	var current: Control = null        ## replay: the row of the latest entry that has happened
+	var viewed: Control = null         ## the row of the move being looked at
 	var events := _events()
 	var ply := 0
 	var last_move_at: float = events[0].at if events.size() > 0 else 0.0
@@ -372,6 +383,8 @@ func _render_transcript() -> void:
 				var took := float(e.at) - last_move_at
 				last_move_at = float(e.at)
 				row = _move_row(ply, e, took)
+				if ply == view_ply:
+					viewed = row
 			"chat":
 				row = _chat_row(e, names)
 			"draw-offer":
@@ -387,15 +400,22 @@ func _render_transcript() -> void:
 				continue
 		if mode == "replay" and i >= cursor:
 			row.modulate.a = 0.28
+		if i == cursor - 1:
+			current = row
 		_list.add_child(row)
 	await get_tree().process_frame
-	if is_instance_valid(_scroll):
-		if mode == "replay":
-			var idx := clampi(cursor - 1, 0, _list.get_child_count() - 1)
-			if _list.get_child_count() > 0:
-				_scroll.ensure_control_visible(_list.get_child(idx))
+	if not is_instance_valid(_scroll):
+		return
+	if not follow:
+		if viewed:
+			_scroll.ensure_control_visible(viewed)
+	elif mode == "replay":
+		if current:
+			_scroll.ensure_control_visible(current)
 		else:
-			_scroll.scroll_vertical = int(_scroll.get_v_scroll_bar().max_value)
+			_scroll.scroll_vertical = 0
+	else:
+		_scroll.scroll_vertical = int(_scroll.get_v_scroll_bar().max_value)
 
 
 func _time_label(e: Dictionary) -> Label:
@@ -418,7 +438,7 @@ func _note(text: String, e: Dictionary, strong := false) -> Control:
 
 func _move_row(ply: int, e: Dictionary, took: float) -> Control:
 	var white := (ply % 2) == 1
-	var num := UI.label(("%d." % ((ply + 1) / 2)) if white else ("%d…" % (ply / 2)), "Muted", 13)
+	var num := UI.label(UI.move_number(ply), "Muted", 13)
 	num.custom_minimum_size.x = 34
 	num.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	var san := chess.sans[ply - 1] if ply - 1 < chess.sans.size() else str(e.text)
@@ -432,6 +452,11 @@ func _move_row(ply: int, e: Dictionary, took: float) -> Control:
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	b.add_theme_stylebox_override("normal", UI.box(Color(UI.GOLD, 0.18) if ply == _shown_ply() and (mode == "replay" or view_ply >= 0) else Color(0, 0, 0, 0), 8, Color(0, 0, 0, 0), Vector4(8, 3, 8, 3)))
 	b.add_theme_stylebox_override("hover", UI.box(Color(1, 1, 1, 0.06), 8, Color(0, 0, 0, 0), Vector4(8, 3, 8, 3)))
+	# Same padding in every state, so the row doesn't grow while the button is held down.
+	b.add_theme_stylebox_override("pressed", UI.box(Color(1, 1, 1, 0.03), 8, Color(0, 0, 0, 0), Vector4(8, 3, 8, 3)))
+	b.add_theme_stylebox_override("focus", UI.box(Color(0, 0, 0, 0), 8, UI.GOLD, Vector4(8, 3, 8, 3)))
+	b.add_theme_color_override("font_focus_color", UI.INK)
+	b.add_theme_color_override("font_pressed_color", UI.INK)
 	b.pressed.connect(func() -> void: _jump_to_ply(ply))
 	var took_l := UI.label(UI.duration(took), "Muted", 12)
 	return UI.hbox(8, [_time_label(e), num, UI.side_dot(white, 9), b, took_l])
@@ -463,9 +488,15 @@ func _jump_to_ply(ply: int) -> void:
 		return
 	view_ply = -1 if ply >= chess.moves.size() else ply
 	_show_board(false)
-	_render_transcript()
+	# Back to the game follows the newest move again; looking back keeps that move in view.
+	_render_transcript(view_ply < 0)
+	_update_viewing()
+
+
+## The "Looking at move n of m" banner, shown while looking at an earlier position.
+func _update_viewing() -> void:
 	UI.clear(_viewing)
-	_viewing.visible = view_ply >= 0
+	_viewing.visible = view_ply >= 0 and mode != "replay"
 	if _viewing.visible:
 		_viewing.add_child(UI.hbox(8, [UI.label("Looking at move %d of %d" % [(view_ply + 1) / 2, (chess.moves.size() + 1) / 2]), UI.spacer(),
 			UI.button("Back to the game", func() -> void: _jump_to_ply(chess.moves.size()), "Primary")]))
@@ -628,8 +659,7 @@ func _computer_end(outcome: Dictionary) -> void:
 	g.reason = outcome.reason
 	Api.engine_cancel()
 	_thinking = false
-	_apply(g, true)
-	_end_sound()
+	_apply(g, true)   # plays the win, lose or draw sound
 	Main.finish_computer(game)
 
 
@@ -659,14 +689,14 @@ func _seek(n: int) -> void:
 	if cursor >= events.size():
 		_status.text = Chess.describe(str(game.result), str(game.reason), names[0], names[1])
 		_status.add_theme_color_override("font_color", UI.GOLD)
-	elif cursor == 0:
-		_status.text = "Replay · %s" % UI.clock(float(events[0].at)) if events.size() else "Replay"
+	elif ply == 0:
+		# Nothing has been played yet (only the start, or chat before the first move).
+		_status.text = "Replay · %s" % UI.hhmm(float(events[0].at)) if events.size() else "Replay"
 	else:
 		var e: Dictionary = events[cursor - 1]
 		var gone := float(e.at) - float(events[0].at)
 		# White's moves "3. Qh5", Black's "3… Nf6", as in the transcript.
-		var label := "%d%s %s" % [(ply + 1) / 2, "." if ply % 2 == 1 else "…", chess.sans[ply - 1]] if ply > 0 else "Before the first move"
-		_status.text = "%s · %s in" % [label, UI.duration(gone)]
+		_status.text = "%s %s · %s in" % [UI.move_number(ply), chess.sans[ply - 1], UI.duration(gone)]
 	_render_transcript()
 
 
@@ -681,7 +711,16 @@ func _toggle_play() -> void:
 	if _playing and cursor >= _events().size():
 		_seek(0)
 	_play_btn.text = "Pause" if _playing else "Play"
-	_play_timer = 0.4
+	_play_timer = _wait_before(cursor)
+
+
+## How long Play waits before showing entry `n`: as long as the players took, sped up by the pace,
+## but at least 0.35 s and at most 3 s.
+func _wait_before(n: int) -> float:
+	var events := _events()
+	if n <= 0 or n >= events.size():
+		return 0.35
+	return clampf((float(events[n].at) - float(events[n - 1].at)) / 1000.0 / _speed, 0.35, 3.0)
 
 
 func _set_speed(s: float) -> void:
@@ -703,7 +742,4 @@ func _process(delta: float) -> void:
 		_play_btn.text = "Play"
 		return
 	_seek(cursor + 1)
-	if cursor < events.size():
-		# Wait as long as the players did, sped up, but never less than a beat or more than a few seconds.
-		var gap := (float(events[cursor].at) - float(events[cursor - 1].at)) / 1000.0 / _speed
-		_play_timer = clampf(gap, 0.35, 3.0)
+	_play_timer = _wait_before(cursor)
