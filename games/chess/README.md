@@ -4,7 +4,7 @@
 
 *Chess, beautifully.* A 3D chess game made in Godot 4 for the web. Invite a friend by email and play at your own pace, chatting as you go, or play Stockfish at eight strengths. Every game, with its moves, chat and timing, is kept and can be replayed.
 
-It will live at <https://games.icelander.net/retro/chess/> once deployed (see **Deploy**: it needs a database and sign-in keys first).
+It lives at <https://games.icelander.net/retro/chess/>. Playing a friend needs the Google or GitHub sign-in keys set up first (see **Deploy**, step 2); until then the sign-in screen says sign-in isn't available, and the computer can still be played.
 
 ## How to play
 
