@@ -48,7 +48,7 @@
     {
       "id": "capabilities",
       "name": "Capabilities",
-      "responsibility": "Reusable rules with no outward dependencies: random generators, space maths, ships, the bubble, the pilot, the universe, the market, equipment and flight.",
+      "responsibility": "Reusable rules with no outward dependencies: random generators, space maths, ships, the bubble, the pilot, the cockpit (the player's in-flight state), the universe, the market, equipment, flight, combat and the ship AI.",
       "folder": "games/lodestar/src/capabilities"
     },
     {

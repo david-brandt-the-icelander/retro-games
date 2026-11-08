@@ -189,7 +189,7 @@ impl Cockpit {
 
     /// True on the ticks shields and energy recharge: C mod 8 = 0 (RULES B.3.3 step 4).
     pub fn recharge_due(&self) -> bool {
-        self.counter % 8 == 0
+        self.counter.is_multiple_of(8)
     }
 
     /// One recharge (RULES C.10.1): with energy ≥ 128, the aft then the fore shield rise by 1
