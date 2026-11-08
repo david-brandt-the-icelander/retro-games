@@ -18,7 +18,7 @@
   "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": ["/retro/chess/api/*", "/retro/chess/auth/*", "/retro/chess/index.wasm"] },
   "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "GameRoom" }] },
   "migrations": [{ "tag": "rooms-v1", "new_sqlite_classes": ["GameRoom"] }],
-  "d1_databases": [{ "binding": "DB", "database_name": "chess", "database_id": "00000000-0000-0000-0000-000000000000" }],
+  "d1_databases": [{ "binding": "DB", "database_name": "chess", "database_id": "8c4255e7-b890-4839-a821-65f1483d776e" }],
   "vars": {
     // The sender of challenge emails, e.g. "Gambit <chess@icelander.net>"; empty sends none.
     "MAIL_FROM": ""
