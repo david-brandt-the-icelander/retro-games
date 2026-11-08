@@ -74,6 +74,11 @@
           "external": {
             "type": "boolean",
             "description": "True for a component outside this repository (another repository's service, a managed database, a third party). It has no folder or diagram."
+          },
+          "actor": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Repository-relative path to the actor's file, Actors/<name>.md, when this external component is an actor (an external system with goals of its own toward this one) rather than infrastructure the system merely uses. Only with external true."
           }
         },
         "required": [
@@ -111,7 +116,12 @@
         "else": {
           "required": [
             "folder"
-          ]
+          ],
+          "not": {
+            "required": [
+              "actor"
+            ]
+          }
         }
       },
       "minItems": 1
