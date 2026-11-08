@@ -13,12 +13,12 @@ Docked at a station, the pilot buys goods to carry and sells what is in the hold
 - ✅ The stepper's largest buy is the smallest of the item's availability, the room left in the hold for it ([RULES A.11.1](../../../docs/RULES.md#a111-hold-space)) and the whole units the cash pays for at the current price.
 - ✅ A buy of `q` units takes `q × price` from cash, adds `q` to the cargo and takes `q` from availability, which is step 6 of [RULES A.10.2](../../../docs/RULES.md#a102-buying-docked-only) for `q`.
 - ✅ A buy above the limit is refused with nothing changed, naming the first limit it breaks in the order availability, hold room, cash.
-- ✅ Goods 13..16 take no hold space, so their buys are limited only by availability and cash ([RULES A.14](../../../docs/RULES.md#a14-quirks-and-edge-cases) item 10), and by the 255 the pilot's record can hold of one item.
+- ✅ Goods 13..16 take no hold space, so their buys are limited only by availability and cash ([RULES A.14](../../../docs/RULES.md#a14-quirks-and-edge-cases) item 10).
 - ✅ The special item (16) is never on sale but can be sold.
 - ✅ The stepper's largest sale is the cargo held of the item; a sale of `q` units adds `q × price` to cash and takes `q` from the cargo, so partial sales are allowed.
 - ✅ Selling never restores availability ([RULES A.14](../../../docs/RULES.md#a14-quirks-and-edge-cases) item 7), and buying and selling use the same price.
 - ✅ Buying or selling 0 changes nothing.
-- ✅ Prices use the economy and market byte the caller passes, which are the current system's economy and the pilot's stored market byte ([RULES A.9.2](../../../docs/RULES.md#a92-the-market-byte)).
+- ✅ Prices use the current system's economy, which the caller passes, and the pilot's stored market byte, read from the pilot so no other byte can be used ([RULES A.9.2](../../../docs/RULES.md#a92-the-market-byte)).
 - ✅ Nothing in buying or selling draws a random number.
 - ⚠️ The market panel lists all 17 items with their price (one decimal) and unit, and the availability with its unit or a dash when none, as [RULES A.9.5](../../../docs/RULES.md#a95-the-market-screen) says; in flight it is view-only and shows the current system's stored market.
 - ⚠️ Buy and Sell are offered only while docked, and the stepper never offers more than the largest buy or sale, so a refused quantity never reaches the sim.

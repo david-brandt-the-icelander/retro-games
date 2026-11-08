@@ -157,7 +157,7 @@ fn read_field(pilot: &mut Pilot, key: &str, values: &[&str], check: &mut Option<
             }
         }
         "hold" => pilot.hold = decimals::<1>(values, byte)?[0] as u8,
-        "cargo" => pilot.cargo = decimals::<GOODS>(values, byte)?.map(|v| v as u8),
+        "cargo" => pilot.cargo = decimals::<GOODS>(values, u64::from(u32::MAX))?.map(|v| v as u32),
         "ecm" => pilot.fitted.ecm = flag(values)?,
         "fuel-scoop" => pilot.fitted.fuel_scoop = flag(values)?,
         "area-blast" => pilot.fitted.area_blast = flag(values)?,
@@ -190,7 +190,9 @@ fn canonical(pilot: &Pilot) -> String {
     let Fitted { ecm, fuel_scoop, area_blast, energy_booster, auto_dock, galaxy_drive, escape_pod } =
         pilot.fitted;
     let yes_no = |on: bool| if on { "yes" } else { "no" };
-    let list = |values: &[u8]| values.iter().map(u8::to_string).collect::<Vec<_>>().join(" ");
+    fn list<T: ToString>(values: &[T]) -> String {
+        values.iter().map(T::to_string).collect::<Vec<_>>().join(" ")
+    }
     let [w0, w1, w2] = pilot.galaxy_state;
     let lines = [
         format!("{HEADER} {VERSION}"),
@@ -529,7 +531,7 @@ mod tests {
             ("lasers", "lasers 15 0 0 16"),
             ("lasers", "lasers 15 0 0"),
             ("hold", "hold 256"),
-            ("cargo", "cargo 256 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"),
+            ("cargo", "cargo 4294967296 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"),
             ("ecm", "ecm true"),
             ("ecm", "ecm"),
             ("missiles", "missiles 5"),

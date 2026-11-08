@@ -66,8 +66,8 @@ pub struct Pilot {
     pub lasers: [u8; 4],
     /// Hold capacity in tonnes.
     pub hold: u8,
-    /// Cargo per goods item.
-    pub cargo: [u8; GOODS],
+    /// Cargo per goods item. RULES sets no ceiling, so the count is wider than a byte.
+    pub cargo: [u32; GOODS],
     pub fitted: Fitted,
     /// Missiles carried, 0..4.
     pub missiles: u8,
@@ -135,8 +135,8 @@ impl Pilot {
 
     /// ((cargo 3 + cargo 6) × 2 + cargo 10) mod 256 (RULES A.7.2).
     pub fn contraband(&self) -> u8 {
-        let serious = u32::from(self.cargo[3]) + u32::from(self.cargo[6]);
-        ((serious * 2 + u32::from(self.cargo[10])) % 256) as u8
+        let serious = u64::from(self.cargo[3]) + u64::from(self.cargo[6]);
+        ((serious * 2 + u64::from(self.cargo[10])) % 256) as u8
     }
 
     /// True when the hold extension is fitted (capacity ≥ 26, RULES A.7.2).

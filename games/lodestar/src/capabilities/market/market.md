@@ -20,7 +20,7 @@ A pilot makes a living by buying goods where they are cheap and selling them whe
 - ✅ The new game's market is market byte 0 and the availability the formula gives for the starting system's economy; for economy 5 both the availability and the prices are [GDD § 5.2](../../../docs/GDD.md#52-starting-market-rules-a97)'s lists.
 - ⚠️ Starting a new game sets the start pilot's market from the starting system's economy, as the universe computes it.
 - ✅ Items 0..12 take hold space and items 13..16 never do; there is room for `n` more of an item exactly as [RULES A.11.1](../../../docs/RULES.md#a111-hold-space) says, and the room left never goes below zero.
-- ✅ No more than 255 of one item can be held, because the pilot's record keeps one byte per item; a gain or purchase past that is refused as no room. Only the hold-free items 13..16 can reach it.
+- ✅ Nothing but the hold limits how much of an item is held: the hold-free items 13..16 count on past 255, since RULES sets no ceiling.
 - ✅ A unit gained in flight is added only when there is room; otherwise nothing is added and the caller plays the no-room sound ([RULES A.11.3](../../../docs/RULES.md#a113-gaining-and-losing-cargo-in-flight-summary-detail-elsewhere)).
 - ✅ A scooped canister draws one byte first and gives item `byte & 7`, whether or not the hold has room ([RULES A.14](../../../docs/RULES.md#a14-quirks-and-edge-cases) item 14).
 - ⚠️ Flight scoops a canister, alien drone (item 16) or escape pod (item 3) only with the fuel scoop fitted and the object below the ship, destroys the object either way, and shows the item's name when it is gained ([RULES B.15.3](../../../docs/RULES.md#b153-scooping-objects)).
@@ -34,7 +34,6 @@ A pilot makes a living by buying goods where they are cheap and selling them whe
 | What goes wrong | What the reader sees | What to do | Status |
 | --- | --- | --- | --- |
 | A scooped item does not fit | The no-room sound; the object is gone and nothing is added | Make room in the hold, or fit the hold extension | ✅ |
-| 255 of a hold-free item are already held | The item cannot be bought or scooped | Sell some first | ✅ |
 
 ## What it deliberately doesn't do
 

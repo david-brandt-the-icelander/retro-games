@@ -49,7 +49,7 @@ A pilot's ship, cash, cargo and record are worth something only if they last. Th
   | `fuel` | 0..70 |
   | `lasers` | four values, each 0, 15 or 143 |
   | `hold` | 0..255 |
-  | `cargo` | 17 values, 0..255 |
+  | `cargo` | 17 values, 0..4294967295 |
   | `ecm`, `fuel-scoop`, `area-blast`, `energy-booster`, `auto-dock`, `galaxy-drive`, `escape-pod` | `yes` or `no` |
   | `missiles` | 0..4 |
   | `legal` | 0..255 |

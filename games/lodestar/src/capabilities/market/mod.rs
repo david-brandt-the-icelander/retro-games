@@ -118,9 +118,6 @@ pub const SPECIAL_ITEM: usize = 16;
 pub const CANISTER_MASK: u8 = 7;
 /// Items from this number up take no hold space (RULES A.11.1).
 pub const FIRST_HOLD_FREE: usize = 13;
-/// The most of one item the pilot's record can hold (`Pilot::cargo` is a byte per item). RULES
-/// sets no such limit; it only binds items 13..16, which take no hold space.
-pub const CARGO_CEILING: u8 = u8::MAX;
 
 /// The price of `item` in tenths of a credit per unit (RULES A.9.3).
 pub fn price(item: usize, economy: u8, market_byte: u8) -> u16 {
@@ -169,7 +166,7 @@ pub fn takes_hold_space(item: usize) -> bool {
 
 /// Tonnes in use: `cargo[0] + … + cargo[12]`.
 pub fn hold_used(pilot: &Pilot) -> u32 {
-    pilot.cargo[..FIRST_HOLD_FREE].iter().map(|&n| u32::from(n)).sum()
+    pilot.cargo[..FIRST_HOLD_FREE].iter().sum()
 }
 
 /// RULES A.11.1 exactly: is there room for `n` more of `item`?
@@ -187,10 +184,10 @@ pub fn room_for(pilot: &Pilot, item: usize) -> Option<u32> {
     }
 }
 
-/// The most of `item` that can be added: the hold room, and never past [`CARGO_CEILING`].
+/// The most of `item` that can be added: the hold room for items that take space, and no limit
+/// (short of the counter's own size) for items 13..16, which take none (RULES A.11.1).
 pub fn addable(pilot: &Pilot, item: usize) -> u32 {
-    let ceiling = u32::from(CARGO_CEILING - pilot.cargo[item]);
-    room_for(pilot, item).map_or(ceiling, |room| room.min(ceiling))
+    room_for(pilot, item).unwrap_or(u32::MAX - pilot.cargo[item])
 }
 
 /// Adds one unit of `item` gained in flight (scooped), if there is room (RULES A.11.3).
@@ -431,13 +428,13 @@ mod tests {
     }
 
     #[test]
-    fn hold_free_items_stop_at_the_cargo_ceiling() {
+    fn hold_free_items_have_no_ceiling() {
+        // RULES sets no limit on items 13..16, which take no hold space.
         let mut pilot = Pilot::start();
-        pilot.cargo[13] = 250;
-        assert_eq!(addable(&pilot, 13), 5);
         pilot.cargo[13] = 255;
-        assert!(!gain_one(&mut pilot, 13));
-        assert_eq!(pilot.cargo[13], 255);
+        assert!(gain_one(&mut pilot, 13));
+        assert_eq!(pilot.cargo[13], 256);
+        assert_eq!(addable(&pilot, 13), u32::MAX - 256);
     }
 
     #[test]
