@@ -42,6 +42,7 @@ export interface TipPrompt {
 }
 
 export interface AuthEnv {
+  /** The binding, under its default name; an app may name it otherwise (AuthOptions.binding). */
   ACCOUNTS?: AccountsBinding;
   /** The login service's public keys (JWKS JSON). */
   ACCOUNTS_JWKS?: string;
@@ -58,6 +59,8 @@ export interface AuthOptions {
   bearer?: boolean;
   /** The role every signed-in user holds for this app, after the colon (default "play"). */
   implicitRole?: string;
+  /** The env name of the service binding to the login service (default "ACCOUNTS"). */
+  binding?: string;
 }
 
 export interface Auth {
@@ -70,6 +73,8 @@ export interface Auth {
   signInPath(returnTo: string): string;
   sessionValue(request: Request): string | undefined;
   configured(env: AuthEnv): boolean;
+  /** The login service's binding in this env, under the configured name. */
+  service(env: AuthEnv): AccountsBinding | undefined;
 }
 
 export declare function createAuth(options: AuthOptions): Auth;

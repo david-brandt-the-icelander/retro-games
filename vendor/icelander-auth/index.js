@@ -17,7 +17,7 @@
 // pinned public keys in env.ACCOUNTS_JWKS. Without either, sign-in is off and nobody is signed in
 // (fail closed). Tokens, cookies and session values are never logged.
 
-export const VERSION = "1.0.0";
+export const VERSION = "1.1.0";
 export const ISSUER = "https://accounts.icelander.net";
 /** How long an app's sign-in lasts, unless the user signs out or is signed out. */
 export const SESSION_SECONDS = 30 * 24 * 60 * 60;
@@ -153,6 +153,8 @@ const text = (body, status) => new Response(body + "\n", { status, headers: { "c
  *   home           where to go when `return` is missing or unsafe (default "/")
  *   accountsOrigin the login service (default https://accounts.icelander.net)
  *   bearer         also accept "Authorization: Bearer <session>" (a desktop build talking to a dev server)
+ *   binding        the name of the service binding to the login service (default "ACCOUNTS"; Puppetmaster's
+ *                  ACCOUNTS is a Durable Object of its own, so it names it "LOGIN")
  */
 export function createAuth(options) {
   const app = options.app;
@@ -161,9 +163,11 @@ export function createAuth(options) {
   const home = options.home ?? "/";
   const accountsOrigin = options.accountsOrigin ?? ISSUER;
   const stateCookie = `${name}_state`;
+  const bindingName = options.binding ?? "ACCOUNTS";
+  const service = (env) => env?.[bindingName];
   if (!/^[a-z][a-z0-9-]{0,31}$/.test(app ?? "") || !/^[a-z][a-z0-9_]{0,40}$/.test(name ?? "")) throw new Error("icelander-auth: bad app or cookie name");
 
-  const configured = (env) => Boolean(env?.ACCOUNTS && parseJwks(env.ACCOUNTS_JWKS).length);
+  const configured = (env) => Boolean(service(env) && parseJwks(env.ACCOUNTS_JWKS).length);
   const devOn = (env, url) => env?.DEV_SIGN_IN === "true" && isLocal(url);
   const back = (value) => safeReturn(value, home, basePath);
 
@@ -197,7 +201,7 @@ export function createAuth(options) {
     if (value.startsWith("dev.")) return devOn(env, url) ? devUser(value) : null;
     if (!configured(env) || value.length > 200) return null;
     try {
-      return (await env.ACCOUNTS.session(value, app)) ?? null;
+      return (await service(env).session(value, app)) ?? null;
     } catch {
       return null; // the login service is unreachable: nobody is signed in, rather than anyone
     }
@@ -253,8 +257,8 @@ export function createAuth(options) {
       const value = sessionValue(request);
       if (value && !value.startsWith("dev.") && configured(env)) {
         try {
-          if (route === "/sign-out") await env.ACCOUNTS.signOut(value, app);
-          else await env.ACCOUNTS.signOutEverywhere(value, app);
+          if (route === "/sign-out") await service(env).signOut(value, app);
+          else await service(env).signOutEverywhere(value, app);
         } catch {
           // The cookie is cleared below either way.
         }
@@ -291,7 +295,7 @@ export function createAuth(options) {
       if (!claims) return failed("The sign-in could not be checked.");
       let result;
       try {
-        result = await env.ACCOUNTS.redeem(token, app);
+        result = await service(env).redeem(token, app);
       } catch {
         result = undefined;
       }
@@ -302,5 +306,5 @@ export function createAuth(options) {
     return text("Not found.", 404);
   }
 
-  return { app, cookieName: name, handle, currentUser, requireRole, hasRole, signInPath, sessionValue, configured };
+  return { app, cookieName: name, handle, currentUser, requireRole, hasRole, signInPath, sessionValue, configured, service };
 }

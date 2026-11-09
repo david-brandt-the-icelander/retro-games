@@ -3,6 +3,7 @@
 // icelander.net's accounts/test, and the games hub tests the sign-in routes on this host.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { checkVendored } from "../../../vendor/icelander-auth/check.mjs";
 import worker from "../worker/index";
 
 const ORIGIN = "https://games.icelander.net";
@@ -43,4 +44,8 @@ test("sign-in: a new game or a score needs a sign-in; the login service out of r
   const down = env({ session: async () => { throw new Error("down"); } });
   assert.equal((await call(`${PATH}/api/game`, { method: "POST", body: "{}", headers: { Cookie: `games_session=${ALICE}` } }, down)).status, 401);
   assert.equal((await call(`${PATH}/`, { headers: { Cookie: `games_session=${ALICE}` } }, env(null))).status, 302);
+});
+
+test("sign-in: the vendored library (shared by every game here) is icelander.net's, unedited", () => {
+  assert.match(checkVendored(new URL("../../../../vendor/icelander-auth/", import.meta.url)), /^\d+\.\d+\.\d+$/);
 });
