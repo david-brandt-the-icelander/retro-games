@@ -4,7 +4,7 @@
 //   POST {BASE}/score   ← { id, name, level, recording }   the player's paddle moves, tick by tick
 //                       → { score, rank, name }
 //   GET  {BASE}/scores  → { scores: [...] }                the table, best first
-//   GET  /retro/rally/scores/                         the table as a web page (worker/scores-page.ts)
+//   GET  /games/retro/rally/scores/                         the table as a web page (worker/scores-page.ts)
 //
 // Scores are never trusted from the browser: the server replays the match with the same engine,
 // from the seed it issued, the computer's level and the player's recorded moves, and records the
@@ -21,10 +21,10 @@ interface Fetcher { fetch(req: Request): Promise<Response> }
 export interface Env extends AuthEnv { DB: D1Database; ASSETS: Fetcher }
 
 /**
- * Every game on games.icelander.net needs a sign-in (the games hub's docs/SIGN-IN.md): the host's one cookie,
- * checked with icelander.net's login service through the ACCOUNTS binding. The hub answers /auth/… on this host.
+ * Every game under icelander.net/games needs a sign-in (the games hub's docs/SIGN-IN.md): the site's one cookie, site_session (the games are part of icelander.net's sign-in),
+ * checked with icelander.net's login service through the ACCOUNTS binding. The site's Worker answers /auth/….
  */
-const AUTH = createAuth({ app: "games", cookie: "games_session" });
+const AUTH = createAuth({ app: "site", cookie: "site_session", home: "/games/", implicitRole: "reader", rolePrefixes: ["games"] });
 
 /** The game's page itself; its script, images and sounds come straight from the assets. */
 const isPage = (path: string) => path === `${PATH}/` || path === `${PATH}/index.html`;

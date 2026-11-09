@@ -4,7 +4,7 @@
 
 Inspired by *Dictator* (1983) by Don Priestley, published by DK'Tronics. Independent remake, not affiliated with or endorsed by the original rights holders.
 
-Play it at <https://games.icelander.net/retro/samosa/>. All the games are listed at <https://games.icelander.net/>.
+Play it at <https://icelander.net/games/retro/samosa/>. All the games are listed at <https://icelander.net/games/>.
 
 ## How to play
 
@@ -23,7 +23,7 @@ Several times a month State Security offers you its file for $1,000: every group
 
 ## The high-score table
 
-After a reign you may put it on the public table under a name of up to 12 characters, typed in the style of the old arcade tables: each letter over its own underline, with the cursor blinking under the next one. Type on your keyboard, or tap or click the keys drawn on the screen (capitals, digits, dots, hyphens and spaces); each key blinks as it is pressed. DEL (or Backspace) deletes the last letter, ENTER saves and SKIP (or Escape) leaves the reign off the table. The name is remembered for the rest of the browser session, for every game on icelander.net. A player signed in at games.icelander.net starts with the part of their email address before the @ (from `/me`; accented letters are written plainly, so Davíð becomes DAVID). No email or other personal data is asked for or stored. The server doesn't trust the browser's score: it issued the reign's random seed, and it replays your key presses through the same game engine to compute the score itself. Press S on the title screen to see the table, or open <https://games.icelander.net/retro/samosa/scores/>.
+After a reign you may put it on the public table under a name of up to 12 characters, typed in the style of the old arcade tables: each letter over its own underline, with the cursor blinking under the next one. Type on your keyboard, or tap or click the keys drawn on the screen (capitals, digits, dots, hyphens and spaces); each key blinks as it is pressed. DEL (or Backspace) deletes the last letter, ENTER saves and SKIP (or Escape) leaves the reign off the table. The name is remembered for the rest of the browser session, for every game on icelander.net. A player signed in at icelander.net/games starts with the part of their email address before the @ (from `/me`; accented letters are written plainly, so Davíð becomes DAVID). No email or other personal data is asked for or stored. The server doesn't trust the browser's score: it issued the reign's random seed, and it replays your key presses through the same game engine to compute the score itself. Press S on the title screen to see the table, or open <https://icelander.net/games/retro/samosa/scores/>.
 
 ## Develop
 
@@ -54,7 +54,7 @@ The engine never touches the DOM or timers. `playGame(io, newGame(seed), best)` 
 
 ## Deploy
 
-A Worker named `samosa` (`wrangler.jsonc`), routed at `games.icelander.net/retro/samosa*` (the old `icelander.net/retro-games/samosa*` redirects there). It serves the static game, and `worker/index.ts` answers the high-score API under `/retro-games/samosa/api/`, backed by the D1 database `samosa-scores`.
+A Worker named `samosa` (`wrangler.jsonc`), routed at `icelander.net/games/retro/samosa*` (the old `icelander.net/retro-games/samosa*` redirects there). It serves the static game, and `worker/index.ts` answers the high-score API under `/retro-games/samosa/api/`, backed by the D1 database `samosa-scores`.
 
 - First time only: `npx wrangler d1 execute samosa-scores --remote --file worker/schema.sql`.
 - Deploy: `npm run deploy` (needs `CLOUDFLARE_API_TOKEN`).

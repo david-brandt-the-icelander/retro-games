@@ -2,7 +2,7 @@
 export { replay } from "../src/engine/replay";
 export { cleanName } from "../src/name";
 
-export const PATH = "/retro/hivestorm";
+export const PATH = "/games/retro/hivestorm";
 export const BASE = `${PATH}/api`;
 /** Rows in the game's own table screen. */
 export const TABLE_SIZE = 10;

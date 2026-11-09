@@ -3,15 +3,15 @@ Recreations of retro-games that I have made with the help of AI
 
 ## Games
 
-Each game needs a sign-in with Google or GitHub, the one sign-in of games.icelander.net (icelander.net's login service; the `recreations` repository's `docs/SIGN-IN.md`). Each game's Worker checks it with the shared library in `vendor/icelander-auth/`, which is copied unchanged from the icelander.net repository: don't edit it here. The high-score tables stay public.
+Each game needs a sign-in with Google or GitHub, icelander.net's one sign-in (the games are part of the site) (icelander.net's login service; the `recreations` repository's `docs/SIGN-IN.md`). Each game's Worker checks it with the shared library in `vendor/icelander-auth/`, which is copied unchanged from the icelander.net repository: don't edit it here. The high-score tables stay public.
 
 | Game | Play | Source |
 |---|---|---|
-| Rally: table tennis against the computer, or a friend online on their own device, with a high-score table | [games.icelander.net/retro/rally](https://games.icelander.net/retro/rally/) ([high scores](https://games.icelander.net/retro/rally/scores/)) | [games/rally](games/rally) |
-| Shatterbelt: an original rock-breaking shooter, alone or online with up to nine pilots each on their own computer, co-op or versus, with a high-score table | [games.icelander.net/retro/shatterbelt](https://games.icelander.net/retro/shatterbelt/) ([high scores](https://games.icelander.net/retro/shatterbelt/scores/)) | [games/shatterbelt](games/shatterbelt) |
-| Hivestorm: an arcade shooter for one player, or two online each on their own device, with a high-score table | [games.icelander.net/retro/hivestorm](https://games.icelander.net/retro/hivestorm/) ([high scores](https://games.icelander.net/retro/hivestorm/scores/)) | [games/hivestorm](games/hivestorm) |
-| Samosa: a remake of a 1983 ZX Spectrum strategy game | [games.icelander.net/retro/samosa](https://games.icelander.net/retro/samosa/) ([high scores](https://games.icelander.net/retro/samosa/scores/)) | [games/dictator](games/dictator) |
-| Gambit: 3D chess made in Godot 4. Invite a friend by email and play with chat and a timed transcript, keep contacts and replay past games, or play Stockfish at eight strengths | [games.icelander.net/retro/chess](https://games.icelander.net/retro/chess/) | [games/chess](games/chess) |
+| Rally: table tennis against the computer, or a friend online on their own device, with a high-score table | [icelander.net/games/retro/rally](https://icelander.net/games/retro/rally/) ([high scores](https://icelander.net/games/retro/rally/scores/)) | [games/rally](games/rally) |
+| Shatterbelt: an original rock-breaking shooter, alone or online with up to nine pilots each on their own computer, co-op or versus, with a high-score table | [icelander.net/games/retro/shatterbelt](https://icelander.net/games/retro/shatterbelt/) ([high scores](https://icelander.net/games/retro/shatterbelt/scores/)) | [games/shatterbelt](games/shatterbelt) |
+| Hivestorm: an arcade shooter for one player, or two online each on their own device, with a high-score table | [icelander.net/games/retro/hivestorm](https://icelander.net/games/retro/hivestorm/) ([high scores](https://icelander.net/games/retro/hivestorm/scores/)) | [games/hivestorm](games/hivestorm) |
+| Samosa: a remake of a 1983 ZX Spectrum strategy game | [icelander.net/games/retro/samosa](https://icelander.net/games/retro/samosa/) ([high scores](https://icelander.net/games/retro/samosa/scores/)) | [games/dictator](games/dictator) |
+| Gambit: 3D chess made in Godot 4. Invite a friend by email and play with chat and a timed transcript, keep contacts and replay past games, or play Stockfish at eight strengths | [icelander.net/games/retro/chess](https://icelander.net/games/retro/chess/) | [games/chess](games/chess) |
 
 ## Architecture
 

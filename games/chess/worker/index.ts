@@ -1,5 +1,5 @@
-// The chess Worker at games.icelander.net/retro/chess: the static game (dist/), for anyone signed in to
-// games.icelander.net (worker/auth.ts, through icelander.net's login service), the JSON API (worker/api.ts) and one Durable Object per online game
+// The chess Worker at icelander.net/games/retro/chess: the static game (dist/), for anyone signed in to
+// icelander.net (worker/auth.ts, through icelander.net's login service), the JSON API (worker/api.ts) and one Durable Object per online game
 // (worker/room.ts), with users, challenges, contacts and games in the D1 database "chess"
 // (worker/schema.sql).
 import { BASE } from "../shared/protocol";
@@ -27,7 +27,7 @@ export default {
       return json({ error: "Something went wrong on the server." }, 500);
     }
     if (url.pathname === `${BASE}/index.wasm`) return joinedWasm(req, env, url);
-    // The game's page: every game on games.icelander.net needs a sign-in.
+    // The game's page: every game under icelander.net/games needs a sign-in.
     if (url.pathname === `${BASE}/` || url.pathname === `${BASE}/index.html`) {
       const { response } = await requirePlayer(req, env);
       if (response) return response;

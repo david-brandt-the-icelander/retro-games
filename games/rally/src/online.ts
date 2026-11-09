@@ -1,7 +1,7 @@
 // Online play: friends on different computers play one game together. The same file is in Rally,
 // Shatterbelt and Hivestorm.
 //
-// Games are started from the multiplayer page at games.icelander.net/multiplayer/, where signed-in
+// Games are started from the multiplayer page at icelander.net/games/multiplayer/, where signed-in
 // players meet. When a game starts there, each player's browser opens the game with ?match=ID, and
 // connects to that match's relay (GET /multiplayer/match/ID, a WebSocket served by the games
 // hub, not by this game's Worker). Only the players the lobby put in the match may connect.
@@ -23,7 +23,7 @@ export type RoomMessage = { t: string; from?: number; [key: string]: unknown };
 export type RoomListener = (msg: RoomMessage) => void;
 
 /** The multiplayer page, where games are started. */
-export const MULTIPLAYER_PAGE = "/multiplayer/";
+export const MULTIPLAYER_PAGE = "/games/multiplayer/";
 
 /** Why a match can't be played, in words for players. */
 export const REFUSALS: Record<string, string> = {
@@ -93,7 +93,7 @@ export class Room {
   /** Connects to a match. Resolves once the match has welcomed this browser. */
   static open(match: string): Promise<Room> {
     return new Promise((resolve, reject) => {
-      const url = new URL(`/multiplayer/match/${match}`, location.href);
+      const url = new URL(`/games/multiplayer/match/${match}`, location.href);
       url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
       let ws: WebSocket;
       try { ws = new WebSocket(url.toString()); } catch { reject(new Error("unreachable")); return; }

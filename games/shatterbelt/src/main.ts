@@ -315,7 +315,7 @@ function draw(): void {
 
 // ——— Online: each pilot on their own computer ———
 //
-// Online games start on the multiplayer page (games.icelander.net/multiplayer/), which opens this page
+// Online games start on the multiplayer page (icelander.net/games/multiplayer/), which opens this page
 // with ?match=ID&mode=coop (or versus) for every pilot. Every browser runs the same game in lockstep
 // (src/online.ts) and sends only its own pilot's controls. The host (the first in the lobby) starts
 // the game with a seed the high-score server issued, so an online game goes on the public table like

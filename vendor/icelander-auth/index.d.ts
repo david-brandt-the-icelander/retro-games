@@ -14,11 +14,16 @@ export interface User {
   emails: string[];
   name: string;
   picture: string | null;
-  /** This app's roles only, e.g. ["games:play", "games:recreations"]. */
+  /** This app's roles only, e.g. ["site:reader", "games:play", "games:recreations"]. */
   roles: string[];
   supporter: boolean;
   /** The ids icelander.net and puppetmaster used to give this person, per linked provider: { google: "a-…" }. */
   accountIds: Record<string, string>;
+  /**
+   * How this session was made: "provider" (Google, GitHub, Facebook, Discord), "email" (a magic link) or "link" (a
+   * Snekkjó guest's own link). Only a provider's sessions carry roles beyond the implicit ones.
+   */
+  via: "provider" | "email" | "link";
   /** Only on a local host's stand-in sign-in. */
   dev?: boolean;
 }
@@ -61,6 +66,10 @@ export interface AuthOptions {
   implicitRole?: string;
   /** The env name of the service binding to the login service (default "ACCOUNTS"). */
   binding?: string;
+  /** The Path of the app's cookie (default "/"). */
+  cookiePath?: string;
+  /** Other apps' role prefixes this app's stand-in sign-in may grant (e.g. "games" for the site). */
+  rolePrefixes?: string[];
 }
 
 export interface Auth {

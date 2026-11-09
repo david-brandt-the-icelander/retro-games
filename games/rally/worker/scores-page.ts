@@ -1,4 +1,4 @@
-// The public high-score page, /retro/rally/scores/: the same table the game shows, as a
+// The public high-score page, /games/retro/rally/scores/: the same table the game shows, as a
 // web page in icelander.net's look.
 import { escapeHtml, sitePage } from "./look";
 import type { Row } from "./scores";
@@ -22,7 +22,7 @@ ${body}
 </table>`;
   const side = `<div class="block">
 <p class="label">Rally</p>
-<a class="button" href="/retro/rally/">Play Rally</a>
+<a class="button" href="/games/retro/rally/">Play Rally</a>
 <a class="link" href="/">← All the games</a>
 </div>
 <p class="note">Enter the table at the end of a one-player match, under a name of up to 12 characters.</p>`;

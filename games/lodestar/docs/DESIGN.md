@@ -18,7 +18,7 @@ The main decisions:
 | Camera | Third person, EVE-style orbit around your ship, with a limited zoom range | Your decision; the one deliberate change to how the game plays |
 | Ships | The ACNX-7 Cheetah GLB takes the heavy trader and pirate role, and stands in for every other ship until more models exist | One model for now |
 | Renderer | Compatibility (WebGL 2), the only one Godot exports to the web | Glow, MSAA, tonemapping and custom shaders are all available there |
-| Hosting | The game's own Worker at `games.icelander.net/retro/lodestar/`, checking the games sign-in until release; large files split into parts the Worker stitches back together | Private while in development, no 25 MiB problem, no new host |
+| Hosting | The game's own Worker at `icelander.net/games/retro/lodestar/`, checking the games sign-in until release; large files split into parts the Worker stitches back together | Private while in development, no 25 MiB problem, no new host |
 
 The title must not echo the original's. Choosing it is part of the GDD phase; `lodestar` is a working label.
 
@@ -361,9 +361,9 @@ Every screen the original had becomes a panel in one consistent UI, with the sam
 
 The game stays on the existing Cloudflare setup, free, behind the games sign-in: the build splits any file over 24 MiB into parts, tarball-style, and the game's Worker streams the parts back as one file. Godot never knows.
 
-**Where it lives.** Like Hivestorm, the game has its own Worker with the route `games.icelander.net/retro/lodestar*`, which runs before the games hub. The source is public in `retro-games`; secrets are set with `wrangler secret put`, never committed.
+**Where it lives.** Like Hivestorm, the game has its own Worker with the route `icelander.net/games/retro/lodestar*`, which runs before the games hub. The source is public in `retro-games`; secrets are set with `wrangler secret put`, never committed.
 
-**Private while in development.** The Worker reads the hub's `recreations_player` cookie (sent to every path on games.icelander.net), checks its HMAC with the same `PLAYER_SECRET`, and checks the address against the hub's player list through a binding to the `recreations-players` D1 database. Anyone else is sent to the hub's sign-in with a return path. A single `PRIVATE` setting turns the gate off at release.
+**Private while in development.** The Worker reads icelander.net's cookie, `site_session`, with the shared library in `vendor/icelander-auth/` and a service binding to the login service, as the other games do, and lets in only someone holding the invite-only role `games:recreations` (granted on icelander.net/private/admin). Anyone else is sent to sign in, with a return path. A single `PRIVATE` setting turns the gate off at release, when, like every game, it needs only a sign-in.
 
 **The 25 MiB limit: split and stitch.** Godot 4.7.2's single-threaded `index.wasm` is about 39.5 MB, and Workers static assets cap each file at 25 MiB.
 
@@ -413,7 +413,7 @@ The sim is proven to match the baseline's mechanics by replaying data-swapped tr
 
 The work follows `create-retro-game`'s phases, each ending at a gate where you approve before the next starts. One technical spike runs alongside the early phases, because it uses only the Cheetah and our own code, so it can be pushed before any rules exist.
 
-1. **Spike (in parallel with phases 0–2).** Godot 4.7 web export through the game's Worker: sign-in gate, split-and-stitch, Brotli. The Cheetah imported through the rig script (UV fix, Basis textures, parts moving), with exhaust, flying near a blooming sun under the orbit camera. *Gate:* it runs from games.icelander.net in Chrome and Safari; download size and frame rate measured.
+1. **Spike (in parallel with phases 0–2).** Godot 4.7 web export through the game's Worker: sign-in gate, split-and-stitch, Brotli. The Cheetah imported through the rig script (UV fix, Basis textures, parts moving), with exhaust, flying near a blooming sun under the orbit camera. *Gate:* it runs from icelander.net/games in Chrome and Safari; download size and frame rate measured.
 2. **Phase 0, provenance.** `docs/PROVENANCE.md` inventories what the baseline holds that must change. *Gate:* you confirm the slug and folder.
 3. **Phase 1, RULES.** The behaviour spec from the baseline, including the camera and mount changes as deliberate differences. *Gate:* overlap check clean; you approve.
 4. **Phase 2, GDD.** Three title proposals, setting, every name, the new galaxy generator, market and ship stats. *Gate:* you choose the title and names.

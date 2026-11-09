@@ -4,7 +4,7 @@
 // signs people in (see README.md, "Vendoring"); change it here, bump VERSION, and copy it with sync.sh.
 //
 // An app is one host with one host-only cookie of its own (site, games, puppetmaster). The library:
-//   GET  /auth/sign-in?return=/…  sends the visitor to accounts.icelander.net, with a fresh `state`
+//   GET  /auth/sign-in?return=/…  sends the visitor to icelander.net/accounts, with a fresh `state`
 //   GET  /auth/callback           back from it: checks the token, redeems it once, sets the app's cookie
 //   POST /auth/sign-out           ends this app's session (same-origin only)
 //   POST /auth/sign-out-everywhere ends every session of the user, on every app (same-origin only)
@@ -17,8 +17,9 @@
 // pinned public keys in env.ACCOUNTS_JWKS. Without either, sign-in is off and nobody is signed in
 // (fail closed). Tokens, cookies and session values are never logged.
 
-export const VERSION = "1.1.0";
-export const ISSUER = "https://accounts.icelander.net";
+export const VERSION = "2.0.0";
+/** The login service: icelander.net/accounts (a Worker of its own on that path). */
+export const ISSUER = "https://icelander.net/accounts";
 /** How long an app's sign-in lasts, unless the user signs out or is signed out. */
 export const SESSION_SECONDS = 30 * 24 * 60 * 60;
 const STATE_SECONDS = 10 * 60;
@@ -150,8 +151,9 @@ const text = (body, status) => new Response(body + "\n", { status, headers: { "c
  *   app            the app id registered with the login service ("site", "games", "puppetmaster")
  *   cookie         the app's own cookie name, e.g. "games_session"
  *   basePath       where the routes above live (default "/auth")
+ *   cookiePath     the Path of the app's cookie (default "/"; an app under a path, e.g. "/puppetmaster")
  *   home           where to go when `return` is missing or unsafe (default "/")
- *   accountsOrigin the login service (default https://accounts.icelander.net)
+ *   accountsOrigin the login service's address (default https://icelander.net/accounts)
  *   bearer         also accept "Authorization: Bearer <session>" (a desktop build talking to a dev server)
  *   binding        the name of the service binding to the login service (default "ACCOUNTS"; Puppetmaster's
  *                  ACCOUNTS is a Durable Object of its own, so it names it "LOGIN")
@@ -161,7 +163,8 @@ export function createAuth(options) {
   const name = options.cookie;
   const basePath = options.basePath ?? "/auth";
   const home = options.home ?? "/";
-  const accountsOrigin = options.accountsOrigin ?? ISSUER;
+  const accountsOrigin = (options.accountsOrigin ?? ISSUER).replace(/\/+$/, "");
+  const cookiePath = options.cookiePath ?? "/";
   const stateCookie = `${name}_state`;
   const bindingName = options.binding ?? "ACCOUNTS";
   const service = (env) => env?.[bindingName];
@@ -183,10 +186,12 @@ export function createAuth(options) {
     try {
       const u = JSON.parse(new TextDecoder().decode(fromBase64url(value.slice(4))));
       const email = String(u.email ?? "").toLowerCase();
-      const roles = (Array.isArray(u.roles) ? u.roles : []).filter((r) => typeof r === "string" && r.startsWith(`${app}:`));
+      const prefixes = [app, ...(options.rolePrefixes ?? [])];
+      const roles = (Array.isArray(u.roles) ? u.roles : []).filter((r) => typeof r === "string" && prefixes.some((p) => r.startsWith(`${p}:`)));
       return {
         id: String(u.id ?? `dev-${email}`), email, emails: [email], name: String(u.name ?? "Tester"), picture: null,
         roles: [`${app}:${options.implicitRole ?? "play"}`, ...roles], supporter: false, accountIds: {}, dev: true,
+        via: u.via === "email" || u.via === "link" ? u.via : "provider",
       };
     } catch {
       return null;
@@ -245,10 +250,10 @@ export function createAuth(options) {
       if (!devOn(env, url)) return text("Not found.", 404);
       const email = (url.searchParams.get("email") || "tester@example.com").toLowerCase().slice(0, 254);
       const roles = (url.searchParams.get("roles") ?? "").split(",").map((r) => r.trim()).filter(Boolean);
-      const body = { id: url.searchParams.get("id") || `dev-${email}`, email, name: (url.searchParams.get("name") || "Tester").slice(0, 80), roles };
+      const body = { id: url.searchParams.get("id") || `dev-${email}`, email, name: (url.searchParams.get("name") || "Tester").slice(0, 80), roles, via: url.searchParams.get("via") ?? "provider" };
       const value = `dev.${base64url(encoder.encode(JSON.stringify(body)))}`;
       if (url.searchParams.get("format") === "token") return json({ token: value });
-      return redirect(back(url.searchParams.get("return")), [cookie(name, value, SESSION_SECONDS, { secure })]);
+      return redirect(back(url.searchParams.get("return")), [cookie(name, value, SESSION_SECONDS, { secure, path: cookiePath })]);
     }
 
     if (route === "/sign-out" || route === "/sign-out-everywhere") {
@@ -263,7 +268,7 @@ export function createAuth(options) {
           // The cookie is cleared below either way.
         }
       }
-      const cleared = [cookie(name, "", 0, { secure })];
+      const cleared = [cookie(name, "", 0, { secure, path: cookiePath })];
       if ((request.headers.get("content-type") ?? "").startsWith("application/x-www-form-urlencoded")) {
         const form = await request.formData().catch(() => undefined);
         return redirect(back(form?.get("return")), cleared, 303);
@@ -277,7 +282,7 @@ export function createAuth(options) {
         return text("Sign-in is not available here.", 503);
       }
       const state = randomToken();
-      const to = new URL("/sign-in", accountsOrigin);
+      const to = new URL(`${accountsOrigin}/sign-in`);
       to.search = new URLSearchParams({ app, return: back(url.searchParams.get("return")), state, callback: `${url.origin}${basePath}/callback` }).toString();
       if (url.searchParams.get("prompt") === "select") to.searchParams.set("prompt", "select");
       return redirect(to.toString(), [cookie(stateCookie, state, STATE_SECONDS, { path: basePath, secure })]);
@@ -300,7 +305,7 @@ export function createAuth(options) {
         result = undefined;
       }
       if (!result?.session) return failed(result?.error === "used" ? "This sign-in was already used." : "The sign-in could not be completed.");
-      return redirect(back(claims.ret), [clearState, cookie(name, result.session, SESSION_SECONDS, { secure })], 303);
+      return redirect(back(claims.ret), [clearState, cookie(name, result.session, SESSION_SECONDS, { secure, path: cookiePath })], 303);
     }
 
     return text("Not found.", 404);

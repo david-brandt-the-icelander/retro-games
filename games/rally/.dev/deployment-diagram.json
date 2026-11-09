@@ -33,7 +33,7 @@
       "id": "edge",
       "name": "Cloudflare edge",
       "kind": "host",
-      "description": "Runs the Worker on games.icelander.net/retro/rally*, ahead of the games hub's custom domain."
+      "description": "Runs the Worker on icelander.net/games/retro/rally*, ahead of the games hub's custom domain."
     },
     {
       "id": "worker",
@@ -51,14 +51,14 @@
       "id": "hub",
       "name": "Games hub",
       "kind": "external-service",
-      "description": "The games hub at games.icelander.net (the recreations repository's Worker): sign-in on this host (/auth/…), /me, play time (/play.js), the multiplayer lobby and one WebSocket relay per online match.",
+      "description": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in on this host (/auth/…), /me, play time (/play.js), the multiplayer lobby and one WebSocket relay per online match.",
       "condition": "Online matches (opened with ?match=ID), and the default name for a signed-in player"
     },
     {
       "id": "accounts",
       "name": "icelander.net login service",
       "kind": "external-service",
-      "description": "accounts.icelander.net, in the icelander.net repository (accounts/): who holds the host's games_session cookie and their games: roles, asked on every request. The Worker reaches it only through a service binding."
+      "description": "accounts.icelander.net, in the icelander.net repository (accounts/): who holds the host's site_session cookie and their games: roles, asked on every request. The Worker reaches it only through a service binding."
     }
   ],
   "artifacts": [
@@ -89,7 +89,7 @@
       "from": "edge",
       "to": "worker",
       "kind": "hosts",
-      "description": "Routes games.icelander.net/retro/rally* to the Worker."
+      "description": "Routes icelander.net/games/retro/rally* to the Worker."
     },
     {
       "from": "browser",
@@ -107,7 +107,7 @@
       "from": "browser",
       "to": "hub",
       "kind": "connects-to",
-      "description": "WebSocket /multiplayer/match/{id} for online matches; GET /me for the default name."
+      "description": "WebSocket /games/multiplayer/match/{id} for online matches; GET /me for the default name."
     },
     {
       "from": "worker",

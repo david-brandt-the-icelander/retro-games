@@ -4,7 +4,7 @@
 //   POST {BASE}/score   ← { id, recording, names }   every change of every player's controls
 //                       → { results: [{ player, score, wave, name, rank }] }
 //   GET  {BASE}/scores  → { scores: [...] }          the table, best first
-//   GET  /retro/shatterbelt/scores/            the table as a web page (worker/scores-page.ts)
+//   GET  /games/retro/shatterbelt/scores/            the table as a web page (worker/scores-page.ts)
 //
 // Scores are never trusted from the browser: the server replays the game with the same engine,
 // from the seed it issued and the recorded controls, and lists the scores that replay produces.
@@ -21,10 +21,10 @@ interface Fetcher { fetch(req: Request): Promise<Response> }
 export interface Env extends AuthEnv { DB: D1Database; ASSETS: Fetcher }
 
 /**
- * Every game on games.icelander.net needs a sign-in (the games hub's docs/SIGN-IN.md): the host's one cookie,
- * checked with icelander.net's login service through the ACCOUNTS binding. The hub answers /auth/… on this host.
+ * Every game under icelander.net/games needs a sign-in (the games hub's docs/SIGN-IN.md): the site's one cookie, site_session (the games are part of icelander.net's sign-in),
+ * checked with icelander.net's login service through the ACCOUNTS binding. The site's Worker answers /auth/….
  */
-const AUTH = createAuth({ app: "games", cookie: "games_session" });
+const AUTH = createAuth({ app: "site", cookie: "site_session", home: "/games/", implicitRole: "reader", rolePrefixes: ["games"] });
 
 /** The game's page itself; its script, images and sounds come straight from the assets. */
 const isPage = (path: string) => path === `${PATH}/` || path === `${PATH}/index.html`;
@@ -98,7 +98,7 @@ async function loadTop(env: Env, size: number): Promise<Row[]> {
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
-    // The game moved from icelander.net/retro-games/shatterbelt to games.icelander.net/retro/shatterbelt; 308 keeps the method.
+    // The game moved from icelander.net/retro-games/shatterbelt to icelander.net/games/retro/shatterbelt; 308 keeps the method.
     if (url.pathname === OLD_PATH || url.pathname.startsWith(OLD_PATH + "/")) {
       const rest = url.pathname.slice(OLD_PATH.length) || "/";
       return new Response(null, { status: 308, headers: { Location: ORIGIN + PATH + rest + url.search, "Cache-Control": "no-store" } });

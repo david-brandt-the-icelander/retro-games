@@ -79,7 +79,7 @@
     {
       "id": "signin",
       "name": "Sign-in (vendor/icelander-auth)",
-      "responsibility": "The shared library: reads the host's games_session cookie and asks the login service who it is (requireRole); a page without a sign-in goes to /auth/sign-in on this host.",
+      "responsibility": "The shared library: reads the host's site_session cookie and asks the login service who it is (requireRole); a page without a sign-in goes to /auth/sign-in on this host.",
       "folder": "vendor/icelander-auth"
     },
     {

@@ -1,4 +1,4 @@
-// The Samosa Worker at games.icelander.net/retro/samosa: static assets, plus the high-score
+// The Samosa Worker at icelander.net/games/retro/samosa: static assets, plus the high-score
 // API (worker/index.ts) backed by the D1 database samosa-scores (schema: worker/schema.sql).
 {
   "$schema": "node_modules/wrangler/config-schema.json",
@@ -6,17 +6,17 @@
   "compatibility_date": "2025-01-01",
   "workers_dev": false,
   "preview_urls": false,
-  // Its route runs before the games hub (the recreations Worker), which is games.icelander.net's custom domain.
+  // Its route runs before the games hub (the recreations Worker), whose route icelander.net/games/* is less specific.
   // The old address, /retro-games/samosa, is redirected here.
   "routes": [
-    { "pattern": "games.icelander.net/retro/samosa*", "zone_name": "icelander.net" },
+    { "pattern": "icelander.net/games/retro/samosa*", "zone_name": "icelander.net" },
     { "pattern": "icelander.net/retro-games/samosa*", "zone_name": "icelander.net" }
   ],
-  // The Worker serves the high-score API under /retro/samosa/api/; everything else is a static asset.
+  // The Worker serves the high-score API under /games/retro/samosa/api/; everything else is a static asset.
   "main": "worker/index.ts",
   // The game's page runs the Worker first, for the sign-in (every game needs one; the hub's docs/SIGN-IN.md).
-  "assets": { "directory": "./dist", "binding": "ASSETS", "run_worker_first": ["/retro/samosa/", "/retro/samosa/index.html"] },
-  // icelander.net's login service: who is signed in, through the cookie games.icelander.net's hub sets.
+  "assets": { "directory": "./dist", "binding": "ASSETS", "run_worker_first": ["/games/retro/samosa/", "/games/retro/samosa/index.html"] },
+  // icelander.net's login service: who is signed in, through the site's cookie (icelander.net and its games are one sign-in).
   "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
   // The login service's public keys (icelander.net docs/accounts.md, "Keys").
   "vars": { "ACCOUNTS_JWKS": "{\"keys\":[]}" },

@@ -1,9 +1,9 @@
-// Signing in for Gambit: games.icelander.net's one sign-in, through icelander.net's login service (the games
+// Signing in for Gambit: icelander.net's one sign-in (the games are part of the site), through icelander.net's login service (the games
 // hub's docs/SIGN-IN.md; icelander.net docs/accounts.md), with the shared library vendored in vendor/icelander-auth.
 // Gambit has no OAuth code of its own any more: Google and GitHub are the login service's.
 //
 //   GET  {BASE}/auth/login/{provider}?return=PATH   → the host's sign-in (/auth/sign-in), which comes back to PATH
-//   POST {BASE}/auth/logout                          signs out of games.icelander.net
+//   POST {BASE}/auth/logout                          signs out of icelander.net
 //   GET  {BASE}/auth/dev?email=…&name=…[&format=token]   only when DEV_LOGIN is "1", on localhost (local development)
 //
 // The cookie is the host's games_session; a desktop build talking to a dev server sends the same value as
@@ -18,7 +18,7 @@ export interface AuthEnv extends SharedAuthEnv {
   DEV_LOGIN?: string;
 }
 
-const AUTH = createAuth({ app: "games", cookie: "games_session", home: `${BASE}/`, bearer: true });
+const AUTH = createAuth({ app: "site", cookie: "site_session", home: `${BASE}/`, implicitRole: "reader", rolePrefixes: ["games"], bearer: true });
 
 /** The library's env: DEV_LOGIN "1" turns on its stand-in sign-in (which works on localhost only). */
 const shared = (env: AuthEnv): AuthEnv => (env.DEV_LOGIN === "1" ? { ...env, DEV_SIGN_IN: "true" } : env);
@@ -46,7 +46,7 @@ export function safeReturn(x: string | null): string {
   return `${BASE}/`;
 }
 
-/** Gambit's sign-in check for the page (index.ts): every game on games.icelander.net needs a sign-in. */
+/** Gambit's sign-in check for the page (index.ts): every game under icelander.net/games needs a sign-in. */
 export const requirePlayer = (req: Request, env: AuthEnv) => AUTH.requireRole(req, shared(env), "games:play");
 
 /**

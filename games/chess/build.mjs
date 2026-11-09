@@ -1,4 +1,4 @@
-// Builds the game into dist/retro/chess/ and the tests into dist-test/.
+// Builds the game into dist/games/retro/chess/ and the tests into dist-test/.
 //
 //   node build.mjs          the whole site: the Godot web export, the page bridge, Stockfish, headers
 //   node build.mjs --test   the TypeScript tests
@@ -9,7 +9,7 @@ import { build } from "esbuild";
 import { execFileSync } from "node:child_process";
 import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 
-const SITE = "dist/retro/chess";
+const SITE = "dist/games/retro/chess";
 const args = process.argv.slice(2);
 
 if (args.includes("--test")) {

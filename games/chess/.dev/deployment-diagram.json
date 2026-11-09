@@ -48,13 +48,13 @@
       "id": "edge",
       "name": "Cloudflare edge",
       "kind": "host",
-      "description": "Runs the Worker on the route games.icelander.net/retro/chess* and serves static assets from ./dist."
+      "description": "Runs the Worker on the route icelander.net/games/retro/chess* and serves static assets from ./dist."
     },
     {
       "id": "worker",
       "name": "chess Worker",
       "kind": "process",
-      "description": "worker/index.ts. Runs first for the page (sign-in), /retro/chess/api/*, /retro/chess/auth/* and /retro/chess/index.wasm; every other path is a static asset."
+      "description": "worker/index.ts. Runs first for the page (sign-in), /games/retro/chess/api/*, /games/retro/chess/auth/* and /games/retro/chess/index.wasm; every other path is a static asset."
     },
     {
       "id": "room",
@@ -86,7 +86,7 @@
       "id": "accounts",
       "name": "icelander.net login service",
       "kind": "external-service",
-      "description": "accounts.icelander.net, in the icelander.net repository (accounts/): who holds the host's games_session cookie and their games: roles, asked on every request. The Worker reaches it only through a service binding."
+      "description": "accounts.icelander.net, in the icelander.net repository (accounts/): who holds the host's site_session cookie and their games: roles, asked on every request. The Worker reaches it only through a service binding."
     }
   ],
   "artifacts": [
@@ -102,7 +102,7 @@
       "name": "index.wasm.0, index.wasm.1",
       "source": "games/chess/build.mjs",
       "deployedTo": "edge",
-      "description": "The Godot engine's WebAssembly, cut into 20 MiB parts; the Worker joins them for /retro/chess/index.wasm."
+      "description": "The Godot engine's WebAssembly, cut into 20 MiB parts; the Worker joins them for /games/retro/chess/index.wasm."
     },
     {
       "id": "bridge",
@@ -152,7 +152,7 @@
       "from": "edge",
       "to": "worker",
       "kind": "hosts",
-      "description": "Routes games.icelander.net/retro/chess* to the Worker."
+      "description": "Routes icelander.net/games/retro/chess* to the Worker."
     },
     {
       "from": "edge",

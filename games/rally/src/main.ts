@@ -183,7 +183,7 @@ function showOver(note = ""): void {
 
 // ——— Online: a match started from the multiplayer page ———
 //
-// The multiplayer page (games.icelander.net/multiplayer/) opens this page with ?match=ID for both
+// The multiplayer page (icelander.net/games/multiplayer/) opens this page with ?match=ID for both
 // players. Both connect to the match; once both are there, the host (the first in the lobby) starts it.
 
 /** Connects to the match in the address, and starts it once both players are there. */

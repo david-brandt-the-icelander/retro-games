@@ -80,7 +80,7 @@ To render the states without clicking through them, the desktop build understand
 
 | Switch | Does |
 |---|---|
-| `--server=URL` | The game's API (default `http://127.0.0.1:8787/retro/chess/`) |
+| `--server=URL` | The game's API (default `http://127.0.0.1:8787/games/retro/chess/`) |
 | `--dev-email=EMAIL` | Signs in through the development sign-in first |
 | `--goto=setup\|lobby\|history\|computer\|game\|contact` | Opens a screen. `computer` starts a new game at level 3 as White, with `--moves=…` already played (one second apart). `game` opens `--id=ID` (finished games as a replay, unless `--mode=online`). `contact` opens `--contact=EMAIL` |
 | `--select=SQ` | Picks up the piece on SQ |

@@ -137,10 +137,10 @@ function fakeEnv(): Env & { rows: { games: Map<string, { seed: number; created: 
   return { DB: DB as never, ASSETS: { fetch: async () => new Response("asset") }, ACCOUNTS: ACCOUNTS as never, ACCOUNTS_JWKS, rows: { games, scores } };
 }
 
-const API = "https://games.icelander.net/retro/hivestorm/api";
+const API = "https://icelander.net/games/retro/hivestorm/api";
 const post = (env: Env, path: string, body: unknown) =>
   worker.fetch(new Request(`${API}/${path}`, { method: "POST", body: JSON.stringify(body), headers: { Cookie: SIGNED_IN } }), env);
-const SIGNED_IN = "games_session=session-alice-xxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const SIGNED_IN = "site_session=session-alice-xxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
 test("the API issues a seed, scores a replayed two-player game once, and lists it", async () => {
   const env = fakeEnv();
@@ -153,7 +153,7 @@ test("the API issues a seed, scores a replayed two-player game once, and lists i
   assert.equal((await post(env, "score", { id, runs: game.runs, names: ["Ace", null] })).status, 409, "each game once");
   const table = (await (await worker.fetch(new Request(`${API}/scores`), env)).json()) as { scores: { name: string; score: number; players: number }[] };
   assert.deepEqual(table.scores.map((s) => [s.name, s.score, s.players]), [["Ace", game.scores[0].score, 2]]);
-  const page = await (await worker.fetch(new Request("https://games.icelander.net/retro/hivestorm/scores/"), env)).text();
+  const page = await (await worker.fetch(new Request("https://icelander.net/games/retro/hivestorm/scores/"), env)).text();
   assert.match(page, /<td>Ace<\/td>/);
 });
 
@@ -168,5 +168,5 @@ test("the API refuses made-up controls, wrong player counts and bad names, and k
   assert.equal((await post(env, "score", { id: "nope", runs: game.runs, names: ["Ace"] })).status, 409);
   assert.equal(env.rows.scores.length, 0);
   assert.equal((await post(env, "score", { id, runs: game.runs, names: ["Ace"] })).status, 200, "the real game still counts");
-  assert.equal((await worker.fetch(new Request("https://games.icelander.net/retro/hivestorm/", { headers: { Cookie: SIGNED_IN } }), env)).status, 200, "the page is the static game");
+  assert.equal((await worker.fetch(new Request("https://icelander.net/games/retro/hivestorm/", { headers: { Cookie: SIGNED_IN } }), env)).status, 200, "the page is the static game");
 });

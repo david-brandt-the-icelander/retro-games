@@ -1,12 +1,12 @@
 // play.js: the games' side of play time and tips (icelander.net docs/accounts.md, "Tips"). The games hub serves
-// it at games.icelander.net/play.js; a game's page loads it with its id:
-//   <script src="/play.js" data-game="rally" defer></script>
+// it at icelander.net/games/play.js; a game's page loads it with its id:
+//   <script src="/games/play.js" data-game="rally" defer></script>
 // and its game-over screen may call, at game over only:
 //   window.icelanderTips?.gameOver(element)
 //
 // Once a minute, while the tab is visible and the player has touched a key, the mouse, the screen or a gamepad
-// in the last two minutes, it tells the hub a minute was played (POST /api/play/heartbeat). gameOver asks the
-// hub whether to suggest a tip (GET /api/tips) and, if so, shows a line or a card in `element`: always with a
+// in the last two minutes, it tells the hub a minute was played (POST /games/api/play/heartbeat). gameOver asks the
+// hub whether to suggest a tip (GET /games/api/tips) and, if so, shows a line or a card in `element`: always with a
 // way to dismiss it, never during play. Nothing is shown to supporters or to anyone invited.
 (() => {
   const script = document.currentScript;
@@ -23,7 +23,7 @@
   }, 2000);
   setInterval(() => {
     if (document.visibilityState !== "visible" || Date.now() - lastInput > IDLE_MS) return;
-    fetch("/api/play/heartbeat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ game }), credentials: "same-origin" }).catch(() => {});
+    fetch("/games/api/play/heartbeat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ game }), credentials: "same-origin" }).catch(() => {});
   }, 60_000);
 
   const el = (tag, style, text) => {
@@ -37,7 +37,7 @@
     if (!(where instanceof Element)) return;
     let tip;
     try {
-      tip = await (await fetch("/api/tips", { credentials: "same-origin" })).json();
+      tip = await (await fetch("/games/api/tips", { credentials: "same-origin" })).json();
     } catch {
       return;
     }
@@ -62,7 +62,7 @@
     row.append(no);
     box.append(row);
     where.append(box);
-    fetch("/api/tips/shown", { method: "POST", credentials: "same-origin" }).catch(() => {});
+    fetch("/games/api/tips/shown", { method: "POST", credentials: "same-origin" }).catch(() => {});
   }
 
   window.icelanderTips = { gameOver };

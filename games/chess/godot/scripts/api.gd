@@ -4,7 +4,7 @@ extends Node
 ##
 ## In the browser the game is served by the Worker, so requests go to the same origin and carry
 ## the session cookie. On the desktop (the editor, or a test run), pass the server and a dev
-## account after "--":  godot --path godot -- --server=http://127.0.0.1:8787/retro/chess/ --dev-email=a@b.io
+## account after "--":  godot --path godot -- --server=http://127.0.0.1:8787/games/retro/chess/ --dev-email=a@b.io
 
 signal me_changed
 
@@ -23,7 +23,7 @@ func _ready() -> void:
 		bridge = JavaScriptBridge.get_interface("chessBridge")
 		base = str(bridge.baseUrl())
 	else:
-		base = "http://127.0.0.1:8787/retro/chess/"
+		base = "http://127.0.0.1:8787/games/retro/chess/"
 		for a in OS.get_cmdline_user_args():
 			if a.begins_with("--server="):
 				base = a.trim_prefix("--server=")
@@ -113,7 +113,7 @@ func logout() -> void:
 
 ## Opens a provider's sign-in page; the browser comes back to the game signed in.
 func sign_in(provider: String, email := "") -> void:
-	var ret: String = str(bridge.returnPath()) if is_web() else "/retro/chess/"
+	var ret: String = str(bridge.returnPath()) if is_web() else "/games/retro/chess/"
 	if provider == "dev":
 		if is_web():
 			bridge.navigate(base + "auth/dev?email=%s&return=%s" % [email.uri_encode(), ret.uri_encode()])

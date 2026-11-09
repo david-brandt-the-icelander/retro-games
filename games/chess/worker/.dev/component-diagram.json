@@ -3,7 +3,7 @@
   "kind": "component",
   "title": "Gambit Worker component diagram",
   "folder": "games/chess/worker",
-  "description": "The chess Worker at games.icelander.net/retro/chess: sign-in through games.icelander.net's one sign-in (icelander.net's login service), the JSON API (lobby, invitations, contacts, games, history, profile pictures), one Durable Object per online game that takes its actions one at a time, and the static game, with the Godot engine's .wasm joined from its parts. Every move is checked with chess.js through shared/rules.ts.",
+  "description": "The chess Worker at icelander.net/games/retro/chess: sign-in through icelander.net/games's one sign-in (icelander.net's login service), the JSON API (lobby, invitations, contacts, games, history, profile pictures), one Durable Object per online game that takes its actions one at a time, and the static game, with the Godot engine's .wasm joined from its parts. Every move is checked with chess.js through shared/rules.ts.",
   "sources": [
     {
       "path": "games/chess/worker/index.ts",
@@ -48,13 +48,13 @@
     {
       "id": "router",
       "name": "Routes (index.ts)",
-      "responsibility": "Redirects /retro/chess to /retro/chess/, sends api/ and auth/ to their handlers (a thrown error becomes a JSON 500), streams index.wasm.0, .1, … as one index.wasm, and serves every other path from the static assets; exports GameRoom.",
+      "responsibility": "Redirects /games/retro/chess to /games/retro/chess/, sends api/ and auth/ to their handlers (a thrown error becomes a JSON 500), streams index.wasm.0, .1, … as one index.wasm, and serves every other path from the static assets; exports GameRoom.",
       "folder": "games/chess/worker"
     },
     {
       "id": "auth",
       "name": "Sign-in (auth.ts)",
-      "responsibility": "Gambit's side of games.icelander.net's one sign-in, through the shared library (vendor/icelander-auth) and the login service: who is signed in (cookie, or Bearer for a desktop build), mapped to Gambit's own user row by the first of the person's addresses it knows; login and old callbacks go to the host's /auth/sign-in; logout; the stand-in sign-in when DEV_LOGIN is 1.",
+      "responsibility": "Gambit's side of icelander.net/games's one sign-in, through the shared library (vendor/icelander-auth) and the login service: who is signed in (cookie, or Bearer for a desktop build), mapped to Gambit's own user row by the first of the person's addresses it knows; login and old callbacks go to the host's /auth/sign-in; logout; the stand-in sign-in when DEV_LOGIN is 1.",
       "folder": "games/chess/worker"
     },
     {
@@ -115,7 +115,7 @@
     {
       "id": "signin",
       "name": "Sign-in (vendor/icelander-auth)",
-      "responsibility": "The shared library: reads the host's games_session cookie and asks the login service who it is (requireRole); a page without a sign-in goes to /auth/sign-in on this host.",
+      "responsibility": "The shared library: reads the host's site_session cookie and asks the login service who it is (requireRole); a page without a sign-in goes to /auth/sign-in on this host.",
       "folder": "vendor/icelander-auth"
     },
     {
@@ -172,13 +172,13 @@
       "from": "router",
       "to": "api",
       "kind": "depends-on",
-      "description": "handleApi for /retro/chess/api/*."
+      "description": "handleApi for /games/retro/chess/api/*."
     },
     {
       "from": "router",
       "to": "auth",
       "kind": "depends-on",
-      "description": "handleAuth for /retro/chess/auth/*."
+      "description": "handleAuth for /games/retro/chess/auth/*."
     },
     {
       "from": "router",

@@ -33,14 +33,14 @@ async function signIn(env: ApiEnv, email: string, name: string): Promise<string>
   const url = new URL(`${ORIGIN}${BASE}/auth/dev?email=${email}&name=${name}`);
   const res = (await handleAuth(new Request(url), env, url))!;
   assert.equal(res.status, 302);
-  return /games_session=([^;]+)/.exec(res.headers.get("Set-Cookie")!)![1];
+  return /site_session=([^;]+)/.exec(res.headers.get("Set-Cookie")!)![1];
 }
 
 function client(env: ApiEnv, cookie: string | null) {
   return async (method: string, path: string, body?: unknown, headers: Record<string, string> = {}) => {
     const url = new URL(`${ORIGIN}${BASE}/api/${path}`);
     const h: Record<string, string> = { ...headers };
-    if (cookie) h.Cookie = `games_session=${cookie}`;
+    if (cookie) h.Cookie = `site_session=${cookie}`;
     if (body !== undefined) h["Content-Type"] = "application/json";
     const res = await handleApi(new Request(url, { method, headers: h, body: body === undefined ? undefined : JSON.stringify(body) }), env, url);
     return { status: res.status, body: (await res.json()) as Record<string, any> };
@@ -142,22 +142,22 @@ test("profile pictures only from Google or GitHub; a Bearer token works like the
   assert.equal(((await viaBearer.json()) as any).user.email, "pic@x.io");
 });
 
-test("sign-in goes to games.icelander.net's one sign-in; signing out is the host's", async () => {
+test("sign-in goes to icelander.net's one sign-in; signing out is the site's", async () => {
   const { env } = setup();
-  for (const path of ["auth/login/google?return=%2Fretro%2Fchess%2F%3Fchallenge%3Dabc", "auth/login/github", "auth/callback/google?code=x&state=y"]) {
+  for (const path of ["auth/login/google?return=%2Fgames%2Fretro%2Fchess%2F%3Fchallenge%3Dabc", "auth/login/github", "auth/callback/google?code=x&state=y"]) {
     const url = new URL(`${ORIGIN}${BASE}/${path}`);
     const res = (await handleAuth(new Request(url), env, url))!;
     assert.equal(res.status, 302, path);
-    assert.match(res.headers.get("Location")!, /^\/auth\/sign-in\?return=%2Fretro%2Fchess%2F/, path);
+    assert.match(res.headers.get("Location")!, /^\/auth\/sign-in\?return=%2Fgames%2Fretro%2Fchess%2F/, path);
   }
   const evil = new URL(`${ORIGIN}${BASE}/auth/login/google?return=${encodeURIComponent("https://evil.example/")}`);
-  assert.equal((await handleAuth(new Request(evil), env, evil))!.headers.get("Location"), "/auth/sign-in?return=%2Fretro%2Fchess%2F");
+  assert.equal((await handleAuth(new Request(evil), env, evil))!.headers.get("Location"), "/auth/sign-in?return=%2Fgames%2Fretro%2Fchess%2F");
   const cookie = await signIn(env, "ann@x.io", "Ann");
   const logout = new URL(`${ORIGIN}${BASE}/auth/logout`);
-  const res = (await handleAuth(new Request(logout, { method: "POST", headers: { Cookie: `games_session=${cookie}`, Origin: ORIGIN } }), env, logout))!;
+  const res = (await handleAuth(new Request(logout, { method: "POST", headers: { Cookie: `site_session=${cookie}`, Origin: ORIGIN } }), env, logout))!;
   assert.equal(res.status, 200);
-  assert.match(res.headers.get("Set-Cookie")!, /^games_session=; Path=\/; Max-Age=0/);
-  const refused = (await handleAuth(new Request(logout, { method: "POST", headers: { Cookie: `games_session=${cookie}`, Origin: "https://evil.example" } }), env, logout))!;
+  assert.match(res.headers.get("Set-Cookie")!, /^site_session=; Path=\/; Max-Age=0/);
+  const refused = (await handleAuth(new Request(logout, { method: "POST", headers: { Cookie: `site_session=${cookie}`, Origin: "https://evil.example" } }), env, logout))!;
   assert.equal(refused.status, 403);
 });
 
@@ -166,14 +166,14 @@ test("through the login service: checked on every request, and a person plays as
   const live = new Map<string, { id: string; email: string; emails: string[]; name: string; picture: string | null; roles: string[] }>();
   const shared = {
     ...env, DEV_LOGIN: undefined, ACCOUNTS_JWKS: JSON.stringify({ keys: [{ kty: "OKP", crv: "Ed25519", kid: "t", x: "11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo" }] }),
-    ACCOUNTS: { session: async (v: string, app: string) => (app === "games" ? live.get(v) ?? null : null) },
+    ACCOUNTS: { session: async (v: string, app: string) => (app === "site" ? live.get(v) ?? null : null) },
   } as unknown as ApiEnv;
   // Ann played Gambit as ann@work.io; she signs in now with her primary address, ann@x.io.
   const before = client(env, await signIn(env, "ann@work.io", "Ann"));
   const annId = (await before("GET", "me")).body.user.id;
   live.set("s-ann-xxxxxxxxxxxxxxxxxxxxxxxxxxxx", { id: "a-1", email: "ann@x.io", emails: ["ann@x.io", "ann@work.io"], name: "Ann", picture: null, roles: ["games:play"] });
   const url = new URL(`https://games.icelander.net${BASE}/api/me`);
-  const me = async () => (await (await handleApi(new Request(url, { headers: { Cookie: "games_session=s-ann-xxxxxxxxxxxxxxxxxxxxxxxxxxxx" } }), shared, url)).json()) as any;
+  const me = async () => (await (await handleApi(new Request(url, { headers: { Cookie: "site_session=s-ann-xxxxxxxxxxxxxxxxxxxxxxxxxxxx" } }), shared, url)).json()) as any;
   assert.deepEqual([(await me()).user.id, (await me()).user.email], [annId, "ann@work.io"]);
   assert.deepEqual((await me()).providers, ["google", "github"]);
   live.delete("s-ann-xxxxxxxxxxxxxxxxxxxxxxxxxxxx"); // disabled, or signed out everywhere

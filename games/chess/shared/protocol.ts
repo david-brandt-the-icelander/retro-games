@@ -1,7 +1,7 @@
 // What the browser and the Worker say to each other. Every path is under BASE.
 import type { Reason, Result, Side } from "./rules";
 
-export const BASE = "/retro/chess";
+export const BASE = "/games/retro/chess";
 
 export interface User { id: string; email: string; name: string; picture?: string | null }
 

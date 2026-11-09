@@ -3,10 +3,10 @@ import { standings } from "../src/engine/game";
 import { replay, validRecording, type Recording } from "../src/engine/replay";
 import { cleanName } from "../src/name";
 
-export const PATH = "/retro/shatterbelt";
+export const PATH = "/games/retro/shatterbelt";
 /** Where the game first lived: every path there is redirected to the same path under PATH. */
 /** The games' own site, where the old address redirects to. */
-export const ORIGIN = "https://games.icelander.net";
+export const ORIGIN = "https://icelander.net";
 export const OLD_PATH = "/retro-games/shatterbelt";
 export const BASE = `${PATH}/api`;
 export const SCORES_PAGE = `${PATH}/scores`;
