@@ -22,6 +22,6 @@
   // icelander.net's login service: who is signed in, through the site's cookie (icelander.net and its games are one sign-in).
   "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
   // The login service's public keys (icelander.net docs/accounts.md, "Keys").
-  "vars": { "ACCOUNTS_JWKS": "{\"keys\":[]}" },
+  "vars": { "ACCOUNTS_JWKS": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"kid\":\"k2026a\",\"x\":\"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc\"}]}" },
   "d1_databases": [{ "binding": "DB", "database_name": "hivestorm-scores", "database_id": "c29ed586-3080-4efa-9fc6-2a50330591f4" }]
 }
