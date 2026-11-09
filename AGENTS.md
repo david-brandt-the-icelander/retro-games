@@ -38,3 +38,7 @@ LodeStar's feature, use-case and journey documents follow knowledge-driven devel
 - Write ✅ only after reading the code and seeing its tests pass.
 - When a fix has to wait, record the defect as a ❌ in the document that owns the behavior.
 - Never write `TODO`, `FIXME`, `HACK` or `XXX`. Write a ⚠️ or ❌ in the owning document instead.
+
+## Sign-in
+
+Every game's Worker checks icelander.net's sign-in (the games are part of the site) with the shared library in `vendor/icelander-auth/`. It is a copy of `packages/icelander-auth/` in the icelander.net repository, and `vendor/icelander-auth/STAMP.json` records each file's hash: change it there and copy it with that repository's `packages/icelander-auth/sync.sh`, never here.

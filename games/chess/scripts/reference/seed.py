@@ -5,7 +5,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 GAME = os.path.dirname(os.path.dirname(HERE))
 SEED = os.path.join(HERE, ".seed.json")
 import json, urllib.parse, urllib.request
-B = "http://127.0.0.1:8787/retro/chess/"
+B = "http://127.0.0.1:8787/games/retro/chess/"
 tok = {}
 def login(email, name):
     r = urllib.request.urlopen(B + f"auth/dev?format=token&email={email}&name={urllib.parse.quote(name)}")

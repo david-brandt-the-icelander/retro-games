@@ -2,8 +2,8 @@
 import { build, context } from "esbuild";
 import { cpSync, mkdirSync, readdirSync, renameSync, rmSync } from "node:fs";
 
-/** The site is served under https://games.icelander.net/retro/shatterbelt/ (set BASE_PATH="" to build at the root). */
-const BASE_PATH = process.env.BASE_PATH ?? "retro/shatterbelt";
+/** The site is served under https://icelander.net/games/retro/shatterbelt/ (set BASE_PATH="" to build at the root). */
+const BASE_PATH = process.env.BASE_PATH ?? "games/retro/shatterbelt";
 const args = process.argv.slice(2);
 
 if (args.includes("--test")) {

@@ -23,7 +23,7 @@
   "states": [
     {
       "id": "connecting",
-      "description": "A WebSocket to /multiplayer/match/{id} is opening; it waits up to 8 seconds for the relay's first message."
+      "description": "A WebSocket to /games/multiplayer/match/{id} is opening; it waits up to 8 seconds for the relay's first message."
     },
     {
       "id": "open",

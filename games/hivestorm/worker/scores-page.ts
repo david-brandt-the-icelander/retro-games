@@ -1,4 +1,4 @@
-// The public high-score page, /retro/hivestorm/scores/: the table the game shows between
+// The public high-score page, /games/retro/hivestorm/scores/: the table the game shows between
 // title screens, as a web page in icelander.net's look.
 import { escapeHtml, sitePage } from "./look";
 
@@ -21,7 +21,7 @@ ${body}
 </table>`;
   const side = `<div class="block">
 <p class="label">Hivestorm</p>
-<a class="button" href="/retro/hivestorm/">Play Hivestorm</a>
+<a class="button" href="/games/retro/hivestorm/">Play Hivestorm</a>
 <a class="link" href="/">← All the games</a>
 </div>
 <p class="note">Players enter the table with a name of their choosing when their game ends. In a two-player game, each player can enter their own score.</p>`;

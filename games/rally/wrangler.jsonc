@@ -1,21 +1,26 @@
-// The Rally Worker at games.icelander.net/retro/rally: the static game, plus the high-score API
+// The Rally Worker at icelander.net/games/retro/rally: the static game, plus the high-score API
 // (worker/index.ts) backed by the D1 database rally-scores (schema: worker/schema.sql).
-// Its route runs before the games hub (the recreations Worker), which is games.icelander.net's custom domain.
+// Its route runs before the games hub (the recreations Worker), whose route icelander.net/games/* is less specific.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "rally",
   "compatibility_date": "2025-06-01",
   "workers_dev": false,
   "preview_urls": false,
-  "routes": [{ "pattern": "games.icelander.net/retro/rally*", "zone_name": "icelander.net" }],
-  // The Worker answers the API and the scores page under /retro/rally/; everything else is a static asset.
+  "routes": [{ "pattern": "icelander.net/games/retro/rally*", "zone_name": "icelander.net" }],
+  // The Worker answers the API and the scores page under /games/retro/rally/; everything else is a static asset.
   "main": "worker/index.ts",
-  "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "none" },
-  // The online rooms that were here moved to the games hub (games.icelander.net/multiplayer); this
+  // The game's page runs the Worker first, for the sign-in (every game needs one; the hub's docs/SIGN-IN.md).
+  "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "none", "run_worker_first": ["/games/retro/rally/", "/games/retro/rally/index.html"] },
+  // The online rooms that were here moved to the games hub (icelander.net/games/multiplayer); this
   // deletes their Durable Object class. Keep both entries: Cloudflare applies migrations in order.
   "migrations": [
     { "tag": "rooms-v1", "new_sqlite_classes": ["Room"] },
     { "tag": "rooms-v2", "deleted_classes": ["Room"] }
   ],
+  // icelander.net's login service: who is signed in, through the site's cookie (icelander.net and its games are one sign-in).
+  "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
+  // The login service's public keys (icelander.net docs/accounts.md, "Keys").
+  "vars": { "ACCOUNTS_JWKS": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"kid\":\"k2026a\",\"x\":\"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc\"}]}" },
   "d1_databases": [{ "binding": "DB", "database_name": "rally-scores", "database_id": "cfa22c0a-477c-4d43-9f93-a88614800caf" }]
 }

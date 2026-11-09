@@ -16,6 +16,10 @@
     {
       "path": "games/dictator/worker/index.ts",
       "symbol": "default.fetch"
+    },
+    {
+      "path": "vendor/icelander-auth/index.js",
+      "symbol": "createAuth"
     }
   ],
   "nodes": [
@@ -29,13 +33,13 @@
       "id": "edge",
       "name": "Cloudflare edge",
       "kind": "host",
-      "description": "Runs the Worker on games.icelander.net/retro/samosa* and icelander.net/retro-games/samosa*, ahead of the games hub's custom domain."
+      "description": "Runs the Worker on icelander.net/games/retro/samosa* and icelander.net/retro-games/samosa*, ahead of the games hub's custom domain."
     },
     {
       "id": "worker",
       "name": "samosa Worker",
       "kind": "process",
-      "description": "worker/index.ts: the high-score API and scores page; every other path is a static asset from ./dist. The old address, /retro-games/samosa, gets a 308 redirect to games.icelander.net."
+      "description": "worker/index.ts: the high-score API and scores page; every other path is a static asset from ./dist. The old address, /retro-games/samosa, gets a 308 redirect to icelander.net/games."
     },
     {
       "id": "db",
@@ -47,8 +51,14 @@
       "id": "hub",
       "name": "Games hub",
       "kind": "external-service",
-      "description": "The games hub at games.icelander.net (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "description": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in on this host (/auth/…), /me, play time (/play.js), the multiplayer lobby and one WebSocket relay per online match.",
       "condition": "The default name for a signed-in player"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "accounts.icelander.net, in the icelander.net repository (accounts/): who holds the host's site_session cookie and their games: roles, asked on every request. The Worker reaches it only through a service binding."
     }
   ],
   "artifacts": [
@@ -79,7 +89,7 @@
       "from": "edge",
       "to": "worker",
       "kind": "hosts",
-      "description": "Routes games.icelander.net/retro/samosa* and icelander.net/retro-games/samosa* to the Worker."
+      "description": "Routes icelander.net/games/retro/samosa* and icelander.net/retro-games/samosa* to the Worker."
     },
     {
       "from": "browser",
@@ -98,6 +108,12 @@
       "to": "hub",
       "kind": "connects-to",
       "description": "GET /me for the default name."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS (entrypoint Internal): the game's page and its API need a signed-in player."
     }
   ]
 }

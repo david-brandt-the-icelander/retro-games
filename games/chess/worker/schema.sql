@@ -2,7 +2,8 @@
 --   npx wrangler d1 execute chess --remote --file worker/schema.sql
 -- (and with --local for `wrangler dev`). Every statement is safe to run again.
 
--- One row per person who has signed in. Google and GitHub accounts with the same verified email are one user.
+-- One row per person who has played, keyed by address. Who they are is the login service's (worker/auth.ts);
+-- this is Gambit's own record of them, which its games, challenges and contacts refer to.
 CREATE TABLE IF NOT EXISTS users (
   id TEXT PRIMARY KEY,
   email TEXT NOT NULL UNIQUE,
@@ -12,14 +13,8 @@ CREATE TABLE IF NOT EXISTS users (
   last_seen INTEGER NOT NULL
 );
 
--- Signed-in browsers. Only a hash of the cookie's token is stored.
-CREATE TABLE IF NOT EXISTS sessions (
-  token_hash TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL REFERENCES users(id),
-  created INTEGER NOT NULL,
-  expires INTEGER NOT NULL
-);
-CREATE INDEX IF NOT EXISTS sessions_by_user ON sessions (user_id);
+-- (Signed-in browsers were kept here in `sessions` until Gambit moved to icelander.net's login service:
+-- worker/retire-sessions.sql drops it.)
 
 -- Challenges are addressed to an email, whether or not anyone has signed in with it yet.
 CREATE TABLE IF NOT EXISTS challenges (

@@ -4,11 +4,12 @@
 //   POST {BASE}/score   ← { id, recording, names }   every change of every player's controls
 //                       → { results: [{ player, score, wave, name, rank }] }
 //   GET  {BASE}/scores  → { scores: [...] }          the table, best first
-//   GET  /retro/shatterbelt/scores/            the table as a web page (worker/scores-page.ts)
+//   GET  /games/retro/shatterbelt/scores/            the table as a web page (worker/scores-page.ts)
 //
 // Scores are never trusted from the browser: the server replays the game with the same engine,
 // from the seed it issued and the recorded controls, and lists the scores that replay produces.
 // Each seed can be submitted once.
+import { createAuth, type AuthEnv } from "../../../vendor/icelander-auth/index.js";
 import { scoresPage, type Row } from "./scores-page";
 import { BASE, MAX_BODY, OLD_PATH, ORIGIN, PAGE_SIZE, PATH, SCORES_PAGE, SEED_LIFETIME_MS, TABLE_SIZE, cleanName, json, score, validSubmission } from "./scores";
 
@@ -17,7 +18,26 @@ interface D1Result<T> { results: T[]; meta: { changes: number } }
 interface D1Statement { bind(...v: unknown[]): D1Statement; first<T>(): Promise<T | null>; all<T>(): Promise<D1Result<T>>; run(): Promise<D1Result<unknown>> }
 interface D1Database { prepare(sql: string): D1Statement; batch(statements: D1Statement[]): Promise<unknown> }
 interface Fetcher { fetch(req: Request): Promise<Response> }
-export interface Env { DB: D1Database; ASSETS: Fetcher }
+export interface Env extends AuthEnv { DB: D1Database; ASSETS: Fetcher }
+
+/**
+ * Every game under icelander.net/games needs a sign-in (the games hub's docs/SIGN-IN.md): the site's one cookie, site_session (the games are part of icelander.net's sign-in),
+ * checked with icelander.net's login service through the ACCOUNTS binding. The site's Worker answers /auth/….
+ */
+const AUTH = createAuth({ app: "site", cookie: "site_session", home: "/games/", implicitRole: "reader", rolePrefixes: ["games"] });
+
+/** The game's page itself; its script, images and sounds come straight from the assets. */
+const isPage = (path: string) => path === `${PATH}/` || path === `${PATH}/index.html`;
+
+/** The page, for anyone signed in; anyone else goes to sign in and comes back. */
+async function gamePage(req: Request, env: Env): Promise<Response> {
+  const { response } = await AUTH.requireRole(req, env, "games:play");
+  if (response) return response;
+  const page = await env.ASSETS.fetch(req);
+  const out = new Response(page.body, page);
+  out.headers.set("Cache-Control", "private, no-cache");
+  return out;
+}
 
 async function issueGame(env: Env): Promise<Response> {
   const id = crypto.randomUUID();
@@ -78,7 +98,7 @@ async function loadTop(env: Env, size: number): Promise<Row[]> {
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
-    // The game moved from icelander.net/retro-games/shatterbelt to games.icelander.net/retro/shatterbelt; 308 keeps the method.
+    // The game moved from icelander.net/retro-games/shatterbelt to icelander.net/games/retro/shatterbelt; 308 keeps the method.
     if (url.pathname === OLD_PATH || url.pathname.startsWith(OLD_PATH + "/")) {
       const rest = url.pathname.slice(OLD_PATH.length) || "/";
       return new Response(null, { status: 308, headers: { Location: ORIGIN + PATH + rest + url.search, "Cache-Control": "no-store" } });
@@ -91,8 +111,14 @@ export default {
         return json({ error: "server error" }, 500);
       }
     }
+    if (isPage(url.pathname)) return gamePage(req, env);
     if (!url.pathname.startsWith(BASE + "/")) return env.ASSETS.fetch(req);
     const route = `${req.method} ${url.pathname.slice(BASE.length)}`;
+    // Playing, and so a new game's seed and a score, needs a sign-in; the table itself is public.
+    if (req.method === "POST") {
+      const { response } = await AUTH.requireRole(req, env, "games:play", { api: true });
+      if (response) return response;
+    }
     try {
       if (route === "POST /game") return await issueGame(env);
       if (route === "POST /score") return await submitScore(req, env);

@@ -164,7 +164,7 @@ async function offerTable(rec: Recording, scores: number[], net: OnlineGame | nu
 
 // ── Online: two players on different computers, taking turns ────────────
 //
-// Online games start on the multiplayer page (games.icelander.net/multiplayer/), which opens this
+// Online games start on the multiplayer page (icelander.net/games/multiplayer/), which opens this
 // page with ?match=ID for both players. Both browsers run the same game in lockstep (src/online.ts).
 // Each sends only its own player's controls, and each frame the game plays the controls of the
 // player whose turn it is. The host (the first in the lobby) is player 1, and starts the game with

@@ -32,21 +32,6 @@ export const userById = (db: D1Database, id: string) =>
 export const userByEmail = (db: D1Database, email: string) =>
   db.prepare("SELECT id, email, name, picture FROM users WHERE email = ?").bind(email).first<User>();
 
-// ── Sessions ──
-
-export async function createSession(db: D1Database, tokenHash: string, userId: string, now: number, lifetime: number): Promise<void> {
-  await db.prepare("DELETE FROM sessions WHERE expires < ?").bind(now).run();
-  await db.prepare("INSERT INTO sessions (token_hash, user_id, created, expires) VALUES (?, ?, ?, ?)").bind(tokenHash, userId, now, now + lifetime).run();
-}
-
-export const sessionUser = (db: D1Database, tokenHash: string, now: number) =>
-  db.prepare("SELECT u.id, u.email, u.name, u.picture FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ? AND s.expires > ?")
-    .bind(tokenHash, now).first<User>();
-
-export async function deleteSession(db: D1Database, tokenHash: string): Promise<void> {
-  await db.prepare("DELETE FROM sessions WHERE token_hash = ?").bind(tokenHash).run();
-}
-
 // ── Games ──
 
 interface GameRow {

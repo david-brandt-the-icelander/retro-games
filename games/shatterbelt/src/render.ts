@@ -604,7 +604,7 @@ export class Renderer {
     this.glow(busy ? "rgba(143,233,255,0.25)" : "#8fe9ff", 2, "rgba(20,50,80,0.6)");
     this.text(busy ?? "LAUNCH", W / 2, r.y + r.h / 2 + 1, 28, busy ? COLOR.dim : COLOR.text, "center");
     this.text(touch ? "◀ ▶ turn · THRUST · FIRE · BLINK" : `${keysLabel} · gamepads too`, W / 2, 420, 16, COLOR.text, "center", 500);
-    this.text("With friends, each on their own computer: games.icelander.net/multiplayer (up to nine pilots)", W / 2, 456, 15, PLAYER_COLORS[1], "center", 500);
+    this.text("With friends, each on their own computer: icelander.net/games/multiplayer (up to nine pilots)", W / 2, 456, 15, PLAYER_COLORS[1], "center", 500);
 
     // Lower panel: how to play and the best pilots, side by side.
     const top = 530;

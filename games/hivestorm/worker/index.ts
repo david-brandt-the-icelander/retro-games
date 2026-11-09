@@ -4,12 +4,13 @@
 //   POST {BASE}/score   ← { id, runs, names }              the game's recorded controls, and a name (or null) per player
 //                       → { entries: [{ player, name, score, wave, rank }] }
 //   GET  {BASE}/scores  → { scores: [...] }                the table, best first
-//   GET  /retro/hivestorm/scores/                    the table as a web page (worker/scores-page.ts)
+//   GET  /games/retro/hivestorm/scores/                    the table as a web page (worker/scores-page.ts)
 //
 // Scores are never trusted from the browser: the server plays the game again with the same engine,
 // from the seed it issued and the controls the players used on every frame (src/engine/replay.ts),
 // and records the scores that replay produces. Each seed can be submitted once. Players give only a
 // name for the table (cleaned by src/name.ts); no email or other personal data is asked for or kept.
+import { createAuth, type AuthEnv } from "../../../vendor/icelander-auth/index.js";
 import { scoresPage } from "./scores-page";
 import { BASE, MAX_BODY_BYTES, PAGE_SIZE, PATH, SEED_LIFETIME_MS, TABLE_SIZE, cleanName, json, replay } from "./scores";
 
@@ -18,7 +19,26 @@ interface D1Result<T> { results: T[]; meta: { changes: number } }
 interface D1Statement { bind(...v: unknown[]): D1Statement; first<T>(): Promise<T | null>; all<T>(): Promise<D1Result<T>>; run(): Promise<D1Result<unknown>> }
 interface D1Database { prepare(sql: string): D1Statement }
 interface Fetcher { fetch(req: Request): Promise<Response> }
-export interface Env { DB: D1Database; ASSETS: Fetcher }
+export interface Env extends AuthEnv { DB: D1Database; ASSETS: Fetcher }
+
+/**
+ * Every game under icelander.net/games needs a sign-in (the games hub's docs/SIGN-IN.md): the site's one cookie, site_session (the games are part of icelander.net's sign-in),
+ * checked with icelander.net's login service through the ACCOUNTS binding. The site's Worker answers /auth/….
+ */
+const AUTH = createAuth({ app: "site", cookie: "site_session", home: "/games/", implicitRole: "reader", rolePrefixes: ["games"] });
+
+/** The game's page itself; its script, images and sounds come straight from the assets. */
+const isPage = (path: string) => path === `${PATH}/` || path === `${PATH}/index.html`;
+
+/** The page, for anyone signed in; anyone else goes to sign in and comes back. */
+async function gamePage(req: Request, env: Env): Promise<Response> {
+  const { response } = await AUTH.requireRole(req, env, "games:play");
+  if (response) return response;
+  const page = await env.ASSETS.fetch(req);
+  const out = new Response(page.body, page);
+  out.headers.set("Cache-Control", "private, no-cache");
+  return out;
+}
 
 async function issueGame(env: Env): Promise<Response> {
   const id = crypto.randomUUID();
@@ -78,8 +98,14 @@ export default {
       if (url.pathname === SCORES_PAGE) return Response.redirect(`${url.origin}${SCORES_PAGE}/`, 301);
       return scoresPage(await loadTop(env, PAGE_SIZE));
     }
+    if (isPage(url.pathname)) return gamePage(req, env);
     if (!url.pathname.startsWith(BASE + "/")) return env.ASSETS.fetch(req);
     const route = `${req.method} ${url.pathname.slice(BASE.length)}`;
+    // Playing, and so a new game's seed and a score, needs a sign-in; the table itself is public.
+    if (req.method === "POST") {
+      const { response } = await AUTH.requireRole(req, env, "games:play", { api: true });
+      if (response) return response;
+    }
     try {
       if (route === "POST /game") return await issueGame(env);
       if (route === "POST /score") return await submitScore(req, env);

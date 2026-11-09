@@ -3,8 +3,8 @@
 import { build, context } from "esbuild";
 import { cpSync, mkdirSync, readdirSync, renameSync, rmSync } from "node:fs";
 
-/** The site is served under https://games.icelander.net/retro/samosa/ (set BASE_PATH="" to build at the root). */
-const BASE_PATH = process.env.BASE_PATH ?? "retro/samosa";
+/** The site is served under https://icelander.net/games/retro/samosa/ (set BASE_PATH="" to build at the root). */
+const BASE_PATH = process.env.BASE_PATH ?? "games/retro/samosa";
 const args = process.argv.slice(2);
 const node = { bundle: true, platform: "node", format: "esm", target: "node20" };
 

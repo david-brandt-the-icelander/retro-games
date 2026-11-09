@@ -4,7 +4,7 @@
 
 *Chess, beautifully.* A 3D chess game made in Godot 4 for the web. Invite a friend by email and play at your own pace, chatting as you go, or play Stockfish at eight strengths. Every game, with its moves, chat and timing, is kept and can be replayed.
 
-It lives at <https://games.icelander.net/retro/chess/>, with sign-in through Google. GitHub sign-in can be added the same way (see **Deploy**, step 2): the sign-in screen offers whichever providers have keys.
+It lives at <https://icelander.net/games/retro/chess/>. Like every game on icelander.net/games it needs a sign-in, with Google or GitHub, through icelander.net's login service (`accounts.icelander.net`): one sign-in for the whole host, made once (see **Sign-in** below).
 
 ## How to play
 
@@ -13,7 +13,7 @@ It lives at <https://games.icelander.net/retro/chess/>, with sign-in through Goo
 - **The transcript.** Every move, message, draw offer and result, in order, with the clock time it happened and how long each move took. Click a move to look at that position; **Back to the game** returns.
 - **Contacts.** Everyone you have played is kept under **Friends** with their name, email and profile picture from Google or GitHub, and your record against them. Open one to see every game you have played together and invite them again.
 - **History and replays.** **History** lists every finished game. Open one to replay it: step through with **Back** and **Next**, drag the slider, or press **Play** to watch it at the pace it was played, sped up 1×, 4× or 16× (pauses are capped at three seconds).
-- **Play the computer.** Pick a strength and a colour. Stockfish runs in your browser, so this works without signing in. Your game is kept on the device, so a reload carries on where you were; **Take back** undoes your last move and the computer's answer. Finished games go to your history (on the server when signed in, on the device otherwise).
+- **Play the computer.** Pick a strength and a colour. Stockfish runs in your browser. Your game is kept on the device, so a reload carries on where you were; **Take back** undoes your last move and the computer's answer. Finished games go to your history (on the server when signed in, on the device otherwise).
 
 **Moving:** click a piece, then where it goes (gold dots show the moves, rings show captures), or drag it. Drag the empty table (or the right mouse button) to turn the camera; the wheel zooms. **Turn the board** shows the other side.
 
@@ -53,15 +53,15 @@ bridge/                 TypeScript for that page: boots the engine, Stockfish in
 shared/                 TypeScript shared by the Worker and its tests: rules (chess.js), API types
 worker/                 the Cloudflare Worker
   index.ts              routes; joins the engine's .wasm, which is stored in two parts (see below)
-  auth.ts               Google and GitHub OAuth (code flow with PKCE), sessions, profile pictures
+  auth.ts               the host's sign-in (vendor/icelander-auth and the login service), mapped to Gambit's own users; profile pictures
   api.ts                lobby, invitations, contacts, games, history, avatars
   room.ts, actions.ts   a Durable Object per online game: moves and chat, one at a time, live
   db.ts, schema.sql, mail.ts
 ```
 
-- **Who you are.** Your verified email address from Google or GitHub; the same address through either is the same player. Your name and profile picture come from the provider and are refreshed at each sign-in. Pictures are fetched through the Worker (`api/avatar/ID`, only from Google's and GitHub's image hosts), so the game loads everything from its own origin. Only a hash of each session token is stored; the cookie is `HttpOnly`, `SameSite=Lax` and limited to `/retro/chess`; writes must be JSON from this origin.
+- **Who you are.** The person signed in to icelander.net/games, as icelander.net's login service says on every request: a verified address from Google or GitHub (the same address through either is the same person, and one person may have several addresses). Gambit keeps its own row per player, keyed by address, for games, contacts and history; a person plays as the first of their addresses Gambit already knows. Name and picture come from the login service. Pictures are fetched through the Worker (`api/avatar/ID`, only from Google's and GitHub's image hosts), so the game loads everything from its own origin. The cookie is the host's `site_session` (`HttpOnly`, `Secure`, `SameSite=Lax`, icelander.net/games only); writes must be JSON from this origin.
 - **The server decides.** Every online move and message goes through the game's Durable Object, which checks it (with chess.js) and saves it in D1 as the game's state plus a new transcript entry (`game_events`: when, who, what). Both players get the whole game over a WebSocket after every change. The game shows your move at once; the server confirms it or puts it back. Games against the computer are checked too before they go into your history: legal moves, a finished game, and times that only go forward.
-- **What is stored:** users (email, name, picture URL), sessions, invitations (to an email address), games (moves, result) with their transcripts (moves, chat, offers, times), and contacts.
+- **What is stored:** users (email, name, picture URL), invitations (to an email address), games (moves, result) with their transcripts (moves, chat, offers, times), and contacts.
 - **The engine file.** Godot's WebAssembly engine is 39.5 MB, and Cloudflare serves static files of at most 25 MiB, so the build stores it as `index.wasm.0` and `index.wasm.1` and the Worker streams them back as one `index.wasm`.
 
 ## Develop
@@ -74,19 +74,53 @@ npm test                 # TypeScript: rules, transcript actions, and the whole 
 npm run test:godot       # GDScript: move generation (perft), SAN, mate and draws; the text formats
 cp .dev.vars.example .dev.vars          # DEV_LOGIN=1: sign in as any email, for testing two players
 npx wrangler d1 execute chess --local --file worker/schema.sql
-npm run dev              # exports the game, then wrangler dev at http://localhost:8787/retro/chess/
+npm run dev              # exports the game, then wrangler dev at http://localhost:8787/games/retro/chess/
 ```
 
 With `DEV_LOGIN=1` the sign-in screen offers a development sign-in that takes any address; use two browsers (or a private window) to play yourself. Never set it in production.
 
 You can also run the game from the Godot editor or the command line against the dev server, signed in as anyone: `godot --path godot -- --dev-email=you@test.io`. Development switches (desktop only): `--server=URL`, `--goto=setup|lobby|history|computer|game`, `--id=GAME`, `--moves=e2e4,e7e5`, `--click=X,Y;X,Y`, `--shot=file.png --shot-after=SECONDS` (a screenshot, then quit). The computer opponent only runs in the browser.
 
+## Sign-in
+
+Gambit used to sign people in itself (Google and GitHub OAuth in `worker/auth.ts`, a `chess_session` cookie, a `sessions` table). It now uses icelander.net/games's one sign-in, through icelander.net's login service; the design is in that repository's `docs/accounts.md`, and this host's side in the `recreations` repository's `docs/SIGN-IN.md`. `/games/retro/chess/auth/login/<provider>` and the old callbacks go to the host's `/auth/sign-in`; `auth/logout` signs out of icelander.net/games.
+
+Moving over keeps every player's games, contacts and history: they stay keyed by address in Gambit's `users` table. The players are also imported into the login service so they are listed on its admin page (export them read-only first, for its import):
+
+```bash
+npx wrangler d1 execute chess --remote --json --command "SELECT email, name, picture, created FROM users" > gambit-users.json
+```
+
+After the move, and once sign-in works, delete the old secrets and the sessions table:
+
+```bash
+npx wrangler secret delete GOOGLE_CLIENT_ID
+```
+
+```bash
+npx wrangler secret delete GOOGLE_CLIENT_SECRET
+```
+
+```bash
+npx wrangler secret delete GITHUB_CLIENT_ID
+```
+
+```bash
+npx wrangler secret delete GITHUB_CLIENT_SECRET
+```
+
+```bash
+npx wrangler d1 execute chess --remote --file worker/retire-sessions.sql
+```
+
+and remove the old redirect URIs `https://icelander.net/games/retro/chess/auth/callback/google` (Google Cloud Console) and `…/callback/github` (the GitHub OAuth app; or delete that app, since the login service has its own).
+
 ## Deploy
 
 One-time set-up (owner actions):
 
 1. `npx wrangler d1 create chess`, put the id in `wrangler.jsonc`, then `npx wrangler d1 execute chess --remote --file worker/schema.sql`.
-2. **Google:** in Google Cloud Console → APIs & Services → Credentials, create an OAuth client ID (Web application) with the redirect URI `https://games.icelander.net/retro/chess/auth/callback/google`. **GitHub:** Settings → Developer settings → OAuth Apps, callback URL `https://games.icelander.net/retro/chess/auth/callback/github`. Then `npx wrangler secret put` each of `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`. Either provider alone is enough; the sign-in screen offers those that are set up.
+2. Sign-in: put icelander.net's login service's public keys into `ACCOUNTS_JWKS` in `wrangler.jsonc` (the `accounts` Worker must be deployed first; its service binding is already in `wrangler.jsonc`). No OAuth secrets belong here.
 3. Optional, to email invitations: a [Resend](https://resend.com) API key (`npx wrangler secret put RESEND_API_KEY`) and a verified sender in `MAIL_FROM` in `wrangler.jsonc`. Without it invitations still work; the inviter sends the link.
 
 Then `npm run deploy`.

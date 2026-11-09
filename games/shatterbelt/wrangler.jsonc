@@ -1,4 +1,4 @@
-// The Shatterbelt Worker at games.icelander.net/retro/shatterbelt: static assets, plus the high-score
+// The Shatterbelt Worker at icelander.net/games/retro/shatterbelt: static assets, plus the high-score
 // API and page (worker/index.ts) backed by the D1 database shatterbelt-scores (schema: worker/schema.sql).
 {
   "$schema": "node_modules/wrangler/config-schema.json",
@@ -6,21 +6,26 @@
   "compatibility_date": "2025-01-01",
   "workers_dev": false,
   "preview_urls": false,
-  // Its route runs before the games hub (the recreations Worker), which is games.icelander.net's custom domain.
+  // Its route runs before the games hub (the recreations Worker), whose route icelander.net/games/* is less specific.
   // The old address, /retro-games/shatterbelt, is redirected here by the Worker.
   "routes": [
-    { "pattern": "games.icelander.net/retro/shatterbelt*", "zone_name": "icelander.net" },
+    { "pattern": "icelander.net/games/retro/shatterbelt*", "zone_name": "icelander.net" },
     { "pattern": "icelander.net/retro-games/shatterbelt*", "zone_name": "icelander.net" }
   ],
-  // The Worker serves the high-score API under /retro/shatterbelt/api/ and the page at
-  // /retro/shatterbelt/scores/; everything else is a static asset.
+  // The Worker serves the high-score API under /games/retro/shatterbelt/api/ and the page at
+  // /games/retro/shatterbelt/scores/; everything else is a static asset.
   "main": "worker/index.ts",
-  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash" },
-  // The online rooms that were here moved to the games hub (games.icelander.net/multiplayer); this
+  // The game's page runs the Worker first, for the sign-in (every game needs one; the hub's docs/SIGN-IN.md).
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": ["/games/retro/shatterbelt/", "/games/retro/shatterbelt/index.html"] },
+  // The online rooms that were here moved to the games hub (icelander.net/games/multiplayer); this
   // deletes their Durable Object class. Keep both entries: Cloudflare applies migrations in order.
   "migrations": [
     { "tag": "rooms-v1", "new_sqlite_classes": ["Room"] },
     { "tag": "rooms-v2", "deleted_classes": ["Room"] }
   ],
+  // icelander.net's login service: who is signed in, through the site's cookie (icelander.net and its games are one sign-in).
+  "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
+  // The login service's public keys (icelander.net docs/accounts.md, "Keys").
+  "vars": { "ACCOUNTS_JWKS": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"kid\":\"k2026a\",\"x\":\"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc\"}]}" },
   "d1_databases": [{ "binding": "DB", "database_name": "shatterbelt-scores", "database_id": "932bf59f-05df-43ac-aa1d-9d63a42304b9" }]
 }

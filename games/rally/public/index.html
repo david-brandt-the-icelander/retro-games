@@ -38,7 +38,7 @@
       <div class="links">
         <button type="button" data-action="help" class="link"><kbd>H</kbd> How to play</button>
         <button type="button" data-action="scores" class="link"><kbd>S</kbd> High scores</button>
-        <a class="link" href="/multiplayer/">Play a friend online</a>
+        <a class="link" href="/games/multiplayer/">Play a friend online</a>
       </div>
     </section>
 
@@ -50,7 +50,7 @@
         <tr><th></th><th>Keys</th><th>Touch or mouse</th></tr>
         <tr><td>Your paddle</td><td><kbd>W</kbd>/<kbd>S</kbd> or <kbd>↑</kbd>/<kbd>↓</kbd></td><td>drag anywhere, or move the mouse</td></tr>
       </table>
-      <p>To play a friend, each of you on your own computer, phone or tablet, sign in and meet on the <a href="/multiplayer/">multiplayer page</a>. You both use the same controls.</p>
+      <p>To play a friend, each of you on your own computer, phone or tablet, sign in and meet on the <a href="/games/multiplayer/">multiplayer page</a>. You both use the same controls.</p>
       <p><kbd>P</kbd> or <kbd>Esc</kbd> pauses, <kbd>M</kbd> turns sound on and off.</p>
       <p>Against the computer, each point you win scores 100 on easy, 200 on normal and 300 on hard, and winning the match adds ten points' worth. Then you may put your score on the public table.</p>
       <button type="button" data-action="menu" class="big">BACK</button>
@@ -80,7 +80,7 @@
       <h2 id="online-h">ONLINE MATCH</h2>
       <p id="online-status" role="status"></p>
       <div class="choices">
-        <a class="big" href="/multiplayer/">BACK TO MULTIPLAYER</a>
+        <a class="big" href="/games/multiplayer/">BACK TO MULTIPLAYER</a>
         <button type="button" data-action="menu" class="big">PLAY HERE INSTEAD</button>
       </div>
     </section>
@@ -111,5 +111,6 @@
 <div id="announce" class="sr-only" aria-live="polite"></div>
 <noscript><p class="noscript">Rally needs JavaScript.</p></noscript>
 <script src="game.js"></script>
+<script src="/games/play.js" data-game="rally" defer></script>
 </body>
 </html>
