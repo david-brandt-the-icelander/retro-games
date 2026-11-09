@@ -131,12 +131,16 @@ function fakeEnv(): Env & { rows: { games: Map<string, { seed: number; created: 
       return st;
     },
   };
-  return { DB: DB as never, ASSETS: { fetch: async () => new Response("asset") }, rows: { games, scores } };
+  // A player signed in through the login service (test/sign-in.test.ts covers signing in).
+  const ACCOUNTS = { session: async () => ({ id: "a-1", email: "alice@example.com", roles: ["games:play"] }) };
+  const ACCOUNTS_JWKS = JSON.stringify({ keys: [{ kty: "OKP", crv: "Ed25519", kid: "test", x: "11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo" }] });
+  return { DB: DB as never, ASSETS: { fetch: async () => new Response("asset") }, ACCOUNTS: ACCOUNTS as never, ACCOUNTS_JWKS, rows: { games, scores } };
 }
 
 const API = "https://games.icelander.net/retro/hivestorm/api";
 const post = (env: Env, path: string, body: unknown) =>
-  worker.fetch(new Request(`${API}/${path}`, { method: "POST", body: JSON.stringify(body) }), env);
+  worker.fetch(new Request(`${API}/${path}`, { method: "POST", body: JSON.stringify(body), headers: { Cookie: SIGNED_IN } }), env);
+const SIGNED_IN = "games_session=session-alice-xxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
 test("the API issues a seed, scores a replayed two-player game once, and lists it", async () => {
   const env = fakeEnv();
@@ -164,5 +168,5 @@ test("the API refuses made-up controls, wrong player counts and bad names, and k
   assert.equal((await post(env, "score", { id: "nope", runs: game.runs, names: ["Ace"] })).status, 409);
   assert.equal(env.rows.scores.length, 0);
   assert.equal((await post(env, "score", { id, runs: game.runs, names: ["Ace"] })).status, 200, "the real game still counts");
-  assert.equal((await worker.fetch(new Request("https://games.icelander.net/retro/hivestorm/"), env)).status, 200, "everything else is the static game");
+  assert.equal((await worker.fetch(new Request("https://games.icelander.net/retro/hivestorm/", { headers: { Cookie: SIGNED_IN } }), env)).status, 200, "the page is the static game");
 });

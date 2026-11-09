@@ -10,12 +10,17 @@
   "routes": [{ "pattern": "games.icelander.net/retro/rally*", "zone_name": "icelander.net" }],
   // The Worker answers the API and the scores page under /retro/rally/; everything else is a static asset.
   "main": "worker/index.ts",
-  "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "none" },
+  // The game's page runs the Worker first, for the sign-in (every game needs one; the hub's docs/SIGN-IN.md).
+  "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "none", "run_worker_first": ["/retro/rally/", "/retro/rally/index.html"] },
   // The online rooms that were here moved to the games hub (games.icelander.net/multiplayer); this
   // deletes their Durable Object class. Keep both entries: Cloudflare applies migrations in order.
   "migrations": [
     { "tag": "rooms-v1", "new_sqlite_classes": ["Room"] },
     { "tag": "rooms-v2", "deleted_classes": ["Room"] }
   ],
+  // icelander.net's login service: who is signed in, through the cookie games.icelander.net's hub sets.
+  "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
+  // The login service's public keys (icelander.net docs/accounts.md, "Keys").
+  "vars": { "ACCOUNTS_JWKS": "{\"keys\":[]}" },
   "d1_databases": [{ "binding": "DB", "database_name": "rally-scores", "database_id": "cfa22c0a-477c-4d43-9f93-a88614800caf" }]
 }

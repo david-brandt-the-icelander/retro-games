@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "files": {
+    "index.js": "5be813bd9426625344275d553c95d52296b0636ec7d255e48de7ae4416c461b9",
+    "index.d.ts": "8d51c6aaa57e59b4ec0fba11d9c4daeed8ec2a28cfa1004da47b5e6423594a93",
+    "check.mjs": "7e557b73d816d97c5b8d1ac032a240eeb79dbf090c7f256e8bad037398c3b5ad",
+    "client/play.js": "2f166080762fa1eaeb88840177adc2b6cf1a3a3d6619368db531c21e2a797029"
+  }
+}

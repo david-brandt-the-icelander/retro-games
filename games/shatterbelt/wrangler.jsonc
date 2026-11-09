@@ -15,12 +15,17 @@
   // The Worker serves the high-score API under /retro/shatterbelt/api/ and the page at
   // /retro/shatterbelt/scores/; everything else is a static asset.
   "main": "worker/index.ts",
-  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash" },
+  // The game's page runs the Worker first, for the sign-in (every game needs one; the hub's docs/SIGN-IN.md).
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": ["/retro/shatterbelt/", "/retro/shatterbelt/index.html"] },
   // The online rooms that were here moved to the games hub (games.icelander.net/multiplayer); this
   // deletes their Durable Object class. Keep both entries: Cloudflare applies migrations in order.
   "migrations": [
     { "tag": "rooms-v1", "new_sqlite_classes": ["Room"] },
     { "tag": "rooms-v2", "deleted_classes": ["Room"] }
   ],
+  // icelander.net's login service: who is signed in, through the cookie games.icelander.net's hub sets.
+  "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
+  // The login service's public keys (icelander.net docs/accounts.md, "Keys").
+  "vars": { "ACCOUNTS_JWKS": "{\"keys\":[]}" },
   "d1_databases": [{ "binding": "DB", "database_name": "shatterbelt-scores", "database_id": "932bf59f-05df-43ac-aa1d-9d63a42304b9" }]
 }

@@ -16,6 +16,10 @@
     {
       "path": "games/shatterbelt/worker/index.ts",
       "symbol": "default.fetch"
+    },
+    {
+      "path": "vendor/icelander-auth/index.js",
+      "symbol": "createAuth"
     }
   ],
   "nodes": [
@@ -47,8 +51,14 @@
       "id": "hub",
       "name": "Games hub",
       "kind": "external-service",
-      "description": "The games hub at games.icelander.net (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "description": "The games hub at games.icelander.net (the recreations repository's Worker): sign-in on this host (/auth/…), /me, play time (/play.js), the multiplayer lobby and one WebSocket relay per online match.",
       "condition": "Online games (opened with ?match=ID)"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "accounts.icelander.net, in the icelander.net repository (accounts/): who holds the host's games_session cookie and their games: roles, asked on every request. The Worker reaches it only through a service binding."
     }
   ],
   "artifacts": [
@@ -98,6 +108,12 @@
       "to": "hub",
       "kind": "connects-to",
       "description": "WebSocket /multiplayer/match/{id} for online games."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS (entrypoint Internal): the game's page and its API need a signed-in player."
     }
   ]
 }

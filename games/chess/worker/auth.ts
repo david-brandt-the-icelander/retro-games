@@ -1,81 +1,32 @@
-// Sign-in with Google or GitHub (OAuth 2.0 authorization code flow with PKCE), and the session cookie.
+// Signing in for Gambit: games.icelander.net's one sign-in, through icelander.net's login service (the games
+// hub's docs/SIGN-IN.md; icelander.net docs/accounts.md), with the shared library vendored in vendor/icelander-auth.
+// Gambit has no OAuth code of its own any more: Google and GitHub are the login service's.
 //
-//   GET  {BASE}/auth/login/{provider}?return=PATH   → redirect to the provider
-//   GET  {BASE}/auth/callback/{provider}            ← the provider's redirect; sets the session cookie
-//   POST {BASE}/auth/logout
-//   GET  {BASE}/auth/dev?email=…&name=…              only when DEV_LOGIN is "1" (local development)
+//   GET  {BASE}/auth/login/{provider}?return=PATH   → the host's sign-in (/auth/sign-in), which comes back to PATH
+//   POST {BASE}/auth/logout                          signs out of games.icelander.net
+//   GET  {BASE}/auth/dev?email=…&name=…[&format=token]   only when DEV_LOGIN is "1", on localhost (local development)
 //
-// A user is their verified email address: signing in with Google and with GitHub under the same
-// address is the same user. Only a SHA-256 hash of each session token is stored.
+// The cookie is the host's games_session; a desktop build talking to a dev server sends the same value as
+// "Authorization: Bearer". A person is their address: Gambit's own users table (games, contacts, history) is keyed
+// by it, so the first of the person's addresses Gambit already knows is the one they play as.
+import { createAuth, type AuthEnv as SharedAuthEnv } from "../../../vendor/icelander-auth/index.js";
 import { BASE, cleanDisplayName, cleanEmail, type User } from "../shared/protocol";
-import { createSession, deleteSession, sessionUser, upsertUser, type D1Database } from "./db";
+import { upsertUser, userByEmail, type D1Database } from "./db";
 
-export interface AuthEnv {
+export interface AuthEnv extends SharedAuthEnv {
   DB: D1Database;
-  GOOGLE_CLIENT_ID?: string;
-  GOOGLE_CLIENT_SECRET?: string;
-  GITHUB_CLIENT_ID?: string;
-  GITHUB_CLIENT_SECRET?: string;
   DEV_LOGIN?: string;
 }
 
-const SESSION_COOKIE = "chess_session";
-const OAUTH_COOKIE = "chess_oauth";
-const SESSION_MS = 60 * 24 * 3600 * 1000;
-const UA = "icelander-chess";
+const AUTH = createAuth({ app: "games", cookie: "games_session", home: `${BASE}/`, bearer: true });
 
-interface Provider {
-  authorize: string;
-  token: string;
-  scope: string;
-  id: (env: AuthEnv) => string | undefined;
-  secret: (env: AuthEnv) => string | undefined;
-  /** The user's verified email and name, from the access token. */
-  profile: (token: string) => Promise<{ email: string; name: string; picture: string | null } | null>;
-}
+/** The library's env: DEV_LOGIN "1" turns on its stand-in sign-in (which works on localhost only). */
+const shared = (env: AuthEnv): AuthEnv => (env.DEV_LOGIN === "1" ? { ...env, DEV_SIGN_IN: "true" } : env);
 
-const PROVIDERS: Record<string, Provider> = {
-  google: {
-    authorize: "https://accounts.google.com/o/oauth2/v2/auth",
-    token: "https://oauth2.googleapis.com/token",
-    scope: "openid email profile",
-    id: (e) => e.GOOGLE_CLIENT_ID,
-    secret: (e) => e.GOOGLE_CLIENT_SECRET,
-    async profile(token) {
-      const res = await fetch("https://openidconnect.googleapis.com/v1/userinfo", { headers: { Authorization: `Bearer ${token}` } });
-      if (!res.ok) return null;
-      const p = (await res.json()) as { email?: string; email_verified?: boolean; name?: string; picture?: string };
-      const email = cleanEmail(p.email);
-      return email && p.email_verified ? { email, name: cleanDisplayName(p.name), picture: safePicture(p.picture) } : null;
-    },
-  },
-  github: {
-    authorize: "https://github.com/login/oauth/authorize",
-    token: "https://github.com/login/oauth/access_token",
-    scope: "read:user user:email",
-    id: (e) => e.GITHUB_CLIENT_ID,
-    secret: (e) => e.GITHUB_CLIENT_SECRET,
-    async profile(token) {
-      const h = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "User-Agent": UA };
-      const [u, em] = await Promise.all([fetch("https://api.github.com/user", { headers: h }), fetch("https://api.github.com/user/emails", { headers: h })]);
-      if (!u.ok || !em.ok) return null;
-      const user = (await u.json()) as { name?: string | null; login?: string; avatar_url?: string };
-      const emails = (await em.json()) as { email: string; primary: boolean; verified: boolean }[];
-      const best = emails.find((e) => e.primary && e.verified) ?? emails.find((e) => e.verified);
-      const email = cleanEmail(best?.email);
-      return email ? { email, name: cleanDisplayName(user.name || user.login), picture: safePicture(user.avatar_url) } : null;
-    },
-  },
-};
-
-/** The sign-in methods that are set up on this deployment. */
+/** The sign-in methods the game offers: Google and GitHub through the login service, and the stand-in locally. */
 export function providers(env: AuthEnv): string[] {
-  const list = Object.keys(PROVIDERS).filter((p) => PROVIDERS[p].id(env) && PROVIDERS[p].secret(env));
-  if (env.DEV_LOGIN === "1") list.push("dev");
-  return list;
+  return [...(AUTH.configured(env) ? ["google", "github"] : []), ...(env.DEV_LOGIN === "1" ? ["dev"] : [])];
 }
-
-// ── Small helpers ──
 
 /** Where profile pictures may come from: the providers' own image hosts, over HTTPS. */
 export const PICTURE_HOSTS = ["lh3.googleusercontent.com", "avatars.githubusercontent.com"];
@@ -89,123 +40,66 @@ export function safePicture(x: unknown): string | null {
   }
 }
 
-const b64url = (bytes: Uint8Array) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-const randomToken = (n = 32) => b64url(crypto.getRandomValues(new Uint8Array(n)));
-export async function sha256(text: string): Promise<string> {
-  return b64url(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text))));
-}
-
-export function readCookie(req: Request, name: string): string | null {
-  const header = req.headers.get("Cookie") ?? "";
-  for (const part of header.split(";")) {
-    const i = part.indexOf("=");
-    if (i > 0 && part.slice(0, i).trim() === name) return decodeURIComponent(part.slice(i + 1).trim());
-  }
-  return null;
-}
-
-function cookie(name: string, value: string, path: string, maxAge: number, secure: boolean): string {
-  return `${name}=${encodeURIComponent(value)}; Path=${path}; Max-Age=${maxAge}; HttpOnly; SameSite=Lax${secure ? "; Secure" : ""}`;
-}
-
-const isSecure = (url: URL) => url.protocol === "https:";
-
 /** A return path inside the game, or the game's front page. */
 export function safeReturn(x: string | null): string {
   if (x && x.startsWith(`${BASE}/`) && !x.startsWith("//") && !/[\\\r\n]/.test(x)) return x;
   return `${BASE}/`;
 }
 
-function redirect(location: string, cookies: string[] = []): Response {
-  const headers = new Headers({ Location: location, "Cache-Control": "no-store" });
-  for (const c of cookies) headers.append("Set-Cookie", c);
-  return new Response(null, { status: 302, headers });
-}
-
-// ── Sessions ──
+/** Gambit's sign-in check for the page (index.ts): every game on games.icelander.net needs a sign-in. */
+export const requirePlayer = (req: Request, env: AuthEnv) => AUTH.requireRole(req, shared(env), "games:play");
 
 /**
- * The signed-in user: from the session cookie (the web build, same origin), or from an
- * "Authorization: Bearer" header with the same token (a desktop build talking to a dev server).
+ * The signed-in user as Gambit knows them (its own users row), or null. Asked of the login service on every
+ * request; Gambit's row is made, or its name and picture refreshed, only when something changed.
  */
 export async function currentUser(req: Request, env: AuthEnv): Promise<User | null> {
-  const bearer = /^Bearer (\S+)$/.exec(req.headers.get("Authorization") ?? "")?.[1];
-  const token = bearer ?? readCookie(req, SESSION_COOKIE);
-  if (!token || token.length > 100) return null;
-  return sessionUser(env.DB, await sha256(token), Date.now());
+  const person = await AUTH.currentUser(req, shared(env));
+  const primary = cleanEmail(person?.email);
+  if (!person || !primary) return null;
+  let email = primary;
+  for (const e of person.emails ?? []) {
+    const known = cleanEmail(e);
+    if (known && (await userByEmail(env.DB, known))) {
+      email = known;
+      break;
+    }
+  }
+  const name = cleanDisplayName(person.name);
+  const picture = safePicture(person.picture);
+  const existing = await userByEmail(env.DB, email);
+  if (existing && existing.name === name && (!picture || existing.picture === picture)) return existing;
+  return upsertUser(env.DB, email, name, picture, Date.now());
 }
 
-async function startSession(env: AuthEnv, url: URL, email: string, name: string, picture: string | null, back: string, asToken = false): Promise<Response> {
-  const now = Date.now();
-  const user = await upsertUser(env.DB, email, name, picture, now);
-  const token = randomToken();
-  await createSession(env.DB, await sha256(token), user.id, now, SESSION_MS);
-  if (asToken) return new Response(JSON.stringify({ token, user }), { headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
-  return redirect(back, [
-    cookie(SESSION_COOKIE, token, BASE, SESSION_MS / 1000, isSecure(url)),
-    cookie(OAUTH_COOKIE, "", `${BASE}/auth`, 0, isSecure(url)),
-  ]);
-}
+const redirect = (location: string) => new Response(null, { status: 302, headers: { Location: location, "Cache-Control": "no-store" } });
 
-// ── The routes ──
+/** The library's route on this host, for one of Gambit's own sign-in addresses. */
+function asShared(req: Request, url: URL, path: string): Request {
+  const to = new URL(path, url);
+  to.search = url.search;
+  return new Request(to, req);
+}
 
 export async function handleAuth(req: Request, env: AuthEnv, url: URL): Promise<Response | null> {
   const rest = url.pathname.slice(`${BASE}/auth/`.length);
-  const [action, name] = rest.split("/");
+  const [action] = rest.split("/");
 
   if (action === "logout" && req.method === "POST") {
-    const token = readCookie(req, SESSION_COOKIE);
-    if (token) await deleteSession(env.DB, await sha256(token));
-    return new Response(JSON.stringify({ ok: true }), {
-      headers: { "Content-Type": "application/json", "Set-Cookie": cookie(SESSION_COOKIE, "", BASE, 0, isSecure(url)) },
-    });
+    // A desktop build's stand-in token: nothing to end, it just forgets it.
+    if ((req.headers.get("Authorization") ?? "").startsWith("Bearer dev.")) return new Response(JSON.stringify({ ok: true }), { headers: { "Content-Type": "application/json" } });
+    return (await AUTH.handle(asShared(req, url, "/auth/sign-out"), shared(env)))!;
   }
-
   if (action === "dev" && req.method === "GET") {
     if (env.DEV_LOGIN !== "1") return new Response("Not found", { status: 404 });
-    const email = cleanEmail(url.searchParams.get("email"));
-    if (!email) return new Response("Give ?email=", { status: 400 });
-    // ?format=token answers with the token instead of a cookie, for a desktop build or the Godot editor.
-    return startSession(env, url, email, cleanDisplayName(url.searchParams.get("name")), safePicture(url.searchParams.get("picture")),
-      safeReturn(url.searchParams.get("return")), url.searchParams.get("format") === "token");
+    const to = new URL("/auth/dev", url);
+    to.search = url.search;
+    to.searchParams.set("return", safeReturn(url.searchParams.get("return")));
+    return (await AUTH.handle(new Request(to, req), shared(env)))!;
   }
-
-  const p = PROVIDERS[name ?? ""];
-  if (!p || req.method !== "GET") return null;
-  const clientId = p.id(env), secret = p.secret(env);
-  if (!clientId || !secret) return new Response(`Sign-in with ${name} isn't set up here.`, { status: 404 });
-  const callback = `${url.origin}${BASE}/auth/callback/${name}`;
-
-  if (action === "login") {
-    const state = randomToken(16);
-    const verifier = randomToken(32);
-    const challenge = await sha256(verifier);
-    const back = safeReturn(url.searchParams.get("return"));
-    const q = new URLSearchParams({
-      client_id: clientId, redirect_uri: callback, response_type: "code", scope: p.scope, state,
-      code_challenge: challenge, code_challenge_method: "S256",
-    });
-    if (name === "google") q.set("prompt", "select_account");
-    const value = [state, verifier, name, back].join("|");
-    return redirect(`${p.authorize}?${q}`, [cookie(OAUTH_COOKIE, value, `${BASE}/auth`, 600, isSecure(url))]);
-  }
-
-  if (action === "callback") {
-    const saved = (readCookie(req, OAUTH_COOKIE) ?? "").split("|");
-    const [state, verifier, provider, back] = saved;
-    const code = url.searchParams.get("code");
-    if (!code || !state || state !== url.searchParams.get("state") || provider !== name) {
-      return redirect(`${BASE}/#signin-failed`);
-    }
-    const res = await fetch(p.token, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded", Accept: "application/json", "User-Agent": UA },
-      body: new URLSearchParams({ client_id: clientId, client_secret: secret, code, redirect_uri: callback, grant_type: "authorization_code", code_verifier: verifier }),
-    });
-    const tok = res.ok ? ((await res.json()) as { access_token?: string }) : {};
-    const profile = tok.access_token ? await p.profile(tok.access_token) : null;
-    if (!profile) return redirect(`${BASE}/#signin-failed`);
-    return startSession(env, url, profile.email, profile.name, profile.picture, safeReturn(back ?? null));
+  // Signing in, and the old OAuth callbacks (a bookmark or a page from before): the host's sign-in.
+  if ((action === "login" || action === "callback") && req.method === "GET") {
+    return redirect(AUTH.signInPath(safeReturn(url.searchParams.get("return"))));
   }
   return null;
 }

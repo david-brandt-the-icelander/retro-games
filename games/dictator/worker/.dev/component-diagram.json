@@ -3,7 +3,7 @@
   "kind": "component",
   "title": "Samosa Worker component diagram",
   "folder": "games/dictator/worker",
-  "description": "The Samosa Worker: the high-score API, the public scores page and, for every other path, the static game. Scores are never trusted from the browser.",
+  "description": "The Samosa Worker: the high-score API, the public scores page and, for every other path, the static game. Scores are never trusted from the browser. Every game needs a sign-in: the page and the score API are for signed-in players.",
   "sources": [
     {
       "path": "games/dictator/worker/index.ts",
@@ -24,6 +24,10 @@
     {
       "path": "games/dictator/worker/migrations/0002-drop-email.sql",
       "symbol": "scores"
+    },
+    {
+      "path": "vendor/icelander-auth/index.js",
+      "symbol": "createAuth"
     }
   ],
   "components": [
@@ -74,6 +78,18 @@
       "id": "db",
       "name": "D1 database",
       "responsibility": "Issued seeds and verified scores.",
+      "external": true
+    },
+    {
+      "id": "signin",
+      "name": "Sign-in (vendor/icelander-auth)",
+      "responsibility": "The shared library: reads the host's games_session cookie and asks the login service who it is (requireRole); a page without a sign-in goes to /auth/sign-in on this host.",
+      "folder": "vendor/icelander-auth"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Who is signed in, and their games: roles (service binding ACCOUNTS).",
       "external": true
     }
   ],
@@ -137,6 +153,18 @@
       "to": "names",
       "kind": "depends-on",
       "description": "cleanName() for submitted names."
+    },
+    {
+      "from": "api",
+      "to": "signin",
+      "kind": "depends-on",
+      "description": "The game's page and POST api/game and api/score need a signed-in player; the table is public."
+    },
+    {
+      "from": "signin",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "ACCOUNTS.session(cookie, \"games\") on every request."
     }
   ]
 }

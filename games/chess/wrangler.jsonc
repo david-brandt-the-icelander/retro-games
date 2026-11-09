@@ -4,7 +4,7 @@
 // Before the first deploy (owner actions; see README "Deploy"):
 //   npx wrangler d1 create chess        → put its id in database_id below
 //   npx wrangler d1 execute chess --remote --file worker/schema.sql
-//   npx wrangler secret put GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET
+//   (sign-in is icelander.net's login service now: no OAuth secrets here; README "Sign-in")
 //   (optional) npx wrangler secret put RESEND_API_KEY, and set MAIL_FROM below
 {
   "$schema": "node_modules/wrangler/config-schema.json",
@@ -15,11 +15,15 @@
   "routes": [{ "pattern": "games.icelander.net/retro/chess*", "zone_name": "icelander.net" }],
   "main": "worker/index.ts",
   // The Worker runs first for the API, sign-in and the joined engine file; everything else is a static asset.
-  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": ["/retro/chess/api/*", "/retro/chess/auth/*", "/retro/chess/index.wasm"] },
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": ["/retro/chess/", "/retro/chess/index.html", "/retro/chess/api/*", "/retro/chess/auth/*", "/retro/chess/index.wasm"] },
+  // icelander.net's login service: who is signed in, through games.icelander.net's one cookie (worker/auth.ts).
+  "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
   "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "GameRoom" }] },
   "migrations": [{ "tag": "rooms-v1", "new_sqlite_classes": ["GameRoom"] }],
   "d1_databases": [{ "binding": "DB", "database_name": "chess", "database_id": "8c4255e7-b890-4839-a821-65f1483d776e" }],
   "vars": {
+    // The login service's public keys (icelander.net docs/accounts.md, "Keys").
+    "ACCOUNTS_JWKS": "{\"keys\":[]}",
     // The sender of challenge emails, e.g. "Gambit <chess@icelander.net>"; empty sends none.
     "MAIL_FROM": ""
   }

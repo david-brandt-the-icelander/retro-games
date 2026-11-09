@@ -22,3 +22,7 @@ python3 Meta/Agents/Skills/validate_diagrams.py
 ```
 
 The skills come from <https://github.com/david-brandt-the-icelander/processes/tree/main/Agents/Skills>.
+
+## Sign-in
+
+Every game's Worker checks the sign-in of games.icelander.net with the shared library in `vendor/icelander-auth/`. It is a copy of `packages/icelander-auth/` in the icelander.net repository, and `vendor/icelander-auth/STAMP.json` records each file's hash: change it there and copy it with that repository's `packages/icelander-auth/sync.sh`, never here.

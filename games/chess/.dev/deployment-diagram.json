@@ -24,6 +24,10 @@
     {
       "path": "games/chess/package.json",
       "symbol": "scripts.deploy"
+    },
+    {
+      "path": "vendor/icelander-auth/index.js",
+      "symbol": "createAuth"
     }
   ],
   "nodes": [
@@ -50,7 +54,7 @@
       "id": "worker",
       "name": "chess Worker",
       "kind": "process",
-      "description": "worker/index.ts. Runs first for /retro/chess/api/*, /retro/chess/auth/* and /retro/chess/index.wasm; every other path is a static asset."
+      "description": "worker/index.ts. Runs first for the page (sign-in), /retro/chess/api/*, /retro/chess/auth/* and /retro/chess/index.wasm; every other path is a static asset."
     },
     {
       "id": "room",
@@ -62,14 +66,7 @@
       "id": "db",
       "name": "D1 chess",
       "kind": "database",
-      "description": "Users, sessions, challenges, games, game_events and contacts (worker/schema.sql)."
-    },
-    {
-      "id": "oauth",
-      "name": "Google and GitHub OAuth",
-      "kind": "external-service",
-      "description": "Authorization, token and profile endpoints of accounts.google.com, oauth2.googleapis.com, openidconnect.googleapis.com, github.com and api.github.com.",
-      "condition": "A provider is offered only when its client ID and secret are set as Worker secrets"
+      "description": "Users (Gambit's own record of each player, keyed by address), challenges, games, game_events and contacts (worker/schema.sql)."
     },
     {
       "id": "pictures",
@@ -84,6 +81,12 @@
       "kind": "external-service",
       "description": "api.resend.com, for invitation emails.",
       "condition": "RESEND_API_KEY and MAIL_FROM set; otherwise the inviter sends the link"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "accounts.icelander.net, in the icelander.net repository (accounts/): who holds the host's games_session cookie and their games: roles, asked on every request. The Worker reaches it only through a service binding."
     }
   ],
   "artifacts": [
@@ -189,18 +192,6 @@
     },
     {
       "from": "worker",
-      "to": "oauth",
-      "kind": "connects-to",
-      "description": "HTTPS: token exchange and profile, after the browser is redirected to the provider."
-    },
-    {
-      "from": "browser",
-      "to": "oauth",
-      "kind": "connects-to",
-      "description": "Redirected to the provider's sign-in page and back to auth/callback/{provider}."
-    },
-    {
-      "from": "worker",
       "to": "pictures",
       "kind": "connects-to",
       "description": "HTTPS fetch for api/avatar/{id}, cached for a day."
@@ -210,6 +201,12 @@
       "to": "resend",
       "kind": "connects-to",
       "description": "HTTPS POST /emails."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS (entrypoint Internal): the game's page and its API need a signed-in player."
     }
   ]
 }

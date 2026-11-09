@@ -3,12 +3,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { handleApi, type ApiEnv } from "../worker/api";
-import { handleAuth, safeReturn } from "../worker/auth";
+import { handleAuth, safePicture, safeReturn } from "../worker/auth";
 import { RoomCore } from "../worker/room";
 import { BASE, type LiveMessage } from "../shared/protocol";
 import { fakeD1 } from "./fake-d1";
 
-const ORIGIN = "https://games.example";
+const ORIGIN = "http://localhost:8787";
 
 function setup() {
   const DB = fakeD1();
@@ -33,14 +33,14 @@ async function signIn(env: ApiEnv, email: string, name: string): Promise<string>
   const url = new URL(`${ORIGIN}${BASE}/auth/dev?email=${email}&name=${name}`);
   const res = (await handleAuth(new Request(url), env, url))!;
   assert.equal(res.status, 302);
-  return /chess_session=([^;]+)/.exec(res.headers.get("Set-Cookie")!)![1];
+  return /games_session=([^;]+)/.exec(res.headers.get("Set-Cookie")!)![1];
 }
 
 function client(env: ApiEnv, cookie: string | null) {
   return async (method: string, path: string, body?: unknown, headers: Record<string, string> = {}) => {
     const url = new URL(`${ORIGIN}${BASE}/api/${path}`);
     const h: Record<string, string> = { ...headers };
-    if (cookie) h.Cookie = `chess_session=${cookie}`;
+    if (cookie) h.Cookie = `games_session=${cookie}`;
     if (body !== undefined) h["Content-Type"] = "application/json";
     const res = await handleApi(new Request(url, { method, headers: h, body: body === undefined ? undefined : JSON.stringify(body) }), env, url);
     return { status: res.status, body: (await res.json()) as Record<string, any> };
@@ -133,14 +133,51 @@ test("declining and cancelling invitations; removing a contact", async () => {
 
 test("profile pictures only from Google or GitHub; a Bearer token works like the cookie", async () => {
   const { env } = setup();
-  const url = new URL(`${ORIGIN}${BASE}/auth/dev?email=pic@x.io&name=Pic&format=token&picture=${encodeURIComponent("https://avatars.githubusercontent.com/u/1")}`);
-  const res = (await handleAuth(new Request(url), env, url))!;
-  const { token, user } = (await res.json()) as any;
-  assert.equal(user.picture, "https://avatars.githubusercontent.com/u/1");
+  assert.equal(safePicture("https://avatars.githubusercontent.com/u/1"), "https://avatars.githubusercontent.com/u/1");
+  assert.equal(safePicture("https://evil.example/x.png"), null);
+  assert.equal(safePicture("http://lh3.googleusercontent.com/a"), null);
+  const url = new URL(`${ORIGIN}${BASE}/auth/dev?email=pic@x.io&name=Pic&format=token`);
+  const { token } = (await (await handleAuth(new Request(url), env, url))!.json()) as { token: string };
   const viaBearer = await handleApi(new Request(`${ORIGIN}${BASE}/api/me`, { headers: { Authorization: `Bearer ${token}` } }), env, new URL(`${ORIGIN}${BASE}/api/me`));
-  assert.equal(((await viaBearer.json()) as any).user.avatar, `api/avatar/${user.id}`);
-  const bad = new URL(`${ORIGIN}${BASE}/auth/dev?email=evil@x.io&format=token&picture=${encodeURIComponent("https://evil.example/x.png")}`);
-  assert.equal(((await (await handleAuth(new Request(bad), env, bad))!.json()) as any).user.picture, null);
+  assert.equal(((await viaBearer.json()) as any).user.email, "pic@x.io");
+});
+
+test("sign-in goes to games.icelander.net's one sign-in; signing out is the host's", async () => {
+  const { env } = setup();
+  for (const path of ["auth/login/google?return=%2Fretro%2Fchess%2F%3Fchallenge%3Dabc", "auth/login/github", "auth/callback/google?code=x&state=y"]) {
+    const url = new URL(`${ORIGIN}${BASE}/${path}`);
+    const res = (await handleAuth(new Request(url), env, url))!;
+    assert.equal(res.status, 302, path);
+    assert.match(res.headers.get("Location")!, /^\/auth\/sign-in\?return=%2Fretro%2Fchess%2F/, path);
+  }
+  const evil = new URL(`${ORIGIN}${BASE}/auth/login/google?return=${encodeURIComponent("https://evil.example/")}`);
+  assert.equal((await handleAuth(new Request(evil), env, evil))!.headers.get("Location"), "/auth/sign-in?return=%2Fretro%2Fchess%2F");
+  const cookie = await signIn(env, "ann@x.io", "Ann");
+  const logout = new URL(`${ORIGIN}${BASE}/auth/logout`);
+  const res = (await handleAuth(new Request(logout, { method: "POST", headers: { Cookie: `games_session=${cookie}`, Origin: ORIGIN } }), env, logout))!;
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get("Set-Cookie")!, /^games_session=; Path=\/; Max-Age=0/);
+  const refused = (await handleAuth(new Request(logout, { method: "POST", headers: { Cookie: `games_session=${cookie}`, Origin: "https://evil.example" } }), env, logout))!;
+  assert.equal(refused.status, 403);
+});
+
+test("through the login service: checked on every request, and a person plays as the address Gambit knows", async () => {
+  const { env } = setup();
+  const live = new Map<string, { id: string; email: string; emails: string[]; name: string; picture: string | null; roles: string[] }>();
+  const shared = {
+    ...env, DEV_LOGIN: undefined, ACCOUNTS_JWKS: JSON.stringify({ keys: [{ kty: "OKP", crv: "Ed25519", kid: "t", x: "11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo" }] }),
+    ACCOUNTS: { session: async (v: string, app: string) => (app === "games" ? live.get(v) ?? null : null) },
+  } as unknown as ApiEnv;
+  // Ann played Gambit as ann@work.io; she signs in now with her primary address, ann@x.io.
+  const before = client(env, await signIn(env, "ann@work.io", "Ann"));
+  const annId = (await before("GET", "me")).body.user.id;
+  live.set("s-ann-xxxxxxxxxxxxxxxxxxxxxxxxxxxx", { id: "a-1", email: "ann@x.io", emails: ["ann@x.io", "ann@work.io"], name: "Ann", picture: null, roles: ["games:play"] });
+  const url = new URL(`https://games.icelander.net${BASE}/api/me`);
+  const me = async () => (await (await handleApi(new Request(url, { headers: { Cookie: "games_session=s-ann-xxxxxxxxxxxxxxxxxxxxxxxxxxxx" } }), shared, url)).json()) as any;
+  assert.deepEqual([(await me()).user.id, (await me()).user.email], [annId, "ann@work.io"]);
+  assert.deepEqual((await me()).providers, ["google", "github"]);
+  live.delete("s-ann-xxxxxxxxxxxxxxxxxxxxxxxxxxxx"); // disabled, or signed out everywhere
+  assert.equal((await me()).user, null);
 });
 
 test("cross-site and non-JSON writes are refused", async () => {
