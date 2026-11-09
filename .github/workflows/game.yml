@@ -1,0 +1,73 @@
+name: Game
+
+# One game, tested and built, and deployed when `deploy` is true. Called by ci.yml and deploy.yml
+# so both run exactly the same steps as the game's own `npm run deploy` (its README.md).
+
+on:
+  workflow_call:
+    inputs:
+      game:
+        description: The folder under games/
+        type: string
+        required: true
+      deploy:
+        type: boolean
+        default: false
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: false
+
+env:
+  # Gambit's web export (games/chess/README.md).
+  GODOT_VERSION: 4.7.2
+
+jobs:
+  game:
+    name: ${{ inputs.game }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.deploy && 'production' || '' }}
+    defaults:
+      run:
+        working-directory: games/${{ inputs.game }}
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      # No game's wrangler.jsonc names the account.
+      CLOUDFLARE_ACCOUNT_ID: ab026008f5aa2bef2dca4cfccd0f70ef
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games/${{ inputs.game }}/package-lock.json
+      - run: npm ci
+
+      - if: inputs.game == 'chess'
+        uses: actions/cache@v4
+        id: godot-cache
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}
+      - if: inputs.game == 'chess' && steps.godot-cache.outputs.cache-hit != 'true'
+        name: Install Godot and its web export templates
+        working-directory: ${{ runner.temp }}
+        run: |
+          base=https://github.com/godotengine/godot-builds/releases/download/$GODOT_VERSION-stable
+          curl -fsSLO "$base/Godot_v$GODOT_VERSION-stable_linux.x86_64.zip"
+          curl -fsSLO "$base/Godot_v$GODOT_VERSION-stable_export_templates.tpz"
+          mkdir -p ~/godot ~/.local/share/godot/export_templates
+          unzip -q "Godot_v$GODOT_VERSION-stable_linux.x86_64.zip" -d ~/godot
+          mv ~/godot/"Godot_v$GODOT_VERSION-stable_linux.x86_64" ~/godot/godot
+          unzip -q "Godot_v$GODOT_VERSION-stable_export_templates.tpz"
+          mv templates ~/.local/share/godot/export_templates/"$GODOT_VERSION.stable"
+      - if: inputs.game == 'chess'
+        run: echo "$HOME/godot" >> "$GITHUB_PATH"
+
+      - run: npm test
+      - if: inputs.game == 'chess'
+        run: npm run test:godot
+      - run: npm run build
+      - if: inputs.deploy
+        run: npx wrangler deploy

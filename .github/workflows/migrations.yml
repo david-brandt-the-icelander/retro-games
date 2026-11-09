@@ -1,0 +1,28 @@
+name: Database migration
+
+# Fails a pull request that changes the database until its description acknowledges that
+# production's database was migrated (docs/database-migrations.md). Runs again when the
+# description is edited.
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  migration:
+    name: Database migration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - run: .github/scripts/migration-gate.sh pr "$BASE" "$PR"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          PR: ${{ github.event.pull_request.number }}

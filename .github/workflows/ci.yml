@@ -1,0 +1,40 @@
+name: CI
+
+# On every pull request: the architecture diagrams, and each game the pull request changes,
+# tested and built as its deploy would (game.yml), without deploying.
+
+on:
+  pull_request:
+
+jobs:
+  diagrams:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: pip install jsonschema
+      - run: python3 Meta/Agents/Skills/validate_diagrams.py
+
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      games: ${{ steps.games.outputs.games }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - id: games
+        run: echo "games=$(.github/scripts/changed-games.sh ${{ github.event.pull_request.base.sha }})" >> "$GITHUB_OUTPUT"
+
+  game:
+    needs: changes
+    if: needs.changes.outputs.games != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        game: ${{ fromJSON(needs.changes.outputs.games) }}
+    uses: ./.github/workflows/game.yml
+    with:
+      game: ${{ matrix.game }}
