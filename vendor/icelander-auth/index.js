@@ -3,7 +3,7 @@
 // This file is the whole client library. It is vendored, byte for byte, into every repository that
 // signs people in (see README.md, "Vendoring"); change it here, bump VERSION, and copy it with sync.sh.
 //
-// An app is one host with one host-only cookie of its own (site, games, puppetmaster). The library:
+// An app is a host (or a path of one) with a host-only cookie of its own; today only the site, the games included. The library:
 //   GET  /auth/sign-in?return=/…  sends the visitor to icelander.net/accounts, with a fresh `state`
 //   GET  /auth/callback           back from it: checks the token, redeems it once, sets the app's cookie
 //   POST /auth/sign-out           ends this app's session (same-origin only)
@@ -17,7 +17,7 @@
 // pinned public keys in env.ACCOUNTS_JWKS. Without either, sign-in is off and nobody is signed in
 // (fail closed). Tokens, cookies and session values are never logged.
 
-export const VERSION = "2.0.0";
+export const VERSION = "2.0.1";
 /** The login service: icelander.net/accounts (a Worker of its own on that path). */
 export const ISSUER = "https://icelander.net/accounts";
 /** How long an app's sign-in lasts, unless the user signs out or is signed out. */
@@ -148,15 +148,15 @@ const text = (body, status) => new Response(body + "\n", { status, headers: { "c
 
 /**
  * The sign-in for one app.
- *   app            the app id registered with the login service ("site", "games", "puppetmaster")
+ *   app            the app id registered with the login service ("site")
  *   cookie         the app's own cookie name, e.g. "games_session"
  *   basePath       where the routes above live (default "/auth")
- *   cookiePath     the Path of the app's cookie (default "/"; an app under a path, e.g. "/puppetmaster")
+ *   cookiePath     the Path of the app's cookie (default "/"; an app under a path, e.g. "/other")
  *   home           where to go when `return` is missing or unsafe (default "/")
  *   accountsOrigin the login service's address (default https://icelander.net/accounts)
  *   bearer         also accept "Authorization: Bearer <session>" (a desktop build talking to a dev server)
- *   binding        the name of the service binding to the login service (default "ACCOUNTS"; Puppetmaster's
- *                  ACCOUNTS is a Durable Object of its own, so it names it "LOGIN")
+ *   binding        the name of the service binding to the login service (default "ACCOUNTS"; an app whose
+ *                  ACCOUNTS is something else names it otherwise, e.g. "LOGIN")
  */
 export function createAuth(options) {
   const app = options.app;
@@ -190,7 +190,9 @@ export function createAuth(options) {
       const roles = (Array.isArray(u.roles) ? u.roles : []).filter((r) => typeof r === "string" && prefixes.some((p) => r.startsWith(`${p}:`)));
       return {
         id: String(u.id ?? `dev-${email}`), email, emails: [email], name: String(u.name ?? "Tester"), picture: null,
-        roles: [`${app}:${options.implicitRole ?? "play"}`, ...roles], supporter: false, accountIds: {}, dev: true,
+        // The implicit roles every signed-in user holds: this app's, and "play" for each other prefix it carries (games:play).
+        roles: [`${app}:${options.implicitRole ?? "play"}`, ...(options.rolePrefixes ?? []).map((p) => `${p}:play`), ...roles].filter((r, i, all) => all.indexOf(r) === i),
+        supporter: false, accountIds: {}, dev: true,
         via: u.via === "email" || u.via === "link" ? u.via : "provider",
       };
     } catch {

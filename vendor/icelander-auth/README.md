@@ -35,9 +35,9 @@ The Worker needs, in its `wrangler.jsonc`:
 "vars": { "ACCOUNTS_JWKS": "<the login service's JWKS>" }
 ```
 
-and its callback, `https://<host>/auth/callback`, registered in the login service's `APPS`. Without either, nobody is signed in and `/auth/sign-in` answers 503 (fail closed). With `DEV_SIGN_IN` set to `"true"` on `localhost`, `/auth/dev?email=…&name=…&roles=…` signs in a stand-in user with no login service at all.
+and its callback, `https://<host>[/<path>]/auth/callback`, registered in the login service's `APPS` (an app under a path sets `basePath`, `cookiePath` and `home`). Without either, nobody is signed in and `/auth/sign-in` answers 503 (fail closed). With `DEV_SIGN_IN` set to `"true"` on `localhost`, `/auth/dev?email=…&name=…&roles=…` signs in a stand-in user with no login service at all.
 
-`currentUser(request, env)` asks the login service on every call, so a revoked role or a disabled user counts at once. It returns this app's roles only: a games sign-in never carries `site:editor`.
+`currentUser(request, env)` asks the login service on every call, so a revoked role or a disabled user counts at once. It returns the roles of this app's prefixes only (the site's are `site:` and `games:`), and `via`, how the session was made: only `"provider"` carries more than the implicit roles.
 
 ## Vendoring
 

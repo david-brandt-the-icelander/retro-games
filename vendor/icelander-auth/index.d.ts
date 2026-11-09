@@ -17,7 +17,7 @@ export interface User {
   /** This app's roles only, e.g. ["site:reader", "games:play", "games:recreations"]. */
   roles: string[];
   supporter: boolean;
-  /** The ids icelander.net and puppetmaster used to give this person, per linked provider: { google: "a-…" }. */
+  /** The ids icelander.net (and The Puppetmaster, before the login service) gave this person, per linked provider: { google: "a-…" }. */
   accountIds: Record<string, string>;
   /**
    * How this session was made: "provider" (Google, GitHub, Facebook, Discord), "email" (a magic link) or "link" (a
