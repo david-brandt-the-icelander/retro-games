@@ -56,6 +56,6 @@ test("the high-score web page lists matches, escapes names, and carries the site
   assert.match(html, /<td>1<\/td><td>PAT<\/td><td class="num">3800<\/td><td>Normal<\/td><td>Won 11–7<\/td>/);
   assert.match(html, /&lt;b&gt;x&lt;\/b&gt;/);
   assert.doesNotMatch(html, /<b>x<\/b>/);
-  assert.match(html, /<a href="https:\/\/icelander\.net\/trains">Trains of thought<\/a> · <a href="\/">Games<\/a>/);
+  assert.match(html, /<a href="https:\/\/icelander\.net\/trains">Trains of thought<\/a> · <a href="\/games\/">Games<\/a>[^\n]*<a href="\/privacy">Privacy<\/a> · <a href="\/terms">Terms<\/a>/);
   assert.match(await scoresPage([]).text(), /No match recorded yet/);
 });
