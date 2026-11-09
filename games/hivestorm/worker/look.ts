@@ -108,7 +108,7 @@ ${main}
 ${side}
 </aside>
 </article>
-<p class="back"><a href="https://icelander.net/trains">Trains of thought</a> · <a href="/">Games</a> · <a href="https://icelander.net/">About and contact</a></p>
+<p class="back"><a href="https://icelander.net/trains">Trains of thought</a> · <a href="/games/">Games</a> · <a href="https://icelander.net/">About and contact</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p>
 </main>
 </body>
 </html>
