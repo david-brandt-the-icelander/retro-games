@@ -11,6 +11,10 @@ Recreations of retro-games that I have made with the help of AI
 | Samosa: a remake of a 1983 ZX Spectrum strategy game | [games.icelander.net/retro/samosa](https://games.icelander.net/retro/samosa/) ([high scores](https://games.icelander.net/retro/samosa/scores/)) | [games/dictator](games/dictator) |
 | Gambit: 3D chess made in Godot 4. Invite a friend by email (sign in with Google) and play with chat and a timed transcript, keep contacts and replay past games, or play Stockfish at eight strengths | [games.icelander.net/retro/chess](https://games.icelander.net/retro/chess/) | [games/chess](games/chess) |
 
+## Deploying
+
+Pushing to `main` deploys each game whose folder changed (`.github/workflows/deploy.yml`): it runs the game's tests, builds it and runs `wrangler deploy`, as the game's own `npm run deploy` does. Gambit also gets Godot 4.7.2 and its web export templates. "Run workflow" on the Deploy workflow in the Actions tab deploys one game, or all of them, by hand. Pull requests test and build the games they change, and check the diagrams, without deploying. The workflows need the repository secret `CLOUDFLARE_API_TOKEN`. Database migrations are not applied by them.
+
 ## Architecture
 
 Each folder with something architectural to say has a `.dev/` directory of JSON diagrams (component, class, state and deployment), drawn from the code and checked by `Meta/Agents/Skills/validate_diagrams.py`. They can be browsed at [icelander.net/v1/apps/architecture-browser](https://icelander.net/v1/apps/architecture-browser?url=https://github.com/david-brandt-the-icelander/retro-games). Agents read `AGENTS.md`.

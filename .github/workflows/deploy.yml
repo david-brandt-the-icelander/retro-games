@@ -1,0 +1,57 @@
+name: Deploy
+
+# Every push to main deploys each game it changed (game.yml: test, build, wrangler deploy).
+# "Run workflow" in Actions deploys one game, or all of them, from main by hand.
+# Needs the repository secret CLOUDFLARE_API_TOKEN. To hold deploys for a manual approval, add
+# a required reviewer to the "production" environment in the repository settings.
+# Database schema changes (each game's worker/migrations/) are not applied here: run them by hand
+# before the deploy that needs them.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      game:
+        description: Which game to deploy
+        type: choice
+        options: [all, chess, dictator, hivestorm, rally, shatterbelt]
+        default: all
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      games: ${{ steps.games.outputs.games }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - id: games
+        env:
+          GAME: ${{ inputs.game }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
+            if [ "$GAME" = all ]; then games=$(.github/scripts/changed-games.sh); else games="[\"$GAME\"]"; fi
+          else
+            games=$(.github/scripts/changed-games.sh "$BEFORE")
+          fi
+          echo "games=$games" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: changes
+    if: needs.changes.outputs.games != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        game: ${{ fromJSON(needs.changes.outputs.games) }}
+    concurrency:
+      group: deploy-${{ matrix.game }}
+      cancel-in-progress: false
+    uses: ./.github/workflows/game.yml
+    with:
+      game: ${{ matrix.game }}
+      deploy: true
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
