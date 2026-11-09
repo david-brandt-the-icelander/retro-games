@@ -75,6 +75,11 @@
           "condition": {
             "type": "string",
             "minLength": 1
+          },
+          "actor": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Repository-relative path to the actor's file, Actors/<name>.md, when this client or external service is an actor: someone or something outside the system with goals of its own toward it. Only on nodes of kind client or external-service."
           }
         },
         "required": [
@@ -83,7 +88,22 @@
           "kind",
           "description"
         ],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "if": {
+          "required": [
+            "actor"
+          ]
+        },
+        "then": {
+          "properties": {
+            "kind": {
+              "enum": [
+                "client",
+                "external-service"
+              ]
+            }
+          }
+        }
       },
       "minItems": 1
     },

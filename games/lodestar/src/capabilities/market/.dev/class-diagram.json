@@ -1,0 +1,161 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Market class diagram",
+  "folder": "games/lodestar/src/capabilities/market",
+  "description": "The goods table and its price and availability formulas (RULES A.9), the market operations on the pilot, and hold space with the in-flight cargo helpers (RULES A.11).",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/market/mod.rs",
+      "symbol": "Unit"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/market/mod.rs",
+      "symbol": "Goods"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/market/mod.rs",
+      "symbol": "Scooped"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/market/mod.rs",
+      "symbol": "market"
+    }
+  ],
+  "types": [
+    {
+      "id": "unit",
+      "name": "Unit",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/capabilities/market/mod.rs"
+      ],
+      "members": [
+        "Tonnes",
+        "Kilograms",
+        "Grams",
+        "symbol() -> &str"
+      ]
+    },
+    {
+      "id": "goods",
+      "name": "Goods",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/market/mod.rs"
+      ],
+      "members": [
+        "name",
+        "unit: Unit",
+        "base_price: u8",
+        "gradient: i8",
+        "base_quantity: u8",
+        "mask: u8",
+        "price(economy, market_byte) -> u16",
+        "quantity(economy, market_byte) -> u8"
+      ]
+    },
+    {
+      "id": "scooped",
+      "name": "Scooped",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/market/mod.rs"
+      ],
+      "members": [
+        "item: usize",
+        "gained: bool"
+      ]
+    },
+    {
+      "id": "market",
+      "name": "mod market",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/market/mod.rs"
+      ],
+      "members": [
+        "TABLE: [Goods; 17]",
+        "price(item, economy, market_byte) -> u16",
+        "availability(item, economy, market_byte) -> u8",
+        "availabilities(economy, market_byte) -> [u8; 17]",
+        "arrive(pilot, economy, market_byte)",
+        "draw_and_arrive(pilot, economy, random) -> u8",
+        "start_market(pilot, economy)",
+        "takes_hold_space(item) -> bool",
+        "hold_used(pilot) -> u32",
+        "has_room(pilot, item, n) -> bool",
+        "room_for(pilot, item) -> Option<u32>",
+        "addable(pilot, item) -> u32",
+        "gain_one(pilot, item) -> bool",
+        "scoop_canister(pilot, random) -> Scooped",
+        "lose_stack(pilot, item) -> bool",
+        "empty_hold(pilot)"
+      ]
+    },
+    {
+      "id": "pilot",
+      "name": "Pilot",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/pilot/mod.rs"
+      ],
+      "members": [
+        "cash",
+        "fuel",
+        "lasers",
+        "hold",
+        "cargo",
+        "fitted",
+        "missiles",
+        "availability",
+        "market_byte"
+      ],
+      "external": true
+    },
+    {
+      "id": "main-generator",
+      "name": "MainGenerator",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/random/mod.rs"
+      ],
+      "members": [
+        "byte() -> u8"
+      ],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "goods",
+      "to": "unit",
+      "kind": "depends-on",
+      "description": "Each item is shown in one unit."
+    },
+    {
+      "from": "market",
+      "to": "goods",
+      "kind": "depends-on",
+      "description": "Holds the 17-item table and prices by it."
+    },
+    {
+      "from": "market",
+      "to": "scooped",
+      "kind": "depends-on",
+      "description": "scoop_canister reports what it gave."
+    },
+    {
+      "from": "market",
+      "to": "pilot",
+      "kind": "depends-on",
+      "description": "Stores the market byte and availability, and reads and changes the cargo."
+    },
+    {
+      "from": "market",
+      "to": "main-generator",
+      "kind": "depends-on",
+      "description": "Draws the market byte on arrival and a canister's item."
+    }
+  ]
+}

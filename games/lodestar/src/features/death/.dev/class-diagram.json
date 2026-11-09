@@ -1,0 +1,79 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Death class diagram",
+  "folder": "games/lodestar/src/features/death",
+  "description": "The player's death: the reset, the four wreck canisters, the 61 dying ticks and the return to the title with the last saved pilot (RULES B.18, C.10.4, D.3.10).",
+  "sources": [
+    { "path": "games/lodestar/src/features/death/mod.rs", "symbol": "Cause" },
+    { "path": "games/lodestar/src/features/death/mod.rs", "symbol": "Dying" },
+    { "path": "games/lodestar/src/features/death/mod.rs", "symbol": "die" },
+    { "path": "games/lodestar/src/features/death/mod.rs", "symbol": "return_to_title" }
+  ],
+  "types": [
+    {
+      "id": "cause",
+      "name": "Cause",
+      "kind": "enum",
+      "sources": ["games/lodestar/src/features/death/mod.rs"],
+      "members": ["Crashed", "Burned", "Docking", "Damage", "EscapeInTheDeep"]
+    },
+    {
+      "id": "dying",
+      "name": "Dying",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/features/death/mod.rs"],
+      "members": ["cause: Cause", "in_the_deep: bool", "tick() -> bool", "ticks_left() -> u8"]
+    },
+    {
+      "id": "death",
+      "name": "mod death",
+      "kind": "type",
+      "sources": ["games/lodestar/src/features/death/mod.rs"],
+      "members": [
+        "die(cause, cockpit, bubble, countdown, random) -> Dying",
+        "return_to_title(pilots, countdown)"
+      ]
+    },
+    {
+      "id": "spawning",
+      "name": "mod spawning",
+      "kind": "type",
+      "sources": ["games/lodestar/src/features/spawning/mod.rs"],
+      "members": ["hostile_template(random) -> (Template, Draw)"],
+      "external": true
+    },
+    {
+      "id": "countdown",
+      "name": "Countdown",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/features/hyperspace/countdown.rs"],
+      "members": ["cancel()"],
+      "external": true
+    },
+    {
+      "id": "pilots",
+      "name": "Pilots",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/features/saving/pilots.rs"],
+      "members": ["on_death()"],
+      "external": true
+    },
+    {
+      "id": "cockpit",
+      "name": "Cockpit",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/capabilities/cockpit/mod.rs"],
+      "members": ["speed", "counter", "misjump", "reset(random)"],
+      "external": true
+    }
+  ],
+  "relationships": [
+    { "from": "dying", "to": "cause", "kind": "depends-on", "description": "Records what killed the player, for the epitaph." },
+    { "from": "death", "to": "dying", "kind": "depends-on", "description": "Starting a death returns the dying sequence." },
+    { "from": "death", "to": "spawning", "kind": "depends-on", "description": "Each wreck takes the hostile template's returned pair." },
+    { "from": "death", "to": "countdown", "kind": "depends-on", "description": "Dying cancels the countdown (deliberate difference 5)." },
+    { "from": "death", "to": "pilots", "kind": "depends-on", "description": "The title restores the last saved pilot." },
+    { "from": "death", "to": "cockpit", "kind": "depends-on", "description": "Resets the flight state and sets speed and counter." }
+  ]
+}

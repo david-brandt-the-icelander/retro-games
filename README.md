@@ -13,6 +13,10 @@ Each game needs a sign-in with Google or GitHub, icelander.net's one sign-in (th
 | Samosa: a remake of a 1983 ZX Spectrum strategy game | [icelander.net/games/retro/samosa](https://icelander.net/games/retro/samosa/) ([high scores](https://icelander.net/games/retro/samosa/scores/)) | [games/dictator](games/dictator) |
 | Gambit: 3D chess made in Godot 4. Invite a friend by email and play with chat and a timed transcript, keep contacts and replay past games, or play Stockfish at eight strengths | [icelander.net/games/retro/chess](https://icelander.net/games/retro/chess/) | [games/chess](games/chess) |
 
+## Deploying
+
+Pushing to `main` deploys each game whose folder changed (`.github/workflows/deploy.yml`): it runs the game's tests, builds it and runs `wrangler deploy`, as the game's own `npm run deploy` does. Gambit also gets Godot 4.7.2 and its web export templates. "Run workflow" on the Deploy workflow in the Actions tab deploys one game, or all of them, by hand. Pull requests test and build the games they change, and check the diagrams, without deploying. The workflows need the repository secret `CLOUDFLARE_API_TOKEN`. Database migrations are applied by hand, and a check holds back any pull request and deploy that changes a database until that is acknowledged: see [docs/database-migrations.md](docs/database-migrations.md).
+
 ## Architecture
 
 Each folder with something architectural to say has a `.dev/` directory of JSON diagrams (component, class, state and deployment), drawn from the code and checked by `Meta/Agents/Skills/validate_diagrams.py`. They can be browsed at [icelander.net/v1/apps/architecture-browser](https://icelander.net/v1/apps/architecture-browser?url=https://github.com/david-brandt-the-icelander/retro-games). Agents read `AGENTS.md`.

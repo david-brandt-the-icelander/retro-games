@@ -1,0 +1,220 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Game scene class diagram",
+  "folder": "games/lodestar/src/presentation/game",
+  "description": "The main scene's script, which builds the space scene, HUD, tunnels and panels around SimHost and routes every key by mode, screen and pause, and the script runner that plays scripted games for screenshots and the smoke test.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/presentation/game/game.gd",
+      "symbol": "handle_key"
+    },
+    {
+      "path": "games/lodestar/src/presentation/game/script_runner.gd",
+      "symbol": "SHOTS"
+    },
+    {
+      "path": "games/lodestar/src/presentation/game/game.tscn",
+      "symbol": "SimHost"
+    }
+  ],
+  "types": [
+    {
+      "id": "game",
+      "name": "game.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/game/game.gd",
+        "games/lodestar/src/presentation/game/game.tscn"
+      ],
+      "members": [
+        "sim: SimHost",
+        "space",
+        "hud",
+        "hub",
+        "title",
+        "pause_panel",
+        "tunnel",
+        "runner",
+        "handle_key(event) -> bool",
+        "_docked_key(event) -> bool",
+        "_flight_key(event) -> bool",
+        "_on_sim_event(kind, data)"
+      ]
+    },
+    {
+      "id": "script-runner",
+      "name": "script_runner.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/game/script_runner.gd"
+      ],
+      "members": [
+        "const SHOTS",
+        "const SMOKE",
+        "game",
+        "steps",
+        "_run(step) -> bool",
+        "_steer(planet)"
+      ]
+    },
+    {
+      "id": "node",
+      "name": "Node",
+      "kind": "class",
+      "sources": [],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "sim-host",
+      "name": "SimHost",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/bridge/src/sim_host.rs"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "space",
+      "name": "space.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/space/space.gd"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "hud",
+      "name": "hud.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/hud/hud.gd"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "hub",
+      "name": "hub.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/hub.gd"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "title",
+      "name": "title.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/title.gd"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "pause-panel",
+      "name": "pause_panel.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/pause_panel.gd"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "tunnel",
+      "name": "tunnel.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/tunnel.gd"
+      ],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "node",
+      "kind": "inherits",
+      "description": "extends Node."
+    },
+    {
+      "from": "script-runner",
+      "to": "node",
+      "kind": "inherits",
+      "description": "extends Node."
+    },
+    {
+      "from": "game",
+      "to": "sim-host",
+      "kind": "depends-on",
+      "description": "The scene's SimHost child; presses go to it."
+    },
+    {
+      "from": "game",
+      "to": "space",
+      "kind": "depends-on",
+      "description": "Builds it and hands it the sim."
+    },
+    {
+      "from": "game",
+      "to": "hud",
+      "kind": "depends-on",
+      "description": "Builds it on canvas layer 1; shows notices on it."
+    },
+    {
+      "from": "game",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Builds it on layer 2; routes docked and chart keys to it."
+    },
+    {
+      "from": "game",
+      "to": "title",
+      "kind": "depends-on",
+      "description": "Routes title keys to it."
+    },
+    {
+      "from": "game",
+      "to": "pause-panel",
+      "kind": "depends-on",
+      "description": "Routes keys to it while paused."
+    },
+    {
+      "from": "game",
+      "to": "tunnel",
+      "kind": "depends-on",
+      "description": "Builds it on layer 0, under the HUD."
+    },
+    {
+      "from": "game",
+      "to": "script-runner",
+      "kind": "depends-on",
+      "description": "Adds one for --script."
+    },
+    {
+      "from": "script-runner",
+      "to": "sim-host",
+      "kind": "depends-on",
+      "description": "Stops its clock and advances it tick by tick."
+    },
+    {
+      "from": "script-runner",
+      "to": "title",
+      "kind": "depends-on",
+      "description": "Loads pilots through it."
+    },
+    {
+      "from": "script-runner",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Opens screens and places the chart cursor."
+    }
+  ]
+}

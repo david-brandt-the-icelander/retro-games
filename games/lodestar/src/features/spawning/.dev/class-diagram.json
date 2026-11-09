@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Spawning class diagram",
+  "folder": "games/lodestar/src/features/spawning",
+  "description": "Where new objects are placed (the hostile template, the alien group, launches, children) and the periodic spawn the tick runs when the main counter reaches 0 (RULES B.10.3 to B.10.8, C.16).",
+  "sources": [
+    { "path": "games/lodestar/src/features/spawning/template.rs", "symbol": "Template" },
+    { "path": "games/lodestar/src/features/spawning/template.rs", "symbol": "hostile_template" },
+    { "path": "games/lodestar/src/features/spawning/periodic.rs", "symbol": "SpawnDelay" },
+    { "path": "games/lodestar/src/features/spawning/periodic.rs", "symbol": "periodic_spawn" }
+  ],
+  "types": [
+    {
+      "id": "template",
+      "name": "Template",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/features/spawning/template.rs"],
+      "members": [
+        "position: Vec3",
+        "nose: Vec3",
+        "roof: Vec3",
+        "side: Vec3",
+        "ai: u8",
+        "speed: u8",
+        "pitch: SignMagnitude",
+        "roll: SignMagnitude",
+        "at(position) -> Template",
+        "make(kind) -> Object"
+      ]
+    },
+    {
+      "id": "placements",
+      "name": "mod template",
+      "kind": "type",
+      "sources": ["games/lodestar/src/features/spawning/template.rs"],
+      "members": [
+        "hostile_template(random) -> (Template, Draw)",
+        "alien_group(bubble, random) -> bool",
+        "launch_straight_ahead(kind, target_slot, player_speed) -> Object",
+        "child_of(parent, kind) -> Object"
+      ]
+    },
+    {
+      "id": "spawn-delay",
+      "name": "SpawnDelay",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/features/spawning/periodic.rs"],
+      "members": ["0: i16", "reset()"]
+    },
+    {
+      "id": "periodic",
+      "name": "mod periodic",
+      "kind": "type",
+      "sources": ["games/lodestar/src/features/spawning/periodic.rs"],
+      "members": ["periodic_spawn(pilot, cockpit, bubble, delay, government, random)"]
+    },
+    {
+      "id": "object",
+      "name": "Object",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/capabilities/bubble/mod.rs"],
+      "members": ["kind", "position", "nose", "roof", "side", "speed", "pitch", "roll", "ai"],
+      "external": true
+    },
+    {
+      "id": "main-generator",
+      "name": "MainGenerator",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/capabilities/random/mod.rs"],
+      "members": ["draw() -> Draw", "draw_carry_cleared() -> Draw", "byte() -> u8", "carry() -> bool"],
+      "external": true
+    },
+    {
+      "id": "bubble",
+      "name": "Bubble",
+      "kind": "struct",
+      "sources": ["games/lodestar/src/capabilities/bubble/mod.rs"],
+      "members": ["add(object) -> Option<usize>", "count_of(kind) -> u8"],
+      "external": true
+    }
+  ],
+  "relationships": [
+    { "from": "template", "to": "object", "kind": "depends-on", "description": "Makes fresh objects with the type's energy and missiles." },
+    { "from": "placements", "to": "template", "kind": "depends-on", "description": "The hostile template procedure returns a template." },
+    { "from": "placements", "to": "main-generator", "kind": "depends-on", "description": "An ordinary then a carry-cleared draw per template." },
+    { "from": "placements", "to": "bubble", "kind": "depends-on", "description": "The alien group adds a mothership and a drone." },
+    { "from": "periodic", "to": "placements", "kind": "depends-on", "description": "Police, pirates, hunters and aliens come from hostile templates." },
+    { "from": "periodic", "to": "spawn-delay", "kind": "depends-on", "description": "Counts the delay down and sets it after a pack or a lone ship." },
+    { "from": "periodic", "to": "main-generator", "kind": "depends-on", "description": "Draws in RULES' order; reads the carry for the benign x offset." },
+    { "from": "periodic", "to": "bubble", "kind": "depends-on", "description": "Counts asteroids and police, and adds the arrivals." }
+  ]
+}

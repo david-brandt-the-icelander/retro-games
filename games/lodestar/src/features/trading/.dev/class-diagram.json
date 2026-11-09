@@ -1,0 +1,144 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Trading class diagram",
+  "folder": "games/lodestar/src/features/trading",
+  "description": "Buying and selling goods from the market panel (RULES, deliberate difference 12), on top of the market capability.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/trading/mod.rs",
+      "symbol": "Trade"
+    },
+    {
+      "path": "games/lodestar/src/features/trading/mod.rs",
+      "symbol": "BuyRefused"
+    },
+    {
+      "path": "games/lodestar/src/features/trading/mod.rs",
+      "symbol": "SellRefused"
+    },
+    {
+      "path": "games/lodestar/src/features/trading/mod.rs",
+      "symbol": "trading"
+    }
+  ],
+  "types": [
+    {
+      "id": "trade",
+      "name": "Trade",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/features/trading/mod.rs"
+      ],
+      "members": [
+        "item: usize",
+        "quantity: u8",
+        "unit_price: u16",
+        "total: u64"
+      ]
+    },
+    {
+      "id": "buy-refused",
+      "name": "BuyRefused",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/features/trading/mod.rs"
+      ],
+      "members": [
+        "MoreThanAvailable",
+        "NoRoom",
+        "NotEnoughCash"
+      ]
+    },
+    {
+      "id": "sell-refused",
+      "name": "SellRefused",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/features/trading/mod.rs"
+      ],
+      "members": [
+        "MoreThanHeld"
+      ]
+    },
+    {
+      "id": "trading",
+      "name": "mod trading",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/features/trading/mod.rs"
+      ],
+      "members": [
+        "max_buy(pilot, item, economy, market_byte) -> u8",
+        "buy(pilot, item, quantity, economy, market_byte) -> Result<Trade, BuyRefused>",
+        "max_sell(pilot, item) -> u8",
+        "sell(pilot, item, quantity, economy, market_byte) -> Result<Trade, SellRefused>"
+      ]
+    },
+    {
+      "id": "market",
+      "name": "mod market",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/market/mod.rs"
+      ],
+      "members": [
+        "price(item, economy, market_byte) -> u16",
+        "addable(pilot, item) -> u32"
+      ],
+      "external": true
+    },
+    {
+      "id": "pilot",
+      "name": "Pilot",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/pilot/mod.rs"
+      ],
+      "members": [
+        "cash",
+        "fuel",
+        "lasers",
+        "hold",
+        "cargo",
+        "fitted",
+        "missiles",
+        "availability",
+        "market_byte"
+      ],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "trading",
+      "to": "trade",
+      "kind": "depends-on",
+      "description": "Reports a trade that went through."
+    },
+    {
+      "from": "trading",
+      "to": "buy-refused",
+      "kind": "depends-on",
+      "description": "Reports why a buy was refused."
+    },
+    {
+      "from": "trading",
+      "to": "sell-refused",
+      "kind": "depends-on",
+      "description": "Reports why a sale was refused."
+    },
+    {
+      "from": "trading",
+      "to": "market",
+      "kind": "depends-on",
+      "description": "Prices and hold room come from the market capability."
+    },
+    {
+      "from": "trading",
+      "to": "pilot",
+      "kind": "depends-on",
+      "description": "Changes cash, cargo and availability."
+    }
+  ]
+}

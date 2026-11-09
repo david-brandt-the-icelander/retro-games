@@ -1,0 +1,471 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Panels class diagram",
+  "folder": "games/lodestar/src/presentation/ui",
+  "description": "The plain panels: the hub that shows the page for the sim's screen (docked with tabs, or over the flight view), its six pages, the title, the pause panel, the tunnels, and the shared look.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/presentation/ui/hub.gd",
+      "symbol": "_draw"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ui/market_page.gd",
+      "symbol": "_draw"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ui/equip_page.gd",
+      "symbol": "_draw"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ui/chart_page.gd",
+      "symbol": "_draw"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ui/system_page.gd",
+      "symbol": "_draw"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ui/pilot_page.gd",
+      "symbol": "_draw"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ui/hold_page.gd",
+      "symbol": "_draw"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ui/title.gd",
+      "symbol": "_draw"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ui/pause_panel.gd",
+      "symbol": "_draw"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ui/tunnel.gd",
+      "symbol": "_draw"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ui/look.gd",
+      "symbol": "panel"
+    }
+  ],
+  "types": [
+    {
+      "id": "hub",
+      "name": "hub.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/hub.gd"
+      ],
+      "members": [
+        "sim",
+        "cursor: Vector2i",
+        "current_page() -> Control",
+        "open(screen)",
+        "sync_cursor()",
+        "show_notice(text, seconds)",
+        "panel_rect() -> Rect2",
+        "handle_key(event) -> bool",
+        "on_sim_event(kind, data)"
+      ]
+    },
+    {
+      "id": "market-page",
+      "name": "market_page.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/market_page.gd"
+      ],
+      "members": [
+        "hub",
+        "selected",
+        "quantity",
+        "handle_key(event) -> bool",
+        "on_sim_event(kind, data)"
+      ]
+    },
+    {
+      "id": "equip-page",
+      "name": "equip_page.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/equip_page.gd"
+      ],
+      "members": [
+        "hub",
+        "selected",
+        "picking",
+        "handle_key(event) -> bool",
+        "on_sim_event(kind, data)"
+      ]
+    },
+    {
+      "id": "chart-page",
+      "name": "chart_page.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/chart_page.gd"
+      ],
+      "members": [
+        "hub",
+        "galaxy_mode",
+        "handle_key(event) -> bool",
+        "distance()"
+      ]
+    },
+    {
+      "id": "system-page",
+      "name": "system_page.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/system_page.gd"
+      ],
+      "members": [
+        "hub"
+      ]
+    },
+    {
+      "id": "pilot-page",
+      "name": "pilot_page.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/pilot_page.gd"
+      ],
+      "members": [
+        "hub",
+        "editing() -> bool",
+        "start_save()",
+        "save(name) -> String",
+        "handle_key(event) -> bool"
+      ]
+    },
+    {
+      "id": "hold-page",
+      "name": "hold_page.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/hold_page.gd"
+      ],
+      "members": [
+        "hub"
+      ]
+    },
+    {
+      "id": "title",
+      "name": "title.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/title.gd"
+      ],
+      "members": [
+        "sim",
+        "page",
+        "handle_key(event) -> bool",
+        "load_and_start(name) -> String"
+      ]
+    },
+    {
+      "id": "pause-panel",
+      "name": "pause_panel.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/pause_panel.gd"
+      ],
+      "members": [
+        "sim",
+        "selected",
+        "confirming",
+        "handle_key(event) -> bool"
+      ]
+    },
+    {
+      "id": "tunnel",
+      "name": "tunnel.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/tunnel.gd"
+      ],
+      "members": [
+        "sim"
+      ]
+    },
+    {
+      "id": "look",
+      "name": "look.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ui/look.gd"
+      ],
+      "members": [
+        "colours VOID … GOOD, CONDITION",
+        "sans() -> Font",
+        "mono() -> Font",
+        "panel(canvas, rect, border)",
+        "text(canvas, at, s, size, color, mono)",
+        "eyebrow(canvas, at, number, label)",
+        "bar(canvas, rect, label, fraction, figure, color)",
+        "key_chip(canvas, at, key) -> float",
+        "flash_on(tick) -> bool"
+      ]
+    },
+    {
+      "id": "control",
+      "name": "Control",
+      "kind": "class",
+      "sources": [],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "sim-host",
+      "name": "SimHost",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/bridge/src/sim_host.rs"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "words",
+      "name": "words.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/text/words.gd"
+      ],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "hub",
+      "to": "control",
+      "kind": "inherits",
+      "description": "extends Control."
+    },
+    {
+      "from": "hub",
+      "to": "sim-host",
+      "kind": "depends-on",
+      "description": "Shows the page for sim.screen(); opens screens and moves the cursor through it."
+    },
+    {
+      "from": "market-page",
+      "to": "control",
+      "kind": "inherits",
+      "description": "extends Control."
+    },
+    {
+      "from": "hub",
+      "to": "market-page",
+      "kind": "depends-on",
+      "description": "Creates the page and shows it for its screen."
+    },
+    {
+      "from": "market-page",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Reaches the sim and the chart cursor through the hub."
+    },
+    {
+      "from": "market-page",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Draws with the shared look."
+    },
+    {
+      "from": "equip-page",
+      "to": "control",
+      "kind": "inherits",
+      "description": "extends Control."
+    },
+    {
+      "from": "hub",
+      "to": "equip-page",
+      "kind": "depends-on",
+      "description": "Creates the page and shows it for its screen."
+    },
+    {
+      "from": "equip-page",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Reaches the sim and the chart cursor through the hub."
+    },
+    {
+      "from": "equip-page",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Draws with the shared look."
+    },
+    {
+      "from": "chart-page",
+      "to": "control",
+      "kind": "inherits",
+      "description": "extends Control."
+    },
+    {
+      "from": "hub",
+      "to": "chart-page",
+      "kind": "depends-on",
+      "description": "Creates the page and shows it for its screen."
+    },
+    {
+      "from": "chart-page",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Reaches the sim and the chart cursor through the hub."
+    },
+    {
+      "from": "chart-page",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Draws with the shared look."
+    },
+    {
+      "from": "system-page",
+      "to": "control",
+      "kind": "inherits",
+      "description": "extends Control."
+    },
+    {
+      "from": "hub",
+      "to": "system-page",
+      "kind": "depends-on",
+      "description": "Creates the page and shows it for its screen."
+    },
+    {
+      "from": "system-page",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Reaches the sim and the chart cursor through the hub."
+    },
+    {
+      "from": "system-page",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Draws with the shared look."
+    },
+    {
+      "from": "pilot-page",
+      "to": "control",
+      "kind": "inherits",
+      "description": "extends Control."
+    },
+    {
+      "from": "hub",
+      "to": "pilot-page",
+      "kind": "depends-on",
+      "description": "Creates the page and shows it for its screen."
+    },
+    {
+      "from": "pilot-page",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Reaches the sim and the chart cursor through the hub."
+    },
+    {
+      "from": "pilot-page",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Draws with the shared look."
+    },
+    {
+      "from": "hold-page",
+      "to": "control",
+      "kind": "inherits",
+      "description": "extends Control."
+    },
+    {
+      "from": "hub",
+      "to": "hold-page",
+      "kind": "depends-on",
+      "description": "Creates the page and shows it for its screen."
+    },
+    {
+      "from": "hold-page",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Reaches the sim and the chart cursor through the hub."
+    },
+    {
+      "from": "hold-page",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Draws with the shared look."
+    },
+    {
+      "from": "title",
+      "to": "control",
+      "kind": "inherits",
+      "description": "extends Control."
+    },
+    {
+      "from": "title",
+      "to": "sim-host",
+      "kind": "depends-on",
+      "description": "Reads the mode and sends its presses."
+    },
+    {
+      "from": "title",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Draws with the shared look."
+    },
+    {
+      "from": "pause-panel",
+      "to": "control",
+      "kind": "inherits",
+      "description": "extends Control."
+    },
+    {
+      "from": "pause-panel",
+      "to": "sim-host",
+      "kind": "depends-on",
+      "description": "Reads the mode and sends its presses."
+    },
+    {
+      "from": "pause-panel",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Draws with the shared look."
+    },
+    {
+      "from": "tunnel",
+      "to": "control",
+      "kind": "inherits",
+      "description": "extends Control."
+    },
+    {
+      "from": "tunnel",
+      "to": "sim-host",
+      "kind": "depends-on",
+      "description": "Reads the mode and sends its presses."
+    },
+    {
+      "from": "tunnel",
+      "to": "look",
+      "kind": "depends-on",
+      "description": "Draws with the shared look."
+    },
+    {
+      "from": "hub",
+      "to": "words",
+      "kind": "depends-on",
+      "description": "Tab names, notices."
+    },
+    {
+      "from": "market-page",
+      "to": "words",
+      "kind": "depends-on",
+      "description": "Refusals and cash."
+    },
+    {
+      "from": "title",
+      "to": "words",
+      "kind": "depends-on",
+      "description": "Title, menu and credit line."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "LodeStar deployment diagram",
+  "folder": "games/lodestar",
+  "description": "LodeStar runs as one desktop process: the Godot 4.7 runtime with the exported game data and the lodestar-godot library beside it. There is no server and no web build.",
+  "sources": [
+    {
+      "path": "games/lodestar/project.godot",
+      "symbol": "application"
+    },
+    {
+      "path": "games/lodestar/lodestar.gdextension",
+      "symbol": "libraries"
+    },
+    {
+      "path": "games/lodestar/src/hosting/godot/Cargo.toml",
+      "symbol": "crate-type cdylib"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "desktop",
+      "name": "Player's computer",
+      "kind": "host",
+      "description": "Windows, macOS or Linux, with a keyboard and mouse."
+    },
+    {
+      "id": "game-process",
+      "name": "LodeStar game process",
+      "kind": "process",
+      "description": "The Godot runtime running the exported project."
+    },
+    {
+      "id": "pilot",
+      "name": "Pilot",
+      "kind": "client",
+      "description": "The person flying the ship, at the keyboard and mouse.",
+      "actor": "Actors/pilot.md"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "game-data",
+      "name": "Exported game (.pck and executable)",
+      "source": "games/lodestar/project.godot",
+      "deployedTo": "game-process",
+      "description": "Scenes, scripts, ships and shaders, exported per platform."
+    },
+    {
+      "id": "extension-library",
+      "name": "liblodestar_godot (.so, .dll or .dylib)",
+      "source": "games/lodestar/src/hosting/godot/Cargo.toml",
+      "deployedTo": "game-process",
+      "description": "The rules and the bridge, built by cargo for the platform."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "desktop",
+      "to": "game-process",
+      "kind": "hosts",
+      "description": "Started like any desktop application."
+    },
+    {
+      "from": "pilot",
+      "to": "game-process",
+      "kind": "connects-to",
+      "description": "Keyboard and mouse input; the picture and sound."
+    }
+  ]
+}
