@@ -13,7 +13,7 @@ Recreations of retro-games that I have made with the help of AI
 
 ## Deploying
 
-Pushing to `main` deploys each game whose folder changed (`.github/workflows/deploy.yml`): it runs the game's tests, builds it and runs `wrangler deploy`, as the game's own `npm run deploy` does. Gambit also gets Godot 4.7.2 and its web export templates. "Run workflow" on the Deploy workflow in the Actions tab deploys one game, or all of them, by hand. Pull requests test and build the games they change, and check the diagrams, without deploying. The workflows need the repository secret `CLOUDFLARE_API_TOKEN`. Database migrations are not applied by them.
+Pushing to `main` deploys each game whose folder changed (`.github/workflows/deploy.yml`): it runs the game's tests, builds it and runs `wrangler deploy`, as the game's own `npm run deploy` does. Gambit also gets Godot 4.7.2 and its web export templates. "Run workflow" on the Deploy workflow in the Actions tab deploys one game, or all of them, by hand. Pull requests test and build the games they change, and check the diagrams, without deploying. The workflows need the repository secret `CLOUDFLARE_API_TOKEN`. Database migrations are applied by hand, and a check holds back any pull request and deploy that changes a database until that is acknowledged: see [docs/database-migrations.md](docs/database-migrations.md).
 
 ## Architecture
 

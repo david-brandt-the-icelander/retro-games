@@ -4,8 +4,8 @@ name: Deploy
 # "Run workflow" in Actions deploys one game, or all of them, from main by hand.
 # Needs the repository secret CLOUDFLARE_API_TOKEN. To hold deploys for a manual approval, add
 # a required reviewer to the "production" environment in the repository settings.
-# Database schema changes (each game's worker/migrations/) are not applied here: run them by hand
-# before the deploy that needs them.
+# Database migrations are applied by hand; the migrations job refuses to deploy a database
+# change nobody has acknowledged (docs/database-migrations.md).
 
 on:
   push:
@@ -17,8 +17,31 @@ on:
         type: choice
         options: [all, chess, dictator, hivestorm, rally, shatterbelt]
         default: all
+      migration_applied:
+        description: Production's database has been migrated for every change being deployed (docs/database-migrations.md)
+        type: boolean
+        default: false
 
 jobs:
+  # Nothing deploys while a database change since the last deploy is unacknowledged
+  # (docs/database-migrations.md).
+  migrations:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - run: .github/scripts/migration-gate.sh deploy "$(.github/scripts/last-deployed.sh "$BEFORE")"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          BEFORE: ${{ github.event.before }}
+          MIGRATION_APPLIED: ${{ inputs.migration_applied }}
+
   changes:
     runs-on: ubuntu-latest
     outputs:
@@ -40,7 +63,7 @@ jobs:
           echo "games=$games" >> "$GITHUB_OUTPUT"
 
   deploy:
-    needs: changes
+    needs: [changes, migrations]
     if: needs.changes.outputs.games != '[]'
     strategy:
       fail-fast: false

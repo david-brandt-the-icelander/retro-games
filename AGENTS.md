@@ -6,6 +6,10 @@ The games' engines must stay deterministic: the server replays every submitted g
 
 `.claude/skills/` holds the skills for making clean-room remakes (`create-retro-game`, `clean-room-rebuild`, `zx-spectrum-clean-room`). Use them when making or auditing a game.
 
+## Database migrations
+
+Read [`docs/database-migrations.md`](docs/database-migrations.md) before changing a game's database. A game's `worker/schema.sql` describes a fresh database; the live one changes only through files in its `worker/migrations/`. A pull request that changes either fails its "Database migration" check, and the deploy refuses to run, until production's database has been migrated and the pull request's description says so.
+
 ## Architecture diagrams
 
 Architecture is documented per folder, as JSON diagrams in `.dev/` directories next to the code, following the skills in `Meta/Agents/Skills/`. Read a folder's diagrams before changing it.
