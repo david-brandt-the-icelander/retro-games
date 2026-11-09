@@ -1,0 +1,103 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Random generators class diagram",
+  "folder": "games/lodestar/src/capabilities/random",
+  "description": "The main generator every rule draws from (RULES C.2.1) and the separate cosmetic generator for the picture (deliberate difference 3), sharing one byte-state step.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/random/mod.rs",
+      "symbol": "Draw"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/random/mod.rs",
+      "symbol": "ByteState"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/random/mod.rs",
+      "symbol": "MainGenerator"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/random/mod.rs",
+      "symbol": "CosmeticGenerator"
+    }
+  ],
+  "types": [
+    {
+      "id": "draw",
+      "name": "Draw",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/random/mod.rs"
+      ],
+      "members": [
+        "a: u8",
+        "x: u8"
+      ]
+    },
+    {
+      "id": "byte-state",
+      "name": "ByteState",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/random/mod.rs"
+      ],
+      "members": [
+        "s0..s3: u8",
+        "carry: bool",
+        "step(carry_in) -> Draw"
+      ]
+    },
+    {
+      "id": "main",
+      "name": "MainGenerator",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/random/mod.rs"
+      ],
+      "members": [
+        "new()",
+        "with_seed(seed)",
+        "reseed(seed)",
+        "draw() -> Draw",
+        "draw_carry_cleared() -> Draw",
+        "byte() -> u8",
+        "discard(count)",
+        "carry() -> bool"
+      ]
+    },
+    {
+      "id": "cosmetic",
+      "name": "CosmeticGenerator",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/random/mod.rs"
+      ],
+      "members": [
+        "new()",
+        "byte() -> u8",
+        "unit() -> f64"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "main",
+      "to": "byte-state",
+      "kind": "depends-on",
+      "description": "Holds one and steps it with its own carry."
+    },
+    {
+      "from": "cosmetic",
+      "to": "byte-state",
+      "kind": "depends-on",
+      "description": "Holds its own, seeded apart from the main generator's."
+    },
+    {
+      "from": "byte-state",
+      "to": "draw",
+      "kind": "depends-on",
+      "description": "Each step returns a Draw."
+    }
+  ]
+}

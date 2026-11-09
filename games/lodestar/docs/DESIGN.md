@@ -1,24 +1,27 @@
-# Lodestar: design (Godot 4, web)
+# LodeStar: design (Rust and Godot 4, desktop)
 
-Working design, 8 November 2026. `lodestar` is a working slug; the GDD phase chooses the title.
+Working design, 8 November 2026. **LodeStar** is the working title; `lodestar` is its slug. The GDD phase confirms the title.
 
 ## Summary
 
-The game is a new work in the public `retro-games` repo: it plays like a 1984 BBC Micro space trading game (same mechanics, same 12 Hz flight model, same AI), but with its own galaxy, market, names and text, a third-person camera that always shows your ship, and modern 3D art. It is built in Godot 4.7 for the web and stays behind the games sign-in while in development.
+The game is a new work in the public `retro-games` repo: it plays like a 1984 BBC Micro space trading game (same mechanics, same 12 Hz flight model, same AI), but with its own galaxy, market, names and text, a third-person camera that always shows your ship, and modern 3D art. Its simulation is a Rust crate, presented through Godot 4.7 with godot-rust, and it ships as a desktop game for Windows, macOS and Linux. There is no web build.
 
 The main decisions:
 
 | Decision | Choice | Why |
 | --- | --- | --- |
 | Repo and process | `retro-games/games/lodestar/`, made with the repo's `create-retro-game` skill: gated phases, clean-room roles | It is a remake, not a recreation; the repo is public during development |
-| Where the rules come from | A clean-room behaviour spec (`docs/RULES.md`) written from the private TypeScript recreation; the Godot code is written from the spec only | Nothing of the original or the faithful clone is copied |
+| Where the rules come from | A clean-room behaviour spec (`docs/RULES.md`) written from the private TypeScript recreation; the Rust and Godot code is written from the spec only | Nothing of the original or the faithful clone is copied |
 | Original data | Galaxy generation, market table, all text and all names are new **before the first push** | Your rule: the public repo never holds the original's data |
-| Simulation vs. picture | A pure sim at 12 Hz; a presentation layer that interpolates and decorates | Mechanics stay retro while art is free to be modern |
+| Simulation vs. picture | A pure, deterministic Rust sim at 12 Hz with no engine dependency; a Godot presentation that interpolates and decorates | Mechanics stay retro while art is free to be modern |
+| Hybrid | Single-player embeds the sim crate in the game; a later multiplayer server runs the same crate as the authority | One set of rules, so the server never drifts from the client |
 | Hit detection, targeting, collisions | Spec'd from the original's maths; meshes are cosmetic | Changing them would change the game |
 | Camera | Third person, EVE-style orbit around your ship, with a limited zoom range | Your decision; the one deliberate change to how the game plays |
 | Ships | The ACNX-7 Cheetah GLB takes the heavy trader and pirate role, and stands in for every other ship until more models exist | One model for now |
-| Renderer | Compatibility (WebGL 2), the only one Godot exports to the web | Glow, MSAA, tonemapping and custom shaders are all available there |
-| Hosting | The game's own Worker at `games.icelander.net/retro/lodestar/`, checking the games sign-in until release; large files split into parts the Worker stitches back together | Private while in development, no 25 MiB problem, no new host |
+| Engine binding | Godot 4.7 with godot-rust (`gdext`, GDExtension); scenes and presentation scripts in GDScript | Rust for the rules, Godot for the picture; godot-rust is mature on desktop |
+| Platform | Desktop only: Windows, macOS, Linux, keyboard and mouse. No web build | godot-rust in Godot's web export is still experimental; desktop removes the sign-in gate, file-size limits and browser-owned keys |
+| Renderer | Forward+, with Compatibility as the fallback for old GPUs | Full glow, shadows and MSAA on desktop |
+| Source layout | Layered, after [A hundred and fifty diagrams before breakfast](https://icelander.net/v1/processes/a-hundred-and-fifty-diagrams-before-breakfast): use cases, features and capabilities in Rust, presentation in Godot, infrastructure and hosting around them, with `.dev/` diagrams beside the code | Agents find their way by the folders, and the diagrams stay true |
 
 The title must not echo the original's. Choosing it is part of the GDD phase; `lodestar` is a working label.
 
@@ -52,7 +55,7 @@ The faithful TypeScript recreation in the owner's private `recreations` repo is 
 | --- | --- | --- |
 | Spec and verify | The baseline and the annotated original source | `docs/RULES.md` (mechanics in our own words, message *purposes* instead of text), the distinctiveness brief, parity and overlap reports |
 | Designer | RULES and the design docs | GDD (title, names, setting, the new galaxy and market), wireframes, art bible, UI design |
-| Implementer | Only `docs/` | GDScript, scenes, tests |
+| Implementer | Only `docs/` and the knowledge documents beside the code | Rust, GDScript, scenes, tests |
 
 **What RULES covers.** Every state, formula, threshold and timing the baseline implements: the flight model and its damping, the universe rotation, docking checks, sun heat, the AI's decisions, laser hit tests, missiles and E.C.M., damage and shields, spawning, legal status, ranks, and the order of random draws. It describes the galaxy generator and the market only as *structure* ("each system has an economy from 0–7 that sets…"), with no seeds, tables or names.
 
@@ -62,19 +65,23 @@ The faithful TypeScript recreation in the owner's private `recreations` repo is 
 
 **Parity without the original data.** The verify role makes a scratch copy of the baseline, swaps its galaxy, market and text for the new ones, and records traces from it: inputs per tick plus a state hash. The Godot sim must reproduce those traces. That proves the mechanics match while nothing of the original's data enters the public repo.
 
-## Architecture in Godot
+## Architecture
 
-The game is two layers that talk one way: a **sim** that knows nothing about nodes, frames or meshes, and a **presentation** that reads the sim and makes it look good. The presentation never writes to the sim; input reaches the sim only through a per-tick input record.
+The game is two layers that talk one way: a **sim** that knows nothing about nodes, frames or meshes, and a **presentation** that reads the sim and makes it look good. The presentation never writes to the sim; input reaches the sim only through a per-tick input record, and docked actions only through use-case commands that validate as RULES says.
 
-**The sim** is plain GDScript classes (`RefCounted`, no `Node`s): universe, pilot, the bubble of up to 13 objects, flight, AI, market. It advances only when `Sim.tick(input)` is called and draws random numbers from one injected RNG in the order RULES gives.
+**The sim** is Rust with no Godot dependency: universe, pilot, the bubble of up to 13 objects, flight, AI, market. It advances only when `tick(input)` is called and draws random numbers from one injected generator in the order RULES gives. Because nothing in it touches Godot, the same crates run headless in tests, in parity replays and, later, in a server.
 
-**The loop** lives in one `Game` node:
+**The loop** lives in one Rust class registered with Godot, `SimHost` (a `Node`):
 
-1. Each frame, read the keyboard into an `InputRecord`: held keys plus a queue of presses.
-2. Add `delta` to an accumulator; while it holds 1/12 s, keep the bubble's state as `previous`, run `Sim.tick()`, and collect the events it emitted.
-3. Hand the presentation `previous`, `current`, the events and `alpha = accumulator × 12`. It lerps positions and slerps orientations, so 12 Hz logic looks smooth at 60–120 fps.
+1. Each frame, read Godot's input actions into an `InputRecord`: held actions plus a queue of presses.
+2. Add `delta` to an accumulator; while it holds 1/12 s, keep the bubble's state as `previous`, run `tick()`, and collect the events it emitted.
+3. Hand the presentation `previous`, `current`, the events (as Godot signals) and `alpha = accumulator × 12`. It lerps positions and slerps orientations, so 12 Hz logic looks smooth at 60–240 fps.
+
+**Determinism.** The sim uses `f64` and only `+ − × ÷` and `sqrt` in rule code, plus the small set of functions RULES names, so a replay gives the same state on every platform. Random numbers come only from the sim's own seeded generator.
 
 **Events** are how the art learns about gameplay: `laser_fired(slot)`, `missile_launched(slot)`, `hit(slot, shield)`, `exploded(slot)`, `ecm`, `area_blast`, `docked`, `launched`, `hyperspace_started`, `ambushed`, `message(id)`. Turrets, bay doors, flashes and sounds all key off these. Slot 0 is the player, so the player's own ship animates the same way.
+
+**Hybrid, later.** Multiplayer moves `tick()` to a headless server binary built from the same crates; the client keeps the sim for prediction and smoothing. Nothing in the single-player design may assume the sim lives in the same process as the picture: the presentation reads snapshots and events, never the sim's internals.
 
 **Coordinates.** As in the original, the sim is player-centred: your ship sits at the origin, always facing forward, and the universe moves and rotates around it.
 
@@ -95,28 +102,53 @@ The camera orbits your ship, EVE-style. Because the ship never moves or turns in
 
 Docked, a second camera shows the hangar scene.
 
-**Project layout:**
+### Project layout
+
+The source is layered as in [A hundred and fifty diagrams before breakfast](https://icelander.net/v1/processes/a-hundred-and-fifty-diagrams-before-breakfast). Dependencies point inward only: presentation → use cases → features → capabilities. Infrastructure implements interfaces (Rust traits) that the inner layers own, and hosting wires the implementations in. Capabilities depend on nothing further out. Domain names repeat across layers: `market` is a capability, `trading` the feature built from it, and buying cargo at a station a use case.
 
 ```
 games/lodestar/
   README.md
-  docs/                    # PROVENANCE, RULES, GDD, WIREFRAMES, ART-BIBLE, UI-DESIGN, TEST-PLAN
-  project.godot            # Compatibility renderer, Web export preset
-  sim/                     # pure rules, no Nodes
-    universe/              # our galaxy generator, systems, distances
-    pilot/                 # cargo, equipment, legal, rank, save/load
-    flight/                # controls, ship state, universe rotation, docking, sun, hyperspace
-    ai/                    # tactics, missiles, spawning
-    sim.gd                 # tick(), events
-  game/                    # Game node: loop, input, interpolation, modes
-  space/                   # camera rig, ship pool, planet, sun, stardust, effects
-  ships/                   # one scene per ship type, wrapping its GLB
-  hud/  ui/  audio/
-  text/                    # every message and label, in one table
-  assets/                  # GLBs, textures, fonts, sounds
-  worker/                  # the game's Worker: sign-in gate, file stitching
-  tests/                   # unit tests and parity replays
+  docs/                     # create-retro-game's documents: PROVENANCE, RULES, GDD, DESIGN, ART-BIBLE,
+                            # UI-DESIGN, TEST-PLAN
+  Cargo.toml                # the Rust workspace, and the lodestar-core crate (src/lib.rs)
+  project.godot             # the Godot project (res:// is this folder), Forward+
+  lodestar.gdextension      # loads the hosting crate's library
+  src/
+    lib.rs                  # lodestar-core: use_cases, features and capabilities, no Godot
+    journeys/               # journey documents, once a journey is evidenced
+    use_cases/              # a pilot's goals: coordinating code and its document side by side
+                            # (fly in a system, which owns the 12 Hz tick; trade at a station; jump)
+    features/               # behaviours built from operations, each with its feature document:
+                            # trading, docking, hyperspace and the ambush, fuel scooping, law and bounties
+    capabilities/           # reusable interfaces and operations: universe, market, pilot, flight,
+                            # combat, ai, spawning, random
+    infrastructure/         # lodestar-infrastructure: save files and settings on disk, behind
+                            # traits the capabilities own
+    presentation/
+      bridge/               # lodestar-bridge: the Rust classes GDScript calls (SimHost, snapshots,
+                            # commands), converting to Godot types; formatting only
+      space/  ships/  hud/  ui/  audio/  text/   # Godot scenes and GDScript; text holds every
+                            # message and label in one table
+    hosting/
+      godot/                # lodestar-godot: the GDExtension library; registers the classes and
+                            # wires infrastructure into the sim
+      server/               # later, for multiplayer: the headless authoritative server binary
+  assets/                   # GLBs, textures, fonts, sounds (asset folders, not components)
+  tests/                    # Godot scene tests and parity replays; Rust tests sit in their crates
 ```
+
+**Rules for the layout:**
+
+- Folders and files are `snake_case`, the Rust and Godot convention, where the essay's examples use C#'s PascalCase.
+- An operation lives in the capability that owns it. A small set may share one file; a larger one gets an `operations/` folder. One action is `<name>_operation.rs` holding `NameOperation`; a group is `<name>_operations.rs` holding `NameOperations`.
+- The crate boundaries enforce the outer rules: `lodestar-core` cannot see Godot, infrastructure or the bridge. Inside `lodestar-core`, a test parses every `use crate::` path and fails when capabilities reach out to features or use cases, or features to use cases.
+- Presentation scripts reach the sim only through the bridge's `SimHost`; they may call a feature or capability command directly for a simple operation, as the essay allows.
+- `journeys/` exists only once a journey has evidence. No folder is created empty, and no component is made of an asset folder.
+- Feature, use-case and journey documents follow [knowledge-driven development](https://github.com/david-brandt-the-icelander/knowledge-driven-development): present tense, every statement marked. They link to `docs/RULES.md` for exact mechanics rather than restating them.
+- Every folder with something architectural to say gets its `.dev/` diagrams from the repository's skills in `Meta/Agents/Skills/`, in the same commit as the code. Actors named by documents or diagrams get files in the repository's `Actors/`.
+
+The layout is confirmed by the spike, which is the pilot: one feature end to end through every layer. Anything the spike shows to be wrong is changed here before more code follows.
 
 ## Ships
 
@@ -156,7 +188,7 @@ An `EditorScenePostImport` script (`ships/ship_import.gd`) runs on every ship GL
 1. Reads the extras into a `ShipRig` resource (parts by kind, markers, limits). If glTF extras do not arrive as node metadata, the Blender script also writes `<ship>.rig.json`.
 2. Rotates +X forward to −Z and scales the ship to its type's target box.
 3. Builds an `ORMMaterial3D` with emission driven at runtime, and turns on mesh LODs.
-4. Compresses textures with Basis Universal at 2048²; the 4096² sources stay in Blender.
+4. Imports textures with VRAM compression (S3TC/BPTC on desktop) at 2048²; the 4096² sources stay in Blender.
 
 ### Stand-ins until more models exist
 
@@ -214,13 +246,13 @@ The mechanism is the one the Cheetah viewer already uses: each ship has named **
 | Station | Sim roll; docking computer on | Spins; slot lights chase inward |
 | Hangar idle | Docked | Your ship drifts gently on its pad |
 
-**Engine exhaust** is built per `exhaust_N` marker: a cone mesh with an additive, scrolling-noise shader for the plume, a bright core sprite at the nozzle that blooms, and, for your ship and the two nearest others, a small `OmniLight3D` that lights the hull. This stays within the Compatibility renderer's per-object light limit.
+**Engine exhaust** is built per `exhaust_N` marker: a cone mesh with an additive, scrolling-noise shader for the plume, a bright core sprite at the nozzle that blooms, and, for your ship and the two nearest others, a small `OmniLight3D` that lights the hull. This also stays within the Compatibility fallback's per-object light limit.
 
 Ship positions and orientations are never animated by the presentation: they come straight from the interpolated sim. No added banking or wobble in flight.
 
 ## Lighting, the sun and bloom
 
-The sun's bloom comes from Godot's built-in glow, which the Compatibility renderer supports, fed by an HDR sun. The rule that makes it work: only things meant to glow are brighter than 1.0, so the glow threshold picks them out and nothing else smears.
+The sun's bloom comes from Godot's built-in glow (Forward+, and also in the Compatibility fallback), fed by an HDR sun. The rule that makes it work: only things meant to glow are brighter than 1.0, so the glow threshold picks them out and nothing else smears.
 
 **Environment** (one `WorldEnvironment`):
 
@@ -250,7 +282,7 @@ The sun's bloom comes from Godot's built-in glow, which the Compatibility render
 
 ## Keyboard controls
 
-Two built-in layouts, both fully remappable: **Modern** (the default) for WASD hands, kept clear of keys the browser owns, and **Classic**, which puts flight on the BBC Micro's keys for players who learned them. Both drive the same sim actions. The camera has its own keys in both, and the mouse can orbit and zoom too.
+Two built-in layouts, both fully remappable: **Modern** (the default) for WASD hands, and **Classic**, which puts flight on the BBC Micro's keys for players who learned them. Both drive the same sim actions. The camera has its own keys in both, and the mouse can orbit and zoom too.
 
 | Action | Modern (default) | Classic |
 | --- | --- | --- |
@@ -276,13 +308,13 @@ Two built-in layouts, both fully remappable: **Modern** (the default) for WASD h
 | Chart cursor, distance, home | Arrows, `Enter`, `Home` (on charts the arrows move the cursor) | Same |
 | Pause menu | `Esc` (or `P`) | `P` (or `Esc`) |
 
-**Browser-owned keys are avoided in both layouts.** In a tab, `F5` reloads the page, `F1` can open help, `Ctrl`+`H` opens history, and `Esc` leaves fullscreen and cannot be intercepted. So Classic uses the digit keys for its screens, as the faithful recreation already allows, and no layout puts anything on `F`-keys or `Ctrl` combinations.
+**Function keys.** On the desktop nothing owns `F1`–`F10`, so Classic may also put the screens on them, as the 1984 keyboard did; the digit keys stay as an alternative.
 
 **How input reaches the sim.** Everything is a Godot `InputMap` action. Held actions (pitch, roll, speed, fire) are sampled at each 12 Hz tick. One-shot actions (mounts, missiles, E.C.M., jump) are queued on key-down and consumed by the next tick, so a quick tap between ticks is never lost. Key repeat is ignored. Camera input is presentation only: it is read every frame and never reaches the sim.
 
 **Rebinding.** Options → Controls lists every action with its keys; press a key to bind, with conflicts shown. Saved with the settings. The same action layer will take a gamepad later.
 
-**Focus on the web.** The page opens on a "Click to start" card, which gives the canvas keyboard focus and unlocks audio. If focus is lost mid-flight, the game pauses and shows the card again.
+**Focus.** If the window loses focus mid-flight, the game pauses.
 
 ## HUD
 
@@ -353,45 +385,20 @@ Every screen the original had becomes a panel in one consistent UI, with the sam
 
 **In flight** the charts, system data, prices, status and inventory panels cover the space view (the HUD stays), and the sim keeps running: reading a chart in a fight is still a risk.
 
-**Saving.** Pilots are saved as named slots in the browser, with export to and import from a file so a pilot can move between computers. Dying restarts from the last saved or loaded pilot.
+**Saving.** Pilots are saved as named files under Godot's `user://` folder, with export to and import from a file so a pilot can move between computers. Dying restarts from the last saved or loaded pilot.
 
 **Build.** A `ScreenHost` swaps panel scenes; each panel reads the sim and calls sim commands (`buy(item, qty)`, `fit(item, mount)`, `select_system(x, y)`) that validate exactly as RULES says. All words come from one text table in `text/`, written in the UI-design phase and checked with `overlap.py`.
 
-## Web build and hosting
+## Desktop build
 
-The game stays on the existing Cloudflare setup, free, behind the games sign-in: the build splits any file over 24 MiB into parts, tarball-style, and the game's Worker streams the parts back as one file. Godot never knows.
+The game ships as a native desktop build. There is no web build in scope.
 
-**Where it lives.** Like Hivestorm, the game has its own Worker with the route `games.icelander.net/retro/lodestar*`, which runs before the games hub. The source is public in `retro-games`; secrets are set with `wrangler secret put`, never committed.
-
-**Private while in development.** The Worker reads the hub's `recreations_player` cookie (sent to every path on games.icelander.net), checks its HMAC with the same `PLAYER_SECRET`, and checks the address against the hub's player list through a binding to the `recreations-players` D1 database. Anyone else is sent to the hub's sign-in with a return path. A single `PRIVATE` setting turns the gate off at release.
-
-**The 25 MiB limit: split and stitch.** Godot 4.7.2's single-threaded `index.wasm` is about 39.5 MB, and Workers static assets cap each file at 25 MiB.
-
-1. After `godot --headless --export-release "Web"`, the build splits every file over 24 MiB, like `split -b 24m`: `index.wasm.000`, `index.wasm.001`, plus `index.wasm.parts.json` (part count, total size, SHA-256).
-2. When the browser asks for `index.wasm`, the Worker finds the manifest, fetches the parts from its assets in order, and streams them as one response with the right `Content-Type` (`application/wasm`, needed for streaming compilation) and `Content-Length`.
-3. The build also writes Brotli-compressed copies (the engine shrinks to about 9 MB). When the browser accepts Brotli, the Worker sends those with `Content-Encoding: br` instead. This is for speed, not for the limit.
-
-The same applies to `index.pck` if the game data ever passes 24 MiB, so no packing scheme has to be designed around the limit. A client-side alternative (a service worker that reassembles the parts) would also work, but stitching in the Worker needs no code in the page.
-
-**Free alternatives considered**
-
-| Host | Cost | Behind the games sign-in? | Verdict |
-| --- | --- | --- | --- |
-| Split and stitch in the game's Worker | Free (static assets) | Yes | **Chosen** |
-| Cloudflare R2, served through the same Worker | Free up to 10 GB stored, 1M writes and 10M reads a month, no egress fees | Yes | Good fallback; no splitting, but one more thing to deploy |
-| itch.io | Free; 200 MB per file, 500 MB per game | No, separate site | Possible mirror after release |
-| GitHub Pages | Free | No: anything there is public | Possible after release only |
-
-**Engine and export settings**
-
-- Godot 4.7.x (4.7.2 today), pinned, with matching export templates. GDScript only: C# projects cannot export to the web.
-- Compatibility renderer, the only one Godot exports to the web (WebGL 2.0).
-- Thread support off: Godot's default for the web since 4.3, and no cross-origin isolation headers needed.
-- Saves and settings in `user://`, which the web build keeps in IndexedDB.
-
-**In the repo.** `games/lodestar/` follows the layout `create-retro-game` gives (README, `docs/`, `worker/`, tests, `wrangler.jsonc`), but the game itself is a Godot project rather than the skill's TypeScript template. `npm run build` exports, splits and compresses; `npm run deploy` deploys the Worker. The hub's games page lists it only at release.
-
-**Browsers.** Current Chrome, Edge, Firefox and Safari on desktop. Phones and tablets are out of scope for the first release: the game needs a keyboard.
+- **Engine.** Godot 4.7.x, pinned, with matching export templates; godot-rust (`gdext`) pinned to a version that supports it. The Rust toolchain is pinned in `rust-toolchain.toml`.
+- **Targets.** Windows (x86-64), macOS (universal), Linux (x86-64). Each export bundles the `lodestar-godot` library built for that target.
+- **Building.** `cargo build --release` builds the library; `godot --headless --export-release "<platform>"` exports the game. One script does both for each platform.
+- **Saves and settings** live in Godot's `user://` folder.
+- **Private while in development.** Builds are not distributed until release; the repository is public, as before.
+- **Distribution** at release is decided in the publish phase (for example itch.io or a store), with the credit line `create-retro-game` requires.
 
 ## Testing
 
@@ -399,28 +406,31 @@ The sim is proven to match the baseline's mechanics by replaying data-swapped tr
 
 | Test | What it checks | How |
 | --- | --- | --- |
-| Unit tests | Every rule in RULES, as it is written | GDScript tests run headless with `godot --headless -s tests/run.gd` |
+| Unit tests | Every rule in RULES, as it is written | `cargo test` in the workspace; Godot scene tests run headless with `godot --headless -s tests/run.gd` |
+| Layer test | Dependencies point inward only | A Rust test in `lodestar-core` that parses `use crate::` paths; the crate graph enforces the rest |
+| Deferred-work gate | No `TODO`, `FIXME`, `HACK` or `XXX` comment, no `TODO/` folder | A test run by `cargo test`, as knowledge-driven development requires |
+| Diagrams and actors | Every `.dev/` diagram and actor link is well-formed | `python3 Meta/Agents/Skills/validate_diagrams.py` from the repository root |
 | Parity | The sim's mechanics match the baseline | The verify role, in scratch only, gives a copy of the TypeScript baseline our galaxy, market, ship stats and text, records scripted games (launch, trade, fight, dock, hyperspace, the ambush, death) as inputs plus a state hash per tick; Godot replays them and stops at the first differing tick. Differences are bugs unless RULES lists them as deliberate |
 | Overlap check | No original text or names | `overlap.py` from `clean-room-rebuild` over `docs/` and `text/`, with the original's names as `--names`; must be clean before every push |
 | Guard test | No original name ever slips in later | The hash list from `make_guard_hashes.py`, checked against every text file in CI; proven once by planting a name |
 | Rig contract | Every ship GLB has its parts, markers and limits | The import script fails with a clear message; a test loads every ship scene |
 | Camera | Orbit, zoom limits, obstacle pull-in, both modes | Scripted camera paths around the station and a ship |
-| Busy-bubble benchmark | Frame rate in the worst case: 12 ships fighting near the sun, missiles, explosions, all effects | Scripted scene in the web build; 60 fps at 1920×1080 on High, M1 MacBook Air, Chrome |
-| Web smoke | Page loads through the sign-in gate, stitched files arrive intact, keys work, no console errors | Headless Chrome against `wrangler dev` |
+| Busy-bubble benchmark | Frame rate in the worst case: 12 ships fighting near the sun, missiles, explosions, all effects | Scripted scene in a release build; 60 fps at 1920×1080 on High, M1 MacBook Air, Chrome |
+| Desktop smoke | Each platform's export starts, loads the ships, ticks, saves and quits without errors | `--headless --quit-after` runs of each export in CI, where a runner for the platform exists |
 | Visual review | No screen could be mistaken for the original's | Contact sheet of every screen and the HUD, per `create-retro-game` |
 
 ## Milestones
 
 The work follows `create-retro-game`'s phases, each ending at a gate where you approve before the next starts. One technical spike runs alongside the early phases, because it uses only the Cheetah and our own code, so it can be pushed before any rules exist.
 
-1. **Spike (in parallel with phases 0–2).** Godot 4.7 web export through the game's Worker: sign-in gate, split-and-stitch, Brotli. The Cheetah imported through the rig script (UV fix, Basis textures, parts moving), with exhaust, flying near a blooming sun under the orbit camera. *Gate:* it runs from games.icelander.net in Chrome and Safari; download size and frame rate measured.
+1. **Spike, the pilot (in parallel with phases 0–2).** The Rust workspace with `SimHost` ticking an empty bubble at 12 Hz through godot-rust; the Cheetah imported through the rig script (UV fix, compressed textures, parts moving), with exhaust, flying near a blooming sun under the orbit camera; desktop exports for the three platforms; the first `.dev/` diagrams and the layer and deferred-work tests. *Gate:* it runs on Windows, macOS and Linux; frame rate measured; the layout confirmed or changed.
 2. **Phase 0, provenance.** `docs/PROVENANCE.md` inventories what the baseline holds that must change. *Gate:* you confirm the slug and folder.
 3. **Phase 1, RULES.** The behaviour spec from the baseline, including the camera and mount changes as deliberate differences. *Gate:* overlap check clean; you approve.
 4. **Phase 2, GDD.** Three title proposals, setting, every name, the new galaxy generator, market and ship stats. *Gate:* you choose the title and names.
 5. **Phases 3–5, wireframes, art bible, UI design.** HUD, panels and flow, adapted from the skill's Spectrum grid to screen-relative layouts. *Gate:* contact sheet approved.
-6. **Phase 6, implementation.** Sim from RULES, then flight, HUD, panels, hangar, saving. Stand-in Cheetahs for every ship. *Gate:* the whole game plays end to end on the private URL.
-7. **Phase 7, testing.** Parity, clean-room checks, benchmark, browsers. *Gate:* you review the test plan's results.
-8. **More models, then phase 8, publish.** Station, missile, canister, asteroid and pod models first, then the alien ship, then the rest; then the sign-in gate comes off. *Gate:* your explicit "publish".
+6. **Phase 6, implementation.** First the working base: the Rust sim from RULES, proven by parity replays, under a plain playable client (flight, combat, docking, trading). Then the HUD, panels, hangar and saving at full quality. Stand-in Cheetahs for every ship. *Gate:* the whole game plays end to end in a desktop build.
+7. **Phase 7, testing.** Parity, clean-room checks, benchmark, the three platforms. *Gate:* you review the test plan's results.
+8. **More models, then phase 8, publish.** Station, missile, canister, asteroid and pod models first, then the alien ship, then the rest; then the first public build. *Gate:* your explicit "publish".
 
 The first push to `retro-games` contains only our own work: the spike's code and the Cheetah. RULES arrives in its own reviewed push, and nothing that holds original data ever does.
 
@@ -434,24 +444,24 @@ The biggest design risk is now the camera: seeing all around your ship changes h
 | Aiming from behind the ship has parallax | Lasers feel inaccurate | Reticle on the mount's axis at range, and the *in line of fire* mark from the sim's own hit test |
 | The original's title and its ship and alien names are protected | Cannot publish under them | New title and names in the GDD; the overlap check and guard test enforce it |
 | Every ship is a Cheetah for now | Hard to tell ships apart | Per-type scale, tint and beacons; the alien ship and the non-ship objects are the first new models |
-| `create-retro-game`'s tools (template, contact-sheet renderer, parity kit) are TypeScript | They don't apply directly to a Godot game | The parity kit compares JSON traces, so Godot only has to write the same format; contact sheets come from headless Godot screenshots |
-| The sign-in gate relies on the hub's secret and player list | A misconfigured gate exposes or blocks the game | The gate fails closed, as the hub does; the web smoke test covers it |
+| `create-retro-game`'s tools (template, contact-sheet renderer, parity kit) are TypeScript | They don't apply directly to a Rust and Godot game | The parity kit compares JSON traces, so the Rust sim only has to write the same format; contact sheets come from Godot screenshots |
+| godot-rust lags a Godot release | The engine can't be upgraded when wanted | Pin both; upgrade together, after `gdext` supports the new version |
+| The layered layout is new to a Godot and Rust game | Folders that fit the essay's C# examples may fit a game badly | The spike is the pilot; the layout is changed before more code follows |
 | Cheetah textures are on the second UV set | Textures map wrongly in Godot | Re-bake to UV0; checked in the spike |
 | glTF extras may not arrive as node metadata | Rigs don't load | Sidecar `<ship>.rig.json` from the Blender script |
-| Glow in the Compatibility renderer is weaker than the viewer's bloom | The sun looks flat | Tune in the spike; fallback is a custom fullscreen-quad bloom shader |
-| JavaScript and Godot maths can differ in the last bit | Parity traces drift | Hash values rounded to 6 decimals; investigate at the first differing tick |
+| Glow in the Compatibility fallback is weaker than the viewer's bloom | The sun looks flat on old GPUs | Forward+ is the default; tune the fallback in the spike |
+| JavaScript and Rust maths can differ in the last bit | Parity traces drift | Hash values rounded to 6 decimals; investigate at the first differing tick |
 
-**Decided** (8 Nov): Cheetah only, in the heavy trader and pirate role; original galaxy, market, text and names replaced before the first push; private behind sign-in during development, public repo; the game lives in `retro-games`; you always see your ship, EVE-style, with limited zoom; working slug `lodestar` (until the GDD picks a title); ship stats retuned; 8 galaxies of 256 systems; camera space-anchored by default, with follow as an option and a zoom range of 1.5× to 5× the ship's length.
+**Decided** (8 Nov): Cheetah only, in the heavy trader and pirate role; original galaxy, market, text and names replaced before the first push; public repo, builds private until release; the game lives in `retro-games`; you always see your ship, EVE-style, with limited zoom; working title LodeStar, slug `lodestar`; ship stats retuned; 8 galaxies of 256 systems; camera space-anchored by default, with follow as an option and a zoom range of 1.5× to 5× the ship's length.
+
+**Decided** (8 Nov, later): the sim in Rust, presented through Godot 4 with godot-rust; desktop first and only, with the web build removed from the project's scope; hybrid, so a later multiplayer server can run the same sim; the source layered after the diagrams essay; the first deliverable is a working base that plays like the original, built from RULES.
 
 ## Sources
 
-- The `recreations` repo (private): the baseline's README and source, `docs/SIGN-IN.md`, `wrangler.jsonc`.
-- The [`retro-games` repo](https://github.com/david-brandt-the-icelander/retro-games): `README.md`, `.claude/skills/create-retro-game/SKILL.md`, `games/hivestorm/wrangler.jsonc`.
+- The `recreations` repo (private): the baseline's README and source.
+- The [`retro-games` repo](https://github.com/david-brandt-the-icelander/retro-games): `README.md`, `.claude/skills/create-retro-game/SKILL.md`, `AGENTS.md`, `Meta/Agents/Skills/`.
 - The Cheetah: `ACNX-7_Cheetah_viewer.html` (embedded GLB inspected) and the owner's comparison images.
-- [Godot 4.6 docs: Overview of renderers](https://docs.godotengine.org/en/4.6/tutorials/rendering/renderers.html) (glow supported in Compatibility).
-- [Godot 4.7 release coverage](https://app.cinevva.com/news/2026-06-19-godot-4-7-released) (web export still WebGL 2.0).
 - [endoflife.date: Godot](https://endoflife.date/godot) (4.7.2 current).
-- [Ziva: Exporting a Godot game to the web](https://ziva.sh/blogs/godot-web-export) (4.7.2 single-threaded `index.wasm` is 39,514,754 bytes).
-- [Cloudflare Workers limits](https://developers.cloudflare.com/workers/platform/limits/) (25 MiB per static asset).
-- [Cloudflare R2 free tier](https://flarecalc.com/calculators/r2) (10 GB storage, 1M Class A and 10M Class B operations a month, free egress).
-- [Summer Engine: Godot web export guide](https://www.summerengine.com/blog/godot-web-export-guide) (itch.io limits; single-threaded needs no special headers).
+- [A hundred and fifty diagrams before breakfast](https://icelander.net/v1/processes/a-hundred-and-fifty-diagrams-before-breakfast) and the [processes](https://github.com/david-brandt-the-icelander/processes) repository: the layered layout, `.dev/` diagrams and actors.
+- [Knowledge-driven development](https://github.com/david-brandt-the-icelander/knowledge-driven-development): the status marks for feature, use-case and journey documents.
+- [godot-rust](https://godot-rust.github.io/) (`gdext`): Rust bindings for Godot 4 through GDExtension.

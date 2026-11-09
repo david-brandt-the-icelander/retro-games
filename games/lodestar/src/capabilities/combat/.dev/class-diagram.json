@@ -1,0 +1,351 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Combat class diagram",
+  "folder": "games/lodestar/src/capabilities/combat",
+  "description": "The player's side of combat (RULES C.6 to C.13, C.15) and the combat steps of the slot loop (RULES C.4). Each file is a group of free functions over the pilot, the cockpit and the bubble, with small result types the flight tick acts on. The ship AI it calls is the ai capability.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/combat/damage.rs",
+      "symbol": "Damage"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/damage.rs",
+      "symbol": "Loss"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+      "symbol": "Shot"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+      "symbol": "LaserHit"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+      "symbol": "MissileFired"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/contact.rs",
+      "symbol": "Contact"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/steps.rs",
+      "symbol": "AiStep"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/steps.rs",
+      "symbol": "SightsStep"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/steps.rs",
+      "symbol": "Exploded"
+    }
+  ],
+  "types": [
+    {
+      "id": "damage",
+      "name": "Damage",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/damage.rs"
+      ],
+      "members": [
+        "Shielded",
+        "Hurt",
+        "Died",
+        "take_damage(pilot, cockpit, random, damage, from_z) -> Damage",
+        "lose_something(pilot, cockpit, random) -> Option<Loss>"
+      ]
+    },
+    {
+      "id": "loss",
+      "name": "Loss",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/damage.rs"
+      ],
+      "members": [
+        "Cargo(item)",
+        "Equipment(roll)"
+      ]
+    },
+    {
+      "id": "shot",
+      "name": "Shot",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/lasers.rs"
+      ],
+      "members": [
+        "damage: u8",
+        "jitter: [i8; 2]",
+        "start_key_handling(cockpit)",
+        "fire_lasers(pilot, cockpit, random, fire_held, flight_view) -> Option<Shot>",
+        "cool_down(cockpit)",
+        "mount_frame(position, mount) -> Vec3",
+        "in_sights(object, mount) -> bool"
+      ]
+    },
+    {
+      "id": "laser_hit",
+      "name": "LaserHit",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/lasers.rs"
+      ],
+      "members": [
+        "Damaged",
+        "StationTurned",
+        "Destroyed { canisters, kill }",
+        "laser_hit(pilot, cockpit, bubble, slot, random) -> Option<LaserHit>"
+      ]
+    },
+    {
+      "id": "missile_fired",
+      "name": "MissileFired",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/missiles.rs"
+      ],
+      "members": [
+        "NoLock",
+        "Jammed",
+        "Launched(slot)",
+        "arm_missile(pilot, cockpit) -> bool",
+        "unarm_missile(pilot, cockpit) -> bool",
+        "try_lock(cockpit, bubble, slot) -> bool",
+        "fire_missile(pilot, cockpit, bubble) -> MissileFired",
+        "fix_up_after_removal(cockpit, bubble, slot) -> bool",
+        "fix_up_lock(cockpit, slot) -> bool"
+      ]
+    },
+    {
+      "id": "contact",
+      "name": "Contact",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/contact.rs"
+      ],
+      "members": [
+        "None",
+        "DockingBox",
+        "Scooped { item, gained }",
+        "Collided(Damage)",
+        "contact(pilot, cockpit, bubble, slot, random) -> Contact",
+        "failed_docking(pilot, cockpit, random, station_z) -> Damage"
+      ]
+    },
+    {
+      "id": "countermeasures",
+      "name": "mod countermeasures",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/countermeasures.rs"
+      ],
+      "members": [
+        "fire_ecm(pilot, cockpit) -> bool",
+        "trigger_area_blast(pilot, cockpit) -> bool",
+        "count_down_area_blast(cockpit)",
+        "laser_and_ecm_bookkeeping(cockpit) -> bool"
+      ]
+    },
+    {
+      "id": "explosion",
+      "name": "mod explosion",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/explosion.rs"
+      ],
+      "members": [
+        "start_explosion(object, random)",
+        "advance_explosion(object) -> bool"
+      ]
+    },
+    {
+      "id": "kills",
+      "name": "mod kills",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/kills.rs"
+      ],
+      "members": [
+        "count_kill(pilot, cockpit) -> bool",
+        "pay_bounty(pilot, cockpit, kind) -> u16",
+        "on_launch(pilot)",
+        "on_police_exploded(pilot)",
+        "on_hyperspace_arrival(pilot) -> u8",
+        "on_galaxy_jump(pilot)"
+      ]
+    },
+    {
+      "id": "ai_step",
+      "name": "AiStep",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/steps.rs"
+      ],
+      "members": [
+        "ran: bool",
+        "damage: Option<Damage>",
+        "kill: bool",
+        "player_died() -> bool"
+      ]
+    },
+    {
+      "id": "sights_step",
+      "name": "SightsStep",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/steps.rs"
+      ],
+      "members": [
+        "locked: bool",
+        "hit: Option<LaserHit>"
+      ]
+    },
+    {
+      "id": "exploded",
+      "name": "Exploded",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/steps.rs"
+      ],
+      "members": [
+        "kind: TypeNumber",
+        "bounty: u16",
+        "target_lost: bool"
+      ]
+    },
+    {
+      "id": "steps",
+      "name": "mod steps",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/combat/steps.rs"
+      ],
+      "members": [
+        "area_blast_step(pilot, cockpit, bubble, slot) -> bool",
+        "explosion_start_step(bubble, slot, random) -> bool",
+        "ai_step(pilot, cockpit, bubble, slot, random) -> AiStep",
+        "explosion_progress_step(bubble, slot) -> bool",
+        "sights_step(pilot, cockpit, bubble, slot, random, flight_view) -> SightsStep",
+        "removal_step(pilot, cockpit, bubble, slot) -> Option<Exploded>"
+      ]
+    },
+    {
+      "id": "ai",
+      "name": "mod ai",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/ai/mod.rs"
+      ],
+      "members": [
+        "due(object, counter, slot) -> bool",
+        "think(bubble, slot, cockpit, random) -> Thought",
+        "anger(bubble, slot)",
+        "launch_child(bubble, parent, kind, ai, random) -> Option<usize>",
+        "retarget_missiles(bubble, removed)"
+      ],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "damage",
+      "to": "loss",
+      "kind": "depends-on",
+      "description": "Damage reaching the energy bank runs the loss check."
+    },
+    {
+      "from": "contact",
+      "to": "damage",
+      "kind": "depends-on",
+      "description": "A collision or a slow failed docking damages the player."
+    },
+    {
+      "from": "laser_hit",
+      "to": "ai",
+      "kind": "depends-on",
+      "description": "A hit angers the ship; a kill launches canisters."
+    },
+    {
+      "from": "laser_hit",
+      "to": "kills",
+      "kind": "depends-on",
+      "description": "A laser kill of types 1 to 7 counts."
+    },
+    {
+      "from": "missile_fired",
+      "to": "ai",
+      "kind": "depends-on",
+      "description": "Firing angers the target; removals retarget the missiles in flight."
+    },
+    {
+      "from": "missile_fired",
+      "to": "shot",
+      "kind": "depends-on",
+      "description": "The lock uses the sights test of the active mount."
+    },
+    {
+      "from": "countermeasures",
+      "to": "shot",
+      "kind": "depends-on",
+      "description": "The end-of-tick bookkeeping cools the laser down."
+    },
+    {
+      "from": "steps",
+      "to": "ai",
+      "kind": "depends-on",
+      "description": "Step 3 runs a due think."
+    },
+    {
+      "from": "steps",
+      "to": "ai_step",
+      "kind": "depends-on",
+      "description": "Step 3 reports what the think did to the player."
+    },
+    {
+      "from": "steps",
+      "to": "explosion",
+      "kind": "depends-on",
+      "description": "Steps 2 and 5 start and advance explosions."
+    },
+    {
+      "from": "steps",
+      "to": "sights_step",
+      "kind": "depends-on",
+      "description": "Step 7 locks, then hits."
+    },
+    {
+      "from": "steps",
+      "to": "laser_hit",
+      "kind": "depends-on",
+      "description": "Step 7's laser hit."
+    },
+    {
+      "from": "steps",
+      "to": "exploded",
+      "kind": "depends-on",
+      "description": "Step 8 removes a finished explosion."
+    },
+    {
+      "from": "steps",
+      "to": "kills",
+      "kind": "depends-on",
+      "description": "The area blast counts kills; a finished explosion pays its bounty and police mark the record."
+    },
+    {
+      "from": "steps",
+      "to": "missile_fired",
+      "kind": "depends-on",
+      "description": "Step 7's lock and step 8's missile and lock fix-up."
+    },
+    {
+      "from": "ai_step",
+      "to": "damage",
+      "kind": "depends-on",
+      "description": "Reports the hit's outcome."
+    }
+  ]
+}

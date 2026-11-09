@@ -1,0 +1,67 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Flight class diagram",
+  "folder": "games/lodestar/src/capabilities/flight",
+  "description": "The player's attitude and the held keys it reads (RULES B.5). Speed, motion and re-orthonormalisation (RULES B.6 to B.8) are free functions over the bubble's objects: apply_speed_keys, move_substep, move_object, own_motion_tick, tidy, tidy_due and tidy_if_due.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/flight/mod.rs",
+      "symbol": "HeldControls"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/flight/attitude.rs",
+      "symbol": "Attitude"
+    }
+  ],
+  "types": [
+    {
+      "id": "held",
+      "name": "HeldControls",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/flight/mod.rs"
+      ],
+      "members": [
+        "roll_left: bool",
+        "roll_right: bool",
+        "climb: bool",
+        "dive: bool",
+        "speed_up: bool",
+        "slow_down: bool",
+        "NONE"
+      ]
+    },
+    {
+      "id": "attitude",
+      "name": "Attitude",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/flight/attitude.rs"
+      ],
+      "members": [
+        "roll_rate: u8",
+        "pitch_rate: u8",
+        "auto_centre: bool",
+        "damping: bool",
+        "roll_angle: f64",
+        "pitch_angle: f64",
+        "new()",
+        "reset()",
+        "apply_keys(held)",
+        "damp_and_angles()",
+        "tick(held)",
+        "roll_magnitude() -> u8",
+        "pitch_magnitude() -> u8"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "attitude",
+      "to": "held",
+      "kind": "depends-on",
+      "description": "Reads the held roll, climb and dive keys once per tick."
+    }
+  ]
+}

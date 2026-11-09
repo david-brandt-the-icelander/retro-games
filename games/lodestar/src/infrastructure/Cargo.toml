@@ -1,0 +1,10 @@
+[package]
+name = "lodestar-infrastructure"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+description = "LodeStar's infrastructure: pilot records as files on disk, behind the saving feature's PilotStore trait."
+
+[dependencies]
+lodestar-core.workspace = true

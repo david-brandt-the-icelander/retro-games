@@ -1,14 +1,17 @@
-"""Validate architecture schemas, examples and diagrams. Requires jsonschema.
+"""Validate architecture schemas, examples, diagrams and actor files. Requires jsonschema.
 
 Usage: python3 Meta/Agents/Skills/validate_diagrams.py [repository-root]
 
 The skills are found next to this script. Every `.dev/*.json` file in the repository is checked,
 except under directories that never hold source: .git, node_modules, build output and the skills
-themselves.
+themselves. If the repository has an `Actors/` folder, its files are checked too: every link to
+`Actors/<name>.md`, in a diagram's `actor` field or in a Markdown file, must land on a file, and every
+file in `Actors/` must be linked from at least one other file.
 """
 
 import json
 import os
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -16,6 +19,8 @@ from pathlib import Path
 from jsonschema import Draft202012Validator
 
 KINDS = ("component", "class", "state", "deployment")
+ACTORS_DIR = "Actors"
+ACTOR_LINK = re.compile(r"\bActors/[A-Za-z0-9._-]+\.md\b")
 SKIPPED_DIRS = {".git", "node_modules", "dist", "dist-test", "build", "bin", "obj", ".wrangler", "__pycache__"}
 
 
@@ -63,12 +68,54 @@ def check_graph(document):
             require(artifact["deployedTo"] in ids, "Unknown deployment target")
 
 
-def diagram_files(root, skills):
+def source_files(root, skills):
     for directory, subdirs, files in os.walk(root):
         here = Path(directory)
         subdirs[:] = sorted(d for d in subdirs if d not in SKIPPED_DIRS and (here / d).resolve() != skills)
+        yield here, sorted(files)
+
+
+def diagram_files(root, skills):
+    for here, files in source_files(root, skills):
         if here.name == ".dev":
-            yield from (here / f for f in sorted(files) if f.endswith(".json"))
+            yield from (here / f for f in files if f.endswith(".json"))
+
+
+def markdown_files(root, skills):
+    for here, files in source_files(root, skills):
+        yield from (here / f for f in files if f.endswith(".md"))
+
+
+def actor_reference(root, value):
+    """Check one `actor` field or link and return the actor file it names."""
+    require(Path(value).parts[:1] == (ACTORS_DIR,), f"Actor reference is not under {ACTORS_DIR}/: {value}")
+    require(value.endswith(".md"), f"Actor reference is not a Markdown file: {value}")
+    target = repo_path(root, value)
+    require(target.is_file(), f"Actor is not a file: {value}")
+    return target
+
+
+def check_actors(root, skills, referenced):
+    """Every actor file is linked from some other file, and every link lands on a file."""
+    actors_dir = root / ACTORS_DIR
+    if not actors_dir.is_dir():
+        require(not referenced, f"Diagrams name actors but there is no {ACTORS_DIR}/ folder")
+        return 0
+    actors = sorted(p for p in actors_dir.iterdir() if p.is_file() and p.name != "README.md")
+    for actor in actors:
+        require(actor.suffix == ".md", f"{ACTORS_DIR}/{actor.name}: not a Markdown file")
+    for path in markdown_files(root, skills):
+        for link in sorted(set(ACTOR_LINK.findall(path.read_text()))):
+            try:
+                target = actor_reference(root, link)
+            except Exception as error:
+                raise ValueError(f"{path.relative_to(root)}: {error}") from error
+            if target != path.resolve():
+                referenced.add(target)
+    for actor in actors:
+        require(actor.resolve() in referenced,
+                f"{ACTORS_DIR}/{actor.name}: nothing links to this actor; delete it or link it")
+    return len(actors)
 
 
 def validate(root):
@@ -87,6 +134,7 @@ def validate(root):
         schemas[kind] = validator
 
     counts = Counter()
+    referenced_actors = set()
     for path in diagram_files(root, skills):
         document = read_json(path)
         try:
@@ -107,6 +155,9 @@ def validate(root):
             for item in document.get("types", []):
                 for source in item["sources"]:
                     require(repo_path(root, source).is_file(), f"Type source is not a file: {source}")
+            for item in document.get("components", []) + document.get("nodes", []):
+                if "actor" in item:
+                    referenced_actors.add(actor_reference(root, item["actor"]))
             for component in document.get("components", []):
                 if "folder" in component:
                     require(repo_path(root, component["folder"]).is_dir(),
@@ -121,8 +172,10 @@ def validate(root):
             raise ValueError(f"{path.relative_to(root)}: {getattr(error, 'message', error)}") from error
         counts[kind] += 1
     require(sum(counts.values()) > 0, "No diagrams found")
-    print("Validated four schemas and examples; " + ", ".join(
-        f"{count} {kind} diagrams" for kind, count in sorted(counts.items())) + ".")
+    actors = check_actors(root, skills, referenced_actors)
+    print(f"Validated {len(KINDS)} schemas and examples; " + ", ".join(
+        f"{count} {kind} diagrams" for kind, count in sorted(counts.items()))
+        + f"; {actors} actors.")
 
 
 if __name__ == "__main__":

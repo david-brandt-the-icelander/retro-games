@@ -1,0 +1,200 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "LodeStar component diagram",
+  "folder": "games/lodestar",
+  "description": "LodeStar, a desktop space trading and combat game: the rules are a Rust crate with no engine dependency, and Godot draws them through a GDExtension library that registers the bridge's classes.",
+  "sources": [
+    {
+      "path": "games/lodestar/Cargo.toml",
+      "symbol": "workspace"
+    },
+    {
+      "path": "games/lodestar/src/lib.rs",
+      "symbol": "lodestar_core"
+    },
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+      "symbol": "SimHost"
+    },
+    {
+      "path": "games/lodestar/src/hosting/godot/src/lib.rs",
+      "symbol": "LodeStarExtension"
+    },
+    {
+      "path": "games/lodestar/lodestar.gdextension",
+      "symbol": "entry_symbol"
+    },
+    {
+      "path": "games/lodestar/project.godot",
+      "symbol": "run/main_scene"
+    },
+    {
+      "path": "games/lodestar/src/features/mod.rs",
+      "symbol": "features"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/mod.rs",
+      "symbol": "capabilities"
+    },
+    {
+      "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+      "symbol": "PilotFiles"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "LodeStar",
+      "responsibility": "The whole game: the Rust workspace and the Godot project, built and shipped together.",
+      "folder": "games/lodestar"
+    },
+    {
+      "id": "capabilities",
+      "name": "Capabilities",
+      "responsibility": "Reusable rules with no outward dependencies: random generators, space maths, ships, the bubble, the pilot, the cockpit (the player's in-flight state), the universe, the market, equipment, flight, combat and the ship AI.",
+      "folder": "games/lodestar/src/capabilities"
+    },
+    {
+      "id": "features",
+      "name": "Features",
+      "responsibility": "Behaviours built from capabilities: hyperspace, spawning, the station, docking, the planet and sun, the in-system jump, the escape pod, death, saving and loading the pilot, and trading at the market panel.",
+      "folder": "games/lodestar/src/features"
+    },
+    {
+      "id": "use-cases",
+      "name": "Use cases",
+      "responsibility": "A pilot's goals; so far flying in a system, which owns the 12 Hz tick.",
+      "folder": "games/lodestar/src/use_cases"
+    },
+    {
+      "id": "infrastructure",
+      "name": "Infrastructure (lodestar-infrastructure)",
+      "responsibility": "Implements the traits the inner layers own on the real machine: pilot records as files (PilotStore).",
+      "folder": "games/lodestar/src/infrastructure"
+    },
+    {
+      "id": "bridge",
+      "name": "Presentation bridge (lodestar-bridge)",
+      "responsibility": "SimHost: runs the sim at 12 Hz under Godot's frame loop, takes every press, samples the held input actions, exposes the scenes' snapshots and emits the tick's events.",
+      "folder": "games/lodestar/src/presentation/bridge"
+    },
+    {
+      "id": "scenes",
+      "name": "Godot presentation",
+      "responsibility": "The plain playable client: the game scene and its keys, the space scene and orbit camera, the HUD, the panels, the text table, and the ship rig.",
+      "folder": "games/lodestar/src/presentation",
+      "diagram": "games/lodestar/src/presentation/.dev/component-diagram.json"
+    },
+    {
+      "id": "extension",
+      "name": "GDExtension library (lodestar-godot)",
+      "responsibility": "The cdylib Godot loads; registers the bridge's classes.",
+      "folder": "games/lodestar/src/hosting/godot"
+    },
+    {
+      "id": "godot",
+      "name": "Godot 4.7 engine",
+      "responsibility": "Renders, reads input and runs the scenes; loads the extension library.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "infrastructure",
+      "kind": "contains",
+      "description": "A workspace member crate."
+    },
+    {
+      "from": "game",
+      "to": "capabilities",
+      "kind": "contains",
+      "description": "Part of the lodestar-core crate (src/lib.rs)."
+    },
+    {
+      "from": "game",
+      "to": "use-cases",
+      "kind": "contains",
+      "description": "Part of the lodestar-core crate (src/lib.rs)."
+    },
+    {
+      "from": "game",
+      "to": "features",
+      "kind": "contains",
+      "description": "Part of the lodestar-core crate (src/lib.rs)."
+    },
+    {
+      "from": "game",
+      "to": "bridge",
+      "kind": "contains",
+      "description": "A workspace member crate."
+    },
+    {
+      "from": "game",
+      "to": "scenes",
+      "kind": "contains",
+      "description": "The Godot project's scenes and scripts."
+    },
+    {
+      "from": "game",
+      "to": "extension",
+      "kind": "contains",
+      "description": "A workspace member crate."
+    },
+    {
+      "from": "use-cases",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "FlyInSystem owns a MainGenerator."
+    },
+    {
+      "from": "bridge",
+      "to": "use-cases",
+      "kind": "depends-on",
+      "description": "SimHost ticks FlyInSystem with a TickClock and an InputRecord, and reads its state."
+    },
+    {
+      "from": "extension",
+      "to": "bridge",
+      "kind": "depends-on",
+      "description": "Re-exports SimHost so its registration is linked in."
+    },
+    {
+      "from": "scenes",
+      "to": "bridge",
+      "kind": "depends-on",
+      "description": "game.tscn holds a SimHost; the scenes read its snapshots and signals and send it every press."
+    },
+    {
+      "from": "godot",
+      "to": "extension",
+      "kind": "depends-on",
+      "description": "Loads it through lodestar.gdextension."
+    },
+    {
+      "from": "godot",
+      "to": "scenes",
+      "kind": "depends-on",
+      "description": "Runs the main scene set in project.godot."
+    },
+    {
+      "from": "features",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Trading uses the market and the pilot; saving uses the pilot."
+    },
+    {
+      "from": "infrastructure",
+      "to": "features",
+      "kind": "depends-on",
+      "description": "PilotFiles implements the saving feature's PilotStore."
+    },
+    {
+      "from": "bridge",
+      "to": "infrastructure",
+      "kind": "depends-on",
+      "description": "SimHost saves and loads pilots through PilotFiles under user://pilots."
+    }
+  ]
+}

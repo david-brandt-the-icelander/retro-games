@@ -148,7 +148,7 @@ Three places hold the player (title, flight, docked) and everything else is a pa
 | Flight | Ship destroyed | Death → Docked hub (last save) or Title |
 | Pause | Options / Controls | Options panel (Controls tab) |
 | Pause | Quit to title, confirmed | Title |
-| Any | Canvas loses keyboard focus | Paused, with the "Click to continue" card |
+| Any | The window loses focus | Paused |
 
 ## Text rules and budgets
 
@@ -181,4 +181,4 @@ The game is keyboard-first by nature; these rules make it usable for players wit
 - **Flashing:** nothing above 3 Hz; the area-blast whiteout fades in over 80 ms; a **Reduced motion** option shortens transitions to a cut and turns off camera shake and lens ghosts.
 - **Scale:** UI scale up to 150%; HUD figures never below 14 px at 100%.
 - **Input:** every action remappable; nothing needs two keys at once except optional `Shift` modifiers; holds (escape pod) can be set to a toggle.
-- **Screen readers:** the Godot web canvas is not reachable by screen readers, so every panel also mirrors its text into an off-screen live region of the page for the selected row and the latest ticker message.
+- **Screen readers:** panels expose their selected row and the latest ticker message to the operating system's screen reader where Godot's accessibility support allows; until it does, a text-to-speech option reads them.

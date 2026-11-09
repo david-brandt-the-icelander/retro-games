@@ -1,0 +1,131 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Space scene class diagram",
+  "folder": "games/lodestar/src/presentation/space",
+  "description": "The 3D picture: the space scene that draws the player's ship and the bubble's objects from the sim's interpolated snapshots, and the orbit camera that holds its direction in space.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/presentation/space/space.gd",
+      "symbol": "setup"
+    },
+    {
+      "path": "games/lodestar/src/presentation/space/orbit_camera.gd",
+      "symbol": "turn_with_universe"
+    }
+  ],
+  "types": [
+    {
+      "id": "space",
+      "name": "space.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/space/space.gd"
+      ],
+      "members": [
+        "camera: Camera3D",
+        "setup(sim)",
+        "object_at(slot) -> Dictionary",
+        "drawn_objects() -> Array",
+        "_draw_objects(flying)",
+        "_place_body(node, kind, position)",
+        "_clear_distance() -> float",
+        "_on_ticked(tick)"
+      ]
+    },
+    {
+      "id": "orbit-camera",
+      "name": "orbit_camera.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/space/orbit_camera.gd"
+      ],
+      "members": [
+        "zoom",
+        "follow",
+        "keys_enabled",
+        "anchored",
+        "mount",
+        "idle",
+        "limit",
+        "turn_with_universe(roll_angle, pitch_angle, seconds)",
+        "behind_mount(mount, now)",
+        "set_view(direction, zoom)",
+        "direction() -> Vector3"
+      ]
+    },
+    {
+      "id": "node3d",
+      "name": "Node3D",
+      "kind": "class",
+      "sources": [],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "camera3d",
+      "name": "Camera3D",
+      "kind": "class",
+      "sources": [],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "ship",
+      "name": "ship.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ships/ship.gd"
+      ],
+      "members": [
+        "set_channel(channel, value)"
+      ],
+      "external": true
+    },
+    {
+      "id": "sim-host",
+      "name": "SimHost",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/bridge/src/sim_host.rs"
+      ],
+      "members": [
+        "objects() -> Array",
+        "cockpit() -> Dictionary"
+      ],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "space",
+      "to": "node3d",
+      "kind": "inherits",
+      "description": "extends Node3D."
+    },
+    {
+      "from": "orbit-camera",
+      "to": "camera3d",
+      "kind": "inherits",
+      "description": "extends Camera3D."
+    },
+    {
+      "from": "space",
+      "to": "orbit-camera",
+      "kind": "depends-on",
+      "description": "Creates it; hands it the sim's roll and pitch and the obstacle limit."
+    },
+    {
+      "from": "space",
+      "to": "ship",
+      "kind": "depends-on",
+      "description": "Every Cheetah stand-in carries the rig script."
+    },
+    {
+      "from": "space",
+      "to": "sim-host",
+      "kind": "depends-on",
+      "description": "Reads the mode, cockpit and objects each frame; listens to ticked and sim_event."
+    }
+  ]
+}

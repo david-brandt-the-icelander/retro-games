@@ -1,0 +1,290 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Universe class diagram",
+  "folder": "games/lodestar/src/capabilities/universe",
+  "description": "The universe capability: generator states and galaxies (RULES A.3), the system properties worked out from them, distance and selection (RULES A.4, A.5) and the charts' cursor and local-chart layout (RULES A.6). Names and labels are data from the GDD and free functions in names.rs.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+      "symbol": "Seed"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+      "symbol": "Galaxy"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/universe/system.rs",
+      "symbol": "System"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/universe/system.rs",
+      "symbol": "PlanetStyle"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/universe/system.rs",
+      "symbol": "Point"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+      "symbol": "Selection"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/universe/chart.rs",
+      "symbol": "ChartCursor"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/universe/chart.rs",
+      "symbol": "Arrow"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/universe/chart.rs",
+      "symbol": "HeldArrows"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/universe/chart.rs",
+      "symbol": "LocalChartEntry"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/space/mod.rs",
+      "symbol": "Vec3"
+    }
+  ],
+  "types": [
+    {
+      "id": "seed",
+      "name": "Seed",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/universe/galaxy.rs"
+      ],
+      "members": [
+        "0: [u16; 3]",
+        "bytes() -> [u8; 6]",
+        "advanced() -> Seed",
+        "next_system() -> Seed",
+        "rotated() -> Seed"
+      ]
+    },
+    {
+      "id": "galaxy",
+      "name": "Galaxy",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/universe/galaxy.rs"
+      ],
+      "members": [
+        "number: u8",
+        "seed: Seed",
+        "FIRST: Galaxy",
+        "new(number, state) -> Galaxy",
+        "reach(number) -> Galaxy",
+        "next() -> Galaxy",
+        "state() -> [u16; 3]",
+        "seeds() -> Iterator<Seed>",
+        "seed_of(index) -> Seed",
+        "system(index) -> System",
+        "systems() -> Iterator<System>",
+        "nearest(point) -> u8"
+      ]
+    },
+    {
+      "id": "system",
+      "name": "System",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/universe/system.rs"
+      ],
+      "members": [
+        "index: u8",
+        "seed: Seed",
+        "x, y: u8",
+        "economy, government, tech_level, population: u8",
+        "productivity, radius: u16",
+        "name, inhabitants: String",
+        "new(index, seed) -> System",
+        "position() -> Point",
+        "shown_tech_level() -> u8",
+        "is_farm() -> bool",
+        "has_default_settlers() -> bool",
+        "chart_dot_width() -> u8",
+        "local_disc_radius() -> u8",
+        "planet_style() -> PlanetStyle",
+        "planet_position(legal_low_bit) -> Vec3",
+        "sun_position() -> Vec3"
+      ]
+    },
+    {
+      "id": "planet-style",
+      "name": "PlanetStyle",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/capabilities/universe/system.rs"
+      ],
+      "members": [
+        "A",
+        "B",
+        "object_type() -> TypeNumber"
+      ]
+    },
+    {
+      "id": "point",
+      "name": "Point",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/universe/system.rs"
+      ],
+      "members": [
+        "(u8, u8)"
+      ]
+    },
+    {
+      "id": "selection",
+      "name": "Selection",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/universe/navigation.rs"
+      ],
+      "members": [
+        "system: u8",
+        "position: Point",
+        "distance: u16"
+      ]
+    },
+    {
+      "id": "chart-cursor",
+      "name": "ChartCursor",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/universe/chart.rs"
+      ],
+      "members": [
+        "position: Point",
+        "at(position) -> ChartCursor",
+        "tap(arrow) -> bool",
+        "hold(held, docked, tick) -> bool",
+        "home(pilot)",
+        "select(galaxy, pilot) -> Selection"
+      ]
+    },
+    {
+      "id": "arrow",
+      "name": "Arrow",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/capabilities/universe/chart.rs"
+      ],
+      "members": [
+        "Left",
+        "Right",
+        "Up",
+        "Down"
+      ]
+    },
+    {
+      "id": "held-arrows",
+      "name": "HeldArrows",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/universe/chart.rs"
+      ],
+      "members": [
+        "left, right, up, down: bool"
+      ]
+    },
+    {
+      "id": "local-chart-entry",
+      "name": "LocalChartEntry",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/universe/chart.rs"
+      ],
+      "members": [
+        "system: u8",
+        "point: (i16, i16)",
+        "radius: u8",
+        "label_row: Option<u8>"
+      ]
+    },
+    {
+      "id": "vec3",
+      "name": "Vec3",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/space/mod.rs"
+      ],
+      "members": [
+        "x, y, z: f64"
+      ],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "galaxy",
+      "to": "seed",
+      "kind": "depends-on",
+      "description": "Holds its system-0 state and advances it four steps per system."
+    },
+    {
+      "from": "galaxy",
+      "to": "system",
+      "kind": "depends-on",
+      "description": "Builds systems from their states; searches their positions for the nearest."
+    },
+    {
+      "from": "system",
+      "to": "seed",
+      "kind": "depends-on",
+      "description": "Every property, the name and the inhabitants are worked out from the state's six bytes."
+    },
+    {
+      "from": "system",
+      "to": "planet-style",
+      "kind": "depends-on",
+      "description": "Bit 1 of the tech level chooses the planet's look."
+    },
+    {
+      "from": "system",
+      "to": "vec3",
+      "kind": "depends-on",
+      "description": "Returns the planet's and sun's arrival positions."
+    },
+    {
+      "from": "selection",
+      "to": "point",
+      "kind": "depends-on",
+      "description": "Carries the selected system's position."
+    },
+    {
+      "from": "chart-cursor",
+      "to": "selection",
+      "kind": "depends-on",
+      "description": "Selecting from the cursor returns a selection and snaps the cursor onto it."
+    },
+    {
+      "from": "chart-cursor",
+      "to": "galaxy",
+      "kind": "depends-on",
+      "description": "Searches the galaxy for the system nearest the cursor."
+    },
+    {
+      "from": "chart-cursor",
+      "to": "arrow",
+      "kind": "depends-on",
+      "description": "Moves one unit per tap."
+    },
+    {
+      "from": "chart-cursor",
+      "to": "held-arrows",
+      "kind": "depends-on",
+      "description": "Repeats held arrows when docked, on even ticks."
+    },
+    {
+      "from": "local-chart-entry",
+      "to": "system",
+      "kind": "depends-on",
+      "description": "Built by local_chart from each system's position and disc radius."
+    }
+  ]
+}
