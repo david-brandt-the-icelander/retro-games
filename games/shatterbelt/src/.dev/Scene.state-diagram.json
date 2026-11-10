@@ -39,7 +39,7 @@
   "states": [
     {
       "id": "title",
-      "description": "The title and table over an attract game; launching while a seed is requested."
+      "description": "The title and the table (the public one once loaded, else this browser's) over an attract game; LAUNCHING… while a seed is requested, JOINING THE GAME… while an online game is awaited."
     },
     {
       "id": "play",
@@ -81,7 +81,7 @@
       "to": "play",
       "trigger": "a pause press, a window blur or a hidden tab",
       "guard": "solo",
-      "action": "Toggle paused."
+      "action": "A pause press (P, START, the PAUSE button) toggles paused; Escape, a blur or a hidden tab only pauses."
     },
     {
       "from": "play",
@@ -92,8 +92,8 @@
     {
       "from": "play",
       "to": "title",
-      "trigger": "Escape while paused, or Back on a gamepad",
-      "guard": "solo"
+      "trigger": "Escape, or Back on a gamepad",
+      "guard": "solo and paused"
     },
     {
       "from": "play",
@@ -119,13 +119,13 @@
       "from": "over",
       "to": "title",
       "trigger": "afterGame()",
-      "guard": "solo, and no seed or no names"
+      "guard": "nobody here made a table, and the game was solo or had no seed"
     },
     {
       "from": "over",
       "to": "saving",
       "trigger": "afterGame() then afterOnline()",
-      "guard": "online, with a seed"
+      "guard": "online, with a seed, and this browser's pilot made no table"
     },
     {
       "from": "entry",

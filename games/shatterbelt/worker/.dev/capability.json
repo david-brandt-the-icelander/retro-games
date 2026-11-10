@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "High-score Worker capability",
+  "folder": "games/shatterbelt/worker",
+  "description": "What the Shatterbelt Worker does besides serving files.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/worker/index.ts",
+      "symbol": "default.fetch"
+    }
+  ],
+  "entities": [
+    {
+      "id": "high-score-table",
+      "name": "Replay-checked high-score table",
+      "description": "Keeps the public table of pilots, from solo and online games alike.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "score"
+        }
+      ],
+      "responsibility": "Issues each game's seed, replays every submitted game with the game's own engine, and lists only the scores those replays produce, one row per named player.",
+      "operations": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "issueGame"
+        },
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "loadTop"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        }
+      ],
+      "access": [
+        "Anyone may read the table, as JSON or as the web page.",
+        "Only a player signed in with the games:play role may get a seed or submit a game.",
+        "Each seed is accepted once, within 24 hours of being issued."
+      ]
+    },
+    {
+      "id": "signed-in-page",
+      "name": "Signed-in game page",
+      "description": "Serves the game only to players who are signed in.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "gamePage"
+        },
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "AUTH"
+        }
+      ],
+      "responsibility": "Checks icelander.net's sign-in before serving the game's page.",
+      "operations": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "gamePage"
+        }
+      ],
+      "access": [
+        "Signed in to icelander.net with the games:play role; anyone signed out is sent to sign in and back."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/shatterbelt/worker",
+      "path": "games/shatterbelt/worker/.dev/operation.json",
+      "relationship": "The operations through which they are reached."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/shatterbelt/worker",
+      "path": "games/shatterbelt/worker/.dev/feature.json",
+      "relationship": "The features they offer."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Browser game",
+  "folder": "games/shatterbelt/src",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Browser game",
+      "summary": "Everything that runs in the player's browser.",
+      "purpose": "Wires the pure engine to the page: the scenes, the fixed-step frame loop at 60 steps a second, recording, input from keys, gamepads and touch, drawing, sound, the name form, this browser's own table, the public table's client, and online play in lockstep.",
+      "boundaries": [
+        "The rules live in engine/; this folder decides nothing about the game.",
+        "The relay for online games and the multiplayer lobby are the games hub's; src/online.ts only connects to them.",
+        "src/name.ts is also the server's: the Worker imports it to clean submitted names."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "frame"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Lockstep"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "cleanName"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/backlog.json",
+          "entityId": "online-copies"
+        }
+      ]
+    }
+  ]
+}

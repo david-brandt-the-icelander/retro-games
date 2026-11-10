@@ -1,0 +1,78 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "High-score Worker verification",
+  "folder": "games/shatterbelt/worker",
+  "entities": [
+    {
+      "id": "submissions",
+      "title": "Submissions",
+      "summary": "Names are cleaned, a submission's shape is checked, and scores come from the issued seed.",
+      "subject": [
+        {
+          "path": "games/shatterbelt/worker/.dev/feature.json",
+          "entityId": "unfakeable-scores"
+        }
+      ],
+      "criteria": [
+        "Names are cleaned to plain letters, digits, spaces and . - ' _, at most 12 characters",
+        "A submission needs one name or null per player, and no name without a usable character or over 200 characters",
+        "score() gives every player's score and wave as the game played them, from the issued seed",
+        "A recording that runs past the game's end does not score"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/replay.test.ts",
+          "symbol": "the server's helpers: names, submissions, and scores from the issued seed",
+          "command": "npm test"
+        }
+      ],
+      "details": "The routes themselves (the database, 409 for a used seed, ranks) and the scores page have no automated check."
+    },
+    {
+      "id": "sign-in",
+      "title": "Sign-in",
+      "summary": "The page and the score API need a sign-in; the vendored library is unedited.",
+      "subject": [
+        {
+          "path": "games/shatterbelt/worker/.dev/capability.json",
+          "entityId": "signed-in-page"
+        }
+      ],
+      "criteria": [
+        "Someone signed out is sent to sign in, and back",
+        "The page is served privately to anyone signed in",
+        "A new game or a score needs a sign-in, and an unreachable login service counts as signed out",
+        "vendor/icelander-auth is icelander.net's, unedited"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/sign-in.test.ts",
+          "symbol": "sign-in: the game's page sends someone signed out to sign in, and back",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/sign-in.test.ts",
+          "symbol": "sign-in: the page is served to anyone signed in, privately",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/sign-in.test.ts",
+          "symbol": "sign-in: a new game or a score needs a sign-in; the login service out of reach is signed out",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/sign-in.test.ts",
+          "symbol": "sign-in: the vendored library (shared by every game here) is icelander.net's, unedited",
+          "command": "npm test, in games/rally"
+        }
+      ],
+      "details": "Shatterbelt's own suite does not check the vendored library; Rally's does, for the one copy every game imports."
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/limitations.schema.json",
+  "kind": "limitations",
+  "title": "Shatterbelt limitations",
+  "folder": "games/shatterbelt",
+  "entities": [
+    {
+      "id": "one-pilot-per-device",
+      "title": "One pilot per device",
+      "summary": "Two people play together only online, each on their own device.",
+      "impact": "Friends in the same room need a device each.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/input.ts",
+          "symbol": "Input.controls"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "launch"
+        }
+      ]
+    },
+    {
+      "id": "nine-pilots",
+      "title": "Nine pilots at most",
+      "summary": "An online game takes the first nine slots in the room; a game holds at most nine ships.",
+      "impact": "A tenth player in the lobby's match would not fly.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "MAX_PLAYERS"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "startOnline"
+        }
+      ]
+    },
+    {
+      "id": "online-no-pause",
+      "title": "Online games can't be paused",
+      "summary": "An online game goes on whatever one pilot does.",
+      "impact": "A pilot who looks away keeps flying; a hidden tab or a slow connection makes the others wait.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "setPaused"
+        }
+      ]
+    },
+    {
+      "id": "leavers-stay",
+      "title": "A pilot who leaves stays in the game",
+      "summary": "A pilot who leaves an online game keeps an idle ship there until it is lost.",
+      "impact": "The game goes on until that idle ship, and everyone else's, are out of lives; in co-op it can't help, and in versus its score still counts.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Lockstep.next"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "stepOnline"
+        }
+      ]
+    },
+    {
+      "id": "offline-no-entry",
+      "title": "Offline games can't enter the public table",
+      "summary": "A game the server issued no seed for still plays, but its scores stay on the device.",
+      "impact": "A player whose connection drops before the game, or an online game whose host got no seed, can't reach the public table.",
+      "workaround": "Start another game once the connection is back.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "launch"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "afterGame"
+        }
+      ]
+    },
+    {
+      "id": "ninety-minutes",
+      "title": "Ninety-minute replays",
+      "summary": "The server replays games of up to 90 minutes, and seeds expire after 24 hours unused.",
+      "impact": "A longer game, or one submitted a day later, is refused.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "MAX_STEPS"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "SEED_LIFETIME_MS"
+        }
+      ]
+    },
+    {
+      "id": "plain-names",
+      "title": "Plain names",
+      "summary": "Names are up to 12 plain characters; accents are dropped and a few letters spelled out (Þór becomes Thor).",
+      "impact": "Names in other scripts cannot be shown.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/name.ts",
+          "symbol": "cleanName"
+        }
+      ]
+    },
+    {
+      "id": "deploy-refuses-games",
+      "title": "A deploy can refuse games in progress",
+      "summary": "A game started before a deploy that changes the engine is replayed by the new engine.",
+      "impact": "Its recording may no longer replay to a whole game, and is refused.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "score"
+        }
+      ]
+    }
+  ]
+}

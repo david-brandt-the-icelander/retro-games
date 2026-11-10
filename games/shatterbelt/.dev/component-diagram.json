@@ -28,7 +28,7 @@
     {
       "id": "client",
       "name": "Browser game",
-      "responsibility": "The engine, drawing, input, sound, menus and, where it has them, online play.",
+      "responsibility": "The engine, drawing, input, sound, the scenes, the tables' clients and online play.",
       "folder": "games/shatterbelt/src",
       "diagram": "games/shatterbelt/src/.dev/component-diagram.json"
     },
@@ -42,7 +42,7 @@
     {
       "id": "hub",
       "name": "Games hub",
-      "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): play time (/games/play.js), the multiplayer lobby and one WebSocket relay per online match.",
       "external": true
     },
     {

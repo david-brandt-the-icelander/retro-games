@@ -27,7 +27,7 @@
     },
     {
       "id": "used",
-      "description": "used = 1: a verified submission claimed it, and its score is recorded.",
+      "description": "used = 1: a submission that replays claimed it; the score of each named player who scored is recorded with it.",
       "terminal": true
     },
     {
@@ -42,14 +42,14 @@
       "to": "used",
       "trigger": "POST api/score",
       "guard": "the row is unused and under 24 hours old, and the recording replays exactly one whole game",
-      "action": "UPDATE games SET used = 1 WHERE id = ? AND used = 0; insert the replayed score."
+      "action": "UPDATE games SET used = 1 WHERE id = ? AND used = 0; then insert one scores row per player with a name and a score above 0."
     },
     {
       "from": "issued",
       "to": "issued",
       "trigger": "POST api/score",
       "guard": "the submission does not replay",
-      "action": "Answer 422; the row stays unused."
+      "action": "Answer 422; the row stays unused, so a corrected submission may still claim it."
     },
     {
       "from": "issued",

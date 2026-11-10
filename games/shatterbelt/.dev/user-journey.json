@@ -1,0 +1,181 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-user-journey/schema.json",
+  "kind": "user-journey",
+  "title": "Shatterbelt journeys",
+  "folder": "games/shatterbelt",
+  "description": "Players' experience of Shatterbelt, as its README describes it to them.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/README.md",
+      "symbol": "How to play"
+    }
+  ],
+  "entities": [
+    {
+      "id": "climb-the-table",
+      "name": "Climb the high-score table",
+      "description": "A player flies alone, names themselves on the table and comes back to see it.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/README.md",
+          "symbol": "The high-score table"
+        }
+      ],
+      "persona": "Player",
+      "goal": "Get a name onto the public table, higher than before.",
+      "stages": [
+        {
+          "id": "sign-in",
+          "context": "Arrives at the game signed out.",
+          "touchpoint": "icelander.net's sign-in",
+          "action": "Signs in, and is sent back to the game.",
+          "outcome": "The title screen over a drifting belt, with the best pilots beside how to play.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/worker/index.ts",
+              "symbol": "gamePage"
+            },
+            {
+              "path": "games/shatterbelt/src/render.ts",
+              "symbol": "Renderer.title"
+            }
+          ]
+        },
+        {
+          "id": "fly",
+          "context": "Launches a game alone.",
+          "touchpoint": "The game's field",
+          "action": "Breaks rocks wave after wave, chases pods and drones, and keeps a streak going, until every ship is lost.",
+          "outcome": "A score and the wave reached; a new ship every 10,000 points along the way.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/README.md",
+              "symbol": "How to play"
+            }
+          ]
+        },
+        {
+          "id": "enter",
+          "context": "The game is over and the score makes a table.",
+          "touchpoint": "The name form over the screen",
+          "action": "Types a name of up to 12 letters or digits and saves.",
+          "outcome": "The score with its rank among all pilots, checked by replay.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/README.md",
+              "symbol": "The high-score table"
+            }
+          ]
+        },
+        {
+          "id": "share",
+          "context": "Later, or on another device.",
+          "touchpoint": "icelander.net/games/retro/shatterbelt/scores/",
+          "action": "Opens the public scores page.",
+          "outcome": "The table, for anyone to see, with each pilot's wave and kind of game.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/README.md",
+              "symbol": "The high-score table"
+            },
+            {
+              "path": "games/shatterbelt/worker/scores-page.ts",
+              "symbol": "scoresPage"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    },
+    {
+      "id": "fly-with-friends",
+      "name": "Fly with friends online",
+      "description": "Friends, each on their own device, meet in the multiplayer lobby and play one game together or against each other.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/README.md",
+          "symbol": "Playing online: each pilot on their own computer"
+        }
+      ],
+      "persona": "Player",
+      "goal": "Play friends who are somewhere else, in co-op or versus, and see everyone on the table.",
+      "stages": [
+        {
+          "id": "lobby",
+          "context": "Everyone is signed in to the games.",
+          "touchpoint": "The multiplayer page (the games hub)",
+          "action": "One starts a Shatterbelt co-op or versus game and waits; the others join by typing that player's address.",
+          "outcome": "A 60-second countdown, started again whenever someone joins and cut short when everyone presses Ready.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/README.md",
+              "symbol": "Playing online: each pilot on their own computer"
+            }
+          ]
+        },
+        {
+          "id": "game",
+          "context": "The game opens on every device, two to nine of them.",
+          "touchpoint": "The game's field",
+          "action": "Each flies their own ship; the line under the field says which pilot they are, in their colour.",
+          "outcome": "The same game on every screen; a slow connection makes the others wait, and they are told. A pilot who leaves stays in the game with an idle ship.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/README.md",
+              "symbol": "Playing online: each pilot on their own computer"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "showNet"
+            }
+          ]
+        },
+        {
+          "id": "names",
+          "context": "The game is over.",
+          "touchpoint": "The name form, on each pilot's own screen",
+          "action": "Each pilot who made the table names themselves.",
+          "outcome": "The host's browser sends the game with every name; everyone sees the ranks.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/README.md",
+              "symbol": "Playing online: each pilot on their own computer"
+            }
+          ]
+        },
+        {
+          "id": "again",
+          "context": "The results are shown.",
+          "touchpoint": "The line under the field",
+          "action": "Chooses BACK TO MULTIPLAYER.",
+          "outcome": "The lobby, ready for another game.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/README.md",
+              "symbol": "Playing online: each pilot on their own computer"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "showNet"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md",
+      "supportingActors": [
+        {
+          "name": "The other players",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/shatterbelt/src",
+      "path": "games/shatterbelt/src/.dev/use-case.json",
+      "relationship": "The use cases behind the journeys' stages."
+    }
+  ]
+}

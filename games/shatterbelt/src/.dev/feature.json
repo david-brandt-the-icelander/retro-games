@@ -1,0 +1,332 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Browser game features",
+  "folder": "games/shatterbelt/src",
+  "description": "What the page offers around the engine: a game alone, a game with friends online, the controls, the tables and the title screen.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/src/main.ts",
+      "symbol": "launch"
+    },
+    {
+      "path": "games/shatterbelt/src/main.ts",
+      "symbol": "beginOnline"
+    }
+  ],
+  "entities": [
+    {
+      "id": "solo-game",
+      "name": "A game alone",
+      "description": "One pilot flies a game in this browser.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "launch"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "setPaused"
+        }
+      ],
+      "behavior": "LAUNCH starts a co-op game for one from a seed the server issued, or, if none comes within 2.5 s, from one of the browser's own, marked offline. P, START or the PAUSE button pause and resume it; leaving the tab or window pauses it; Escape pauses, and Escape again quits to the title. The engine steps 60 times a second whatever the screen's refresh rate.",
+      "outcome": "A player can fly at any time, with or without the score server.",
+      "constraints": [
+        "One pilot per browser: games with friends start from the multiplayer page.",
+        "An offline game can go only on this browser's table.",
+        "A frame never advances the game by more than 0.25 s."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "launch"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "setPaused"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "frame"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "tick"
+        }
+      ]
+    },
+    {
+      "id": "online-game",
+      "name": "A game with friends online",
+      "description": "Up to nine pilots, each on their own device, play one game, co-op or versus.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "joinMatch"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "stepOnline"
+        }
+      ],
+      "behavior": "Opened from the multiplayer page with ?match=ID and the mode, the page joins the games hub's relay for that match. Once everyone is there, or after 15 s, the host's page starts the game with a seed from the server; every page then runs the whole game in lockstep and flies its own pilot's ship. The line under the field says which pilot this is, in their colour, whom it is waiting for, and when someone leaves; a pilot who leaves stays in the game with an idle ship. After the game each page asks its own pilot's name, and the host's page enters the game on the public table with every name.",
+      "outcome": "Friends play together or against each other, see the same game, and go on the table as they would alone.",
+      "constraints": [
+        "2 to 9 pilots; pilots are numbered by their order in the lobby's match.",
+        "An online game can't be paused; Escape twice within 2 s leaves it.",
+        "If the browsers' fingerprints ever differ, the game ends.",
+        "If the host's page gets no seed, the game can't go on the public table."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "joinMatch"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "startOnline"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "beginOnline"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "stepOnline"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "afterOnline"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "showNet"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Lockstep"
+        }
+      ]
+    },
+    {
+      "id": "controls",
+      "name": "Keyboard, gamepad or touch",
+      "description": "The same five controls from any device.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/input.ts",
+          "symbol": "Input"
+        },
+        {
+          "path": "games/shatterbelt/src/input.ts",
+          "symbol": "KEYS"
+        }
+      ],
+      "behavior": "Turn, thrust, fire and blink come from the arrows or WASD (by physical key, so any layout works), the numpad, any connected gamepad's stick, d-pad and buttons, or on-screen buttons that appear on a touch screen. The controls of all of them are combined. Menus take presses from the same keys and buttons. Losing focus forgets every held key.",
+      "outcome": "A player can fly with whatever they have.",
+      "constraints": [
+        "Keys with Meta, Alt or Ctrl held (except Right Ctrl) are ignored.",
+        "The page swallows keys that would scroll it or open quick find."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/input.ts",
+          "symbol": "Input.controls"
+        },
+        {
+          "path": "games/shatterbelt/src/input.ts",
+          "symbol": "Input.poll"
+        },
+        {
+          "path": "games/shatterbelt/src/input.ts",
+          "symbol": "menuAct"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "showTouch"
+        }
+      ]
+    },
+    {
+      "id": "name-for-tables",
+      "name": "A name for the tables",
+      "description": "A pilot who makes a table names themselves in a form over the screen.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "askName"
+        },
+        {
+          "path": "games/shatterbelt/src/name.ts",
+          "symbol": "cleanName"
+        }
+      ],
+      "behavior": "When a score would make the public top ten or this browser's, a form asks for a name, with SAVE and SKIP. The name is cleaned as the server cleans it: accents dropped, a few letters spelled out (Þór becomes Thor), and only letters, digits, spaces and . - ' _ kept. Typing in the form never reaches the game's keys, and password managers are told to leave the field alone.",
+      "outcome": "Pilots appear on the tables under a name of their choosing, and nothing else about them is kept.",
+      "constraints": [
+        "Up to 12 characters, with at least one letter or digit.",
+        "Esc or SKIP leaves the pilot off both tables.",
+        "Online, each page asks only its own pilot."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "afterGame"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "askName"
+        },
+        {
+          "path": "games/shatterbelt/src/name.ts",
+          "symbol": "cleanName"
+        }
+      ]
+    },
+    {
+      "id": "device-table",
+      "name": "This device's best ten",
+      "description": "The browser keeps its own table of the best ten scores.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/scores.ts",
+          "symbol": "addScore"
+        }
+      ],
+      "behavior": "A named score that makes this browser's top ten is kept in localStorage with its wave, mode and number of players, whether or not the server could take it. The title shows it when the public table can't be loaded.",
+      "outcome": "A player keeps their best games even offline.",
+      "constraints": [
+        "Ten rows (TABLE_SIZE).",
+        "Kept only in this browser; a blocked storage keeps it for the visit only."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/scores.ts",
+          "symbol": "loadScores"
+        },
+        {
+          "path": "games/shatterbelt/src/scores.ts",
+          "symbol": "qualifies"
+        },
+        {
+          "path": "games/shatterbelt/src/scores.ts",
+          "symbol": "addScore"
+        }
+      ]
+    },
+    {
+      "id": "title-screen",
+      "name": "The title screen",
+      "description": "The title over a drifting belt, with how to play and the best pilots.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/render.ts",
+          "symbol": "Renderer.title"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "attract"
+        }
+      ],
+      "behavior": "Behind the title an attract game without ships drifts and breaks up. The title shows LAUNCH, the controls for this device, how to reach the multiplayer page, how to play, and the public table's top ten, or this device's when the public one can't be loaded.",
+      "outcome": "A player sees how to play and whom to beat before launching.",
+      "constraints": [
+        "The public table is loaded when the page opens and again after each submission the server accepts."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "draw"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "refreshPublic"
+        },
+        {
+          "path": "games/shatterbelt/src/render.ts",
+          "symbol": "Renderer.title"
+        }
+      ]
+    },
+    {
+      "id": "sound",
+      "name": "Synthesised sound",
+      "description": "Sound effects made on the fly, with no sound files.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/sound.ts",
+          "symbol": "Sound"
+        }
+      ],
+      "behavior": "Each step's events (shots, explosions, pods, blinks, waves and the rest) play short sounds made with Web Audio, panned by where they happen. An engine rumble follows the ships that are thrusting, and a warble plays while a drone is out. M or the SOUND button turns sound off and on, and the choice is remembered.",
+      "outcome": "The game sounds alive without downloading anything.",
+      "constraints": [
+        "Sound starts only after the first key press or tap, as browsers require."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/sound.ts",
+          "symbol": "Sound.play"
+        },
+        {
+          "path": "games/shatterbelt/src/sound.ts",
+          "symbol": "Sound.follow"
+        },
+        {
+          "path": "games/shatterbelt/src/sound.ts",
+          "symbol": "Sound.toggle"
+        }
+      ]
+    },
+    {
+      "id": "spoken-status",
+      "name": "Spoken status",
+      "description": "What happens is also written to a live region for screen readers.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "say"
+        }
+      ],
+      "behavior": "The page announces launching, each wave, pausing, the game over with every player's score, the name prompt, saving, the ranks the server gave, and online messages, through a polite live region the canvas is described by.",
+      "outcome": "A player using a screen reader hears how the game is going.",
+      "constraints": [],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "say"
+        },
+        {
+          "path": "games/shatterbelt/public/index.html",
+          "symbol": "live"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/shatterbelt/src",
+      "path": "games/shatterbelt/src/.dev/use-case.json",
+      "relationship": "The use cases that exercise these features."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/shatterbelt/src",
+      "path": "games/shatterbelt/src/.dev/capability.json",
+      "relationship": "The capability the online game belongs to."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/shatterbelt/src/engine",
+      "path": "games/shatterbelt/src/engine/.dev/feature.json",
+      "relationship": "The engine features they rely on."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/shatterbelt/worker",
+      "path": "games/shatterbelt/worker/.dev/feature.json",
+      "relationship": "The server side of the public table."
+    }
+  ]
+}

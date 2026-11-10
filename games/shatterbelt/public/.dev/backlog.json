@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Page backlog",
+  "folder": "games/shatterbelt/public",
+  "entities": [
+    {
+      "id": "games-link",
+      "title": "\"Games\" under the game goes to the About page",
+      "summary": "The site links under the game link Games to /, which on icelander.net is the About page, not the list of games.",
+      "type": "defect",
+      "expected": "Games opens the games list at /games/.",
+      "observed": "It links to / (icelander.net/), the same address as the About and contact link beside it: a leftover from when the games lived at the root of games.icelander.net, before commit edfb3fe moved them to icelander.net/games/retro/.",
+      "reproduction": [
+        "Open icelander.net/games/retro/shatterbelt/",
+        "Choose Games in the links under the game"
+      ],
+      "acceptanceCriteria": [
+        "The Games link under the game leads to /games/."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/shatterbelt/public/index.html",
+        "description": "Found while documenting Shatterbelt: the nav.site-links element."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/public/index.html",
+          "symbol": "site-links"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/worker/.dev/backlog.json",
+          "entityId": "all-games-link"
+        }
+      ]
+    }
+  ]
+}

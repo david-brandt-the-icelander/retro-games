@@ -1,0 +1,105 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/quality-requirements.schema.json",
+  "kind": "quality-requirements",
+  "title": "Shatterbelt quality requirements",
+  "folder": "games/shatterbelt",
+  "entities": [
+    {
+      "id": "determinism",
+      "title": "The same game in every browser and on the server",
+      "summary": "The engine must give bit-identical results everywhere.",
+      "area": "correctness",
+      "requirement": "Engine code uses only + − × ÷ and Math.sqrt (its own sine, cosine and arctangent from dmath.ts), and draws random numbers only from its own seeded generator, so a game replays exactly in every browser and in the Worker, and online browsers stay in step.",
+      "measuredBy": "The replay and lockstep tests: a recorded game replays to the same scores; the same seed and inputs replay the same game; dmath agrees with Math to 1e-12; browsers in lockstep play the same steps.",
+      "origin": {
+        "kind": "document",
+        "reference": "AGENTS.md",
+        "description": "The repository's agent instructions: the games' engines must stay deterministic."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/dmath.ts",
+          "symbol": "sin"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "SHIP"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/rng.ts",
+          "symbol": "rand"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/shatterbelt/src/engine/.dev/verification.json",
+          "entityId": "replay"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/src/engine/.dev/decisions.json",
+          "entityId": "own-trigonometry"
+        }
+      ]
+    },
+    {
+      "id": "replay-speed",
+      "title": "Replays are cheap for the server",
+      "summary": "The Worker replays a whole game, up to 90 minutes and nine players, on every submission, so a replay must be fast.",
+      "area": "performance",
+      "requirement": "Replaying a game takes under 200 ms per minute of play.",
+      "measuredBy": "test/replay.test.ts, \"replaying a long game is quick enough for the server\": a four-player co-op game.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/test/replay.test.ts",
+          "symbol": "replaying a long game is quick enough for the server"
+        }
+      ]
+    },
+    {
+      "id": "strict-csp",
+      "title": "Everything from this origin",
+      "summary": "The page loads nothing from elsewhere except Cloudflare Web Analytics.",
+      "area": "security",
+      "requirement": "The page's content security policy allows scripts, styles, images and connections only from icelander.net (WebSockets to wss://icelander.net included), plus Cloudflare's analytics beacon; no framing, forms, plugins or base URL changes. Camera, microphone, location and payment are refused; gamepads are allowed for this origin.",
+      "measuredBy": "public/_headers, read by Cloudflare's static assets; the scores page carries its own policy from worker/look.ts.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/public/_headers",
+          "symbol": "Content-Security-Policy"
+        },
+        {
+          "path": "games/shatterbelt/public/_headers",
+          "symbol": "Permissions-Policy"
+        },
+        {
+          "path": "games/shatterbelt/worker/look.ts",
+          "symbol": "sitePage"
+        }
+      ]
+    },
+    {
+      "id": "fixed-step",
+      "title": "The same speed on every screen",
+      "summary": "The game advances 60 steps a second whatever the display's refresh rate.",
+      "area": "correctness",
+      "requirement": "The page steps the engine in fixed steps of 1/60 s from the time elapsed, catching up at most 0.25 s after a stall, so a game plays the same on a 60 Hz and a 144 Hz screen and its recording replays to the same game.",
+      "measuredBy": "Reading main.ts's frame loop; no automated check.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "frame"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "DT"
+        }
+      ]
+    }
+  ]
+}

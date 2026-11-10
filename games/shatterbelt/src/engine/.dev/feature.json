@@ -1,0 +1,412 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Engine features",
+  "folder": "games/shatterbelt/src/engine",
+  "description": "The game itself: the rock belt and its waves, drones, pods, blink, streaks, lives, the two modes and replays.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/src/engine/game.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/config.ts",
+      "symbol": "ROCK"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/replay.ts",
+      "symbol": "replay"
+    }
+  ],
+  "entities": [
+    {
+      "id": "rock-belt",
+      "name": "Waves of breaking rock",
+      "description": "Each wave brings large rocks that split as they are shot.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "startWave"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "destroyRock"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "damageRock"
+        }
+      ],
+      "behavior": "A wave puts large rocks along the field's edges, away from every ship, moving in random directions. A shot rock splits into two of the next size down (large, medium, small), and a small one breaks up. Stone takes one hit; crystal splits in three and is worth double; iron takes two hits (the first only flashes it) and is worth triple. Pieces keep their rock's kind. Clearing the field brings the next wave after a pause, with one more large rock and faster rocks.",
+      "outcome": "Players have a field to clear that grows harder wave by wave, and points by size and kind: stone 25, 60 and 120 for large, medium and small, crystal double, iron triple.",
+      "constraints": [
+        "Wave n has min(14, 3 + n + ⌊(players − 1) / 2⌋) large rocks (rocksForWave).",
+        "Rocks are at least WAVE.clearance (240 px) from every live ship when they appear, if 40 tries find such a place.",
+        "Iron appears from wave 3, more often each wave, up to 30% of large rocks; 18% are crystal.",
+        "Rock speeds rise 5% a wave, up to 1.6 times wave 1's.",
+        "WAVE.opening (1.5 s) before wave 1, WAVE.pause (2.5 s) after each cleared field."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "rocksForWave"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "startWave"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "destroyRock"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "ROCK"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "WAVE"
+        }
+      ]
+    },
+    {
+      "id": "ships-and-guns",
+      "name": "Turn, thrust, shoot, wrap",
+      "description": "Each player flies one ship across a field that wraps at every edge.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "updateShip"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "fire"
+        }
+      ],
+      "behavior": "Left and right turn the ship, thrust pushes it forward, and its speed decays by the same factor every step. Fire shoots ahead, quicker for each fresh press than while held. Ships, shots, rocks and pods leave one edge of the 1280×800 field and come back on the other; drones fly across it and leave.",
+      "outcome": "The controls of the rock-shooter genre, the same for every player and every device.",
+      "constraints": [
+        "Top speed 430 px/s.",
+        "At most 5 of a ship's shots in flight (8 with rapid fire, 9 with spread); each lasts 0.95 s.",
+        "A fresh press fires at most every 0.1 s; holding fire fires every 0.24 s, or 0.075 s with rapid fire."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "updateShip"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "fire"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "wrap"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "SHIP"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "GUN"
+        }
+      ]
+    },
+    {
+      "id": "blink",
+      "name": "Blink",
+      "description": "A short jump forward that can't be hurt.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "updateShip"
+        }
+      ],
+      "behavior": "A fresh press of blink moves the ship 230 px in the direction it faces, wrapping, and nothing can hurt it for 0.5 s. Blink then recharges for 3 s.",
+      "outcome": "A way out of a closing gap, at the cost of waiting for the next one.",
+      "constraints": [
+        "Only on a fresh press, and only when recharged.",
+        "BLINK.distance 230 px, BLINK.guard 0.5 s, BLINK.cool 3 s."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "updateShip"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "BLINK"
+        }
+      ]
+    },
+    {
+      "id": "drones",
+      "name": "Drones",
+      "description": "Drones cross the field and shoot at the ships.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "updateDrones"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "killDrone"
+        }
+      ],
+      "behavior": "While a wave is on, a drone now and then enters from the left or right edge, turns up, down or straight every 0.8–1.8 s, and fires while it is over the field. The large drone fires in a random direction; the small hunter aims at the nearest ship, more accurately each wave. A drone that meets a rock is destroyed and the rock breaks, for nobody's points. A drone shot down by a ship scores and may leave a pod.",
+      "outcome": "A moving threat that also pays: the large drone is worth 250, the hunter 700.",
+      "constraints": [
+        "One drone at a time, and only while rocks are on the field.",
+        "The hunter appears from wave 3, more often each wave up to 70%.",
+        "Drones come sooner in later waves: 13–22 s apart in wave 1, down to 45% of that.",
+        "Drone shots hit every ship, in co-op as in versus.",
+        "A drone shot down by a ship leaves a pod half the time."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "updateDrones"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "nearestShip"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "killDrone"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "DRONE"
+        }
+      ]
+    },
+    {
+      "id": "pods",
+      "name": "Pods",
+      "description": "Power-ups left by crystal rocks and drones.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "dropPod"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "collide"
+        }
+      ],
+      "behavior": "A broken crystal rock may leave a pod, as may a drone a ship shoots down. A pod drifts slowly and is picked up by the first live ship to touch it: rapid fire or spread shot (three shots at once) for 10 s, or a shield that takes one hit and then guards the ship for 1 s. A new rapid fire or spread replaces the old.",
+      "outcome": "A reason to break crystal and chase drones.",
+      "constraints": [
+        "A broken crystal piece leaves a pod 22% of the time; never in the attract backdrop.",
+        "A pod lasts 9 s on the field.",
+        "Losing a ship loses its power and shield."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "dropPod"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "collide"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "hurtShip"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "POD"
+        }
+      ]
+    },
+    {
+      "id": "streaks",
+      "name": "Streaks",
+      "description": "Quick hits multiply what each one scores.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "award"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "multiplier"
+        }
+      ],
+      "behavior": "Every scoring hit within 1.6 s of the ship's last adds to its streak, and every 5 hits in a streak raise its multiplier by one. A longer gap, or losing the ship, starts again. Every score (rocks, drones and takedowns) is multiplied.",
+      "outcome": "Fast, sustained shooting pays up to four times as much.",
+      "constraints": [
+        "COMBO.window 1.6 s, COMBO.step 5, COMBO.max ×4."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "award"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "multiplier"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "COMBO"
+        }
+      ]
+    },
+    {
+      "id": "lives",
+      "name": "Ships, lives and the end of the game",
+      "description": "Each player has ships to lose; the game ends when everyone is out.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "hurtShip"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "killShip"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "step"
+        }
+      ],
+      "behavior": "A ship touched by a rock, a drone or a drone's shot is lost, unless a shield takes the hit; the rock or drone it touched is destroyed either way and scores for that ship. Two ships that touch are both lost. A lost ship comes back at its spawn point after 2 s, if its player has ships left, and nothing can hurt it, nor can it collide with another ship, for 3 s. Every 10,000 points add a ship. The game ends in the step in which every player is out of ships.",
+      "outcome": "A game lasts as long as the players' ships do, and score buys more time.",
+      "constraints": [
+        "SHIP.lives 3, SHIP.respawn 2 s, SHIP.spawnGuard 3 s, SHIP.extraEvery 10,000.",
+        "A player who is out gets no extra ships.",
+        "Ships collide with each other in every mode."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "collide"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "hurtShip"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "killShip"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "placeShip"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "award"
+        }
+      ]
+    },
+    {
+      "id": "modes",
+      "name": "Co-op and versus",
+      "description": "Up to nine ships share one field, as a team or as rivals.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "Mode"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "collide"
+        }
+      ],
+      "behavior": "In co-op a ship's shots pass through other ships. In versus they take them down, and a takedown scores 500 for the shooter. A ship's own shots never hit it. In both modes each player keeps their own score, and standings() ranks them. A game alone is a co-op game for one.",
+      "outcome": "Friends can clear the belt together or race each other for the highest score.",
+      "constraints": [
+        "1 to 9 players (MAX_PLAYERS).",
+        "More than one player adds a large rock to each wave for every two players past the first.",
+        "Players appear in a ring around the middle, or side by side for two."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "newGame"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "spawnPoint"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "collide"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "standings"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "TAKEDOWN"
+        }
+      ]
+    },
+    {
+      "id": "replay",
+      "name": "Exact replays",
+      "description": "A recorded game plays again to exactly the same scores.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "replay"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/dmath.ts",
+          "symbol": "atan2"
+        }
+      ],
+      "behavior": "The page records every change of every player's controls while it plays; replay() plays that recording through the same engine from the same seed. The engine's sine, cosine, arctangent and hypotenuse are built from + − × ÷ and Math.sqrt, its drag factor is written out, and its one generator keeps its state in the game, so every JavaScript engine computes the same game.",
+      "outcome": "The server can compute the scores itself, and browsers in an online game stay in step.",
+      "constraints": [
+        "Up to 90 minutes of play (MAX_STEPS) and 250,000 changes (MAX_LOG).",
+        "A recording must play exactly one whole game: it ends on its last step, with every change used.",
+        "Any change to the engine changes what an old recording replays to."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "Recorder"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "replay"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/dmath.ts",
+          "symbol": "sin"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/rng.ts",
+          "symbol": "rand"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/shatterbelt/src/engine",
+      "path": "games/shatterbelt/src/engine/.dev/capability.json",
+      "relationship": "The capability these features make up."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/shatterbelt/src/engine",
+      "path": "games/shatterbelt/src/engine/.dev/operation.json",
+      "relationship": "The operations they are reached through."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/shatterbelt/src",
+      "path": "games/shatterbelt/src/.dev/use-case.json",
+      "relationship": "The use cases that exercise them."
+    }
+  ]
+}

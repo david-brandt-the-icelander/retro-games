@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Browser game backlog",
+  "folder": "games/shatterbelt/src",
+  "entities": [
+    {
+      "id": "name-copies",
+      "title": "Check that the name rules stay identical to the other games'",
+      "summary": "src/name.ts has the same rules as Samosa's, Hivestorm's and Rally's copies, and nothing checks that they stay the same.",
+      "type": "debt",
+      "compromise": "The rules are copied into each game rather than shared; Shatterbelt's copy carries no comment asking to keep it identical, only the README's statement that the rules are Samosa's and Hivestorm's.",
+      "cost": "A name valid on one game's table could be refused or shown differently by another's.",
+      "acceptanceCriteria": [
+        "A check fails when cleanName's rules differ between the games, or the rules are shared from one place."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/shatterbelt/README.md",
+        "description": "The high-score section: names are cleaned by src/name.ts, the same rules as Samosa and Hivestorm."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/name.ts",
+          "symbol": "cleanName"
+        },
+        {
+          "path": "games/dictator/src/name.ts",
+          "symbol": "cleanName"
+        },
+        {
+          "path": "games/hivestorm/src/name.ts",
+          "symbol": "cleanName"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/backlog.json",
+          "entityId": "name-copies"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/observability.schema.json",
+  "kind": "observability",
+  "title": "Shatterbelt observability",
+  "folder": "games/shatterbelt",
+  "entities": [
+    {
+      "id": "web-analytics",
+      "title": "Cloudflare Web Analytics",
+      "summary": "Page views reported by Cloudflare's beacon, which Cloudflare injects into the page.",
+      "signalType": "metric",
+      "meaning": "Visits to the game's page.",
+      "access": "The Cloudflare account's owners.",
+      "excludes": [
+        "Anything inside the game: games, scores and names are not reported."
+      ],
+      "details": "The page's content security policy allows the beacon's script and reports; nothing in this folder emits them. The Worker writes no logs or metrics of its own: an unexpected error becomes a 500 with { error: \"server error\" } and is not recorded. The page also loads the games hub's /games/play.js with data-game=\"shatterbelt\"; whatever that records is the hub's.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/shatterbelt/public/_headers",
+          "symbol": "Content-Security-Policy"
+        },
+        {
+          "path": "games/shatterbelt/public/index.html",
+          "symbol": "play.js"
+        },
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "default.fetch"
+        }
+      ]
+    }
+  ]
+}
