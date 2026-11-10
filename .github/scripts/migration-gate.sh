@@ -10,8 +10,8 @@ cd "$(dirname "$0")/../.."
 
 DOC=docs/database-migrations.md
 # What counts as a database change, and how each file reaches production. Each game has its own
-# database, named in its wrangler.jsonc.
-PATHS=(':(glob)games/*/worker/schema.sql' ':(glob)games/*/worker/migrations/**')
+# database, named in its wrangler.jsonc. A .dev/ folder documents the code and is never applied.
+PATHS=(':(glob)games/*/worker/schema.sql' ':(glob)games/*/worker/migrations/**' ':(exclude,glob)**/.dev/**')
 how_to() {
   local game db
   game=$(cut -d/ -f2 <<<"$1")
