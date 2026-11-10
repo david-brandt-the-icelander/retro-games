@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Hyperspace decisions",
+  "folder": "games/lodestar/src/features/hyperspace",
+  "entities": [
+    {
+      "id": "death-cancels-countdown",
+      "title": "Dying cancels a running countdown",
+      "summary": "A countdown never survives death.",
+      "status": "accepted",
+      "context": "In the baseline a countdown can jump a dying pilot.",
+      "decision": "die cancels the countdown (RULES 3, deliberate difference 5).",
+      "rationale": "No jump rescues a dead pilot.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "die"
+        }
+      ]
+    },
+    {
+      "id": "range-checked-retarget",
+      "title": "Retargeting during a countdown is range-checked",
+      "summary": "A new selection becomes the destination only within the fuel; fuel never goes negative.",
+      "status": "accepted",
+      "context": "In the baseline a retarget beyond the fuel could take the fuel below 0.",
+      "decision": "Countdown::retarget accepts only 0 < distance ≤ fuel (RULES 4, deliberate difference 6).",
+      "rationale": "Fuel stays within its range.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/hyperspace/countdown.rs",
+          "symbol": "Countdown::retarget"
+        }
+      ]
+    }
+  ]
+}

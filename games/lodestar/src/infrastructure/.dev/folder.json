@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Infrastructure (lodestar-infrastructure)",
+  "folder": "games/lodestar/src/infrastructure",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Infrastructure (lodestar-infrastructure)",
+      "summary": "The crate that implements the inner layers' traits on the real machine: so far, pilot records as files.",
+      "purpose": "A workspace crate that depends on lodestar-core and implements the saving feature's PilotStore with PilotFiles: one <NAME>.pilot text file per pilot in one folder.",
+      "boundaries": [
+        "The record's format and whether it is accepted are the saving feature's; this crate only stores and fetches text."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/infrastructure/Cargo.toml",
+          "symbol": "package"
+        },
+        {
+          "path": "games/lodestar/src/infrastructure/src/lib.rs",
+          "symbol": "PilotFiles"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/infrastructure/infrastructure.md",
+          "label": "Infrastructure (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

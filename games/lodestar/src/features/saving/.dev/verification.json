@@ -1,0 +1,365 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How saving is checked",
+  "folder": "games/lodestar/src/features/saving",
+  "entities": [
+    {
+      "id": "name",
+      "title": "The pilot name and the name prompt",
+      "summary": "The 9 tests in src/features/saving/name.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/saving/.dev/feature.json",
+          "entityId": "save-and-restore"
+        }
+      ],
+      "criteria": [
+        "Letters are stored in capitals and digits kept",
+        "At most seven characters and further ones are ignored",
+        "Every other key is ignored",
+        "Delete removes the last character and does nothing when empty",
+        "Confirm may return an empty name",
+        "Cancel returns an empty name whatever was typed",
+        "The prompt starts empty after finishing",
+        "Validate name applies the prompt rules to text",
+        "Record names are one to seven capitals or digits"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/name.rs",
+          "symbol": "letters_are_stored_in_capitals_and_digits_kept",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/name.rs",
+          "symbol": "at_most_seven_characters_and_further_ones_are_ignored",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/name.rs",
+          "symbol": "every_other_key_is_ignored",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/name.rs",
+          "symbol": "delete_removes_the_last_character_and_does_nothing_when_empty",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/name.rs",
+          "symbol": "confirm_may_return_an_empty_name",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/name.rs",
+          "symbol": "cancel_returns_an_empty_name_whatever_was_typed",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/name.rs",
+          "symbol": "the_prompt_starts_empty_after_finishing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/name.rs",
+          "symbol": "validate_name_applies_the_prompt_rules_to_text",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/name.rs",
+          "symbol": "record_names_are_one_to_seven_capitals_or_digits",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "pilots",
+      "title": "The playing and the saved pilot, and saving and loading between them and the store",
+      "summary": "The 15 tests in src/features/saving/pilots.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/saving/.dev/feature.json",
+          "entityId": "save-and-restore"
+        }
+      ],
+      "criteria": [
+        "At power on both copies are the start pilot",
+        "Saving names the pilot copies it and writes it under the name",
+        "Saving applies the name rules",
+        "Saving in flight does nothing",
+        "An empty or cancelled name saves nothing",
+        "Saving under an existing name replaces it",
+        "Death returns to the saved copy",
+        "Death before any save returns to the start pilot",
+        "Loading an accepted record makes it the saved and the playing pilot",
+        "An empty name loads the saved pilots own name",
+        "An empty name with the start pilot looks up the default name",
+        "A missing record changes nothing but the playing copy still resets",
+        "A rejected record changes nothing",
+        "A loaded records missing fields come from the start pilot given",
+        "Skipping the load still starts from the saved pilot"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "at_power_on_both_copies_are_the_start_pilot",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "saving_names_the_pilot_copies_it_and_writes_it_under_the_name",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "saving_applies_the_name_rules",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "saving_in_flight_does_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "an_empty_or_cancelled_name_saves_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "saving_under_an_existing_name_replaces_it",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "death_returns_to_the_saved_copy",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "death_before_any_save_returns_to_the_start_pilot",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "loading_an_accepted_record_makes_it_the_saved_and_the_playing_pilot",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "an_empty_name_loads_the_saved_pilots_own_name",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "an_empty_name_with_the_start_pilot_looks_up_the_default_name",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "a_missing_record_changes_nothing_but_the_playing_copy_still_resets",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "a_rejected_record_changes_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "a_loaded_records_missing_fields_come_from_the_start_pilot_given",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "skipping_the_load_still_starts_from_the_saved_pilot",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "record",
+      "title": "The saved record",
+      "summary": "The 20 tests in src/features/saving/record.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/saving/.dev/feature.json",
+          "entityId": "checked-record"
+        },
+        {
+          "path": "games/lodestar/src/features/saving/.dev/contracts.json",
+          "entityId": "pilot-record"
+        }
+      ],
+      "criteria": [
+        "Crc32 matches the standard check value",
+        "The start pilot round trips",
+        "Extreme pilots round trip",
+        "A mixed pilot round trips",
+        "Blank lines extra spaces crlf and lowercase hex are read",
+        "The check is case insensitive",
+        "Missing fields take start values before the check",
+        "Missing fields take the given start pilots values",
+        "Only a header and a check is the start pilot",
+        "A changed value fails the check",
+        "A changed check fails",
+        "A record without a check is rejected",
+        "Text that is not a record is rejected",
+        "Another version is rejected",
+        "A galaxy state must be six bytes",
+        "Cargo and availability must have seventeen entries",
+        "Values out of their range are rejected",
+        "A malformed check is rejected",
+        "A field given twice is rejected",
+        "Unknown keys are ignored"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "crc32_matches_the_standard_check_value",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "the_start_pilot_round_trips",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "extreme_pilots_round_trip",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "a_mixed_pilot_round_trips",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "blank_lines_extra_spaces_crlf_and_lowercase_hex_are_read",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "the_check_is_case_insensitive",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "missing_fields_take_start_values_before_the_check",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "missing_fields_take_the_given_start_pilots_values",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "only_a_header_and_a_check_is_the_start_pilot",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "a_changed_value_fails_the_check",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "a_changed_check_fails",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "a_record_without_a_check_is_rejected",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "text_that_is_not_a_record_is_rejected",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "another_version_is_rejected",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "a_galaxy_state_must_be_six_bytes",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "cargo_and_availability_must_have_seventeen_entries",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "values_out_of_their_range_are_rejected",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "a_malformed_check_is_rejected",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "a_field_given_twice_is_rejected",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "unknown_keys_are_ignored",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

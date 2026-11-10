@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How planet and sun is checked",
+  "folder": "games/lodestar/src/features/planet_and_sun",
+  "entities": [
+    {
+      "id": "planet-and-sun",
+      "title": "The planet and the sun",
+      "summary": "The 9 tests in src/features/planet_and_sun/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/.dev/feature.json",
+          "entityId": "bodies-on-arrival"
+        },
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/.dev/feature.json",
+          "entityId": "altitude-and-crash"
+        },
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/.dev/feature.json",
+          "entityId": "sun-heat-and-scooping"
+        }
+      ],
+      "criteria": [
+        "Arrival places the planet ahead and the sun behind",
+        "The checks run only at their phases and not in the deep",
+        "Altitude from coarse values and the planets x fine value",
+        "Altitude is 255 when far and capped at 255",
+        "The low energy warning shows below 50",
+        "Cabin temperature rises toward the sun",
+        "Temperature readings far away and in the safe zone",
+        "Fuel scooping at 224 and above",
+        "The scooping message shows even when nothing is gained"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "arrival_places_the_planet_ahead_and_the_sun_behind",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "the_checks_run_only_at_their_phases_and_not_in_the_deep",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "altitude_from_coarse_values_and_the_planets_x_fine_value",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "altitude_is_255_when_far_and_capped_at_255",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "the_low_energy_warning_shows_below_50",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "cabin_temperature_rises_toward_the_sun",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "temperature_readings_far_away_and_in_the_safe_zone",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "fuel_scooping_at_224_and_above",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "the_scooping_message_shows_even_when_nothing_is_gained",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

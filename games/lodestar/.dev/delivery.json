@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/delivery.schema.json",
+  "kind": "delivery",
+  "title": "LodeStar delivery",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "not-distributed",
+      "title": "No distribution yet",
+      "summary": "Builds stay private until release; nothing deploys LodeStar.",
+      "environment": "none: local builds only",
+      "purpose": "Development and testing on the developer's machine.",
+      "deployedBy": "Nobody. The repository's Deploy workflow builds only games with a package.json and does not offer LodeStar; exports are made by hand (src/hosting/godot/.dev/runbooks.json).",
+      "rollback": "Not applicable: nothing is distributed. A local build is replaced by building an earlier commit.",
+      "details": "Distribution at release is decided in the publish phase (DESIGN § Desktop build), with the credit line create-retro-game requires.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Desktop build"
+        }
+      ],
+      "links": [
+        {
+          "path": ".github/workflows/deploy.yml",
+          "label": "Deploy workflow (its game list)"
+        },
+        {
+          "path": ".github/scripts/changed-games.sh",
+          "label": "changed-games.sh"
+        }
+      ]
+    }
+  ]
+}

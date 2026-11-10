@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "The cockpit",
+  "folder": "games/lodestar/src/capabilities/cockpit",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "The cockpit",
+      "summary": "The player's in-flight state that is not saved.",
+      "purpose": "Holds what a flight-state reset sets again (RULES C.1, C.6–C.10, D.3.13): energy and shields, temperatures, altitude, speed, attitude, the active mount, the missile lock, the E.C.M. and area-blast timers, the main counter and the timed message, with the small operations on them.",
+      "boundaries": [
+        "A capability: it uses no feature or use case (tests/layers.rs).",
+        "What is saved is the pilot capability's.",
+        "Nothing here draws a random number except Cockpit::reset, which discards the 54 stardust draws."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "Cockpit"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "MissileLock"
+        }
+      ]
+    }
+  ]
+}

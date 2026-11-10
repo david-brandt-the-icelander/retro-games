@@ -1,0 +1,110 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How the bridge's readouts are checked",
+  "folder": "games/lodestar/src/presentation/bridge",
+  "entities": [
+    {
+      "id": "views",
+      "title": "What the panels and the picture read, worked out from the sim in plain Rust so it can be tested without Godot",
+      "summary": "The 12 tests in src/presentation/bridge/src/views.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/.dev/operation.json"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/.dev/contracts.json",
+          "entityId": "simhost-gdscript-api"
+        }
+      ],
+      "criteria": [
+        "The title and docked modes are named and condition 0",
+        "Launching runs the tunnel then flight near the station",
+        "Screen and press names round trip",
+        "The start market rows match the gdd vectors",
+        "Buying shows in the rows and the hold",
+        "The start system offers equipment by tech level",
+        "The status lists equipment in rules order then lasers",
+        "Messages carry their data",
+        "The start system is current and selected at distance 0",
+        "The nearest system to a point selects nothing",
+        "Lasers in sights follow the active mount",
+        "Mode counts follow the tunnel steps"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "the_title_and_docked_modes_are_named_and_condition_0",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "launching_runs_the_tunnel_then_flight_near_the_station",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "screen_and_press_names_round_trip",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "the_start_market_rows_match_the_gdd_vectors",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "buying_shows_in_the_rows_and_the_hold",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "the_start_system_offers_equipment_by_tech_level",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "the_status_lists_equipment_in_rules_order_then_lasers",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "messages_carry_their_data",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "the_start_system_is_current_and_selected_at_distance_0",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "the_nearest_system_to_a_point_selects_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "lasers_in_sights_follow_the_active_mount",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "mode_counts_follow_the_tunnel_steps",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

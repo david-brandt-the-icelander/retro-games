@@ -1,0 +1,141 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How hyperspace is checked",
+  "folder": "games/lodestar/src/features/hyperspace",
+  "entities": [
+    {
+      "id": "countdown",
+      "title": "The hyperspace countdown and its destination",
+      "summary": "The 3 tests in src/features/hyperspace/countdown.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/hyperspace/.dev/feature.json",
+          "entityId": "hyperspace-jump"
+        },
+        {
+          "path": "games/lodestar/src/features/hyperspace/.dev/Countdown.state-diagram.json"
+        }
+      ],
+      "criteria": [
+        "The jump comes 85 ticks after the key",
+        "Cancelling clears both values",
+        "Retargeting is range checked"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/hyperspace/countdown.rs",
+          "symbol": "the_jump_comes_85_ticks_after_the_key",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/hyperspace/countdown.rs",
+          "symbol": "cancelling_clears_both_values",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/hyperspace/countdown.rs",
+          "symbol": "retargeting_is_range_checked",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "jump",
+      "title": "The hyperspace and galaxy-drive keys, the jump when the countdown ends and the arrival after the tunnel",
+      "summary": "The 6 tests in src/features/hyperspace/jump.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/hyperspace/.dev/feature.json",
+          "entityId": "hyperspace-jump"
+        },
+        {
+          "path": "games/lodestar/src/features/hyperspace/.dev/feature.json",
+          "entityId": "reach-jump"
+        },
+        {
+          "path": "games/lodestar/src/features/hyperspace/.dev/feature.json",
+          "entityId": "mis-jump"
+        }
+      ],
+      "criteria": [
+        "The hyperspace key checks in order",
+        "The galaxy drive key uses the drive and clears the record at once",
+        "A normal jump charges the fuel and draws the mis jump byte",
+        "A normal arrival",
+        "A galactic jump and arrival",
+        "A mis jump arrival is the ambush"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "the_hyperspace_key_checks_in_order",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "the_galaxy_drive_key_uses_the_drive_and_clears_the_record_at_once",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "a_normal_jump_charges_the_fuel_and_draws_the_mis_jump_byte",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "a_normal_arrival",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "a_galactic_jump_and_arrival",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "a_mis_jump_arrival_is_the_ambush",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "navigation",
+      "title": "The chart cursor, the selected system and the current system",
+      "summary": "The 2 tests in src/features/hyperspace/navigation.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/hyperspace/.dev/feature.json",
+          "entityId": "hyperspace-jump"
+        }
+      ],
+      "criteria": [
+        "The game starts at home with home selected",
+        "Selecting snaps the cursor and retargets only within range"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/hyperspace/navigation.rs",
+          "symbol": "the_game_starts_at_home_with_home_selected",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/hyperspace/navigation.rs",
+          "symbol": "selecting_snaps_the_cursor_and_retargets_only_within_range",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

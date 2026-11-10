@@ -87,7 +87,8 @@
       "id": "use-cases",
       "name": "Use cases",
       "responsibility": "FlyInSystem: the game and its 12 Hz tick.",
-      "folder": "games/lodestar/src/use_cases"
+      "folder": "games/lodestar/src/use_cases",
+      "diagram": "games/lodestar/src/use_cases/.dev/component-diagram.json"
     },
     {
       "id": "infrastructure",
@@ -216,6 +217,18 @@
       "to": "text",
       "kind": "depends-on",
       "description": "Labels, notices and refusals."
+    },
+    {
+      "from": "game",
+      "to": "text",
+      "kind": "depends-on",
+      "description": "Words for the notices it shows on the HUD."
+    },
+    {
+      "from": "hud",
+      "to": "ui",
+      "kind": "depends-on",
+      "description": "Shares the panels' look (look.gd)."
     }
   ]
 }

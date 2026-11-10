@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Infrastructure capability",
+  "folder": "games/lodestar/src/infrastructure",
+  "description": "What lodestar-infrastructure can do for the sim.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+      "symbol": "PilotFiles"
+    }
+  ],
+  "entities": [
+    {
+      "id": "pilot-record-storage",
+      "name": "Pilot record storage",
+      "description": "Pilot records as files on the player's machine.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "PilotFiles"
+        },
+        {
+          "path": "games/lodestar/src/infrastructure/src/lib.rs",
+          "symbol": "PilotFiles"
+        }
+      ],
+      "responsibility": "Stores and fetches each pilot's record text in one folder, one file per name, so a pilot saved at a station is there next time.",
+      "operations": [
+        {
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "PilotFiles::read"
+        },
+        {
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "PilotFiles::write"
+        },
+        {
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "PilotFiles::names"
+        }
+      ],
+      "access": [
+        "Nothing checks: an in-process library.",
+        "Only a name a record may hold (1 to 7 of A–Z and 0–9) reaches the disk, so no name points outside the folder."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/lodestar/src/infrastructure",
+      "path": "games/lodestar/src/infrastructure/.dev/operation.json",
+      "relationship": "Its operations."
+    }
+  ]
+}

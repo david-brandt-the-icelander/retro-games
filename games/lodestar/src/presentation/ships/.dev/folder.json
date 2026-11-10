@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Ship rig",
+  "folder": "games/lodestar/src/presentation/ships",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Ship rig",
+      "summary": "The ship script that poses a rigged ship's parts, and the GLB post-import script.",
+      "purpose": "ship.gd eases each ship's channels (turrets, brakes) toward their targets and poses its parts; ship_import.gd turns a ship GLB into a rigged ship: glTF extras to node metadata, the second UV set to the first, +X forward to Godot's −Z.",
+      "boundaries": [
+        "The rig contract every ship GLB follows is DESIGN § Rig contract.",
+        "The models themselves are in assets/ships/."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/ships/ship.gd",
+          "symbol": "set_channel"
+        },
+        {
+          "path": "games/lodestar/src/presentation/ships/ship_import.gd",
+          "symbol": "_post_import"
+        },
+        {
+          "path": "games/lodestar/assets/ships/acnx7_cheetah/acnx7_cheetah.glb.import",
+          "symbol": "import_script/path"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "label": "DESIGN § Ships"
+        }
+      ]
+    }
+  ]
+}

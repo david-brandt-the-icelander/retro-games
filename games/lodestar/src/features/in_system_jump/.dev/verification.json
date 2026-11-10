@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How in system jump is checked",
+  "folder": "games/lodestar/src/features/in_system_jump",
+  "entities": [
+    {
+      "id": "in-system-jump",
+      "title": "The in-system jump",
+      "summary": "The 4 tests in src/features/in_system_jump/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/in_system_jump/.dev/feature.json",
+          "entityId": "hop"
+        }
+      ],
+      "criteria": [
+        "A jump brings the bodies one far unit nearer",
+        "Any other ship refuses the jump",
+        "The safe zone and the deep refuse it",
+        "A body close ahead blocks and one behind never does"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/in_system_jump/mod.rs",
+          "symbol": "a_jump_brings_the_bodies_one_far_unit_nearer",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/in_system_jump/mod.rs",
+          "symbol": "any_other_ship_refuses_the_jump",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/in_system_jump/mod.rs",
+          "symbol": "the_safe_zone_and_the_deep_refuse_it",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/in_system_jump/mod.rs",
+          "symbol": "a_body_close_ahead_blocks_and_one_behind_never_does",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

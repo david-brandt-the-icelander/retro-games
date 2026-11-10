@@ -1,0 +1,98 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/risks.schema.json",
+  "kind": "risks",
+  "title": "LodeStar risks",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "camera-changes-fights",
+      "title": "The third-person camera shows what the original hid",
+      "summary": "Seeing behind the ship may make fights easier than the original's.",
+      "likelihood": "medium",
+      "impact": "Fights get easier.",
+      "mitigation": "Keep the rules and scanner, play-test, and only then decide on a retune, logged in the GDD and RULES.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Risks and open questions"
+        }
+      ]
+    },
+    {
+      "id": "aiming-parallax",
+      "title": "Aiming from behind the ship has parallax",
+      "summary": "Lasers may feel inaccurate from a third-person view.",
+      "likelihood": "medium",
+      "impact": "Lasers feel inaccurate.",
+      "mitigation": "A reticle on the mount's axis at range, and the in-line-of-fire mark from the sim's own hit test.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Risks and open questions"
+        }
+      ]
+    },
+    {
+      "id": "one-model",
+      "title": "Every ship is a Cheetah for now",
+      "summary": "Ship types are hard to tell apart.",
+      "likelihood": "high",
+      "impact": "Players confuse police, pirates and traders.",
+      "mitigation": "Per-type scale, tint and beacons; the alien ship and the non-ship objects are the first new models.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Risks and open questions"
+        }
+      ]
+    },
+    {
+      "id": "godot-rust-lag",
+      "title": "godot-rust lags a Godot release",
+      "summary": "The engine cannot be upgraded when wanted.",
+      "likelihood": "medium",
+      "impact": "Upgrades wait on gdext.",
+      "mitigation": "Pin both and upgrade together.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Risks and open questions"
+        }
+      ]
+    },
+    {
+      "id": "parity-drift",
+      "title": "JavaScript and Rust maths differ in the last bit",
+      "summary": "Parity traces may drift.",
+      "likelihood": "medium",
+      "impact": "False parity failures.",
+      "mitigation": "Hash values rounded to 6 decimals; investigate at the first differing tick.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Risks and open questions"
+        }
+      ]
+    },
+    {
+      "id": "rig-extras",
+      "title": "glTF extras may not arrive as node metadata",
+      "summary": "Rigs would not load.",
+      "likelihood": "low",
+      "impact": "Ships without moving parts.",
+      "mitigation": "A sidecar <ship>.rig.json from the Blender script.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Risks and open questions"
+        }
+      ]
+    }
+  ]
+}

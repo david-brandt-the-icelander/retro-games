@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Cockpit capability",
+  "folder": "games/lodestar/src/capabilities/cockpit",
+  "description": "What the cockpit can do for the rules.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+      "symbol": "Cockpit"
+    }
+  ],
+  "entities": [
+    {
+      "id": "cockpit",
+      "name": "The cockpit",
+      "description": "Holds and updates the player's in-flight state.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "Cockpit"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "MissileLock"
+        }
+      ],
+      "responsibility": "Resets the flight state, drains and recharges energy and shields, shows and times the messages, counts the main counter down, cools the laser, runs the E.C.M. pulse and follows the missile lock through removals.",
+      "operations": [
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "Cockpit::reset"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "Cockpit::drain_energy"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "Cockpit::recharge"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "Cockpit::show"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "Cockpit::count_down_counter"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "Cockpit::cool_laser"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "Cockpit::start_ecm"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "MissileLock::on_removed"
+        }
+      ],
+      "access": [
+        "Nothing checks: an in-process library inside lodestar-core.",
+        "The use case keeps one Cockpit; features, combat and the AI change it; the bridge reads it."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "class",
+      "folder": "games/lodestar/src/capabilities/cockpit",
+      "path": "games/lodestar/src/capabilities/cockpit/.dev/class-diagram.json",
+      "relationship": "Its types."
+    },
+    {
+      "kind": "state",
+      "folder": "games/lodestar/src/capabilities/cockpit",
+      "path": "games/lodestar/src/capabilities/cockpit/.dev/MissileLock.state-diagram.json",
+      "relationship": "The missile lock's states."
+    }
+  ]
+}

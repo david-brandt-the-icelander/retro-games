@@ -1,0 +1,88 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Escape pod",
+  "folder": "games/lodestar/src/features/escape_pod",
+  "description": "Abandoning ship. The feature document, escape_pod.md, is the primary record.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/escape_pod/mod.rs",
+      "symbol": "launch_pod"
+    },
+    {
+      "path": "games/lodestar/src/features/escape_pod/mod.rs",
+      "symbol": "aftermath"
+    }
+  ],
+  "entities": [
+    {
+      "id": "escape-pod",
+      "name": "Abandon ship",
+      "description": "A pilot with an escape pod leaves the ship and wakes up docked, poorer by the cargo.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "launch_pod"
+        },
+        {
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "Escape"
+        },
+        {
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "aftermath"
+        }
+      ],
+      "behavior": "The pod press launches the pod when one is fitted: the bubble is emptied but for the abandoned hull, placed straight ahead, which drifts away for 97 ticks; the rest of the launch tick runs on the new bubble. Then the flight state is reset and, outside the Deep, the pilot is docked at the current system's station with the hold emptied, a clean record, the pod used up and a full tank, keeping cash, equipment, missiles, kills and the market. In the Deep the death sequence starts instead.",
+      "outcome": "A lost fight need not cost the ship's equipment and cash.",
+      "constraints": [
+        "ESCAPE_TICKS is 97; the hull flies at HULL_SPEED.",
+        "Needs Fitted::escape_pod.",
+        "The hull never collides with the player (deliberate difference 7).",
+        "In the presentation the key must be held for a second (game.gd ESCAPE_HOLD)."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "launch_pod"
+        },
+        {
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "Escape::tick"
+        },
+        {
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "aftermath"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "escape_pod_rescue"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::end_escape"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The pilot's goals that exercise it."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/death",
+      "path": "games/lodestar/src/features/death/.dev/feature.json",
+      "relationship": "Death when the pod is used in the Deep."
+    },
+    {
+      "kind": "state",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/Mode.state-diagram.json",
+      "relationship": "The escape mode."
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How escape pod is checked",
+  "folder": "games/lodestar/src/features/escape_pod",
+  "entities": [
+    {
+      "id": "escape-pod",
+      "title": "The escape pod",
+      "summary": "The 6 tests in src/features/escape_pod/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/escape_pod/.dev/feature.json",
+          "entityId": "escape-pod"
+        }
+      ],
+      "criteria": [
+        "No pod no escape",
+        "The launch leaves only the hull",
+        "A full bubble leaves no hull",
+        "Ninety seven ticks of the hull drifting",
+        "The rescue docks with a full tank and an empty hold",
+        "The pod in the deep ends in death"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "no_pod_no_escape",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "the_launch_leaves_only_the_hull",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "a_full_bubble_leaves_no_hull",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "ninety_seven_ticks_of_the_hull_drifting",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "the_rescue_docks_with_a_full_tank_and_an_empty_hold",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "the_pod_in_the_deep_ends_in_death",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

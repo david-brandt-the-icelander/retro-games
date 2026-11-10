@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "In-system jump",
+  "folder": "games/lodestar/src/features/in_system_jump",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "In-system jump",
+      "summary": "A leap of one far unit forward when nothing else is about and no body is close ahead.",
+      "purpose": "Carries out the hop of RULES B.13 and says why it was refused.",
+      "boundaries": [
+        "A feature: it uses capabilities and other features, never a use case (tests/layers.rs).",
+        "It draws no random number."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/in_system_jump/mod.rs",
+          "symbol": "in_system_jump"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/features/in_system_jump/in_system_jump.md",
+          "label": "In-system jump (feature document)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How bubble is checked",
+  "folder": "games/lodestar/src/capabilities/bubble",
+  "entities": [
+    {
+      "id": "bubble",
+      "title": "The bubble",
+      "summary": "The 3 tests in src/capabilities/bubble/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/bubble/.dev/capability.json",
+          "entityId": "bubble"
+        }
+      ],
+      "criteria": [
+        "New objects take their type and the default orientation",
+        "Adding stops at thirteen and removing shifts down",
+        "Replacing keeps slots and fixes counts"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "new_objects_take_their_type_and_the_default_orientation",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "adding_stops_at_thirteen_and_removing_shifts_down",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "replacing_keeps_slots_and_fixes_counts",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Death",
+  "folder": "games/lodestar/src/features/death",
+  "description": "What dying does, whichever rule killed the player. The feature document, death.md, is the primary record.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/death/mod.rs",
+      "symbol": "die"
+    },
+    {
+      "path": "games/lodestar/src/features/death/mod.rs",
+      "symbol": "return_to_title"
+    }
+  ],
+  "entities": [
+    {
+      "id": "death-sequence",
+      "name": "Death and the return to the last save",
+      "description": "The ship is lost, wreckage tumbles where it was, and the game returns to the title with the last saved pilot.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "die"
+        },
+        {
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "Dying"
+        },
+        {
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "return_to_title"
+        }
+      ],
+      "behavior": "On a crash, a burn, a fatal docking, energy reaching 0 or the escape pod used in the Deep, the flight state is reset, a running countdown is cancelled and four wreck canisters are placed. 61 dying ticks of flight logic run without the player's controls or periodic spawning; then the title shows and the playing pilot becomes a copy of the saved one.",
+      "outcome": "Every launch risks what the pilot has earned since the last save.",
+      "constraints": [
+        "DYING_TICKS is 61 and WRECKS is 4.",
+        "Death starts only once (FlyInSystem::die ignores a second death).",
+        "The countdown never survives death (deliberate difference 5)."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "die"
+        },
+        {
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "Dying::tick"
+        },
+        {
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "return_to_title"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::die"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::end_death"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The pilot's goals that exercise it."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/saving",
+      "path": "games/lodestar/src/features/saving/.dev/feature.json",
+      "relationship": "Returns to the saved pilot through Pilots::on_death."
+    },
+    {
+      "kind": "state",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/Mode.state-diagram.json",
+      "relationship": "The dying mode."
+    }
+  ]
+}

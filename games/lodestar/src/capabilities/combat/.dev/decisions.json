@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Combat decisions",
+  "folder": "games/lodestar/src/capabilities/combat",
+  "entities": [
+    {
+      "id": "lock-on-active-mount",
+      "title": "The missile lock uses the active mount's axis",
+      "summary": "A missile locks on a ship in the active mount's sights.",
+      "status": "accepted",
+      "context": "The baseline locks along the current view; LodeStar has one third-person view and four mounts.",
+      "decision": "try_lock tests the active mount's sights (RULES 6, deliberate difference 8).",
+      "rationale": "The lock follows the mount the pilot fires from.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "try_lock"
+        }
+      ]
+    },
+    {
+      "id": "fire-only-in-flight-view",
+      "title": "Firing and locking need the space view",
+      "summary": "Lasers fire, hit and lock only while the space view shows, not with a panel open.",
+      "status": "accepted",
+      "context": "In the baseline the current view's laser fires; a panel over the view is not a view.",
+      "decision": "The flight tick passes whether the space view shows to the laser and the sights step (RULES 7, deliberate difference 9).",
+      "rationale": "Reading a chart in a fight stays a risk, as the original intended.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::flight_view"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "sights_step"
+        }
+      ]
+    }
+  ]
+}

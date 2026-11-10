@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Market and hold",
+  "folder": "games/lodestar/src/capabilities/market",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Market and hold",
+      "summary": "The 17 goods, their prices and availability, the per-visit market byte and hold space.",
+      "purpose": "Owns RULES A.9 and A.11: the goods table, price and availability formulas from a system's economy and the market byte, drawing the byte on arrival, and what fits in the hold.",
+      "boundaries": [
+        "A capability: it uses no feature or use case (tests/layers.rs).",
+        "Callers pass the current system's economy; the market never looks a system up.",
+        "The goods data are the GDD's (§ 4.7, § 5.1, § 5.2)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "price"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "draw_and_arrive"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/capabilities/market/market.md",
+          "label": "Market (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

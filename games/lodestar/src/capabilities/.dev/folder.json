@@ -1,0 +1,24 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Capabilities",
+  "folder": "games/lodestar/src/capabilities",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Capabilities",
+      "summary": "Reusable rules and state with no outward dependencies, each in its own module.",
+      "purpose": "Groups lodestar-core's innermost layer: random generators, space maths, ship types, the bubble, the pilot, the cockpit, the universe, the market, equipment, flight, combat and the ship AI. Features and the use case build on them.",
+      "boundaries": [
+        "A capability never uses a feature or a use case (tests/layers.rs)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/mod.rs",
+          "symbol": "capabilities"
+        }
+      ]
+    }
+  ]
+}

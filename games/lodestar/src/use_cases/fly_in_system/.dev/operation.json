@@ -1,0 +1,144 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "Fly in a system: operations",
+  "folder": "games/lodestar/src/use_cases/fly_in_system",
+  "description": "The calls through which a host drives the game.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "FlyInSystem"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "TickClock"
+    }
+  ],
+  "entities": [
+    {
+      "id": "power-on",
+      "name": "Power on",
+      "description": "A new game on the title, with the start pilot saved and playing.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::new"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+        "symbol": "FlyInSystem::new"
+      },
+      "action": "query",
+      "transport": "Rust function (constructor)",
+      "authorization": "None: an in-process call. SimHost (src/presentation/bridge) and the tests call it.",
+      "result": "A FlyInSystem in the title mode; the main generator has discarded the 54 power-on stardust draws.",
+      "failures": []
+    },
+    {
+      "id": "tick",
+      "name": "Run one tick",
+      "description": "Runs one 12 Hz tick, two substeps, with the held actions and the presses since the last tick.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::tick"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+        "symbol": "FlyInSystem::tick"
+      },
+      "action": "command",
+      "transport": "Rust method",
+      "authorization": "None: an in-process call. SimHost (src/presentation/bridge) and the tests call it.",
+      "result": "The tick's events in order (Event); the game's state has moved on one tick.",
+      "failures": [
+        "A press the present mode does not accept is dropped, with no event.",
+        "While paused only the pause handler's presses act."
+      ]
+    },
+    {
+      "id": "load",
+      "name": "Load a pilot",
+      "description": "Loads the pilot named name from a PilotStore; only on the title.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::load"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+        "symbol": "FlyInSystem::load"
+      },
+      "action": "command",
+      "transport": "Rust method",
+      "authorization": "None: an in-process call. SimHost (src/presentation/bridge) and the tests call it.",
+      "result": "Some(Ok) when the record was accepted and is now the saved and playing pilot.",
+      "failures": [
+        "None when not on the title.",
+        "Some(Err(LoadError::NotFound)) when there is no record; Some(Err(…)) when the record is rejected; nothing changes."
+      ]
+    },
+    {
+      "id": "save",
+      "name": "Save the pilot",
+      "description": "Saves the playing pilot under name to a PilotStore; only while docked.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::save"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+        "symbol": "FlyInSystem::save"
+      },
+      "action": "command",
+      "transport": "Rust method",
+      "authorization": "None: an in-process call. SimHost (src/presentation/bridge) and the tests call it.",
+      "result": "SaveOutcome::Saved: the saved pilot is a copy of the playing one and its record was handed to the store.",
+      "failures": [
+        "SaveOutcome::NotDocked when not docked.",
+        "SaveOutcome::NoName when the name is empty once the name prompt's rules are applied (A–Z and 0–9 kept, letters in capitals, at most 7)."
+      ]
+    },
+    {
+      "id": "advance-clock",
+      "name": "Advance the tick clock",
+      "description": "Adds a frame's time and says how many ticks to run.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "TickClock::advance"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+        "symbol": "TickClock::advance"
+      },
+      "action": "command",
+      "transport": "Rust method",
+      "authorization": "None: an in-process call. SimHost (src/presentation/bridge) and the tests call it.",
+      "result": "The whole ticks due; TickClock::alpha then says how far the frame is towards the next tick.",
+      "failures": [
+        "A frame longer than MAX_FRAME_SECONDS (0.25 s) counts as 0.25 s; a non-finite one as 0."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The goals these calls carry."
+    },
+    {
+      "kind": "state",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/Mode.state-diagram.json",
+      "relationship": "The modes a tick moves through."
+    }
+  ]
+}

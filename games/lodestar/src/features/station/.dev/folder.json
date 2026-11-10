@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Station",
+  "folder": "games/lodestar/src/features/station",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Station",
+      "summary": "The station appearing near the planet, leaving for distance, the removal test and the launch scene.",
+      "purpose": "Places the station on launch (RULES B.10.2) and on approach (B.11.1), swaps it with the sun when it leaves (B.9.4), and gives the tick the removal-for-distance test.",
+      "boundaries": [
+        "A feature: it uses capabilities and other features, never a use case (tests/layers.rs).",
+        "Docking is the docking feature's.",
+        "The station can never be destroyed."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/station/mod.rs",
+          "symbol": "station_appearance"
+        },
+        {
+          "path": "games/lodestar/src/features/station/mod.rs",
+          "symbol": "launch"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/features/station/station.md",
+          "label": "Station (feature document)"
+        }
+      ]
+    }
+  ]
+}

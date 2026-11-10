@@ -16,6 +16,10 @@
     {
       "path": "games/lodestar/src/hosting/godot/Cargo.toml",
       "symbol": "crate-type cdylib"
+    },
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+      "symbol": "PILOT_FOLDER"
     }
   ],
   "nodes": [
@@ -37,6 +41,12 @@
       "kind": "client",
       "description": "The person flying the ship, at the keyboard and mouse.",
       "actor": "Actors/pilot.md"
+    },
+    {
+      "id": "pilot-records",
+      "name": "Pilot records (user://pilots)",
+      "kind": "database",
+      "description": "A folder of <NAME>.pilot text files in Godot's user data folder on the player's computer, one per saved pilot."
     }
   ],
   "artifacts": [
@@ -67,6 +77,18 @@
       "to": "game-process",
       "kind": "connects-to",
       "description": "Keyboard and mouse input; the picture and sound."
+    },
+    {
+      "from": "desktop",
+      "to": "pilot-records",
+      "kind": "hosts",
+      "description": "On the local disk, in Godot's user:// folder."
+    },
+    {
+      "from": "game-process",
+      "to": "pilot-records",
+      "kind": "connects-to",
+      "description": "Reads and writes records through lodestar-infrastructure's PilotFiles (file system)."
     }
   ]
 }

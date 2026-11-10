@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Ship AI",
+  "folder": "games/lodestar/src/capabilities/ai",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Ship AI",
+      "summary": "How every non-player object thinks, launches its children and becomes angry.",
+      "purpose": "Decides each think of every thinking object (RULES C.5): when it is due, the missile AI, the ship AI and its steering, launching police, pods, missiles, drones and canisters, and the anger a hit causes. A think changes the bubble and the cockpit but never the pilot: damage and kills come back in a Thought for combat to apply.",
+      "boundaries": [
+        "A capability: it uses no feature or use case (tests/layers.rs).",
+        "The player's side of a fight is the combat capability's."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/ai/mod.rs",
+          "symbol": "think"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/ai/mod.rs",
+          "symbol": "Thought"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/capabilities/ai/ai.md",
+          "label": "The ship AI (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

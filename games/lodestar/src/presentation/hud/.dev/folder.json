@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Flight HUD",
+  "folder": "games/lodestar/src/presentation/hud",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Flight HUD",
+      "summary": "The flight instruments, drawn plainly in the corners and edges.",
+      "purpose": "hud.gd draws the location, the ticker, the speed tape, the roll and pitch indicators, the scanner and heading pip, the weapons row, shields, energy, heat, altitude, fuel, the condition frame and the reticle on the active mount's axis, from the sim's snapshots and the space scene's interpolated objects.",
+      "boundaries": [
+        "It reads and writes nothing in the sim.",
+        "Its words are text/words.gd's and its look ui/look.gd's."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/hud/hud.gd",
+          "symbol": "_draw"
+        },
+        {
+          "path": "games/lodestar/src/presentation/hud/hud.gd",
+          "symbol": "show_notice"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/presentation/hud/hud.md",
+          "label": "The HUD (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

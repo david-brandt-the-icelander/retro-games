@@ -1,0 +1,114 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Planet and sun",
+  "folder": "games/lodestar/src/features/planet_and_sun",
+  "description": "The two bodies of every system. The feature document, planet_and_sun.md, is the primary record.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+      "symbol": "place_on_arrival"
+    },
+    {
+      "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+      "symbol": "planet_and_sun_checks"
+    }
+  ],
+  "entities": [
+    {
+      "id": "bodies-on-arrival",
+      "name": "A planet ahead, a sun behind",
+      "description": "Every arrival places the system's planet ahead of the pilot and its sun behind.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "place_on_arrival"
+        }
+      ],
+      "behavior": "On arrival the planet and the sun are placed from the system's own positions, the planet's by the legal status's low bit.",
+      "outcome": "Each system has its own geography to fly through.",
+      "constraints": [],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "place_on_arrival"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/system.rs",
+          "symbol": "System::planet_position"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/system.rs",
+          "symbol": "System::sun_position"
+        }
+      ]
+    },
+    {
+      "id": "altitude-and-crash",
+      "name": "Altitude and crashing",
+      "description": "Flying too low crashes into the planet.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "altitude_check"
+        }
+      ],
+      "behavior": "Outside the Deep, on the tick whose 32-tick phase is 10, the low-energy warning shows when energy is below 50 and the altitude is worked out from the planet's distance; inside the planet, or at altitude 0, the player dies and the tick ends.",
+      "outcome": "The planet is a hazard as well as a destination.",
+      "constraints": [
+        "ALTITUDE_PHASE is 10 of every 32 ticks, so a crash is found up to 32 ticks late."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "planet_and_sun_checks"
+        },
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "altitude_check"
+        }
+      ]
+    },
+    {
+      "id": "sun-heat-and-scooping",
+      "name": "The sun's heat and fuel scooping",
+      "description": "Close to the sun the cabin heats up; skimming it with a fuel scoop fills the tank.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "sun_check"
+        }
+      ],
+      "behavior": "Outside the Deep, on the tick whose 32-tick phase is 20, the cabin temperature is worked out from the sun's distance; a temperature that would pass 255 burns the player up. With a fuel scoop, no station present and a temperature of at least 224, fuel is scooped and the scooping message shows.",
+      "outcome": "Fuel for free, at a risk.",
+      "constraints": [
+        "SUN_PHASE is 20 of every 32 ticks; SCOOP_HEAT is 224.",
+        "No gradual heat damage (RULES B open question 4)."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "sun_check"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "scoop_sun_fuel"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The pilot's goals that exercise it."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/lodestar/src/capabilities/universe",
+      "path": "games/lodestar/src/capabilities/universe/.dev/capability.json",
+      "relationship": "The system's planet and sun positions."
+    }
+  ]
+}

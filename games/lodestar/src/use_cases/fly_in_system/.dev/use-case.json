@@ -1,0 +1,1021 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-use-case/schema.json",
+  "kind": "use-case",
+  "title": "Fly in a system: the pilot's goals",
+  "folder": "games/lodestar/src/use_cases/fly_in_system",
+  "description": "What the pilot does with the game, goal by goal, as FlyInSystem carries it out. fly_in_system.md beside the code is the primary record of what is built.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "FlyInSystem"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+      "symbol": "FlyInSystem::flight_logic"
+    }
+  ],
+  "entities": [
+    {
+      "id": "start-playing",
+      "name": "Start playing from the title",
+      "description": "The pilot starts the last saved pilot, or loads another by name, and is docked.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::begin"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::load"
+        }
+      ],
+      "actor": "Pilot",
+      "goal": "Get back to the pilot they saved and start from a station.",
+      "preconditions": [
+        "The title shows (power-on, death or quitting)."
+      ],
+      "postconditions": [
+        "The game is docked at the system nearest the pilot's position, on the status screen.",
+        "The playing pilot is a copy of the last saved or loaded one."
+      ],
+      "flow": [
+        {
+          "id": "choose",
+          "actor": "Pilot",
+          "action": "Chooses Continue, or Load pilot and types a saved pilot's name.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/ui/title.gd",
+              "symbol": "_choose"
+            },
+            {
+              "path": "games/lodestar/src/presentation/ui/title.gd",
+              "symbol": "load_and_start"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/pilot.md"
+        },
+        {
+          "id": "load",
+          "actor": "FlyInSystem",
+          "action": "On Load, reads the named record through the store and, when it is accepted, makes it the saved and the playing pilot.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::load"
+            },
+            {
+              "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+              "symbol": "SimHost::load_pilot"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "start",
+          "actor": "Pilot",
+          "action": "Starts (the title sends the start press).",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/ui/title.gd",
+              "symbol": "load_and_start"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/pilot.md"
+        },
+        {
+          "id": "begin",
+          "actor": "FlyInSystem",
+          "action": "Restores the saved pilot, resets the flight state and docks at the system nearest the pilot's position, on the status screen.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::title_press"
+            },
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::begin"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "load",
+          "condition": "No record has the name, or the record is rejected",
+          "outcome": "load_pilot answers not_found or rejected; the title stays, with the last saved pilot.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+              "symbol": "SimHost::load_pilot"
+            },
+            {
+              "path": "games/lodestar/src/presentation/ui/title.gd",
+              "symbol": "load_and_start"
+            }
+          ]
+        },
+        {
+          "atStep": "start",
+          "condition": "Another press comes first in the substep",
+          "outcome": "Only the first press in a substep answers the title; anything but start is ignored.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::substep"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/pilot.md"
+    },
+    {
+      "id": "trade-at-station",
+      "name": "Trade goods at the station",
+      "description": "Docked, the pilot buys and sells goods at the market panel.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::docked_press"
+        }
+      ],
+      "actor": "Pilot",
+      "goal": "Buy goods cheap here to sell dear elsewhere, or sell what is in the hold.",
+      "preconditions": [
+        "Docked.",
+        "The market tab is open."
+      ],
+      "postconditions": [
+        "Cash, cargo and the market's availability have changed by the trade, or nothing has after a refusal.",
+        "The panel shows the result."
+      ],
+      "flow": [
+        {
+          "id": "pick",
+          "actor": "Pilot",
+          "action": "Picks an item, sets a quantity with the stepper and presses buy or sell.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/ui/market_page.gd",
+              "symbol": "handle_key"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/pilot.md"
+        },
+        {
+          "id": "send",
+          "actor": "SimHost",
+          "action": "The page calls buy or sell on SimHost, which queues the press.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+              "symbol": "SimHost::buy"
+            },
+            {
+              "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+              "symbol": "SimHost::sell"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "trade",
+          "actor": "FlyInSystem",
+          "action": "Passes the buy or sale to the trading feature at the current system's economy and reports Bought or Sold.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::docked_press"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "show",
+          "actor": "Market page",
+          "action": "The page shows the trade and the cash left.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/ui/market_page.gd",
+              "symbol": "on_sim_event"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "trade",
+          "condition": "More than available, no room in the hold, or not enough cash",
+          "outcome": "The trade is refused in that order and nothing changes; the stepper normally never offers such a quantity.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/features/trading/mod.rs",
+              "symbol": "buy"
+            },
+            {
+              "path": "games/lodestar/src/features/trading/mod.rs",
+              "symbol": "max_buy"
+            }
+          ]
+        },
+        {
+          "atStep": "trade",
+          "condition": "Not docked",
+          "outcome": "The press is dropped.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::flight_press"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/pilot.md"
+    },
+    {
+      "id": "equip-ship",
+      "name": "Buy equipment",
+      "description": "Docked, the pilot buys an item from the equipment list the station's tech level offers.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::docked_press"
+        }
+      ],
+      "actor": "Pilot",
+      "goal": "Make the ship better: fuel, missiles, a bigger hold, lasers and gear.",
+      "preconditions": [
+        "Docked.",
+        "The equip tab is open."
+      ],
+      "postconditions": [
+        "The item is fitted and its price taken, or nothing changed after a refusal."
+      ],
+      "flow": [
+        {
+          "id": "pick",
+          "actor": "Pilot",
+          "action": "Picks an item and, for a laser, a mount, and confirms.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/ui/equip_page.gd",
+              "symbol": "handle_key"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/pilot.md"
+        },
+        {
+          "id": "send",
+          "actor": "SimHost",
+          "action": "The page calls equip on SimHost, which queues the press.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+              "symbol": "SimHost::equip"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "buy",
+          "actor": "FlyInSystem",
+          "action": "Buys the item at the current system's tech level and reports Equipped; buying fuel sets the main counter to 0.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::docked_press"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "show",
+          "actor": "Equip page",
+          "action": "The page shows what was bought and the cash left, or the refusal, and stays open.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/ui/equip_page.gd",
+              "symbol": "on_sim_event"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "buy",
+          "condition": "Not enough cash, already fitted or at its limit, no mount for a laser, or not offered here",
+          "outcome": "Refused; nothing changes.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+              "symbol": "Refused"
+            },
+            {
+              "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+              "symbol": "buy_offered"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/pilot.md"
+    },
+    {
+      "id": "save-pilot",
+      "name": "Save the pilot",
+      "description": "Docked, the pilot saves under a name.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::save"
+        }
+      ],
+      "actor": "Pilot",
+      "goal": "Keep what they have earned, so that death returns them here.",
+      "preconditions": [
+        "Docked.",
+        "The pilot tab is open."
+      ],
+      "postconditions": [
+        "The saved pilot is a copy of the playing one, under the name, and its record is written."
+      ],
+      "flow": [
+        {
+          "id": "name",
+          "actor": "Pilot",
+          "action": "Presses S, keeps or types a name and presses Enter.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/ui/pilot_page.gd",
+              "symbol": "handle_key"
+            },
+            {
+              "path": "games/lodestar/src/presentation/ui/pilot_page.gd",
+              "symbol": "_on_submitted"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/pilot.md"
+        },
+        {
+          "id": "save",
+          "actor": "SimHost",
+          "action": "SimHost saves at once through PilotFiles.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+              "symbol": "SimHost::save_pilot"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "copy",
+          "actor": "FlyInSystem",
+          "action": "Names the playing pilot, copies it to the saved pilot and writes the record.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::save"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "copy",
+          "condition": "Not docked",
+          "outcome": "not_docked; nothing is saved.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+              "symbol": "SimHost::save_pilot"
+            }
+          ]
+        },
+        {
+          "atStep": "copy",
+          "condition": "The name is empty",
+          "outcome": "no_name; nothing is saved.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+              "symbol": "SimHost::save_pilot"
+            }
+          ]
+        },
+        {
+          "atStep": "copy",
+          "condition": "The file cannot be written",
+          "outcome": "The save in play stands but no file is written, and the pilot is not told (PilotStore::write cannot report it).",
+          "sources": [
+            {
+              "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+              "symbol": "PilotFiles::write"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/pilot.md"
+    },
+    {
+      "id": "launch",
+      "name": "Launch from the station",
+      "description": "Docked, the pilot launches into the station's safe zone.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::tunnel_step"
+        }
+      ],
+      "actor": "Pilot",
+      "goal": "Leave the station and fly.",
+      "preconditions": [
+        "Docked."
+      ],
+      "postconditions": [
+        "Flying in the safe zone with the planet ahead and the station behind, at speed 12."
+      ],
+      "flow": [
+        {
+          "id": "launch",
+          "actor": "Pilot",
+          "action": "Presses launch.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/game/game.gd",
+              "symbol": "_docked_key"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/pilot.md"
+        },
+        {
+          "id": "tunnel",
+          "actor": "FlyInSystem",
+          "action": "Starts the launch tunnel and runs its 16 steps, one a tick.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::docked_press"
+            },
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::tunnel_step"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "scene",
+          "actor": "FlyInSystem",
+          "action": "Builds the launch scene and switches to flight.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::tunnel_step"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [],
+      "actorDocument": "Actors/pilot.md"
+    },
+    {
+      "id": "fight",
+      "name": "Fight",
+      "description": "In flight, the pilot fires the active mount's lasers and missiles at a ship until it explodes.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::flight_logic"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::process"
+        }
+      ],
+      "actor": "Pilot",
+      "goal": "Survive, and earn bounties and rank.",
+      "preconditions": [
+        "Flying, with the space view showing."
+      ],
+      "postconditions": [
+        "The target exploded and left the bubble; its bounty is paid and the kill counted. Or the pilot died."
+      ],
+      "flow": [
+        {
+          "id": "aim",
+          "actor": "Pilot",
+          "action": "Chooses the active mount (1–4) and steers the target into its sights.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/game/game.gd",
+              "symbol": "_flight_key"
+            },
+            {
+              "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+              "symbol": "SimHost::press_mount"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/pilot.md"
+        },
+        {
+          "id": "fire",
+          "actor": "Pilot",
+          "action": "Holds fire; or arms a missile, waits for the lock and fires it.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+              "symbol": "held_actions"
+            },
+            {
+              "path": "games/lodestar/src/presentation/game/game.gd",
+              "symbol": "_flight_key"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/pilot.md"
+        },
+        {
+          "id": "shoot",
+          "actor": "FlyInSystem",
+          "action": "Fires the active mount's laser when the space view shows, and in the slot loop locks the armed missile and hits a ship in the sights.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+              "symbol": "FlyInSystem::flight_logic"
+            },
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+              "symbol": "FlyInSystem::process"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "explode",
+          "actor": "FlyInSystem",
+          "action": "A killed ship explodes; when its cloud is done it leaves the bubble and its bounty is paid (Event::Exploded).",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+              "symbol": "FlyInSystem::process"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "shoot",
+          "condition": "A panel covers the space view",
+          "outcome": "Lasers do not fire, hit or lock (deliberate difference 9).",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::flight_view"
+            }
+          ]
+        },
+        {
+          "atStep": "fire",
+          "condition": "The bubble is full when a missile is fired",
+          "outcome": "Jammed: the message shows and the lock is kept.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+              "symbol": "fire_missile"
+            }
+          ]
+        },
+        {
+          "atStep": "shoot",
+          "condition": "Enemy fire or a collision takes the energy to 0",
+          "outcome": "The pilot dies: 61 dying ticks, then the title with the last save.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+              "symbol": "FlyInSystem::process"
+            },
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::die"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/pilot.md"
+    },
+    {
+      "id": "jump-to-system",
+      "name": "Jump to another system",
+      "description": "In flight, the pilot picks a system on a chart and jumps there by hyperspace.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::flight_press"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::flight_logic"
+        }
+      ],
+      "actor": "Pilot",
+      "goal": "Reach another system and its market.",
+      "preconditions": [
+        "Flying."
+      ],
+      "postconditions": [
+        "Flying in the destination system with a new market, the planet ahead and the sun behind; or in the Deep after a mis-jump."
+      ],
+      "flow": [
+        {
+          "id": "select",
+          "actor": "Pilot",
+          "action": "Moves the chart cursor to a system and presses the jump key.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/ui/chart_page.gd",
+              "symbol": "distance"
+            },
+            {
+              "path": "games/lodestar/src/presentation/game/game.gd",
+              "symbol": "_flight_key"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/pilot.md"
+        },
+        {
+          "id": "check",
+          "actor": "FlyInSystem",
+          "action": "Selects the system nearest the cursor and starts the 85-tick countdown when it is within the fuel.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::flight_press"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "countdown",
+          "actor": "FlyInSystem",
+          "action": "Counts down at step 11 of every flight tick; at 0 jumps and starts the hyperspace tunnel.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+              "symbol": "FlyInSystem::flight_logic"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "arrive",
+          "actor": "FlyInSystem",
+          "action": "After 16 tunnel steps arrives: the market draw, the reset, and the new system or the ambush.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::tunnel_step"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "check",
+          "condition": "The selected system is out of range",
+          "outcome": "OutOfRange: the notice shows and no countdown starts.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/features/hyperspace/jump.rs",
+              "symbol": "press_hyperspace"
+            },
+            {
+              "path": "games/lodestar/src/presentation/game/game.gd",
+              "symbol": "_on_sim_event"
+            }
+          ]
+        },
+        {
+          "atStep": "check",
+          "condition": "A countdown is already running, or the system is the current one",
+          "outcome": "Ignored.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/features/hyperspace/jump.rs",
+              "symbol": "press_hyperspace"
+            }
+          ]
+        },
+        {
+          "atStep": "countdown",
+          "condition": "The pilot docks or dies during the countdown",
+          "outcome": "The countdown is cancelled; no jump.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/features/docking/mod.rs",
+              "symbol": "dock"
+            },
+            {
+              "path": "games/lodestar/src/features/death/mod.rs",
+              "symbol": "die"
+            }
+          ]
+        },
+        {
+          "atStep": "arrive",
+          "condition": "The mis-jump byte says so (3 in 256)",
+          "outcome": "The ambush in the Deep: alien ships, no planet or station.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/features/hyperspace/jump.rs",
+              "symbol": "arrive"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/pilot.md"
+    },
+    {
+      "id": "dock",
+      "name": "Dock at the station",
+      "description": "In flight near the station, the pilot docks by hand or with the auto-berth.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::contact"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::queued_actions"
+        }
+      ],
+      "actor": "Pilot",
+      "goal": "Get inside safely, to trade, refit and save.",
+      "preconditions": [
+        "Flying in the safe zone."
+      ],
+      "postconditions": [
+        "Docked at the station, on the status screen, with the flight state reset."
+      ],
+      "flow": [
+        {
+          "id": "approach",
+          "actor": "Pilot",
+          "action": "Flies into the station's slot, lined up and level, slowly; or presses the auto-berth key.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/game/game.gd",
+              "symbol": "_flight_key"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/pilot.md"
+        },
+        {
+          "id": "check",
+          "actor": "FlyInSystem",
+          "action": "In the docking box, the docking checks pass (or the auto-dock succeeds): the countdown is cancelled and the docking tunnel starts.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+              "symbol": "FlyInSystem::contact"
+            },
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+              "symbol": "FlyInSystem::dock"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "enter",
+          "actor": "FlyInSystem",
+          "action": "After 16 tunnel steps finishes docking and shows the status screen.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::tunnel_step"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "check",
+          "condition": "A check fails",
+          "outcome": "At speed 5 or more the pilot dies; slower, a bump: speed 1 and 5 damage to the shield facing the station.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+              "symbol": "FlyInSystem::contact"
+            },
+            {
+              "path": "games/lodestar/src/capabilities/combat/contact.rs",
+              "symbol": "failed_docking"
+            }
+          ]
+        },
+        {
+          "atStep": "check",
+          "condition": "The auto-berth is not fitted, or the station is hostile or absent",
+          "outcome": "Nothing happens.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/features/docking/mod.rs",
+              "symbol": "auto_dock"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/pilot.md"
+    },
+    {
+      "id": "abandon-ship",
+      "name": "Abandon ship",
+      "description": "In flight, a pilot with an escape pod abandons a lost fight.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::queued_actions"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::end_escape"
+        }
+      ],
+      "actor": "Pilot",
+      "goal": "Survive with their cash and equipment.",
+      "preconditions": [
+        "Flying, with an escape pod fitted."
+      ],
+      "postconditions": [
+        "Docked at the current system's station with an empty hold, a clean record, a full tank and no pod; or, in the Deep, dead."
+      ],
+      "flow": [
+        {
+          "id": "hold",
+          "actor": "Pilot",
+          "action": "Holds the lifeboat key for a second.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/game/game.gd",
+              "symbol": "_hold_escape_pod"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/pilot.md"
+        },
+        {
+          "id": "launch",
+          "actor": "FlyInSystem",
+          "action": "Launches the pod: later queued actions and the laser are skipped, the rest of the tick runs, and the escape mode starts.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+              "symbol": "FlyInSystem::queued_actions"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "drift",
+          "actor": "FlyInSystem",
+          "action": "Runs 97 ticks of the hull drifting away.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::substep"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "rescue",
+          "actor": "FlyInSystem",
+          "action": "Resets the flight state and docks the rescued pilot.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::end_escape"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "launch",
+          "condition": "No escape pod fitted",
+          "outcome": "Nothing happens.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/features/escape_pod/mod.rs",
+              "symbol": "launch_pod"
+            }
+          ]
+        },
+        {
+          "atStep": "rescue",
+          "condition": "The pod was used in the Deep",
+          "outcome": "The death sequence, then the title.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::end_escape"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/pilot.md"
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "state",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/Mode.state-diagram.json",
+      "relationship": "The modes the goals move through."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/operation.json",
+      "relationship": "The entrypoints the steps call."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/lodestar/src/presentation/bridge",
+      "path": "games/lodestar/src/presentation/bridge/.dev/operation.json",
+      "relationship": "The presentation's way in."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/trading",
+      "path": "games/lodestar/src/features/trading/.dev/feature.json",
+      "relationship": "Trading."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/hyperspace",
+      "path": "games/lodestar/src/features/hyperspace/.dev/feature.json",
+      "relationship": "Hyperspace."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/docking",
+      "path": "games/lodestar/src/features/docking/.dev/feature.json",
+      "relationship": "Docking."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/escape_pod",
+      "path": "games/lodestar/src/features/escape_pod/.dev/feature.json",
+      "relationship": "The escape pod."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/saving",
+      "path": "games/lodestar/src/features/saving/.dev/feature.json",
+      "relationship": "Saving."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/station",
+      "path": "games/lodestar/src/features/station/.dev/feature.json",
+      "relationship": "The launch."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/lodestar/src/capabilities/combat",
+      "path": "games/lodestar/src/capabilities/combat/.dev/capability.json",
+      "relationship": "Fighting."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/lodestar/src/capabilities/equipment",
+      "path": "games/lodestar/src/capabilities/equipment/.dev/capability.json",
+      "relationship": "Buying equipment."
+    },
+    {
+      "kind": "user-journey",
+      "folder": "games/lodestar",
+      "path": "games/lodestar/.dev/user-journey.json",
+      "relationship": "The journey these goals make up."
+    }
+  ]
+}

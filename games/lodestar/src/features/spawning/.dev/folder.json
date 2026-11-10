@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Spawning",
+  "folder": "games/lodestar/src/features/spawning",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Spawning",
+      "summary": "Where new objects are placed, and the periodic spawn when the main counter reaches 0.",
+      "purpose": "Places the hostile template, the alien group, launches straight ahead and a ship's children (RULES B.10.3 to B.10.6), and runs the periodic spawn (B.10.8, C.16), drawing from the main generator in RULES' order.",
+      "boundaries": [
+        "A feature: it uses capabilities and other features, never a use case (tests/layers.rs).",
+        "It does not run the arrivals' AI; that is the ai and combat capabilities'."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "periodic_spawn"
+        },
+        {
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "hostile_template"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/features/spawning/spawning.md",
+          "label": "Spawning (feature document)"
+        }
+      ]
+    }
+  ]
+}

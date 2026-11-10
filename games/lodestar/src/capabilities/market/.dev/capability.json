@@ -1,0 +1,91 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Market capability",
+  "folder": "games/lodestar/src/capabilities/market",
+  "description": "What the market and the hold can do.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/market/mod.rs",
+      "symbol": "price"
+    }
+  ],
+  "entities": [
+    {
+      "id": "market",
+      "name": "Market and hold",
+      "description": "Prices the goods and decides what fits in the hold.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "Goods"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "price"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "addable"
+        }
+      ],
+      "responsibility": "Prices each goods item and works out its availability from the economy and the market byte, draws the byte on arrival, and says how much of an item the hold can take, gains, loses and empties cargo.",
+      "operations": [
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "price"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "availability"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "draw_and_arrive"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "start_market"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "addable"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "gain_one"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "scoop_canister"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "lose_stack"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "empty_hold"
+        }
+      ],
+      "access": [
+        "Nothing checks: an in-process library inside lodestar-core.",
+        "Trading, hyperspace's arrival and combat's scooping and cargo loss call it."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "class",
+      "folder": "games/lodestar/src/capabilities/market",
+      "path": "games/lodestar/src/capabilities/market/.dev/class-diagram.json",
+      "relationship": "Its types."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/trading",
+      "path": "games/lodestar/src/features/trading/.dev/feature.json",
+      "relationship": "Trading is built from it."
+    }
+  ]
+}

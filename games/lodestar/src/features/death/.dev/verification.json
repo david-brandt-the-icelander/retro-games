@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How death is checked",
+  "folder": "games/lodestar/src/features/death",
+  "entities": [
+    {
+      "id": "death",
+      "title": "Death",
+      "summary": "The 4 tests in src/features/death/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/death/.dev/feature.json",
+          "entityId": "death-sequence"
+        }
+      ],
+      "criteria": [
+        "The four wrecks from the starting state",
+        "Dying cancels the countdown",
+        "Sixty one dying ticks then the title with the saved pilot",
+        "The wrecks fly at twice the speeds quarter"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "the_four_wrecks_from_the_starting_state",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "dying_cancels_the_countdown",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "sixty_one_dying_ticks_then_the_title_with_the_saved_pilot",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "the_wrecks_fly_at_twice_the_speeds_quarter",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

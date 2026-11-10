@@ -1,0 +1,292 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Features component diagram",
+  "folder": "games/lodestar/src/features",
+  "description": "The ten features, the features they use and the capabilities they are built from, read from their non-test imports. No feature uses a use case (tests/layers.rs).",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/mod.rs",
+      "symbol": "hyperspace"
+    },
+    {
+      "path": "games/lodestar/tests/layers.rs",
+      "symbol": "features_do_not_depend_on_use_cases"
+    }
+  ],
+  "components": [
+    {
+      "id": "features",
+      "name": "Features",
+      "responsibility": "lodestar-core's middle layer.",
+      "folder": "games/lodestar/src/features"
+    },
+    {
+      "id": "death",
+      "name": "death",
+      "responsibility": "The death sequence and the return to the title.",
+      "folder": "games/lodestar/src/features/death"
+    },
+    {
+      "id": "docking",
+      "name": "docking",
+      "responsibility": "The docking box, the checks, the auto-dock and docking.",
+      "folder": "games/lodestar/src/features/docking"
+    },
+    {
+      "id": "escape-pod",
+      "name": "escape_pod",
+      "responsibility": "The pod, the drifting hull, the rescue or death in the Deep.",
+      "folder": "games/lodestar/src/features/escape_pod"
+    },
+    {
+      "id": "hyperspace",
+      "name": "hyperspace",
+      "responsibility": "Selection, the keys, the countdown, the jump and the arrival.",
+      "folder": "games/lodestar/src/features/hyperspace"
+    },
+    {
+      "id": "in-system-jump",
+      "name": "in_system_jump",
+      "responsibility": "The hop of one far unit.",
+      "folder": "games/lodestar/src/features/in_system_jump"
+    },
+    {
+      "id": "planet-and-sun",
+      "name": "planet_and_sun",
+      "responsibility": "Placing the bodies, altitude, crashing, heat and scooping.",
+      "folder": "games/lodestar/src/features/planet_and_sun"
+    },
+    {
+      "id": "saving",
+      "name": "saving",
+      "responsibility": "The two pilot copies, names, the record format and PilotStore.",
+      "folder": "games/lodestar/src/features/saving"
+    },
+    {
+      "id": "spawning",
+      "name": "spawning",
+      "responsibility": "Placements and the periodic spawn.",
+      "folder": "games/lodestar/src/features/spawning"
+    },
+    {
+      "id": "station",
+      "name": "station",
+      "responsibility": "The station's appearance, departure, removal test and the launch.",
+      "folder": "games/lodestar/src/features/station"
+    },
+    {
+      "id": "trading",
+      "name": "trading",
+      "responsibility": "Buying and selling at the market panel.",
+      "folder": "games/lodestar/src/features/trading"
+    },
+    {
+      "id": "capabilities",
+      "name": "Capabilities",
+      "responsibility": "The rules every feature is built from.",
+      "folder": "games/lodestar/src/capabilities",
+      "diagram": "games/lodestar/src/capabilities/.dev/component-diagram.json"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "features",
+      "to": "death",
+      "kind": "contains",
+      "description": "pub mod death."
+    },
+    {
+      "from": "features",
+      "to": "docking",
+      "kind": "contains",
+      "description": "pub mod docking."
+    },
+    {
+      "from": "features",
+      "to": "escape-pod",
+      "kind": "contains",
+      "description": "pub mod escape_pod."
+    },
+    {
+      "from": "features",
+      "to": "hyperspace",
+      "kind": "contains",
+      "description": "pub mod hyperspace."
+    },
+    {
+      "from": "features",
+      "to": "in-system-jump",
+      "kind": "contains",
+      "description": "pub mod in_system_jump."
+    },
+    {
+      "from": "features",
+      "to": "planet-and-sun",
+      "kind": "contains",
+      "description": "pub mod planet_and_sun."
+    },
+    {
+      "from": "features",
+      "to": "saving",
+      "kind": "contains",
+      "description": "pub mod saving."
+    },
+    {
+      "from": "features",
+      "to": "spawning",
+      "kind": "contains",
+      "description": "pub mod spawning."
+    },
+    {
+      "from": "features",
+      "to": "station",
+      "kind": "contains",
+      "description": "pub mod station."
+    },
+    {
+      "from": "features",
+      "to": "trading",
+      "kind": "contains",
+      "description": "pub mod trading."
+    },
+    {
+      "from": "death",
+      "to": "hyperspace",
+      "kind": "depends-on",
+      "description": "Cancels the countdown."
+    },
+    {
+      "from": "death",
+      "to": "saving",
+      "kind": "depends-on",
+      "description": "Returns to the saved pilot (Pilots::on_death)."
+    },
+    {
+      "from": "death",
+      "to": "spawning",
+      "kind": "depends-on",
+      "description": "Places the four wreck canisters from the hostile template."
+    },
+    {
+      "from": "docking",
+      "to": "hyperspace",
+      "kind": "depends-on",
+      "description": "Cancels the countdown and selects on entering the docked state."
+    },
+    {
+      "from": "escape-pod",
+      "to": "death",
+      "kind": "depends-on",
+      "description": "Dies when the pod was used in the Deep."
+    },
+    {
+      "from": "escape-pod",
+      "to": "docking",
+      "kind": "depends-on",
+      "description": "The rescue enters the docked state."
+    },
+    {
+      "from": "escape-pod",
+      "to": "hyperspace",
+      "kind": "depends-on",
+      "description": "Hands the countdown and the navigation to death or the docked state."
+    },
+    {
+      "from": "escape-pod",
+      "to": "spawning",
+      "kind": "depends-on",
+      "description": "Places the abandoned hull straight ahead."
+    },
+    {
+      "from": "hyperspace",
+      "to": "planet-and-sun",
+      "kind": "depends-on",
+      "description": "Places the bodies on arrival."
+    },
+    {
+      "from": "hyperspace",
+      "to": "spawning",
+      "kind": "depends-on",
+      "description": "The ambush's alien group and the spawn delay."
+    },
+    {
+      "from": "in-system-jump",
+      "to": "spawning",
+      "kind": "depends-on",
+      "description": "Resets the spawn delay."
+    },
+    {
+      "from": "station",
+      "to": "hyperspace",
+      "kind": "depends-on",
+      "description": "Reads the navigation on launch."
+    },
+    {
+      "from": "station",
+      "to": "planet-and-sun",
+      "kind": "depends-on",
+      "description": "Places the planet on launch."
+    },
+    {
+      "from": "death",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Uses bubble, cockpit, random, ships, space."
+    },
+    {
+      "from": "docking",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Uses bubble, cockpit, pilot, random, ships, universe."
+    },
+    {
+      "from": "escape-pod",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Uses bubble, cockpit, equipment, flight, pilot, random, ships, space, universe."
+    },
+    {
+      "from": "hyperspace",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Uses bubble, cockpit, combat, market, pilot, random, ships, universe."
+    },
+    {
+      "from": "in-system-jump",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Uses bubble, cockpit, ships, space."
+    },
+    {
+      "from": "planet-and-sun",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Uses bubble, cockpit, equipment, pilot, ships, space, universe."
+    },
+    {
+      "from": "saving",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Uses pilot."
+    },
+    {
+      "from": "spawning",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Uses bubble, cockpit, pilot, random, ships, space."
+    },
+    {
+      "from": "station",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Uses bubble, cockpit, combat, flight, pilot, random, ships, space, universe."
+    },
+    {
+      "from": "trading",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Uses market, pilot."
+    }
+  ]
+}

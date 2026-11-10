@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How the client is checked",
+  "folder": "games/lodestar/src/presentation/game",
+  "entities": [
+    {
+      "id": "smoke",
+      "title": "The headless smoke test",
+      "summary": "A scripted game through the real input path that checks each step and exits 0 when every check passes.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json"
+        }
+      ],
+      "criteria": [
+        "The title, docking, trading, buying equipment, saving, the launch, flying, firing, the mounts, the missile and E.C.M. keys, a chart, pause and resume, a crash into the planet, death, the return to the title and loading the saved pilot each behave as checked"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/presentation/game/script_runner.gd",
+          "symbol": "steps",
+          "command": "godot --headless --path . -- --script=@smoke (in games/lodestar, after cargo build)"
+        }
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/game/game.md",
+          "symbol": "Scripted games and the smoke test"
+        }
+      ]
+    },
+    {
+      "id": "screens",
+      "title": "Screenshots of every screen",
+      "summary": "A scripted game that saves a screenshot of every screen for review.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/presentation/.dev/component-diagram.json"
+        }
+      ],
+      "criteria": [
+        "Every screen renders: title, docked status, market, equipment, the charts, system data, the tunnels, the flight HUD, a fight, the countdown, pause, death and the loaded pilot's hold"
+      ],
+      "checks": [
+        {
+          "type": "manual",
+          "path": "games/lodestar/src/presentation/game/script_runner.gd",
+          "symbol": "steps",
+          "command": "godot --path . -- --script=@shots --shots=<folder>",
+          "description": "A person looks at the screenshots."
+        }
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/README.md",
+          "symbol": "Scripted runs"
+        }
+      ]
+    }
+  ]
+}

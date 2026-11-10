@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Hyperspace",
+  "folder": "games/lodestar/src/features/hyperspace",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Hyperspace",
+      "summary": "The selected system, the hyperspace and Reach-drive keys, the countdown, the jump and the arrival.",
+      "purpose": "Holds the state between the universe's pure computations (cursor, selection, current system and countdown) and makes the draws of RULES A.5, B.16 and C.16.6 in order, including the mis-jump into the Deep.",
+      "boundaries": [
+        "A feature: it uses capabilities and other features, never a use case (tests/layers.rs).",
+        "It returns a Tunnel and an Arrived for the use case to act on; it does not run the tunnel or the modes."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "press_hyperspace"
+        },
+        {
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "arrive"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/features/hyperspace/hyperspace.md",
+          "label": "Hyperspace (feature document)"
+        }
+      ]
+    }
+  ]
+}

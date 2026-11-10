@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How random is checked",
+  "folder": "games/lodestar/src/capabilities/random",
+  "entities": [
+    {
+      "id": "random",
+      "title": "Random numbers",
+      "summary": "The 5 tests in src/capabilities/random/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/random/.dev/capability.json",
+          "entityId": "random-numbers"
+        }
+      ],
+      "criteria": [
+        "First two draws from the starting state",
+        "X is the previous a until reseeded",
+        "Carry survives reseeding and is cleared on request",
+        "Discard advances the stream exactly",
+        "Cosmetic draws never touch the main generator"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "first_two_draws_from_the_starting_state",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "x_is_the_previous_a_until_reseeded",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "carry_survives_reseeding_and_is_cleared_on_request",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "discard_advances_the_stream_exactly",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "cosmetic_draws_never_touch_the_main_generator",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

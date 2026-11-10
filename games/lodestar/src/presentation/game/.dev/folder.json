@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Game scene",
+  "folder": "games/lodestar/src/presentation/game",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Game scene",
+      "summary": "The main scene: SimHost with the space scene, the HUD, the tunnels and the panels around it, and every key routed to a press.",
+      "purpose": "game.tscn is the project's main scene. game.gd builds the rest around SimHost, routes one-shot keys by mode, screen and pause, holds the escape pod's one-second key, pauses on focus loss, and takes the command-line options for screenshots and scripted runs; script_runner.gd plays scripted games and the headless smoke test.",
+      "boundaries": [
+        "Held flight actions are sampled by SimHost from the input map, not here.",
+        "The input map itself is in project.godot."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/game/game.gd",
+          "symbol": "handle_key"
+        },
+        {
+          "path": "games/lodestar/src/presentation/game/script_runner.gd",
+          "symbol": "steps"
+        },
+        {
+          "path": "games/lodestar/project.godot",
+          "symbol": "run/main_scene"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/presentation/game/game.md",
+          "label": "The game scene and its keys (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

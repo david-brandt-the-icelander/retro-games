@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Pilot class diagram",
+  "folder": "games/lodestar/src/capabilities/pilot",
+  "description": "The saved pilot (RULES A.7) and what is derived from it.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/pilot/mod.rs",
+      "symbol": "Pilot"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/pilot/mod.rs",
+      "symbol": "Fitted"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/pilot/mod.rs",
+      "symbol": "LegalLabel"
+    }
+  ],
+  "types": [
+    {
+      "id": "pilot",
+      "name": "Pilot",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/pilot/mod.rs"
+      ],
+      "members": [
+        "name: String",
+        "position: (u8, u8)",
+        "galaxy_state: [u16; 3]",
+        "galaxy: u8",
+        "cash: u64",
+        "fuel: u8",
+        "lasers: [u8; 4]",
+        "hold: u8",
+        "cargo: [u32; GOODS]",
+        "fitted: Fitted",
+        "missiles: u8",
+        "legal: u8",
+        "availability: [u8; GOODS]",
+        "market_byte: u8",
+        "kills: u16",
+        "start() -> Pilot",
+        "rank() -> u8",
+        "legal_label() -> LegalLabel",
+        "contraband() -> u8",
+        "has_hold_extension() -> bool"
+      ]
+    },
+    {
+      "id": "fitted",
+      "name": "Fitted",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/pilot/mod.rs"
+      ],
+      "members": [
+        "ecm",
+        "fuel_scoop",
+        "area_blast",
+        "energy_booster",
+        "auto_dock",
+        "galaxy_drive",
+        "escape_pod"
+      ]
+    },
+    {
+      "id": "legal-label",
+      "name": "LegalLabel",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/capabilities/pilot/mod.rs"
+      ],
+      "members": [
+        "Clean",
+        "Offender",
+        "Fugitive"
+      ]
+    },
+    {
+      "id": "mount",
+      "name": "Mount",
+      "kind": "type",
+      "sources": [
+        "games/lodestar/src/capabilities/pilot/mod.rs"
+      ],
+      "members": [
+        "usize: 0 front, 1 rear, 2 left, 3 right"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "pilot",
+      "to": "fitted",
+      "kind": "depends-on",
+      "description": "The equipment fitted."
+    },
+    {
+      "from": "pilot",
+      "to": "legal-label",
+      "kind": "depends-on",
+      "description": "legal_label derives it from the legal status byte."
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Ship AI capability",
+  "folder": "games/lodestar/src/capabilities/ai",
+  "description": "What the ship AI can do for the flight tick.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/ai/mod.rs",
+      "symbol": "think"
+    }
+  ],
+  "entities": [
+    {
+      "id": "ship-ai",
+      "name": "Ship AI",
+      "description": "Decides what every non-player object does on its think.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/ai/mod.rs",
+          "symbol": "think"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "think_ship"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "think_missile"
+        }
+      ],
+      "responsibility": "Runs the missile AI and the ship AI on each due think, steers, launches children, makes ships angry and returns the damage and kills a think did to the player.",
+      "operations": [
+        {
+          "path": "games/lodestar/src/capabilities/ai/mod.rs",
+          "symbol": "due"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/ai/mod.rs",
+          "symbol": "think"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/ai/anger.rs",
+          "symbol": "anger"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/ai/launch.rs",
+          "symbol": "launch_child"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "retarget_missiles"
+        }
+      ],
+      "access": [
+        "Nothing checks: an in-process library inside lodestar-core.",
+        "Called by the combat capability's ai_step in the slot loop, and by combat's lasers and missiles for anger."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "class",
+      "folder": "games/lodestar/src/capabilities/ai",
+      "path": "games/lodestar/src/capabilities/ai/.dev/class-diagram.json",
+      "relationship": "Its types."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/lodestar/src/capabilities/combat",
+      "path": "games/lodestar/src/capabilities/combat/.dev/capability.json",
+      "relationship": "Applies what a think returns."
+    }
+  ]
+}

@@ -1,0 +1,440 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "SimHost operations",
+  "folder": "games/lodestar/src/presentation/bridge",
+  "description": "The methods GDScript calls on SimHost. Commands queue a press for the next tick, except saving, loading and the clock controls, which act at once.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+      "symbol": "SimHost"
+    },
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+      "symbol": "press_from_name"
+    }
+  ],
+  "entities": [
+    {
+      "id": "press",
+      "name": "Queue a press",
+      "description": "Queues a press without an argument by name: start, launch, hyperspace, galaxy_drive, the queued flight actions, pause, resume, quit and the two toggles.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::press"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::press"
+      },
+      "action": "command",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "true when queued for the next tick.",
+      "failures": [
+        "false for an unknown name; nothing is queued."
+      ]
+    },
+    {
+      "id": "press-mount",
+      "name": "Choose the active mount",
+      "description": "Queues a mount choice, 0 fore to 3 starboard.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::press_mount"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::press_mount"
+      },
+      "action": "command",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "Queued for the next tick.",
+      "failures": [
+        "A mount outside 0..3 is dropped."
+      ]
+    },
+    {
+      "id": "show-screen",
+      "name": "Show a screen",
+      "description": "Queues showing a screen by name.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::show_screen"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::show_screen"
+      },
+      "action": "command",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "true when queued.",
+      "failures": [
+        "false for an unknown screen name."
+      ]
+    },
+    {
+      "id": "move-cursor",
+      "name": "Move the chart cursor",
+      "description": "Queues putting the chart cursor on a point, which selects the nearest system.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::move_cursor"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::move_cursor"
+      },
+      "action": "command",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "Queued; the point is clamped to 0..255.",
+      "failures": []
+    },
+    {
+      "id": "buy",
+      "name": "Buy goods",
+      "description": "Queues buying a quantity of a goods item.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::buy"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::buy"
+      },
+      "action": "command",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "Queued; the outcome arrives as the bought event.",
+      "failures": [
+        "An item outside 0..16 is dropped; the quantity is clamped to 0..255."
+      ]
+    },
+    {
+      "id": "sell",
+      "name": "Sell goods",
+      "description": "Queues selling a quantity of a goods item.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::sell"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::sell"
+      },
+      "action": "command",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "Queued; the outcome arrives as the sold event.",
+      "failures": [
+        "An item outside 0..16 is dropped."
+      ]
+    },
+    {
+      "id": "equip",
+      "name": "Buy equipment",
+      "description": "Queues buying an equipment item, with a mount for a laser.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::equip"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::equip"
+      },
+      "action": "command",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "Queued; the outcome arrives as the equipped event.",
+      "failures": [
+        "An unknown item is dropped; a mount outside 0..3 means none."
+      ]
+    },
+    {
+      "id": "save-pilot",
+      "name": "Save the pilot",
+      "description": "Saves the playing pilot under a name at once, to user://pilots.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::save_pilot"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::save_pilot"
+      },
+      "action": "command",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "saved",
+      "failures": [
+        "not_docked",
+        "no_name"
+      ]
+    },
+    {
+      "id": "load-pilot",
+      "name": "Load a pilot",
+      "description": "Loads a pilot by name at once (empty: the last saved one).",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::load_pilot"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::load_pilot"
+      },
+      "action": "command",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "An empty string when loaded.",
+      "failures": [
+        "not_title",
+        "not_found",
+        "rejected"
+      ]
+    },
+    {
+      "id": "pilot-names",
+      "name": "List saved pilots",
+      "description": "The names that have a record, sorted.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::pilot_names"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::pilot_names"
+      },
+      "action": "query",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "A PackedStringArray of names.",
+      "failures": []
+    },
+    {
+      "id": "set-running",
+      "name": "Stop or start the clock",
+      "description": "Stops or restarts the real-time clock so a script can drive the sim.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::set_running"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::set_running"
+      },
+      "action": "command",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "While stopped, frames run no ticks.",
+      "failures": []
+    },
+    {
+      "id": "advance",
+      "name": "Run ticks now",
+      "description": "Runs n ticks at once with the held actions as they are.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::advance"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::advance"
+      },
+      "action": "command",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "n ticks run; their signals are emitted.",
+      "failures": [
+        "A negative count runs none."
+      ]
+    },
+    {
+      "id": "mode",
+      "name": "Read the mode",
+      "description": "The mode, its count, the death cause, the screen and the pause flag (mode, mode_count, death_cause, screen, paused).",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::mode"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::mode"
+      },
+      "action": "query",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "Names such as title, docked, tunnel_launch, flight, dying, escape.",
+      "failures": []
+    },
+    {
+      "id": "cockpit",
+      "name": "Read the cockpit",
+      "description": "The player's in-flight state, the timed message, the condition and the countdown.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::cockpit"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::cockpit"
+      },
+      "action": "query",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "A Dictionary.",
+      "failures": []
+    },
+    {
+      "id": "pilot",
+      "name": "Read the pilot",
+      "description": "Name, cash, fuel, legal standing, rank, kills, missiles, hold, lasers and equipment.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::pilot"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::pilot"
+      },
+      "action": "query",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "A Dictionary.",
+      "failures": []
+    },
+    {
+      "id": "navigation",
+      "name": "Read navigation",
+      "description": "The current and selected systems, the cursor and the system data; the nearest system to a point; the galaxy's systems; the local chart.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::navigation"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::navigation"
+      },
+      "action": "query",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "Dictionaries and arrays (navigation, system_data, nearest_system, galaxy_systems, local_chart, local_cursor).",
+      "failures": []
+    },
+    {
+      "id": "market-rows",
+      "name": "Read the market panel",
+      "description": "The 17 market rows with prices, availability, cargo and the stepper's limits.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::market_rows"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::market_rows"
+      },
+      "action": "query",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "An Array of Dictionaries.",
+      "failures": []
+    },
+    {
+      "id": "equipment-rows",
+      "name": "Read the equipment panel",
+      "description": "The items the current system offers, with their prices.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::equipment_rows"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::equipment_rows"
+      },
+      "action": "query",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "An Array of Dictionaries.",
+      "failures": []
+    },
+    {
+      "id": "objects",
+      "name": "Read the bubble",
+      "description": "Every object in slot order, interpolated by alpha, in Godot metres and axes.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::objects"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+        "symbol": "SimHost::objects"
+      },
+      "action": "query",
+      "transport": "GDScript method (#[func])",
+      "authorization": "None: any script in the Godot project may call it; SimHost is a Node class registered by the GDExtension (#[func]).",
+      "result": "An Array of Dictionaries: kind, position, basis and flags.",
+      "failures": []
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/lodestar/src/presentation/bridge",
+      "path": "games/lodestar/src/presentation/bridge/.dev/capability.json",
+      "relationship": "The capability these operations expose."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/operation.json",
+      "relationship": "What SimHost calls in the sim."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The goals the scenes carry out through them."
+    }
+  ]
+}

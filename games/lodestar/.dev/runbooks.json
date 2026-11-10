@@ -1,0 +1,61 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/runbooks.schema.json",
+  "kind": "runbooks",
+  "title": "LodeStar runbooks",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "setup",
+      "title": "Work on LodeStar",
+      "summary": "Build, test and play the game from its folder.",
+      "purpose": "setup",
+      "when": "Before changing anything in games/lodestar.",
+      "steps": [
+        "Install the Rust toolchain pinned in rust-toolchain.toml and the Godot version README.md names",
+        "cd games/lodestar",
+        "cargo test --workspace (the rules, the bridge's readouts, the pilot files, and the layer and deferred-work gates)",
+        "cargo build (the GDExtension library Godot loads)",
+        "godot --headless --path . --import, once, before the first run",
+        "godot --path . to play, or godot -e --path . for the editor",
+        "From the repository root: python3 Meta/Agents/Skills/validate_diagrams.py and python3 Meta/Agents/Knowledge/validate_knowledge.py"
+      ],
+      "verify": "cargo test passes and the title shows.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/README.md",
+          "symbol": "Develop"
+        },
+        {
+          "path": "games/lodestar/rust-toolchain.toml",
+          "symbol": "channel"
+        }
+      ]
+    },
+    {
+      "id": "smoke-test",
+      "title": "Run the smoke test and the screenshots",
+      "summary": "Check the client end to end with a scripted game.",
+      "purpose": "operate",
+      "when": "After a change to the presentation or the bridge, with the library rebuilt.",
+      "steps": [
+        "cargo build",
+        "godot --headless --path . -- --script=@smoke",
+        "godot --path . -- --script=@shots --shots=<folder> for a screenshot of every screen",
+        "godot --path . -- --shot=out.png --frames=150 for one screenshot"
+      ],
+      "verify": "The smoke run exits with code 0; a failed check prints and exits non-zero.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/README.md",
+          "symbol": "Scripted runs"
+        },
+        {
+          "path": "games/lodestar/src/presentation/game/script_runner.gd",
+          "symbol": "steps"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Saving",
+  "folder": "games/lodestar/src/features/saving",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Saving",
+      "summary": "The playing and the saved pilot, the name rules, and the pilot record format with its accept and reject rules.",
+      "purpose": "Keeps the two copies of the pilot (RULES A.7.3), applies the name prompt's rules (D.6.12), writes a record in LodeStar's own text format and decides whether a record read back is accepted (A.8, D.12, deliberate difference 11). It owns the PilotStore trait that infrastructure implements.",
+      "boundaries": [
+        "A feature: it uses capabilities and other features, never a use case (tests/layers.rs).",
+        "It never touches a disk: records go through PilotStore."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "Pilots"
+        },
+        {
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "PilotStore"
+        },
+        {
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "decode_over"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/features/saving/saving.md",
+          "label": "Saving (feature document)"
+        }
+      ]
+    }
+  ]
+}

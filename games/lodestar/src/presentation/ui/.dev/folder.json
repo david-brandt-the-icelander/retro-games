@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Panels",
+  "folder": "games/lodestar/src/presentation/ui",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Panels",
+      "summary": "The title, the docked hub and its pages, the same pages in flight, pause and the tunnels.",
+      "purpose": "hub.gd swaps the market, equipment, chart, system, pilot and hold pages; title.gd, pause_panel.gd and tunnel.gd are the other screens; look.gd is the shared look. A page asks the sim for every change and shows what it says.",
+      "boundaries": [
+        "The sim decides which screen shows; panels send presses through SimHost."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/ui/hub.gd",
+          "symbol": "hub.gd"
+        },
+        {
+          "path": "games/lodestar/src/presentation/ui/look.gd",
+          "symbol": "look.gd"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/presentation/ui/ui.md",
+          "label": "The panels (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

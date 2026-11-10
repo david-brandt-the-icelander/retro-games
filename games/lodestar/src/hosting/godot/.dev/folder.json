@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "GDExtension library (lodestar-godot)",
+  "folder": "games/lodestar/src/hosting/godot",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "GDExtension library (lodestar-godot)",
+      "summary": "The cdylib Godot loads through lodestar.gdextension; it registers the bridge's classes.",
+      "purpose": "A workspace crate built as a cdylib. Its entry point is the #[gdextension] ExtensionLibrary implementation; it re-exports SimHost so the class registration is linked in. desktop-build.md beside it records how the library and the exports are built.",
+      "boundaries": [
+        "The runtime is Godot 4.7.2; the binding is godot-rust 0.5.5, pinned in the workspace and upgraded together with Godot."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/hosting/godot/Cargo.toml",
+          "symbol": "crate-type cdylib"
+        },
+        {
+          "path": "games/lodestar/src/hosting/godot/src/lib.rs",
+          "symbol": "LodeStarExtension"
+        },
+        {
+          "path": "games/lodestar/lodestar.gdextension",
+          "symbol": "entry_symbol"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/hosting/godot/desktop-build.md",
+          "label": "Desktop build (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

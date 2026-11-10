@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How pilot files are checked",
+  "folder": "games/lodestar/src/infrastructure",
+  "entities": [
+    {
+      "id": "pilot-files",
+      "title": "Pilot records as files",
+      "summary": "The 6 tests in src/infrastructure/src/pilot_files.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/infrastructure/.dev/capability.json",
+          "entityId": "pilot-record-storage"
+        }
+      ],
+      "criteria": [
+        "A written record reads back unchanged",
+        "A second write replaces the first",
+        "A missing record or folder reads as none",
+        "Names that no record may hold never touch the disk",
+        "Names lists only record files with pilot names sorted",
+        "The saving feature saves and loads through files as through memory"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "a_written_record_reads_back_unchanged",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "a_second_write_replaces_the_first",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "a_missing_record_or_folder_reads_as_none",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "names_that_no_record_may_hold_never_touch_the_disk",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "names_lists_only_record_files_with_pilot_names_sorted",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "the_saving_feature_saves_and_loads_through_files_as_through_memory",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}
