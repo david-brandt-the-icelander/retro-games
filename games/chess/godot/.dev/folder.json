@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Godot client",
+  "folder": "games/chess/godot",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Godot client",
+      "summary": "The Godot 4.7 project that is the game: the 3D table and pieces, the screens, and games online, against the computer and in replay.",
+      "purpose": "One scene (scenes/main.tscn) runs Main; Api and Sfx are autoloads. The rules are chess/, the scripts scripts/, the page the web export runs in web_shell/, and the GDScript tests tests/. The Web preset exports it single-threaded with the Compatibility (WebGL 2) renderer.",
+      "boundaries": [
+        "The Worker, the page bridge and Stockfish are outside the project; the client reaches them over HTTP, a WebSocket and JavaScriptBridge.",
+        "fonts/ holds the four font files and their SIL OFL licences; they are assets, not documented here."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/project.godot",
+          "symbol": "autoload"
+        },
+        {
+          "path": "games/chess/godot/export_presets.cfg",
+          "symbol": "preset.0"
+        },
+        {
+          "path": "games/chess/godot/scenes/main.tscn",
+          "symbol": "Main"
+        }
+      ],
+      "links": [
+        {
+          "label": "UI design",
+          "path": "games/chess/docs/UI-DESIGN.md"
+        },
+        {
+          "label": "Art bible",
+          "path": "games/chess/docs/ART-BIBLE.md"
+        },
+        {
+          "label": "Game design document",
+          "path": "games/chess/docs/GDD.md"
+        }
+      ]
+    }
+  ]
+}

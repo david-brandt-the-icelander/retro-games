@@ -1,0 +1,59 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Page bridge references",
+  "folder": "games/chess/bridge",
+  "entities": [
+    {
+      "id": "stockfish-js",
+      "title": "stockfish.js (Stockfish 19)",
+      "summary": "The WebAssembly build of Stockfish the bridge runs, GPL-3.0; its licence is served at engine/COPYING.txt.",
+      "relevance": "build.mjs copies its lite single-threaded build into engine/; engine.ts starts it as a Web Worker.",
+      "url": "https://github.com/nmrugg/stockfish.js",
+      "sources": [
+        {
+          "path": "games/chess/build.mjs",
+          "symbol": "stockfish"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "Engine.start"
+        }
+      ]
+    },
+    {
+      "id": "uci-protocol",
+      "title": "Universal Chess Interface",
+      "summary": "The text protocol engine.ts speaks to Stockfish: uci, setoption, position, go, stop, bestmove.",
+      "relevance": "commandsFor builds the commands; the Worker's bestmove line is the answer.",
+      "url": "https://www.chessprogramming.org/UCI",
+      "sources": [
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "commandsFor"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "Engine.bestMove"
+        }
+      ]
+    },
+    {
+      "id": "godot-web-export",
+      "title": "Godot's web export and JavaScriptBridge",
+      "summary": "How the export's loader (global Engine, startGame) and JavaScriptBridge.get_interface work.",
+      "relevance": "main.ts starts the export with new Engine(config).startGame and exposes chessBridge for get_interface.",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/platform/web/javascript_bridge.html",
+      "sources": [
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "startGame"
+        },
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "_ready"
+        }
+      ]
+    }
+  ]
+}

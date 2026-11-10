@@ -1,0 +1,74 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Page bridge contracts",
+  "folder": "games/chess/bridge",
+  "entities": [
+    {
+      "id": "chess-bridge",
+      "title": "window.chessBridge",
+      "summary": "The JavaScript object the Godot game calls through JavaScriptBridge.get_interface(\"chessBridge\").",
+      "contractType": "library-api",
+      "consumers": [
+        "godot/scripts/api.gd (Api), in the browser only"
+      ],
+      "guarantees": [
+        "baseUrl() is the game's address, ending in /",
+        "returnPath() is this page's path, with ?challenge=ID while an invitation in the address has not been taken",
+        "takeChallenge() returns the invitation id from the address once, then removes it from the address",
+        "bestMove(moves, level, done) calls done with one UCI move, or with \"\" when the engine fails; a cancelled search never calls back",
+        "cancelEngine() stops any search; preloadEngine() starts the engine early",
+        "navigate(url), setTitle(text) and copy(text) leave the page, set the tab's title and copy to the clipboard"
+      ],
+      "compatibility": "bridge.js and the Godot export are built and deployed together, so the two sides change in the same commit; a renamed or removed call breaks the game in the browser only, since the desktop build never calls it.",
+      "definition": "games/chess/bridge/main.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "chessBridge"
+        },
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "_ready"
+        },
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "engine_move"
+        }
+      ]
+    },
+    {
+      "id": "page-elements",
+      "title": "The page's elements",
+      "summary": "The ids bridge.js needs in the shell page: godot-config, status, bar-fill and notice.",
+      "contractType": "file-format",
+      "consumers": [
+        "godot/web_shell/shell.html, the page the export produces"
+      ],
+      "guarantees": [
+        "#godot-config holds Godot's export config as JSON",
+        "#status is the loading screen; bridge.js adds done when the game starts and failed when it cannot",
+        "#bar-fill's width shows the download's progress; #notice shows why the game could not start",
+        "bridge.js is loaded after Godot's loader, which defines the global Engine"
+      ],
+      "compatibility": "shell.html, shell.css and bridge/main.ts change together.",
+      "definition": "games/chess/godot/web_shell/shell.html",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "startGame"
+        },
+        {
+          "path": "games/chess/godot/web_shell/shell.html",
+          "symbol": "godot-config"
+        },
+        {
+          "path": "games/chess/web/shell.css",
+          "symbol": "#status"
+        }
+      ]
+    }
+  ]
+}

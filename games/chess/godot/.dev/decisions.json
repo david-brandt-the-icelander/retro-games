@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Godot client decisions",
+  "folder": "games/chess/godot",
+  "entities": [
+    {
+      "id": "godot-3d",
+      "title": "A 3D game in Godot 4, not a retro page",
+      "summary": "Gambit is a stylish 3D game made in Godot 4, not an 8-bit page.",
+      "status": "accepted",
+      "context": "The first version was an 8-bit pixel-art web page. The owner asked for something very stylish instead.",
+      "decision": "Godot 4 as a 3D game; GDD.md's pillar \"Stylish, not retro\".",
+      "decidedBy": "The owner",
+      "decidedOn": "2026-11-08",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Decision log"
+        },
+        {
+          "path": "games/chess/godot/project.godot",
+          "symbol": "config/features"
+        }
+      ]
+    },
+    {
+      "id": "web-export",
+      "title": "Compatibility renderer, single-threaded export, models in code",
+      "summary": "Godot 4.7.2, GDScript, the Compatibility renderer (WebGL 2) and a single-threaded web export; every model is made in code.",
+      "status": "accepted",
+      "context": "The game runs in a browser from a Cloudflare Worker that sets no cross-origin isolation headers.",
+      "decision": "renderer gl_compatibility; the Web preset with thread_support off and no cross-origin isolation headers; pieces from lathe profiles and a lofted knight (PieceMeshes), sounds synthesised (Sfx), no art or sound files.",
+      "rationale": "A single-threaded export runs without SharedArrayBuffer, so it needs no cross-origin isolation; WebGL 2 reaches the most browsers.",
+      "decidedBy": "Claude, recorded in the GDD's decision log",
+      "decidedOn": "2026-11-08",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/project.godot",
+          "symbol": "renderer/rendering_method"
+        },
+        {
+          "path": "games/chess/godot/export_presets.cfg",
+          "symbol": "variant/thread_support"
+        },
+        {
+          "path": "games/chess/godot/export_presets.cfg",
+          "symbol": "progressive_web_app/ensure_cross_origin_isolation_headers"
+        },
+        {
+          "path": "games/chess/godot/scripts/pieces.gd",
+          "symbol": "PieceMeshes"
+        },
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Decision log"
+        }
+      ]
+    }
+  ]
+}

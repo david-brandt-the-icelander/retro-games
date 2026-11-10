@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Main scene",
+  "folder": "games/chess/godot/scenes",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Main scene",
+      "summary": "The project's one scene: a full-window Control running main.gd.",
+      "purpose": "main.tscn is run/main_scene in project.godot; everything else (the table, the screens, the game) is built in code by Main.",
+      "boundaries": [
+        "The behaviour is in godot/scripts/."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/scenes/main.tscn",
+          "symbol": "Main"
+        },
+        {
+          "path": "games/chess/godot/project.godot",
+          "symbol": "run/main_scene"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/pipeline.schema.json",
+  "kind": "pipeline",
+  "title": "Gambit pipeline",
+  "folder": "games/chess",
+  "entities": [
+    {
+      "id": "pull-request",
+      "title": "On a pull request",
+      "summary": "Gambit is typechecked, tested in TypeScript and GDScript, and exported; every .dev diagram is validated.",
+      "trigger": "A pull request that changes games/chess, or anything under .github/ (ci.yml).",
+      "checks": [
+        "npm ci",
+        "Godot 4.7.2 and its web export templates, cached by version",
+        "npm test: tsc --noEmit, then the node:test suites in test/",
+        "npm run test:godot: import, then tests/test_rules.gd and tests/test_formats.gd headless",
+        "npm run build: the Godot web export, the engine split into parts, bridge.js and Stockfish",
+        "python3 Meta/Agents/Skills/validate_diagrams.py, for the whole repository",
+        "The Database migration check, when worker/schema.sql or worker/migrations/ change"
+      ],
+      "blocks": "merge",
+      "notChecked": [
+        "The knowledge files: Meta/Agents/Knowledge/validate_knowledge.py is not run in CI.",
+        "How the game looks: the reference renders are compared by hand.",
+        "The game in a real browser, the GameRoom's WebSockets, Stockfish, and the login service.",
+        "worker/retire-sessions.sql, which the migration check does not watch."
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/game.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": "games/chess/package.json",
+          "symbol": "scripts"
+        }
+      ]
+    },
+    {
+      "id": "deploy",
+      "title": "On a push to main",
+      "summary": "The same steps again, then wrangler deploy.",
+      "trigger": "A push to main that changes games/chess or .github/, or Run workflow on the Deploy workflow (chess or all).",
+      "checks": [
+        "The migration gate: every database change since the last deploy has been acknowledged",
+        "npm test",
+        "npm run test:godot",
+        "npm run build",
+        "npx wrangler deploy"
+      ],
+      "blocks": "release",
+      "secrets": [
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/game.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Database migrations"
+        }
+      ]
+    }
+  ]
+}

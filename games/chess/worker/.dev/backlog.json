@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Chess Worker backlog",
+  "folder": "games/chess/worker",
+  "entities": [
+    {
+      "id": "retire-sessions-outside-migrations",
+      "title": "retire-sessions.sql is a migration outside worker/migrations/",
+      "summary": "The file that drops the old sessions table sits beside schema.sql, where the migration check and the deploy gate do not look.",
+      "type": "debt",
+      "compromise": "It was written as a one-off command in the README's sign-in move, before the repository's migration convention; Gambit has no worker/migrations/ folder.",
+      "cost": "Nothing records whether production has run it, and the next migration has no numbered file to follow.",
+      "acceptanceCriteria": [
+        "The drop is a numbered file in games/chess/worker/migrations/ (or recorded as applied and removed), as docs/database-migrations.md describes."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/chess/worker/retire-sessions.sql",
+        "description": "Its comment, against docs/database-migrations.md and .github/scripts/migration-gate.sh's paths."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/retire-sessions.sql"
+        },
+        {
+          "path": ".github/scripts/migration-gate.sh",
+          "symbol": "PATHS"
+        },
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Writing a migration"
+        }
+      ]
+    },
+    {
+      "id": "cookie-comment",
+      "title": "auth.ts names the wrong cookie",
+      "summary": "auth.ts's opening comment says the cookie is games_session; the code reads site_session.",
+      "type": "debt",
+      "compromise": "The comment kept an earlier name when the cookie changed.",
+      "cost": "A reader looking for the session cookie looks for one that is never set.",
+      "acceptanceCriteria": [
+        "The comment names site_session, as createAuth does."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/chess/worker/auth.ts",
+        "description": "The opening comment, against the AUTH constant."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "AUTH"
+        }
+      ]
+    }
+  ]
+}

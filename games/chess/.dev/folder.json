@@ -1,0 +1,56 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Gambit",
+  "folder": "games/chess",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Gambit",
+      "summary": "3D chess for the browser, made in Godot 4: play a friend by email invitation at your own pace, with chat, or Stockfish at eight strengths; every game is kept and can be replayed.",
+      "purpose": "Holds the whole game: the Godot client in godot/, the page bridge in bridge/, the TypeScript shared by the Worker and its tests in shared/, the Cloudflare Worker in worker/, the page's static files in web/, the TypeScript tests in test/, the reference-render scripts in scripts/, and Gambit's own design documents in docs/. It is one npm project, built by build.mjs and deployed as one Worker.",
+      "boundaries": [
+        "The sign-in is icelander.net's; the Worker checks it with the shared library in vendor/icelander-auth/ and the login service, neither edited here.",
+        "Unlike the other games it has no TypeScript engine and no high-score table.",
+        "docs/ is the design to build from; the .dev files link to it rather than copy it."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/README.md",
+          "symbol": "How it works"
+        },
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "main"
+        },
+        {
+          "path": "games/chess/build.mjs",
+          "symbol": "SITE"
+        },
+        {
+          "path": "games/chess/package.json",
+          "symbol": "scripts"
+        }
+      ],
+      "links": [
+        {
+          "label": "Game design document",
+          "path": "games/chess/docs/GDD.md"
+        },
+        {
+          "label": "Design and acceptance",
+          "path": "games/chess/docs/DESIGN.md"
+        },
+        {
+          "label": "UI design",
+          "path": "games/chess/docs/UI-DESIGN.md"
+        },
+        {
+          "label": "Art bible",
+          "path": "games/chess/docs/ART-BIBLE.md"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Shared backlog",
+  "folder": "games/chess/shared",
+  "entities": [
+    {
+      "id": "level-names",
+      "title": "The computer's names differ between the client and the server",
+      "summary": "shared/protocol.ts LEVELS calls strengths 2, 6 and 8 Weekend Wood, County Champ and The Machine; the client, the README and UI-DESIGN.md call them Weekend Player, County Champion and Stockfish.",
+      "type": "defect",
+      "expected": "A game against the computer shows the same opponent name while it is played and afterwards in the history, as UI-DESIGN.md names the strengths.",
+      "observed": "During play the client names the opponent from Main.LEVELS (\"Stockfish · Weekend Player\"); once the finished game is saved, the Worker names it from LEVELS in shared/protocol.ts (db.ts player(): \"Stockfish · Weekend Wood\"), so the history and replay show the other name. The blurbs differ too, though only the client shows them.",
+      "reproduction": [
+        "Signed in, play the computer at strength 2, 6 or 8 to the end",
+        "Open the game from History"
+      ],
+      "acceptanceCriteria": [
+        "shared/protocol.ts LEVELS and godot/scripts/main.gd LEVELS give the same names, matching docs/UI-DESIGN.md."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/chess/shared/protocol.ts",
+        "description": "LEVELS, compared with Main.LEVELS in godot/scripts/main.gd and the README's table."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/shared/protocol.ts",
+          "symbol": "LEVELS"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "player"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "LEVELS"
+        },
+        {
+          "path": "games/chess/docs/UI-DESIGN.md",
+          "symbol": "3. Computer set-up"
+        }
+      ]
+    },
+    {
+      "id": "browser-leftovers",
+      "title": "rules.ts still describes a browser that no longer uses it",
+      "summary": "rules.ts opens by saying it is shared by the browser and the server; since the Godot client has its own rules, describe(), scoreFor() and START_FEN are used only by the tests.",
+      "type": "debt",
+      "compromise": "The first, TypeScript version of the game ran these rules in the browser; the Godot client replaced it, and the helpers it used stayed.",
+      "cost": "A reader trusts that the client and the server judge a game with the same code, which is no longer true (see godot/chess backlog two-rule-sets), and keeps unused helpers in step.",
+      "acceptanceCriteria": [
+        "rules.ts says who uses it, and helpers nothing but their own tests use are gone or used."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/chess/shared/rules.ts",
+        "description": "The file's opening comment, against what imports it."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "describe"
+        },
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "scoreFor"
+        },
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "START_FEN"
+        },
+        {
+          "path": "games/chess/test/rules.test.ts"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/godot/chess/.dev/backlog.json",
+          "entityId": "two-rule-sets"
+        }
+      ]
+    }
+  ]
+}

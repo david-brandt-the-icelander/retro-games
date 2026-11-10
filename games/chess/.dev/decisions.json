@@ -1,0 +1,155 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Gambit decisions",
+  "folder": "games/chess",
+  "entities": [
+    {
+      "id": "split-engine",
+      "title": "Godot's engine served in parts",
+      "summary": "build.mjs cuts index.wasm into 20 MiB parts and the Worker joins them.",
+      "status": "accepted",
+      "context": "Godot's WebAssembly engine is about 39.5 MB; Cloudflare serves static files of at most 25 MiB.",
+      "decision": "Store index.wasm.0, .1, … as static assets and stream them back as one index.wasm from the Worker, which runs first for that path.",
+      "rationale": "Keeps the stock Godot loader, which asks for index.wasm, unchanged.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/build.mjs",
+          "symbol": "PART"
+        },
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "joinedWasm"
+        },
+        {
+          "path": "games/chess/README.md",
+          "symbol": "How it works"
+        }
+      ]
+    },
+    {
+      "id": "computer-without-sign-in",
+      "title": "Playing the computer without signing in",
+      "summary": "The GDD keeps playing the computer without an account; the Worker now needs a sign-in for the page.",
+      "status": "open",
+      "context": "GDD pillar 2 says the computer needs no account, and the decision log kept playing the computer without signing in (\"Claude, open for the owner\"). Since Gambit moved to icelander.net's one sign-in, the Worker serves the page only to players signed in with games:play, so a signed-out visitor never reaches the computer; the client still has its signed-out paths: the sign-in card, and a history kept on the device.",
+      "options": [
+        {
+          "title": "Keep the sign-in for the whole game",
+          "consequences": "Pillar 2 and the README's \"on the device otherwise\" change; the signed-out paths in the client could go."
+        },
+        {
+          "title": "Serve the page signed out, for the computer only",
+          "consequences": "index.ts lets the page through without a sign-in; the API already answers /me signed out, and everything else stays behind the sign-in."
+        }
+      ],
+      "waitingOn": "The owner",
+      "blocks": [
+        {
+          "path": "games/chess/godot/scripts/.dev/feature.json",
+          "entityId": "computer-game-on-device"
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Pillars"
+        },
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Decision log"
+        },
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main.finish_computer"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._history"
+        }
+      ]
+    },
+    {
+      "id": "first-version-carryover",
+      "title": "What the first version's features became",
+      "summary": "Pass and play on one screen, and adding contacts by hand, were dropped.",
+      "status": "open",
+      "context": "The decision log keeps the Worker, D1 and a Durable Object per game, and Stockfish at eight strengths, from the first version, and drops pass & play on one screen and adding contacts by hand. It is marked \"Claude, open for the owner\".",
+      "decision": "Proposed: as the log says.",
+      "waitingOn": "The owner",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Decision log"
+        }
+      ]
+    },
+    {
+      "id": "title-and-slug",
+      "title": "The name Gambit, the path chess",
+      "summary": "Working title Gambit; the slug and path stay chess.",
+      "status": "open",
+      "context": "The decision log names the game Gambit and keeps the slug and path chess (/games/retro/chess), marked \"Claude, open for the owner\". Everything technical (the folder, the Worker, the database, BASE) is chess.",
+      "decision": "Proposed: Gambit, at /games/retro/chess.",
+      "waitingOn": "The owner",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Decision log"
+        },
+        {
+          "path": "games/chess/shared/protocol.ts",
+          "symbol": "BASE"
+        },
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "name"
+        }
+      ]
+    },
+    {
+      "id": "correspondence",
+      "title": "No clocks; email only for new invitations",
+      "summary": "Games are correspondence-style, without clocks, and only new invitations are emailed.",
+      "status": "open",
+      "context": "The decision log says no clocks (correspondence-style games) and email only for new invitations, not for each move, marked \"Claude, open for the owner\". The non-goals list clocks, ratings, spectators, puzzles, engine analysis, move notifications and phone-sized layouts \"for now\".",
+      "decision": "Proposed: as the log says.",
+      "waitingOn": "The owner",
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/.dev/limitations.json",
+          "entityId": "no-clocks"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/chess/.dev/limitations.json",
+          "entityId": "no-move-notifications"
+        }
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Decision log"
+        },
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Non-goals (for now)"
+        },
+        {
+          "path": "games/chess/worker/mail.ts",
+          "symbol": "challengeMail"
+        }
+      ]
+    }
+  ]
+}

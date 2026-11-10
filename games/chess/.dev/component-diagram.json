@@ -61,26 +61,32 @@
     {
       "id": "worker",
       "name": "Chess Worker",
-      "responsibility": "Static assets (joining the split engine .wasm), Google and GitHub sign-in, the JSON API, and the GameRoom Durable Object that checks and broadcasts every online action.",
+      "responsibility": "Static assets (joining the split engine .wasm), the page behind icelander.net's sign-in (through the login service), the JSON API, and the GameRoom Durable Object that checks and broadcasts every online action.",
       "folder": "games/chess/worker",
       "diagram": "games/chess/worker/.dev/component-diagram.json"
     },
     {
       "id": "db",
       "name": "D1 database chess",
-      "responsibility": "Users, sessions, challenges, games with their transcripts (game_events) and contacts.",
+      "responsibility": "Gambit's own record of each player (users, keyed by address), challenges, games with their transcripts (game_events) and contacts.",
       "external": true
     },
     {
       "id": "providers",
-      "name": "Google and GitHub",
-      "responsibility": "OAuth sign-in and profile (verified email, name, picture), and the image hosts the profile pictures come from.",
+      "name": "Profile picture hosts",
+      "responsibility": "Google's and GitHub's image hosts, the only places players' profile pictures are fetched from.",
       "external": true
     },
     {
       "id": "resend",
       "name": "Resend",
       "responsibility": "Sends invitation emails, when RESEND_API_KEY and MAIL_FROM are set.",
+      "external": true
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Who is signed in to icelander.net (Google or GitHub, verified addresses, name, picture) and their games: roles, asked through a service binding.",
       "external": true
     }
   ],
@@ -137,13 +143,19 @@
       "from": "worker",
       "to": "providers",
       "kind": "depends-on",
-      "description": "OAuth code flow with PKCE; profile pictures fetched through api/avatar/{id}."
+      "description": "Fetches profile pictures for api/avatar/{id}, only from these hosts."
     },
     {
       "from": "worker",
       "to": "resend",
       "kind": "depends-on",
       "description": "POST /emails for an invitation, best effort."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Service binding ACCOUNTS, through vendor/icelander-auth: who is signed in, on every request to the page and the API."
     }
   ]
 }

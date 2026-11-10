@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Page bridge verification",
+  "folder": "games/chess/bridge",
+  "entities": [
+    {
+      "id": "strengths",
+      "title": "Engine strengths",
+      "summary": "Eight strengths, from Skill Level 0 to full strength; out-of-range levels are clamped.",
+      "subject": [
+        {
+          "path": "games/chess/bridge/.dev/feature.json",
+          "entityId": "computer-strengths"
+        }
+      ],
+      "criteria": [
+        "Strength 1 sends Skill Level 0, the start position and go depth 1",
+        "Strength 8 sends the moves played and go movetime 2000",
+        "A strength above 8 is treated as 8"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/chess/test/rules.test.ts",
+          "symbol": "engine strengths: eight levels, from skill 0 to full strength",
+          "command": "npm test"
+        },
+        {
+          "type": "manual",
+          "description": "Play the computer in a browser at a low and a high strength; Take back and leave the screen during a search, and check no stale move is played."
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/test/rules.test.ts"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "commandsFor"
+        }
+      ],
+      "details": "Only commandsFor is tested; the Web Worker, the pauses and cancelling are not, since node has no Worker for Stockfish here."
+    }
+  ]
+}

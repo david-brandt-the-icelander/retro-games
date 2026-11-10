@@ -1,0 +1,232 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/quality-requirements.schema.json",
+  "kind": "quality-requirements",
+  "title": "Gambit quality requirements",
+  "folder": "games/chess",
+  "entities": [
+    {
+      "id": "visually-correct",
+      "title": "Looks as designed",
+      "summary": "Every screen state renders like its reference image.",
+      "area": "usability",
+      "requirement": "With the reference scenario loaded at 1440 × 900, each of the 23 states matches its reference render: layout within 2 px, the same text, fonts and UI colours, the 3D scene within a small tolerance.",
+      "measuredBy": "scripts/reference/render.sh, compared with docs/screens/ with the masked areas excluded.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/docs/DESIGN.md",
+        "description": "Gambit's design: Acceptance, \"visually correct\"."
+      },
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/docs/DESIGN.md",
+          "symbol": "Acceptance"
+        },
+        {
+          "path": "games/chess/scripts/reference/render.sh"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/chess/godot/scripts/.dev/verification.json",
+          "entityId": "visual"
+        }
+      ]
+    },
+    {
+      "id": "accessible-text",
+      "title": "Readable and keyboard-reachable",
+      "summary": "Text contrast and keyboard use as UI-DESIGN.md sets them.",
+      "area": "accessibility",
+      "requirement": "Ink on card at least 14.7 : 1, muted 5.7 : 1, gold 9.0 : 1; every button focusable and pressable with Enter or Space; Escape closes the promotion picker and list pages; results are told in words, not colour alone.",
+      "measuredBy": "Reading the theme's colours against the ratios; trying the screens with the keyboard.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/docs/UI-DESIGN.md",
+        "description": "Gambit's UI design: Keyboard and accessibility."
+      },
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/docs/UI-DESIGN.md",
+          "symbol": "Keyboard and accessibility"
+        },
+        {
+          "path": "games/chess/godot/scripts/ui.gd",
+          "symbol": "UI.make_theme"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._input"
+        }
+      ],
+      "details": "The board itself is driven by mouse or touch only."
+    },
+    {
+      "id": "browser-reach",
+      "title": "Runs without cross-origin isolation",
+      "summary": "WebGL 2 and a single-threaded export, so any browser with WebGL 2 runs the game without special headers.",
+      "area": "compatibility",
+      "requirement": "The web export uses the Compatibility renderer and no threads, and Stockfish its single-threaded build, so neither needs SharedArrayBuffer or cross-origin isolation headers.",
+      "measuredBy": "export_presets.cfg (thread_support off, no cross-origin isolation headers) and project.godot (gl_compatibility); the stockfish-19-lite-single files build.mjs copies.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/docs/GDD.md",
+        "description": "Decision log: Compatibility renderer, single-threaded web export (no cross-origin isolation needed)."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/export_presets.cfg",
+          "symbol": "variant/thread_support"
+        },
+        {
+          "path": "games/chess/godot/project.godot",
+          "symbol": "renderer/rendering_method"
+        },
+        {
+          "path": "games/chess/build.mjs",
+          "symbol": "stockfish-19-lite-single"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/godot/.dev/decisions.json",
+          "entityId": "web-export"
+        }
+      ]
+    },
+    {
+      "id": "static-file-limit",
+      "title": "Every static file under 25 MiB",
+      "summary": "Cloudflare serves static files of at most 25 MiB; Godot's engine is about 39.5 MB.",
+      "area": "capacity",
+      "requirement": "No file in dist/ is over 25 MiB: build.mjs cuts index.wasm into 20 MiB parts and the Worker streams them back as one index.wasm.",
+      "measuredBy": "build.mjs's PART size, and joinedWasm streaming up to 8 parts.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/README.md",
+        "description": "Gambit's README, written for players and developers."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/build.mjs",
+          "symbol": "PART"
+        },
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "joinedWasm"
+        }
+      ],
+      "details": "joinedWasm reads at most eight parts, 160 MiB.",
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/.dev/decisions.json",
+          "entityId": "split-engine"
+        }
+      ]
+    },
+    {
+      "id": "cross-site-writes",
+      "title": "No writes from other sites",
+      "summary": "Every write is JSON from the game's own origin, behind the host's cookie.",
+      "area": "security",
+      "requirement": "The API refuses a POST that is not JSON or whose Origin is another site; the session cookie is the host's site_session (HttpOnly, Secure, SameSite=Lax); the page's Content-Security-Policy allows only this origin, wss://icelander.net and Cloudflare's analytics.",
+      "measuredBy": "The API test that a cross-site write is 403; web/_headers.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/README.md",
+        "description": "Gambit's README, written for players and developers."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "sameOrigin"
+        },
+        {
+          "path": "games/chess/web/_headers",
+          "symbol": "Content-Security-Policy"
+        },
+        {
+          "path": "vendor/icelander-auth/index.js",
+          "symbol": "cookie"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/chess/worker/.dev/verification.json",
+          "entityId": "writes-and-computer-games"
+        }
+      ]
+    },
+    {
+      "id": "privacy",
+      "title": "Only what invitations and contacts need",
+      "summary": "Gambit keeps a player's name, email address and profile picture, and their games; nothing else.",
+      "area": "privacy",
+      "requirement": "The users table holds address, name, picture address and two times; challenges, games with their transcripts, and contacts are the rest. Pictures are fetched through the Worker, only from Google's and GitHub's image hosts, so the page loads nothing from elsewhere.",
+      "measuredBy": "worker/schema.sql; the sign-in card's text; safePicture and the avatar route.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/README.md",
+        "description": "Gambit's README, written for players and developers."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/schema.sql",
+          "symbol": "users"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._signin"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "safePicture"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "avatar"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/chess/worker/.dev/verification.json",
+          "entityId": "sign-in"
+        }
+      ]
+    },
+    {
+      "id": "idle-cost",
+      "title": "An idle game costs nothing",
+      "summary": "Players' WebSockets hibernate between moves.",
+      "area": "cost",
+      "requirement": "A game's Durable Object accepts its players' sockets with the hibernation API, so a game waiting for a move keeps no object running.",
+      "measuredBy": "GameRoom.fetch uses ctx.acceptWebSocket and webSocketMessage rather than holding sockets itself.",
+      "origin": {
+        "kind": "code",
+        "reference": "games/chess/worker/room.ts",
+        "description": "The file's opening comment: their sockets hibernate between moves, so an idle game costs nothing."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom.fetch"
+        },
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom.webSocketMessage"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Chess Worker capabilities",
+  "folder": "games/chess/worker",
+  "description": "What the Worker does besides serving files.",
+  "sources": [
+    {
+      "path": "games/chess/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/chess/worker/api.ts",
+      "symbol": "handleApi"
+    }
+  ],
+  "entities": [
+    {
+      "id": "signed-in-page",
+      "name": "Signed-in game",
+      "description": "The game only for players signed in to icelander.net.",
+      "sources": [
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "requirePlayer"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "currentUser"
+        }
+      ],
+      "responsibility": "Checks icelander.net's sign-in through the login service on every request, maps the person to Gambit's own player by the first of their addresses Gambit knows, and sends sign-in and sign-out to the host's.",
+      "operations": [
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "handleAuth"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        }
+      ],
+      "access": [
+        "The page: signed in with the games:play role.",
+        "The API: anyone signed in; /api/me answers everyone.",
+        "auth/dev: only with DEV_LOGIN \"1\" on a local host."
+      ]
+    },
+    {
+      "id": "invitations",
+      "name": "Invitations by email",
+      "description": "Invitations to an address, answered once.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "createChallenge"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "closeChallenge"
+        }
+      ],
+      "responsibility": "Stores an invitation to an email address, emails it when Resend is set up, and lets the addressee accept or decline and the sender cancel, once.",
+      "operations": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "createChallenge"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        }
+      ],
+      "access": [
+        "Signed in.",
+        "Accept and decline: the player whose address it was sent to. Cancel: its sender. Look at it: either.",
+        "At most 30 invitations per player per hour."
+      ]
+    },
+    {
+      "id": "online-games",
+      "name": "Refereed online games",
+      "description": "Online games the server checks and broadcasts.",
+      "sources": [
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom"
+        },
+        {
+          "path": "games/chess/worker/actions.ts",
+          "symbol": "applyAction"
+        }
+      ],
+      "responsibility": "Runs each online game's actions one at a time in its Durable Object, checks them with chess.js, saves the game and its transcript, and sends the new game to both players.",
+      "operations": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom.fetch"
+        },
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "RoomCore.act"
+        }
+      ],
+      "access": [
+        "Only the game's two players may see it, act in it or watch it live."
+      ]
+    },
+    {
+      "id": "contacts-history",
+      "name": "Contacts and history",
+      "description": "Who a player has played, and every finished game.",
+      "sources": [
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "contacts"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "finishedGames"
+        }
+      ],
+      "responsibility": "Lists a player's contacts with their record against each, the games between two players, the finished games, and stores finished games against the computer after replaying them.",
+      "operations": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "saveComputerGame"
+        }
+      ],
+      "access": [
+        "Signed in; a player sees only games they played."
+      ]
+    },
+    {
+      "id": "profile-pictures",
+      "name": "Profile pictures from this origin",
+      "description": "Players' pictures, fetched by the Worker.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "avatar"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "safePicture"
+        }
+      ],
+      "responsibility": "Keeps only Google's and GitHub's picture addresses, and serves them from the game's own origin.",
+      "operations": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "avatar"
+        }
+      ],
+      "access": [
+        "Signed in; any player's picture by their id."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/operation.json",
+      "relationship": "The operations through which they are reached."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/feature.json",
+      "relationship": "The features they offer."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/use-case.json",
+      "relationship": "The use cases that use them."
+    }
+  ]
+}

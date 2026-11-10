@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Chess rules references",
+  "folder": "games/chess/godot/chess",
+  "entities": [
+    {
+      "id": "perft",
+      "title": "Perft results",
+      "summary": "Published node counts for the start position, Kiwipete and test positions 3 to 5.",
+      "relevance": "test_rules.gd checks Chess.perft against them.",
+      "url": "https://www.chessprogramming.org/Perft_Results",
+      "sources": [
+        {
+          "path": "games/chess/godot/tests/test_rules.gd",
+          "symbol": "_init"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.perft"
+        }
+      ]
+    },
+    {
+      "id": "san",
+      "title": "Standard Algebraic Notation",
+      "summary": "How moves are written: piece letter, disambiguation, x for captures, =Q, + and #.",
+      "relevance": "Chess.san writes every move in the transcript this way.",
+      "url": "https://www.chessprogramming.org/Algebraic_Chess_Notation",
+      "sources": [
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.san"
+        }
+      ]
+    }
+  ]
+}

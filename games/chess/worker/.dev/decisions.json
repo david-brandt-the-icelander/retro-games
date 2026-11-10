@@ -1,0 +1,118 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Chess Worker decisions",
+  "folder": "games/chess/worker",
+  "entities": [
+    {
+      "id": "room-per-game",
+      "title": "A Durable Object per online game, the game in D1",
+      "summary": "Each online game's actions pass through its own GameRoom, one at a time; the game itself is stored in D1.",
+      "status": "accepted",
+      "context": "Two players act on the same game at once and both must see every change; lists and history must query games.",
+      "decision": "GameRoom, named by the game's id, queues actions (RoomCore), saves to D1 only if the game is unchanged, and broadcasts to hibernatable WebSockets. The lobby, history and contacts query D1 directly.",
+      "rationale": "Two moves can never race, an idle game costs nothing while its sockets hibernate, and D1 can list games by player.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "RoomCore"
+        },
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "saveGame"
+        },
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "durable_objects"
+        },
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Decision log"
+        }
+      ]
+    },
+    {
+      "id": "login-service",
+      "title": "icelander.net's one sign-in instead of Gambit's own",
+      "summary": "Gambit no longer signs people in itself: icelander.net's login service does, for every game under icelander.net/games.",
+      "status": "accepted",
+      "context": "Gambit had its own Google and GitHub OAuth, a chess_session cookie and a sessions table; the games are part of icelander.net and share one sign-in.",
+      "decision": "Check the host's site_session through vendor/icelander-auth and the ACCOUNTS binding; keep Gambit's users table keyed by address, so a person plays as the first of their addresses Gambit already knows; send the old login and callback addresses to the host's sign-in.",
+      "rationale": "One sign-in for the whole host; players keep their games, contacts and history.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "currentUser"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "handleAuth"
+        },
+        {
+          "path": "games/chess/README.md",
+          "symbol": "Sign-in"
+        },
+        {
+          "path": "games/chess/worker/schema.sql",
+          "symbol": "users"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "supersedes",
+          "path": "games/chess/docs/GDD.md",
+          "description": "The GDD's decision that multiplayer uses Gambit's own OAuth sign-in."
+        }
+      ]
+    },
+    {
+      "id": "api-role",
+      "title": "Should the API require the games:play role?",
+      "summary": "The page needs a sign-in with games:play; the API needs only a sign-in.",
+      "status": "open",
+      "context": "index.ts serves the page through requirePlayer (AUTH.requireRole with games:play), but handleApi uses currentUser, which accepts anyone the login service knows, with or without the role. Rally's Worker checks the role on its API too.",
+      "options": [
+        {
+          "title": "Require games:play on the API as on the page",
+          "consequences": "A person without the role can do nothing through the API either; /api/me would have to keep answering signed-out and role-less callers in a way the client understands."
+        },
+        {
+          "title": "Keep the API open to anyone signed in",
+          "consequences": "Someone signed in to icelander.net without games:play can invite, play and keep history by calling the API directly."
+        }
+      ],
+      "waitingOn": "The owner",
+      "blocks": [
+        {
+          "path": "games/chess/worker/.dev/capability.json",
+          "entityId": "signed-in-page"
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "requirePlayer"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "AUTH"
+        }
+      ]
+    }
+  ]
+}

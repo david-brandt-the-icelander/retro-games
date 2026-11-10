@@ -1,0 +1,70 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Chess rules capability",
+  "folder": "games/chess/godot/chess",
+  "description": "The rules the Godot client plays by.",
+  "sources": [
+    {
+      "path": "games/chess/godot/chess/rules.gd",
+      "symbol": "Chess"
+    }
+  ],
+  "entities": [
+    {
+      "id": "chess-rules",
+      "name": "Chess rules on the client",
+      "description": "What is legal, how a move is written, and how the board ends a game.",
+      "sources": [
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.Game"
+        }
+      ],
+      "responsibility": "Answers, for the board shown, which moves are legal and what the game's moves, positions, SAN and result are.",
+      "operations": [
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.Game.from_moves"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.Game.play"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.legal_moves"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.parse_uci"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.describe"
+        }
+      ],
+      "access": [
+        "A library of static functions: any script in the project may call it."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/chess/godot/chess",
+      "path": "games/chess/godot/chess/.dev/operation.json",
+      "relationship": "The functions through which it is reached."
+    },
+    {
+      "kind": "component",
+      "folder": "games/chess/godot/chess",
+      "path": "games/chess/godot/chess/.dev/component-diagram.json",
+      "relationship": "Its parts."
+    }
+  ]
+}

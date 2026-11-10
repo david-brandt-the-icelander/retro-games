@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/runbooks.schema.json",
+  "kind": "runbooks",
+  "title": "Reference render runbooks",
+  "folder": "games/chess/scripts/reference",
+  "entities": [
+    {
+      "id": "render-reference",
+      "title": "Render the reference states",
+      "summary": "Recreate the reference scenario locally and render all 23 states for comparison with docs/screens/.",
+      "purpose": "verify",
+      "when": "After a change to how anything looks, to check it against the design (docs/DESIGN.md, Acceptance).",
+      "steps": [
+        "cd games/chess; cp .dev.vars.example .dev.vars (DEV_LOGIN=1)",
+        "npx wrangler d1 execute chess --local --file worker/schema.sql, on a fresh local database",
+        "npm run dev, and leave it running",
+        "python3 scripts/reference/seed.py, then python3 scripts/reference/retime.py",
+        "bash scripts/reference/render.sh (Godot 4.7.2 and xvfb-run on the PATH); it writes into docs/screens/",
+        "python3 scripts/reference/contact_sheet.py docs/screens docs/contact-sheet.png",
+        "git diff the images, or compare them with the committed ones, masking the areas docs/DESIGN.md lists"
+      ],
+      "verify": "render.sh prints ok for every state, and each image matches its reference apart from the masked areas and antialiasing.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/scripts/reference/render.sh"
+        },
+        {
+          "path": "games/chess/scripts/reference/seed.py"
+        },
+        {
+          "path": "games/chess/docs/DESIGN.md",
+          "symbol": "Acceptance"
+        }
+      ]
+    }
+  ]
+}

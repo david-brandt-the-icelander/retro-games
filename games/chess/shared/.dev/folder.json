@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Shared protocol and rules",
+  "folder": "games/chess/shared",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Shared protocol and rules",
+      "summary": "TypeScript shared by the Worker and its tests: what the game and the Worker say to each other, and the server's rules of chess.",
+      "purpose": "protocol.ts defines the JSON the Worker sends and accepts (users, games with their transcripts, challenges, contacts, the lobby, actions and live messages), the path BASE, email and name cleaning, and the computer's eight strengths; rules.ts judges a game, given as UCI moves, with chess.js.",
+      "boundaries": [
+        "The Godot client does not import this folder: it reads the same JSON in GDScript and has its own rules in godot/chess/.",
+        "The HTTP API that carries these types is the Worker's, recorded in worker/.dev/contracts.json."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/shared/protocol.ts",
+          "symbol": "GameView"
+        },
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "replay"
+        },
+        {
+          "path": "games/chess/tsconfig.json",
+          "symbol": "include"
+        }
+      ]
+    }
+  ]
+}
