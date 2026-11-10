@@ -1,0 +1,137 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "Engine operations",
+  "folder": "games/rally/src/engine",
+  "description": "The functions through which the page and the Worker drive a match.",
+  "sources": [
+    {
+      "path": "games/rally/src/engine/rules.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/rally/src/engine/match.ts",
+      "symbol": "replay"
+    }
+  ],
+  "entities": [
+    {
+      "id": "new-match",
+      "name": "Start a match",
+      "description": "A fresh match from a seed: the paddles centred and the ball resting on the first server's paddle, chosen by the seed.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "newMatch"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/rally/src/engine/rules.ts",
+        "symbol": "newMatch"
+      },
+      "action": "query",
+      "transport": "exported function",
+      "authorization": "None: an in-process function. The page (src/main.ts) and the Worker (worker/scores.ts) call it.",
+      "result": "A new State, serving after SERVE_DELAY seconds.",
+      "failures": []
+    },
+    {
+      "id": "step",
+      "name": "Step a match",
+      "description": "Advances a match by a fixed time step with both paddles' controls.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "step"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/rally/src/engine/rules.ts",
+        "symbol": "step"
+      },
+      "action": "command",
+      "transport": "exported function",
+      "authorization": "None: an in-process function. The page (src/main.ts) and the Worker (worker/scores.ts) call it.",
+      "result": "The state is changed in place; the serve, paddle, wall, point and win events of the step are returned for sound and the scoreboard.",
+      "failures": []
+    },
+    {
+      "id": "computer-control",
+      "name": "Ask the computer for its control",
+      "description": "The computer player's paddle control for the next step.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/ai.ts",
+          "symbol": "Cpu.control"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/rally/src/engine/ai.ts",
+        "symbol": "Cpu.control"
+      },
+      "action": "command",
+      "transport": "method of Cpu",
+      "authorization": "None: an in-process function. The page (src/main.ts) and the Worker (worker/scores.ts) call it.",
+      "result": "A Control with a target y and the level's top speed; the computer's plan is updated when it looks at the ball.",
+      "failures": []
+    },
+    {
+      "id": "record",
+      "name": "Record the player's control",
+      "description": "Adds one tick's control to a one-player match's recording.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "Recorder.record"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/rally/src/engine/match.ts",
+        "symbol": "Recorder.record"
+      },
+      "action": "command",
+      "transport": "method of Recorder",
+      "authorization": "None: an in-process function. The page (src/main.ts) and the Worker (worker/scores.ts) call it.",
+      "result": "A move is appended only when the control changed; the tick count grows by one.",
+      "failures": []
+    },
+    {
+      "id": "replay",
+      "name": "Replay a one-player match",
+      "description": "Plays a recorded match again from its seed, level and recording, as the server does before listing a score.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "replay"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/rally/src/engine/match.ts",
+        "symbol": "replay"
+      },
+      "action": "query",
+      "transport": "exported function",
+      "authorization": "None: an in-process function. The page (src/main.ts) and the Worker (worker/scores.ts) call it.",
+      "result": "The score, the points each side won and whether the player won.",
+      "failures": [
+        "null when the level is not easy, normal or hard.",
+        "null when the recording is malformed: no whole ticks, more than 30 minutes, moves out of order or out of range.",
+        "null when the match ends before the recording's last tick, or has not ended by it."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/rally/src/engine",
+      "path": "games/rally/src/engine/.dev/capability.json",
+      "relationship": "The capability these operations expose."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/rally/src/engine",
+      "path": "games/rally/src/engine/.dev/feature.json",
+      "relationship": "The features these operations carry out."
+    }
+  ]
+}

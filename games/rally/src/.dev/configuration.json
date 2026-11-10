@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "Browser game settings",
+  "folder": "games/rally/src",
+  "entities": [
+    {
+      "id": "level",
+      "title": "Computer level",
+      "summary": "The level last chosen, remembered in this browser.",
+      "key": "localStorage rally.level",
+      "type": "easy | normal | hard",
+      "default": "normal",
+      "sensitive": false,
+      "scope": "per browser",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "setLevel"
+        }
+      ]
+    },
+    {
+      "id": "sound",
+      "title": "Sound",
+      "summary": "Whether sound is on, remembered in this browser.",
+      "key": "localStorage rally.sound",
+      "type": "on | off",
+      "default": "on",
+      "sensitive": false,
+      "scope": "per browser",
+      "takesEffect": "per-use",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "setSound"
+        }
+      ]
+    }
+  ]
+}

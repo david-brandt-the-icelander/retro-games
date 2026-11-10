@@ -1,0 +1,59 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Browser game contracts",
+  "folder": "games/rally/src",
+  "entities": [
+    {
+      "id": "online-messages",
+      "title": "Online match messages",
+      "summary": "What a browser sends other players through the games hub's relay.",
+      "contractType": "message",
+      "consumers": [
+        "Shatterbelt and Hivestorm, which carry the same src/online.ts",
+        "The games hub's relay, which passes messages on in order"
+      ],
+      "guarantees": [
+        "start: { slots, seed, delay }, sent by the host",
+        "in: { f, b }, the sender's controls from step f on",
+        "sum: { f, h }, a fingerprint of step f",
+        "rtt: { ms }, the sender's round trip, when it changes by 5 ms or more"
+      ],
+      "compatibility": "The three games' copies change together, with test/online.test.ts.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Lockstep.flush"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Lockstep.check"
+        },
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "startOnline"
+        }
+      ]
+    },
+    {
+      "id": "session-name",
+      "title": "The session name",
+      "summary": "sessionStorage games.name: the table name, shared by every game on icelander.net.",
+      "contractType": "browser-storage",
+      "consumers": [
+        "Samosa (games/dictator)"
+      ],
+      "guarantees": [
+        "Holds a name already cleaned by cleanName."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/scores.ts",
+          "symbol": "NAME_KEY"
+        }
+      ]
+    }
+  ]
+}

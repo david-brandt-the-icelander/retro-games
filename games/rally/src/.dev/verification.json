@@ -1,0 +1,88 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Browser game verification",
+  "folder": "games/rally/src",
+  "entities": [
+    {
+      "id": "lockstep",
+      "title": "Lockstep",
+      "summary": "Browsers play the same steps, notice drift, and agree on who left.",
+      "subject": [
+        {
+          "path": "games/rally/src/.dev/feature.json",
+          "entityId": "online-match"
+        }
+      ],
+      "criteria": [
+        "Browsers play the same steps whatever the delays",
+        "A player who leaves plays on as null from the same step for everyone",
+        "Browsers notice when their games drift apart",
+        "The delay covers the slowest two players' connections"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/rally/test/online.test.ts",
+          "symbol": "browsers in lockstep play the same steps, whatever the delays",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/online.test.ts",
+          "symbol": "a player who leaves plays on as null from the same step for everyone",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/online.test.ts",
+          "symbol": "browsers notice when their games drift apart",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/online.test.ts",
+          "symbol": "the delay covers the slowest two players' connections",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "name-entry",
+      "title": "Names and name entry",
+      "summary": "Names are cleaned the same way everywhere, and the entry keeps to 12 characters.",
+      "subject": [
+        {
+          "path": "games/rally/src/.dev/feature.json",
+          "entityId": "arcade-name-entry"
+        }
+      ],
+      "criteria": [
+        "Names are cleaned to plain letters, digits, spaces and . - ' _",
+        "A signed-in player's default comes from their email",
+        "Never more than 12 characters",
+        "Every name character has a key on screen"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/rally/test/scores.test.ts",
+          "symbol": "names: cleaned to plain letters, digits, spaces and . - ' _; a signed-in player's default from their email",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/scores.test.ts",
+          "symbol": "name entry: typed keys, delete, enter and skip; never more than 12",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/scores.test.ts",
+          "symbol": "the on-screen keyboard has a key for every name character, and typed keys light theirs",
+          "command": "npm test"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/requirements.schema.json",
+  "kind": "requirements",
+  "title": "Rally requirements",
+  "folder": "games/rally",
+  "entities": [
+    {
+      "id": "table-tennis-scoring",
+      "title": "Table-tennis scoring",
+      "summary": "A match is won by the first to 11 points, by two clear points.",
+      "statement": "The first side to 11 points wins, by two clear points. The serve changes every two points, and every point from 10–10.",
+      "rationale": "Rally's scoring follows table tennis.",
+      "acceptanceCriteria": [
+        "11–9 ends a match; 11–10 does not; 12–10 does.",
+        "From 10–10 the serve changes after every point."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/rally/README.md",
+        "description": "Rally's README, written for players and developers."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "winnerOf"
+        },
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "serverFor"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/rally/src/engine/.dev/verification.json",
+          "entityId": "scoring"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/engine/.dev/feature.json",
+          "entityId": "table-tennis-scoring"
+        }
+      ]
+    },
+    {
+      "id": "unfakeable-scores",
+      "title": "Scores can't be faked",
+      "summary": "A score on the table is only ever what the server's replay of the match computed.",
+      "statement": "The server issues each one-player match's seed, replays the recorded match with the same engine before listing it, and accepts each seed once.",
+      "rationale": "A public table is only worth climbing if nobody can type a score into it.",
+      "acceptanceCriteria": [
+        "A recording that does not play exactly one whole match is refused.",
+        "A recording made against another seed or level scores differently or not at all.",
+        "A used seed is refused."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/rally/README.md",
+        "description": "Rally's README, written for players and developers."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "replay"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/rally/src/engine/.dev/verification.json",
+          "entityId": "replay"
+        },
+        {
+          "relation": "verified-by",
+          "path": "games/rally/worker/.dev/verification.json",
+          "entityId": "submissions"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/rally/worker/.dev/feature.json",
+          "entityId": "unfakeable-scores"
+        }
+      ]
+    },
+    {
+      "id": "own-devices",
+      "title": "Friends play on their own devices",
+      "summary": "Two players can play each other online, each on their own computer, phone or tablet.",
+      "statement": "An online match started from the multiplayer page is played by two signed-in players on two devices, who see exactly the same match. There is no two-player game on one device.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/rally/README.md",
+        "description": "Rally's README, written for players and developers."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "joinMatch"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Lockstep"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/rally/src/.dev/verification.json",
+          "entityId": "lockstep"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/feature.json",
+          "entityId": "online-match"
+        }
+      ]
+    },
+    {
+      "id": "sign-in",
+      "title": "Playing needs a sign-in",
+      "summary": "The game and its score API are for players signed in to icelander.net; the table stays public.",
+      "statement": "The game's page, a new match's seed and a score submission need a sign-in to icelander.net with the games:play role. The table, as JSON or as a page, needs none.",
+      "origin": {
+        "kind": "document",
+        "reference": "README.md",
+        "description": "The repository README: every game needs icelander.net's sign-in; the high-score tables stay public."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "AUTH"
+        },
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "gamePage"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/rally/worker/.dev/verification.json",
+          "entityId": "sign-in"
+        }
+      ]
+    },
+    {
+      "id": "any-input",
+      "title": "Keys, touch or mouse",
+      "summary": "The paddle can be moved with the keyboard, a finger or the mouse.",
+      "statement": "W/S and the arrow keys move the paddle, and dragging or moving the mouse over the table sends it toward the pointer.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/rally/README.md",
+        "description": "Rally's README, written for players and developers."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/ui/input.ts",
+          "symbol": "Input.one"
+        },
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "POINTER_SPEED"
+        }
+      ]
+    },
+    {
+      "id": "names-only",
+      "title": "Only a name is stored",
+      "summary": "A score is stored with a name of up to 12 characters, and nothing else about the player.",
+      "statement": "The table stores a name of up to 12 plain characters with each score. No email address is asked for or stored; a signed-in player's address before the @ is only offered as a starting name.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/rally/README.md",
+        "description": "Rally's README, written for players and developers."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/worker/schema.sql",
+          "symbol": "scores"
+        },
+        {
+          "path": "games/rally/src/name.ts",
+          "symbol": "cleanName"
+        },
+        {
+          "path": "games/rally/src/scores.ts",
+          "symbol": "defaultName"
+        }
+      ]
+    },
+    {
+      "id": "original",
+      "title": "An original game",
+      "summary": "Rally copies none of the paddle-and-ball games it follows: its name, look, sounds and code are its own.",
+      "statement": "Rally belongs to the paddle-and-ball genre but takes no name, artwork, sound or code from any game in it.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/rally/README.md",
+        "description": "Rally's README, written for players and developers."
+      },
+      "evidenceStatus": "documented"
+    }
+  ]
+}

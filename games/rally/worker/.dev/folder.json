@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "High-score Worker",
+  "folder": "games/rally/worker",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "High-score Worker",
+      "summary": "The Cloudflare Worker: the signed-in game page, the high-score API and the public scores page.",
+      "purpose": "Serves the game behind icelander.net's sign-in, issues seeds, replays submitted matches with the engine, and keeps the table in D1.",
+      "boundaries": [
+        "Static files are served by Cloudflare's assets, not by this code.",
+        "Online matches never reach it."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "default.fetch"
+        }
+      ]
+    }
+  ]
+}

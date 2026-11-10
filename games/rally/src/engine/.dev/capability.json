@@ -1,0 +1,78 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Engine capability",
+  "folder": "games/rally/src/engine",
+  "description": "What the engine can do for the page and the Worker.",
+  "sources": [
+    {
+      "path": "games/rally/src/engine/rules.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/rally/src/engine/match.ts",
+      "symbol": "replay"
+    }
+  ],
+  "entities": [
+    {
+      "id": "deterministic-match",
+      "name": "Deterministic table-tennis match",
+      "description": "Plays and replays a match of Rally with no DOM, timers or randomness of its own.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "replay"
+        },
+        {
+          "path": "games/rally/src/engine/ai.ts",
+          "symbol": "Cpu"
+        }
+      ],
+      "responsibility": "Holds the rules of the game and plays a match step by step, so that the same seed and controls always give the same match in every browser and on the server.",
+      "operations": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "newMatch"
+        },
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/rally/src/engine/ai.ts",
+          "symbol": "Cpu.control"
+        },
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "Recorder.record"
+        },
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "replay"
+        }
+      ],
+      "access": [
+        "Nothing checks: it is a library bundled into the page and the Worker."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/rally/src/engine",
+      "path": "games/rally/src/engine/.dev/operation.json",
+      "relationship": "The operations through which it is reached."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/rally/src/engine",
+      "path": "games/rally/src/engine/.dev/feature.json",
+      "relationship": "The features it offers."
+    }
+  ]
+}

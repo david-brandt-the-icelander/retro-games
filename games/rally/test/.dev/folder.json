@@ -1,0 +1,24 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Tests",
+  "folder": "games/rally/test",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Tests",
+      "summary": "The node:test suites for the engine, the high-score code, online play and the sign-in.",
+      "purpose": "Checks the game without a browser: build.mjs --test bundles each *.test.ts into dist-test/, and npm test runs them after the typecheck.",
+      "boundaries": [
+        "What each suite checks is recorded in the verification files of the folders it checks."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/build.mjs",
+          "symbol": "--test"
+        }
+      ]
+    }
+  ]
+}

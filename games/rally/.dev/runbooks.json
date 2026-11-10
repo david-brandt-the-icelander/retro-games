@@ -1,0 +1,75 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/runbooks.schema.json",
+  "kind": "runbooks",
+  "title": "Rally runbooks",
+  "folder": "games/rally",
+  "entities": [
+    {
+      "id": "setup",
+      "title": "Work on Rally",
+      "summary": "Install, test and build the game in its folder.",
+      "purpose": "setup",
+      "when": "Before changing anything in games/rally.",
+      "steps": [
+        "cd games/rally",
+        "npm install",
+        "npm test (typecheck, then the test suites)",
+        "npm run build (into dist/games/retro/rally/; BASE_PATH=\"\" builds at the root)",
+        "npm run dev rebuilds on change; serve dist/ with any static server"
+      ],
+      "verify": "npm test passes.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/rally/README.md",
+          "symbol": "Develop"
+        },
+        {
+          "path": "games/rally/package.json",
+          "symbol": "scripts"
+        }
+      ]
+    },
+    {
+      "id": "run-locally",
+      "title": "Run the Worker locally",
+      "summary": "The game, its API and a local copy of the database on localhost.",
+      "purpose": "setup",
+      "steps": [
+        "npx wrangler d1 execute rally-scores --local --file worker/schema.sql",
+        "npm run build && npx wrangler dev",
+        "Open http://localhost:8787/games/retro/rally/"
+      ],
+      "verify": "The title screen appears and a one-player match can be entered on the table.",
+      "details": "An online match also needs the games hub on the same origin, from its own repository.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/rally/README.md",
+          "symbol": "Deploy"
+        }
+      ]
+    },
+    {
+      "id": "change-database",
+      "title": "Change the database",
+      "summary": "A schema change is a migration applied by hand before merging.",
+      "purpose": "operate",
+      "when": "worker/schema.sql has to change.",
+      "steps": [
+        "Add games/rally/worker/migrations/NNNN-what-it-does.sql, numbered from 0002, with a comment saying why",
+        "Make the same change in worker/schema.sql",
+        "Try it locally: npx wrangler d1 execute rally-scores --local --file worker/migrations/<file>",
+        "Apply it to production before merging, and say so in the pull request's description"
+      ],
+      "verify": "The Database migration check passes.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Writing a migration"
+        }
+      ]
+    }
+  ]
+}

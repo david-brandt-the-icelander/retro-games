@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Browser game decisions",
+  "folder": "games/rally/src",
+  "entities": [
+    {
+      "id": "lockstep",
+      "title": "Online play in lockstep",
+      "summary": "Every browser runs the whole match and exchanges only controls.",
+      "status": "accepted",
+      "context": "Two players on different connections must see the same match, and the engine is already deterministic for replays.",
+      "options": [
+        {
+          "title": "Lockstep in every browser",
+          "consequences": "Only controls cross the network; a slow player makes the other wait."
+        },
+        {
+          "title": "A server runs the match",
+          "consequences": "The server needs the engine, a clock and state per match."
+        }
+      ],
+      "decision": "Lockstep: controls are scheduled a few steps ahead, and a browser steps only with every player's controls; fingerprints are compared every 120 steps.",
+      "rationale": "The same property that lets the server replay a match keeps the browsers in step, and the relay only passes messages on.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Lockstep"
+        },
+        {
+          "path": "games/rally/README.md",
+          "symbol": "Playing online"
+        }
+      ]
+    },
+    {
+      "id": "shared-name",
+      "title": "One name for every game",
+      "summary": "The table name follows Samosa's rules and is shared for the browser session.",
+      "status": "accepted",
+      "context": "A player who enters one game's table should not have to type their name again in another.",
+      "decision": "src/name.ts has the same rules as games/dictator/src/name.ts, and the name is kept in sessionStorage under games.name.",
+      "rationale": "A name typed in one game is then valid in the other.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/name.ts",
+          "symbol": "cleanName"
+        },
+        {
+          "path": "games/rally/src/scores.ts",
+          "symbol": "saveName"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "High-score Worker settings",
+  "folder": "games/rally/worker",
+  "entities": [
+    {
+      "id": "db",
+      "title": "Database binding",
+      "summary": "The D1 database rally-scores.",
+      "key": "DB",
+      "type": "D1 binding",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/wrangler.jsonc",
+          "symbol": "d1_databases"
+        },
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "Env"
+        }
+      ]
+    },
+    {
+      "id": "assets",
+      "title": "Static assets",
+      "summary": "The built game in dist/; the page itself is served through the Worker for the sign-in.",
+      "key": "ASSETS",
+      "type": "assets binding",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/wrangler.jsonc",
+          "symbol": "assets"
+        }
+      ]
+    },
+    {
+      "id": "accounts",
+      "title": "Login service",
+      "summary": "icelander.net's accounts Worker, through its Internal entrypoint.",
+      "key": "ACCOUNTS",
+      "type": "service binding",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/wrangler.jsonc",
+          "symbol": "services"
+        }
+      ]
+    },
+    {
+      "id": "jwks",
+      "title": "Login service's public keys",
+      "summary": "The keys a session is checked against; public, not secret.",
+      "key": "ACCOUNTS_JWKS",
+      "type": "JSON Web Key Set (string)",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "details": "Changed when icelander.net rotates its keys (its docs/accounts.md, Keys).",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/wrangler.jsonc",
+          "symbol": "vars"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,219 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Browser game features",
+  "folder": "games/rally/src",
+  "description": "What the page offers a player, on top of the engine's rules.",
+  "sources": [
+    {
+      "path": "games/rally/src/main.ts",
+      "symbol": "start"
+    },
+    {
+      "path": "games/rally/src/main.ts",
+      "symbol": "joinMatch"
+    }
+  ],
+  "entities": [
+    {
+      "id": "play-the-computer",
+      "name": "Play the computer",
+      "description": "A one-player match against the computer at the level the player chose.",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "start"
+        },
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "setLevel"
+        }
+      ],
+      "behavior": "The player is the left paddle and picks easy, normal or hard, which is remembered in this browser. W/S, the arrow keys, dragging or the mouse move the paddle. P or Esc pauses, and so does leaving the tab. The page asks the server for the match's seed first; without one the match still plays.",
+      "outcome": "A match against the computer on any computer, phone or tablet.",
+      "constraints": [
+        "No two-player game on one device.",
+        "A match the server issued no seed for cannot enter the table."
+      ],
+      "implementation": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "start"
+        },
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "setLevel"
+        },
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "controls"
+        },
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "frame"
+        },
+        {
+          "path": "games/rally/src/ui/input.ts",
+          "symbol": "Input"
+        }
+      ]
+    },
+    {
+      "id": "online-match",
+      "name": "Online match with a friend",
+      "description": "Two signed-in players, each on their own device, play one match together.",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "joinMatch"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Lockstep"
+        }
+      ],
+      "behavior": "Opened from the multiplayer page with ?match=ID, the page connects to the games hub's relay for that match and waits for the other player. The first player in the lobby starts it with a seed and a delay that suits both connections. Each browser runs the whole match, sends only its own player's controls a few steps ahead, and steps only once it has both players' controls. Every 120 steps the browsers compare a fingerprint of the match, and end it if they differ.",
+      "outcome": "Both players see exactly the same match, whatever their connections.",
+      "constraints": [
+        "Cannot be paused: Esc opens a menu while it goes on.",
+        "Does not go on the high-score table.",
+        "Two players.",
+        "A browser that falls behind makes the other wait."
+      ],
+      "implementation": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "joinMatch"
+        },
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "startOnline"
+        },
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "beginOnline"
+        },
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "stepOnline"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Room"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Lockstep"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "delaySteps"
+        }
+      ]
+    },
+    {
+      "id": "arcade-name-entry",
+      "name": "Arcade-style name entry",
+      "description": "After a one-player match with points, the player may put it on the table.",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "offerEntry"
+        },
+        {
+          "path": "games/rally/src/ui/entry.ts",
+          "symbol": "NameEntry"
+        }
+      ],
+      "behavior": "The name is typed into underlined slots with a blinking cursor, on the keyboard or on keys drawn on screen. It starts as the name used earlier in this browser session, or else the signed-in player's address before the @. DEL deletes, ENTER sends the match and SKIP leaves it off the table.",
+      "outcome": "The player's match is replayed by the server and shown in the table with its rank.",
+      "constraints": [
+        "Up to 12 characters: capitals, digits, dots, hyphens and spaces.",
+        "The name is shared with every game on icelander.net for the browser session.",
+        "No email address is asked for or stored."
+      ],
+      "implementation": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "offerEntry"
+        },
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "entryKey"
+        },
+        {
+          "path": "games/rally/src/ui/entry.ts",
+          "symbol": "NameEntry"
+        },
+        {
+          "path": "games/rally/src/name.ts",
+          "symbol": "cleanName"
+        },
+        {
+          "path": "games/rally/src/name.ts",
+          "symbol": "nameFromEmail"
+        },
+        {
+          "path": "games/rally/src/scores.ts",
+          "symbol": "defaultName"
+        },
+        {
+          "path": "games/rally/src/scores.ts",
+          "symbol": "submitMatch"
+        }
+      ]
+    },
+    {
+      "id": "demo-match",
+      "name": "A match behind the menus",
+      "description": "The computer plays itself behind the title, help and online screens.",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "newDemo"
+        }
+      ],
+      "behavior": "A silent match between a hard and a normal computer plays behind the menus, and starts again when it ends.",
+      "outcome": "The title screen shows the game being played.",
+      "constraints": [
+        "Silent."
+      ],
+      "implementation": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "newDemo"
+        },
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "frame"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/rally/src",
+      "path": "games/rally/src/.dev/use-case.json",
+      "relationship": "The use cases that exercise these features."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/rally/src",
+      "path": "games/rally/src/.dev/capability.json",
+      "relationship": "The capability the online match belongs to."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/rally/src/engine",
+      "path": "games/rally/src/engine/.dev/feature.json",
+      "relationship": "The engine features they rely on."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/rally/worker",
+      "path": "games/rally/worker/.dev/feature.json",
+      "relationship": "The server side of the table."
+    }
+  ]
+}

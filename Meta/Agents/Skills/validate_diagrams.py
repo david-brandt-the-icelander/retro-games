@@ -1,8 +1,9 @@
-"""Validate architecture schemas, examples, diagrams and actor files. Requires jsonschema.
+"""Validate architecture and behavior schemas, examples, diagrams and actor files. Requires jsonschema.
 
 Usage: python3 Meta/Agents/Skills/validate_diagrams.py [repository-root]
 
-The skills are found next to this script. Every `.dev/*.json` file in the repository is checked,
+Component, class, state and deployment diagrams and use-case, user-journey, capability, feature and
+operation views are checked. The skills are found next to this script. Every `.dev/*.json` file in the repository is checked,
 except under directories that never hold source: .git, node_modules, build output and the skills
 themselves. If the repository has an `Actors/` folder, its files are checked too: every link to
 `Actors/<name>.md`, in a diagram's `actor` field or in a Markdown file, must land on a file, and every
@@ -19,6 +20,9 @@ from pathlib import Path
 from jsonschema import Draft202012Validator
 
 KINDS = ("component", "class", "state", "deployment")
+BEHAVIOR_KINDS = ("use-case", "user-journey", "capability", "feature", "operation")
+SKILL_FOLDERS = {**{kind: f"describe-{kind}-diagram" for kind in KINDS},
+                 **{kind: f"describe-{kind}" for kind in BEHAVIOR_KINDS}}
 ACTORS_DIR = "Actors"
 ACTOR_LINK = re.compile(r"\bActors/[A-Za-z0-9._-]+\.md\b")
 SKIPPED_DIRS = {".git", "node_modules", "dist", "dist-test", "build", "bin", "obj", ".wrangler", "__pycache__"}
@@ -51,7 +55,7 @@ def repo_path(root, value):
 
 def check_graph(document):
     collection = {"component": "components", "class": "types", "state": "states",
-                  "deployment": "nodes"}[document["kind"]]
+                  "deployment": "nodes"}.get(document["kind"], "entities")
     ids = [item["id"] for item in document[collection]]
     require(len(ids) == len(set(ids)), f"Duplicate IDs in {collection}")
     edges = document.get("relationships", document.get("transitions", []))
@@ -60,6 +64,13 @@ def check_graph(document):
         require(edge["to"] in ids, f"Unknown target: {edge['to']}")
     if document["kind"] == "state":
         require(document["initialState"] in ids, "Unknown initial state")
+    for entity in document.get("entities", []):
+        for collection in ("flow", "stages"):
+            steps = [step["id"] for step in entity.get(collection, [])]
+            require(len(steps) == len(set(steps)), f"Duplicate {collection} IDs in {entity['id']}")
+        for alternative in entity.get("alternatives", []):
+            require(alternative["atStep"] in [step["id"] for step in entity["flow"]],
+                    f"Unknown step: {alternative['atStep']}")
     if document["kind"] == "deployment":
         artifacts = document["artifacts"]
         artifact_ids = [item["id"] for item in artifacts]
@@ -118,11 +129,25 @@ def check_actors(root, skills, referenced):
     return len(actors)
 
 
+def check_behavior_references(root, value, referenced_actors):
+    """Every source a behavior view cites is a file, and every actorDocument is an actor file."""
+    if isinstance(value, dict):
+        if isinstance(value.get("path"), str) and "symbol" in value:
+            require(repo_path(root, value["path"]).is_file(), f"Source is not a file: {value['path']}")
+        if "actorDocument" in value:
+            referenced_actors.add(actor_reference(root, value["actorDocument"]))
+        for child in value.values():
+            check_behavior_references(root, child, referenced_actors)
+    elif isinstance(value, list):
+        for child in value:
+            check_behavior_references(root, child, referenced_actors)
+
+
 def validate(root):
     skills = Path(__file__).resolve().parent
     schemas = {}
-    for kind in KINDS:
-        folder = skills / f"describe-{kind}-diagram"
+    for kind in SKILL_FOLDERS:
+        folder = skills / SKILL_FOLDERS[kind]
         schema = read_json(folder / "schema.json")
         Draft202012Validator.check_schema(schema)
         validator = Draft202012Validator(schema)
@@ -133,21 +158,25 @@ def validate(root):
                 "Example references the wrong schema")
         schemas[kind] = validator
 
+    # Knowledge files are validated by Agents/Knowledge/validate_knowledge.py, so their kinds are skipped here.
+    knowledge = skills.parent / "Knowledge" / "schemas"
     counts = Counter()
     referenced_actors = set()
     for path in diagram_files(root, skills):
         document = read_json(path)
         try:
             kind = document["kind"]
+            if kind not in schemas and (knowledge / f"{kind}.schema.json").exists():
+                continue
             require(kind in schemas, f"Unknown diagram kind: {kind}")
             schemas[kind].validate(document)
             check_graph(document)
-            expected_schema = skills / f"describe-{kind}-diagram/schema.json"
+            expected_schema = skills / SKILL_FOLDERS[kind] / "schema.json"
             require((path.parent / document["$schema"]).resolve() == expected_schema.resolve(),
                     "Diagram references the wrong schema")
             require(repo_path(root, document["folder"]) == path.parent.parent,
                     "Folder does not match diagram location")
-            expected_name = f"{kind}-diagram.json"
+            expected_name = f"{kind}-diagram.json" if kind in KINDS else f"{kind}.json"
             require(path.name.endswith(".state-diagram.json") if kind == "state"
                     else path.name == expected_name, "Unexpected diagram filename")
             for source in document["sources"]:
@@ -166,6 +195,15 @@ def validate(root):
                     target = read_json(repo_path(root, component["diagram"]))
                     require(target["kind"] == "component" and target["folder"] == component.get("folder"),
                             "Component reference describes a different folder or diagram kind")
+            if kind in BEHAVIOR_KINDS:
+                check_behavior_references(root, document["entities"], referenced_actors)
+            for related in document.get("relatedViews", []):
+                target_path = repo_path(root, related["path"])
+                target = read_json(target_path)
+                require(target["kind"] == related["kind"] and target["folder"] == related["folder"],
+                        f"Related view describes a different folder or kind: {related['path']}")
+                require(repo_path(root, related["folder"]) == target_path.parent.parent,
+                        f"Related view's folder does not match its location: {related['path']}")
             for artifact in document.get("artifacts", []):
                 require(repo_path(root, artifact["source"]).is_file(), f"Artifact source is not a file: {artifact['source']}")
         except Exception as error:
@@ -173,8 +211,8 @@ def validate(root):
         counts[kind] += 1
     require(sum(counts.values()) > 0, "No diagrams found")
     actors = check_actors(root, skills, referenced_actors)
-    print(f"Validated {len(KINDS)} schemas and examples; " + ", ".join(
-        f"{count} {kind} diagrams" for kind, count in sorted(counts.items()))
+    print(f"Validated {len(SKILL_FOLDERS)} schemas and examples; " + ", ".join(
+        f"{count} {kind}" for kind, count in sorted(counts.items()))
         + f"; {actors} actors.")
 
 

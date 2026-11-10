@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Browser game",
+  "folder": "games/rally/src",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Browser game",
+      "summary": "Everything that runs in the player's browser.",
+      "purpose": "Wires the pure engine to the page: the screens, the 120 Hz frame loop, recording, the name entry, the high-score client, and online play in lockstep.",
+      "boundaries": [
+        "The rules live in engine/ and the drawing, input and sound in ui/.",
+        "The relay for online matches and /games/me are the games hub's."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "frame"
+        }
+      ]
+    }
+  ]
+}

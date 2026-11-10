@@ -1,0 +1,32 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Engine decisions",
+  "folder": "games/rally/src/engine",
+  "entities": [
+    {
+      "id": "exact-arithmetic",
+      "title": "Slopes, not angles",
+      "summary": "The engine avoids every function a browser may compute differently.",
+      "status": "accepted",
+      "context": "The server replays every submitted match and must get exactly the browser's result; sin, cos, pow and hypot are not guaranteed to agree bit for bit between engines.",
+      "decision": "Directions are slopes (tan 55° and tan 22° are constants), speeds come from Math.sqrt, and the computer's error grows as pace × √pace rather than pace ** 1.5.",
+      "rationale": "+ − × ÷ and √ are exact in every browser, so a match replays identically anywhere.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "MAX_SLOPE"
+        },
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "launch"
+        },
+        {
+          "path": "games/rally/src/engine/ai.ts",
+          "symbol": "fastMiss"
+        }
+      ]
+    }
+  ]
+}

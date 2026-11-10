@@ -27,7 +27,8 @@
       "id": "browser",
       "name": "Player's browser",
       "kind": "client",
-      "description": "Runs the game itself; one player per device."
+      "description": "Runs the game itself; one player per device.",
+      "actor": "Actors/player.md"
     },
     {
       "id": "edge",

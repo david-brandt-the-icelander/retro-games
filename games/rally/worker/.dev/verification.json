@@ -1,0 +1,84 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "High-score Worker verification",
+  "folder": "games/rally/worker",
+  "entities": [
+    {
+      "id": "submissions",
+      "title": "Submissions and the scores page",
+      "summary": "Bad submissions are refused before any replay, and the page escapes names.",
+      "subject": [
+        {
+          "path": "games/rally/worker/.dev/feature.json",
+          "entityId": "unfakeable-scores"
+        },
+        {
+          "path": "games/rally/worker/.dev/feature.json",
+          "entityId": "public-scores-page"
+        }
+      ],
+      "criteria": [
+        "A submission's shape is checked before it is replayed",
+        "The web page lists matches, escapes names and carries the site's footer"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/rally/test/scores.test.ts",
+          "symbol": "the server checks a submission's shape before replaying it",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/scores.test.ts",
+          "symbol": "the high-score web page lists matches, escapes names, and carries the site's footer",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "sign-in",
+      "title": "Sign-in",
+      "summary": "The page and the score API need a sign-in; the vendored library is unedited.",
+      "subject": [
+        {
+          "path": "games/rally/worker/.dev/capability.json",
+          "entityId": "signed-in-page"
+        }
+      ],
+      "criteria": [
+        "Someone signed out is sent to sign in, and back",
+        "The page is served privately to anyone signed in",
+        "A new game or a score needs a sign-in, and an unreachable login service counts as signed out",
+        "vendor/icelander-auth is icelander.net's, unedited"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/rally/test/sign-in.test.ts",
+          "symbol": "sign-in: the game's page sends someone signed out to sign in, and back",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/sign-in.test.ts",
+          "symbol": "sign-in: the page is served to anyone signed in, privately",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/sign-in.test.ts",
+          "symbol": "sign-in: a new game or a score needs a sign-in; the login service out of reach is signed out",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/sign-in.test.ts",
+          "symbol": "sign-in: the vendored library (shared by every game here) is icelander.net's, unedited",
+          "command": "npm test"
+        }
+      ]
+    }
+  ]
+}

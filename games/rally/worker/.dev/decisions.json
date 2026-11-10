@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "High-score Worker decisions",
+  "folder": "games/rally/worker",
+  "entities": [
+    {
+      "id": "replay-not-trust",
+      "title": "Replay every score",
+      "summary": "The server never takes a score from the browser; it replays the match.",
+      "status": "accepted",
+      "context": "A browser can send anything; a public table is worthless if scores can be typed in.",
+      "options": [
+        {
+          "title": "Accept the browser's score",
+          "consequences": "Trivially faked."
+        },
+        {
+          "title": "Issue the seed and replay the recorded controls",
+          "consequences": "A replay per submission, about 5 ms for a 10-minute match; the engine must be deterministic."
+        }
+      ],
+      "decision": "The server issues each match's seed, stores it unused, and on submission replays the recording with the same engine, marks the seed used and stores the replay's score.",
+      "rationale": "Only what the match really scored can be listed, and each seed only once.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "issueGame"
+        },
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/rally/worker/scores.ts",
+          "symbol": "verify"
+        }
+      ]
+    }
+  ]
+}

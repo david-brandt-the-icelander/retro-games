@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Engine",
+  "folder": "games/rally/src/engine",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Engine",
+      "summary": "The pure game: rules, the computer player, recording and replay.",
+      "purpose": "Plays a match of Rally step by step with no DOM, timers or randomness of its own, so the page, the tests and the Worker all get the same match from the same seed and controls.",
+      "boundaries": [
+        "Only + − × ÷ and Math.sqrt, and only rng.ts for random numbers.",
+        "Knows nothing of the page, the network or the database."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "step"
+        }
+      ]
+    }
+  ]
+}

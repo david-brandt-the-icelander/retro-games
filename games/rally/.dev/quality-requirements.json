@@ -1,0 +1,104 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/quality-requirements.schema.json",
+  "kind": "quality-requirements",
+  "title": "Rally quality requirements",
+  "folder": "games/rally",
+  "entities": [
+    {
+      "id": "determinism",
+      "title": "The same match in every browser and on the server",
+      "summary": "The engine must give bit-identical results everywhere.",
+      "area": "correctness",
+      "requirement": "Engine code uses only + − × ÷ and Math.sqrt, and draws random numbers only from its own seeded generator, so a match replays exactly in every browser and in the Worker.",
+      "measuredBy": "The replay tests: a recorded match replays to the same score; the same seed plays the same match; browsers in lockstep play the same steps.",
+      "origin": {
+        "kind": "document",
+        "reference": "AGENTS.md",
+        "description": "The repository's agent instructions: the games' engines must stay deterministic."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "MAX_SLOPE"
+        },
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "speedOf"
+        },
+        {
+          "path": "games/rally/src/engine/ai.ts",
+          "symbol": "fastMiss"
+        },
+        {
+          "path": "games/rally/src/engine/rng.ts",
+          "symbol": "rng"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/rally/src/engine/.dev/verification.json",
+          "entityId": "replay"
+        }
+      ]
+    },
+    {
+      "id": "replay-speed",
+      "title": "Replays are cheap for the server",
+      "summary": "The Worker replays a whole match on every submission, so a replay must be fast.",
+      "area": "performance",
+      "requirement": "A long match against the hard computer replays in well under half a second; the README gives about 5 ms for a 10-minute match.",
+      "measuredBy": "test/match.test.ts, \"a long match replays quickly enough for the server\": under 500 ms.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/rally/README.md",
+        "description": "Rally's README, written for players and developers."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/test/match.test.ts",
+          "symbol": "a long match replays quickly enough for the server"
+        }
+      ]
+    },
+    {
+      "id": "strict-csp",
+      "title": "Everything from this origin",
+      "summary": "The page loads nothing from elsewhere except Cloudflare Web Analytics.",
+      "area": "security",
+      "requirement": "The page's content security policy allows scripts, styles, images and connections only from icelander.net, plus Cloudflare's analytics beacon; no framing, forms, plugins or base URL changes.",
+      "measuredBy": "public/_headers, read by Cloudflare's static assets.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/public/_headers",
+          "symbol": "Content-Security-Policy"
+        }
+      ]
+    },
+    {
+      "id": "tunnel-free",
+      "title": "The ball never passes through a paddle",
+      "summary": "Even at top speed, a ball that meets a paddle is returned.",
+      "area": "correctness",
+      "requirement": "The ball is moved in sub-steps of at most a third of its size.",
+      "measuredBy": "test/rules.test.ts, \"even at top speed the ball can't slip through a paddle\".",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "MAX_TRAVEL"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/rally/src/engine/.dev/verification.json",
+          "entityId": "returns"
+        }
+      ]
+    }
+  ]
+}

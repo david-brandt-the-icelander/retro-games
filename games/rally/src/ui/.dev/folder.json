@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "UI",
+  "folder": "games/rally/src/ui",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "UI",
+      "summary": "Drawing, input, sound and the name entry's keyboard.",
+      "purpose": "Turns the engine's state and events into what the player sees and hears, and keys, fingers and the mouse into a paddle control.",
+      "boundaries": [
+        "Decides nothing about the game: the engine does."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/ui/render.ts",
+          "symbol": "Renderer"
+        },
+        {
+          "path": "games/rally/src/ui/input.ts",
+          "symbol": "Input"
+        }
+      ]
+    }
+  ]
+}
