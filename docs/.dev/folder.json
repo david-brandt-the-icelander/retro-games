@@ -1,0 +1,35 @@
+{
+  "$schema": "../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Repository documents",
+  "folder": "docs",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Repository documents",
+      "summary": "The procedures that apply to every game rather than to one of them.",
+      "purpose": "Holds docs/database-migrations.md: how a game's database changes (a fresh database from worker/schema.sql, the live one only through worker/migrations/), how a migration is applied to production by hand, and how a pull request acknowledges it so the Database migration check and the deploy gate let it through.",
+      "boundaries": [
+        "Each game's own documents live in that game's folder (games/chess/docs, games/dictator/docs, games/lodestar/docs), not here.",
+        "The gate that enforces the procedure is .github/scripts/migration-gate.sh, which reads this document's path."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Database migrations"
+        },
+        {
+          "path": ".github/scripts/migration-gate.sh",
+          "symbol": "DOC"
+        }
+      ],
+      "links": [
+        {
+          "path": "docs/database-migrations.md",
+          "label": "Database migrations"
+        }
+      ]
+    }
+  ]
+}

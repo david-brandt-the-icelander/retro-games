@@ -3,7 +3,7 @@
   "kind": "component",
   "title": "Retro games component diagram",
   "folder": "games",
-  "description": "The games folder groups five independent browser games, each its own npm project with its own Cloudflare Worker. Four have an engine, a page and a replay-checked high-score table; Gambit is a Godot client whose Worker handles sign-in, games and history. They share no code at build time, and three carry identical copies of the online module.",
+  "description": "The games folder groups six independent games. Five are browser games, each its own npm project with its own Cloudflare Worker: four have an engine, a page and a replay-checked high-score table, and Gambit is a Godot client whose Worker handles sign-in, games and history. LodeStar is a desktop game, a Rust workspace presented by Godot, with no server. They share no code at build time, and three carry identical copies of the online module.",
   "sources": [
     {
       "path": "README.md",
@@ -24,13 +24,17 @@
     {
       "path": "games/chess/README.md",
       "symbol": "How it works"
+    },
+    {
+      "path": "games/lodestar/Cargo.toml",
+      "symbol": "workspace"
     }
   ],
   "components": [
     {
       "id": "games",
       "name": "Retro games",
-      "responsibility": "The five browser games, side by side.",
+      "responsibility": "The six games, side by side.",
       "folder": "games"
     },
     {
@@ -69,6 +73,13 @@
       "diagram": "games/chess/.dev/component-diagram.json"
     },
     {
+      "id": "lodestar",
+      "name": "LodeStar",
+      "responsibility": "A desktop space trading and combat game: deterministic rules in the Rust lodestar-core crate, presented in Godot 4.",
+      "folder": "games/lodestar",
+      "diagram": "games/lodestar/.dev/component-diagram.json"
+    },
+    {
       "id": "hub",
       "name": "Games hub",
       "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
@@ -105,6 +116,12 @@
       "to": "gambit",
       "kind": "contains",
       "description": "Gambit is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "lodestar",
+      "kind": "contains",
+      "description": "LodeStar is one of the games."
     },
     {
       "from": "rally",
