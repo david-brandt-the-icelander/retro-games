@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Browser game contracts",
+  "folder": "games/dictator/src",
+  "entities": [
+    {
+      "id": "name-rules",
+      "title": "The name rules",
+      "summary": "cleanName: what a name on the table may be. Samosa's src/name.ts is the source; the Worker imports it and Rally copies it.",
+      "contractType": "library",
+      "consumers": [
+        "worker/scores.ts, which cleans every submitted name with it",
+        "games/rally/src/name.ts, which copies the same rules, so a name typed in one game is valid in the other"
+      ],
+      "guarantees": [
+        "At most 12 characters (NAME_MAX)",
+        "Accents dropped and þ, ð, æ, ø, ß, œ and ł spelled out; only letters, digits, spaces and . ' _ - kept; spaces collapsed",
+        "A name with no letter or digit cleans to \"\", which the table refuses",
+        "nameFromEmail gives the part of an address before the @ and any +tag, in capitals, with underscores as hyphens, typeable on the name entry's keys"
+      ],
+      "compatibility": "A change here changes what the Worker accepts and must be made in Rally's copy too; nothing checks the two agree (Rally's backlog item name-copies).",
+      "definition": "games/dictator/src/name.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/name.ts",
+          "symbol": "cleanName"
+        },
+        {
+          "path": "games/dictator/src/name.ts",
+          "symbol": "nameFromEmail"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "cleanName"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/backlog.json",
+          "entityId": "name-copies"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/decisions.json",
+          "entityId": "shared-name"
+        }
+      ]
+    },
+    {
+      "id": "session-name",
+      "title": "The session name",
+      "summary": "sessionStorage games.name: the table name, shared by every game on icelander.net for the browser session.",
+      "contractType": "browser-storage",
+      "consumers": [
+        "Rally (games/rally), which reads and writes the same key"
+      ],
+      "guarantees": [
+        "Holds a name already cleaned by cleanName, saved only once the server has accepted a reign under it"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/scores.ts",
+          "symbol": "NAME_KEY"
+        },
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "offerTable"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/contracts.json",
+          "entityId": "session-name"
+        }
+      ]
+    }
+  ]
+}

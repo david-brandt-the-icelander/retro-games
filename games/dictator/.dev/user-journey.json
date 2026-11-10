@@ -1,0 +1,223 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-user-journey/schema.json",
+  "kind": "user-journey",
+  "title": "Samosa journeys",
+  "folder": "games/dictator",
+  "description": "Players' experience of Samosa, as its README and its game design document describe it.",
+  "sources": [
+    {
+      "path": "games/dictator/README.md",
+      "symbol": "How to play"
+    },
+    {
+      "path": "games/dictator/docs/GDD.md",
+      "symbol": "5. Player experience"
+    }
+  ],
+  "entities": [
+    {
+      "id": "a-reign",
+      "name": "One reign, from confidence to verdict",
+      "description": "The arc of a session as the game design document lays it out: a reign starts comfortably and usually ends badly.",
+      "sources": [
+        {
+          "path": "games/dictator/docs/GDD.md",
+          "symbol": "5. Player experience"
+        }
+      ],
+      "persona": "Player",
+      "goal": "Rule as long and as well as possible, and get out alive with money in Switzerland if they can.",
+      "stages": [
+        {
+          "id": "confidence",
+          "context": "A new reign: a full treasury, every group but the Contras moderately content.",
+          "touchpoint": "The welcome screen, the treasury and the free first report",
+          "action": "Reads the best rating to beat, the treasury and State Security's first file.",
+          "outcome": "Month 1 begins.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "playGame"
+            },
+            {
+              "path": "games/dictator/src/engine/state.ts",
+              "symbol": "newGame"
+            }
+          ]
+        },
+        {
+          "id": "juggling",
+          "context": "Every month a faction wants something; the treasury drains.",
+          "touchpoint": "The audience, the adviser and the decision dialog",
+          "action": "Asks the adviser, then grants or refuses; takes at most one decision from the five sections.",
+          "outcome": "Some groups like the President more, the one refused less; the reports start to show plots.",
+          "sources": [
+            {
+              "path": "games/dictator/docs/GDD.md",
+              "symbol": "6. Core loop"
+            },
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "audience"
+            },
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "decide"
+            }
+          ]
+        },
+        {
+          "id": "paranoia",
+          "context": "Plots appear in the file.",
+          "touchpoint": "The report offer and section 3 of the decision menu",
+          "action": "Buys reports, pays for secret police, guards or the helicopter, and moves money to Switzerland.",
+          "outcome": "A stronger guard, a way out, and a Swiss account that only counts if they live.",
+          "sources": [
+            {
+              "path": "games/dictator/docs/GDD.md",
+              "symbol": "5. Player experience"
+            },
+            {
+              "path": "games/dictator/src/engine/data.ts",
+              "symbol": "DECISIONS"
+            }
+          ]
+        },
+        {
+          "id": "crisis",
+          "context": "An assassin, an invasion or a revolution.",
+          "touchpoint": "The alarm, the escape question and the help list",
+          "action": "Runs, by helicopter or on foot over the mountains, or fights with whichever group still likes them.",
+          "outcome": "Crushes the revolt and rules on, or the reign ends.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "revolution"
+            },
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "fight"
+            }
+          ]
+        },
+        {
+          "id": "verdict",
+          "context": "Killed, or out of the country.",
+          "touchpoint": "The funeral (if dead), the rating and the final report",
+          "action": "Reads the score, line by line, and the best so far.",
+          "outcome": "A rating to beat next time: different strategies score differently.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "rate"
+            },
+            {
+              "path": "games/dictator/docs/GDD.md",
+              "symbol": "5. Player experience"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    },
+    {
+      "id": "climb-the-table",
+      "name": "Climb the high-score table",
+      "description": "A player signs in, plays a reign, enters it on the table and comes back to see it.",
+      "sources": [
+        {
+          "path": "games/dictator/README.md",
+          "symbol": "The high-score table"
+        }
+      ],
+      "persona": "Player",
+      "goal": "Get a name onto the public table, higher than before.",
+      "stages": [
+        {
+          "id": "sign-in",
+          "context": "Arrives at the game signed out.",
+          "touchpoint": "icelander.net's sign-in",
+          "action": "Signs in, and is sent back to the game.",
+          "outcome": "The title screen.",
+          "sources": [
+            {
+              "path": "games/dictator/worker/index.ts",
+              "symbol": "gamePage"
+            }
+          ]
+        },
+        {
+          "id": "learn",
+          "context": "First time, or out of practice.",
+          "touchpoint": "The title screen",
+          "action": "Presses H for the six pages of how to play, A for About, or S for the table.",
+          "outcome": "Back at the title, ready to take power.",
+          "sources": [
+            {
+              "path": "games/dictator/src/main.ts",
+              "symbol": "title"
+            }
+          ]
+        },
+        {
+          "id": "reign",
+          "context": "Takes power with any other key.",
+          "touchpoint": "The game's screens",
+          "action": "Plays a reign to its end.",
+          "outcome": "A rating, and the best in this browser.",
+          "sources": [
+            {
+              "path": "games/dictator/README.md",
+              "symbol": "How to play"
+            }
+          ]
+        },
+        {
+          "id": "enter",
+          "context": "The reign is over.",
+          "touchpoint": "The name entry",
+          "action": "Keeps or types a name of up to 12 characters, on the keyboard or the keys drawn on screen, and presses ENTER.",
+          "outcome": "The table, with the new reign marked and its rank.",
+          "sources": [
+            {
+              "path": "games/dictator/README.md",
+              "symbol": "The high-score table"
+            },
+            {
+              "path": "games/dictator/src/main.ts",
+              "symbol": "offerTable"
+            }
+          ]
+        },
+        {
+          "id": "share",
+          "context": "Later, or on another device.",
+          "touchpoint": "icelander.net/games/retro/samosa/scores/",
+          "action": "Opens the public scores page.",
+          "outcome": "The best 25 reigns, checked by replay, for anyone to see.",
+          "sources": [
+            {
+              "path": "games/dictator/worker/scores-page.ts",
+              "symbol": "scoresPage"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/dictator/src",
+      "path": "games/dictator/src/.dev/use-case.json",
+      "relationship": "The use case behind the table journey."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/use-case.json",
+      "relationship": "The month a reign is made of."
+    }
+  ]
+}

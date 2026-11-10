@@ -1,0 +1,296 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Browser game features",
+  "folder": "games/dictator/src",
+  "description": "What the page offers a player around the engine's reign.",
+  "sources": [
+    {
+      "path": "games/dictator/src/main.ts",
+      "symbol": "present"
+    },
+    {
+      "path": "games/dictator/src/main.ts",
+      "symbol": "title"
+    }
+  ],
+  "entities": [
+    {
+      "id": "title-and-extras",
+      "name": "The title and its extras",
+      "description": "The title screen leads to the reign, the rules, the credits and the table.",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "title"
+        }
+      ],
+      "behavior": "The title shows the logo, the tagline and an empty balcony, and plays the anthem on the first visit once sound can play. H shows six pages of how to play, A the About page with the credit line, S the table as the server has it; each returns to the title. Any other key takes power.",
+      "outcome": "A newcomer can learn the game and see the table without starting a reign.",
+      "constraints": [
+        "The title is not a game prompt: its keys never reach the engine or the key log."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "title"
+        },
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "drawTitle"
+        },
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "drawHowto"
+        },
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "drawAbout"
+        },
+        {
+          "path": "games/dictator/src/ui/text.ts",
+          "symbol": "HOWTO_PAGES"
+        }
+      ]
+    },
+    {
+      "id": "screen-pacing",
+      "name": "Every screen waits for a key",
+      "description": "Each screen is drawn, played and animated, then waits for its key; the screens the original timed move on by themselves.",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "present"
+        },
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "held"
+        }
+      ],
+      "behavior": "A screen appears with its motif and its animation steps. A screen the original moved on by itself holds for at least its old time reading no key (keys pressed meanwhile are dropped), then draws the any-key footer, and moves on by itself 7 seconds after it appeared unless a key comes first. Every other screen reads its key at once, with its footer drawn. A new screen stops the last one's animation.",
+      "outcome": "Nothing goes by too fast to read, and the reign still moves when the player waits.",
+      "constraints": [
+        "The key a held screen moves on with is ignored by the engine, so pacing never changes the game.",
+        "The help list reads only digits; a tap there counts for nothing."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "present"
+        },
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "AUTO_ADVANCE_MS"
+        },
+        {
+          "path": "games/dictator/src/zx/input.ts",
+          "symbol": "Input.waitKey"
+        },
+        {
+          "path": "games/dictator/src/zx/input.ts",
+          "symbol": "Input.idle"
+        }
+      ]
+    },
+    {
+      "id": "keys-and-touch",
+      "name": "Keyboard, keypad or taps",
+      "description": "Every prompt can be answered from a keyboard, from a keypad of the keys that matter, or by tapping the screen.",
+      "sources": [
+        {
+          "path": "games/dictator/src/zx/input.ts",
+          "symbol": "Input"
+        }
+      ],
+      "behavior": "Keys reach the game as typed. On a touch screen a keypad under the screen (beside it in landscape) offers the keys the prompt accepts, and tapping the screen counts as any key. Mouse-and-keyboard devices see no keypad. The canvas scales by whole numbers where there is room, and to the exact fit on phones.",
+      "outcome": "The game plays the same on a desktop and on a phone held either way.",
+      "constraints": [
+        "Keys with Ctrl, Alt or Meta, repeats and keys that aren't one character, Enter or Space are ignored.",
+        "Keypad buttons and the sound button are at least 44 CSS pixels."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/zx/input.ts",
+          "symbol": "Input"
+        },
+        {
+          "path": "games/dictator/src/zx/input.ts",
+          "symbol": "normaliseKey"
+        },
+        {
+          "path": "games/dictator/src/zx/display.ts",
+          "symbol": "Display.fit"
+        },
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "sideways"
+        },
+        {
+          "path": "games/dictator/public/zx.css",
+          "symbol": "#keypad"
+        }
+      ]
+    },
+    {
+      "id": "sound",
+      "name": "Beeper sound, on or off",
+      "description": "Each screen has its own motif, every key a blip, and M or the sound button turns it all on or off.",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "toggleSound"
+        }
+      ],
+      "behavior": "Sound is silent until the first key or tap unlocks audio. M (or the button) toggles it at any time without answering the prompt, shows SOUND: ON or OFF over the top of the screen for 1.5 s, says so to screen readers, and is remembered in this browser. If the title's anthem could not play yet, it plays when sound is turned on.",
+      "outcome": "The game can be heard as on the Spectrum, or played muted with nothing lost.",
+      "constraints": [
+        "Every sound has an on-screen message, so the game is fully playable muted."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "toggleSound"
+        },
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "playMotifs"
+        },
+        {
+          "path": "games/dictator/src/ui/overlay.ts",
+          "symbol": "SoundOverlay"
+        },
+        {
+          "path": "games/dictator/src/ui/sounds.ts",
+          "symbol": "MOTIFS"
+        },
+        {
+          "path": "games/dictator/src/zx/sound.ts",
+          "symbol": "Sound"
+        }
+      ]
+    },
+    {
+      "id": "screen-reader",
+      "name": "A text version of every screen",
+      "description": "Each screen is mirrored, in reading order, to a live region a screen reader speaks.",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "announce"
+        }
+      ],
+      "behavior": "Every painter writes the screen's text in reading order, describing pictures that carry meaning and ending with the keys the prompt accepts. The page puts it in a polite live region, and alarms and deaths in an assertive one too.",
+      "outcome": "The game can be played without seeing the screen.",
+      "constraints": [],
+      "implementation": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "announce"
+        },
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "Presentation"
+        },
+        {
+          "path": "games/dictator/public/index.html",
+          "symbol": "screen-text"
+        }
+      ]
+    },
+    {
+      "id": "best-rating",
+      "name": "The best rating in this browser",
+      "description": "The welcome screen shows the best rating so far, and the rating says when it is beaten.",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "loadBest"
+        }
+      ],
+      "behavior": "After every reign the best rating, this reign included, is kept in the browser's local storage, and the next reign starts with it.",
+      "outcome": "A score to beat, even without the public table.",
+      "constraints": [
+        "This browser only; with storage blocked there is no best."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "loadBest"
+        },
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "store"
+        }
+      ]
+    },
+    {
+      "id": "arcade-name-entry",
+      "name": "Arcade-style name entry",
+      "description": "After a reign the player may put it on the table.",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "offerTable"
+        },
+        {
+          "path": "games/dictator/src/ui/entry.ts",
+          "symbol": "NameEntry"
+        }
+      ],
+      "behavior": "The name is typed into twelve underlined slots with a blinking cursor under the next one, on the keyboard or on keys drawn on screen, each key lighting as it is pressed. It starts as the name used earlier in this browser session, or else the signed-in player's address before the @. DEL deletes, ENTER sends the reign and SKIP leaves it off the table.",
+      "outcome": "The reign is replayed by the server and shown in the table with its rank.",
+      "constraints": [
+        "Up to 12 characters: capitals, digits, dots, hyphens and spaces.",
+        "The name is shared with every game on icelander.net for the browser session.",
+        "No email address is asked for or stored.",
+        "Offered only for a reign the server issued a seed for."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "offerTable"
+        },
+        {
+          "path": "games/dictator/src/ui/entry.ts",
+          "symbol": "NameEntry"
+        },
+        {
+          "path": "games/dictator/src/name.ts",
+          "symbol": "cleanName"
+        },
+        {
+          "path": "games/dictator/src/name.ts",
+          "symbol": "nameFromEmail"
+        },
+        {
+          "path": "games/dictator/src/scores.ts",
+          "symbol": "defaultName"
+        },
+        {
+          "path": "games/dictator/src/scores.ts",
+          "symbol": "submitReign"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/dictator/src",
+      "path": "games/dictator/src/.dev/use-case.json",
+      "relationship": "The use case that exercises these features."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/feature.json",
+      "relationship": "The engine features they present."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/dictator/worker",
+      "path": "games/dictator/worker/.dev/feature.json",
+      "relationship": "The server side of the table."
+    }
+  ]
+}

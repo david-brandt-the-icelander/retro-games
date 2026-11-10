@@ -1,0 +1,80 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Engine capability",
+  "folder": "games/dictator/src/engine",
+  "description": "What the engine can do for the page, the Worker and the tests.",
+  "sources": [
+    {
+      "path": "games/dictator/src/engine/index.ts",
+      "symbol": "playGame"
+    }
+  ],
+  "entities": [
+    {
+      "id": "deterministic-reign",
+      "name": "Deterministic reign",
+      "description": "Plays and replays a reign of Samosa with no DOM, timers or randomness of its own.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "playGame"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "rate"
+        },
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "draw"
+        }
+      ],
+      "responsibility": "Holds the rules of the game and plays a reign screen by screen through one IO interface, so the same seed and keys always give the same reign, in the browser, in the tests and on the server.",
+      "operations": [
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "newGame"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "playGame"
+        },
+        {
+          "path": "games/dictator/src/engine/snapshot.ts",
+          "symbol": "snapshot"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "isYes"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "digit"
+        }
+      ],
+      "access": [
+        "Nothing checks: it is a library bundled into the page and the Worker."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/operation.json",
+      "relationship": "The operations through which it is reached."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/feature.json",
+      "relationship": "The features it offers."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/use-case.json",
+      "relationship": "The use case it carries."
+    }
+  ]
+}

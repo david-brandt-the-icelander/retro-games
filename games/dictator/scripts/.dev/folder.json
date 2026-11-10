@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Scripts",
+  "folder": "games/dictator/scripts",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Scripts",
+      "summary": "The contact-sheet renderer: every sample screen drawn headless into one PNG for review.",
+      "purpose": "Draws each of test/samples.ts's worst-case screens on a ZXScreen, twice side by side (FLASH off and on) with its name above, and writes them as one PNG, without a browser. The UI design and the visual review read the result.",
+      "boundaries": [
+        "Uses the samples the layout tests use, so the sheet shows what the tests check.",
+        "A development tool: nothing here is deployed."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/scripts/contact-sheet.ts",
+          "symbol": "SAMPLES"
+        },
+        {
+          "path": "games/dictator/build.mjs",
+          "symbol": "scripts/contact-sheet.ts"
+        }
+      ]
+    }
+  ]
+}

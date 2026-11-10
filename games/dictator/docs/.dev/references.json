@@ -1,0 +1,23 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Design documents references",
+  "folder": "games/dictator/docs",
+  "entities": [
+    {
+      "id": "original-game",
+      "title": "Dictator (1983)",
+      "summary": "The ZX Spectrum 48K game by Don Priestley, published by DK'Tronics, whose rules Samosa keeps.",
+      "relevance": "RULES.md restates its behaviour in the remake's own words. Only the spec and verify role reads the original and the baseline; the tape image is Spectrum Computing's entry 1388.",
+      "citation": "Dictator, Don Priestley, DK'Tronics, 1983. ZX Spectrum 48K.",
+      "url": "https://spectrumcomputing.co.uk/pub/sinclair/games/d/Dictator.tap.zip",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/dictator/docs/PROVENANCE.md",
+          "symbol": "Provenance"
+        }
+      ]
+    }
+  ]
+}

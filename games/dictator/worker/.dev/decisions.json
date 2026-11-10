@@ -1,0 +1,48 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "High-score Worker decisions",
+  "folder": "games/dictator/worker",
+  "entities": [
+    {
+      "id": "replay-not-trust",
+      "title": "Replay every reign",
+      "summary": "The server never takes a score from the browser; it replays the reign from its seed and keys.",
+      "status": "accepted",
+      "context": "A browser can send anything; a public table is worthless if scores can be typed in. The engine is already deterministic, so the parity tests could replay reigns.",
+      "options": [
+        {
+          "title": "Accept the browser's score",
+          "consequences": "Trivially faked."
+        },
+        {
+          "title": "Issue the seed and replay the keys",
+          "consequences": "A headless replay per submission; the engine must stay deterministic, and every key the engine reads must be logged."
+        }
+      ],
+      "decision": "The server issues each reign's seed and stores it unused. On submission it replays the reign headless from the seed and the keys, requiring the keys to run out exactly as the reign ends, then claims the seed and stores the replay's score.",
+      "rationale": "Only what the reign really scored can be listed, and each seed only once.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-06",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "issueGame"
+        },
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "replay"
+        },
+        {
+          "path": "games/dictator/docs/GDD.md",
+          "symbol": "14. Decision log"
+        }
+      ]
+    }
+  ]
+}

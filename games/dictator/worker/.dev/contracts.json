@@ -1,0 +1,113 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "High-score Worker contracts",
+  "folder": "games/dictator/worker",
+  "entities": [
+    {
+      "id": "score-api",
+      "title": "High-score API",
+      "summary": "POST game, POST score and GET scores under /games/retro/samosa/api/.",
+      "contractType": "http-api",
+      "consumers": [
+        "src/scores.ts"
+      ],
+      "guarantees": [
+        "Errors are JSON { error } with 400, 404, 409, 422 or 500; the sign-in library's are { code, message } with 401 or 403",
+        "Responses are never cached (Cache-Control: no-store)",
+        "GET scores needs no sign-in"
+      ],
+      "compatibility": "The browser sends the keys of a reign it played with its own copy of the engine. A deploy that changes the engine changes what an earlier key log replays to, so a reign in progress during a deploy may be refused.",
+      "definition": "games/dictator/worker/index.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "json"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "documents",
+          "path": "games/dictator/worker/.dev/operation.json"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/dictator/src/engine/.dev/contracts.json",
+          "entityId": "key-log"
+        }
+      ]
+    },
+    {
+      "id": "database",
+      "title": "samosa-scores tables",
+      "summary": "games (issued seeds) and scores (replayed reigns) in D1.",
+      "contractType": "persistence",
+      "consumers": [
+        "The live D1 database samosa-scores"
+      ],
+      "guarantees": [
+        "A score's id is the id of the seed it was played from",
+        "Scores are listed best first, ties oldest first (index scores_by_score)",
+        "No email or other personal data: a reign keeps only the name the player typed"
+      ],
+      "compatibility": "schema.sql describes a fresh database; the live one changes only through worker/migrations/, applied by hand before merging.",
+      "definition": "games/dictator/worker/schema.sql",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/worker/schema.sql",
+          "symbol": "scores"
+        },
+        {
+          "path": "games/dictator/worker/schema.sql",
+          "symbol": "games"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/dictator/worker/migrations/.dev/versions.json",
+          "entityId": "v2-drop-email"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/dictator/.dev/runbooks.json",
+          "entityId": "change-database"
+        }
+      ]
+    },
+    {
+      "id": "pages",
+      "title": "Public addresses",
+      "summary": "The game at /games/retro/samosa/ and its scores at /games/retro/samosa/scores/; the old /retro-games/samosa redirects.",
+      "contractType": "url",
+      "consumers": [
+        "Players' bookmarks, and links from icelander.net's games page and the repository's README"
+      ],
+      "guarantees": [
+        "/games/retro/samosa/scores redirects to the page with a trailing slash",
+        "Every path under /retro-games/samosa redirects with 308 to the same path under /games/retro/samosa"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "PATH"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "OLD_PATH"
+        },
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "SCORES_PAGE"
+        }
+      ]
+    }
+  ]
+}

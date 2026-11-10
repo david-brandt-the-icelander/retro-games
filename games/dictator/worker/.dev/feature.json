@@ -1,0 +1,107 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "High-score Worker features",
+  "folder": "games/dictator/worker",
+  "description": "What the Worker offers players.",
+  "sources": [
+    {
+      "path": "games/dictator/worker/index.ts",
+      "symbol": "submitScore"
+    }
+  ],
+  "entities": [
+    {
+      "id": "unfakeable-scores",
+      "name": "High scores that can't be faked",
+      "description": "A reign is listed only with the score the server's replay of it computes.",
+      "sources": [
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "replay"
+        }
+      ],
+      "behavior": "The server issues the seed; the browser sends every key the engine received, in order, with a name. The Worker plays the whole reign again headless with the same engine, answering each screen with the next key, and accepts it only if the keys run out exactly as the reign ends. It then claims the seed and stores the replay's score, months and whether the President got out alive.",
+      "outcome": "Players can trust the table: a score cannot be typed in, edited or submitted twice.",
+      "constraints": [
+        "Seeds expire after 24 hours unused.",
+        "At most 20,000 keys, each at most 12 characters.",
+        "Names of up to 12 characters, cleaned the same way as in the browser.",
+        "The best rating in the browser is not used: a replay starts with no best."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "issueGame"
+        },
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "replay"
+        },
+        {
+          "path": "games/dictator/src/name.ts",
+          "symbol": "cleanName"
+        }
+      ]
+    },
+    {
+      "id": "public-scores-page",
+      "name": "Public scores page",
+      "description": "The table as a page of icelander.net.",
+      "sources": [
+        {
+          "path": "games/dictator/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        }
+      ],
+      "behavior": "The best 25 reigns are listed with their rank, name, score, months ruled and fate, in the site's look, with inline styles so its strict content policy holds. An empty table invites the first entry.",
+      "outcome": "Anyone can see the table without signing in or opening the game.",
+      "constraints": [
+        "25 rows.",
+        "Names are escaped."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        },
+        {
+          "path": "games/dictator/worker/look.ts",
+          "symbol": "sitePage"
+        },
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "loadTop"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/dictator/worker",
+      "path": "games/dictator/worker/.dev/capability.json",
+      "relationship": "The capability these features belong to."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/dictator/worker",
+      "path": "games/dictator/worker/.dev/operation.json",
+      "relationship": "The operations they call."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/operation.json",
+      "relationship": "The engine operations the replay calls."
+    }
+  ]
+}

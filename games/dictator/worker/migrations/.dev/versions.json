@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/versions.schema.json",
+  "kind": "versions",
+  "title": "samosa-scores schema versions",
+  "folder": "games/dictator/worker/migrations",
+  "entities": [
+    {
+      "id": "v1-first-schema",
+      "title": "1: the first schema",
+      "summary": "games for issued seeds, and scores keyed by the player's email.",
+      "version": "1",
+      "versionOf": "stored format: the samosa-scores database",
+      "changes": [
+        "games (id, seed, created, used): one row per issued seed",
+        "scores (id, email, name, score, months, alive, created), with the index scores_by_score; email private, name the part before the @"
+      ],
+      "details": "Applied once with worker/schema.sql as it was then, when the table was keyed by email.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/dictator/worker/migrations/0002-drop-email.sql",
+          "symbol": "email"
+        }
+      ]
+    },
+    {
+      "id": "v2-drop-email",
+      "title": "2: no email",
+      "summary": "The email column is dropped: the table keeps only a name the player typed.",
+      "version": "2",
+      "versionOf": "stored format: the samosa-scores database",
+      "date": "2026-11-06",
+      "changes": [
+        "ALTER TABLE scores DROP COLUMN email"
+      ],
+      "details": "The owner decided the table asks for a name, not an email. Applied before deploying the Worker that no longer writes the column. worker/schema.sql describes this version.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/worker/migrations/0002-drop-email.sql",
+          "symbol": "scores"
+        },
+        {
+          "path": "games/dictator/worker/schema.sql",
+          "symbol": "scores"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/dictator/src/.dev/decisions.json",
+          "entityId": "name-not-email"
+        }
+      ]
+    }
+  ]
+}

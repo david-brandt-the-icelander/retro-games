@@ -1,0 +1,118 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Engine decisions",
+  "folder": "games/dictator/src/engine",
+  "entities": [
+    {
+      "id": "one-report-offer",
+      "title": "One report offer a month, at its end",
+      "summary": "State Security offers its file once a month, as the month's last step, instead of up to four times.",
+      "status": "accepted",
+      "context": "The original offered a report after a bankruptcy, after the dangers, after the decision and after news, and once more after a crushed revolt. In playtesting this was too many interruptions.",
+      "options": [
+        {
+          "title": "Keep the original's offers",
+          "consequences": "Up to five offers a month."
+        },
+        {
+          "title": "One offer, at the month's end",
+          "consequences": "Only when money can be spent on reports changes: an offer draws no random number, and the plot checks stay where RULES puts them."
+        }
+      ],
+      "decision": "One offer, at step 15, if the President is still in office. The plot checks stay where they were, so the file shows the plots as of the month's last check. A reign that ends mid-month has no offer.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-06",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "month"
+        },
+        {
+          "path": "games/dictator/docs/RULES.md",
+          "symbol": "4. The month, step by step"
+        }
+      ]
+    },
+    {
+      "id": "news-no-money",
+      "title": "A newsflash moves no money",
+      "summary": "The original's quirk of applying the last costed item's money again on a newsflash is switched off.",
+      "status": "accepted",
+      "context": "The original remembered the money of the last item whose dialog was shown, and a newsflash applied it again.",
+      "options": [
+        {
+          "title": "Keep the quirk"
+        },
+        {
+          "title": "Switch it off",
+          "consequences": "The remake need not track the last costed item; parity runs the baseline with the quirk off."
+        }
+      ],
+      "decision": "Off: a headline changes only popularity and strength.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-06",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "printHeadline"
+        },
+        {
+          "path": "games/dictator/docs/RULES.md",
+          "symbol": "9.4 The last costed item (an original quirk, switched off in the remake)"
+        }
+      ]
+    },
+    {
+      "id": "y-either-case",
+      "title": "Y in either case",
+      "summary": "Both Y and y mean yes.",
+      "status": "accepted",
+      "context": "The original read the keyboard as typed, so only a lower-case y counted while caps lock was off; the baseline accepted both.",
+      "options": [
+        {
+          "title": "Both cases"
+        },
+        {
+          "title": "Lower case only"
+        }
+      ],
+      "decision": "Both cases. Every other key means no, or next.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-06",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "isYes"
+        }
+      ]
+    },
+    {
+      "id": "draw-before-reveal",
+      "title": "Draw just before the screen that reveals it",
+      "summary": "A random number is drawn just before the first screen that shows its outcome, and after the screen before it.",
+      "status": "accepted",
+      "context": "Parity compares the state after every screen, and RULES §15.4 fixes the order of draws.",
+      "decision": "flow.ts draws each number as late as possible: the battle's swing after the invasion screen, the helicopter after the war result, the assassin's coin after the attempt, the escape's raw draw after the mountains. Advice, dialogs, reports, report offers, the Swiss transfer and plots never draw.",
+      "rationale": "The state seen with each screen matches the baseline's, and a screen with no input between two draws cannot reorder them.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "war"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "onFoot"
+        },
+        {
+          "path": "games/dictator/test/rng.test.ts",
+          "symbol": "nothing draws but the rules: advice, dialogs, reports, the Swiss account and plots do not"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,378 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/glossary.schema.json",
+  "kind": "glossary",
+  "title": "Samosa glossary",
+  "folder": "games/dictator",
+  "entities": [
+    {
+      "id": "samosa",
+      "title": "Samosa",
+      "summary": "The game, its Worker, its address and its database. Also the ruling family that stands in for the Landowners faction (SAMOSAS on screen).",
+      "aliases": [
+        "dictator (the folder)"
+      ],
+      "notToBeConfusedWith": [
+        "Dictator, the 1983 game it remakes, whose name, text and look it does not use."
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/wrangler.jsonc",
+          "symbol": "name"
+        },
+        {
+          "path": "games/dictator/src/ui/text.ts",
+          "symbol": "LABELS"
+        }
+      ]
+    },
+    {
+      "id": "reign",
+      "title": "Reign",
+      "summary": "One game: from the welcome screen, month by month, until the President is killed or escapes, then the rating and the final report.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "playGame"
+        }
+      ]
+    },
+    {
+      "id": "month",
+      "title": "Month",
+      "summary": "One turn of a reign: the mood roll, accounts, an audience, dangers, a decision, news, a possible revolution and the report offer, in RULES §4's order.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "month"
+        }
+      ]
+    },
+    {
+      "id": "group",
+      "title": "Group",
+      "summary": "One of eight, always in this order: Army, Peasants, Landowners, Guerrillas, the Neighbour, the secret police, the East and the West. Each has a popularity; the first six also have a strength.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "GROUP_COUNT"
+        }
+      ]
+    },
+    {
+      "id": "faction",
+      "title": "Faction",
+      "summary": "One of the three domestic groups that ask favours and may plot: Army, Peasants and Landowners.",
+      "notToBeConfusedWith": [
+        "Group: every faction is a group, not every group is a faction."
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "FACTIONS"
+        }
+      ]
+    },
+    {
+      "id": "screen-names",
+      "title": "SAMOSAS, CONTRAS, HONDURAS, SEC. POLICE, EAST, WEST",
+      "summary": "The labels the screens give the Landowners, the Guerrillas, the Neighbour, the secret police (State Security) and the two superpowers (Moscow and Havana; Washington). The code uses the neutral names.",
+      "sources": [
+        {
+          "path": "games/dictator/src/ui/text.ts",
+          "symbol": "LABELS"
+        },
+        {
+          "path": "games/dictator/src/ui/text.ts",
+          "symbol": "SPOKEN"
+        }
+      ]
+    },
+    {
+      "id": "popularity",
+      "title": "Popularity",
+      "summary": "How well a group regards the President, 0–9 (POP. on screen).",
+      "aliases": [
+        "POP."
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "GameState"
+        }
+      ]
+    },
+    {
+      "id": "strength",
+      "title": "Strength",
+      "summary": "How powerful one of the first six groups is, 0–9 (STR. on screen).",
+      "aliases": [
+        "STR."
+      ],
+      "notToBeConfusedWith": [
+        "The President's strength, the bodyguard, which has no upper limit.",
+        "Revolution strength."
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "GameState"
+        }
+      ]
+    },
+    {
+      "id": "bodyguard",
+      "title": "Bodyguard",
+      "summary": "The President's own strength: 4 at the start, +2 per bodyguard decision with no upper limit, −1 per bankrupt month.",
+      "aliases": [
+        "President's strength",
+        "presidentStrength (in a snapshot)"
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "takeDecision"
+        },
+        {
+          "path": "games/dictator/src/engine/snapshot.ts",
+          "symbol": "Snapshot"
+        }
+      ]
+    },
+    {
+      "id": "threshold",
+      "title": "Threshold",
+      "summary": "This month's hidden disaffection line, 2–4. A group whose popularity is at or below it is disaffected.",
+      "aliases": [
+        "disaffection line",
+        "secret line"
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "isDisaffected"
+        }
+      ]
+    },
+    {
+      "id": "revolution-strength",
+      "title": "Revolution strength",
+      "summary": "This month's figure, 10–12, that a faction and its ally's strengths must reach together to plot a revolution. It is shown on every report.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "rollMood"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "findAlly"
+        }
+      ]
+    },
+    {
+      "id": "plot",
+      "title": "Plot",
+      "summary": "What a disaffected faction plans: a revolution with an ally strong enough, otherwise an assassination. Worked out at every plot check.",
+      "aliases": [
+        "status (in a snapshot)"
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "Plot"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "checkPlots"
+        }
+      ]
+    },
+    {
+      "id": "ally",
+      "title": "Ally",
+      "summary": "The first disaffected group (not the faction itself) whose strength, with the faction's, reaches the revolution strength.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "findAlly"
+        }
+      ]
+    },
+    {
+      "id": "report",
+      "title": "Report",
+      "summary": "State Security's file: every group's popularity and strength, and every plot. The first is free; afterwards it is offered once a month, at the month's end, for $1,000 if the police are loyal and strong and the treasury can pay.",
+      "aliases": [
+        "intelligence report",
+        "file"
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "reportAvailability"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "REPORT_PRICE"
+        }
+      ]
+    },
+    {
+      "id": "request",
+      "title": "Request",
+      "summary": "The favour a faction asks at the month's audience: one of 24 (R1–R24), eight from each faction, each used once until all 24 have been.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/data.ts",
+          "symbol": "REQUESTS"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "chooseRequest"
+        }
+      ]
+    },
+    {
+      "id": "decision",
+      "title": "Decision",
+      "summary": "One of 19 presidential options (D1–D19) in five sections of the decision menu; at most one a month.",
+      "notToBeConfusedWith": [
+        "An owner's decision, recorded in a decisions file."
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/data.ts",
+          "symbol": "DECISIONS"
+        },
+        {
+          "path": "games/dictator/src/engine/data.ts",
+          "symbol": "SECTIONS"
+        }
+      ]
+    },
+    {
+      "id": "money",
+      "title": "Money",
+      "summary": "Counted in whole thousands of dollars: a treasury of 1000 is $1,000,000.",
+      "sources": [
+        {
+          "path": "games/dictator/src/ui/text.ts",
+          "symbol": "money"
+        }
+      ]
+    },
+    {
+      "id": "rating",
+      "title": "Rating",
+      "summary": "A reign's score: total popularity of all eight groups, plus 3 a month; if the President got out alive, plus 10 and 1 for every 10 thousand in Switzerland.",
+      "aliases": [
+        "score"
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "rate"
+        }
+      ]
+    },
+    {
+      "id": "best",
+      "title": "Best",
+      "summary": "The best rating so far in this browser, shown on the welcome screen.",
+      "notToBeConfusedWith": [
+        "The high-score table, which is public and kept by the server."
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "loadBest"
+        }
+      ]
+    },
+    {
+      "id": "seed",
+      "title": "Seed",
+      "summary": "A 32-bit number that fixes every random draw in a reign. The server issues it so that it can replay the reign.",
+      "sources": [
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "issueGame"
+        },
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "newGame"
+        }
+      ]
+    },
+    {
+      "id": "key-log",
+      "title": "Key log",
+      "summary": "Every key the engine received in a reign, in order, one per screen shown: what the browser sends to be replayed.",
+      "aliases": [
+        "keys"
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "keyLog"
+        }
+      ]
+    },
+    {
+      "id": "held-screen",
+      "title": "Held screen",
+      "summary": "A screen the original moved on by itself. It draws in full and holds for at least its old time reading no key, then shows the any-key footer, and moves on by itself 7 seconds after it appeared unless a key comes first.",
+      "aliases": [
+        "timed screen"
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "AUTO_ADVANCE_MS"
+        },
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "present"
+        }
+      ]
+    },
+    {
+      "id": "footer",
+      "title": "Footer",
+      "summary": "The counterfoil in rows 21–23 with the prompt and a flashing cursor: it means the screen is waiting for a key.",
+      "sources": [
+        {
+          "path": "games/dictator/src/ui/paint.ts",
+          "symbol": "FOOTER_ROW"
+        }
+      ]
+    },
+    {
+      "id": "baseline",
+      "title": "Baseline",
+      "summary": "The owner's faithful recreation of the original, in a private repository. Only the spec and verify role reads it; the parity run compares Samosa with it.",
+      "aliases": [
+        "faithful copy"
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/docs/PROVENANCE.md",
+          "symbol": "Provenance"
+        }
+      ]
+    },
+    {
+      "id": "games-hub",
+      "title": "Games hub",
+      "summary": "The site's games Worker in another repository: the sign-in pages under /auth/, /games/me and /games/play.js.",
+      "aliases": [
+        "recreations"
+      ],
+      "sources": [
+        {
+          "path": "games/dictator/src/scores.ts",
+          "symbol": "ME"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "Samosa build settings",
+  "folder": "games/dictator",
+  "entities": [
+    {
+      "id": "base-path",
+      "title": "Base path",
+      "summary": "Where in dist/ the build puts the game: under games/retro/samosa, as the Worker's routes serve it, or at the root.",
+      "key": "BASE_PATH (environment variable of build.mjs)",
+      "type": "path, or empty",
+      "default": "games/retro/samosa",
+      "sensitive": false,
+      "scope": "per build",
+      "takesEffect": "at-build",
+      "details": "With a base path, _headers is moved to dist/ itself, because Cloudflare reads it only at the assets' root. Set it to \"\" to build at the root.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/build.mjs",
+          "symbol": "BASE_PATH"
+        }
+      ]
+    }
+  ]
+}

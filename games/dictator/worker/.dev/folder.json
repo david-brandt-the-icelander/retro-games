@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "High-score Worker",
+  "folder": "games/dictator/worker",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "High-score Worker",
+      "summary": "The Cloudflare Worker: the signed-in game page, the high-score API, the public scores page and the old address's redirect.",
+      "purpose": "Serves the game behind icelander.net's sign-in, issues each reign's seed, replays submitted reigns headless with the game's own engine, and keeps the table in D1. Its schema is schema.sql; later changes to the live database are in migrations/.",
+      "boundaries": [
+        "Static files are served by Cloudflare's assets, not by this code; only the game's page itself runs through it first.",
+        "The engine and the name rules are src/'s, imported, never copied.",
+        "The sign-in is vendor/icelander-auth's, with icelander.net's login service behind the ACCOUNTS binding."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "replay"
+        }
+      ]
+    }
+  ]
+}

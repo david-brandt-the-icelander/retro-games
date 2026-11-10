@@ -27,7 +27,8 @@
       "id": "browser",
       "name": "Player's browser",
       "kind": "client",
-      "description": "Runs the game itself; one player per device."
+      "description": "Runs the whole game; one player per device.",
+      "actor": "Actors/player.md"
     },
     {
       "id": "edge",
@@ -39,7 +40,7 @@
       "id": "worker",
       "name": "samosa Worker",
       "kind": "process",
-      "description": "worker/index.ts: the high-score API and scores page; every other path is a static asset from ./dist. The old address, /retro-games/samosa, gets a 308 redirect to icelander.net/games."
+      "description": "worker/index.ts: the game's page behind the sign-in, the high-score API and the scores page; every other path is a static asset from ./dist. Every path under the old address, /retro-games/samosa, gets a 308 redirect to the same path under icelander.net/games/retro/samosa."
     },
     {
       "id": "db",
@@ -51,8 +52,8 @@
       "id": "hub",
       "name": "Games hub",
       "kind": "external-service",
-      "description": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in on this host (/auth/…), /me, play time (/play.js), the multiplayer lobby and one WebSocket relay per online match.",
-      "condition": "The default name for a signed-in player"
+      "description": "The games hub at icelander.net/games (the recreations repository's Worker): the sign-in pages on this host (/auth/…), /games/me and the play-time script /games/play.js. Samosa has no online play, so it never uses the hub's lobby or relay.",
+      "condition": "The sign-in pages when a player is signed out; /games/play.js on every page load; /games/me for the default name in the name entry"
     },
     {
       "id": "accounts",
@@ -107,7 +108,7 @@
       "from": "browser",
       "to": "hub",
       "kind": "connects-to",
-      "description": "GET /me for the default name."
+      "description": "HTTPS: GET /games/play.js; GET /games/me for the default name; /auth/… to sign in."
     },
     {
       "from": "worker",

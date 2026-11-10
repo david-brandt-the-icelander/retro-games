@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Engine contracts",
+  "folder": "games/dictator/src/engine",
+  "entities": [
+    {
+      "id": "io",
+      "title": "The IO interface and its screens",
+      "summary": "show(screen) resolves with the raw key that answers it; Screen is a union of 42 kinds, each with the data it shows.",
+      "contractType": "interface",
+      "consumers": [
+        "src/main.ts, which paints each screen with src/ui/screens.ts and reads a key",
+        "worker/scores.ts, which answers each screen with the next logged key",
+        "The tests and the parity harness"
+      ],
+      "guarantees": [
+        "Every screen of a reign goes through show, including those the original moved on by itself, whose key the engine ignores",
+        "Keys are raw: \"y\", \"Y\", \"1\", \"Enter\", \" \" and the like; the engine alone decides what they mean",
+        "SCREEN_KINDS lists every kind, in GDD §7's order",
+        "Each screen carries the state as it is when shown"
+      ],
+      "compatibility": "A new or removed kind needs a painter in src/ui/screens.ts and a sample in test/samples.ts; the layout tests fail until both exist.",
+      "definition": "games/dictator/src/engine/screens.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/screens.ts",
+          "symbol": "IO"
+        },
+        {
+          "path": "games/dictator/src/engine/screens.ts",
+          "symbol": "Screen"
+        },
+        {
+          "path": "games/dictator/src/engine/screens.ts",
+          "symbol": "SCREEN_KINDS"
+        }
+      ]
+    },
+    {
+      "id": "key-log",
+      "title": "A reign's key log",
+      "summary": "The keys that answered each screen of a reign, in order, one per show: with the seed, all a replay needs.",
+      "contractType": "data-format",
+      "consumers": [
+        "src/main.ts, which logs every key it returns to the engine",
+        "worker/scores.ts, which replays the log through POST /api/score"
+      ],
+      "guarantees": [
+        "Exactly one key per screen shown, from the welcome screen to the final report",
+        "The same seed and log always replay to the same reign"
+      ],
+      "compatibility": "Any change to the rules, the data, the order of screens or the order of draws changes what a log replays to. Reigns already on the table are not replayed again; a reign in progress during a deploy may be refused.",
+      "definition": "games/dictator/src/engine/flow.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "keyLog"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "replay"
+        }
+      ]
+    },
+    {
+      "id": "snapshot",
+      "title": "The parity snapshot",
+      "summary": "snapshot(state) in RULES' own terms, which the parity harness compares with the baseline's after every screen.",
+      "contractType": "data-format",
+      "consumers": [
+        "The parity harness, kept outside this repository by the verify role",
+        "test/helpers.ts and test/rng.test.ts"
+      ],
+      "guarantees": [
+        "Exactly the fields RULES names: pop, str, status, ally, treasury, costs, swiss, presidentStrength, month, threshold, revolutionStrength, plotPause, helicopter, loanEast, loanWest, requestUsed, decisionUsed, newsUsed, alive, escaped and rng"
+      ],
+      "definition": "games/dictator/src/engine/snapshot.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/snapshot.ts",
+          "symbol": "Snapshot"
+        },
+        {
+          "path": "games/dictator/test/rng.test.ts",
+          "symbol": "snapshot has exactly the parity shape, in RULES' terms"
+        }
+      ]
+    }
+  ]
+}

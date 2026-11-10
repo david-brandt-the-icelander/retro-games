@@ -3,7 +3,7 @@
   "kind": "class",
   "title": "Samosa UI classes",
   "folder": "games/dictator/src/ui",
-  "description": "The painter, the name entry and the sound overlay, all drawing on a ZXScreen.",
+  "description": "The painter, the name entry and the sound overlay, all drawing on a ZXScreen, and the Presentation each painter returns.",
   "sources": [
     {
       "path": "games/dictator/src/ui/paint.ts",
@@ -16,6 +16,10 @@
     {
       "path": "games/dictator/src/ui/overlay.ts",
       "symbol": "SoundOverlay"
+    },
+    {
+      "path": "games/dictator/src/ui/screens.ts",
+      "symbol": "Presentation"
     }
   ],
   "types": [
@@ -36,7 +40,13 @@
         "centre(row: number, s: string, attr?: Attr): this",
         "big(row: number, c0: number, c1: number, s: string, attr: Attr): this",
         "icon(col: number, row: number, picture: readonly string[], attr: Attr): this",
+        "bigIcon(col: number, row: number, picture: readonly string[], attr: Attr): this",
+        "hline(y: number, x0: number, x1: number, step = 1): this",
+        "vline(x: number, y0: number, y1: number): this",
+        "rect(x0: number, y0: number, x1: number, y1: number): this",
         "letterhead(office: string, band: Attr, seal: readonly string[]): this",
+        "bar(row: number, c0: number, c1: number, s: string, textCol: number, paper: number): this",
+        "stamp(c0: number, r0: number, c1: number, r1: number, paper: number): Attr",
         "footer(prompt: string, second?: string): this"
       ]
     },
@@ -66,7 +76,7 @@
         "games/dictator/src/ui/overlay.ts"
       ],
       "members": [
-        "constructor(z: ZXScreen)",
+        "constructor(private readonly z: ZXScreen)",
         "draw(on: boolean): void",
         "restore(): void",
         "get showing(): boolean"
@@ -94,7 +104,55 @@
       "sources": [
         "games/dictator/src/ui/screens.ts"
       ],
-      "members": []
+      "members": [
+        "offer: Offer",
+        "mode: \"key\" | \"digits\"",
+        "ms: number",
+        "autoMs?: number",
+        "motifs: MotifId[]",
+        "steps: Step[]",
+        "speech: string",
+        "assertive: boolean"
+      ]
+    },
+    {
+      "id": "ui.Step",
+      "name": "Step",
+      "kind": "interface",
+      "sources": [
+        "games/dictator/src/ui/screens.ts"
+      ],
+      "members": [
+        "at: number",
+        "run: () => void",
+        "sound?: { notes: readonly Note[]; volume: number }",
+        "motif?: MotifId"
+      ]
+    },
+    {
+      "id": "ui.Offer",
+      "name": "Offer",
+      "kind": "type",
+      "sources": [
+        "games/dictator/src/ui/screens.ts"
+      ],
+      "members": [
+        "ReadonlyArray<readonly [key: string, label: string]>"
+      ]
+    },
+    {
+      "id": "ui.Saved",
+      "name": "Saved",
+      "kind": "interface",
+      "sources": [
+        "games/dictator/src/ui/overlay.ts"
+      ],
+      "members": [
+        "clears: number",
+        "pixels: Uint8Array",
+        "attrs: Uint8Array",
+        "chars: string[]"
+      ]
     },
     {
       "id": "zx.ZXScreen",
@@ -137,6 +195,24 @@
       "to": "zx.ZXScreen",
       "kind": "depends-on",
       "description": "Saves, overdraws and restores cells."
+    },
+    {
+      "from": "ui.Presentation",
+      "to": "ui.Step",
+      "kind": "depends-on",
+      "description": "The animation steps, each at its time after the screen appears."
+    },
+    {
+      "from": "ui.Presentation",
+      "to": "ui.Offer",
+      "kind": "depends-on",
+      "description": "The keys the touch keypad offers."
+    },
+    {
+      "from": "ui.SoundOverlay",
+      "to": "ui.Saved",
+      "kind": "depends-on",
+      "description": "What was under the overlay, and the screen's clears count when it was saved."
     }
   ]
 }

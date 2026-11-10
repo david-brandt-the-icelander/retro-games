@@ -1,0 +1,176 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "UI verification",
+  "folder": "games/dictator/src/ui",
+  "entities": [
+    {
+      "id": "layout",
+      "title": "Layout, legibility and screen-reader text",
+      "summary": "Every screen, at its worst case, fits its regions, carries the footer, flashes only what it should, and has a text version.",
+      "subject": [
+        {
+          "path": "games/dictator/src/ui/.dev/folder.json",
+          "entityId": "folder"
+        },
+        {
+          "path": "games/dictator/.dev/requirements.json",
+          "entityId": "playable-without-sight-or-sound"
+        }
+      ],
+      "criteria": [
+        "No screen runs off the edge, out of its region, under the footer or into art",
+        "Every engine kind has a sample, and the flow shows only sampled kinds",
+        "Every screen drawn in full has the footer, and its cursor is the only flash",
+        "A held screen flashes only the alarm lamp or the rifle sight while it waits",
+        "The report never flashes and marks plots in words; debt shows a minus sign and a worded warning",
+        "Borders follow the colour families",
+        "The sound overlay restores the cells it covered, unless the screen was redrawn",
+        "Every string fits 32 columns and the font; data texts fit their 30-column regions",
+        "Every screen has screen-reader text, and alarms and deaths are assertive"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/layout.test.ts",
+          "symbol": "no screen runs off the edge, out of its region, under the footer or into art",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/layout.test.ts",
+          "symbol": "every engine kind has a sample, and the flow shows only sampled kinds",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/layout.test.ts",
+          "symbol": "every screen, drawn in full, has the footer, and its cursor is the only flash",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/layout.test.ts",
+          "symbol": "while a held screen waits out its time, it flashes only the alarm lamp or the rifle sight, and nothing in the footer rows",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/layout.test.ts",
+          "symbol": "the report never flashes and marks plots in words",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/layout.test.ts",
+          "symbol": "debt shows a minus sign and a worded warning, not only red",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/layout.test.ts",
+          "symbol": "borders follow the colour families",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/layout.test.ts",
+          "symbol": "the sound overlay restores the cells it covered, unless the screen was redrawn",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/layout.test.ts",
+          "symbol": "every string the player sees fits 32 columns and the font",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/layout.test.ts",
+          "symbol": "data texts fit their 30-column regions and headlines are capitals",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/layout.test.ts",
+          "symbol": "every screen has screen-reader text, and alarms and deaths are assertive",
+          "command": "npm test"
+        },
+        {
+          "type": "manual",
+          "description": "Render the contact sheet (scripts/.dev/runbooks.json) and check that no screen could be mistaken for the original's (docs/TEST-PLAN.md row 12)."
+        }
+      ]
+    },
+    {
+      "id": "pacing",
+      "title": "Pacing, keypad offers and sound",
+      "summary": "Held screens keep their time and then wait or move on as decided; every screen offers its keys; every motif parses to the art bible's notes.",
+      "subject": [
+        {
+          "path": "games/dictator/src/.dev/feature.json",
+          "entityId": "screen-pacing"
+        }
+      ],
+      "criteria": [
+        "Every motif parses into its stated number of notes and length",
+        "Held screens stay at least RULES §15.5's time reading no key, then show the any-key footer; a tap counts",
+        "Every screen waits for a key with a keypad offer",
+        "The screens the original timed move on by themselves 7 s after they appear; every other screen waits",
+        "The help list reads only digits, and a tap there counts for nothing",
+        "Keypad offers follow the UI design",
+        "The rating shows a line every 300 ms with a tally"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/pacing.test.ts",
+          "symbol": "every motif parses into its stated number of notes and length",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/pacing.test.ts",
+          "symbol": "held screens stay at least RULES §15.5's time, reading no key; screens timed by their sound exactly as long",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/pacing.test.ts",
+          "symbol": "then they show the any-key footer and wait for any key: [NEXT], and a tap counts",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/pacing.test.ts",
+          "symbol": "every screen waits for a key with a keypad offer; the others read keys at once, with their footer drawn",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/pacing.test.ts",
+          "symbol": "the screens the original timed move on by themselves 7 s after they appear; every other screen waits",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/pacing.test.ts",
+          "symbol": "the help list reads only digits, and a tap there counts for nothing",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/pacing.test.ts",
+          "symbol": "keypad offers follow the UI design",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/pacing.test.ts",
+          "symbol": "the rating shows a line every 300 ms with a tally, and reads keys with the last",
+          "command": "npm test"
+        }
+      ]
+    }
+  ]
+}

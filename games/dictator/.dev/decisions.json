@@ -1,0 +1,162 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Samosa decisions",
+  "folder": "games/dictator",
+  "entities": [
+    {
+      "id": "clean-room",
+      "title": "A clean-room remake, checked by parity",
+      "summary": "The engine is written from docs/RULES.md alone, and checked against the private baseline by parity, not by copying it.",
+      "status": "accepted",
+      "context": "The baseline plays exactly like the original but carries its text, data layout and code structure, so it cannot be published.",
+      "options": [
+        {
+          "title": "Publish the baseline with new text",
+          "consequences": "Keeps the original's code structure, screen designs and data encoding."
+        },
+        {
+          "title": "A new engine from a clean spec, checked by parity",
+          "consequences": "Separate roles: the spec and verify role reads the baseline; the implementer reads only docs/. The parity harness stays outside this repository."
+        }
+      ],
+      "decision": "A spec role wrote docs/RULES.md from the baseline; the implementer built src/ from docs/ only; the verify role ran the parity, overlap and asset checks. A guard test keeps hashes of the original's strings and fails if any reappears.",
+      "rationale": "Rules and numbers are not protected; the original's expression is. Parity keeps the game the same while everything that is expression is new.",
+      "decidedBy": "Owner",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/dictator/docs/PROVENANCE.md",
+          "symbol": "Inventory of the baseline"
+        },
+        {
+          "path": "games/dictator/PLAN.md",
+          "symbol": "Phases and gates"
+        },
+        {
+          "path": "games/dictator/test/guard.test.ts",
+          "symbol": "no string or name from the original appears in the game"
+        }
+      ]
+    },
+    {
+      "id": "title-and-setting",
+      "title": "Samosa, set in Nicaragua",
+      "summary": "The remake is titled Samosa and set in Nicaragua, with Honduras as the Neighbour and pun-named ruling families.",
+      "status": "accepted",
+      "context": "The original's title and invented country names are its own; the remake needed a title and a setting of its own.",
+      "options": [
+        {
+          "title": "President for Life, Tinpot or One More Month, in a fictional country",
+          "consequences": "No real-world sensitivities."
+        },
+        {
+          "title": "Keep Dictator",
+          "consequences": "A weak mark, but the name most tied to the 1983 game."
+        },
+        {
+          "title": "Samosa, in Nicaragua",
+          "consequences": "Real organisations are named and two real ruling families are punned on; no real person is portrayed (GDD §4.1)."
+        }
+      ],
+      "decision": "Samosa. The player is President Ortiga of Nicaragua, the Landowners are the Samosa family, the Guerrillas the Contras and the Neighbour Honduras; the rules are unchanged. The folder stays games/dictator.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-06",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/docs/GDD.md",
+          "symbol": "1. Identity"
+        },
+        {
+          "path": "games/dictator/src/ui/text.ts",
+          "symbol": "LABELS"
+        }
+      ]
+    },
+    {
+      "id": "no-permission",
+      "title": "Don't ask the original author's estate",
+      "summary": "The remake relies on the clean-room work rather than on permission.",
+      "status": "accepted",
+      "context": "The publisher was dissolved and the author has died; his estate could be asked for permission to publish a free remake.",
+      "options": [
+        {
+          "title": "Ask the estate"
+        },
+        {
+          "title": "Rely on the clean-room work"
+        }
+      ],
+      "decision": "Don't ask.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-06",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/dictator/docs/PROVENANCE.md",
+          "symbol": "Decisions"
+        },
+        {
+          "path": "games/dictator/docs/GDD.md",
+          "symbol": "15. Decisions (all closed)"
+        }
+      ]
+    },
+    {
+      "id": "address",
+      "title": "icelander.net/games/retro/samosa",
+      "summary": "The game lives under the site's games; the first address, /retro-games/samosa, redirects there.",
+      "status": "accepted",
+      "context": "The game was first published at icelander.net/retro-games/samosa; the site's games moved under icelander.net/games.",
+      "decision": "The Worker is routed at icelander.net/games/retro/samosa* and also at the old icelander.net/retro-games/samosa*, which answers every path with a 308 redirect to the same path at the new address.",
+      "rationale": "Old links and bookmarks keep working; 308 keeps the method of a request in flight.",
+      "decidedBy": "Owner",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/wrangler.jsonc",
+          "symbol": "routes"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "OLD_PATH"
+        },
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "default.fetch"
+        }
+      ]
+    },
+    {
+      "id": "purge-old-history",
+      "title": "Purge the old repository's history?",
+      "summary": "Whether the private repository that first held the faithful version should have its history rewritten.",
+      "status": "open",
+      "context": "Milestone 1 of PLAN.md moved the faithful version out of an older repository. Purging that repository's history rewrites main and every branch and force-pushes them, which is destructive and breaks existing clones. The repository turned out to be private, so the faithful version was never publicly visible there. PLAN.md records the purge as \"to re-confirm\", and nothing in this repository records an answer. Whether it is still open could not be checked from here: it concerns another repository.",
+      "options": [
+        {
+          "title": "Purge",
+          "consequences": "Destructive; every clone of that repository breaks."
+        },
+        {
+          "title": "Don't purge",
+          "consequences": "The faithful version stays in that private repository's history."
+        }
+      ],
+      "waitingOn": "Owner",
+      "origin": {
+        "kind": "document",
+        "reference": "games/dictator/PLAN.md",
+        "description": "PLAN.md §2, Milestone 1, and §5: M1 waits for the owner to re-confirm the purge."
+      },
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/dictator/PLAN.md",
+          "symbol": "2. Milestone 1: the faithful version, private"
+        }
+      ]
+    }
+  ]
+}
