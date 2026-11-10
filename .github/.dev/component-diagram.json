@@ -1,0 +1,234 @@
+{
+  "$schema": "../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Workflows component diagram",
+  "folder": ".github",
+  "description": "The four workflows GitHub runs and the three scripts they share: what each calls, and what lies outside the folder.",
+  "sources": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "symbol": "jobs"
+    },
+    {
+      "path": ".github/workflows/deploy.yml",
+      "symbol": "jobs"
+    },
+    {
+      "path": ".github/workflows/game.yml",
+      "symbol": "jobs"
+    },
+    {
+      "path": ".github/workflows/migrations.yml",
+      "symbol": "jobs"
+    },
+    {
+      "path": ".github/scripts/changed-games.sh",
+      "symbol": "all"
+    },
+    {
+      "path": ".github/scripts/last-deployed.sh",
+      "symbol": "last"
+    },
+    {
+      "path": ".github/scripts/migration-gate.sh",
+      "symbol": "mode"
+    }
+  ],
+  "components": [
+    {
+      "id": "workflows",
+      "name": "Workflows",
+      "responsibility": "Tests every pull request, checks its database changes, and deploys each changed game from main.",
+      "folder": ".github"
+    },
+    {
+      "id": "ci",
+      "name": "CI (ci.yml)",
+      "responsibility": "On every pull request: validates the .dev files and tests and builds each game the pull request changes.",
+      "folder": ".github/workflows"
+    },
+    {
+      "id": "migrations",
+      "name": "Database migration (migrations.yml)",
+      "responsibility": "The required pull request check: fails until a database change is acknowledged in the description.",
+      "folder": ".github/workflows"
+    },
+    {
+      "id": "deploy",
+      "name": "Deploy (deploy.yml)",
+      "responsibility": "On a push to main, or by hand: runs the migration gate, then deploys each changed game.",
+      "folder": ".github/workflows"
+    },
+    {
+      "id": "game",
+      "name": "Game (game.yml)",
+      "responsibility": "One game's install, tests, build, the check that no .dev folder is in the build, and, when asked, wrangler deploy.",
+      "folder": ".github/workflows"
+    },
+    {
+      "id": "changed-games",
+      "name": "Changed games (changed-games.sh)",
+      "responsibility": "Lists the games with a package.json that changed since a commit, leaving .dev files out.",
+      "folder": ".github/scripts"
+    },
+    {
+      "id": "last-deployed",
+      "name": "Last deployed (last-deployed.sh)",
+      "responsibility": "Finds the commit the last successful Deploy run deployed.",
+      "folder": ".github/scripts"
+    },
+    {
+      "id": "migration-gate",
+      "name": "Migration gate (migration-gate.sh)",
+      "responsibility": "Finds database files changed since a commit and fails unless each change is acknowledged.",
+      "folder": ".github/scripts"
+    },
+    {
+      "id": "games",
+      "name": "Games",
+      "responsibility": "The games the workflows test, build and deploy.",
+      "folder": "games",
+      "diagram": "games/.dev/component-diagram.json"
+    },
+    {
+      "id": "validators",
+      "name": "Validators (Meta/Agents)",
+      "responsibility": "validate_diagrams.py and validate_knowledge.py, copied from human-assisted-software-development.",
+      "folder": "Meta/Agents"
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "responsibility": "Runs the workflows on its events, and answers the gh calls for pull request descriptions and Deploy runs.",
+      "external": true
+    },
+    {
+      "id": "cloudflare",
+      "name": "Cloudflare",
+      "responsibility": "Receives each game's Worker and assets from wrangler deploy.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "workflows",
+      "to": "ci",
+      "kind": "contains",
+      "description": "Part of the folder."
+    },
+    {
+      "from": "workflows",
+      "to": "migrations",
+      "kind": "contains",
+      "description": "Part of the folder."
+    },
+    {
+      "from": "workflows",
+      "to": "deploy",
+      "kind": "contains",
+      "description": "Part of the folder."
+    },
+    {
+      "from": "workflows",
+      "to": "game",
+      "kind": "contains",
+      "description": "Part of the folder."
+    },
+    {
+      "from": "workflows",
+      "to": "changed-games",
+      "kind": "contains",
+      "description": "Part of the folder."
+    },
+    {
+      "from": "workflows",
+      "to": "last-deployed",
+      "kind": "contains",
+      "description": "Part of the folder."
+    },
+    {
+      "from": "workflows",
+      "to": "migration-gate",
+      "kind": "contains",
+      "description": "Part of the folder."
+    },
+    {
+      "from": "ci",
+      "to": "validators",
+      "kind": "depends-on",
+      "description": "Runs both validators on every pull request."
+    },
+    {
+      "from": "ci",
+      "to": "changed-games",
+      "kind": "depends-on",
+      "description": "Picks the games to test against the pull request's base."
+    },
+    {
+      "from": "ci",
+      "to": "game",
+      "kind": "depends-on",
+      "description": "Calls it once per changed game, without deploying."
+    },
+    {
+      "from": "migrations",
+      "to": "migration-gate",
+      "kind": "depends-on",
+      "description": "migration-gate.sh pr, against the pull request's base."
+    },
+    {
+      "from": "deploy",
+      "to": "last-deployed",
+      "kind": "depends-on",
+      "description": "Where the migration gate starts looking."
+    },
+    {
+      "from": "deploy",
+      "to": "migration-gate",
+      "kind": "depends-on",
+      "description": "migration-gate.sh deploy; nothing deploys if it fails."
+    },
+    {
+      "from": "deploy",
+      "to": "changed-games",
+      "kind": "depends-on",
+      "description": "Picks the games to deploy against the push's before commit, or every game by hand."
+    },
+    {
+      "from": "deploy",
+      "to": "game",
+      "kind": "depends-on",
+      "description": "Calls it once per game, with deploy true."
+    },
+    {
+      "from": "game",
+      "to": "games",
+      "kind": "depends-on",
+      "description": "npm ci, npm test, npm run build in the game's folder; Godot for Gambit."
+    },
+    {
+      "from": "game",
+      "to": "cloudflare",
+      "kind": "depends-on",
+      "description": "npx wrangler deploy, with CLOUDFLARE_API_TOKEN."
+    },
+    {
+      "from": "changed-games",
+      "to": "games",
+      "kind": "depends-on",
+      "description": "Reads which games have a package.json."
+    },
+    {
+      "from": "migration-gate",
+      "to": "github",
+      "kind": "depends-on",
+      "description": "gh: each pull request's description, and the pull requests that brought each commit."
+    },
+    {
+      "from": "last-deployed",
+      "to": "github",
+      "kind": "depends-on",
+      "description": "gh run list for the last successful Deploy run."
+    }
+  ]
+}

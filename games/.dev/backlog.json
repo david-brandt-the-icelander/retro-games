@@ -86,7 +86,6 @@
       "type": "chore",
       "acceptanceCriteria": [
         "For each game, each journey links the use cases behind its stages; each use case its features, capability and operations; each feature its capability; each operation its capability; and back.",
-        "The games hub is a supporting actor in every online play use case, icelander.net accounts in every use case a step of which needs the sign-in, and Resend in Gambit's invite-a-friend.",
         "The check in .github/.dev/backlog.json (related-views-check) reports nothing."
       ],
       "origin": {
@@ -103,14 +102,6 @@
         },
         {
           "path": "games/chess/godot/scripts/.dev/use-case.json"
-        }
-      ],
-      "relationships": [
-        {
-          "relation": "depends-on",
-          "path": ".dev/backlog.json",
-          "entityId": "actors",
-          "description": "The supporting actors need their files first."
         }
       ]
     }

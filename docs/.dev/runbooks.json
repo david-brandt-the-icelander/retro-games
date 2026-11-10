@@ -1,0 +1,121 @@
+{
+  "$schema": "../../Meta/Agents/Knowledge/schemas/runbooks.schema.json",
+  "kind": "runbooks",
+  "title": "Database runbooks",
+  "folder": "docs",
+  "entities": [
+    {
+      "id": "apply-migration",
+      "title": "Apply a migration to production",
+      "summary": "Apply a game's new migration files by hand, before its pull request is merged.",
+      "purpose": "operate",
+      "when": "A pull request adds a file to a game's worker/migrations/, and the owner has asked for it to go live.",
+      "steps": [
+        "In the game's folder, check that npx wrangler whoami names the repository's account; otherwise stop and ask the owner",
+        "Record a restore point: npx wrangler d1 time-travel info <database>, and copy the bookmark into a comment on the pull request",
+        "Apply each new migration file once, in filename order: npx wrangler d1 execute <database> --remote -y --file worker/migrations/<file>",
+        "Look at a table the migration changed",
+        "Add the acknowledgement line to the pull request's description",
+        "Merge: merging deploys"
+      ],
+      "verify": "The Database migration check passes on the pull request.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Applying it to production"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/.dev/runbooks.json",
+          "entityId": "change-database",
+          "description": "The game's own steps for writing the migration."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/dictator/.dev/runbooks.json",
+          "entityId": "change-database",
+          "description": "The game's own steps for writing the migration."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/hivestorm/.dev/runbooks.json",
+          "entityId": "change-database",
+          "description": "The game's own steps for writing the migration."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/rally/.dev/runbooks.json",
+          "entityId": "change-database",
+          "description": "The game's own steps for writing the migration."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/.dev/runbooks.json",
+          "entityId": "change-database",
+          "description": "The game's own steps for writing the migration."
+        }
+      ]
+    },
+    {
+      "id": "deploy-stopped-at-gate",
+      "title": "The deploy stopped at the migration gate",
+      "summary": "A merge brought a database change nobody acknowledged, so nothing was deployed.",
+      "purpose": "recover",
+      "when": "The migrations job of a Deploy run failed.",
+      "steps": [
+        "Apply the migration as in Apply a migration to production",
+        "Add the acknowledgement to the merged pull request's description",
+        "Re-run the failed jobs: gh run rerun <run id> --failed"
+      ],
+      "verify": "The Deploy run's migrations job passes and the games deploy.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "When something went wrong"
+        }
+      ]
+    },
+    {
+      "id": "pushed-without-pull-request",
+      "title": "A database change reached main without a pull request",
+      "summary": "No pull request carries an acknowledgement, so the gate can only be passed by hand.",
+      "purpose": "recover",
+      "when": "The gate reports a commit that no pull request brought.",
+      "steps": [
+        "Apply the migration",
+        "Deploy by hand with the acknowledgement: gh workflow run deploy.yml --ref main -f migration_applied=true"
+      ],
+      "verify": "The Deploy run passes the gate.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "When something went wrong"
+        }
+      ]
+    },
+    {
+      "id": "migration-broke-production",
+      "title": "A migration broke production",
+      "summary": "Restoring the bookmark undoes every write since it, so only the owner decides on it.",
+      "purpose": "rollback",
+      "when": "A game misbehaves after its migration was applied.",
+      "steps": [
+        "Tell the owner",
+        "If the owner decides to restore: npx wrangler d1 time-travel restore <database> --bookmark=<bookmark>, in the game's folder"
+      ],
+      "verify": "The game works against the restored database.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "When something went wrong"
+        }
+      ]
+    }
+  ]
+}

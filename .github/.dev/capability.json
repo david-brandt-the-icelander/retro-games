@@ -1,0 +1,108 @@
+{
+  "$schema": "../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Workflow capabilities",
+  "folder": ".github",
+  "description": "What the workflows can do for the repository, and who can set them going.",
+  "sources": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "symbol": "on"
+    },
+    {
+      "path": ".github/workflows/deploy.yml",
+      "symbol": "on"
+    },
+    {
+      "path": ".github/workflows/migrations.yml",
+      "symbol": "on"
+    }
+  ],
+  "entities": [
+    {
+      "id": "continuous-delivery",
+      "name": "Continuous delivery",
+      "description": "Every pull request is checked, and every change that reaches main is deployed to icelander.net, game by game.",
+      "sources": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/game.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/migrations.yml",
+          "symbol": "jobs"
+        }
+      ],
+      "responsibility": "Test and build each game a change touches, refuse database changes nobody has applied, and deploy each changed game from main.",
+      "access": [
+        "Any pull request runs CI and the Database migration check; the workflows check nobody.",
+        "Deploying starts on a push to main, which takes only pull requests because main requires the Database migration check (AGENTS.md), or with Run workflow on deploy.yml.",
+        "Deploy jobs run in the production environment, which holds them for a reviewer if one is set in the repository's settings, and need the CLOUDFLARE_API_TOKEN secret."
+      ],
+      "operations": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "on.pull_request"
+        },
+        {
+          "path": ".github/workflows/migrations.yml",
+          "symbol": "on.pull_request"
+        },
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "on.push"
+        },
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "on.workflow_dispatch"
+        },
+        {
+          "path": ".github/scripts/changed-games.sh",
+          "symbol": "all"
+        },
+        {
+          "path": ".github/scripts/last-deployed.sh",
+          "symbol": "last"
+        },
+        {
+          "path": ".github/scripts/migration-gate.sh",
+          "symbol": "mode"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": ".github",
+      "path": ".github/.dev/operation.json",
+      "relationship": "The ways in."
+    },
+    {
+      "kind": "use-case",
+      "folder": ".github",
+      "path": ".github/.dev/use-case.json",
+      "relationship": "Shipping a change uses it."
+    },
+    {
+      "kind": "use-case",
+      "folder": "docs",
+      "path": "docs/.dev/use-case.json",
+      "relationship": "Migrating a database is enforced by its gate."
+    },
+    {
+      "kind": "component",
+      "folder": ".github",
+      "path": ".github/.dev/component-diagram.json",
+      "relationship": "The workflows and scripts that make it up."
+    }
+  ]
+}

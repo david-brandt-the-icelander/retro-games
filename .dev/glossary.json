@@ -1,0 +1,80 @@
+{
+  "$schema": "../Meta/Agents/Knowledge/schemas/glossary.schema.json",
+  "kind": "glossary",
+  "title": "Terms every game shares",
+  "folder": ".",
+  "entities": [
+    {
+      "id": "replay-check",
+      "title": "Replay check",
+      "summary": "A web game's Worker replays a submitted game from its seed and recorded controls, and ranks the score the replay reaches, not the one the browser claims.",
+      "details": "This is why the engines must be deterministic (AGENTS.md). Each game's glossary defines its own seed.",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "symbol": "Agent instructions"
+        },
+        {
+          "path": "games/rally/worker/scores.ts",
+          "symbol": "verify"
+        },
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "submitScore"
+        }
+      ]
+    },
+    {
+      "id": "games-play",
+      "title": "games:play",
+      "summary": "The icelander.net role a player needs to open a web game and use its API.",
+      "sources": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "AUTH"
+        },
+        {
+          "path": "vendor/icelander-auth/index.js",
+          "symbol": "createAuth"
+        }
+      ]
+    },
+    {
+      "id": "changed-game",
+      "title": "Changed game",
+      "summary": "A game with a package.json that a change touches outside its .dev folders; a change under .github/, outside .github/.dev, changes every game.",
+      "sources": [
+        {
+          "path": ".github/scripts/changed-games.sh",
+          "symbol": "all"
+        }
+      ]
+    },
+    {
+      "id": "migration-acknowledgement",
+      "title": "Migration acknowledgement",
+      "summary": "A ticked line in a pull request's description saying production's database was migrated, or that no migration is needed; the migration gate looks for it.",
+      "sources": [
+        {
+          "path": ".github/scripts/migration-gate.sh",
+          "symbol": "ack_re"
+        },
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Applying it to production"
+        }
+      ]
+    },
+    {
+      "id": "owner",
+      "title": "The owner",
+      "summary": "The person who decides what goes live and answers open decisions; see Actors/owner.md.",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "symbol": "Agent instructions"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "$schema": "../../Meta/Agents/Knowledge/schemas/pipeline.schema.json",
+  "kind": "pipeline",
+  "title": "The repository's pipelines",
+  "folder": ".github",
+  "entities": [
+    {
+      "id": "pull-request",
+      "title": "On a pull request",
+      "summary": "Every .dev file is validated, and each changed game is tested and built without deploying.",
+      "trigger": "Any pull request (ci.yml).",
+      "checks": [
+        "python3 Meta/Agents/Skills/validate_diagrams.py",
+        "python3 Meta/Agents/Knowledge/validate_knowledge.py",
+        "For each game changed outside its .dev folders, or every game when .github/ changed outside .github/.dev: game.yml without deploying"
+      ],
+      "blocks": "nothing on its own: main requires only the Database migration check",
+      "notChecked": [
+        "The scripts in .github/scripts/ have no tests of their own.",
+        "LodeStar: it has no package.json, so no game job runs for it."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/scripts/changed-games.sh",
+          "symbol": "all"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/.dev/pipeline.json",
+          "entityId": "pull-request",
+          "description": "How it applies to this game."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/dictator/.dev/pipeline.json",
+          "entityId": "pull-request",
+          "description": "How it applies to this game."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/hivestorm/.dev/pipeline.json",
+          "entityId": "pull-request",
+          "description": "How it applies to this game."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/rally/.dev/pipeline.json",
+          "entityId": "pull-request",
+          "description": "How it applies to this game."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/.dev/pipeline.json",
+          "entityId": "pull-request",
+          "description": "How it applies to this game."
+        }
+      ]
+    },
+    {
+      "id": "database-migration",
+      "title": "Database migration check",
+      "summary": "The pull request check main requires: a database change waits for its acknowledgement.",
+      "trigger": "A pull request opened, edited, pushed to or reopened (migrations.yml).",
+      "checks": [
+        "migration-gate.sh pr: any games/*/worker/schema.sql or worker/migrations/ change, outside .dev, needs an acknowledgement line in the description"
+      ],
+      "blocks": "merge",
+      "notChecked": [
+        "Whether the migration was in fact applied to production: the gate reads the acknowledgement, not the database."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": ".github/workflows/migrations.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/scripts/migration-gate.sh",
+          "symbol": "pr"
+        },
+        {
+          "path": "AGENTS.md",
+          "symbol": "Database migrations"
+        }
+      ]
+    },
+    {
+      "id": "push-to-main",
+      "title": "On a push to main",
+      "summary": "The migration gate, then each changed game tested, built and deployed.",
+      "trigger": "A push to main, which only a merged pull request makes; or Run workflow, for one game or all.",
+      "checks": [
+        "migration-gate.sh deploy, from the last successful deploy",
+        "For each changed game: game.yml with deploy true"
+      ],
+      "blocks": "release",
+      "secrets": [
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/scripts/last-deployed.sh",
+          "symbol": "last"
+        },
+        {
+          "path": ".github/scripts/migration-gate.sh",
+          "symbol": "deploy"
+        }
+      ]
+    }
+  ]
+}

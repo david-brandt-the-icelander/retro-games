@@ -14,10 +14,6 @@
       "scope": [
         {
           "path": ".dev/backlog.json",
-          "entityId": "actors"
-        },
-        {
-          "path": ".dev/backlog.json",
           "entityId": "root-views"
         },
         {
@@ -30,15 +26,7 @@
         },
         {
           "path": ".github/.dev/backlog.json",
-          "entityId": "describe-delivery"
-        },
-        {
-          "path": ".github/.dev/backlog.json",
           "entityId": "related-views-check"
-        },
-        {
-          "path": "docs/.dev/backlog.json",
-          "entityId": "migration-use-case"
         },
         {
           "path": "games/.dev/backlog.json",
@@ -73,8 +61,8 @@
         },
         {
           "id": "phase-1",
-          "title": "Actors, the root's views, .github/, docs/ and .claude/skills/ (views only)",
-          "status": "todo"
+          "title": "Actors, the root's views, .github/, docs/ and .claude/skills/ (views only); done except .claude/skills/ and the Direction group, which wait on the owner",
+          "status": "in-progress"
         },
         {
           "id": "phase-2",
@@ -129,7 +117,7 @@
           "entityId": "kdd-documents"
         }
       ],
-      "details": "The explorer reads every .dev folder and offers component, deployment, class and state diagrams; use cases and user journeys; capability, feature and operation cards; links between views; a knowledge tab in eight groups; and a **Waiting** panel of open decisions and blockers. This plan gives each of them a place where the code or the owner's own words justify it, and changes the code where its shape hides a concept the views would otherwise describe three or four times.\n\n**What the explorer showed before the plan**\n\n- The root's .dev held only folder.json, so the explorer opened on a folder card. .github/, docs/, vendor/ and .claude/skills/ had no views.\n- No deployment diagram showed the whole site: five Workers on one zone, their D1 databases, Gambit's Durable Object, the accounts service and the hub.\n- Four Workers each declared the same *Replay-checked high-score table* and *Signed-in game page* capabilities, three src folders the same *Online lockstep play*; Room was drawn three times and Seed four.\n- Use cases and journeys named only the Player and the Pilot, and none named an outside system.\n- Six knowledge kinds were never used: vision, roadmap, plan, estimation, tasks and contacts.\n- changed-games.sh counted a .dev file as a change to its game, so documentation alone redeployed games; CI did not run the knowledge validator.\n\n**Actors, after the plan**\n\n- Player and Pilot (existing).\n- Owner: AGENTS.md, the merge-is-deploy rule, docs/database-migrations.md, create-retro-game's approval gates.\n- Coding agent: AGENTS.md, .claude/skills/, LodeStar's implementer and spec-and-verify roles.\n- icelander.net accounts: the ACCOUNTS service binding in every wrangler.jsonc, vendor/icelander-auth/.\n- Games hub: online.ts and the ?match=ID address.\n- GitHub: the workflows and the required Database migration check.\n- Resend: games/chess/worker/mail.ts.\n\nCloudflare appears as deployment nodes, not as an actor. Reading a public scores page without signing in is neither a separate actor nor a use case.\n\n**Phases**\n\n- **Phase 0**: this plan, its decisions and backlog items; changed-games.sh leaves .dev files out; CI runs both validators.\n- **Phase 1** (views only): actors, the root's diagrams and knowledge, .github/, docs/, and .claude/skills/ if the owner agrees.\n- **Phase 2** (code, deploys four games): packages/game-kit/ for online play, scores, the page and names.\n- **Phase 3** (code, one pull request per game): Rally's and Shatterbelt's screen machines out of main.ts, Shatterbelt's src/ui/, Gambit's screens; LodeStar's missing views. Samosa and Hivestorm need nothing beyond the kit.\n- **Phase 4** (views only): the chain from journey to operation, checked by a script.\n- **Phase 5**: walk the result in the explorer and record what it cannot show.\n\nPhases 1 and 4 change only .dev files and Actors/, which since Phase 0 deploy nothing. Phase 3's games are independent of each other once Phase 2 has landed.",
+      "details": "The explorer reads every .dev folder and offers component, deployment, class and state diagrams; use cases and user journeys; capability, feature and operation cards; links between views; a knowledge tab in eight groups; and a **Waiting** panel of open decisions and blockers. This plan gives each of them a place where the code or the owner's own words justify it, and changes the code where its shape hides a concept the views would otherwise describe three or four times.\n\n**What the explorer showed before the plan**\n\n- The root's .dev held only folder.json, so the explorer opened on a folder card. .github/, docs/, vendor/ and .claude/skills/ had no views.\n- No deployment diagram showed the whole site: five Workers on one zone, their D1 databases, Gambit's Durable Object, the accounts service and the hub.\n- Four Workers each declared the same *Replay-checked high-score table* and *Signed-in game page* capabilities, three src folders the same *Online lockstep play*; Room was drawn three times and Seed four.\n- Use cases and journeys named only the Player and the Pilot, and none named an outside system.\n- Six knowledge kinds were never used: vision, roadmap, plan, estimation, tasks and contacts.\n- changed-games.sh counted a .dev file as a change to its game, so documentation alone redeployed games; CI did not run the knowledge validator.\n\n**Actors**\n\n- Player and Pilot, who play the games.\n- Owner ([Actors/owner.md](Actors/owner.md)): decides what goes live, merges, answers the open decisions.\n- Coding agent ([Actors/coding-agent.md](Actors/coding-agent.md)): makes and checks changes, opens pull requests, applies migrations at the owner's request.\n\nThe games hub, the icelander.net login service, Resend, GitHub and Cloudflare are services the system uses, not actors with goals of their own toward it (describe-actor), so they are external components and deployment nodes. Reading a public scores page without signing in is neither a separate actor nor a use case.\n\n**Phases**\n\n- **Phase 0**: this plan, its decisions and backlog items; changed-games.sh leaves .dev files out; CI runs both validators.\n- **Phase 1** (views only): actors, the root's diagrams and knowledge, .github/, docs/, and .claude/skills/ if the owner agrees.\n- **Phase 2** (code, deploys four games): packages/game-kit/ for online play, scores, the page and names.\n- **Phase 3** (code, one pull request per game): Rally's and Shatterbelt's screen machines out of main.ts, Shatterbelt's src/ui/, Gambit's screens; LodeStar's missing views. Samosa and Hivestorm need nothing beyond the kit.\n- **Phase 4** (views only): the chain from journey to operation, checked by a script.\n- **Phase 5**: walk the result in the explorer and record what it cannot show.\n\nPhases 1 and 4 change only .dev files and Actors/, which since Phase 0 deploy nothing. Phase 3's games are independent of each other once Phase 2 has landed.",
       "origin": {
         "kind": "conversation",
         "by": "Owner",

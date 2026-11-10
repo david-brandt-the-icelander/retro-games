@@ -1,0 +1,273 @@
+{
+  "$schema": "../../Meta/Agents/Skills/describe-use-case/schema.json",
+  "kind": "use-case",
+  "title": "Workflow use cases",
+  "folder": ".github",
+  "description": "How a change to a game gets from a branch to icelander.net.",
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "symbol": "Agent instructions"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "symbol": "jobs"
+    },
+    {
+      "path": ".github/workflows/deploy.yml",
+      "symbol": "jobs"
+    }
+  ],
+  "entities": [
+    {
+      "id": "ship-a-change",
+      "name": "Ship a change to a game",
+      "description": "A change made on a branch is checked on a pull request and, once merged, deployed to icelander.net.",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "symbol": "Agent instructions"
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/migrations.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "jobs"
+        }
+      ],
+      "actor": "Owner",
+      "actorDocument": "Actors/owner.md",
+      "supportingActors": [
+        {
+          "name": "Coding agent",
+          "actorDocument": "Actors/coding-agent.md"
+        }
+      ],
+      "goal": "See a change to a game live on icelander.net.",
+      "preconditions": [
+        "The change is on a branch, not on main: main takes only pull requests.",
+        "The game's own tests pass in its folder (npm test)."
+      ],
+      "postconditions": [
+        "Each game the change touched, outside its .dev folders, runs the merged code on icelander.net.",
+        "A change to .dev files alone is on main and nothing was deployed."
+      ],
+      "flow": [
+        {
+          "id": "open",
+          "actor": "Coding agent",
+          "participantKind": "actor",
+          "actorDocument": "Actors/coding-agent.md",
+          "action": "Pushes the branch and opens a pull request.",
+          "sources": [
+            {
+              "path": "AGENTS.md",
+              "symbol": "Agent instructions"
+            }
+          ]
+        },
+        {
+          "id": "ci",
+          "actor": "CI",
+          "participantKind": "system",
+          "action": "Validates every .dev file, lists the changed games, and tests and builds each one.",
+          "sources": [
+            {
+              "path": ".github/workflows/ci.yml",
+              "symbol": "jobs"
+            },
+            {
+              "path": ".github/scripts/changed-games.sh",
+              "symbol": "all"
+            },
+            {
+              "path": ".github/workflows/game.yml",
+              "symbol": "jobs"
+            }
+          ]
+        },
+        {
+          "id": "migration-check",
+          "actor": "Database migration check",
+          "participantKind": "system",
+          "action": "Passes when the pull request changes no database file, or acknowledges the migration.",
+          "sources": [
+            {
+              "path": ".github/workflows/migrations.yml",
+              "symbol": "jobs"
+            },
+            {
+              "path": ".github/scripts/migration-gate.sh",
+              "symbol": "pr"
+            }
+          ]
+        },
+        {
+          "id": "merge",
+          "actor": "Owner",
+          "participantKind": "actor",
+          "actorDocument": "Actors/owner.md",
+          "action": "Merges the pull request, which deploys it.",
+          "sources": [
+            {
+              "path": "AGENTS.md",
+              "symbol": "Agent instructions"
+            }
+          ]
+        },
+        {
+          "id": "gate",
+          "actor": "Deploy",
+          "participantKind": "system",
+          "action": "Checks every database change since the last successful deploy for an acknowledgement.",
+          "sources": [
+            {
+              "path": ".github/workflows/deploy.yml",
+              "symbol": "jobs.migrations"
+            },
+            {
+              "path": ".github/scripts/last-deployed.sh",
+              "symbol": "last"
+            },
+            {
+              "path": ".github/scripts/migration-gate.sh",
+              "symbol": "deploy"
+            }
+          ]
+        },
+        {
+          "id": "deploy",
+          "actor": "Deploy",
+          "participantKind": "system",
+          "action": "Lists the games the push changed and, for each, tests, builds and runs wrangler deploy in the production environment.",
+          "sources": [
+            {
+              "path": ".github/workflows/deploy.yml",
+              "symbol": "jobs.deploy"
+            },
+            {
+              "path": ".github/scripts/changed-games.sh",
+              "symbol": "all"
+            },
+            {
+              "path": ".github/workflows/game.yml",
+              "symbol": "jobs"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "ci",
+          "condition": "The pull request changes only .dev files, outside .github/ or not.",
+          "outcome": "No game is tested; the validators still run, and the merge deploys nothing.",
+          "sources": [
+            {
+              "path": ".github/scripts/changed-games.sh",
+              "symbol": "all"
+            }
+          ]
+        },
+        {
+          "atStep": "ci",
+          "condition": "A validator, a game's tests or its build fail, or the build holds a .dev folder.",
+          "outcome": "That job fails on the pull request.",
+          "sources": [
+            {
+              "path": ".github/workflows/ci.yml",
+              "symbol": "jobs"
+            },
+            {
+              "path": ".github/workflows/game.yml",
+              "symbol": "No .dev files in the build"
+            }
+          ]
+        },
+        {
+          "atStep": "migration-check",
+          "condition": "A database file changed and the description has no acknowledgement.",
+          "outcome": "The check fails and main refuses the merge until the migration is applied and acknowledged (Migrate a game's database).",
+          "sources": [
+            {
+              "path": ".github/scripts/migration-gate.sh",
+              "symbol": "pr"
+            },
+            {
+              "path": "docs/database-migrations.md",
+              "symbol": "Database migrations"
+            }
+          ]
+        },
+        {
+          "atStep": "gate",
+          "condition": "A database change since the last deploy is not acknowledged.",
+          "outcome": "Nothing is deployed.",
+          "sources": [
+            {
+              "path": ".github/scripts/migration-gate.sh",
+              "symbol": "deploy"
+            }
+          ]
+        },
+        {
+          "atStep": "deploy",
+          "condition": "A production reviewer is set.",
+          "outcome": "Each game's deploy waits for the reviewer's approval.",
+          "sources": [
+            {
+              "path": ".github/workflows/game.yml",
+              "symbol": "environment"
+            },
+            {
+              "path": ".github/workflows/deploy.yml",
+              "symbol": "Deploy"
+            }
+          ]
+        },
+        {
+          "atStep": "deploy",
+          "condition": "One game's tests, build or deploy fail.",
+          "outcome": "That game stays as it was; the others are deployed.",
+          "sources": [
+            {
+              "path": ".github/workflows/deploy.yml",
+              "symbol": "fail-fast"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": ".github",
+      "path": ".github/.dev/operation.json",
+      "relationship": "The operations its steps run."
+    },
+    {
+      "kind": "capability",
+      "folder": ".github",
+      "path": ".github/.dev/capability.json",
+      "relationship": "The capability it uses."
+    },
+    {
+      "kind": "use-case",
+      "folder": "docs",
+      "path": "docs/.dev/use-case.json",
+      "relationship": "What to do when the migration check fails."
+    },
+    {
+      "kind": "component",
+      "folder": ".github",
+      "path": ".github/.dev/component-diagram.json",
+      "relationship": "The workflows that carry it out."
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "$schema": "../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "Workflow operations",
+  "folder": ".github",
+  "description": "The events that start each workflow, and the scripts the workflows call, which can also be run by hand from the repository root.",
+  "sources": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "symbol": "on"
+    },
+    {
+      "path": ".github/workflows/deploy.yml",
+      "symbol": "on"
+    },
+    {
+      "path": ".github/workflows/migrations.yml",
+      "symbol": "on"
+    }
+  ],
+  "entities": [
+    {
+      "id": "check-pull-request",
+      "name": "Check a pull request",
+      "description": "Validates the .dev files and tests and builds each game the pull request changes.",
+      "sources": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/game.yml",
+          "symbol": "jobs"
+        }
+      ],
+      "entrypoint": {
+        "path": ".github/workflows/ci.yml",
+        "symbol": "on.pull_request"
+      },
+      "action": "query",
+      "transport": "GitHub pull_request event",
+      "authorization": "None checked by the workflow: GitHub runs it for every pull request.",
+      "result": "Check results on the pull request: the diagrams job, and one game job per changed game; nothing is deployed.",
+      "failures": [
+        "A .dev file fails a validator: the diagrams job fails.",
+        "A changed game's install, tests or build fail, or its build holds a .dev folder: that game's job fails, and the others still run (fail-fast false)."
+      ]
+    },
+    {
+      "id": "check-database-change",
+      "name": "Check a pull request's database changes",
+      "description": "The required Database migration check, run again whenever the description is edited.",
+      "sources": [
+        {
+          "path": ".github/workflows/migrations.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/scripts/migration-gate.sh",
+          "symbol": "pr"
+        }
+      ],
+      "entrypoint": {
+        "path": ".github/workflows/migrations.yml",
+        "symbol": "on.pull_request"
+      },
+      "action": "query",
+      "transport": "GitHub pull_request event: opened, edited, synchronize, reopened",
+      "authorization": "None checked by the workflow; it reads the pull request with the run's own token.",
+      "result": "Passes when no worker/schema.sql or worker/migrations/ file changed, or when the description acknowledges the migration; prints the command for each changed file.",
+      "failures": [
+        "A database file changed and the description has no acknowledgement line: the check fails, and main refuses the merge."
+      ]
+    },
+    {
+      "id": "deploy-changed-games",
+      "name": "Deploy the changed games",
+      "description": "Deploys each game a push to main changed, once the migration gate passes.",
+      "sources": [
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/game.yml",
+          "symbol": "jobs"
+        }
+      ],
+      "entrypoint": {
+        "path": ".github/workflows/deploy.yml",
+        "symbol": "on.push"
+      },
+      "action": "command",
+      "transport": "GitHub push event on main",
+      "authorization": "Only pull requests reach main (AGENTS.md); deploy jobs run in the production environment, with its reviewer if one is set, and need CLOUDFLARE_API_TOKEN.",
+      "result": "Each changed game tested, built and deployed with wrangler deploy; a change to .dev files alone deploys nothing.",
+      "failures": [
+        "A database change since the last deploy is not acknowledged: the migrations job fails and nothing is deployed.",
+        "A game's tests, build or deploy fail: that game is not deployed, and the others still are."
+      ]
+    },
+    {
+      "id": "deploy-by-hand",
+      "name": "Deploy by hand",
+      "description": "Run workflow on deploy.yml deploys one game, or all, from main.",
+      "sources": [
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "on.workflow_dispatch"
+        }
+      ],
+      "entrypoint": {
+        "path": ".github/workflows/deploy.yml",
+        "symbol": "on.workflow_dispatch"
+      },
+      "action": "command",
+      "transport": "GitHub workflow_dispatch, with the inputs game and migration_applied",
+      "authorization": "Whoever GitHub lets run workflows in the repository; the same production environment and secret as a push.",
+      "result": "The chosen game, or every game, deployed; migration_applied acknowledges any database change since the last deploy.",
+      "failures": [
+        "A database change is not acknowledged and migration_applied is not ticked: nothing is deployed."
+      ]
+    },
+    {
+      "id": "list-changed-games",
+      "name": "List the changed games",
+      "description": "Which games have a package.json and changed between a commit and HEAD.",
+      "sources": [
+        {
+          "path": ".github/scripts/changed-games.sh",
+          "symbol": "all"
+        }
+      ],
+      "entrypoint": {
+        "path": ".github/scripts/changed-games.sh",
+        "symbol": "all"
+      },
+      "action": "query",
+      "transport": ".github/scripts/changed-games.sh [<base sha>]",
+      "authorization": "None.",
+      "result": "A JSON array of game folders. Files in .dev folders are left out; a change under .github/ means every game; with no base, or one Git cannot diff against, every game.",
+      "failures": []
+    },
+    {
+      "id": "find-last-deploy",
+      "name": "Find the last deployed commit",
+      "description": "The commit the last successful Deploy run deployed, where the migration gate starts.",
+      "sources": [
+        {
+          "path": ".github/scripts/last-deployed.sh",
+          "symbol": "last"
+        }
+      ],
+      "entrypoint": {
+        "path": ".github/scripts/last-deployed.sh",
+        "symbol": "last"
+      },
+      "action": "query",
+      "transport": ".github/scripts/last-deployed.sh [<before sha>]",
+      "authorization": "gh signed in with read access to the repository's Actions runs.",
+      "result": "That commit; else the push's before commit; else nothing, when Git has neither.",
+      "failures": []
+    },
+    {
+      "id": "run-migration-gate",
+      "name": "Run the migration gate",
+      "description": "Lists the database files changed since a commit and fails unless their migration is acknowledged.",
+      "sources": [
+        {
+          "path": ".github/scripts/migration-gate.sh",
+          "symbol": "mode"
+        },
+        {
+          "path": ".github/scripts/migration-gate.sh",
+          "symbol": "changed"
+        },
+        {
+          "path": ".github/scripts/migration-gate.sh",
+          "symbol": "acked"
+        }
+      ],
+      "entrypoint": {
+        "path": ".github/scripts/migration-gate.sh",
+        "symbol": "mode"
+      },
+      "action": "query",
+      "transport": ".github/scripts/migration-gate.sh pr <base sha> <pull request number> | deploy [<base sha>]",
+      "authorization": "gh signed in with read access to pull requests.",
+      "result": "Exits 0 when there is no database change or every change is acknowledged (in the pull request, by the pull request that brought each commit, or by migration_applied); prints how to apply each changed file.",
+      "failures": [
+        "A change is not acknowledged: exit 1, with an error annotation.",
+        "No mode, or an unknown one: the usage line, exit 2."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": ".github",
+      "path": ".github/.dev/capability.json",
+      "relationship": "The capability these belong to."
+    },
+    {
+      "kind": "use-case",
+      "folder": ".github",
+      "path": ".github/.dev/use-case.json",
+      "relationship": "Shipping a change goes through them."
+    },
+    {
+      "kind": "use-case",
+      "folder": "docs",
+      "path": "docs/.dev/use-case.json",
+      "relationship": "Migrating a database is checked by the gate."
+    }
+  ]
+}

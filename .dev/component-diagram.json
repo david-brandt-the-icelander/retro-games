@@ -1,0 +1,189 @@
+{
+  "$schema": "../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "retro-games component diagram",
+  "folder": ".",
+  "description": "The repository's parts: the games, the workflows that ship them, the sign-in library they vendor, the tooling for making and documenting them, and the services outside the repository they rely on.",
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "symbol": "Agent instructions"
+    },
+    {
+      "path": "README.md",
+      "symbol": "Games"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "symbol": "jobs"
+    },
+    {
+      "path": "games/rally/wrangler.jsonc",
+      "symbol": "services"
+    },
+    {
+      "path": "vendor/icelander-auth/index.js",
+      "symbol": "createAuth"
+    },
+    {
+      "path": "games/chess/worker/mail.ts",
+      "symbol": "canMail"
+    }
+  ],
+  "components": [
+    {
+      "id": "retro-games",
+      "name": "retro-games",
+      "responsibility": "Six games made with the help of AI, and everything needed to test, ship and document them.",
+      "folder": "."
+    },
+    {
+      "id": "games",
+      "name": "Games",
+      "responsibility": "Rally, Shatterbelt, Hivestorm, Samosa and Gambit, played in the browser, and LodeStar, a desktop game.",
+      "folder": "games",
+      "diagram": "games/.dev/component-diagram.json"
+    },
+    {
+      "id": "workflows",
+      "name": "Workflows",
+      "responsibility": "Check every pull request and deploy each changed game from main.",
+      "folder": ".github",
+      "diagram": ".github/.dev/component-diagram.json"
+    },
+    {
+      "id": "icelander-auth",
+      "name": "Sign-in library (vendor/icelander-auth)",
+      "responsibility": "Checks icelander.net's sign-in for every game's Worker; a copy kept identical to the icelander.net repository's.",
+      "folder": "vendor/icelander-auth"
+    },
+    {
+      "id": "skills",
+      "name": "Clean-room skills (.claude/skills)",
+      "responsibility": "The process and scripts for making a clean-room remake and checking it.",
+      "folder": ".claude/skills"
+    },
+    {
+      "id": "validators",
+      "name": "Skills and knowledge catalogue (Meta/Agents)",
+      "responsibility": "How .dev files are written, and the validators that check them; copied from human-assisted-software-development.",
+      "folder": "Meta/Agents"
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "responsibility": "icelander.net's games Worker, in another repository: sign-in pages on this host, /me, play time, the multiplayer lobby and the online match relay.",
+      "external": true
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Says who is signed in to icelander.net and which games: roles they hold; reached through the ACCOUNTS service binding.",
+      "external": true
+    },
+    {
+      "id": "cloudflare",
+      "name": "Cloudflare",
+      "responsibility": "Runs every game's Worker, D1 database and static assets, and Gambit's Durable Objects.",
+      "external": true
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "responsibility": "Hosts the repository, runs the workflows and holds main to pull requests.",
+      "external": true
+    },
+    {
+      "id": "resend",
+      "name": "Resend",
+      "responsibility": "Sends Gambit's invitation emails, when the Worker is configured for it.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "retro-games",
+      "to": "games",
+      "kind": "contains",
+      "description": "Part of the repository."
+    },
+    {
+      "from": "retro-games",
+      "to": "workflows",
+      "kind": "contains",
+      "description": "Part of the repository."
+    },
+    {
+      "from": "retro-games",
+      "to": "icelander-auth",
+      "kind": "contains",
+      "description": "Part of the repository."
+    },
+    {
+      "from": "retro-games",
+      "to": "skills",
+      "kind": "contains",
+      "description": "Part of the repository."
+    },
+    {
+      "from": "retro-games",
+      "to": "validators",
+      "kind": "contains",
+      "description": "Part of the repository."
+    },
+    {
+      "from": "games",
+      "to": "icelander-auth",
+      "kind": "depends-on",
+      "description": "Every web game's Worker checks the sign-in with it."
+    },
+    {
+      "from": "icelander-auth",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Asks the login service through the ACCOUNTS service binding."
+    },
+    {
+      "from": "games",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Online matches through its relay; /me and play time from the browser."
+    },
+    {
+      "from": "games",
+      "to": "cloudflare",
+      "kind": "depends-on",
+      "description": "Workers, D1 databases, static assets and Durable Objects."
+    },
+    {
+      "from": "games",
+      "to": "resend",
+      "kind": "depends-on",
+      "description": "Gambit's invitations by email."
+    },
+    {
+      "from": "workflows",
+      "to": "games",
+      "kind": "depends-on",
+      "description": "Tests, builds and deploys each changed game."
+    },
+    {
+      "from": "workflows",
+      "to": "validators",
+      "kind": "depends-on",
+      "description": "CI runs both validators."
+    },
+    {
+      "from": "workflows",
+      "to": "github",
+      "kind": "depends-on",
+      "description": "Pull request descriptions and Deploy runs, through gh."
+    },
+    {
+      "from": "workflows",
+      "to": "cloudflare",
+      "kind": "depends-on",
+      "description": "wrangler deploy."
+    }
+  ]
+}

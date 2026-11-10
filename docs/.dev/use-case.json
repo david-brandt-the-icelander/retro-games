@@ -1,0 +1,243 @@
+{
+  "$schema": "../../Meta/Agents/Skills/describe-use-case/schema.json",
+  "kind": "use-case",
+  "title": "Database use cases",
+  "folder": "docs",
+  "description": "Changing a game's live database, which the deploy pipeline never does.",
+  "sources": [
+    {
+      "path": "docs/database-migrations.md",
+      "symbol": "Database migrations"
+    },
+    {
+      "path": ".github/scripts/migration-gate.sh",
+      "symbol": "mode"
+    }
+  ],
+  "entities": [
+    {
+      "id": "migrate-a-database",
+      "name": "Migrate a game's database",
+      "description": "A change to a game's database is applied to production by hand, acknowledged on its pull request, and only then merged.",
+      "sources": [
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Applying it to production"
+        },
+        {
+          "path": ".github/scripts/migration-gate.sh",
+          "symbol": "pr"
+        },
+        {
+          "path": ".github/workflows/migrations.yml",
+          "symbol": "jobs"
+        }
+      ],
+      "actor": "Coding agent",
+      "actorDocument": "Actors/coding-agent.md",
+      "supportingActors": [
+        {
+          "name": "Owner",
+          "actorDocument": "Actors/owner.md"
+        }
+      ],
+      "goal": "Change a game's live D1 database so that the pull request needing it can be merged.",
+      "preconditions": [
+        "The owner has asked for the change to go live.",
+        "The change is a new file in games/<game>/worker/migrations/ and the same change in worker/schema.sql, on an open pull request."
+      ],
+      "postconditions": [
+        "The migration has been applied to production once, after a restore point was recorded on the pull request.",
+        "The pull request's description acknowledges it, and the Database migration check passes."
+      ],
+      "flow": [
+        {
+          "id": "write",
+          "actor": "Coding agent",
+          "participantKind": "actor",
+          "actorDocument": "Actors/coding-agent.md",
+          "action": "Writes the numbered migration and the matching change to schema.sql, safe for the code that is still live.",
+          "sources": [
+            {
+              "path": "docs/database-migrations.md",
+              "symbol": "Writing a migration"
+            }
+          ]
+        },
+        {
+          "id": "check-fails",
+          "actor": "Database migration check",
+          "participantKind": "system",
+          "action": "Fails the pull request and prints the command that applies each changed file.",
+          "sources": [
+            {
+              "path": ".github/scripts/migration-gate.sh",
+              "symbol": "explain"
+            },
+            {
+              "path": ".github/scripts/migration-gate.sh",
+              "symbol": "how_to"
+            }
+          ]
+        },
+        {
+          "id": "whoami",
+          "actor": "Coding agent",
+          "participantKind": "actor",
+          "actorDocument": "Actors/coding-agent.md",
+          "action": "Checks that wrangler reaches the repository's Cloudflare account.",
+          "sources": [
+            {
+              "path": "docs/database-migrations.md",
+              "symbol": "Applying it to production"
+            }
+          ]
+        },
+        {
+          "id": "bookmark",
+          "actor": "Coding agent",
+          "participantKind": "actor",
+          "actorDocument": "Actors/coding-agent.md",
+          "action": "Records a time-travel bookmark of the database in a comment on the pull request.",
+          "sources": [
+            {
+              "path": "docs/database-migrations.md",
+              "symbol": "Applying it to production"
+            }
+          ]
+        },
+        {
+          "id": "apply",
+          "actor": "Coding agent",
+          "participantKind": "actor",
+          "actorDocument": "Actors/coding-agent.md",
+          "action": "Applies each new migration file once, in filename order, and looks at a table it changed.",
+          "sources": [
+            {
+              "path": "docs/database-migrations.md",
+              "symbol": "Applying it to production"
+            }
+          ]
+        },
+        {
+          "id": "acknowledge",
+          "actor": "Coding agent",
+          "participantKind": "actor",
+          "actorDocument": "Actors/coding-agent.md",
+          "action": "Adds the acknowledgement line to the pull request's description.",
+          "sources": [
+            {
+              "path": "docs/database-migrations.md",
+              "symbol": "Applying it to production"
+            },
+            {
+              "path": ".github/scripts/migration-gate.sh",
+              "symbol": "ack_re"
+            }
+          ]
+        },
+        {
+          "id": "check-passes",
+          "actor": "Database migration check",
+          "participantKind": "system",
+          "action": "Runs again on the edited description and passes.",
+          "sources": [
+            {
+              "path": ".github/workflows/migrations.yml",
+              "symbol": "on.pull_request"
+            },
+            {
+              "path": ".github/scripts/migration-gate.sh",
+              "symbol": "acked"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "whoami",
+          "condition": "wrangler names another account, or there are no Cloudflare credentials.",
+          "outcome": "Stop and ask the owner; the box is not ticked.",
+          "sources": [
+            {
+              "path": "docs/database-migrations.md",
+              "symbol": "Applying it to production"
+            }
+          ]
+        },
+        {
+          "atStep": "apply",
+          "condition": "A file fails part-way through.",
+          "outcome": "Stop and tell the owner; the file is not run again.",
+          "sources": [
+            {
+              "path": "docs/database-migrations.md",
+              "symbol": "Applying it to production"
+            }
+          ]
+        },
+        {
+          "atStep": "write",
+          "condition": "The change cannot affect the live database, such as a comment in schema.sql.",
+          "outcome": "The description says no migration is needed, and why, instead.",
+          "sources": [
+            {
+              "path": "docs/database-migrations.md",
+              "symbol": "When no migration is needed"
+            },
+            {
+              "path": ".github/scripts/migration-gate.sh",
+              "symbol": "ack_re"
+            }
+          ]
+        },
+        {
+          "atStep": "check-passes",
+          "condition": "The merge was made and the deploy stopped at the gate.",
+          "outcome": "Apply, acknowledge on the merged pull request, and re-run the failed Deploy jobs.",
+          "sources": [
+            {
+              "path": "docs/database-migrations.md",
+              "symbol": "When something went wrong"
+            },
+            {
+              "path": ".github/scripts/migration-gate.sh",
+              "symbol": "deploy"
+            }
+          ]
+        },
+        {
+          "atStep": "apply",
+          "condition": "The migration broke production.",
+          "outcome": "The owner decides whether to restore the bookmark, which undoes every write since it.",
+          "sources": [
+            {
+              "path": "docs/database-migrations.md",
+              "symbol": "When something went wrong"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": ".github",
+      "path": ".github/.dev/use-case.json",
+      "relationship": "Merging afterwards ships the change."
+    },
+    {
+      "kind": "operation",
+      "folder": ".github",
+      "path": ".github/.dev/operation.json",
+      "relationship": "The gate that checks it."
+    },
+    {
+      "kind": "capability",
+      "folder": ".github",
+      "path": ".github/.dev/capability.json",
+      "relationship": "The capability whose gate enforces it."
+    }
+  ]
+}

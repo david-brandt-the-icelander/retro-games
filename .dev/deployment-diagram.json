@@ -1,0 +1,359 @@
+{
+  "$schema": "../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "retro-games deployment diagram",
+  "folder": ".",
+  "description": "Where every game runs: five Workers on icelander.net, each with its own D1 database, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
+  "sources": [
+    {
+      "path": "games/rally/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
+      "path": "games/hivestorm/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
+      "path": "games/shatterbelt/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
+      "path": "games/dictator/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
+      "path": "games/chess/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
+      "path": ".github/workflows/deploy.yml",
+      "symbol": "jobs"
+    },
+    {
+      "path": "games/lodestar/export_presets.cfg",
+      "symbol": "preset.0"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "browser",
+      "name": "Player's browser",
+      "kind": "client",
+      "description": "Runs each web game; signed in to icelander.net.",
+      "actor": "Actors/player.md"
+    },
+    {
+      "id": "desktop",
+      "name": "Pilot's computer",
+      "kind": "client",
+      "description": "Runs LodeStar's desktop export.",
+      "actor": "Actors/pilot.md"
+    },
+    {
+      "id": "edge",
+      "name": "Cloudflare edge (icelander.net)",
+      "kind": "host",
+      "description": "Runs each game's Worker on its route under icelander.net/games/retro/, and serves its static assets."
+    },
+    {
+      "id": "w-rally",
+      "name": "rally Worker",
+      "kind": "process",
+      "description": "Rally's Worker on icelander.net/games/retro/rally*; its own deployment diagram is in games/rally/.dev."
+    },
+    {
+      "id": "db-rally",
+      "name": "D1 rally-scores",
+      "kind": "database",
+      "description": "Rally's database (games/rally/worker/schema.sql)."
+    },
+    {
+      "id": "w-hivestorm",
+      "name": "hivestorm Worker",
+      "kind": "process",
+      "description": "Hivestorm's Worker on icelander.net/games/retro/hivestorm*; its own deployment diagram is in games/hivestorm/.dev."
+    },
+    {
+      "id": "db-hivestorm",
+      "name": "D1 hivestorm-scores",
+      "kind": "database",
+      "description": "Hivestorm's database (games/hivestorm/worker/schema.sql)."
+    },
+    {
+      "id": "w-shatterbelt",
+      "name": "shatterbelt Worker",
+      "kind": "process",
+      "description": "Shatterbelt's Worker on icelander.net/games/retro/shatterbelt*; its own deployment diagram is in games/shatterbelt/.dev."
+    },
+    {
+      "id": "db-shatterbelt",
+      "name": "D1 shatterbelt-scores",
+      "kind": "database",
+      "description": "Shatterbelt's database (games/shatterbelt/worker/schema.sql)."
+    },
+    {
+      "id": "w-dictator",
+      "name": "samosa Worker",
+      "kind": "process",
+      "description": "Samosa's Worker on icelander.net/games/retro/samosa*; its own deployment diagram is in games/dictator/.dev."
+    },
+    {
+      "id": "db-dictator",
+      "name": "D1 samosa-scores",
+      "kind": "database",
+      "description": "Samosa's database (games/dictator/worker/schema.sql)."
+    },
+    {
+      "id": "w-chess",
+      "name": "chess Worker",
+      "kind": "process",
+      "description": "Gambit's Worker on icelander.net/games/retro/chess*; its own deployment diagram is in games/chess/.dev."
+    },
+    {
+      "id": "db-chess",
+      "name": "D1 chess",
+      "kind": "database",
+      "description": "Gambit's database (games/chess/worker/schema.sql)."
+    },
+    {
+      "id": "rooms",
+      "name": "GameRoom Durable Objects",
+      "kind": "process",
+      "description": "One per live Gambit game: the referee and its watchers."
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "kind": "external-service",
+      "description": "icelander.net/games, another repository's Worker: sign-in pages, /me, play time, the lobby and the match relay.",
+      "condition": "Online matches, and the default name for a signed-in player"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "Who is signed in, and their games: roles."
+    },
+    {
+      "id": "resend",
+      "name": "Resend",
+      "kind": "external-service",
+      "description": "Sends Gambit's invitation emails.",
+      "condition": "RESEND_API_KEY and MAIL_FROM are set"
+    },
+    {
+      "id": "actions",
+      "name": "GitHub Actions runner",
+      "kind": "host",
+      "description": "Runs the Deploy workflow, which deploys each changed game."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "site-rally",
+      "name": "Rally's page and game",
+      "source": "games/rally/src/main.ts",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-rally",
+      "name": "Rally's Worker script",
+      "source": "games/rally/worker/index.ts",
+      "deployedTo": "w-rally",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-hivestorm",
+      "name": "Hivestorm's page and game",
+      "source": "games/hivestorm/src/main.ts",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-hivestorm",
+      "name": "Hivestorm's Worker script",
+      "source": "games/hivestorm/worker/index.ts",
+      "deployedTo": "w-hivestorm",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-shatterbelt",
+      "name": "Shatterbelt's page and game",
+      "source": "games/shatterbelt/src/main.ts",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-shatterbelt",
+      "name": "Shatterbelt's Worker script",
+      "source": "games/shatterbelt/worker/index.ts",
+      "deployedTo": "w-shatterbelt",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-dictator",
+      "name": "Samosa's page and game",
+      "source": "games/dictator/src/main.ts",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-dictator",
+      "name": "Samosa's Worker script",
+      "source": "games/dictator/worker/index.ts",
+      "deployedTo": "w-dictator",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-chess",
+      "name": "Gambit's page and game",
+      "source": "games/chess/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-chess",
+      "name": "Gambit's Worker script",
+      "source": "games/chess/worker/index.ts",
+      "deployedTo": "w-chess",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "room",
+      "name": "GameRoom",
+      "source": "games/chess/worker/room.ts",
+      "deployedTo": "rooms",
+      "description": "The Durable Object class exported by Gambit's Worker."
+    },
+    {
+      "id": "lodestar",
+      "name": "LodeStar desktop export",
+      "source": "games/lodestar/export_presets.cfg",
+      "deployedTo": "desktop",
+      "description": "The Godot export with the Rust sim as a GDExtension; not deployed by the workflows."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "edge",
+      "to": "w-rally",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/rally*."
+    },
+    {
+      "from": "w-rally",
+      "to": "db-rally",
+      "kind": "connects-to",
+      "description": "D1 binding DB."
+    },
+    {
+      "from": "w-rally",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page and its API need a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-hivestorm",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/hivestorm*."
+    },
+    {
+      "from": "w-hivestorm",
+      "to": "db-hivestorm",
+      "kind": "connects-to",
+      "description": "D1 binding DB."
+    },
+    {
+      "from": "w-hivestorm",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page and its API need a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-shatterbelt",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/shatterbelt*."
+    },
+    {
+      "from": "w-shatterbelt",
+      "to": "db-shatterbelt",
+      "kind": "connects-to",
+      "description": "D1 binding DB."
+    },
+    {
+      "from": "w-shatterbelt",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page and its API need a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-dictator",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/samosa*."
+    },
+    {
+      "from": "w-dictator",
+      "to": "db-dictator",
+      "kind": "connects-to",
+      "description": "D1 binding DB."
+    },
+    {
+      "from": "w-dictator",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page and its API need a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-chess",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/chess*."
+    },
+    {
+      "from": "w-chess",
+      "to": "db-chess",
+      "kind": "connects-to",
+      "description": "D1 binding DB."
+    },
+    {
+      "from": "w-chess",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page and its API need a signed-in player."
+    },
+    {
+      "from": "browser",
+      "to": "edge",
+      "kind": "connects-to",
+      "description": "HTTPS to icelander.net/games/retro/<game>/."
+    },
+    {
+      "from": "browser",
+      "to": "hub",
+      "kind": "connects-to",
+      "description": "WebSocket relay for online matches; /me and play time."
+    },
+    {
+      "from": "w-chess",
+      "to": "rooms",
+      "kind": "connects-to",
+      "description": "Durable Object binding ROOMS."
+    },
+    {
+      "from": "w-chess",
+      "to": "resend",
+      "kind": "connects-to",
+      "description": "HTTPS to Resend's API, for an invitation."
+    },
+    {
+      "from": "actions",
+      "to": "edge",
+      "kind": "connects-to",
+      "description": "wrangler deploy, with CLOUDFLARE_API_TOKEN."
+    }
+  ]
+}
