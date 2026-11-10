@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # Prints, as a JSON array, the games under games/ that have a package.json and changed between
 # the commit $1 and HEAD. With no $1, or one Git cannot diff against (a new branch, a force
-# push), every game. A change outside games/ (the workflows themselves, say) also means every game.
+# push), every game. A change under .github/ (the workflows themselves, say) also means every game.
+# Files in .dev/ folders are left out: they describe the code, and no build ships them.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 all=$(for f in games/*/package.json; do basename "$(dirname "$f")"; done)
 if [ -n "${1:-}" ] && files=$(git diff --name-only "$1" HEAD 2>/dev/null); then
+  files=$(grep -Ev '(^|/)\.dev/' <<<"$files" || true)
   if grep -q '^\.github/' <<<"$files"; then
     games=$all
   else

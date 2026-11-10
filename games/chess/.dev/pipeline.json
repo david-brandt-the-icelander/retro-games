@@ -7,8 +7,8 @@
     {
       "id": "pull-request",
       "title": "On a pull request",
-      "summary": "Gambit is typechecked, tested in TypeScript and GDScript, and exported; every .dev diagram is validated.",
-      "trigger": "A pull request that changes games/chess, or anything under .github/ (ci.yml).",
+      "summary": "Gambit is typechecked, tested in TypeScript and GDScript, and exported; every .dev diagram and knowledge file is validated.",
+      "trigger": "A pull request that changes games/chess outside its .dev folders, or anything under .github/ outside .github/.dev (ci.yml).",
       "checks": [
         "npm ci",
         "Godot 4.7.2 and its web export templates, cached by version",
@@ -17,11 +17,11 @@
         "npm run build: the Godot web export, the engine split into parts, bridge.js and Stockfish",
         "No .dev folders in dist/: the build must not ship the folders' documentation",
         "python3 Meta/Agents/Skills/validate_diagrams.py, for the whole repository",
+        "python3 Meta/Agents/Knowledge/validate_knowledge.py, for the whole repository",
         "The Database migration check, when worker/schema.sql or worker/migrations/ change"
       ],
       "blocks": "merge",
       "notChecked": [
-        "The knowledge files: Meta/Agents/Knowledge/validate_knowledge.py is not run in CI.",
         "How the game looks: the reference renders are compared by hand.",
         "The game in a real browser, the GameRoom's WebSockets, Stockfish, and the login service.",
         "worker/retire-sessions.sql, which the migration check does not watch."

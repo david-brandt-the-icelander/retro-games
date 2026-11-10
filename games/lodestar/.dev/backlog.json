@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "LodeStar backlog",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "missing-views",
+      "title": "Views for the LodeStar folders that have none",
+      "summary": "presentation/hud and presentation/text have only a folder record or a backlog, and capabilities/ships and capabilities/pilot have no capability.",
+      "type": "chore",
+      "acceptanceCriteria": [
+        "Each of these folders has the views its code establishes (populate-dev), or a note in its folder record of why it needs none.",
+        "cargo test passes."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/hud/hud.gd"
+        },
+        {
+          "path": "games/lodestar/src/presentation/text/words.gd"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/ships/mod.rs"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/pilot/mod.rs"
+        }
+      ]
+    }
+  ]
+}

@@ -10,7 +10,7 @@
       "summary": "The six games, one folder each, sharing no code at build time.",
       "purpose": "Groups the games: Rally (rally/), Shatterbelt (shatterbelt/), Hivestorm (hivestorm/), Samosa (dictator/) and Gambit (chess/), each an npm project and a Cloudflare Worker, and LodeStar (lodestar/), a Rust and Godot desktop game. Each game's folder is worked in on its own, with its own install and tests.",
       "boundaries": [
-        "A game with a package.json is tested on every pull request that changes it and deployed when that change reaches main (.github/scripts/changed-games.sh); LodeStar has none, so the workflows leave it out.",
+        "A game with a package.json is tested on every pull request that changes it and deployed when that change reaches main (.github/scripts/changed-games.sh); a change to its .dev folders alone does neither. LodeStar has none, so the workflows leave it out.",
         "Rally, Shatterbelt and Hivestorm carry identical copies of src/online.ts, and Rally copies Samosa's name rules; the copies are tracked as debt in games/rally/src/.dev/backlog.json."
       ],
       "evidenceStatus": "source-verified",

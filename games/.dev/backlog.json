@@ -1,0 +1,118 @@
+{
+  "$schema": "../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Backlog for every game",
+  "folder": "games",
+  "entities": [
+    {
+      "id": "shared-game-kit",
+      "title": "One shared kit for the web games' online play, scores, page and names",
+      "summary": "Rally, Hivestorm, Shatterbelt and Samosa carry copies of the same online play, high-score table, page look and name rules, so the explorer shows the same capability, features and state machines three or four times.",
+      "type": "debt",
+      "acceptanceCriteria": [
+        "packages/game-kit/ is its own npm project with tests, holding online/ (online.ts), names/ (Samosa's name rules), scores/ (the client's table calls and the Worker's seed, submit, table and scores page, with each game passing in its replay check and table shape) and page/ (look.ts and the signed-in page).",
+        "The four games use it, one game per commit, each passing its tests; stored games still pass the replay check; nothing a player sees changes.",
+        "changed-games.sh counts a change under packages/ as a change to every game that uses the kit, and ci.yml tests the kit.",
+        "One Room and one Seed state diagram, and one capability per shared responsibility, in the kit's .dev folders; the copies are deleted and every link to them repointed.",
+        "games/.dev/folder.json no longer says the games share no code, and the create-retro-game web template starts from the kit."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Room"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Room"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Room"
+        },
+        {
+          "path": "games/rally/worker/look.ts"
+        },
+        {
+          "path": "games/dictator/src/name.ts"
+        },
+        {
+          "path": "games/rally/worker/.dev/capability.json"
+        },
+        {
+          "path": "games/hivestorm/worker/.dev/capability.json"
+        }
+      ],
+      "compromise": "The shared code was copied into each game rather than shared, and is kept identical by hand.",
+      "cost": "A fix in one copy and not the others puts the games out of step without anything saying so, and every view of the shared behaviour is kept up to date four times.",
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/.dev/decisions.json",
+          "entityId": "shared-game-kit",
+          "description": "Waits on this decision."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/backlog.json",
+          "entityId": "online-copies",
+          "description": "Sharing the file ends the need to check its copies."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/backlog.json",
+          "entityId": "name-copies",
+          "description": "Sharing the rules ends the need to check their copies."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/src/.dev/backlog.json",
+          "entityId": "name-copies",
+          "description": "Sharing the rules ends the need to check their copies."
+        }
+      ]
+    },
+    {
+      "id": "behaviour-chain",
+      "title": "Link every game's journeys, use cases, features, capabilities and operations",
+      "summary": "The links between each game's behaviour views have never been checked end to end.",
+      "type": "chore",
+      "acceptanceCriteria": [
+        "For each game, each journey links the use cases behind its stages; each use case its features, capability and operations; each feature its capability; each operation its capability; and back.",
+        "The games hub is a supporting actor in every online play use case, icelander.net accounts in every use case a step of which needs the sign-in, and Resend in Gambit's invite-a-friend.",
+        "The check in .github/.dev/backlog.json (related-views-check) reports nothing."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "games/rally/src/.dev/use-case.json"
+        },
+        {
+          "path": "games/chess/godot/scripts/.dev/use-case.json"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": ".dev/backlog.json",
+          "entityId": "actors",
+          "description": "The supporting actors need their files first."
+        }
+      ]
+    }
+  ]
+}

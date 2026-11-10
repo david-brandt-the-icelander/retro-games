@@ -1,0 +1,131 @@
+{
+  "$schema": "../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Decisions for the repository",
+  "folder": ".",
+  "entities": [
+    {
+      "id": "vision-and-roadmap",
+      "title": "The repository's vision, stakeholders and roadmap",
+      "summary": "Only the owner can say what retro-games is for, who it serves and what comes next.",
+      "status": "open",
+      "context": "The explorer's Direction group (vision, stakeholders, risks, roadmap) is empty for the repository; only LodeStar has stakeholders and risks. The README says the games are recreations made with the help of AI, and the root folder record links them to icelander.net, but the knowledge catalogue forbids inventing intent.",
+      "options": [
+        {
+          "title": "The owner states them",
+          "consequences": "A sentence or two each becomes vision.json, stakeholders.json and roadmap.json in the root's .dev, with the owner as origin."
+        },
+        {
+          "title": "Leave the Direction group empty",
+          "consequences": "The explorer shows no direction for the repository; nothing else changes."
+        }
+      ],
+      "recommendation": "The owner states them.",
+      "waitingOn": "The owner",
+      "blocks": [
+        {
+          "path": ".dev/backlog.json",
+          "entityId": "root-views"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "README.md"
+        },
+        {
+          "path": ".dev/folder.json",
+          "symbol": "folder"
+        }
+      ]
+    },
+    {
+      "id": "document-skills",
+      "title": "Document .claude/skills in .dev folders?",
+      "summary": "The clean-room skills carry the owner's process for making a game and the clean-room scripts, and have no .dev folder.",
+      "status": "open",
+      "context": "AGENTS.md has every folder document itself, and lists the folders that get diagrams without naming .claude/skills/. Its SKILL.md files describe a journey with an approval gate after each phase, and its scripts are command-line entrypoints. The skills are copied into new games' design work; a .dev folder inside the web template would be copied into each new game.",
+      "options": [
+        {
+          "title": "Yes, except inside the web template",
+          "consequences": "The explorer shows the owner's journey for making a game and the clean-room checks as a capability."
+        },
+        {
+          "title": "No",
+          "consequences": "The skills stay described only by their SKILL.md files, which the explorer does not show."
+        }
+      ],
+      "recommendation": "Yes, except inside the web template.",
+      "waitingOn": "The owner",
+      "blocks": [
+        {
+          "path": ".dev/backlog.json",
+          "entityId": "describe-skills"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "symbol": "Architecture diagrams and knowledge files"
+        },
+        {
+          "path": ".claude/skills/create-retro-game/SKILL.md"
+        }
+      ]
+    },
+    {
+      "id": "vendor-auth-views",
+      "title": "Where vendor/icelander-auth is described",
+      "summary": "The vendored sign-in library must stay identical to its icelander.net copy, so a .dev folder cannot simply be added here.",
+      "status": "open",
+      "context": "vendor/icelander-auth/STAMP.json records each file's hash, and AGENTS.md says to change the library in the icelander.net repository and copy it with packages/icelander-auth/sync.sh, never here.",
+      "options": [
+        {
+          "title": "Describe it upstream",
+          "consequences": "packages/icelander-auth/ in icelander.net gets a .dev folder, and the sync brings it here with the code."
+        },
+        {
+          "title": "Describe it from the root only",
+          "consequences": "The root component diagram names it, and the folder itself shows nothing in the explorer."
+        }
+      ],
+      "recommendation": "Describe it upstream; until then, from the root only.",
+      "waitingOn": "The owner",
+      "blocks": [
+        {
+          "path": ".dev/backlog.json",
+          "entityId": "root-views"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "vendor/icelander-auth/STAMP.json"
+        },
+        {
+          "path": "AGENTS.md",
+          "symbol": "Sign-in"
+        }
+      ]
+    }
+  ]
+}
