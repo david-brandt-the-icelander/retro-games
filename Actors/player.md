@@ -3,9 +3,9 @@
 **Kind:** person in a role
 **Evidence:** `games/rally/worker/index.ts` (`AUTH`, `gamePage`: the page and the score API need a sign-in to icelander.net with the `games:play` role), `games/rally/src/main.ts` (`start`, `joinMatch`), `games/rally/src/scores.ts` (`defaultName`)
 **Evidence (Gambit):** `games/chess/worker/index.ts` (`default.fetch`: the page needs a sign-in to icelander.net with the `games:play` role), `games/chess/worker/auth.ts` (`currentUser`: Gambit's own player record, keyed by address), `games/chess/worker/api.ts` (`handleApi`: an invitation is answered by the player signed in with the address it was sent to), `games/chess/godot/scripts/main.gd` (`Main._lobby`, `Main._setup`, `Main._history`)
-Samosa: `games/dictator/worker/index.ts` (`AUTH`, `gamePage`: the page and the score API need a sign-in to icelander.net with the `games:play` role), `games/dictator/src/main.ts` (`title`, `io`, `offerTable`), `games/dictator/src/scores.ts` (`defaultName`)
+**Evidence (Samosa):** `games/dictator/worker/index.ts` (`AUTH`, `gamePage`: the page and the score API need a sign-in to icelander.net with the `games:play` role), `games/dictator/src/main.ts` (`title`, `io`, `offerTable`), `games/dictator/src/scores.ts` (`defaultName`)
 **Evidence (Hivestorm):** `games/hivestorm/worker/index.ts` (`AUTH`, `gamePage`: the same sign-in and role), `games/hivestorm/src/ui/input.ts` (`Controls`), `games/hivestorm/src/main.ts` (`step`, `joinMatch`, `offerTable`)
-**Evidence:** `games/shatterbelt/worker/index.ts` (`AUTH`, `gamePage`: Shatterbelt's page and score API need the same sign-in and role), `games/shatterbelt/src/main.ts` (`launch`, `joinMatch`), `games/shatterbelt/src/input.ts` (`Input.controls`: one pilot per browser)
+**Evidence (Shatterbelt):** `games/shatterbelt/worker/index.ts` (`AUTH`, `gamePage`: Shatterbelt's page and score API need the same sign-in and role), `games/shatterbelt/src/main.ts` (`launch`, `joinMatch`), `games/shatterbelt/src/input.ts` (`Input.controls`: one pilot per browser)
 
 ## What they want from the system
 
@@ -26,6 +26,9 @@ Samosa: `games/dictator/worker/index.ts` (`AUTH`, `gamePage`: the page and the s
 Rally's page at icelander.net/games/retro/rally/, signed in to icelander.net, with a keyboard, a mouse or a touch screen. Online matches start on the games hub's multiplayer page, which opens the game with `?match=ID`; the other player in an online match is a player too.
 
 Gambit is at icelander.net/games/retro/chess/, signed in to icelander.net, with a mouse or a touch screen. An invitation's link (`?challenge=ID`) opens it at that invitation; the friend invited is a player too, known by the email address the invitation was sent to.
+
 Samosa's page at icelander.net/games/retro/samosa/, signed in to icelander.net, with a keyboard, or on a touch screen with the keypad of the keys each prompt accepts; its scores page needs no sign-in.
+
 Hivestorm's page at icelander.net/games/retro/hivestorm/, signed in to icelander.net, with a keyboard or the touch buttons under the screen. Its online games also start on the multiplayer page, which opens the game with `?match=ID`; there, the other player plays their own turns of the same two-player game.
+
 Shatterbelt's page is at icelander.net/games/retro/shatterbelt/, signed in the same way, with a keyboard, a gamepad or a touch screen; its online games, for two to nine pilots, start on the same multiplayer page, and every pilot in them is a player too.
