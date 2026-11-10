@@ -139,7 +139,7 @@
       "evidenceStatus": "proposed",
       "sources": [
         {
-          "path": "Meta/Agents/Skills/populate-dev/SKILL.md",
+          "path": "Meta/Agents/Skills/populate-dev/skill.md",
           "symbol": "Assessing and planning"
         },
         {
