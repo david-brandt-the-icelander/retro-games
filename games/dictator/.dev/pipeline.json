@@ -13,6 +13,7 @@
         "npm ci",
         "npm test: tsc --noEmit, then build.mjs --test, then the node:test suites in test/ (the clean-room guard among them)",
         "npm run build",
+        "No .dev folders in dist/: the build must not ship the folders' documentation",
         "python3 Meta/Agents/Skills/validate_diagrams.py, for the whole repository",
         "The Database migration check, when worker/schema.sql or worker/migrations/ change"
       ],
@@ -53,6 +54,7 @@
         "The migration gate: every database change since the last deploy has been acknowledged",
         "npm test",
         "npm run build",
+        "No .dev folders in dist/: the build must not ship the folders' documentation",
         "npx wrangler deploy"
       ],
       "blocks": "release",

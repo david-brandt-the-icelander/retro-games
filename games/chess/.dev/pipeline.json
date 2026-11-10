@@ -15,6 +15,7 @@
         "npm test: tsc --noEmit, then the node:test suites in test/",
         "npm run test:godot: import, then tests/test_rules.gd and tests/test_formats.gd headless",
         "npm run build: the Godot web export, the engine split into parts, bridge.js and Stockfish",
+        "No .dev folders in dist/: the build must not ship the folders' documentation",
         "python3 Meta/Agents/Skills/validate_diagrams.py, for the whole repository",
         "The Database migration check, when worker/schema.sql or worker/migrations/ change"
       ],
@@ -51,6 +52,7 @@
         "npm test",
         "npm run test:godot",
         "npm run build",
+        "No .dev folders in dist/: the build must not ship the folders' documentation",
         "npx wrangler deploy"
       ],
       "blocks": "release",

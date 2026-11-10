@@ -25,7 +25,7 @@
         "date": "2026-11-10",
         "description": "Found when public/.dev was added and the build run while documenting Shatterbelt."
       },
-      "status": "open",
+      "status": "done",
       "evidenceStatus": "source-verified",
       "sources": [
         {
@@ -35,8 +35,13 @@
         {
           "path": "games/shatterbelt/wrangler.jsonc",
           "symbol": "assets"
+        },
+        {
+          "path": ".github/workflows/game.yml",
+          "symbol": "No .dev files in the build"
         }
-      ]
+      ],
+      "details": "Fixed 2026-11-10: build.mjs skips .dev when it copies public/, and .github/workflows/game.yml fails a build whose dist/ holds a .dev folder (games/.dev/decisions.json, publish-dev-files)."
     },
     {
       "id": "local-sign-in",

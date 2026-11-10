@@ -11,7 +11,7 @@
       "purpose": "Holds what the build copies unchanged into dist/: index.html with the canvas and the touch buttons under it, hivestorm.css, and _headers with the content security policy.",
       "boundaries": [
         "No game script of its own: the build adds game.js from src/main.ts, and the page also loads the games hub's /games/play.js.",
-        "build.mjs copies the whole folder, this .dev/ included, into dist/ (games/hivestorm/.dev/decisions.json, publish-dev-files)."
+        "build.mjs skips this .dev/ when it copies the folder, so it is never served (games/.dev/decisions.json, publish-dev-files)."
       ],
       "evidenceStatus": "source-verified",
       "sources": [
@@ -31,7 +31,7 @@
       "relationships": [
         {
           "relation": "relates-to",
-          "path": "games/hivestorm/.dev/decisions.json",
+          "path": "games/.dev/decisions.json",
           "entityId": "publish-dev-files"
         }
       ]

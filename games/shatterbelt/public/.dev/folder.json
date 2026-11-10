@@ -11,7 +11,8 @@
       "purpose": "Holds what the build copies unchanged into dist/: index.html with the canvas, the touch buttons, the bar under the field (sound, pause, the online status line and a link to the high scores) and the site links; style.css; and _headers with the content security policy and permissions policy.",
       "boundaries": [
         "No script of its own: the build adds game.js from src/main.ts, and the page loads the games hub's /games/play.js.",
-        "_headers is moved to the assets root by the build, so it applies to every static file."
+        "_headers is moved to the assets root by the build, so it applies to every static file.",
+        "build.mjs skips this .dev/ when it copies the folder, so it is never served (games/.dev/decisions.json, publish-dev-files)."
       ],
       "evidenceStatus": "source-verified",
       "sources": [
