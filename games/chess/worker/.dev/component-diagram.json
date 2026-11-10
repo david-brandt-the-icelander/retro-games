@@ -78,7 +78,7 @@
     {
       "id": "db",
       "name": "Queries (db.ts, schema.sql)",
-      "responsibility": "The D1 schema and every query: users, sessions, challenges, games with their game_events, contacts and records. Saving a game only succeeds if it hasn't changed since it was loaded.",
+      "responsibility": "The D1 schema and every query: users, challenges, games with their game_events, contacts and records. Saving a game only succeeds if it hasn't changed since it was loaded. retire-sessions.sql drops the table the old sign-in used.",
       "folder": "games/chess/worker"
     },
     {
@@ -97,7 +97,7 @@
     {
       "id": "d1",
       "name": "D1 database chess",
-      "responsibility": "Users, sessions, challenges, games, game_events and contacts.",
+      "responsibility": "Users, challenges, games, game_events and contacts.",
       "external": true
     },
     {
@@ -286,7 +286,7 @@
       "from": "signin",
       "to": "accounts",
       "kind": "depends-on",
-      "description": "ACCOUNTS.session(cookie, \"games\") on every request; signOut."
+      "description": "ACCOUNTS.session(cookie, \"site\") on every request; signOut on sign-out."
     },
     {
       "from": "router",

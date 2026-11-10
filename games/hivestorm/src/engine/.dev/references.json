@@ -1,0 +1,32 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Engine references",
+  "folder": "games/hivestorm/src/engine",
+  "entities": [
+    {
+      "id": "mulberry32",
+      "title": "mulberry32",
+      "summary": "The seeded generator in rng.ts.",
+      "relevance": "A small 32-bit generator built from Math.imul and shifts, so every engine computes the same sequence from a seed.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/rng.ts",
+          "symbol": "Rng"
+        }
+      ]
+    },
+    {
+      "id": "taylor-series",
+      "title": "Taylor series of the sine",
+      "summary": "The polynomial behind dsin.",
+      "relevance": "dsin evaluates the sine's Taylor series about 0 to the x¹¹ term, in nested form, on an angle folded into [−π/2, π/2].",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/trig.ts",
+          "symbol": "dsin"
+        }
+      ]
+    }
+  ]
+}

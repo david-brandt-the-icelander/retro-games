@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Page",
+  "folder": "games/dictator/public",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Page",
+      "summary": "The game's HTML page, its styles and the headers Cloudflare serves with it.",
+      "purpose": "Holds what the build copies unchanged into dist/: index.html with the canvas, the keypad, the sound button, the two screen-reader live regions and the site's footer links; zx.css, which lays them out for desktop, phone portrait and phone landscape; and _headers with the content security policy.",
+      "boundaries": [
+        "No game code: the build adds game.js from src/main.ts, which finds its elements by the ids zx, keypad, controls, sound, screen-text and screen-alert.",
+        "/games/play.js, which the page also loads, is the games hub's.",
+        "build.mjs skips this .dev/ when it copies the folder, so it is never served (games/.dev/decisions.json, publish-dev-files)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/public/index.html",
+          "symbol": "zx"
+        },
+        {
+          "path": "games/dictator/public/_headers",
+          "symbol": "Content-Security-Policy"
+        },
+        {
+          "path": "games/dictator/build.mjs",
+          "symbol": "cpSync"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Engine contracts",
+  "folder": "games/shatterbelt/src/engine",
+  "entities": [
+    {
+      "id": "recording",
+      "title": "Recording format",
+      "summary": "{ mode, players, seed, steps, log }: what the browser records and the Worker replays.",
+      "contractType": "data-format",
+      "consumers": [
+        "worker/scores.ts, through POST /api/score (which takes it without the seed)",
+        "src/main.ts, which records"
+      ],
+      "guarantees": [
+        "mode is coop or versus; players 1 to 9; seed a 32-bit unsigned whole number",
+        "steps counts every step played, up to and including the one that ended the game, at most 324,000 (90 minutes)",
+        "log is flat triples [steps since the previous change, player, controls as bits], in order, at most 750,000 numbers",
+        "Controls as bits: left 1, right 2, thrust 4, fire 8, blink 16"
+      ],
+      "compatibility": "Any change to game.ts, config.ts, dmath.ts or rng.ts changes what a recording replays to. Scores already on the table are not replayed again, and a game in progress during a deploy may be refused. The bit order is shared with online play (src/main.ts sends toBits over the lockstep).",
+      "definition": "games/shatterbelt/src/engine/replay.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "Recording"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "toBits"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "validRecording"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "MAX_STEPS"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/worker/.dev/contracts.json",
+          "entityId": "score-api"
+        }
+      ]
+    }
+  ]
+}

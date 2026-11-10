@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/delivery.schema.json",
+  "kind": "delivery",
+  "title": "Gambit delivery",
+  "folder": "games/chess",
+  "entities": [
+    {
+      "id": "production",
+      "title": "Production",
+      "summary": "The chess Worker at icelander.net/games/retro/chess*, with the static game, the GameRoom Durable Objects and the D1 database chess.",
+      "environment": "production",
+      "purpose": "The game players reach at icelander.net/games/retro/chess/.",
+      "deployedBy": "The Deploy workflow on every push to main that changes games/chess (or anything under .github/); by hand with Run workflow; or npm run deploy (npm test, npm run test:godot, npm run build, wrangler deploy) with Godot 4.7.2 and a Cloudflare token.",
+      "approvals": [
+        "A pull request: main accepts nothing else.",
+        "A reviewer on the repository's production environment, if one is set."
+      ],
+      "rollback": "No rollback is recorded. The Deploy workflow deploys only from main, so going back means merging a revert, which deploys it. A database change is not undone by this; it is applied by hand and written so the previous code keeps working (docs/database-migrations.md).",
+      "details": "The Worker's route runs ahead of the games hub's less specific icelander.net/games/*. The Durable Object class GameRoom came with migration rooms-v1, which must stay. One-time set-up (the database, the login service's keys in ACCOUNTS_JWKS, and optionally Resend) is in the README's Deploy section and the runbooks.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "routes"
+        },
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "migrations"
+        },
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "on"
+        },
+        {
+          "path": "games/chess/package.json",
+          "symbol": "scripts.deploy"
+        },
+        {
+          "path": "games/chess/README.md",
+          "symbol": "Deploy"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/.dev/pipeline.json",
+          "entityId": "deploy"
+        }
+      ]
+    }
+  ]
+}

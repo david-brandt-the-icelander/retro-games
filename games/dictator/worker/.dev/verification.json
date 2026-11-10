@@ -1,0 +1,110 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "High-score Worker verification",
+  "folder": "games/dictator/worker",
+  "entities": [
+    {
+      "id": "replay",
+      "title": "Replays",
+      "summary": "A reign replays from its seed and keys to the score the browser saw, and keys that don't play exactly one whole reign are refused.",
+      "subject": [
+        {
+          "path": "games/dictator/worker/.dev/feature.json",
+          "entityId": "unfakeable-scores"
+        }
+      ],
+      "criteria": [
+        "200 recorded reigns replay to the same score, months and fate",
+        "One key too few or too many is refused; another seed fails or scores its own reign"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/scores.test.ts",
+          "symbol": "a replay from the seed and the keys gives the same score",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/scores.test.ts",
+          "symbol": "a replay is refused when the keys don't play exactly one whole reign",
+          "command": "npm test"
+        }
+      ],
+      "details": "submitScore's own refusals (a bad id, keys or name; an unknown, used or expired seed) and the claim of the seed have no automated check."
+    },
+    {
+      "id": "scores-page",
+      "title": "The scores page",
+      "summary": "The web page lists reigns, escapes names and carries the site's footer.",
+      "subject": [
+        {
+          "path": "games/dictator/worker/.dev/feature.json",
+          "entityId": "public-scores-page"
+        }
+      ],
+      "criteria": [
+        "Each reign's rank, name, score, months and fate are listed",
+        "Names are escaped",
+        "The site's footer links are there",
+        "An empty table says so"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/scores.test.ts",
+          "symbol": "the high-score web page lists the reigns, escapes names, and carries the site's footer",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "sign-in",
+      "title": "Sign-in",
+      "summary": "The page and the score API need a sign-in.",
+      "subject": [
+        {
+          "path": "games/dictator/worker/.dev/capability.json",
+          "entityId": "signed-in-page"
+        },
+        {
+          "path": "games/dictator/.dev/requirements.json",
+          "entityId": "sign-in"
+        }
+      ],
+      "criteria": [
+        "Someone signed out is sent to sign in, and back",
+        "The page is served privately to anyone signed in",
+        "A new game or a score needs a sign-in, and an unreachable login service counts as signed out"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/sign-in.test.ts",
+          "symbol": "sign-in: the game's page sends someone signed out to sign in, and back",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/sign-in.test.ts",
+          "symbol": "sign-in: the page is served to anyone signed in, privately",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/sign-in.test.ts",
+          "symbol": "sign-in: a new game or a score needs a sign-in; the login service out of reach is signed out",
+          "command": "npm test"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/dictator/test/.dev/backlog.json",
+          "entityId": "vendored-sign-in-check"
+        }
+      ]
+    }
+  ]
+}

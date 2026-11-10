@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Text backlog",
+  "folder": "games/lodestar/src/presentation/text",
+  "entities": [
+    {
+      "id": "credit-line",
+      "title": "Fill in the credit line before release",
+      "summary": "The credit line still holds placeholders for the original's title, year, author and publisher.",
+      "type": "task",
+      "acceptanceCriteria": [
+        "CREDIT names the original without placeholders, in the release build only, as the GDD says"
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/lodestar/src/presentation/text/words.gd",
+        "description": "The comment on CREDIT: the owner fills in the placeholders before release (GDD § 1)."
+      },
+      "status": "open",
+      "owner": "the owner",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/text/words.gd",
+          "symbol": "CREDIT"
+        },
+        {
+          "path": "games/lodestar/docs/GDD.md",
+          "symbol": "1. Identity"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Ship rig references",
+  "folder": "games/lodestar/src/presentation/ships",
+  "entities": [
+    {
+      "id": "gltf",
+      "title": "glTF 2.0",
+      "summary": "The ship model format.",
+      "relevance": "Rig data travels in each node's extras, which Godot imports as metadata.",
+      "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/ships/ship_import.gd",
+          "symbol": "extras"
+        }
+      ]
+    }
+  ]
+}

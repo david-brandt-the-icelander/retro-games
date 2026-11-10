@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Chess rules (GDScript)",
+  "folder": "games/chess/godot/chess",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Chess rules (GDScript)",
+      "summary": "The rules of chess for the board in the game: positions, legal moves, SAN, check, mate and draws.",
+      "purpose": "The global class Chess: positions as 64 squares, moves packed into ints, legal move generation, UCI and SAN, and Chess.Game, a game as its UCI moves with every position and the result the board decides. No scene tree, no I/O.",
+      "boundaries": [
+        "The server judges online games with its own rules (shared/rules.ts on chess.js); this folder decides only what the client shows and lets the player try.",
+        "Draws by agreement, resignation and the like are the game screen's and the server's; Chess.Game only knows what the board decides."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.Game"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.legal_moves"
+        }
+      ]
+    }
+  ]
+}

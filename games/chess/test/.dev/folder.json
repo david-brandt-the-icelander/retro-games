@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "TypeScript tests",
+  "folder": "games/chess/test",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "TypeScript tests",
+      "summary": "The node:test suites for the shared rules, the Worker's game actions, the page bridge's engine commands and the whole API.",
+      "purpose": "Checks the server side without a browser or Cloudflare: build.mjs --test bundles each *.test.ts into dist-test/, and npm test runs them after the typecheck. fake-d1.ts runs the Worker's own SQL on node:sqlite in memory, with worker/schema.sql applied, and the API suite drives a RoomCore directly in place of the Durable Object.",
+      "boundaries": [
+        "What each suite checks is recorded in the verification files of the folders it checks: worker/, shared/ and bridge/.",
+        "The GDScript tests are in godot/tests/ and run with npm run test:godot."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/build.mjs",
+          "symbol": "--test"
+        },
+        {
+          "path": "games/chess/package.json",
+          "symbol": "scripts.test"
+        },
+        {
+          "path": "games/chess/test/fake-d1.ts",
+          "symbol": "fakeD1"
+        },
+        {
+          "path": "games/chess/test/api.test.ts",
+          "symbol": "setup"
+        }
+      ]
+    }
+  ]
+}

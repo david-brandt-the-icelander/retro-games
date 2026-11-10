@@ -1,0 +1,604 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How combat is checked",
+  "folder": "games/lodestar/src/capabilities/combat",
+  "entities": [
+    {
+      "id": "contact",
+      "title": "Contact",
+      "summary": "The 11 tests in src/capabilities/combat/contact.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/.dev/capability.json",
+          "entityId": "combat"
+        }
+      ],
+      "criteria": [
+        "The station reports the docking box",
+        "A collision kills the ship and hurts the player",
+        "A collision behind hits the aft shield",
+        "Outside the box nothing touches",
+        "Missiles killed and exploding ships and bodies never touch",
+        "A canister below with the scoop is scooped by a byte",
+        "A full hold still destroys the canister",
+        "Drones and pods give their items without a draw",
+        "Without the scoop or from above a canister is rammed",
+        "A collision can kill",
+        "A failed docking kills fast and bumps slow"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "the_station_reports_the_docking_box",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "a_collision_kills_the_ship_and_hurts_the_player",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "a_collision_behind_hits_the_aft_shield",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "outside_the_box_nothing_touches",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "missiles_killed_and_exploding_ships_and_bodies_never_touch",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "a_canister_below_with_the_scoop_is_scooped_by_a_byte",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "a_full_hold_still_destroys_the_canister",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "drones_and_pods_give_their_items_without_a_draw",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "without_the_scoop_or_from_above_a_canister_is_rammed",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "a_collision_can_kill",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "a_failed_docking_kills_fast_and_bumps_slow",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "countermeasures",
+      "title": "The player's E.C.M. and the area blast, and the end-of-tick laser and E.C.M. bookkeeping",
+      "summary": "The 6 tests in src/capabilities/combat/countermeasures.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/.dev/capability.json",
+          "entityId": "combat"
+        }
+      ],
+      "criteria": [
+        "The players ecm needs the unit and a quiet bubble",
+        "A pulse is active for 32 ticks of ai and drains 32 energy",
+        "The players ecm stops when energy is at its floor",
+        "A ships pulse drains nothing",
+        "The cooldown falls by five to zero",
+        "The area blast is used up and lasts four ticks"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/countermeasures.rs",
+          "symbol": "the_players_ecm_needs_the_unit_and_a_quiet_bubble",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/countermeasures.rs",
+          "symbol": "a_pulse_is_active_for_32_ticks_of_ai_and_drains_32_energy",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/countermeasures.rs",
+          "symbol": "the_players_ecm_stops_when_energy_is_at_its_floor",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/countermeasures.rs",
+          "symbol": "a_ships_pulse_drains_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/countermeasures.rs",
+          "symbol": "the_cooldown_falls_by_five_to_zero",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/countermeasures.rs",
+          "symbol": "the_area_blast_is_used_up_and_lasts_four_ticks",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "damage",
+      "title": "Damage to the player",
+      "summary": "The 7 tests in src/capabilities/combat/damage.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/.dev/capability.json",
+          "entityId": "combat"
+        }
+      ],
+      "criteria": [
+        "The shield facing the attacker takes it",
+        "Overflow reaches the energy bank and runs the loss check",
+        "Energy reaching zero kills without a draw",
+        "A roll with the top bit set or x of 22 or more destroys nothing",
+        "A showing message spares the cargo but the pair is drawn",
+        "X names a goods stack",
+        "X 17 to 21 names equipment"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/damage.rs",
+          "symbol": "the_shield_facing_the_attacker_takes_it",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/damage.rs",
+          "symbol": "overflow_reaches_the_energy_bank_and_runs_the_loss_check",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/damage.rs",
+          "symbol": "energy_reaching_zero_kills_without_a_draw",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/damage.rs",
+          "symbol": "a_roll_with_the_top_bit_set_or_x_of_22_or_more_destroys_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/damage.rs",
+          "symbol": "a_showing_message_spares_the_cargo_but_the_pair_is_drawn",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/damage.rs",
+          "symbol": "x_names_a_goods_stack",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/damage.rs",
+          "symbol": "x_17_to_21_names_equipment",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "explosion",
+      "title": "Explosions",
+      "summary": "The 3 tests in src/capabilities/combat/explosion.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/.dev/capability.json",
+          "entityId": "combat"
+        }
+      ],
+      "criteria": [
+        "The start clears killed and firing and draws four seeds",
+        "An explosion lasts sixty ticks counting the start",
+        "Nothing happens to an object not exploding"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/explosion.rs",
+          "symbol": "the_start_clears_killed_and_firing_and_draws_four_seeds",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/explosion.rs",
+          "symbol": "an_explosion_lasts_sixty_ticks_counting_the_start",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/explosion.rs",
+          "symbol": "nothing_happens_to_an_object_not_exploding",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "kills",
+      "title": "Kills, bounties and the legal status",
+      "summary": "The 6 tests in src/capabilities/combat/kills.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/.dev/capability.json",
+          "entityId": "combat"
+        }
+      ],
+      "criteria": [
+        "Kills wrap and every 256th is praised",
+        "A bounty shows the new cash",
+        "A bounty due while a message shows is lost",
+        "A zero bounty shows nothing and blocks nothing",
+        "No bounty in misjump space",
+        "Legal status changes"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/kills.rs",
+          "symbol": "kills_wrap_and_every_256th_is_praised",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/kills.rs",
+          "symbol": "a_bounty_shows_the_new_cash",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/kills.rs",
+          "symbol": "a_bounty_due_while_a_message_shows_is_lost",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/kills.rs",
+          "symbol": "a_zero_bounty_shows_nothing_and_blocks_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/kills.rs",
+          "symbol": "no_bounty_in_misjump_space",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/kills.rs",
+          "symbol": "legal_status_changes",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "lasers",
+      "title": "The player's lasers",
+      "summary": "The 17 tests in src/capabilities/combat/lasers.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/.dev/capability.json",
+          "entityId": "combat"
+        }
+      ],
+      "criteria": [
+        "A pulse laser fires draws two bytes heats drains and cools down",
+        "A pulse laser fires every second tick and a beam every tick",
+        "The beam lasers power drops its top bit",
+        "Each condition stops the laser without a draw",
+        "The hottest shot and the energy floor",
+        "The mount frames",
+        "The sights are a cylinder clipped to a square",
+        "Exploding ships planets and the sun are never in the sights",
+        "The players own missile starts in the front sights",
+        "No shot no hit",
+        "A hit takes fifteen and angers",
+        "The station turns hostile at zero but is not destroyed",
+        "A kill of types 1 to 7 rolls for canisters and counts",
+        "A low roll drops nothing",
+        "Canister launches stop silently when the bubble fills",
+        "Light objects shot down give no kill and no draw",
+        "A killed ship hit again to zero counts again"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "a_pulse_laser_fires_draws_two_bytes_heats_drains_and_cools_down",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "a_pulse_laser_fires_every_second_tick_and_a_beam_every_tick",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "the_beam_lasers_power_drops_its_top_bit",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "each_condition_stops_the_laser_without_a_draw",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "the_hottest_shot_and_the_energy_floor",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "the_mount_frames",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "the_sights_are_a_cylinder_clipped_to_a_square",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "exploding_ships_planets_and_the_sun_are_never_in_the_sights",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "the_players_own_missile_starts_in_the_front_sights",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "no_shot_no_hit",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "a_hit_takes_fifteen_and_angers",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "the_station_turns_hostile_at_zero_but_is_not_destroyed",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "a_kill_of_types_1_to_7_rolls_for_canisters_and_counts",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "a_low_roll_drops_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "canister_launches_stop_silently_when_the_bubble_fills",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "light_objects_shot_down_give_no_kill_and_no_draw",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "a_killed_ship_hit_again_to_zero_counts_again",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "missiles",
+      "title": "The player's missiles",
+      "summary": "The 8 tests in src/capabilities/combat/missiles.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/.dev/capability.json",
+          "entityId": "combat"
+        }
+      ],
+      "criteria": [
+        "Arming needs a missile and no lock",
+        "Unarming needs a missile",
+        "An armed missile locks the first ship in the active mounts sights",
+        "Firing launches ahead and angers the target",
+        "Firing without a lock does nothing",
+        "A full bubble jams and keeps everything",
+        "A removal retargets missiles and drops or moves the lock",
+        "The station replacement moves only the lock"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "arming_needs_a_missile_and_no_lock",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "unarming_needs_a_missile",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "an_armed_missile_locks_the_first_ship_in_the_active_mounts_sights",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "firing_launches_ahead_and_angers_the_target",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "firing_without_a_lock_does_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "a_full_bubble_jams_and_keeps_everything",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "a_removal_retargets_missiles_and_drops_or_moves_the_lock",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "the_station_replacement_moves_only_the_lock",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "steps",
+      "title": "The combat steps of processing one object in the slot loop, one function per step, for the flight tick to call in order",
+      "summary": "The 10 tests in src/capabilities/combat/steps.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/.dev/capability.json",
+          "entityId": "combat"
+        }
+      ],
+      "criteria": [
+        "The area blast kills everything but the station and bodies",
+        "A killed ship starts exploding once",
+        "The ai step applies the hit and reports a death",
+        "A destroyed missile counts a kill after its damage",
+        "Explosion progress marks the ship killed when spent",
+        "The sights lock then hit only in the flight view",
+        "One shot hits every ship in line",
+        "A finished explosion pays and leaves",
+        "A police explosion marks the record",
+        "A bounty lost to a showing message"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "the_area_blast_kills_everything_but_the_station_and_bodies",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "a_killed_ship_starts_exploding_once",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "the_ai_step_applies_the_hit_and_reports_a_death",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "a_destroyed_missile_counts_a_kill_after_its_damage",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "explosion_progress_marks_the_ship_killed_when_spent",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "the_sights_lock_then_hit_only_in_the_flight_view",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "one_shot_hits_every_ship_in_line",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "a_finished_explosion_pays_and_leaves",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "a_police_explosion_marks_the_record",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "a_bounty_lost_to_a_showing_message",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

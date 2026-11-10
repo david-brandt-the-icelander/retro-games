@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Text table",
+  "folder": "games/lodestar/src/presentation/text",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Text table",
+      "summary": "Every word the presentation shows, in one table.",
+      "purpose": "words.gd holds the title, menus, timed messages, notices, ranks, legal standings, ship names, tabs, refusals, epitaphs and the other labels, and the helpers that format money, tenths and names, so the words are checked for overlap with the original in one place.",
+      "boundaries": [
+        "GDD data the sim already holds (goods, equipment, systems, economies, governments, Reaches) comes from the bridge, not from here."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/text/words.gd",
+          "symbol": "MESSAGES"
+        },
+        {
+          "path": "games/lodestar/src/presentation/text/words.gd",
+          "symbol": "CREDIT"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/presentation/text/text.md",
+          "label": "The text table (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

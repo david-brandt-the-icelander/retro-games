@@ -1,0 +1,980 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-use-case/schema.json",
+  "kind": "use-case",
+  "title": "Godot client use cases",
+  "folder": "games/chess/godot/scripts",
+  "description": "What a player does in the game, step by step. The steps the Worker takes are in its operations.",
+  "sources": [
+    {
+      "path": "games/chess/godot/scripts/main.gd",
+      "symbol": "Main.go"
+    },
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen"
+    }
+  ],
+  "entities": [
+    {
+      "id": "invite-a-friend",
+      "name": "Invite a friend",
+      "description": "A player invites someone by email address to an online game.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._lobby"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Get a game going with a friend, wherever they are.",
+      "preconditions": [
+        "The player is signed in.",
+        "The Friends screen (the lobby) is showing."
+      ],
+      "postconditions": [
+        "An open invitation from the player to that address is stored, with the player's colour.",
+        "The player has a link to the invitation; the friend has it by email when email is set up."
+      ],
+      "flow": [
+        {
+          "id": "address",
+          "actor": "Player",
+          "action": "Types the friend's email address and chooses White, Random or Black.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._lobby"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "send",
+          "actor": "Player",
+          "action": "Presses Send invitation, or Enter.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._lobby"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "post",
+          "actor": "Game",
+          "action": "Posts the address and colour to api/challenges.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._lobby"
+            },
+            {
+              "path": "games/chess/godot/scripts/api.gd",
+              "symbol": "post_json"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "sent",
+          "actor": "Game",
+          "action": "Says whether the invitation was emailed or is waiting, shows the link with a Copy button, and refreshes the lobby, where it is listed under Waiting for an answer.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._lobby"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._fill_outgoing"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "share",
+          "actor": "Player",
+          "action": "Copies the link to send it, if they like.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._lobby"
+            },
+            {
+              "path": "games/chess/godot/scripts/api.gd",
+              "symbol": "copy"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "send",
+          "condition": "The field is empty or has no @.",
+          "outcome": "A red toast: \"That doesn't look like an email address.\"; nothing is sent.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._lobby"
+            }
+          ]
+        },
+        {
+          "atStep": "post",
+          "condition": "The server refuses: not an address, the player's own address, no colour, or 30 invitations in the last hour.",
+          "outcome": "The server's message in a red toast; nothing is stored.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._lobby"
+            },
+            {
+              "path": "games/chess/worker/api.ts",
+              "symbol": "createChallenge"
+            }
+          ]
+        },
+        {
+          "atStep": "share",
+          "condition": "The player cancels it later.",
+          "outcome": "Cancel under Waiting for an answer withdraws it.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._fill_outgoing"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._answer"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md",
+      "supportingActors": [
+        {
+          "name": "The invited friend",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    },
+    {
+      "id": "answer-an-invitation",
+      "name": "Answer an invitation",
+      "description": "The invited player accepts or declines, from the lobby or from the invitation's link.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._fill_incoming"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._answer"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._lobby"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Start the game a friend offered, or turn it down.",
+      "preconditions": [
+        "An open invitation is addressed to the player's email address.",
+        "The player is signed in with that address."
+      ],
+      "postconditions": [
+        "Accepted: an online game between the two exists, each is the other's contact, and the game is showing.",
+        "Declined: the invitation is closed and gone from both lobbies."
+      ],
+      "flow": [
+        {
+          "id": "open",
+          "actor": "Player",
+          "action": "Opens the game from the invitation's link (?challenge=ID), or goes to Friends.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._ready"
+            },
+            {
+              "path": "games/chess/godot/scripts/api.gd",
+              "symbol": "challenge_in_address"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "list",
+          "actor": "Game",
+          "action": "Shows the lobby, with the invitation under Invitations for you: who sent it, the colour the player gets and when.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._fill_incoming"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "accept",
+          "actor": "Player",
+          "action": "Presses Accept (or Decline).",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._fill_incoming"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "post",
+          "actor": "Game",
+          "action": "Posts api/challenges/{id}/accept (or decline).",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._answer"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "game",
+          "actor": "Game",
+          "action": "Opens the new game in online mode, live, with the notify sound; a decline rebuilds the lobby.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._answer"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._ready"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "list",
+          "condition": "The link's invitation is not among the player's open ones and was already accepted.",
+          "outcome": "The game it started opens.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._lobby"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._open_game"
+            }
+          ]
+        },
+        {
+          "atStep": "list",
+          "condition": "The link's invitation was declined or cancelled.",
+          "outcome": "A toast says so.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._lobby"
+            }
+          ]
+        },
+        {
+          "atStep": "list",
+          "condition": "The link's invitation was sent to another address.",
+          "outcome": "A red toast names the address the player is signed in with.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._lobby"
+            },
+            {
+              "path": "games/chess/worker/api.ts",
+              "symbol": "handleApi"
+            }
+          ]
+        },
+        {
+          "atStep": "post",
+          "condition": "Someone answered it first (409).",
+          "outcome": "The server's message in a red toast; the lobby is rebuilt.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._answer"
+            },
+            {
+              "path": "games/chess/worker/db.ts",
+              "symbol": "closeChallenge"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md",
+      "supportingActors": [
+        {
+          "name": "The player who sent it",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    },
+    {
+      "id": "play-online",
+      "name": "Play a friend online",
+      "description": "Two players play a game at their own pace, with chat, offers of a draw and resignation, until it ends.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._on_board_move"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._act"
+        },
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "Live"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Play the game through, over minutes or days.",
+      "preconditions": [
+        "The player is signed in and plays in the game.",
+        "The game is in play."
+      ],
+      "postconditions": [
+        "Every move, message, offer and the result are in the game's transcript on the server, with their times.",
+        "The finished game is in both players' history and counts in their record against each other."
+      ],
+      "flow": [
+        {
+          "id": "open",
+          "actor": "Player",
+          "action": "Opens the game from Your games in the lobby, or from a contact.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._fill_active"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._open_game"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "connect",
+          "actor": "Game",
+          "action": "Shows the game with the board facing the player's side, and keeps a live connection to it.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._ready"
+            },
+            {
+              "path": "games/chess/godot/scripts/api.gd",
+              "symbol": "Live._open"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "move",
+          "actor": "Player",
+          "action": "On their turn, clicks or drags a piece to a legal square, choosing a piece when a pawn promotes.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/board3d.gd",
+              "symbol": "Board3D._down"
+            },
+            {
+              "path": "games/chess/godot/scripts/board3d.gd",
+              "symbol": "Board3D._up"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._on_promotion"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "send",
+          "actor": "Game",
+          "action": "Shows the move at once and posts it to api/games/{id}/action with the number of moves it was made after.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._on_board_move"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._act"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "update",
+          "actor": "Game",
+          "action": "Takes the server's game, from the answer or the live connection, and shows the opponent's moves, messages and offers as they come.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._apply"
+            },
+            {
+              "path": "games/chess/godot/scripts/api.gd",
+              "symbol": "Live._process"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "talk",
+          "actor": "Player",
+          "action": "Sends messages, offers a draw, answers an offer, or resigns (pressed twice).",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._send_chat"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._update_status"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._update_actions"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "end",
+          "actor": "Game",
+          "action": "When the game ends, says how, plays the win, loss or draw sound and offers Rematch.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._update_status"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._end_sound"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._update_actions"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "move",
+          "condition": "A move the client's rules don't allow.",
+          "outcome": "The illegal sound; nothing is sent.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._on_board_move"
+            }
+          ]
+        },
+        {
+          "atStep": "send",
+          "condition": "The server refuses the move (it changed meanwhile, or is not legal there).",
+          "outcome": "A red toast; the board is put back to the server's game.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._act"
+            }
+          ]
+        },
+        {
+          "atStep": "update",
+          "condition": "The connection drops.",
+          "outcome": "Reconnecting… shows until it is back; the server sends the whole game again on reconnecting.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._ready"
+            },
+            {
+              "path": "games/chess/godot/scripts/api.gd",
+              "symbol": "Live._process"
+            }
+          ]
+        },
+        {
+          "atStep": "talk",
+          "condition": "The opponent answers a draw offer with a move.",
+          "outcome": "The offer is gone; the game goes on.",
+          "sources": [
+            {
+              "path": "games/chess/worker/actions.ts",
+              "symbol": "applyAction"
+            }
+          ]
+        },
+        {
+          "atStep": "end",
+          "condition": "The player presses Rematch.",
+          "outcome": "An invitation to the opponent with the colours swapped; the lobby shows.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._rematch"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md",
+      "supportingActors": [
+        {
+          "name": "The opponent",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    },
+    {
+      "id": "play-the-computer",
+      "name": "Play the computer",
+      "description": "A player plays Stockfish at a chosen strength; the game is kept on the device and goes to the history when it ends.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._setup"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._computer_turn"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main.finish_computer"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Play a game against the computer at a strength that suits them, and keep it.",
+      "preconditions": [
+        "The game runs in a browser (Stockfish runs in the page)."
+      ],
+      "postconditions": [
+        "The finished game is in the player's history: on the server, checked, when signed in; on the device otherwise.",
+        "user://computer.json holds the finished game, so Continue is no longer offered."
+      ],
+      "flow": [
+        {
+          "id": "choose",
+          "actor": "Player",
+          "action": "Picks Play the computer, a strength from 1 to 8 and White, Random or Black, and starts.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._home"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._setup"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "new",
+          "actor": "Game",
+          "action": "Makes the game, saves it on the device and asks Stockfish for a move whenever it is the computer's turn.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._new_computer_game"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._computer_turn"
+            },
+            {
+              "path": "games/chess/godot/scripts/api.gd",
+              "symbol": "engine_move"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "move",
+          "actor": "Player",
+          "action": "Plays a move; may Take back their last move and the computer's answer.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._computer_play"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._take_back"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "save",
+          "actor": "Game",
+          "action": "Saves the game on the device after every move.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._computer_play"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main.save_computer"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "end",
+          "actor": "Game",
+          "action": "When the board ends the game, or the player resigns, adds the end to the transcript and plays the result's sound.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._computer_end"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "keep",
+          "actor": "Game",
+          "action": "Posts the moves, their times, the strength, the colour and whether the player resigned to api/games/computer, or keeps the game on the device when signed out.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main.finish_computer"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "choose",
+          "condition": "A game against the computer is saved in play.",
+          "outcome": "Continue your game against level N on the title screen resumes it.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._home"
+            }
+          ]
+        },
+        {
+          "atStep": "new",
+          "condition": "Stockfish answers nothing (no engine, as on the desktop).",
+          "outcome": "The status says the computer opponent needs the web version; Take back and Resign still work.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._computer_turn"
+            }
+          ]
+        },
+        {
+          "atStep": "keep",
+          "condition": "The server refuses the game.",
+          "outcome": "A red toast: \"Couldn't save this game to your history: …\".",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main.finish_computer"
+            },
+            {
+              "path": "games/chess/worker/api.ts",
+              "symbol": "saveComputerGame"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    },
+    {
+      "id": "replay-a-game",
+      "name": "Replay a finished game",
+      "description": "A player opens a finished game from their history and watches it again.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._history"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._seek"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._toggle_play"
+        }
+      ],
+      "actor": "Player",
+      "goal": "See how a past game went, move by move and message by message.",
+      "preconditions": [
+        "The player has finished games: on the server when signed in, on the device otherwise."
+      ],
+      "postconditions": [
+        "Nothing changes: a replay only reads the game."
+      ],
+      "flow": [
+        {
+          "id": "open",
+          "actor": "Player",
+          "action": "Opens History, and a game in it (More loads older games, 30 at a time).",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._history"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._game_row"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "load",
+          "actor": "Game",
+          "action": "Loads the game with its transcript and shows the start position.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._open_game"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._ready"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "watch",
+          "actor": "Player",
+          "action": "Presses Play, at 1×, 4× or 16×; or steps with Back and Next, drags the slider, or clicks a move.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._toggle_play"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._set_speed"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._stop_and_seek"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._jump_to_ply"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "show",
+          "actor": "Game",
+          "action": "Shows each transcript entry in turn, waiting as long as the players did, sped up, between 0.35 and 3 seconds.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._process"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._wait_before"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "load",
+          "condition": "A game kept on the device (id local-…).",
+          "outcome": "It opens as a replay straight away, without asking the server.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._game_row"
+            }
+          ]
+        },
+        {
+          "atStep": "load",
+          "condition": "The game is not one of the player's.",
+          "outcome": "A red toast: \"No such game.\"",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._open_game"
+            },
+            {
+              "path": "games/chess/worker/api.ts",
+              "symbol": "handleApi"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    },
+    {
+      "id": "visit-a-contact",
+      "name": "Look up a contact",
+      "description": "A player opens someone they have played to see their record and games together, and invites them again or removes them.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._contact"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._load_contact_games"
+        }
+      ],
+      "actor": "Player",
+      "goal": "See how they do against a friend, and play them again.",
+      "preconditions": [
+        "The player is signed in.",
+        "They have played that person: each becomes the other's contact when an invitation between them is accepted."
+      ],
+      "postconditions": [
+        "Invite: a new open invitation to the contact, colour random.",
+        "Remove: the contact is gone from the player's list; the games stay."
+      ],
+      "flow": [
+        {
+          "id": "open",
+          "actor": "Player",
+          "action": "Opens a contact from the Contacts list in the lobby.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._fill_contacts"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "show",
+          "actor": "Game",
+          "action": "Shows their name, address and record, and loads every online game between the two.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._contact"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._load_contact_games"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "choose",
+          "actor": "Player",
+          "action": "Opens a game, presses Invite to a game, or Remove from contacts (pressed twice).",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._contact"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._game_row"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "choose",
+          "condition": "The server refuses the invitation.",
+          "outcome": "Its message in a red toast.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._contact"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/operation.json",
+      "relationship": "The server operations the steps call."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/chess/bridge",
+      "path": "games/chess/bridge/.dev/operation.json",
+      "relationship": "The page operations playing the computer and answering a link use."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/feature.json",
+      "relationship": "The client features these use cases exercise."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/feature.json",
+      "relationship": "The server features they rely on."
+    },
+    {
+      "kind": "user-journey",
+      "folder": "games/chess",
+      "path": "games/chess/.dev/user-journey.json",
+      "relationship": "The journeys these use cases are part of."
+    },
+    {
+      "kind": "state",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/Main.state-diagram.json",
+      "relationship": "The screens they move between."
+    }
+  ]
+}

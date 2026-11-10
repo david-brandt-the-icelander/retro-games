@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Tests backlog",
+  "folder": "games/dictator/test",
+  "entities": [
+    {
+      "id": "vendored-sign-in-check",
+      "title": "Check that the vendored sign-in library is unedited",
+      "summary": "Samosa's Worker bundles vendor/icelander-auth, but its tests never call checkVendored(), which the library asks every repository's tests to call.",
+      "type": "debt",
+      "compromise": "test/sign-in.test.ts stands in for the login service and checks the Worker's routes, but not that the library it imports matches vendor/icelander-auth/STAMP.json. Only Rally's sign-in test calls checkVendored().",
+      "cost": "An edit to vendor/icelander-auth made while working on Samosa passes Samosa's tests and is deployed with its Worker; only a run of Rally's tests would notice.",
+      "acceptanceCriteria": [
+        "npm test in games/dictator fails when a file in vendor/icelander-auth no longer matches STAMP.json."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "vendor/icelander-auth/check.mjs",
+        "description": "The file's opening comment: a repository's tests call checkVendored()."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "vendor/icelander-auth/check.mjs",
+          "symbol": "checkVendored"
+        },
+        {
+          "path": "games/dictator/test/sign-in.test.ts",
+          "symbol": "sign-in: a new game or a score needs a sign-in; the login service out of reach is signed out"
+        },
+        {
+          "path": "games/rally/test/sign-in.test.ts",
+          "symbol": "checkVendored"
+        }
+      ]
+    }
+  ]
+}

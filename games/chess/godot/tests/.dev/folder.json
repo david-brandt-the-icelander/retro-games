@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "GDScript tests",
+  "folder": "games/chess/godot/tests",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "GDScript tests",
+      "summary": "Headless Godot scripts: the rules against perft counts, the text formats, and a render of every piece.",
+      "purpose": "test_rules.gd and test_formats.gd run as SceneTree scripts (npm run test:godot) and quit with status 1 on any failure. pieces_shot.gd renders the piece models in a row for docs/screens/23-pieces.png; it is a tool for looking, not a test that fails.",
+      "boundaries": [
+        "The Web export leaves this folder out (exclude_filter in export_presets.cfg).",
+        "What the two tests check is recorded in godot/chess/.dev/verification.json and godot/scripts/.dev/verification.json."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/package.json",
+          "symbol": "scripts.test:godot"
+        },
+        {
+          "path": "games/chess/godot/tests/test_rules.gd",
+          "symbol": "_init"
+        },
+        {
+          "path": "games/chess/godot/tests/test_formats.gd",
+          "symbol": "_init"
+        },
+        {
+          "path": "games/chess/godot/tests/pieces_shot.gd",
+          "symbol": "_init"
+        },
+        {
+          "path": "games/chess/godot/export_presets.cfg",
+          "symbol": "exclude_filter"
+        }
+      ]
+    }
+  ]
+}

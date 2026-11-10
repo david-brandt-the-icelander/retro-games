@@ -69,5 +69,10 @@ jobs:
       - if: inputs.game == 'chess'
         run: npm run test:godot
       - run: npm run build
+      - name: No .dev files in the build
+        # .dev/ folders document the code (AGENTS.md); they must never be served with a game.
+        run: |
+          found=$(find dist -name .dev)
+          if [ -n "$found" ]; then echo "::error::The build would ship .dev folders: $found"; exit 1; fi
       - if: inputs.deploy
         run: npx wrangler deploy

@@ -1,0 +1,119 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "Engine operations",
+  "folder": "games/hivestorm/src/engine",
+  "description": "The functions through which the page and the Worker drive a game.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/engine/game.ts",
+      "symbol": "Game.step"
+    },
+    {
+      "path": "games/hivestorm/src/engine/replay.ts",
+      "symbol": "replay"
+    }
+  ],
+  "entities": [
+    {
+      "id": "new-game",
+      "name": "Create a game",
+      "description": "A game on its title screen, holding the seed the next game will start from.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/hivestorm/src/engine/game.ts",
+        "symbol": "Game"
+      },
+      "action": "query",
+      "transport": "constructor (new Game(seed)); the page then sets nextSeed to a seed the server issued",
+      "authorization": "None: an in-process class. The page (src/main.ts) and replay() construct it.",
+      "result": "A Game in the attract phase with a full, swaying hive; nextSeed is the seed given.",
+      "failures": []
+    },
+    {
+      "id": "step",
+      "name": "Step a game",
+      "description": "Advances the game by one frame (1/60 s) with one frame's Input.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.step"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/hivestorm/src/engine/game.ts",
+        "symbol": "Game.step"
+      },
+      "action": "command",
+      "transport": "method of Game",
+      "authorization": "None: an in-process method. The page (src/main.ts) and replay() call it.",
+      "result": "The game is changed in place; the frame's events (start, ready, shoot, hit, queen, dive, die, extra, wave, over, pause) are returned for the sound. On the title screen, start1 or start2 starts a one- or two-player game from nextSeed.",
+      "failures": []
+    },
+    {
+      "id": "record",
+      "name": "Record a frame's controls",
+      "description": "Adds one frame's Input to a game's recording.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "Recorder.push"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/hivestorm/src/engine/replay.ts",
+        "symbol": "Recorder.push"
+      },
+      "action": "command",
+      "transport": "method of Recorder",
+      "authorization": "None: an in-process method. The page (src/main.ts) calls it on every frame of a game.",
+      "result": "The Input is packed into six bits (toBits); a frame like the last lengthens the last run, any other starts a new [bits, 1] run. The frame count grows by one.",
+      "failures": []
+    },
+    {
+      "id": "replay",
+      "name": "Replay a recorded game",
+      "description": "Plays a recorded game again from its seed, as the server does before listing a score.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "replay"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/hivestorm/src/engine/replay.ts",
+        "symbol": "replay"
+      },
+      "action": "query",
+      "transport": "exported function",
+      "authorization": "None: an in-process function. The Worker (worker/index.ts, through worker/scores.ts) and the tests call it.",
+      "result": "How many played, each player's final score and wave, and the number of frames.",
+      "failures": [
+        "null when the runs are not a non-empty, even-length array of at most MAX_RUNS pairs.",
+        "null when a run's bits are not a whole number from 0 to 63, or its count is not a whole number of at least 1.",
+        "null when the runs add up to more than MAX_FRAMES (two hours).",
+        "null when the first frame does not start a game from the title screen.",
+        "null when frames are left over after the game ended, or the game has not ended by the last frame."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/hivestorm/src/engine",
+      "path": "games/hivestorm/src/engine/.dev/capability.json",
+      "relationship": "The capability these operations expose."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/hivestorm/src/engine",
+      "path": "games/hivestorm/src/engine/.dev/feature.json",
+      "relationship": "The features these operations carry out."
+    }
+  ]
+}

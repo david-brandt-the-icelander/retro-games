@@ -1,0 +1,240 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Engine verification",
+  "folder": "games/hivestorm/src/engine",
+  "entities": [
+    {
+      "id": "hive-and-ship",
+      "title": "The hive, the ship and its shot",
+      "summary": "The hive's shape and sway, the start of a game, the ship's limits and its one shot.",
+      "subject": [
+        {
+          "path": "games/hivestorm/src/engine/.dev/feature.json",
+          "entityId": "swaying-hive"
+        },
+        {
+          "path": "games/hivestorm/src/engine/.dev/feature.json",
+          "entityId": "ship"
+        }
+      ],
+      "criteria": [
+        "37 aliens in five rows, all on screen at either end of the sway",
+        "The title screen waits; 1 starts a one-player game and 2 a two-player game",
+        "Only one shot is in the air at a time",
+        "The ship stops at the screen's edges",
+        "Pause stops the game and the next press resumes it"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "the hive has 37 aliens in five rows, all on screen at either end of its sway",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "the title screen waits; 1 starts a one-player game, 2 a two-player game",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "only one shot is in the air at a time",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "the ship moves and stops at the screen edges",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "pause stops the game and P resumes it",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "scoring",
+      "title": "Scoring, waves and the extra ship",
+      "summary": "Points at home and diving, the queen's bonus, rams, the next wave and the one extra ship.",
+      "subject": [
+        {
+          "path": "games/hivestorm/src/engine/.dev/feature.json",
+          "entityId": "scoring"
+        },
+        {
+          "path": "games/hivestorm/src/engine/.dev/feature.json",
+          "entityId": "waves"
+        }
+      ],
+      "criteria": [
+        "An alien scores its hive value at home and more diving",
+        "A diving queen is worth 200, 400 or 800 by how many of her escorts fell first",
+        "A diving alien that rams the ship destroys both",
+        "Clearing the hive brings the next wave and a full hive",
+        "An extra ship comes once, at 7,000"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "aliens score their hive value at home and more when diving",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "a diving queen is worth 200, 400 or 800 by how many of her escorts fell first",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "a diving alien that rams the ship destroys both",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "clearing the hive brings the next wave",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "an extra ship comes once, at 7000",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "dives",
+      "title": "Dives",
+      "summary": "Aliens go through every flight mode, and divers fire.",
+      "subject": [
+        {
+          "path": "games/hivestorm/src/engine/.dev/feature.json",
+          "entityId": "dives"
+        }
+      ],
+      "criteria": [
+        "Aliens are seen at home, peeling off, diving and returning",
+        "Divers fire"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "aliens peel off, dive, fire and come home",
+          "command": "npm test"
+        }
+      ],
+      "notChecked": [
+        "The swarm (five or fewer left) has no test of its own.",
+        "How often aliens dive, how many at once and how fast, per wave."
+      ]
+    },
+    {
+      "id": "turns",
+      "title": "Game over and turns",
+      "summary": "One player's game ends with their last ship; two players take turns and the one still in plays on.",
+      "subject": [
+        {
+          "path": "games/hivestorm/src/engine/.dev/feature.json",
+          "entityId": "turns"
+        },
+        {
+          "path": "games/hivestorm/src/engine/.dev/Game.state-diagram.json"
+        }
+      ],
+      "criteria": [
+        "One player: losing every ship ends the game, keeps the high score and returns to the title",
+        "Two players take turns, each with their own hive, score and ships",
+        "When one is out, the other plays on alone until they are out too",
+        "A long game of random play never breaks: positions stay finite, lives and scores never go negative"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "one player: losing every ship ends the game, keeps the high score and returns to the title",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "two players take turns, each with their own hive, score and ships",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "two players: when one is out, the other plays on alone until they are out too",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/game.test.ts",
+          "symbol": "a long game of random play never breaks",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "replay",
+      "title": "Recording and replay",
+      "summary": "A recorded game replays to the same scores, only whole games replay, and the trigonometry is exact enough.",
+      "subject": [
+        {
+          "path": "games/hivestorm/src/engine/.dev/feature.json",
+          "entityId": "replayable-game"
+        },
+        {
+          "path": "games/hivestorm/src/engine/.dev/contracts.json",
+          "entityId": "recording"
+        }
+      ],
+      "criteria": [
+        "dsin and dcos agree with Math.sin and Math.cos to 1e-6",
+        "Every six-bit input packs and unpacks to itself, and runs merge equal frames",
+        "A replay from the seed and the controls gives the same scores, for one and two players, with pauses, whatever the title screen did first",
+        "A replay is refused one frame short, with a frame left over, without a start on the first frame, with fractional counts, unknown buttons or over the limit"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/scores.test.ts",
+          "symbol": "our sine and cosine agree with Math's to 1e-6",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/scores.test.ts",
+          "symbol": "inputs pack into bits and back",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/scores.test.ts",
+          "symbol": "a replay from the seed and the controls gives the same scores, for one and two players",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/scores.test.ts",
+          "symbol": "a replay is refused unless the controls play exactly one whole game",
+          "command": "npm test"
+        }
+      ],
+      "notChecked": [
+        "That two different JavaScript engines replay the same game: the tests run in Node only.",
+        "How long a replay takes."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Presentation bridge (lodestar-bridge)",
+  "folder": "games/lodestar/src/presentation/bridge",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Presentation bridge (lodestar-bridge)",
+      "summary": "SimHost and the readouts: the scenes' one door into the sim.",
+      "purpose": "A workspace crate that runs FlyInSystem at 12 Hz under Godot's frame loop, turns the scenes' presses and the input map's held actions into the tick's input, converts the sim's state into Godot types for the scenes and emits the tick's events as signals. views.rs works the readouts out in plain Rust so they are tested without Godot.",
+      "boundaries": [
+        "Formatting and conversion only: no rule lives here.",
+        "Pilot records go to user://pilots through lodestar-infrastructure's PilotFiles."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "objects"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/Cargo.toml",
+          "symbol": "dependencies"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/bridge.md",
+          "label": "The presentation bridge (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

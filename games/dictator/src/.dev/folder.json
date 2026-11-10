@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Browser game",
+  "folder": "games/dictator/src",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Browser game",
+      "summary": "Everything that runs in the player's browser, and the name rules the Worker shares.",
+      "purpose": "main.ts wires the engine, the painters and the platform layer together: it runs the title and its extras, presents each engine screen (its sound, animation, hold and key), logs every key for the replay, keeps the best rating and the sound setting, and offers the table after a reign. scores.ts is the browser's side of the high-score table; name.ts cleans names the same way here and on the server.",
+      "boundaries": [
+        "The rules live in engine/, the screens' look and text in ui/, the display, input and sound in zx/.",
+        "/games/me is the games hub's; the table's API is worker/'s."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "present"
+        },
+        {
+          "path": "games/dictator/src/scores.ts",
+          "symbol": "submitReign"
+        },
+        {
+          "path": "games/dictator/src/name.ts",
+          "symbol": "cleanName"
+        }
+      ]
+    }
+  ]
+}

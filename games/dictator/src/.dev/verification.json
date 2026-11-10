@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Browser game verification",
+  "folder": "games/dictator/src",
+  "entities": [
+    {
+      "id": "name-entry",
+      "title": "Names and name entry",
+      "summary": "Names are cleaned to what the font can draw, the entry types only its keys, and the keyboard drawn on screen is complete.",
+      "subject": [
+        {
+          "path": "games/dictator/src/.dev/feature.json",
+          "entityId": "arcade-name-entry"
+        },
+        {
+          "path": "games/dictator/src/.dev/contracts.json",
+          "entityId": "name-rules"
+        }
+      ],
+      "criteria": [
+        "A name is cleaned to what the game's font can draw, up to 12 characters",
+        "The entry types capitals, digits, dots, hyphens and spaces, and M is a letter there",
+        "A signed-in player's default is their email before the @, in capitals, all typeable",
+        "Every typeable character has a key on screen, and keys don't overlap",
+        "Letters sit over their underlines and the cursor under the next free slot"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/scores.test.ts",
+          "symbol": "a name is cleaned to what the game's font can draw, up to 12 characters",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/scores.test.ts",
+          "symbol": "name entry types capitals, digits, dots, hyphens and spaces; M is a letter there",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/scores.test.ts",
+          "symbol": "a signed-in player's default name is their email before the @, in capitals, all typeable",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/scores.test.ts",
+          "symbol": "the on-screen keyboard: every typeable character has a key, and keys don't overlap",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/scores.test.ts",
+          "symbol": "name entry: letters over their underlines, the cursor under the next free slot, keys keep their frames",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "in-the-browser",
+      "title": "Whole reigns in a real browser",
+      "summary": "The page, the keypad, the content policy and accessibility, checked by hand and with Playwright.",
+      "subject": [
+        {
+          "path": "games/dictator/src/.dev/feature.json",
+          "entityId": "keys-and-touch"
+        },
+        {
+          "path": "games/dictator/src/.dev/feature.json",
+          "entityId": "screen-reader"
+        }
+      ],
+      "criteria": [
+        "Full reigns on a desktop keyboard and on a phone in portrait and landscape, with no console errors and no page scroll",
+        "No content-policy violations during play",
+        "Live-region text, keyboard-only play, 44-pixel targets and flashing under 3 Hz"
+      ],
+      "checks": [
+        {
+          "type": "manual",
+          "description": "Under wrangler dev, play full reigns with Playwright on a desktop and a phone in both orientations, watching the console and securitypolicyviolation events (docs/TEST-PLAN.md rows 10 and 11)."
+        },
+        {
+          "type": "manual",
+          "description": "An accessibility pass: the live regions, keyboard-only play, the size of every touch target and the flash rate (docs/TEST-PLAN.md row 13)."
+        }
+      ]
+    }
+  ]
+}

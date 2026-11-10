@@ -1,0 +1,53 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Samosa backlog",
+  "folder": "games/dictator",
+  "entities": [
+    {
+      "id": "readme-out-of-date",
+      "title": "README and PLAN.md describe things the code no longer does",
+      "summary": "The README gives the old build folder, the old API path and several report offers a month; PLAN.md still calls the newsflash money quirk an open decision.",
+      "type": "defect",
+      "expected": "The README and PLAN.md say what the code and the owner's decisions say: the build goes into dist/games/retro/samosa/; the API is under /games/retro/samosa/api/; State Security offers its file once a month, at the month's end; the newsflash money quirk is switched off.",
+      "observed": "README, Develop: \"bundle into dist/retro/samosa/\". README, Deploy: the API is \"under /retro-games/samosa/api/\". README, How to play: \"Several times a month State Security offers you its file\". PLAN.md §4: the news money quirk \"stays as an open decision\".",
+      "acceptanceCriteria": [
+        "Each of the four statements matches build.mjs, worker/scores.ts, src/engine/flow.ts and docs/RULES.md §9.4."
+      ],
+      "origin": {
+        "kind": "review",
+        "by": "Documenting agent",
+        "date": "2026-11-10",
+        "description": "Found while reading the README and PLAN.md against the code for the .dev files."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/build.mjs",
+          "symbol": "BASE_PATH"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "BASE"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "month"
+        },
+        {
+          "path": "games/dictator/docs/RULES.md",
+          "symbol": "9.4 The last costed item (an original quirk, switched off in the remake)"
+        },
+        {
+          "path": "games/dictator/README.md",
+          "symbol": "How to play"
+        },
+        {
+          "path": "games/dictator/PLAN.md",
+          "symbol": "4. Dictator through the skill"
+        }
+      ]
+    }
+  ]
+}

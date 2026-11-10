@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "UI decisions",
+  "folder": "games/dictator/src/ui",
+  "entities": [
+    {
+      "id": "report-bars",
+      "title": "Bars on State Security's file",
+      "summary": "The report shows each popularity and strength as a bar beside its digit, in Samosa's own colours and layout.",
+      "status": "accepted",
+      "context": "The original's report showed values as bars. A bar for a 0–9 value is an idea, not expression, but the report's look must not resemble the original's.",
+      "decision": "Each value gets a bar of 0–9 units, 4 pixels each, after its digit: cyan for popularity, magenta for strength, on the dark file. The report never flashes and marks plots in words.",
+      "rationale": "Easier to read at a glance; only the idea of a bar is shared (docs/PROVENANCE.md).",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-06",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "POP_GAUGE"
+        },
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "gauge"
+        }
+      ]
+    },
+    {
+      "id": "dark-security",
+      "title": "State Security's screens are dark",
+      "summary": "The report and the report offer are white type on black paper.",
+      "status": "accepted",
+      "context": "Each office of the palace has its own colour family (ART-BIBLE §3).",
+      "decision": "State Security's screens use the dossier family: white on black, with a manila tab.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-06",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "dossier"
+        },
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "DOSSIER_BAND"
+        }
+      ]
+    }
+  ]
+}

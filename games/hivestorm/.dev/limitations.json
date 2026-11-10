@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/limitations.schema.json",
+  "kind": "limitations",
+  "title": "Hivestorm limitations",
+  "folder": "games/hivestorm",
+  "entities": [
+    {
+      "id": "no-shared-device",
+      "title": "No two players on one device",
+      "summary": "Two people play each other only online, each on their own device; the page has no way to start a two-player game.",
+      "impact": "A friend in the same room needs a second device.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/ui/input.ts",
+          "symbol": "Controls"
+        },
+        {
+          "path": "games/hivestorm/README.md",
+          "symbol": "Playing"
+        }
+      ]
+    },
+    {
+      "id": "online-no-pause",
+      "title": "Online games can't be paused",
+      "summary": "Pause presses never travel online, and hiding the tab does not pause an online game.",
+      "impact": "A player who looks away keeps the game going; a hidden tab makes the other player wait.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "pack"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "visibilitychange"
+        }
+      ]
+    },
+    {
+      "id": "two-players-online",
+      "title": "Two players online",
+      "summary": "An online game takes the two lowest slots in the room; a third browser in the match is left out of the start and keeps waiting.",
+      "impact": "A lobby game of three or more plays as two, and the others do not play.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "startOnline"
+        }
+      ]
+    },
+    {
+      "id": "offline-no-entry",
+      "title": "Games without a server seed can't be entered",
+      "summary": "A game that started before a seed arrived from the server still plays, but no name is asked for at the end, and the page does not say why.",
+      "impact": "A player whose connection drops, or who starts at once on a slow one, loses the chance to enter that game.",
+      "workaround": "Wait a moment on the title screen before pressing 1.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "offerTable"
+        }
+      ]
+    },
+    {
+      "id": "two-hours",
+      "title": "Two-hour replays",
+      "summary": "The server replays games of up to two hours, and seeds expire after 24 hours unused.",
+      "impact": "A longer game, or one submitted a day later, is refused.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "MAX_FRAMES"
+        },
+        {
+          "path": "games/hivestorm/worker/scores.ts",
+          "symbol": "SEED_LIFETIME_MS"
+        }
+      ]
+    },
+    {
+      "id": "tie-not-enough",
+      "title": "A tie with the tenth row isn't enough",
+      "summary": "The page offers the table only to a score that beats the tenth row of a full table.",
+      "impact": "A player who equals the tenth score is not asked for a name.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/scores.ts",
+          "symbol": "qualifies"
+        }
+      ]
+    },
+    {
+      "id": "ascii-names",
+      "title": "Plain names",
+      "summary": "Names are up to 12 plain characters; accents are dropped and a few letters spelled out (Þór becomes Thor).",
+      "impact": "Names in other scripts cannot be shown.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/name.ts",
+          "symbol": "cleanName"
+        }
+      ]
+    }
+  ]
+}

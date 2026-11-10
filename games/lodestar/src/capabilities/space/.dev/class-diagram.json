@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Space class diagram",
+  "folder": "games/lodestar/src/capabilities/space",
+  "description": "Vectors in sim units and the sign-magnitude counters; the free functions magnitude, coarse, fine and far are the distance tests (RULES B.1, C.1).",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/space/mod.rs",
+      "symbol": "Vec3"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/space/mod.rs",
+      "symbol": "SignMagnitude"
+    }
+  ],
+  "types": [
+    {
+      "id": "vec3",
+      "name": "Vec3",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/space/mod.rs"
+      ],
+      "members": [
+        "x, y, z: f64",
+        "ZERO",
+        "new(x, y, z)",
+        "dot(other) -> f64",
+        "cross(other) -> Vec3",
+        "length() -> f64",
+        "normalised() -> Vec3",
+        "components() -> [f64; 3]",
+        "+ − × (f64) and negation"
+      ]
+    },
+    {
+      "id": "sign-magnitude",
+      "name": "SignMagnitude",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/space/mod.rs"
+      ],
+      "members": [
+        "0: u8",
+        "ZERO",
+        "FOREVER",
+        "new(negative, magnitude)",
+        "magnitude() -> u8",
+        "is_negative() -> bool",
+        "sign() -> f64",
+        "decay()"
+      ]
+    }
+  ],
+  "relationships": []
+}

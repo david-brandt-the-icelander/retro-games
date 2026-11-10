@@ -1,0 +1,71 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Saving contracts",
+  "folder": "games/lodestar/src/features/saving",
+  "entities": [
+    {
+      "id": "pilot-record",
+      "title": "The pilot record",
+      "summary": "LodeStar's own text format for a saved pilot: a header with the version, one key line per field, and a CRC-32 check.",
+      "contractType": "data-format",
+      "consumers": [
+        "lodestar-infrastructure's PilotFiles, which stores the text as <NAME>.pilot files",
+        "Records already saved on players' machines"
+      ],
+      "guarantees": [
+        "The first line is LODESTAR PILOT and the version",
+        "One `key value…` line per field of RULES A.7.1; unknown keys are ignored",
+        "The check is a CRC-32 of the canonical text rebuilt from the decoded values",
+        "A record with another version, a malformed, out-of-range or repeated field, or a missing or wrong check is rejected and changes nothing"
+      ],
+      "compatibility": "A change to the fields or their encoding needs a new VERSION; records of another version are rejected as if absent.",
+      "definition": "games/lodestar/src/features/saving/record.rs",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "HEADER"
+        },
+        {
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "VERSION"
+        },
+        {
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "decode_over"
+        }
+      ]
+    },
+    {
+      "id": "pilot-store",
+      "title": "PilotStore",
+      "summary": "The trait through which the saving feature reads and writes records; infrastructure implements it.",
+      "contractType": "interface",
+      "consumers": [
+        "lodestar-infrastructure (PilotFiles)",
+        "MemoryStore, for tests"
+      ],
+      "guarantees": [
+        "read(name) returns the record stored under name, if any",
+        "write(name, record) replaces any record under name"
+      ],
+      "compatibility": "Changing the trait changes every implementation; write has no way to report a failure (see the backlog).",
+      "definition": "games/lodestar/src/features/saving/pilots.rs",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "PilotStore"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lodestar/src/features/saving/.dev/backlog.json",
+          "entityId": "store-write-failures"
+        }
+      ]
+    }
+  ]
+}

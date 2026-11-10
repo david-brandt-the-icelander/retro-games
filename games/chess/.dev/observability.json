@@ -1,0 +1,70 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/observability.schema.json",
+  "kind": "observability",
+  "title": "Gambit observability",
+  "folder": "games/chess",
+  "entities": [
+    {
+      "id": "worker-errors",
+      "title": "Unexpected errors in the API and sign-in",
+      "summary": "An error thrown while answering api/ or auth/ is logged and answered with a JSON 500.",
+      "signalType": "log",
+      "name": "console.error",
+      "meaning": "Something failed while answering an API or sign-in request: a database error, a failed fetch of a picture, or a bug.",
+      "access": "Whoever can read the Worker's logs in the Cloudflare account (wrangler tail, or the dashboard).",
+      "excludes": [
+        "Errors from the page, index.wasm and static assets, which are not caught here.",
+        "Refusals the code answers on purpose (400 to 429)."
+      ],
+      "details": "wrangler.jsonc sets no observability block, so how long the lines are kept is Cloudflare's default.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/chess/wrangler.jsonc"
+        }
+      ]
+    },
+    {
+      "id": "web-analytics",
+      "title": "Cloudflare Web Analytics",
+      "summary": "Page views reported by Cloudflare's beacon, which the page's Content-Security-Policy allows.",
+      "signalType": "metric",
+      "meaning": "Visits to the game's page.",
+      "access": "The Cloudflare account's owners.",
+      "excludes": [
+        "Anything inside the game: invitations, moves, chat and players are not reported."
+      ],
+      "details": "Nothing in this folder emits it: the CSP allows static.cloudflareinsights.com and cloudflareinsights.com for a beacon Cloudflare adds.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/web/_headers",
+          "symbol": "Content-Security-Policy"
+        }
+      ]
+    },
+    {
+      "id": "client-warnings",
+      "title": "Failed requests in the client",
+      "summary": "A request the client cannot complete is pushed as a warning to the browser's console.",
+      "signalType": "log",
+      "name": "push_warning",
+      "meaning": "A request to the server failed to complete (no answer, not an HTTP error status).",
+      "access": "Only the player, in their browser's console.",
+      "excludes": [
+        "Nothing is sent to the server."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "request"
+        }
+      ]
+    }
+  ]
+}

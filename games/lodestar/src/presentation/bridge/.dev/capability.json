@@ -1,0 +1,119 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Presentation bridge capability",
+  "folder": "games/lodestar/src/presentation/bridge",
+  "description": "What SimHost can do for the Godot scenes.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+      "symbol": "SimHost"
+    }
+  ],
+  "entities": [
+    {
+      "id": "sim-host",
+      "name": "Sim host",
+      "description": "Runs the sim at 12 Hz under Godot's frame loop and is the scenes' one door into it.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::process"
+        }
+      ],
+      "responsibility": "Ticks FlyInSystem as frame time allows, samples the held actions, queues the scenes' presses, converts the state for the scenes, interpolates the objects and emits each tick's events as signals.",
+      "operations": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::press"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::press_mount"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::show_screen"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::move_cursor"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::buy"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::sell"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::equip"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::save_pilot"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::load_pilot"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::set_running"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::advance"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::cockpit"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::pilot"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::navigation"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::market_rows"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::equipment_rows"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::objects"
+        }
+      ],
+      "access": [
+        "Nothing checks: any script in the Godot project may call it.",
+        "Saving, loading and the presses are accepted only in the modes FlyInSystem allows."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/lodestar/src/presentation/bridge",
+      "path": "games/lodestar/src/presentation/bridge/.dev/operation.json",
+      "relationship": "Its operations."
+    },
+    {
+      "kind": "class",
+      "folder": "games/lodestar/src/presentation/bridge",
+      "path": "games/lodestar/src/presentation/bridge/.dev/class-diagram.json",
+      "relationship": "Its types."
+    }
+  ]
+}

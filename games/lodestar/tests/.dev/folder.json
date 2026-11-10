@@ -1,0 +1,32 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Workspace gates",
+  "folder": "games/lodestar/tests",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Workspace gates",
+      "summary": "Two gates cargo test runs over lodestar-core's source: the layer test and the deferred-work gate.",
+      "purpose": "Holds lodestar-core's integration tests that check the source rather than behaviour: layers.rs fails when a capability uses a feature or use case, or a feature uses a use case; deferred_work.rs fails on a deferred-work comment marker in any tracked source file or a deferred-work folder. Behaviour tests sit beside the code in each module.",
+      "boundaries": [
+        "DESIGN § Project layout plans Godot scene tests and parity replays here; none are in the folder yet."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/tests/layers.rs",
+          "symbol": "capabilities_depend_on_nothing_further_out"
+        },
+        {
+          "path": "games/lodestar/tests/layers.rs",
+          "symbol": "features_do_not_depend_on_use_cases"
+        },
+        {
+          "path": "games/lodestar/tests/deferred_work.rs",
+          "symbol": "no_deferred_work_markers_or_folders"
+        }
+      ]
+    }
+  ]
+}

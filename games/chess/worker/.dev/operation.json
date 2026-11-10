@@ -1,0 +1,638 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "Chess Worker operations",
+  "folder": "games/chess/worker",
+  "description": "The routes the Worker answers; every other path under /games/retro/chess is a static asset.",
+  "sources": [
+    {
+      "path": "games/chess/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/chess/worker/api.ts",
+      "symbol": "handleApi"
+    },
+    {
+      "path": "games/chess/worker/auth.ts",
+      "symbol": "handleAuth"
+    }
+  ],
+  "entities": [
+    {
+      "id": "game-page",
+      "name": "Open the game",
+      "description": "The game's page, for players who are signed in.",
+      "sources": [
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "requirePlayer"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/index.ts",
+        "symbol": "default.fetch"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/chess/ or /games/retro/chess/index.html (GET /games/retro/chess redirects with 301)",
+      "authorization": "Signed in to icelander.net with the games:play role (requirePlayer → AUTH.requireRole).",
+      "result": "The page from the static assets, marked Cache-Control: private, no-cache.",
+      "failures": [
+        "Signed out: a redirect to the host's /auth/sign-in, which comes back to the same address.",
+        "Signed in without the role: 403 Not allowed."
+      ]
+    },
+    {
+      "id": "engine-file",
+      "name": "Fetch the engine",
+      "description": "Godot's WebAssembly engine, joined from its parts.",
+      "sources": [
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "joinedWasm"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/index.ts",
+        "symbol": "joinedWasm"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/chess/index.wasm",
+      "authorization": "None.",
+      "result": "index.wasm.0, .1, … streamed as one application/wasm, cached for an hour, with Content-Length when every part gave one.",
+      "failures": [
+        "No parts: 404."
+      ]
+    },
+    {
+      "id": "sign-in",
+      "name": "Sign in",
+      "description": "Sends the player to icelander.net's one sign-in.",
+      "sources": [
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "handleAuth"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "safeReturn"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/auth.ts",
+        "symbol": "handleAuth"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/chess/auth/login/{provider}?return=PATH, and the old auth/callback/{provider}",
+      "authorization": "None.",
+      "result": "302 to the host's /auth/sign-in?return=PATH; a return path outside the game becomes the game's front page.",
+      "failures": []
+    },
+    {
+      "id": "sign-out",
+      "name": "Sign out",
+      "description": "Signs the player out of icelander.net/games.",
+      "sources": [
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "handleAuth"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/auth.ts",
+        "symbol": "handleAuth"
+      },
+      "action": "command",
+      "transport": "POST /games/retro/chess/auth/logout",
+      "authorization": "The library's sign-out: same origin only.",
+      "result": "{ ok: true } and the site_session cookie cleared; a desktop build's stand-in token gets { ok: true } and nothing else.",
+      "failures": [
+        "From another origin: 403 { code: \"forbidden\" }."
+      ]
+    },
+    {
+      "id": "dev-sign-in",
+      "name": "Development sign-in",
+      "description": "Signs in as any address, for testing two players on one machine.",
+      "sources": [
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "handleAuth"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/auth.ts",
+        "symbol": "handleAuth"
+      },
+      "action": "command",
+      "transport": "GET /games/retro/chess/auth/dev?email=…&name=…[&format=token]",
+      "authorization": "Only when DEV_LOGIN is \"1\", and the library answers only on a local host.",
+      "result": "A stand-in session cookie and a redirect back into the game, or { token } with format=token.",
+      "failures": [
+        "DEV_LOGIN not \"1\": 404."
+      ]
+    },
+    {
+      "id": "me",
+      "name": "Who am I",
+      "description": "The signed-in player and the sign-in methods on offer.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "currentUser"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "providers"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "handleApi"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/chess/api/me",
+      "authorization": "None: answers signed out too.",
+      "result": "{ user: { id, email, name, avatar } or null, providers }: google and github when the login service is configured, dev when DEV_LOGIN is \"1\". Makes or refreshes the player's users row.",
+      "failures": []
+    },
+    {
+      "id": "lobby",
+      "name": "The lobby",
+      "description": "Everything the Friends screen shows.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "openChallenges"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "activeGames"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "contacts"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "handleApi"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/chess/api/lobby",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked.",
+      "result": "{ incoming, outgoing, active, contacts }: open invitations to and from the player (50 each), online games in play (50), contacts with records (500).",
+      "failures": [
+        "Not signed in: 401 { error: \"Sign in first.\" }."
+      ]
+    },
+    {
+      "id": "create-challenge",
+      "name": "Invite by email",
+      "description": "An invitation to an address, with the challenger's colour.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "createChallenge"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "countOpenFrom"
+        },
+        {
+          "path": "games/chess/worker/mail.ts",
+          "symbol": "sendMail"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "createChallenge"
+      },
+      "action": "command",
+      "transport": "POST /games/retro/chess/api/challenges { email, color }",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked. Same-origin JSON only.",
+      "result": "{ challenge, emailed, link }: the open invitation, whether Resend accepted the email, and the link ?challenge=ID.",
+      "failures": [
+        "Not an address, or the player's own: 400.",
+        "No colour of white, black or random: 400.",
+        "30 invitations in the past hour: 429.",
+        "Not signed in: 401 { error: \"Sign in first.\" }.",
+        "A POST that is not JSON, or whose Origin is another site: 403 { error: \"forbidden\" }."
+      ]
+    },
+    {
+      "id": "get-challenge",
+      "name": "Look at an invitation",
+      "description": "One invitation, to its sender or addressee.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "handleApi"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/chess/api/challenges/{id}",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked. Only the sender or the addressee.",
+      "result": "{ challenge } in any status.",
+      "failures": [
+        "No such invitation: 404.",
+        "Someone else's: 403 \"This challenge was sent to someone else.\"",
+        "Not signed in: 401 { error: \"Sign in first.\" }."
+      ]
+    },
+    {
+      "id": "accept-challenge",
+      "name": "Accept an invitation",
+      "description": "Starts the online game.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "closeChallenge"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "insertGame"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "addContact"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "handleApi"
+      },
+      "action": "command",
+      "transport": "POST /games/retro/chess/api/challenges/{id}/accept",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked. Only the addressee (by email address). Same-origin JSON only.",
+      "result": "{ game }: a new online game in play with its start entry, colours from the invitation (random drawn now); each player becomes the other's contact.",
+      "failures": [
+        "Already answered: 409.",
+        "Not the addressee: 403, or 404 for the sender.",
+        "No such invitation: 404.",
+        "Not signed in: 401 { error: \"Sign in first.\" }.",
+        "A POST that is not JSON, or whose Origin is another site: 403 { error: \"forbidden\" }."
+      ]
+    },
+    {
+      "id": "decline-challenge",
+      "name": "Decline an invitation",
+      "description": "Turns it down.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "closeChallenge"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "handleApi"
+      },
+      "action": "command",
+      "transport": "POST /games/retro/chess/api/challenges/{id}/decline",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked. Only the addressee. Same-origin JSON only.",
+      "result": "{ ok: true }; the invitation is declined.",
+      "failures": [
+        "Already answered: 409.",
+        "Not the addressee: 403 or 404.",
+        "Not signed in: 401 { error: \"Sign in first.\" }.",
+        "A POST that is not JSON, or whose Origin is another site: 403 { error: \"forbidden\" }."
+      ]
+    },
+    {
+      "id": "cancel-challenge",
+      "name": "Cancel an invitation",
+      "description": "The sender withdraws it.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "closeChallenge"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "handleApi"
+      },
+      "action": "command",
+      "transport": "POST /games/retro/chess/api/challenges/{id}/cancel",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked. Only the sender. Same-origin JSON only.",
+      "result": "{ ok: true }; the invitation is cancelled.",
+      "failures": [
+        "Already answered: 409.",
+        "Not the sender: 403 or 404.",
+        "Not signed in: 401 { error: \"Sign in first.\" }.",
+        "A POST that is not JSON, or whose Origin is another site: 403 { error: \"forbidden\" }."
+      ]
+    },
+    {
+      "id": "contact-games",
+      "name": "Games with a player",
+      "description": "A player's details and every online game between the two.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "gamesBetween"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "userById"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "handleApi"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/chess/api/contacts/{userId}/games",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked. Any player's id; only games the caller played are listed.",
+      "result": "{ contact: { id, email, name, avatar }, games }: up to 200 games, in play or finished, newest first.",
+      "failures": [
+        "No such player: 404.",
+        "Not signed in: 401 { error: \"Sign in first.\" }."
+      ]
+    },
+    {
+      "id": "remove-contact",
+      "name": "Remove a contact",
+      "description": "Takes someone off the player's contacts.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "removeContact"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "handleApi"
+      },
+      "action": "command",
+      "transport": "POST /games/retro/chess/api/contacts/remove { email }",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked. Same-origin JSON only.",
+      "result": "{ contacts }: the list without them; the games stay.",
+      "failures": [
+        "Not an address: 400.",
+        "Not signed in: 401 { error: \"Sign in first.\" }.",
+        "A POST that is not JSON, or whose Origin is another site: 403 { error: \"forbidden\" }."
+      ]
+    },
+    {
+      "id": "avatar",
+      "name": "A profile picture",
+      "description": "A player's picture, from this origin.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "avatar"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "PICTURE_HOSTS"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "avatar"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/chess/api/avatar/{userId}",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked.",
+      "result": "The image (PNG, JPEG or WebP) fetched from Google's or GitHub's image host at 128 px, cached for a day.",
+      "failures": [
+        "No picture, a host other than the two, or anything but a PNG, JPEG or WebP from it: 404.",
+        "The host cannot be reached: the fetch throws, and index.ts answers 500 { error: \"Something went wrong on the server.\" }.",
+        "Not signed in: 401 { error: \"Sign in first.\" }."
+      ]
+    },
+    {
+      "id": "history",
+      "name": "Finished games",
+      "description": "The player's finished games, online and against the computer.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "finishedGames"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "handleApi"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/chess/api/games?before=T",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked.",
+      "result": "{ games }: 30 finished games updated before T (or now), newest first, without transcripts.",
+      "failures": [
+        "Not signed in: 401 { error: \"Sign in first.\" }."
+      ]
+    },
+    {
+      "id": "game",
+      "name": "One game",
+      "description": "A game with its whole transcript.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "gameById"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "handleApi"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/chess/api/games/{id}",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked. Only its players.",
+      "result": "{ game }: the GameView with every event.",
+      "failures": [
+        "Not a game id, no such game, or not the caller's: 404 \"No such game.\"",
+        "Not signed in: 401 { error: \"Sign in first.\" }."
+      ]
+    },
+    {
+      "id": "game-action",
+      "name": "Act in an online game",
+      "description": "A move, a message, a draw offer or answer, or resigning.",
+      "sources": [
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "RoomCore.act"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/actions.ts",
+          "symbol": "validAction"
+        },
+        {
+          "path": "games/chess/worker/actions.ts",
+          "symbol": "applyAction"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "saveGame"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/room.ts",
+        "symbol": "RoomCore.act"
+      },
+      "action": "command",
+      "transport": "POST /games/retro/chess/api/games/{id}/action Action, passed to the game's GameRoom as POST /action with X-User and X-Game",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked. Only the game's two players, and only in an online game. Same-origin JSON only.",
+      "result": "{ game } after the action, which is also sent to both players' live connections.",
+      "failures": [
+        "A malformed action: 400 \"bad action\".",
+        "No such game: 404.",
+        "Not a player, or a game against the computer: 403.",
+        "Not the player's turn, a stale ply, an illegal move, no offer to answer, an empty message, or the game is over: 409 with the error and the game.",
+        "The game changed between loading and saving: 409 \"The board changed; try again.\" with the current game.",
+        "Not signed in: 401 { error: \"Sign in first.\" }.",
+        "A POST that is not JSON, or whose Origin is another site: 403 { error: \"forbidden\" }."
+      ]
+    },
+    {
+      "id": "game-live",
+      "name": "Watch a game live",
+      "description": "A WebSocket that receives the whole game after every change.",
+      "sources": [
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom.fetch"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom.webSocketMessage"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/room.ts",
+        "symbol": "GameRoom.fetch"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/chess/api/games/{id}/live (WebSocket), passed to the game's GameRoom as /live",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked. Only the game's two players.",
+      "result": "101: the socket gets { t: \"state\", game } now and after every action; \"ping\" is answered with { t: \"pong\" }.",
+      "failures": [
+        "Not a WebSocket upgrade: 426.",
+        "No such game, or not a player: 403 \"Not your game\".",
+        "Not signed in: 401 { error: \"Sign in first.\" }."
+      ]
+    },
+    {
+      "id": "save-computer-game",
+      "name": "Keep a game against the computer",
+      "description": "A finished game against Stockfish, into the player's history.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "saveComputerGame"
+        },
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "replay"
+        },
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "boardOutcome"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/worker/api.ts",
+        "symbol": "saveComputerGame"
+      },
+      "action": "command",
+      "transport": "POST /games/retro/chess/api/games/computer { level, color, moves, times, resigned }",
+      "authorization": "Signed in to icelander.net (currentUser through the login service); the games:play role is not checked. Same-origin JSON only.",
+      "result": "{ game }: stored finished, with a transcript built from the moves and their times (rising, at most 30 days back, never after now), and a resign entry when the player resigned.",
+      "failures": [
+        "Level not 1–8, colour not white or black, or a malformed move list: 400.",
+        "An illegal move: 422.",
+        "Not over and not resigned: 422 \"The game isn't over.\"",
+        "Not signed in: 401 { error: \"Sign in first.\" }.",
+        "A POST that is not JSON, or whose Origin is another site: 403 { error: \"forbidden\" }."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/capability.json",
+      "relationship": "The capabilities they belong to."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/feature.json",
+      "relationship": "The features they carry out."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/use-case.json",
+      "relationship": "The use cases that call them."
+    },
+    {
+      "kind": "state",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/Challenge.state-diagram.json",
+      "relationship": "What the invitation operations do to an invitation."
+    },
+    {
+      "kind": "state",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/Game.state-diagram.json",
+      "relationship": "What the action operation does to an online game."
+    }
+  ]
+}

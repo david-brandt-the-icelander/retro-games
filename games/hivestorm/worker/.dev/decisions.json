@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "High-score Worker decisions",
+  "folder": "games/hivestorm/worker",
+  "entities": [
+    {
+      "id": "replay-not-trust",
+      "title": "Replay every game",
+      "summary": "The server never takes a score from the browser; it replays the game.",
+      "status": "accepted",
+      "context": "A browser can send anything; a public table is worthless if scores can be typed in.",
+      "options": [
+        {
+          "title": "Accept the browser's score",
+          "consequences": "Trivially faked."
+        },
+        {
+          "title": "Issue the seed and replay the recorded controls",
+          "consequences": "A replay per submission, which the README puts at about 1 ms per minute of play; the engine must be deterministic."
+        }
+      ],
+      "decision": "The server issues each game's seed, stores it unused, and on submission replays the runs with the same engine, claims the seed only if it is still unused, and stores the scores the replay reached.",
+      "rationale": "Only what the game really scored can be listed, and each seed only once.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "issueGame"
+        },
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/hivestorm/README.md",
+          "symbol": "How scores are checked"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Chess Worker features",
+  "folder": "games/chess/worker",
+  "description": "What the Worker offers players.",
+  "sources": [
+    {
+      "path": "games/chess/worker/api.ts",
+      "symbol": "handleApi"
+    },
+    {
+      "path": "games/chess/worker/room.ts",
+      "symbol": "GameRoom"
+    }
+  ],
+  "entities": [
+    {
+      "id": "invite-by-email",
+      "name": "Invite anyone by email",
+      "description": "An invitation goes to an address, whether or not anyone has signed in with it.",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "createChallenge"
+        }
+      ],
+      "behavior": "The invitation is stored against the address; the addressee finds it under Invitations for you when they sign in with that address, and gets an email through Resend when RESEND_API_KEY and MAIL_FROM are set. The sender always gets the link ?challenge=ID to pass on. Accepting starts the game and makes each the other's contact.",
+      "outcome": "A player can invite a friend who has never played, and the game waits as long as it needs to.",
+      "constraints": [
+        "30 invitations per player per hour.",
+        "Not to one's own address.",
+        "Answered once; invitations do not expire.",
+        "Email is best effort: a failed send is reported as emailed: false."
+      ],
+      "implementation": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "createChallenge"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "challengeLink"
+        },
+        {
+          "path": "games/chess/worker/mail.ts",
+          "symbol": "challengeMail"
+        },
+        {
+          "path": "games/chess/worker/mail.ts",
+          "symbol": "sendMail"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "insertChallenge"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "closeChallenge"
+        }
+      ]
+    },
+    {
+      "id": "server-referee",
+      "name": "The server is the referee",
+      "description": "Every online move and message is checked on the server.",
+      "sources": [
+        {
+          "path": "games/chess/worker/actions.ts",
+          "symbol": "applyAction"
+        },
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "RoomCore"
+        }
+      ],
+      "behavior": "The game's Durable Object takes one action at a time: it loads the game, checks turn, ply and legality with chess.js, decides results the board forces, draws by agreement and resignation, appends to the transcript, saves only if nobody changed the game meanwhile, and sends the whole game to both players' WebSockets.",
+      "outcome": "Both players see the same game, and no client can make an illegal move or play out of turn.",
+      "constraints": [
+        "Only the two players may act.",
+        "A move answers an open draw offer with a no, and withdraws one's own.",
+        "Chat is cleaned of control characters and cut to 500 characters, and allowed after the game.",
+        "Nothing ends a game nobody finishes: there are no clocks and no abandonment."
+      ],
+      "implementation": [
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "RoomCore.act"
+        },
+        {
+          "path": "games/chess/worker/actions.ts",
+          "symbol": "applyAction"
+        },
+        {
+          "path": "games/chess/worker/actions.ts",
+          "symbol": "cleanChat"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "saveGame"
+        },
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom"
+        }
+      ]
+    },
+    {
+      "id": "contacts-and-records",
+      "name": "Contacts with a record",
+      "description": "Everyone a player has played, with wins, losses and draws against each.",
+      "sources": [
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "contacts"
+        }
+      ],
+      "behavior": "Contacts are made when an invitation is accepted; each comes with name, address, picture and the record over online games, newest opponent first. A contact can be removed; the games stay.",
+      "outcome": "Players find their friends again and see how they stand.",
+      "constraints": [
+        "Only online games count.",
+        "An invitation alone does not make a contact.",
+        "At most 500 contacts listed."
+      ],
+      "implementation": [
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "addContact"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "contacts"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "removeContact"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "gamesBetween"
+        }
+      ]
+    },
+    {
+      "id": "history",
+      "name": "Every finished game kept",
+      "description": "Finished games, online and against the computer, with their transcripts.",
+      "sources": [
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "finishedGames"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "saveComputerGame"
+        }
+      ],
+      "behavior": "Finished games are listed newest first, 30 at a time; each opens with its whole transcript. A game against the computer is stored only after the server replays its moves and finds it over (or resigned), with times that only go forward.",
+      "outcome": "A player's games, with their chat and timing, are kept to be replayed.",
+      "constraints": [
+        "Games against the computer up to 600 moves, at most 30 days long.",
+        "Only the player's own games."
+      ],
+      "implementation": [
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "finishedGames"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "gameById"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "saveComputerGame"
+        },
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "validMoveList"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/capability.json",
+      "relationship": "The capabilities they belong to."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/operation.json",
+      "relationship": "The operations they use."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/use-case.json",
+      "relationship": "The use cases that exercise them."
+    },
+    {
+      "kind": "state",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/Game.state-diagram.json",
+      "relationship": "An online game's lifecycle."
+    },
+    {
+      "kind": "state",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/Challenge.state-diagram.json",
+      "relationship": "An invitation's lifecycle."
+    }
+  ]
+}

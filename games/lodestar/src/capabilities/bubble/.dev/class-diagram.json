@@ -1,0 +1,164 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Bubble class diagram",
+  "folder": "games/lodestar/src/capabilities/bubble",
+  "description": "The bubble and the objects in it (RULES B.9, C.1, C.3.3).",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+      "symbol": "Bubble"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+      "symbol": "Object"
+    }
+  ],
+  "types": [
+    {
+      "id": "bubble",
+      "name": "Bubble",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/bubble/mod.rs"
+      ],
+      "members": [
+        "slots: Vec<Object>",
+        "counts: per type",
+        "new()",
+        "add(object) -> Option<usize>",
+        "remove(slot) -> Option<Removed>",
+        "replace(slot, object) -> Option<Object>",
+        "clear()",
+        "count_of(kind) -> u8",
+        "find(kind) -> Option<usize>",
+        "len()",
+        "is_full()",
+        "get(slot)",
+        "get_mut(slot)",
+        "iter()",
+        "iter_mut()"
+      ]
+    },
+    {
+      "id": "object",
+      "name": "Object",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/bubble/mod.rs"
+      ],
+      "members": [
+        "kind: TypeNumber",
+        "position: Vec3",
+        "nose, roof, side: Vec3",
+        "speed: u8",
+        "acceleration: u8",
+        "pitch, roll: SignMagnitude",
+        "ai: u8",
+        "energy: u8",
+        "missiles: u8",
+        "flags: Flags",
+        "explosion: Explosion",
+        "new(kind, position)",
+        "is_body() -> bool"
+      ]
+    },
+    {
+      "id": "flags",
+      "name": "Flags",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/bubble/mod.rs"
+      ],
+      "members": [
+        "killed",
+        "exploding",
+        "firing",
+        "on_screen",
+        "on_scanner"
+      ]
+    },
+    {
+      "id": "explosion",
+      "name": "Explosion",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/bubble/mod.rs"
+      ],
+      "members": [
+        "counter: u8",
+        "seeds: [u8; 4]"
+      ]
+    },
+    {
+      "id": "removed",
+      "name": "Removed",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/bubble/mod.rs"
+      ],
+      "members": [
+        "slot: usize",
+        "kind: TypeNumber"
+      ]
+    },
+    {
+      "id": "vec3",
+      "name": "Vec3",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/space/mod.rs"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "sign-magnitude",
+      "name": "SignMagnitude",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/space/mod.rs"
+      ],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "bubble",
+      "to": "object",
+      "kind": "depends-on",
+      "description": "Holds up to CAPACITY (13) objects in slot order."
+    },
+    {
+      "from": "bubble",
+      "to": "removed",
+      "kind": "depends-on",
+      "description": "remove reports the slot and type that left."
+    },
+    {
+      "from": "object",
+      "to": "flags",
+      "kind": "depends-on",
+      "description": "Its state flags."
+    },
+    {
+      "from": "object",
+      "to": "explosion",
+      "kind": "depends-on",
+      "description": "Its explosion cloud's counter and seeds."
+    },
+    {
+      "from": "object",
+      "to": "vec3",
+      "kind": "depends-on",
+      "description": "Position and orientation vectors."
+    },
+    {
+      "from": "object",
+      "to": "sign-magnitude",
+      "kind": "depends-on",
+      "description": "Pitch and roll counters."
+    }
+  ]
+}

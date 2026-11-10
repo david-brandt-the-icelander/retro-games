@@ -1,0 +1,99 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "Game scene configuration",
+  "folder": "games/lodestar/src/presentation/game",
+  "entities": [
+    {
+      "id": "shot",
+      "title": "Screenshot path",
+      "summary": "Save one screenshot and quit.",
+      "key": "--shot=<png> (after --)",
+      "type": "path",
+      "default": "none",
+      "sensitive": false,
+      "scope": "per run",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/game/game.gd",
+          "symbol": "_shot_path"
+        }
+      ]
+    },
+    {
+      "id": "frames",
+      "title": "Frames before the screenshot",
+      "summary": "How many frames run before --shot is saved.",
+      "key": "--frames=<n>",
+      "type": "integer",
+      "default": "0",
+      "sensitive": false,
+      "scope": "per run",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/game/game.gd",
+          "symbol": "_shot_frames"
+        }
+      ]
+    },
+    {
+      "id": "script",
+      "title": "Scripted game",
+      "summary": "Play a scripted game with the sim's clock stopped: a step list, @smoke or @shots.",
+      "key": "--script=<steps>",
+      "type": "string",
+      "default": "none",
+      "sensitive": false,
+      "scope": "per run",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/game/game.gd",
+          "symbol": "runner"
+        }
+      ]
+    },
+    {
+      "id": "shots",
+      "title": "Screenshot folder",
+      "summary": "Where a scripted game saves its screenshots.",
+      "key": "--shots=<folder>",
+      "type": "path",
+      "default": "user://shots",
+      "sensitive": false,
+      "scope": "per run",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/game/script_runner.gd",
+          "symbol": "_shots_folder"
+        }
+      ]
+    },
+    {
+      "id": "input-map",
+      "title": "Input map",
+      "summary": "The keys of DESIGN's Modern layout under RULES D.5's action names.",
+      "key": "project.godot [input]",
+      "type": "Godot InputMap actions",
+      "default": "the Modern layout",
+      "sensitive": false,
+      "scope": "per project",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/project.godot",
+          "symbol": "input"
+        }
+      ],
+      "details": "SimHost samples the held actions from it; game.gd routes the one-shot actions. There are no in-game rebinding or saved settings yet (game.md ⚠️)."
+    }
+  ]
+}

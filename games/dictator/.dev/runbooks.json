@@ -1,0 +1,81 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/runbooks.schema.json",
+  "kind": "runbooks",
+  "title": "Samosa runbooks",
+  "folder": "games/dictator",
+  "entities": [
+    {
+      "id": "setup",
+      "title": "Work on Samosa",
+      "summary": "Install, test and build the game in its folder.",
+      "purpose": "setup",
+      "when": "Before changing anything in games/dictator. Read docs/RULES.md first for any change to the engine.",
+      "steps": [
+        "cd games/dictator",
+        "npm install",
+        "npm test (typecheck, then the test suites)",
+        "npm run build (into dist/games/retro/samosa/; BASE_PATH=\"\" builds at the root)",
+        "npm run dev rebuilds on change; serve dist/ with any static server"
+      ],
+      "verify": "npm test passes.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/package.json",
+          "symbol": "scripts"
+        },
+        {
+          "path": "games/dictator/build.mjs",
+          "symbol": "BASE_PATH"
+        }
+      ]
+    },
+    {
+      "id": "run-locally",
+      "title": "Run the Worker locally",
+      "summary": "The game, its API and a local copy of the database on localhost.",
+      "purpose": "setup",
+      "steps": [
+        "npx wrangler d1 execute samosa-scores --local --file worker/schema.sql",
+        "npm run build && npx wrangler dev",
+        "Open http://localhost:8787/games/retro/samosa/"
+      ],
+      "verify": "After the sign-in, the title screen appears and a reign can be entered on the table.",
+      "details": "The page needs a sign-in, through the ACCOUNTS service binding; the sign-in pages and /games/me are the games hub's, from its own repository.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/dictator/README.md",
+          "symbol": "Deploy"
+        }
+      ]
+    },
+    {
+      "id": "change-database",
+      "title": "Change the database",
+      "summary": "A schema change is a migration applied by hand before merging.",
+      "purpose": "operate",
+      "when": "worker/schema.sql has to change.",
+      "steps": [
+        "Add games/dictator/worker/migrations/NNNN-what-it-does.sql, numbered after 0002-drop-email.sql, with a comment saying why",
+        "Make the same change in worker/schema.sql",
+        "Try it locally: npx wrangler d1 execute samosa-scores --local --file worker/migrations/<file>",
+        "Apply it to production before merging, as docs/database-migrations.md says, and say so in the pull request's description"
+      ],
+      "verify": "The Database migration check passes.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Writing a migration"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/dictator/worker/migrations/.dev/versions.json"
+        }
+      ]
+    }
+  ]
+}

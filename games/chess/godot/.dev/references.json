@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Godot client references",
+  "folder": "games/chess/godot",
+  "entities": [
+    {
+      "id": "godot",
+      "title": "Godot Engine 4.7",
+      "summary": "The engine the client is made in (MIT); the build and CI use 4.7.2 with its web export templates.",
+      "relevance": "project.godot targets 4.7 with the Compatibility renderer; build.mjs exports with the Web preset.",
+      "url": "https://docs.godotengine.org/en/stable/",
+      "sources": [
+        {
+          "path": "games/chess/godot/project.godot",
+          "symbol": "config/features"
+        },
+        {
+          "path": "games/chess/build.mjs",
+          "symbol": "export-release"
+        },
+        {
+          "path": ".github/workflows/game.yml",
+          "symbol": "GODOT_VERSION"
+        }
+      ]
+    },
+    {
+      "id": "godot-web",
+      "title": "Exporting for the Web",
+      "summary": "The web export, its custom HTML shell, threads and cross-origin isolation.",
+      "relevance": "export_presets.cfg uses a custom shell (web_shell/shell.html) and no thread support.",
+      "url": "https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html",
+      "sources": [
+        {
+          "path": "games/chess/godot/export_presets.cfg",
+          "symbol": "html/custom_html_shell"
+        }
+      ]
+    }
+  ]
+}

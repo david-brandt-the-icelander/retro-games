@@ -1,0 +1,86 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Engine capability",
+  "folder": "games/shatterbelt/src/engine",
+  "description": "What the engine can do for the page and the Worker.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/src/engine/game.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/replay.ts",
+      "symbol": "replay"
+    }
+  ],
+  "entities": [
+    {
+      "id": "deterministic-game",
+      "name": "Deterministic rock-shooter game",
+      "description": "Plays, records and replays a game of Shatterbelt with no DOM, timers or randomness of its own.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "newGame"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "Recorder"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "replay"
+        }
+      ],
+      "responsibility": "Holds the rules of the game and plays it step by step for one to nine ships in co-op or versus, so that the same seed and controls always give the same game in every browser and on the server.",
+      "operations": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "newGame"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "standings"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "Recorder.record"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "validRecording"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "replay"
+        }
+      ],
+      "access": [
+        "Nothing checks: these are in-process functions. The page (src/main.ts) and the Worker's helpers (worker/scores.ts) call them."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/shatterbelt/src/engine",
+      "path": "games/shatterbelt/src/engine/.dev/operation.json",
+      "relationship": "The operations through which it is reached."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/shatterbelt/src/engine",
+      "path": "games/shatterbelt/src/engine/.dev/feature.json",
+      "relationship": "The features it carries."
+    }
+  ]
+}

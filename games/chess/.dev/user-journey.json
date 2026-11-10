@@ -1,0 +1,284 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-user-journey/schema.json",
+  "kind": "user-journey",
+  "title": "Gambit journeys",
+  "folder": "games/chess",
+  "description": "Players' experience of Gambit, as its README describes it to them.",
+  "sources": [
+    {
+      "path": "games/chess/README.md",
+      "symbol": "How to play"
+    }
+  ],
+  "entities": [
+    {
+      "id": "play-a-friend",
+      "name": "Play a friend by email",
+      "description": "A player invites a friend by email, and the two play over days, chatting, until the game ends and they play again.",
+      "sources": [
+        {
+          "path": "games/chess/README.md",
+          "symbol": "How to play"
+        }
+      ],
+      "persona": "Player",
+      "goal": "Play chess with a friend who is somewhere else, at their own pace.",
+      "stages": [
+        {
+          "id": "sign-in",
+          "context": "Arrives at the game signed out.",
+          "touchpoint": "icelander.net's sign-in, with Google or GitHub",
+          "action": "Signs in, and is sent back to the game.",
+          "outcome": "The title screen, with Play a friend and Play the computer.",
+          "sources": [
+            {
+              "path": "games/chess/worker/index.ts",
+              "symbol": "default.fetch"
+            },
+            {
+              "path": "games/chess/README.md",
+              "symbol": "How to play"
+            }
+          ]
+        },
+        {
+          "id": "invite",
+          "context": "Wants to play someone who has never played.",
+          "touchpoint": "Friends: Invite a friend",
+          "action": "Types the friend's address, picks a colour and sends.",
+          "outcome": "The invitation waits for that address; the friend is emailed if email is set up, and the player gets a link to send.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._lobby"
+            },
+            {
+              "path": "games/chess/worker/api.ts",
+              "symbol": "createChallenge"
+            }
+          ]
+        },
+        {
+          "id": "accept",
+          "context": "The friend signs in with that address, from the email, the link or Friends.",
+          "touchpoint": "Friends: Invitations for you",
+          "action": "Accepts.",
+          "outcome": "The game opens for them; each is now the other's contact.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._fill_incoming"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._answer"
+            }
+          ]
+        },
+        {
+          "id": "play",
+          "context": "Days may pass between moves.",
+          "touchpoint": "The game: the board and the transcript",
+          "action": "Each moves on their turn and chats; either leaves and comes back.",
+          "outcome": "Moves and messages appear on both screens at once; Friends shows whose move it is, and the tab's title counts what waits.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._on_board_move"
+            },
+            {
+              "path": "games/chess/godot/scripts/api.gd",
+              "symbol": "Live"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._fill_active"
+            }
+          ]
+        },
+        {
+          "id": "finish",
+          "context": "Someone is mated, resigns, or a draw is offered and accepted.",
+          "touchpoint": "The game",
+          "action": "Reads the result in the transcript.",
+          "outcome": "The game is in both histories and counts in their record against each other.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._update_status"
+            },
+            {
+              "path": "games/chess/worker/db.ts",
+              "symbol": "contacts"
+            }
+          ]
+        },
+        {
+          "id": "rematch",
+          "context": "Wants another.",
+          "touchpoint": "The finished game's Rematch, or the contact's Invite to a game",
+          "action": "Sends a new invitation, colours swapped.",
+          "outcome": "It waits in the friend's lobby.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._rematch"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._contact"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md",
+      "supportingActors": [
+        {
+          "name": "The invited friend",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    },
+    {
+      "id": "play-the-computer",
+      "name": "Practise against the computer",
+      "description": "A player plays Stockfish at a strength they choose, over one sitting or several, and keeps the game.",
+      "sources": [
+        {
+          "path": "games/chess/README.md",
+          "symbol": "How to play"
+        },
+        {
+          "path": "games/chess/README.md",
+          "symbol": "The computer's strengths"
+        }
+      ],
+      "persona": "Player",
+      "goal": "Play a game against a computer opponent of the right strength.",
+      "stages": [
+        {
+          "id": "choose",
+          "context": "On the title screen.",
+          "touchpoint": "Play the computer: the set-up",
+          "action": "Picks one of eight strengths, from Pawn Pusher to Stockfish, and a colour.",
+          "outcome": "The game starts; Stockfish runs in the browser.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._setup"
+            },
+            {
+              "path": "games/chess/bridge/engine.ts",
+              "symbol": "STRENGTH"
+            }
+          ]
+        },
+        {
+          "id": "play",
+          "context": "Makes a mistake, or is called away.",
+          "touchpoint": "The game",
+          "action": "Takes back the last move, or reloads and presses Continue later.",
+          "outcome": "The game carries on where it was.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._take_back"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._home"
+            }
+          ]
+        },
+        {
+          "id": "keep",
+          "context": "The game ends, or the player resigns.",
+          "touchpoint": "The game, then History",
+          "action": "Finds the game in History.",
+          "outcome": "It is in the history on the server, after the server has checked it.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main.finish_computer"
+            },
+            {
+              "path": "games/chess/worker/api.ts",
+              "symbol": "saveComputerGame"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    },
+    {
+      "id": "relive-a-game",
+      "name": "Relive a past game",
+      "description": "A player goes back to a finished game and watches it as it was played.",
+      "sources": [
+        {
+          "path": "games/chess/README.md",
+          "symbol": "How to play"
+        }
+      ],
+      "persona": "Player",
+      "goal": "See again how a game went, its chat included.",
+      "stages": [
+        {
+          "id": "find",
+          "context": "Some time after a game.",
+          "touchpoint": "History, or a contact's games together",
+          "action": "Opens a finished game.",
+          "outcome": "The replay, at the start position, with the whole transcript.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._history"
+            },
+            {
+              "path": "games/chess/godot/scripts/main.gd",
+              "symbol": "Main._contact"
+            }
+          ]
+        },
+        {
+          "id": "watch",
+          "context": "Wants to see it unfold.",
+          "touchpoint": "The replay's controls",
+          "action": "Presses Play at 1×, 4× or 16×, or steps, drags the slider or clicks a move.",
+          "outcome": "The moves and messages come at the pace they were played, sped up, with pauses of at most three seconds.",
+          "sources": [
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._toggle_play"
+            },
+            {
+              "path": "games/chess/godot/scripts/game_screen.gd",
+              "symbol": "GameScreen._wait_before"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/use-case.json",
+      "relationship": "The use cases behind their stages."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/feature.json",
+      "relationship": "The client features the stages use."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/feature.json",
+      "relationship": "The server features the stages use."
+    }
+  ]
+}

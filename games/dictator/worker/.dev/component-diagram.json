@@ -46,7 +46,7 @@
     {
       "id": "helpers",
       "name": "Score helpers (scores.ts)",
-      "responsibility": "Replays a reign headless from its seed and key log, and holds the old path for the 308 redirect.",
+      "responsibility": "Replays a reign headless from its seed and key log; holds the paths (including the old one for the 308 redirect), the limits and the JSON response helper.",
       "folder": "games/dictator/worker"
     },
     {

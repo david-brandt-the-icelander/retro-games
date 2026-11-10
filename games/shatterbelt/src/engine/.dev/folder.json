@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Engine",
+  "folder": "games/shatterbelt/src/engine",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Engine",
+      "summary": "The pure game: tuning, the seeded generator, deterministic maths, the simulation, recording and replay.",
+      "purpose": "Plays a game of Shatterbelt for one to nine ships, one fixed step of 1/60 s at a time, with no DOM, timers or randomness of its own, so the page, the tests and the Worker all get the same game from the same seed and controls.",
+      "boundaries": [
+        "Only + − × ÷ and Math.sqrt: sine, cosine, arctangent and hypotenuse come from dmath.ts, and random numbers only from rng.ts.",
+        "Knows nothing of the page, the network, online play or the database; it lists what happened in each step in Game.events for the page to draw and sound."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/dmath.ts",
+          "symbol": "sin"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/rng.ts",
+          "symbol": "rand"
+        }
+      ]
+    }
+  ]
+}

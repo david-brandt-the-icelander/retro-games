@@ -1,0 +1,178 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/limitations.schema.json",
+  "kind": "limitations",
+  "title": "Gambit limitations",
+  "folder": "games/chess",
+  "entities": [
+    {
+      "id": "no-clocks",
+      "title": "No clocks",
+      "summary": "Online games have no time control.",
+      "impact": "A player who stops answering holds the game in play for ever; nothing ends it but resigning, a draw or mate.",
+      "details": "The reason abandoned exists in the types, but nothing sets it.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/actions.ts",
+          "symbol": "applyAction"
+        },
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Non-goals (for now)"
+        }
+      ]
+    },
+    {
+      "id": "no-move-notifications",
+      "title": "No notice of a move",
+      "summary": "Only new invitations are emailed; a move reaches the other player only while the game or the lobby is open.",
+      "impact": "A player learns of a move by opening Friends: the lobby and the tab's title show what waits.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "createChallenge"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._lobby"
+        },
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Non-goals (for now)"
+        }
+      ]
+    },
+    {
+      "id": "two-players-only",
+      "title": "Only the two players see a game",
+      "summary": "There are no spectators: a game, its transcript and its live connection are for its players only.",
+      "impact": "A friend cannot watch a game, even finished.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom.fetch"
+        }
+      ]
+    },
+    {
+      "id": "wide-screens",
+      "title": "No phone-sized layout",
+      "summary": "The game screen needs about 1000 px of width.",
+      "impact": "On a phone the game panel and the board crowd each other.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Non-goals (for now)"
+        },
+        {
+          "path": "games/chess/docs/UI-DESIGN.md",
+          "symbol": "Canvas"
+        }
+      ]
+    },
+    {
+      "id": "computer-in-browser",
+      "title": "The computer plays only in the browser",
+      "summary": "Stockfish runs in the page; the desktop build has no computer opponent.",
+      "impact": "Playing the computer from the editor or a desktop build says it needs the web version.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "engine_move"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._computer_turn"
+        }
+      ]
+    },
+    {
+      "id": "invitations-never-expire",
+      "title": "Invitations do not expire",
+      "summary": "An open invitation stays open until it is answered or cancelled.",
+      "impact": "Old invitations wait in both lobbies until someone answers them.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "openChallenges"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "closeChallenge"
+        }
+      ]
+    },
+    {
+      "id": "invitation-rate",
+      "title": "30 invitations an hour",
+      "summary": "A player can send at most 30 invitations in any hour.",
+      "impact": "The 31st is refused with \"That's a lot of challenges. Try again in an hour.\"",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "CHALLENGES_PER_HOUR"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "countOpenFrom"
+        }
+      ]
+    },
+    {
+      "id": "list-sizes",
+      "title": "Lists are capped",
+      "summary": "The lobby lists 50 invitations each way and 50 games in play, 500 contacts, 200 games with one contact; history comes 30 at a time.",
+      "impact": "A player with more sees only the newest.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "openChallenges"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "activeGames"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "contacts"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "gamesBetween"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        }
+      ]
+    },
+    {
+      "id": "one-computer-game",
+      "title": "One game against the computer per device",
+      "summary": "The device keeps one game against the computer; starting another replaces it.",
+      "impact": "A game in play against the computer is lost when a new one starts.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "SAVE"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._new_computer_game"
+        }
+      ]
+    }
+  ]
+}

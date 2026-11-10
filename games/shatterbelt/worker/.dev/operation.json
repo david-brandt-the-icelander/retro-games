@@ -1,0 +1,182 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "High-score Worker operations",
+  "folder": "games/shatterbelt/worker",
+  "description": "The routes the Shatterbelt Worker answers; everything else under its routes is a static asset.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/worker/index.ts",
+      "symbol": "default.fetch"
+    }
+  ],
+  "entities": [
+    {
+      "id": "game-page",
+      "name": "Open the game",
+      "description": "The game's page, for players who are signed in.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "gamePage"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/shatterbelt/worker/index.ts",
+        "symbol": "gamePage"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/shatterbelt/ or /games/retro/shatterbelt/index.html (run_worker_first in wrangler.jsonc)",
+      "authorization": "Signed in to icelander.net with the games:play role (AUTH.requireRole).",
+      "result": "The page from the static assets, marked Cache-Control: private, no-cache.",
+      "failures": [
+        "Signed out, or the login service out of reach: a redirect to /auth/sign-in that returns to the same address, ?match=ID included.",
+        "Signed in without the role: 403."
+      ]
+    },
+    {
+      "id": "issue-game",
+      "name": "Issue a game's seed",
+      "description": "Starts a game that may later enter the table, solo or online.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "issueGame"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/shatterbelt/worker/index.ts",
+        "symbol": "issueGame"
+      },
+      "action": "command",
+      "transport": "POST /games/retro/shatterbelt/api/game",
+      "authorization": "Signed in to icelander.net with the games:play role (AUTH.requireRole, with api: true).",
+      "result": "{ id, seed }: a random UUID and 32-bit seed, stored as unused. Unused seeds older than 24 hours are deleted on the way.",
+      "failures": [
+        "Not signed in: 401; signed in without the role: 403.",
+        "A database error: 500 { error: \"server error\" }."
+      ]
+    },
+    {
+      "id": "submit-score",
+      "name": "Submit a game",
+      "description": "Puts a finished game's named players on the table, after replaying it.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "validSubmission"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "score"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/shatterbelt/worker/index.ts",
+        "symbol": "submitScore"
+      },
+      "action": "command",
+      "transport": "POST /games/retro/shatterbelt/api/score with { id, recording: { mode, players, steps, log }, names }",
+      "authorization": "Signed in to icelander.net with the games:play role (AUTH.requireRole, with api: true). Any signed-in player may submit a game for every player in it: online, the host's browser sends everyone's names.",
+      "result": "The seed is marked used, and each player with a name and a score above 0 is stored with the replay's score and wave under the cleaned name. Returns { results: [{ player, score, wave, name, rank }] } for every player, name and rank null for those not entered.",
+      "failures": [
+        "Body over 4,000,000 bytes: 413.",
+        "Not JSON, an id over 64 characters, a names list not one per player, or a name with nothing usable or over 200 characters: 400.",
+        "A seed that is unknown, used or older than 24 hours, or claimed by another submission meanwhile: 409.",
+        "A recording that is malformed or does not replay exactly one whole game from the issued seed: 422.",
+        "Not signed in: 401; signed in without the role: 403.",
+        "A database error: 500."
+      ]
+    },
+    {
+      "id": "list-scores",
+      "name": "Read the table",
+      "description": "The best ten scores, as JSON for the game's title screen.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "loadTop"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/shatterbelt/worker/index.ts",
+        "symbol": "loadTop"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/shatterbelt/api/scores",
+      "authorization": "None: the table is public.",
+      "result": "{ scores: [{ name, score, wave, mode, players }] }, best first, ties oldest first.",
+      "failures": [
+        "A database error: 500."
+      ]
+    },
+    {
+      "id": "scores-page",
+      "name": "Show the scores page",
+      "description": "The best 25 scores as a web page in icelander.net's look.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        },
+        {
+          "path": "games/shatterbelt/worker/look.ts",
+          "symbol": "sitePage"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/shatterbelt/worker/scores-page.ts",
+        "symbol": "scoresPage"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/shatterbelt/scores/ (and /scores, which redirects there with 301)",
+      "authorization": "None: the table is public.",
+      "result": "An HTML page: rank, pilot, score, wave and the kind of game (Solo, Co-op or Versus with the number of players), with names escaped; no-store, with its own content security policy.",
+      "failures": [
+        "A database error: 500 { error: \"server error\" } as JSON."
+      ]
+    },
+    {
+      "id": "old-address",
+      "name": "Redirect the old address",
+      "description": "Sends the game's first address to its current one.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "OLD_PATH"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/shatterbelt/worker/index.ts",
+        "symbol": "default.fetch"
+      },
+      "action": "query",
+      "transport": "Any method on icelander.net/retro-games/shatterbelt and every path under it",
+      "authorization": "None: answered before any sign-in check.",
+      "result": "308 to https://icelander.net/games/retro/shatterbelt with the same rest of the path and query, Cache-Control: no-store; the method is kept.",
+      "failures": []
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/shatterbelt/worker",
+      "path": "games/shatterbelt/worker/.dev/capability.json",
+      "relationship": "The capabilities these operations belong to."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/shatterbelt/src",
+      "path": "games/shatterbelt/src/.dev/use-case.json",
+      "relationship": "The use cases whose steps call them."
+    }
+  ]
+}

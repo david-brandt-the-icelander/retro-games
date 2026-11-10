@@ -1,0 +1,313 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-use-case/schema.json",
+  "kind": "use-case",
+  "title": "Engine use cases",
+  "folder": "games/dictator/src/engine",
+  "description": "What the player does in a month of a reign, step by step, as playGame runs it. The player answers each screen with one key; the engine reads it through io.show.",
+  "sources": [
+    {
+      "path": "games/dictator/src/engine/flow.ts",
+      "symbol": "month"
+    }
+  ],
+  "entities": [
+    {
+      "id": "survive-a-month",
+      "name": "Survive a month in office",
+      "description": "The President deals with a faction's request, the month's dangers, one decision of their own and perhaps a revolution, and is offered the month's file.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "month"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "playGame"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Reach the next month still in office, with the groups that matter on side and money in hand.",
+      "preconditions": [
+        "A reign is under way: the welcome screen, the treasury and the first report have been shown, or the previous month ended with its report offer."
+      ],
+      "postconditions": [
+        "The month number is one higher, and popularity, strength, the treasury and the plots have changed as RULES says.",
+        "Or the reign is over: the President is dead or has escaped."
+      ],
+      "flow": [
+        {
+          "id": "new-month",
+          "actor": "Engine",
+          "action": "Rolls the month's threshold and revolution strength, shows the month, and works out the plots.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "rollMood"
+            },
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "checkPlots"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "accounts",
+          "actor": "Engine",
+          "action": "Settles the accounts: the treasury pays the month's costs if it is in credit.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "settleAccounts"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "request",
+          "actor": "Engine",
+          "action": "Chooses a faction's request and shows the audience.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "chooseRequest"
+            },
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "audience"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "answer",
+          "actor": "Player",
+          "action": "Asks the adviser (Y) or not, then grants the request (Y) or refuses it (any other key).",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "consider"
+            },
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "isYes"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "dangers",
+          "actor": "Engine",
+          "action": "Shows the treasury, then checks for an assassin and for war with Honduras.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "assassination"
+            },
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "war"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "decide",
+          "actor": "Player",
+          "action": "Opens a section of the decision menu (1–5) and takes one decision by its number, or presses any other key to take none.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "decide"
+            },
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "digit"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "news",
+          "actor": "Engine",
+          "action": "Perhaps prints a headline, then checks for a revolution.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "news"
+            },
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "whoRises"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "offer",
+          "actor": "Engine",
+          "action": "Offers State Security's file, if the police are loyal and strong and the treasury can pay.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "reportOffer"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "buy",
+          "actor": "Player",
+          "action": "Buys the file (Y) and reads it, or skips it.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "buyReport"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "accounts",
+          "condition": "The treasury is in debt.",
+          "outcome": "Nothing is paid; the Army and the police lose goodwill, the police strength and the bodyguard one each; the bankruptcy notice, then a plot check.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "settleAccounts"
+            }
+          ]
+        },
+        {
+          "atStep": "answer",
+          "condition": "The treasury cannot cover the request.",
+          "outcome": "The cash-short notice and the must-refuse notice; the request is refused.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "audience"
+            },
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "isAffordable"
+            }
+          ]
+        },
+        {
+          "atStep": "dangers",
+          "condition": "An assassin strikes and the attempt kills.",
+          "outcome": "The reign ends: the funeral, the rating and the final report.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "assassination"
+            },
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "attemptKills"
+            }
+          ]
+        },
+        {
+          "atStep": "dangers",
+          "condition": "Honduras invades and wins.",
+          "outcome": "The helicopter, if bought and it starts, flies the President out; otherwise the President is executed. The reign ends.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "war"
+            },
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "helicopterStarts"
+            }
+          ]
+        },
+        {
+          "atStep": "decide",
+          "condition": "Every option in the chosen section has been used, or the player picks an unlisted number or declines the dialog.",
+          "outcome": "Back to the menu.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "decide"
+            }
+          ]
+        },
+        {
+          "atStep": "news",
+          "condition": "A faction with a strong enough ally rises, and the player flees (Y).",
+          "outcome": "By helicopter or on foot: escaped, or caught and killed. The reign ends.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "escape"
+            },
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "onFoot"
+            }
+          ]
+        },
+        {
+          "atStep": "news",
+          "condition": "A faction rises, and the player fights, choosing a helper from the list (1–6).",
+          "outcome": "Overthrown, and the reign ends; or the revolt is crushed, the player may punish the rebels (Y), and the month goes on to the report offer.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/flow.ts",
+              "symbol": "fight"
+            },
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "revoltCrushed"
+            }
+          ]
+        },
+        {
+          "atStep": "offer",
+          "condition": "The police are disloyal or weak, or the treasury is empty.",
+          "outcome": "The offer says why no file is available, and waits for any key; Y buys nothing.",
+          "sources": [
+            {
+              "path": "games/dictator/src/engine/rules.ts",
+              "symbol": "reportAvailability"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "feature",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/feature.json",
+      "relationship": "The features this use case exercises."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/operation.json",
+      "relationship": "playGame runs it."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/dictator/src",
+      "path": "games/dictator/src/.dev/use-case.json",
+      "relationship": "The reign, of which every month is one step."
+    },
+    {
+      "kind": "user-journey",
+      "folder": "games/dictator",
+      "path": "games/dictator/.dev/user-journey.json",
+      "relationship": "The journey across a reign's months."
+    }
+  ]
+}

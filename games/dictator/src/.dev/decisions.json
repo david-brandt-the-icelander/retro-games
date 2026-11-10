@@ -1,0 +1,110 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Browser game decisions",
+  "folder": "games/dictator/src",
+  "entities": [
+    {
+      "id": "name-not-email",
+      "title": "A name, not an email",
+      "summary": "The table asks for a name of up to 12 characters; no email or other personal data is collected.",
+      "status": "accepted",
+      "context": "The table was first keyed by the player's email, stored privately, with the part before the @ shown.",
+      "options": [
+        {
+          "title": "Keep the email",
+          "consequences": "Personal data stored for every reign."
+        },
+        {
+          "title": "Ask for a name",
+          "consequences": "No personal data; the name is cleaned to what the game's font can draw."
+        }
+      ],
+      "decision": "A name, typed on an arcade-style entry screen and kept for the browser session; a signed-in player starts with the part of their email before the @, which is offered, not stored. The email column was dropped from the live database.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-06",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/name.ts",
+          "symbol": "cleanName"
+        },
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "offerTable"
+        },
+        {
+          "path": "games/dictator/docs/GDD.md",
+          "symbol": "14. Decision log"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/dictator/worker/migrations/.dev/versions.json",
+          "entityId": "v2-drop-email"
+        }
+      ]
+    },
+    {
+      "id": "every-screen-waits",
+      "title": "Every screen waits for a key; timed screens move on after 7 s",
+      "summary": "The screens the original moved on by itself draw in full, hold for their old time, then wait for a key or 7 seconds.",
+      "status": "accepted",
+      "context": "In playtesting a newsflash went by too fast to read. A later decision that day found that waiting indefinitely went too far the other way.",
+      "options": [
+        {
+          "title": "The original's timing",
+          "consequences": "Some screens are gone before they can be read."
+        },
+        {
+          "title": "Every screen waits for a key",
+          "consequences": "A reign stalls whenever the player looks away."
+        },
+        {
+          "title": "Hold, then wait for a key or 7 seconds",
+          "consequences": "Readable, and the reign still moves."
+        }
+      ],
+      "decision": "A screen the original timed draws in full and plays its sound, ignoring keys, for at least its time in RULES §15.5, then shows the any-key footer; a key moves on at once, and with no key it moves on 7 seconds after it appeared (or when its own time ends, if later). Screens that ask something wait for their answer.",
+      "rationale": "The keys these screens read never change the game, so the change is invisible to the state and to parity.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-06",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "present"
+        },
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "AUTO_ADVANCE_MS"
+        },
+        {
+          "path": "games/dictator/docs/RULES.md",
+          "symbol": "15.5 Pacing"
+        }
+      ]
+    },
+    {
+      "id": "server-calls",
+      "title": "Every server call is best effort",
+      "summary": "The game plays without the server; only entering the table needs it.",
+      "status": "accepted",
+      "context": "The game was first a static page with no server; the table added three calls.",
+      "decision": "startReign waits 3 s, submitReign 10 s, the table and /games/me 5 s and 3 s; any failure returns null. Without a seed the reign plays with a local one and is not offered to the table; without the table the screen says it can't be reached.",
+      "rationale": "A slow or absent server never stops a reign.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/scores.ts",
+          "symbol": "call"
+        },
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "startReign"
+        }
+      ]
+    }
+  ]
+}

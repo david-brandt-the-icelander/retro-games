@@ -32,7 +32,7 @@
     {
       "id": "index",
       "name": "Entry point (index.ts)",
-      "responsibility": "Exports newGame, playGame, snapshot and the screen types.",
+      "responsibility": "Exports newGame, playGame, isYes, digit, snapshot, SCREEN_KINDS and the screen types.",
       "folder": "games/dictator/src/engine"
     },
     {

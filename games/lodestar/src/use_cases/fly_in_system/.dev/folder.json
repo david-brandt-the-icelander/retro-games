@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Fly in a system",
+  "folder": "games/lodestar/src/use_cases/fly_in_system",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Fly in a system",
+      "summary": "The game from the title to the end: the 12 Hz tick, the modes, the presses, and the order of everything a tick does.",
+      "purpose": "FlyInSystem holds the pilots, the cockpit, the bubble, navigation, the countdown, the spawn delay and the main generator, and runs the title, docked, tunnel, flight, dying and escape modes and pause, one tick of two substeps at a time. tick.rs owns only the order of the flight tick's eleven steps; each step calls the capability or feature that owns its rule.",
+      "boundaries": [
+        "Presses arrive in an InputRecord and outcomes leave as Events; the presentation reads the state and never writes it.",
+        "Pilot records are loaded and saved through a PilotStore the host passes in."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::flight_logic"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/fly_in_system.md",
+          "label": "Fly in a system (use-case document)"
+        }
+      ]
+    }
+  ]
+}

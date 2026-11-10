@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Browser game decisions",
+  "folder": "games/shatterbelt/src",
+  "entities": [
+    {
+      "id": "one-pilot-per-browser",
+      "title": "One pilot per browser",
+      "summary": "Each browser flies one ship; friends play together each on their own device, from the multiplayer page.",
+      "status": "accepted",
+      "context": "Up to nine pilots can share a game, and online play already keeps several browsers in the same game.",
+      "decision": "Input turns every key, gamepad and touch button into one pilot's controls, LAUNCH starts a game for one, and a game with friends starts only from the multiplayer page, each pilot on their own device.",
+      "rationale": "One way to play together, with every pilot on their own screen and controls.",
+      "origin": {
+        "kind": "commit",
+        "reference": "540029b",
+        "description": "Shatterbelt: one pilot per browser; groups play from the multiplayer page."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/input.ts",
+          "symbol": "Input.controls"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "launch"
+        }
+      ]
+    },
+    {
+      "id": "online-on-table",
+      "title": "Online games go on the public table",
+      "summary": "The host starts an online game with a seed from the server, each page names its own pilot, and the host submits the game with every name.",
+      "status": "accepted",
+      "context": "Every page plays the whole game in lockstep (the lockstep decision recorded in Rally's src, where src/online.ts is the same file), so every page holds the same recording; the server replays a game from a seed it issued, once per seed.",
+      "options": [
+        {
+          "title": "Keep online games off the table",
+          "consequences": "As Rally does: an online win is recorded nowhere."
+        },
+        {
+          "title": "Each page submits its own pilot",
+          "consequences": "The seed is accepted once, so only the first page's pilot would get on."
+        },
+        {
+          "title": "The host submits for everyone",
+          "consequences": "The pages exchange names after the game, and the host waits up to 120 s for them."
+        }
+      ],
+      "decision": "The host asks the server for the seed and sends its ticket in the start message. After the game every page sends its pilot's name; the lowest slot still in the room waits for every name or departure, submits the game with every name, and sends the results to the others.",
+      "rationale": "Online games count like any other, under one seed and one replay.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "startOnline"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "afterOnline"
+        },
+        {
+          "path": "games/shatterbelt/README.md",
+          "symbol": "Playing online: each pilot on their own computer"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/rally/src/.dev/decisions.json",
+          "entityId": "lockstep"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/shatterbelt/worker/.dev/decisions.json",
+          "entityId": "replay-not-trust"
+        }
+      ]
+    }
+  ]
+}

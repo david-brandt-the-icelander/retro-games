@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Chess Worker",
+  "folder": "games/chess/worker",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Chess Worker",
+      "summary": "The Cloudflare Worker at icelander.net/games/retro/chess: the page behind the sign-in, the JSON API, a Durable Object per online game, and the static game.",
+      "purpose": "index.ts routes; auth.ts maps icelander.net's sign-in to Gambit's own users; api.ts answers the lobby, invitations, contacts, games, history and profile pictures; room.ts runs each online game's actions one at a time through actions.ts and broadcasts the result; db.ts and schema.sql are the D1 database; mail.ts emails invitations through Resend.",
+      "boundaries": [
+        "Sign-in itself is icelander.net's login service, reached through vendor/icelander-auth (never edited here) and the ACCOUNTS service binding.",
+        "The rules and the API's types are shared/; the Godot client is the only caller in production."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom"
+        },
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "main"
+        }
+      ]
+    }
+  ]
+}

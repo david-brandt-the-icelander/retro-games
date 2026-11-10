@@ -1,0 +1,76 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "Browser game settings",
+  "folder": "games/shatterbelt/src",
+  "entities": [
+    {
+      "id": "sound",
+      "title": "Sound",
+      "summary": "Whether sound is off, remembered in this browser.",
+      "key": "localStorage shatterbelt.muted",
+      "type": "\"1\" (off) | \"0\" (on)",
+      "default": "on",
+      "sensitive": false,
+      "scope": "per browser",
+      "takesEffect": "per-use",
+      "details": "Read when the page opens, written whenever M or the SOUND button toggles it. Blocked storage starts with sound on and remembers nothing.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/sound.ts",
+          "symbol": "MUTE_KEY"
+        },
+        {
+          "path": "games/shatterbelt/src/sound.ts",
+          "symbol": "Sound.toggle"
+        }
+      ]
+    },
+    {
+      "id": "match",
+      "title": "Online match",
+      "summary": "The match this page was opened to join, from the address.",
+      "key": "?match",
+      "type": "8 to 40 of A–Z, a–z, 0–9, _ and -",
+      "sensitive": false,
+      "scope": "per page load",
+      "takesEffect": "at-startup",
+      "details": "Anything else is ignored and the page shows the title. Leaving the match removes it from the address, so a reload doesn't join it again.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "matchInAddress"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "leaveRoom"
+        }
+      ]
+    },
+    {
+      "id": "mode",
+      "title": "Online mode",
+      "summary": "Co-op or versus for an online game this page's browser starts as host.",
+      "key": "?mode",
+      "type": "versus | anything else (co-op)",
+      "default": "coop",
+      "sensitive": false,
+      "scope": "per page load",
+      "takesEffect": "at-startup",
+      "details": "Only the host's reading counts: it is sent in the start message, and every other page plays the mode it receives.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "onlineMode"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "roomMessage"
+        }
+      ]
+    }
+  ]
+}

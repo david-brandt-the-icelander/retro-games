@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "UI backlog",
+  "folder": "games/hivestorm/src/ui",
+  "entities": [
+    {
+      "id": "scores-address",
+      "title": "The table screen names an old address for the scores",
+      "summary": "The in-game table says SCORES AT GAMES.ICELANDER.NET; the scores page is at icelander.net/games/retro/hivestorm/scores/.",
+      "type": "defect",
+      "expected": "The title screens' table points players to where the public scores page is served: icelander.net/games/retro/hivestorm/scores/, as the README and the Worker's route have it.",
+      "observed": "drawTable() writes SCORES AT GAMES.ICELANDER.NET under the table. The Worker's only route is icelander.net/games/retro/hivestorm*. Whether games.icelander.net still answers, or redirects, was not checked.",
+      "acceptanceCriteria": [
+        "The table screen names an address that serves Hivestorm's scores page, in the 224 px the screen has."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/hivestorm/src/ui/render.ts",
+        "description": "Found while documenting Hivestorm's folders: drawTable's footer line against wrangler.jsonc's route."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/ui/render.ts",
+          "symbol": "drawTable"
+        },
+        {
+          "path": "games/hivestorm/wrangler.jsonc",
+          "symbol": "routes"
+        },
+        {
+          "path": "games/hivestorm/worker/scores.ts",
+          "symbol": "PATH"
+        }
+      ]
+    }
+  ]
+}

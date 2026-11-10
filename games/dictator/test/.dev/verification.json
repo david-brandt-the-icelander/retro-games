@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Tests verification",
+  "folder": "games/dictator/test",
+  "entities": [
+    {
+      "id": "clean-room-guard",
+      "title": "Clean-room guard",
+      "summary": "No string or invented name from the original appears anywhere in the game.",
+      "subject": [
+        {
+          "path": "games/dictator/.dev/requirements.json",
+          "entityId": "looks-new"
+        }
+      ],
+      "criteria": [
+        "No run of words in any source, page, document or .dev file of the game hashes to one of the original's strings",
+        "The hash list is loaded and complete"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/guard.test.ts",
+          "symbol": "no string or name from the original appears in the game",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/guard.test.ts",
+          "symbol": "the hash list is loaded and complete",
+          "command": "npm test"
+        },
+        {
+          "type": "manual",
+          "description": "The verify role runs clean-room-rebuild's overlap.py and zx-spectrum-clean-room's zx_assets.py against the original, outside this repository (docs/TEST-PLAN.md rows 7 and 8)."
+        }
+      ],
+      "details": "The guard reads every .ts, .mjs, .js, .html, .css, .md, .json, .jsonc and .txt file under games/dictator except node_modules, dist, dist-test, .wrangler, package files and the hash list itself, so the .dev files are checked too."
+    }
+  ]
+}

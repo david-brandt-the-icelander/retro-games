@@ -1,0 +1,62 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How docking is checked",
+  "folder": "games/lodestar/src/features/docking",
+  "entities": [
+    {
+      "id": "docking",
+      "title": "Docking",
+      "summary": "The 5 tests in src/features/docking/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/docking/.dev/feature.json",
+          "entityId": "manual-docking"
+        },
+        {
+          "path": "games/lodestar/src/features/docking/.dev/feature.json",
+          "entityId": "auto-dock"
+        }
+      ],
+      "criteria": [
+        "Docking is checked only inside the 128 box",
+        "Each check at its threshold",
+        "The auto dock needs the unit and a friendly station",
+        "Docking cancels the countdown and the tunnel ends docked",
+        "Entering the docked state clears a countdown before selecting"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "docking_is_checked_only_inside_the_128_box",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "each_check_at_its_threshold",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "the_auto_dock_needs_the_unit_and_a_friendly_station",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "docking_cancels_the_countdown_and_the_tunnel_ends_docked",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "entering_the_docked_state_clears_a_countdown_before_selecting",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

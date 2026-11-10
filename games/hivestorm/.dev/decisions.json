@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Hivestorm decisions",
+  "folder": "games/hivestorm",
+  "entities": [
+    {
+      "id": "rooms-to-hub",
+      "title": "Online rooms belong to the games hub",
+      "summary": "The Durable Object that held online rooms moved to the games hub; Hivestorm only connects to it.",
+      "status": "accepted",
+      "context": "Rally, Shatterbelt and Hivestorm all play online, and players meet in one multiplayer lobby.",
+      "decision": "The relay is a Durable Object per match in the games hub, at /games/multiplayer/match/{ID}. Hivestorm's Worker deletes its old Room class, and both migration entries are kept.",
+      "rationale": "One lobby and one relay for every game; Cloudflare applies migrations in order, so removing the first entry would break the deploy.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/wrangler.jsonc",
+          "symbol": "migrations"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Room.open"
+        },
+        {
+          "path": "games/hivestorm/README.md",
+          "symbol": "Code"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/rally/.dev/decisions.json",
+          "entityId": "rooms-to-hub"
+        }
+      ]
+    }
+  ]
+}

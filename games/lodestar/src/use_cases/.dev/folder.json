@@ -1,0 +1,24 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Use cases",
+  "folder": "games/lodestar/src/use_cases",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Use cases",
+      "summary": "A pilot's goals, each coordinating features and capabilities. So far one: flying in a system.",
+      "purpose": "Groups lodestar-core's outermost layer. Its one use case, fly_in_system, owns the 12 Hz tick and every mode around flight.",
+      "boundaries": [
+        "Nothing inside lodestar-core depends on a use case."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/mod.rs",
+          "symbol": "fly_in_system"
+        }
+      ]
+    }
+  ]
+}

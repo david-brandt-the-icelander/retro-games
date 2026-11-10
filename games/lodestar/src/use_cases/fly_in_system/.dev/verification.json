@@ -1,0 +1,175 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How fly in system is checked",
+  "folder": "games/lodestar/src/use_cases/fly_in_system",
+  "entities": [
+    {
+      "id": "fly-in-system",
+      "title": "The use case's tests",
+      "summary": "The 21 tests in src/use_cases/fly_in_system/tests.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/.dev/Mode.state-diagram.json"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/.dev/operation.json"
+        }
+      ],
+      "criteria": [
+        "Twelve ticks a second whatever the frame rate",
+        "Alpha tracks the time since the last tick",
+        "A stall is cut to the longest frame",
+        "Power on is the title and start docks the start pilot",
+        "Only the first press in a substep answers the title",
+        "A mount press changes the active mount once",
+        "The launch tunnel takes sixteen ticks and leaves the station behind",
+        "Speed keys act once per tick",
+        "The world moves by the speed each tick",
+        "Lasers fire only from the space view",
+        "Queued actions wait for the tick logic and keep their order",
+        "The auto dock docks through the tunnel",
+        "A hyperspace jump counts down then arrives",
+        "Death runs sixty one ticks then the title restores the saved pilot",
+        "The escape pod drifts ninety seven ticks then docks",
+        "Pause stops everything until resumed",
+        "Quit from pause returns to the title",
+        "Buying fuel sets the main counter to zero",
+        "Trading happens only while docked",
+        "The same input gives the same game",
+        "A long restless game never panics"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "twelve_ticks_a_second_whatever_the_frame_rate",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "alpha_tracks_the_time_since_the_last_tick",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "a_stall_is_cut_to_the_longest_frame",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "power_on_is_the_title_and_start_docks_the_start_pilot",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "only_the_first_press_in_a_substep_answers_the_title",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "a_mount_press_changes_the_active_mount_once",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "the_launch_tunnel_takes_sixteen_ticks_and_leaves_the_station_behind",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "speed_keys_act_once_per_tick",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "the_world_moves_by_the_speed_each_tick",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "lasers_fire_only_from_the_space_view",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "queued_actions_wait_for_the_tick_logic_and_keep_their_order",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "the_auto_dock_docks_through_the_tunnel",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "a_hyperspace_jump_counts_down_then_arrives",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "death_runs_sixty_one_ticks_then_the_title_restores_the_saved_pilot",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "the_escape_pod_drifts_ninety_seven_ticks_then_docks",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "pause_stops_everything_until_resumed",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "quit_from_pause_returns_to_the_title",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "buying_fuel_sets_the_main_counter_to_zero",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "trading_happens_only_while_docked",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "the_same_input_gives_the_same_game",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "a_long_restless_game_never_panics",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

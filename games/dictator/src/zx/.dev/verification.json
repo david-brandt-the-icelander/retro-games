@@ -1,0 +1,87 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Platform layer verification",
+  "folder": "games/dictator/src/zx",
+  "entities": [
+    {
+      "id": "platform",
+      "title": "Display, font and keys",
+      "summary": "The font covers what the game prints, the display renders as the Spectrum does, and keys reach the game as typed.",
+      "subject": [
+        {
+          "path": "games/dictator/src/zx/.dev/folder.json",
+          "entityId": "folder"
+        }
+      ],
+      "criteria": [
+        "The font covers printable ASCII plus £ and ©; glyphs are distinct and capitals keep the top row clear",
+        "Print draws glyph pixels and sets attributes; pictures plot '#' as ink",
+        "Render paints border, paper and ink, and FLASH swaps ink and paper",
+        "Normal colours are 0xD7, BRIGHT 0xFF, black stays black",
+        "Every drawing call changes the version, so the display redraws",
+        "Keys reach the game as typed: case kept, Enter and Space kept, others ignored"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/zx.test.ts",
+          "symbol": "the font covers printable ASCII plus £ and ©",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/zx.test.ts",
+          "symbol": "glyphs are distinct and capitals keep the top row clear",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/zx.test.ts",
+          "symbol": "parseGlyph reads rows left to right, bit 7 first",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/zx.test.ts",
+          "symbol": "print draws glyph pixels and sets attributes",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/zx.test.ts",
+          "symbol": "render paints border, paper and ink, and FLASH swaps ink and paper",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/zx.test.ts",
+          "symbol": "palette: normal is 0xD7, BRIGHT is 0xFF, black stays black",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/zx.test.ts",
+          "symbol": "pictures plot '#' as ink and colour the cells they cover",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/zx.test.ts",
+          "symbol": "version changes on every drawing call",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/zx.test.ts",
+          "symbol": "keys reach the game as typed: case kept, Enter and Space kept, others ignored",
+          "command": "npm test"
+        },
+        {
+          "type": "manual",
+          "description": "The canvas's scaling, the touch keypad and the sound play in a real browser: desktop, phone portrait and phone landscape (docs/TEST-PLAN.md rows 10 and 13)."
+        }
+      ]
+    }
+  ]
+}

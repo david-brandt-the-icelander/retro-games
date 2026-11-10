@@ -94,7 +94,7 @@
     {
       "id": "hub",
       "name": "Games hub",
-      "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): the multiplayer lobby and one WebSocket relay per online match.",
       "external": true
     }
   ],

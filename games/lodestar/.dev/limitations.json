@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/limitations.schema.json",
+  "kind": "limitations",
+  "title": "LodeStar limitations",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "no-web-or-touch",
+      "title": "No web build, no phones or touch",
+      "summary": "Desktop only, keyboard and mouse.",
+      "impact": "The game cannot be played in a browser like the repository's other games, nor on a phone.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/GDD.md",
+          "symbol": "13. Scope and non-goals"
+        }
+      ]
+    },
+    {
+      "id": "no-autosave",
+      "title": "No autosave and no saving in flight",
+      "summary": "The pilot saves only while docked, by hand.",
+      "impact": "Everything since the last save is lost on death or on quitting.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "Pilots::save"
+        },
+        {
+          "path": "games/lodestar/docs/GDD.md",
+          "symbol": "13. Scope and non-goals"
+        }
+      ]
+    },
+    {
+      "id": "no-new-content",
+      "title": "No content the rules lack",
+      "summary": "No missions, extra ship types, other lasers or difficulty modes.",
+      "impact": "The game is the 1984 game's systems and no more; ideas that change rules are open questions for play-testing.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/GDD.md",
+          "symbol": "13. Scope and non-goals"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Shared rules verification",
+  "folder": "games/chess/shared",
+  "entities": [
+    {
+      "id": "rules",
+      "title": "The server's rules",
+      "summary": "Replaying UCI moves, the board's results, and promotion moves, on chess.js.",
+      "subject": [
+        {
+          "path": "games/chess/shared/.dev/folder.json",
+          "entityId": "folder"
+        }
+      ],
+      "criteria": [
+        "A legal move list replays to its SAN; an illegal move gives null",
+        "Checkmate, stalemate, insufficient material and threefold repetition each end the game with their result and reason",
+        "A promotion is a five-character UCI move naming the piece",
+        "A move list with a malformed move is refused"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/chess/test/rules.test.ts",
+          "symbol": "replay: legal moves give SAN, an illegal one gives null",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/chess/test/rules.test.ts",
+          "symbol": "outcomes: mate, stalemate, material, repetition",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/chess/test/rules.test.ts",
+          "symbol": "promotion moves are UCI with the piece",
+          "command": "npm test"
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/test/rules.test.ts"
+        },
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "boardOutcome"
+        },
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "validMoveList"
+        }
+      ],
+      "details": "The fifty-move rule (boardOutcome's isDrawByFiftyMoves) and validMoveList's limit of 600 moves have no test of their own."
+    }
+  ]
+}

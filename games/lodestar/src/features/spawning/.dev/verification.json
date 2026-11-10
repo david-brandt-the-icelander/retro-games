@@ -1,0 +1,213 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How spawning is checked",
+  "folder": "games/lodestar/src/features/spawning",
+  "entities": [
+    {
+      "id": "periodic",
+      "title": "The periodic spawn",
+      "summary": "The 18 tests in src/features/spawning/periodic.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/spawning/.dev/feature.json",
+          "entityId": "periodic-spawn"
+        }
+      ],
+      "criteria": [
+        "Nothing spawns and nothing is drawn in mis jump space",
+        "The benign trader",
+        "The benign trader comes in the safe zone too",
+        "The benign rock takes 512 more when the carry is set",
+        "The benign rock spins forever when b has bit 7",
+        "The benign canister",
+        "The safe zone stops rocks after three draws",
+        "Three rocks turn a benign byte hostile",
+        "A lone pirate pack of one",
+        "A pack of two shares one place and sets the delay",
+        "Lone hunters take the second bytes ecm",
+        "The alien roll",
+        "Contraband brings the police and nothing else",
+        "Police present add the legal status to the bar",
+        "No hostile spawn in the safe zone",
+        "The government table",
+        "A government stops the spawn after its byte",
+        "The delay counts down before it lets a spawn through"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "nothing_spawns_and_nothing_is_drawn_in_mis_jump_space",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "the_benign_trader",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "the_benign_trader_comes_in_the_safe_zone_too",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "the_benign_rock_takes_512_more_when_the_carry_is_set",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "the_benign_rock_spins_forever_when_b_has_bit_7",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "the_benign_canister",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "the_safe_zone_stops_rocks_after_three_draws",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "three_rocks_turn_a_benign_byte_hostile",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "a_lone_pirate_pack_of_one",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "a_pack_of_two_shares_one_place_and_sets_the_delay",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "lone_hunters_take_the_second_bytes_ecm",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "the_alien_roll",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "contraband_brings_the_police_and_nothing_else",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "police_present_add_the_legal_status_to_the_bar",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "no_hostile_spawn_in_the_safe_zone",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "the_government_table",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "a_government_stops_the_spawn_after_its_byte",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "the_delay_counts_down_before_it_lets_a_spawn_through",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "template",
+      "title": "Placements",
+      "summary": "The 7 tests in src/features/spawning/template.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/spawning/.dev/feature.json",
+          "entityId": "placements"
+        }
+      ],
+      "criteria": [
+        "The hostile template from the starting state",
+        "The template fits an ecm from 245",
+        "A template makes objects with their type energy",
+        "The alien group is a mothership then a drone at one place",
+        "The alien group reports a full bubble",
+        "Launching straight ahead",
+        "Children copy the parent and leave the station along its nose"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "the_hostile_template_from_the_starting_state",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "the_template_fits_an_ecm_from_245",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "a_template_makes_objects_with_their_type_energy",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "the_alien_group_is_a_mothership_then_a_drone_at_one_place",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "the_alien_group_reports_a_full_bubble",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "launching_straight_ahead",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "children_copy_the_parent_and_leave_the_station_along_its_nose",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

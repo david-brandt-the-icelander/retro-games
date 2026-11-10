@@ -1,0 +1,84 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Chess rules verification",
+  "folder": "games/chess/godot/chess",
+  "entities": [
+    {
+      "id": "move-generation",
+      "title": "Move generation against perft counts",
+      "summary": "The number of legal move sequences from known positions matches the published perft counts.",
+      "subject": [
+        {
+          "path": "games/chess/godot/chess/.dev/capability.json",
+          "entityId": "chess-rules"
+        }
+      ],
+      "criteria": [
+        "The start position to depth 3, Kiwipete to depth 2 and positions 3, 4 and 5 give their published counts"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/chess/godot/tests/test_rules.gd",
+          "symbol": "_init",
+          "command": "npm run test:godot"
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/tests/test_rules.gd",
+          "symbol": "_init"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.perft"
+        }
+      ]
+    },
+    {
+      "id": "game-record",
+      "title": "SAN, results and draws",
+      "summary": "Fool's mate, promotion, castling, disambiguation, threefold repetition, an illegal move and insufficient material.",
+      "subject": [
+        {
+          "path": "games/chess/godot/chess/.dev/operation.json",
+          "entityId": "from-moves"
+        }
+      ],
+      "criteria": [
+        "Fool's mate ends 0-1 by checkmate and is written f3 e5 g4 Qh4#",
+        "A capture promoting to a queen is written bxa8=Q; castling moves the rook and is written O-O",
+        "Knights on the same rank are told apart by file (Neg5)",
+        "Repeating a position three times draws by repetition",
+        "e2e5 from the start is refused",
+        "King and bishop against king is insufficient material; king and rook is not"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/chess/godot/tests/test_rules.gd",
+          "symbol": "_init",
+          "command": "npm run test:godot"
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/tests/test_rules.gd",
+          "symbol": "_init"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.san"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.insufficient_material"
+        }
+      ],
+      "details": "The fifty-move rule and stalemate have no test of their own here."
+    }
+  ]
+}

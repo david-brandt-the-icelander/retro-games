@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Static page files",
+  "folder": "games/chess/web",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Static page files",
+      "summary": "The files build.mjs copies beside the export: the headers, the loading screen's styles and the icon.",
+      "purpose": "_headers sets the Content-Security-Policy and the other security headers for every static file; shell.css styles the page and its loading screen; favicon.svg is the tab's icon.",
+      "boundaries": [
+        "The page itself is godot/web_shell/shell.html.",
+        "The Worker sets its own headers on the responses it makes (the page, the API, the joined index.wasm); _headers covers the static assets Cloudflare serves."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/build.mjs",
+          "symbol": "cpSync"
+        },
+        {
+          "path": "games/chess/web/_headers",
+          "symbol": "Content-Security-Policy"
+        },
+        {
+          "path": "games/chess/web/shell.css",
+          "symbol": "#status"
+        }
+      ]
+    }
+  ]
+}

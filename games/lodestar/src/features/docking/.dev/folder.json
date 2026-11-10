@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Docking",
+  "folder": "games/lodestar/src/features/docking",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Docking",
+      "summary": "When the station's slot is reached, the four docking checks, the auto-dock and docking itself.",
+      "purpose": "Says when the docking box is reached and whether the approach passes (RULES B.12.1, B.12.2), runs the auto-dock (B.12.3), and docks: the countdown cancelled and the docked state entered (B.12.4, D.3.11).",
+      "boundaries": [
+        "A feature: it uses capabilities and other features, never a use case (tests/layers.rs).",
+        "What a failed docking does to the player is the combat capability's (failed_docking)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "docking_contact"
+        },
+        {
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "enter_docked"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/features/docking/docking.md",
+          "label": "Docking (feature document)"
+        }
+      ]
+    }
+  ]
+}

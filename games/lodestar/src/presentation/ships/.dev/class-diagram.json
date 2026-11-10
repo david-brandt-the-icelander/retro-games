@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Ship rig class diagram",
+  "folder": "games/lodestar/src/presentation/ships",
+  "description": "The ship script and the import script that prepares every ship GLB for it (DESIGN § Rig contract).",
+  "sources": [
+    {
+      "path": "games/lodestar/src/presentation/ships/ship.gd",
+      "symbol": "set_channel"
+    },
+    {
+      "path": "games/lodestar/src/presentation/ships/ship_import.gd",
+      "symbol": "_post_import"
+    }
+  ],
+  "types": [
+    {
+      "id": "ship",
+      "name": "ship.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ships/ship.gd"
+      ],
+      "members": [
+        "RATES: turrets, brakes",
+        "set_channel(channel, value)",
+        "set_turret_traverse(degrees)",
+        "part_count() -> int",
+        "_process(delta)"
+      ]
+    },
+    {
+      "id": "ship-import",
+      "name": "ship_import.gd",
+      "kind": "class",
+      "sources": [
+        "games/lodestar/src/presentation/ships/ship_import.gd"
+      ],
+      "members": [
+        "_post_import(scene) -> Object",
+        "_use_second_uv_set(instance)",
+        "_all_nodes(root) -> Array"
+      ]
+    },
+    {
+      "id": "node3d",
+      "name": "Node3D",
+      "kind": "class",
+      "sources": [],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "post-import",
+      "name": "EditorScenePostImport",
+      "kind": "class",
+      "sources": [],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "ship",
+      "to": "node3d",
+      "kind": "inherits",
+      "description": "extends Node3D."
+    },
+    {
+      "from": "ship-import",
+      "to": "post-import",
+      "kind": "inherits",
+      "description": "extends EditorScenePostImport; set as the GLB's import script."
+    },
+    {
+      "from": "ship",
+      "to": "ship-import",
+      "kind": "depends-on",
+      "description": "Poses the parts tagged with the rig_kind metadata the import script writes."
+    }
+  ]
+}

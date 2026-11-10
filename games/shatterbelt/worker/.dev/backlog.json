@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "High-score Worker backlog",
+  "folder": "games/shatterbelt/worker",
+  "entities": [
+    {
+      "id": "all-games-link",
+      "title": "\"All the games\" on the scores page goes to the About page",
+      "summary": "The scores page's \"← All the games\" link points at /, which on icelander.net is the About page, not the list of games.",
+      "type": "defect",
+      "expected": "\"← All the games\" opens the games list at /games/, as the page's own header and footer links named Games do.",
+      "observed": "It links to / (icelander.net/), a leftover from when the games lived at the root of games.icelander.net. The game moved to icelander.net/games/retro/shatterbelt in commit edfb3fe, which updated the Play link beside it but not this one.",
+      "reproduction": [
+        "Open icelander.net/games/retro/shatterbelt/scores/",
+        "Choose \"← All the games\""
+      ],
+      "acceptanceCriteria": [
+        "The link on /games/retro/shatterbelt/scores/ leads to /games/."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/shatterbelt/worker/scores-page.ts",
+        "description": "Found while documenting Shatterbelt: scoresPage's side panel beside look.ts's navigation, which links Games to /games/ and About to icelander.net/."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        },
+        {
+          "path": "games/shatterbelt/worker/look.ts",
+          "symbol": "sitePage"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/public/.dev/backlog.json",
+          "entityId": "games-link"
+        }
+      ]
+    }
+  ]
+}

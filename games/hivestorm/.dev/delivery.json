@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/delivery.schema.json",
+  "kind": "delivery",
+  "title": "Hivestorm delivery",
+  "folder": "games/hivestorm",
+  "entities": [
+    {
+      "id": "production",
+      "title": "Production",
+      "summary": "The hivestorm Worker at icelander.net/games/retro/hivestorm*, with its static game and the D1 database hivestorm-scores.",
+      "environment": "production",
+      "purpose": "The game players reach at icelander.net/games/retro/hivestorm/ and its public scores page.",
+      "deployedBy": "The Deploy workflow on every push to main that changes games/hivestorm (or anything under .github/); by hand with Run workflow; or `npm run deploy` with a Cloudflare token.",
+      "approvals": [
+        "A pull request: main accepts nothing else.",
+        "A reviewer on the repository's production environment, if one is set."
+      ],
+      "rollback": "No rollback is recorded. The Deploy workflow deploys only from main, so going back means merging a revert, which deploys it. A database migration is not undone by this; migrations are written so the previous code keeps working (docs/database-migrations.md).",
+      "details": "The Worker's route runs ahead of the games hub's less specific icelander.net/games/*. workers_dev and preview URLs are off, so production is the only address. Its migrations delete the Durable Object class Room, which held online rooms before they moved to the games hub; both migration entries stay, because Cloudflare applies them in order.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/hivestorm/wrangler.jsonc",
+          "symbol": "routes"
+        },
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "on"
+        },
+        {
+          "path": "games/hivestorm/package.json",
+          "symbol": "deploy"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/hivestorm/.dev/pipeline.json",
+          "entityId": "deploy"
+        }
+      ]
+    }
+  ]
+}

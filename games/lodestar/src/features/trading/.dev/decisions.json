@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Trading decisions",
+  "folder": "games/lodestar/src/features/trading",
+  "entities": [
+    {
+      "id": "market-panel",
+      "title": "Trading at a market panel",
+      "summary": "Any item, any order, a stepper and partial sales, instead of RULES' buy and sell prompts.",
+      "status": "accepted",
+      "context": "UI-DESIGN's market panel differs from RULES' prompts.",
+      "decision": "buy and sell take a quantity the stepper sets; prices are fixed per visit, with no spread and no random draws (deliberate difference 12).",
+      "rationale": "Checked to reach exactly the purchases and refusals the prompts reach.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "buy"
+        },
+        {
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "max_buy"
+        }
+      ]
+    }
+  ]
+}

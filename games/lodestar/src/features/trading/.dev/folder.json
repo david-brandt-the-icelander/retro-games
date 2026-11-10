@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Trading",
+  "folder": "games/lodestar/src/features/trading",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Trading",
+      "summary": "Buying and selling goods at the market panel, any item, any order, a quantity.",
+      "purpose": "Carries out a purchase or a sale at the current system's economy and the pilot's stored market byte, and the most the stepper may offer (deliberate difference 12).",
+      "boundaries": [
+        "A feature: it uses capabilities and other features, never a use case (tests/layers.rs).",
+        "Prices, availability and hold space are the market capability's."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "buy"
+        },
+        {
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "sell"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/features/trading/trading.md",
+          "label": "Trading (feature document)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Flight capability",
+  "folder": "games/lodestar/src/capabilities/flight",
+  "description": "What the flight model can do for the tick.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/flight/mod.rs",
+      "symbol": "HeldControls"
+    }
+  ],
+  "entities": [
+    {
+      "id": "flight-model",
+      "name": "Flight model",
+      "description": "Turns and throttles the player and moves everything else.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/flight/attitude.rs",
+          "symbol": "Attitude"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/flight/motion.rs",
+          "symbol": "move_substep"
+        }
+      ],
+      "responsibility": "Updates roll and pitch from the held keys with damping and auto-centre, applies the speed keys, moves every object half a tick per substep, updates each object's own motion once a tick and re-orthonormalises it every 16 ticks.",
+      "operations": [
+        {
+          "path": "games/lodestar/src/capabilities/flight/attitude.rs",
+          "symbol": "Attitude::tick"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/flight/speed.rs",
+          "symbol": "apply_speed_keys"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/flight/motion.rs",
+          "symbol": "move_substep"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/flight/motion.rs",
+          "symbol": "own_motion_tick"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/flight/tidy.rs",
+          "symbol": "tidy_if_due"
+        }
+      ],
+      "access": [
+        "Nothing checks: an in-process library inside lodestar-core.",
+        "The flight tick calls it; the pause handler flips Attitude's auto-centre and damping flags."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "class",
+      "folder": "games/lodestar/src/capabilities/flight",
+      "path": "games/lodestar/src/capabilities/flight/.dev/class-diagram.json",
+      "relationship": "Its types."
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/requirements.schema.json",
+  "kind": "requirements",
+  "title": "LodeStar requirements",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "plays-like-the-original",
+      "title": "Plays the same, looks new",
+      "summary": "Every rule, number, timing and random draw of RULES is kept; every word, name, layout, model and sound is LodeStar's own.",
+      "statement": "The sim implements docs/RULES.md exactly, including the order of random draws and the deliberate differences it lists, while the galaxy data, market, names, text and art are new.",
+      "rationale": "A player of the 1984 game should recognise every system and make the same decisions, while nothing of the original's protected expression is copied.",
+      "acceptanceCriteria": [
+        "Unit tests check each rule as RULES writes it",
+        "Data-swapped parity traces replay bit for bit through FlyInSystem::tick",
+        "The overlap check over docs/ and the text table is clean"
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 2, pillar 1; DESIGN § What retro gameplay means."
+      },
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "What \"retro gameplay\" means"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/fly_in_system.md",
+          "symbol": "Parity"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lodestar/.dev/quality-requirements.json",
+          "entityId": "determinism"
+        }
+      ]
+    },
+    {
+      "id": "always-see-your-ship",
+      "title": "You always see your own ship",
+      "summary": "A third-person orbit camera, space-anchored by default, with a limited zoom, is the one deliberate change to how the game plays.",
+      "statement": "The camera orbits the player's ship between 1.5× and 5× its length, holds its direction in space by default and can follow behind the active mount; the camera never changes what the sim does.",
+      "acceptanceCriteria": [
+        "Orbiting and zooming never reach the sim",
+        "Zoom is clamped to MIN_ZOOM..MAX_ZOOM"
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/space/orbit_camera.gd",
+          "symbol": "MIN_ZOOM"
+        },
+        {
+          "path": "games/lodestar/src/presentation/space/orbit_camera.gd",
+          "symbol": "turn_with_universe"
+        }
+      ]
+    },
+    {
+      "id": "four-mounts",
+      "title": "Four laser mounts, the pilot picks the active one",
+      "summary": "Keys 1–4 choose the fore, aft, port or starboard mount; lasers fire, hit and lock only from it.",
+      "statement": "The active mount replaces the original's view switching: only its laser fires, its axis is the sights for hits and the missile lock, and the camera can swing to look along it.",
+      "acceptanceCriteria": [
+        "A mount press changes the active mount once",
+        "Lasers fire only from the space view"
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::select_mount"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "in_sights"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "a_mount_press_changes_the_active_mount_once"
+        }
+      ]
+    },
+    {
+      "id": "a-life-measured-in-dockings",
+      "title": "Save only at a station; death returns to the save",
+      "summary": "Saving happens only while docked, under a name, and death returns the pilot to the last save.",
+      "statement": "The pilot can save only while docked; death and starting from the title restore the last saved or loaded pilot, so every launch risks what was earned since.",
+      "acceptanceCriteria": [
+        "Saving in flight does nothing",
+        "Death returns to the saved copy"
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 2, pillar 4."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "Pilots::save"
+        },
+        {
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "Pilots::on_death"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lodestar/src/features/saving/.dev/feature.json",
+          "entityId": "save-and-restore"
+        }
+      ]
+    },
+    {
+      "id": "desktop-only",
+      "title": "A desktop game",
+      "summary": "Windows, macOS and Linux with a keyboard and mouse; no web build, no phones or touch.",
+      "statement": "LodeStar ships as a native desktop game: the Godot runtime with the exported game and the lodestar-godot library for each platform.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/export_presets.cfg",
+          "symbol": "preset.0"
+        },
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Desktop build"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lodestar/src/hosting/godot/.dev/blockers.json",
+          "entityId": "windows-and-macos-builds"
+        }
+      ]
+    }
+  ]
+}

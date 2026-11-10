@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "UI",
+  "folder": "games/hivestorm/src/ui",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "UI",
+      "summary": "The pixel art and font, the canvas drawing, the controls and the sound.",
+      "purpose": "Turns the engine's Game and its events into what the player sees and hears on a 224×288 canvas, and keys and on-screen buttons into one Input a frame.",
+      "boundaries": [
+        "Decides nothing about the game: the engine does. render() reads the Game and never changes it.",
+        "No image or sound files: every sprite and glyph is a pixel map in art.ts, and every sound is made with Web Audio."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/ui/render.ts",
+          "symbol": "render"
+        },
+        {
+          "path": "games/hivestorm/src/ui/input.ts",
+          "symbol": "Controls"
+        },
+        {
+          "path": "games/hivestorm/src/ui/sound.ts",
+          "symbol": "Sound"
+        },
+        {
+          "path": "games/hivestorm/src/ui/art.ts",
+          "symbol": "alienSprite"
+        }
+      ]
+    }
+  ]
+}

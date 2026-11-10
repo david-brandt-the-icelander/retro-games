@@ -1,0 +1,290 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/requirements.schema.json",
+  "kind": "requirements",
+  "title": "Shatterbelt requirements",
+  "folder": "games/shatterbelt",
+  "entities": [
+    {
+      "id": "rules",
+      "title": "The rules the README promises",
+      "summary": "Waves of stone, crystal and iron rocks, drones, pods, blink, streaks and lives, with the README's numbers.",
+      "statement": "Large rocks split into two medium and medium into two small; crystal splits in three, is worth double and may drop a pod; iron takes two hits, is worth triple and appears from wave 3. Drones cross and shoot; the hunter aims, from wave 3. Blink jumps 230 px with half a second's guard and recharges in 3 s. Hits within 1.6 s build a streak; every 5 raise the multiplier, up to ×4. Three ships each, another every 10,000 points; ships that touch are both lost.",
+      "rationale": "These rules, and their numbers, are what the README tells players.",
+      "acceptanceCriteria": [
+        "Stone scores 25, 60 and 120 for large, medium and small; crystal double; iron triple.",
+        "The large drone is worth 250, the hunter 700, a versus takedown 500, each multiplied by the streak.",
+        "The game ends when every player is out of ships."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/shatterbelt/README.md",
+        "description": "Shatterbelt's README, How to play."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "ROCK"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "DRONE"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "step"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/shatterbelt/src/engine/.dev/verification.json",
+          "entityId": "rocks-and-scoring"
+        },
+        {
+          "relation": "verified-by",
+          "path": "games/shatterbelt/src/engine/.dev/verification.json",
+          "entityId": "ships-and-modes"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/src/engine/.dev/feature.json",
+          "entityId": "rock-belt"
+        }
+      ]
+    },
+    {
+      "id": "unfakeable-scores",
+      "title": "Scores can't be faked",
+      "summary": "A score on the table is only ever what the server's replay of the game computed.",
+      "statement": "The server issues each game's seed, replays the recorded controls of every player with the same engine before listing any score, and accepts each seed once.",
+      "rationale": "A public table is only worth climbing if nobody can type a score into it.",
+      "acceptanceCriteria": [
+        "A recording that does not play exactly one whole game is refused.",
+        "A recording made with another seed does not replay to the same scores.",
+        "A used seed is refused."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/shatterbelt/README.md",
+        "description": "Shatterbelt's README, The high-score table."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "replay"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/shatterbelt/src/engine/.dev/verification.json",
+          "entityId": "replay"
+        },
+        {
+          "relation": "verified-by",
+          "path": "games/shatterbelt/worker/.dev/verification.json",
+          "entityId": "submissions"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/worker/.dev/feature.json",
+          "entityId": "unfakeable-scores"
+        }
+      ]
+    },
+    {
+      "id": "own-devices",
+      "title": "Friends fly on their own devices",
+      "summary": "Up to nine pilots play one game online, each on their own computer, phone or tablet, in co-op or versus.",
+      "statement": "An online game started from the multiplayer page is played by two to nine signed-in pilots on as many devices, who all see exactly the same game. Each browser flies one pilot; there is no game for several pilots on one device.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/shatterbelt/README.md",
+        "description": "Shatterbelt's README, Controls and Playing online."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "joinMatch"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Lockstep"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "MAX_PLAYERS"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/shatterbelt/src/.dev/verification.json",
+          "entityId": "lockstep"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/src/.dev/feature.json",
+          "entityId": "online-game"
+        }
+      ]
+    },
+    {
+      "id": "online-on-table",
+      "title": "Online games go on the table",
+      "summary": "An online game is entered on the public table like any other, each pilot under their own name.",
+      "statement": "At the end of an online game each pilot who made the table names themselves on their own screen, and the host's browser sends the game with every name.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/shatterbelt/README.md",
+        "description": "Shatterbelt's README, Playing online."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "afterOnline"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/src/.dev/decisions.json",
+          "entityId": "online-on-table"
+        }
+      ]
+    },
+    {
+      "id": "sign-in",
+      "title": "Playing needs a sign-in",
+      "summary": "The game and its score API are for players signed in to icelander.net; the table stays public.",
+      "statement": "The game's page, a new game's seed and a score submission need a sign-in to icelander.net with the games:play role. The table, as JSON or as a page, needs none.",
+      "origin": {
+        "kind": "document",
+        "reference": "README.md",
+        "description": "The repository README: every game needs icelander.net's sign-in; the high-score tables stay public."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "AUTH"
+        },
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "gamePage"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/shatterbelt/worker/.dev/verification.json",
+          "entityId": "sign-in"
+        }
+      ]
+    },
+    {
+      "id": "any-input",
+      "title": "Keyboard, gamepad or touch",
+      "summary": "Every pilot can fly with the keyboard, a gamepad or the touch buttons.",
+      "statement": "Arrows or WASD (and the numpad) turn, thrust and blink, Space or Enter fires; a gamepad's stick, d-pad and buttons do the same; phones and tablets get on-screen buttons.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/shatterbelt/README.md",
+        "description": "Shatterbelt's README, Controls."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/input.ts",
+          "symbol": "KEYS"
+        },
+        {
+          "path": "games/shatterbelt/src/input.ts",
+          "symbol": "Input.poll"
+        },
+        {
+          "path": "games/shatterbelt/public/index.html",
+          "symbol": "touch"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/src/.dev/feature.json",
+          "entityId": "controls"
+        }
+      ]
+    },
+    {
+      "id": "names-only",
+      "title": "Only a name is stored",
+      "summary": "A score is stored with a name of up to 12 characters, and nothing else about the player.",
+      "statement": "The table stores a name of up to 12 plain characters with each score, and the game's wave, mode and number of players. No email address or other personal data is stored.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/shatterbelt/README.md",
+        "description": "Shatterbelt's README, The high-score table."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/schema.sql",
+          "symbol": "scores"
+        },
+        {
+          "path": "games/shatterbelt/src/name.ts",
+          "symbol": "cleanName"
+        }
+      ]
+    },
+    {
+      "id": "plays-offline",
+      "title": "The game plays without the server",
+      "summary": "When the score server can't be reached, the game still plays and its scores stay on the device.",
+      "statement": "A game whose seed the server could not issue still plays; its scores can go only on the device's own top ten, which is kept in the browser either way.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/shatterbelt/README.md",
+        "description": "Shatterbelt's README, The high-score table."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "launch"
+        },
+        {
+          "path": "games/shatterbelt/src/scores.ts",
+          "symbol": "addScore"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/src/.dev/feature.json",
+          "entityId": "device-table"
+        }
+      ]
+    },
+    {
+      "id": "original",
+      "title": "An original game",
+      "summary": "Shatterbelt belongs to the rock-shooter genre but copies no game in it.",
+      "statement": "Shatterbelt's name, look, sounds, rules for crystal and iron rocks, pods, blink, streaks, drones and multiplayer are its own.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/shatterbelt/README.md",
+        "description": "Shatterbelt's README, introduction."
+      },
+      "evidenceStatus": "documented"
+    }
+  ]
+}

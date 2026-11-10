@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Bubble capability",
+  "folder": "games/lodestar/src/capabilities/bubble",
+  "description": "What the bubble can do for the rules.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+      "symbol": "Bubble"
+    }
+  ],
+  "entities": [
+    {
+      "id": "bubble",
+      "name": "The bubble",
+      "description": "Keeps the objects near the player in slot order.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "Bubble"
+        }
+      ],
+      "responsibility": "Adds, removes, replaces and finds objects, keeps per-type counts and silently refuses a fourteenth object.",
+      "operations": [
+        {
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "Bubble::add"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "Bubble::remove"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "Bubble::replace"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "Bubble::clear"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "Bubble::count_of"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "Bubble::find"
+        }
+      ],
+      "access": [
+        "Nothing checks: an in-process library inside lodestar-core.",
+        "Every feature that places or removes objects, the flight and combat capabilities, the use case and the bridge's readouts use it."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "class",
+      "folder": "games/lodestar/src/capabilities/bubble",
+      "path": "games/lodestar/src/capabilities/bubble/.dev/class-diagram.json",
+      "relationship": "Its types."
+    }
+  ]
+}

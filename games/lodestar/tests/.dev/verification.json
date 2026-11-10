@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How the source gates are checked",
+  "folder": "games/lodestar/tests",
+  "entities": [
+    {
+      "id": "layers",
+      "title": "Dependencies point inward",
+      "summary": "A test parses every use crate:: path in lodestar-core and fails on an outward one.",
+      "subject": [
+        {
+          "path": "games/lodestar/.dev/quality-requirements.json",
+          "entityId": "inward-layers"
+        }
+      ],
+      "criteria": [
+        "Capabilities depend on nothing further out",
+        "Features do not depend on use cases"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/tests/layers.rs",
+          "symbol": "capabilities_depend_on_nothing_further_out",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/tests/layers.rs",
+          "symbol": "features_do_not_depend_on_use_cases",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "deferred-work",
+      "title": "No deferred-work markers",
+      "summary": "A test scans every source file for a deferred-work comment and the tree for a deferred-work folder, and checks itself on a planted marker.",
+      "subject": [
+        {
+          "path": "games/lodestar/.dev/quality-requirements.json",
+          "entityId": "no-deferred-work-markers"
+        }
+      ],
+      "criteria": [
+        "No deferred work markers or folders",
+        "The gate catches a planted marker"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/tests/deferred_work.rs",
+          "symbol": "no_deferred_work_markers_or_folders",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/tests/deferred_work.rs",
+          "symbol": "the_gate_catches_a_planted_marker",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

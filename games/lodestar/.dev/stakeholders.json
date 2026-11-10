@@ -1,0 +1,79 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/stakeholders.schema.json",
+  "kind": "stakeholders",
+  "title": "LodeStar stakeholders",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "owner",
+      "title": "The owner",
+      "summary": "Approves each create-retro-game phase and decides the open choices.",
+      "role": "owner",
+      "interest": "A remake that plays like the original and can be published safely.",
+      "influence": "Decides; every gate needs their approval, and publishing their explicit word.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Milestones"
+        }
+      ]
+    },
+    {
+      "id": "spec-and-verify",
+      "title": "Spec-and-verify role",
+      "summary": "The only role that reads the baseline; writes RULES and the parity and overlap reports.",
+      "role": "contributor",
+      "interest": "RULES says exactly what the baseline does, in LodeStar's own words.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Starting point: a clean room from the private recreation"
+        }
+      ]
+    },
+    {
+      "id": "designer",
+      "title": "Designer",
+      "summary": "Writes the GDD, wireframes, art bible and UI design from RULES.",
+      "role": "contributor",
+      "interest": "New names, data and looks that keep the rules.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Starting point: a clean room from the private recreation"
+        }
+      ]
+    },
+    {
+      "id": "implementer",
+      "title": "Implementer",
+      "summary": "Writes the Rust, GDScript, scenes and tests from docs/ and the documents beside the code only.",
+      "role": "contributor",
+      "interest": "Clear documents to build from, and marks that say what is built.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Starting point: a clean room from the private recreation"
+        }
+      ]
+    },
+    {
+      "id": "players",
+      "title": "Players",
+      "summary": "Desktop players who like systemic games: fans of the 1984 game and newcomers to space trading.",
+      "role": "user",
+      "interest": "The game the pilot actor describes (Actors/pilot.md).",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/GDD.md",
+          "symbol": "6. Player experience"
+        }
+      ]
+    }
+  ]
+}

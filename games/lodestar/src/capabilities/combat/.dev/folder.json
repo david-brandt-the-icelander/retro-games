@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Combat",
+  "folder": "games/lodestar/src/capabilities/combat",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Combat",
+      "summary": "The player's lasers, missiles, E.C.M. and area blast, damage, contact, explosions, kills, bounties and the law.",
+      "purpose": "Holds the rules of RULES C.4 and C.6 to C.15 and the combat steps of processing one object in the slot loop, one function per step, for the flight tick to call in order.",
+      "boundaries": [
+        "A capability: it uses no feature or use case (tests/layers.rs).",
+        "The ship AI is the ai capability's; combat applies what a think returns.",
+        "The player's death and the escape pod are features."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/damage.rs",
+          "symbol": "Damage"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "ai_step"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/combat.md",
+          "label": "Combat (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

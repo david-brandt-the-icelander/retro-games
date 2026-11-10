@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "Godot client settings",
+  "folder": "games/chess/godot/scripts",
+  "entities": [
+    {
+      "id": "server",
+      "title": "Server address (desktop)",
+      "summary": "The Worker the desktop build talks to.",
+      "key": "--server=URL",
+      "type": "command-line user argument",
+      "default": "http://127.0.0.1:8787/games/retro/chess/",
+      "sensitive": false,
+      "scope": "desktop builds only; in the browser the address is the page's (chessBridge.baseUrl)",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "_ready"
+        }
+      ]
+    },
+    {
+      "id": "dev-email",
+      "title": "Development sign-in (desktop)",
+      "summary": "Signs the desktop build in as any address through the Worker's stand-in sign-in.",
+      "key": "--dev-email=ADDRESS",
+      "type": "command-line user argument",
+      "sensitive": false,
+      "scope": "desktop builds only; works only against a Worker with DEV_LOGIN=1 on a local host",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "load_me"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "handleAuth"
+        }
+      ]
+    },
+    {
+      "id": "dev-switches",
+      "title": "Development switches (desktop)",
+      "summary": "Open a screen or game, play moves, select, seek, click, toast and take a screenshot, for development and the reference renders.",
+      "key": "--goto, --id, --mode, --contact, --moves, --select, --promote, --view, --seek, --play, --face, --toast, --error-toast, --cycle, --invite, --click, --shot, --shot-after",
+      "type": "command-line user arguments",
+      "sensitive": false,
+      "scope": "desktop builds only (Main._ready calls _dev_args only when Api.is_web() is false)",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._dev_args"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._ready"
+        },
+        {
+          "path": "games/chess/scripts/reference/render.sh"
+        }
+      ]
+    },
+    {
+      "id": "muted",
+      "title": "Sound",
+      "summary": "Sound on or off, from the top bar; off also stops what is playing.",
+      "key": "Sfx.muted",
+      "type": "boolean",
+      "default": "false (sound on)",
+      "sensitive": false,
+      "scope": "this run of the game; not saved",
+      "takesEffect": "immediately",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/sfx.gd",
+          "symbol": "muted"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._ready"
+        }
+      ]
+    }
+  ]
+}

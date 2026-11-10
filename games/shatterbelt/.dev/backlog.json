@@ -1,0 +1,87 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Shatterbelt backlog",
+  "folder": "games/shatterbelt",
+  "entities": [
+    {
+      "id": "dev-folder-published",
+      "title": "The build publishes public/.dev",
+      "summary": "build.mjs copies public/ into dist/ whole, so public/.dev and its knowledge files become static assets of the deployed game.",
+      "type": "defect",
+      "expected": "dist/ holds only what the game serves: the page, its styles, game.js and _headers.",
+      "observed": "npm run build puts public/.dev/*.json at dist/games/retro/shatterbelt/.dev/, which wrangler deploy uploads with the other assets unless something leaves it out (not checked against Cloudflare).",
+      "reproduction": [
+        "cd games/shatterbelt",
+        "npm run build",
+        "ls dist/games/retro/shatterbelt/.dev"
+      ],
+      "acceptanceCriteria": [
+        "After npm run build, dist/ has no .dev folder, or the assets upload leaves it out (an .assetsignore, say)."
+      ],
+      "origin": {
+        "kind": "review",
+        "by": "Documenting agent",
+        "date": "2026-11-10",
+        "description": "Found when public/.dev was added and the build run while documenting Shatterbelt."
+      },
+      "status": "done",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/build.mjs",
+          "symbol": "cpSync"
+        },
+        {
+          "path": "games/shatterbelt/wrangler.jsonc",
+          "symbol": "assets"
+        },
+        {
+          "path": ".github/workflows/game.yml",
+          "symbol": "No .dev files in the build"
+        }
+      ],
+      "details": "Fixed 2026-11-10: build.mjs skips .dev when it copies public/, and .github/workflows/game.yml fails a build whose dist/ holds a .dev folder (games/.dev/decisions.json, publish-dev-files)."
+    },
+    {
+      "id": "local-sign-in",
+      "title": "The README's local run stops at the sign-in",
+      "summary": "Following Deploy › Local leads to a redirect to /auth/sign-in that nothing on localhost answers.",
+      "type": "defect",
+      "expected": "The README's local steps reach a playable game.",
+      "observed": "Read from the code, not run: gamePage redirects a signed-out visit to /auth/sign-in; this Worker never calls the library's handle(), so that path falls through to the static assets and is not found. The library's stand-in sign-in needs DEV_SIGN_IN set to \"true\" and a session cookie of its own making, and the README mentions neither.",
+      "acceptanceCriteria": [
+        "The README (or a runbook) says how to sign in locally, and its steps reach the title screen."
+      ],
+      "origin": {
+        "kind": "review",
+        "by": "Documenting agent",
+        "date": "2026-11-10",
+        "description": "Found while writing the run-locally runbook from the README and the Worker's code."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/README.md",
+          "symbol": "Deploy"
+        },
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "gamePage"
+        },
+        {
+          "path": "vendor/icelander-auth/index.js",
+          "symbol": "devOn"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/.dev/runbooks.json",
+          "entityId": "run-locally"
+        }
+      ]
+    }
+  ]
+}

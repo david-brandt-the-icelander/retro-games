@@ -18,6 +18,14 @@
       "symbol": "default.fetch"
     },
     {
+      "path": "games/shatterbelt/worker/index.ts",
+      "symbol": "AUTH"
+    },
+    {
+      "path": "games/shatterbelt/public/index.html",
+      "symbol": "play.js"
+    },
+    {
       "path": "vendor/icelander-auth/index.js",
       "symbol": "createAuth"
     }
@@ -27,13 +35,14 @@
       "id": "browser",
       "name": "Player's browser",
       "kind": "client",
-      "description": "Runs the game itself; one player per device."
+      "description": "Runs the game itself; one player per device.",
+      "actor": "Actors/player.md"
     },
     {
       "id": "edge",
       "name": "Cloudflare edge",
       "kind": "host",
-      "description": "Runs the Worker on icelander.net/games/retro/shatterbelt* and icelander.net/retro-games/shatterbelt*, ahead of the games hub's custom domain."
+      "description": "Runs the Worker on icelander.net/games/retro/shatterbelt* and icelander.net/retro-games/shatterbelt*, ahead of the games hub's less specific route, icelander.net/games/*."
     },
     {
       "id": "worker",
@@ -51,8 +60,15 @@
       "id": "hub",
       "name": "Games hub",
       "kind": "external-service",
-      "description": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in on this host (/auth/…), /me, play time (/play.js), the multiplayer lobby and one WebSocket relay per online match.",
-      "condition": "Online games (opened with ?match=ID)"
+      "description": "The games hub at icelander.net/games (the recreations repository's Worker): play time (/games/play.js, loaded by the page), the multiplayer lobby and one WebSocket relay per online match.",
+      "condition": "play.js on every visit; the relay only for online games (opened with ?match=ID)"
+    },
+    {
+      "id": "site",
+      "name": "icelander.net site",
+      "kind": "external-service",
+      "description": "The site's own Worker, in the icelander.net repository, which answers /auth/… on icelander.net: sign-in, its callback and sign-out, setting the site_session cookie this Worker reads.",
+      "condition": "When a signed-out player opens the game"
     },
     {
       "id": "accounts",
@@ -107,7 +123,13 @@
       "from": "browser",
       "to": "hub",
       "kind": "connects-to",
-      "description": "WebSocket /games/multiplayer/match/{id} for online games."
+      "description": "HTTPS /games/play.js on every visit; WebSocket /games/multiplayer/match/{id} for online games."
+    },
+    {
+      "from": "browser",
+      "to": "site",
+      "kind": "connects-to",
+      "description": "HTTPS /auth/sign-in?return=…, where the Worker redirects a signed-out player."
     },
     {
       "from": "worker",

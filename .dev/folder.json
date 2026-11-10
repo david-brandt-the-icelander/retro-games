@@ -1,0 +1,53 @@
+{
+  "$schema": "../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "retro-games",
+  "folder": ".",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "retro-games",
+      "summary": "Six games made with the help of AI, five of them played in the browser on icelander.net, each documented in .dev folders beside its code.",
+      "purpose": "The repository root holds the games in games/, the workflows that test and deploy them in .github/, the database migration procedure in docs/, the sign-in library the games' Workers vendor in vendor/icelander-auth/, the actors the .dev files name in Actors/, the skills and knowledge catalogue the .dev files follow in Meta/Agents/, and the clean-room remake skills in .claude/skills/.",
+      "boundaries": [
+        "Every change reaches main through a pull request, and a merge to main deploys each game it changes; nothing here deploys by hand.",
+        "vendor/icelander-auth/ is a copy of packages/icelander-auth/ in the icelander.net repository, kept unchanged and checked against its STAMP.json; it is changed there, never here.",
+        "Meta/Agents/Skills and Meta/Agents/Knowledge are copies from the human-assisted-software-development repository, changed there and copied here, except Meta/Agents/Skills/knowledge-driven-development, which LodeStar still uses.",
+        "The games hub that relays online matches and serves /me lives in another repository; the games only connect to it."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "symbol": "Agent instructions"
+        },
+        {
+          "path": "README.md",
+          "symbol": "Games"
+        },
+        {
+          "path": "vendor/icelander-auth/README.md",
+          "symbol": "icelander-auth"
+        },
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "on.push"
+        }
+      ],
+      "links": [
+        {
+          "path": "README.md",
+          "label": "README"
+        },
+        {
+          "path": "AGENTS.md",
+          "label": "Agent instructions"
+        },
+        {
+          "path": "games/.dev/component-diagram.json",
+          "label": "The games"
+        }
+      ]
+    }
+  ]
+}

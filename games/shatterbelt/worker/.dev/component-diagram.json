@@ -42,7 +42,7 @@
     {
       "id": "helpers",
       "name": "Score helpers (scores.ts)",
-      "responsibility": "Validates submissions, replays them and returns each player's score; holds the old path for the 308 redirect.",
+      "responsibility": "Validates submissions, replays them from the issued seed and returns each player's score; holds the paths, the limits and the old path for the 308 redirect.",
       "folder": "games/shatterbelt/worker"
     },
     {
@@ -160,7 +160,7 @@
       "from": "signin",
       "to": "accounts",
       "kind": "depends-on",
-      "description": "ACCOUNTS.session(cookie, \"games\") on every request."
+      "description": "ACCOUNTS.session(cookie, \"site\") on every request (createAuth with app site)."
     }
   ]
 }

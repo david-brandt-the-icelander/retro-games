@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Page bridge",
+  "folder": "games/chess/bridge",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Page bridge",
+      "summary": "TypeScript for the page around the Godot export, bundled into bridge.js: it starts the engine and gives the game what only the page can do.",
+      "purpose": "main.ts boots Godot's loader with a progress bar and a failure notice, and defines window.chessBridge; engine.ts runs Stockfish in a Web Worker and maps the eight strengths to UCI commands.",
+      "boundaries": [
+        "The game calls window.chessBridge only from godot/scripts/api.gd, and only in the browser; on the desktop Api does without it.",
+        "Stockfish itself is the stockfish npm package, copied into engine/ by build.mjs and not edited here."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "chessBridge"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "Engine"
+        },
+        {
+          "path": "games/chess/build.mjs",
+          "symbol": "bridge"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How pilot is checked",
+  "folder": "games/lodestar/src/capabilities/pilot",
+  "entities": [
+    {
+      "id": "pilot",
+      "title": "The pilot",
+      "summary": "The 3 tests in src/capabilities/pilot/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/pilot/.dev/class-diagram.json"
+        }
+      ],
+      "criteria": [
+        "Rank bands",
+        "Legal and contraband",
+        "Start pilot"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/pilot/mod.rs",
+          "symbol": "rank_bands",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/pilot/mod.rs",
+          "symbol": "legal_and_contraband",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/pilot/mod.rs",
+          "symbol": "start_pilot",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

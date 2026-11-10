@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Browser game backlog",
+  "folder": "games/dictator/src",
+  "entities": [
+    {
+      "id": "refused-reign-message",
+      "title": "A refused reign is reported as an unreachable table",
+      "summary": "When the server refuses a reign (its seed expired or was used, or its keys no longer replay), the name entry says the table can't be reached and invites another try that cannot succeed.",
+      "type": "defect",
+      "expected": "A reign the server refuses is reported as one that can't go on the table, and the player is sent on, as when they skip; only a network failure invites another try.",
+      "observed": "call() turns every failure, a refusal (409, 422) as much as a lost connection, into null, and offerTable answers null with \"The table can't be reached.\" and keeps the entry open, so ENTER sends the same refused reign again.",
+      "reproduction": [
+        "Start a reign, and submit it more than 24 hours after its seed was issued, or after a deploy that changed the engine"
+      ],
+      "acceptanceCriteria": [
+        "A 409 or 422 answer says the reign can't be entered and leaves the entry.",
+        "A network failure still keeps the entry open for another try."
+      ],
+      "origin": {
+        "kind": "review",
+        "by": "Documenting agent",
+        "date": "2026-11-10",
+        "description": "Found while reading src/scores.ts and src/main.ts against worker/index.ts for the .dev files."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/scores.ts",
+          "symbol": "call"
+        },
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "offerTable"
+        },
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "submitScore"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/runbooks.schema.json",
+  "kind": "runbooks",
+  "title": "Gambit runbooks",
+  "folder": "games/chess",
+  "entities": [
+    {
+      "id": "setup",
+      "title": "Work on Gambit",
+      "summary": "Install, test and build the game in its folder.",
+      "purpose": "setup",
+      "when": "Before changing anything in games/chess.",
+      "steps": [
+        "Node 22, and Godot 4.7.2 with its web export templates (GODOT=path if it is not on the PATH as godot)",
+        "cd games/chess",
+        "npm install",
+        "npm test (typecheck, then the TypeScript suites)",
+        "npm run test:godot (the GDScript suites)",
+        "npm run build (into dist/games/retro/chess/)"
+      ],
+      "verify": "npm test and npm run test:godot pass.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/README.md",
+          "symbol": "Develop"
+        },
+        {
+          "path": "games/chess/package.json",
+          "symbol": "scripts"
+        }
+      ]
+    },
+    {
+      "id": "run-locally",
+      "title": "Run the game locally",
+      "summary": "The game, its API and a local database on localhost, with the development sign-in.",
+      "purpose": "setup",
+      "steps": [
+        "cp .dev.vars.example .dev.vars (DEV_LOGIN=1)",
+        "npx wrangler d1 execute chess --local --file worker/schema.sql",
+        "npm run dev (exports the game, then wrangler dev)",
+        "Open http://localhost:8787/games/retro/chess/ and sign in with the development sign-in; a second browser or a private window is the other player",
+        "Or run the desktop build against it: godot --path godot -- --dev-email=you@test.io (no computer opponent on the desktop)"
+      ],
+      "verify": "Two players can invite each other and play a game.",
+      "details": "Never set DEV_LOGIN in production. The development switches (--goto, --moves, --shot and the rest) are in godot/scripts/.dev/configuration.json.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/README.md",
+          "symbol": "Develop"
+        },
+        {
+          "path": "games/chess/.dev.vars.example"
+        }
+      ]
+    },
+    {
+      "id": "first-deploy",
+      "title": "Set up production",
+      "summary": "The one-time owner actions before the first deploy.",
+      "purpose": "setup",
+      "when": "Only once, by the owner, for a new Cloudflare account or database.",
+      "steps": [
+        "npx wrangler d1 create chess, and put its id in wrangler.jsonc",
+        "npx wrangler d1 execute chess --remote --file worker/schema.sql",
+        "Deploy icelander.net's accounts Worker first, and put its public keys into ACCOUNTS_JWKS in wrangler.jsonc",
+        "Optional: npx wrangler secret put RESEND_API_KEY, and a verified sender in MAIL_FROM",
+        "npm run deploy"
+      ],
+      "verify": "The game opens at icelander.net/games/retro/chess/ after signing in.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/README.md",
+          "symbol": "Deploy"
+        },
+        {
+          "path": "games/chess/wrangler.jsonc"
+        }
+      ]
+    },
+    {
+      "id": "change-database",
+      "title": "Change the database",
+      "summary": "A schema change is a migration applied by hand before merging.",
+      "purpose": "operate",
+      "when": "worker/schema.sql has to change.",
+      "steps": [
+        "Add games/chess/worker/migrations/NNNN-what-it-does.sql, numbered from 0002, with a comment saying why (Gambit has no migrations/ folder yet)",
+        "Make the same change in worker/schema.sql",
+        "Try it locally: npx wrangler d1 execute chess --local --file worker/migrations/<file>",
+        "Apply it to production before merging, as docs/database-migrations.md says, and acknowledge it in the pull request's description"
+      ],
+      "verify": "The Database migration check passes.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Writing a migration"
+        },
+        {
+          "path": "games/chess/worker/schema.sql"
+        }
+      ]
+    },
+    {
+      "id": "retire-old-sign-in",
+      "title": "Retire Gambit's own sign-in",
+      "summary": "After the move to icelander.net's login service, delete the old OAuth secrets and the sessions table.",
+      "purpose": "operate",
+      "when": "Once, by the owner, after sign-in through the login service works in production.",
+      "steps": [
+        "Export the players for the login service's import: npx wrangler d1 execute chess --remote --json --command \"SELECT email, name, picture, created FROM users\" > gambit-users.json",
+        "npx wrangler secret delete GOOGLE_CLIENT_ID, then GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET",
+        "npx wrangler d1 execute chess --remote --file worker/retire-sessions.sql",
+        "Remove the old redirect URIs …/auth/callback/google (Google Cloud Console) and …/callback/github (the GitHub OAuth app, or delete the app)"
+      ],
+      "verify": "Signing in, playing and signing out still work; the sessions table is gone.",
+      "details": "Whether this has been done is not recorded in the repository.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/README.md",
+          "symbol": "Sign-in"
+        },
+        {
+          "path": "games/chess/worker/retire-sessions.sql"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/worker/.dev/backlog.json",
+          "entityId": "retire-sessions-outside-migrations"
+        }
+      ]
+    }
+  ]
+}

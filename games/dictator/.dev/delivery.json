@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/delivery.schema.json",
+  "kind": "delivery",
+  "title": "Samosa delivery",
+  "folder": "games/dictator",
+  "entities": [
+    {
+      "id": "production",
+      "title": "Production",
+      "summary": "The samosa Worker at icelander.net/games/retro/samosa* (and the old /retro-games/samosa*), with its static game and the D1 database samosa-scores.",
+      "environment": "production",
+      "purpose": "The game players reach at icelander.net/games/retro/samosa/ and its public scores page.",
+      "deployedBy": "The Deploy workflow on every push to main that changes games/dictator (or anything under .github/); by hand with Run workflow, choosing dictator or all; or `npm run deploy` with a Cloudflare token.",
+      "approvals": [
+        "A pull request: main accepts nothing else.",
+        "A reviewer on the repository's production environment, if one is set."
+      ],
+      "rollback": "No rollback is recorded. The Deploy workflow deploys only from main, so going back means merging a revert, which deploys it. A database migration is not undone by this; migrations are written so the previous code keeps working (docs/database-migrations.md).",
+      "details": "The Worker's routes run ahead of the games hub's less specific icelander.net/games/*. workers_dev and preview_urls are off, so there is no other address. The database was created once by hand from worker/schema.sql; since then it changes only through worker/migrations/.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/dictator/wrangler.jsonc",
+          "symbol": "routes"
+        },
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "on"
+        },
+        {
+          "path": "games/dictator/README.md",
+          "symbol": "Deploy"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/dictator/.dev/pipeline.json",
+          "entityId": "deploy"
+        }
+      ]
+    }
+  ]
+}

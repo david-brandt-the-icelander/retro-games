@@ -70,7 +70,7 @@
     {
       "from": "dive",
       "to": "dive",
-      "trigger": "moveAliens(): its queen is gone or home",
+      "trigger": "moveAliens(): its queen is shot, or no longer peeling or diving",
       "guard": "an escort",
       "action": "leader = −1; it carries on alone."
     },
@@ -110,7 +110,7 @@
     {
       "from": "home",
       "to": "shot",
-      "trigger": "kill(): hit by the player's shot, or rams the ship",
+      "trigger": "kill(): hit by the player's shot (an alien at home never rams)",
       "action": "Score pointsFor(); emit hit, or queen for a diving queen."
     },
     {

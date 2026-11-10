@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "The universe",
+  "folder": "games/lodestar/src/capabilities/universe",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "The universe",
+      "summary": "Eight Reaches of 256 generated systems, distance and fuel range, choosing a destination and the charts.",
+      "purpose": "Works out every system from the generator of RULES A.3 with the GDD's data, measures distance and range (A.4), does the pure computations of choosing and reaching a destination (A.5) and the charts' behaviour (A.6).",
+      "boundaries": [
+        "A capability: it uses no feature or use case (tests/layers.rs).",
+        "Nothing here draws a random number.",
+        "The selected system, the cursor and the countdown are held by the hyperspace feature."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "Galaxy"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "select"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/capabilities/universe/universe.md",
+          "label": "The universe (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Browser game decisions",
+  "folder": "games/hivestorm/src",
+  "entities": [
+    {
+      "id": "online-turns",
+      "title": "Online play is the two-player game, taking turns",
+      "summary": "Two players online play the engine's own two-player game, each playing their own turns with their own controls.",
+      "status": "accepted",
+      "context": "The engine already has a two-player game in which the turn passes on each lost ship, but takes one Input a frame. Online, each browser has only its own player's controls.",
+      "decision": "Both browsers run the two-player game in lockstep (src/online.ts). Each sends only left, right and fire; on every step the page plays the controls of the player whose turn it is, or of the one still there if that player has left. The first step presses 2 for both browsers, and the starts and pause never travel.",
+      "rationale": "The game plays exactly as it would on one machine, and its recording is an ordinary two-player recording the server can replay.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "stepOnline"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "pack"
+        },
+        {
+          "path": "games/hivestorm/README.md",
+          "symbol": "Playing online"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/rally/src/.dev/decisions.json",
+          "entityId": "lockstep"
+        }
+      ]
+    },
+    {
+      "id": "one-submission",
+      "title": "One browser sends an online game",
+      "summary": "The host's browser sends the game once, with both players' names.",
+      "status": "accepted",
+      "context": "Both browsers hold the same recording and the same server-issued seed, and the server accepts each seed once.",
+      "options": [
+        {
+          "title": "Each browser sends its own player's score",
+          "consequences": "The second submission would be refused: the seed is already used."
+        },
+        {
+          "title": "One browser sends both names",
+          "consequences": "It must wait for the other player's name, which may never come."
+        }
+      ],
+      "decision": "Each browser asks its own player and sends the name to the other. The browser of the lowest slot still in the game waits for the other name, up to 90 seconds, then sends the game with both (a missing one as null), and tells the other browser which rows are new.",
+      "rationale": "One replay scores both players, and a player who leaves cannot hold the other's score back for long.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "offerTable"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "newOnline"
+        },
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "submitScore"
+        }
+      ]
+    }
+  ]
+}

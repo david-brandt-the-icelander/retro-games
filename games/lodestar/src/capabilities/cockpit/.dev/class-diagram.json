@@ -1,0 +1,138 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Cockpit class diagram",
+  "folder": "games/lodestar/src/capabilities/cockpit",
+  "description": "The player's in-flight state, the missile lock and the timed messages (RULES C.1, C.6–C.10, D.3.13, D.9.1).",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+      "symbol": "Cockpit"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+      "symbol": "MissileLock"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+      "symbol": "Message"
+    }
+  ],
+  "types": [
+    {
+      "id": "cockpit",
+      "name": "Cockpit",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/cockpit/mod.rs"
+      ],
+      "members": [
+        "energy, fore_shield, aft_shield: u8",
+        "cabin_temperature, laser_temperature, laser_cooldown: u8",
+        "shot_damage, altitude, speed: u8",
+        "attitude: Attitude",
+        "active_mount: Mount",
+        "missile: MissileLock",
+        "ecm_timer: u8, ecm_own: bool",
+        "area_blast: u8",
+        "station_present, misjump: bool",
+        "counter: u8",
+        "message_timer: u8, message: Option<Message>",
+        "new()",
+        "reset(random)",
+        "drain_energy() -> bool",
+        "recharge_due() -> bool",
+        "recharge(energy_booster)",
+        "show(message)",
+        "message_showing() -> bool",
+        "count_down_message()",
+        "count_down_counter() -> bool",
+        "cool_laser()",
+        "start_ecm(own)",
+        "stop_ecm()",
+        "ecm_active() -> bool"
+      ]
+    },
+    {
+      "id": "missile-lock",
+      "name": "MissileLock",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/cockpit/mod.rs"
+      ],
+      "members": [
+        "armed: bool",
+        "target: Option<usize>",
+        "clear()",
+        "on_removed(slot) -> bool"
+      ]
+    },
+    {
+      "id": "message",
+      "name": "Message",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/capabilities/cockpit/mod.rs"
+      ],
+      "members": [
+        "FuelScooping",
+        "EnergyLow",
+        "KillPraise",
+        "IncomingMissile",
+        "MissileJammed",
+        "TargetLost",
+        "GalacticJump",
+        "Bounty { cash }",
+        "Scooped { item }",
+        "CargoLost { item }",
+        "EquipmentLost { roll }"
+      ]
+    },
+    {
+      "id": "attitude",
+      "name": "Attitude",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/flight/attitude.rs"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "main-generator",
+      "name": "MainGenerator",
+      "kind": "struct",
+      "sources": [
+        "games/lodestar/src/capabilities/random/mod.rs"
+      ],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "cockpit",
+      "to": "missile-lock",
+      "kind": "depends-on",
+      "description": "The missile control's state."
+    },
+    {
+      "from": "cockpit",
+      "to": "message",
+      "kind": "depends-on",
+      "description": "The timed message showing, for MESSAGE_TICKS."
+    },
+    {
+      "from": "cockpit",
+      "to": "attitude",
+      "kind": "depends-on",
+      "description": "The roll and pitch state, reset with the cockpit."
+    },
+    {
+      "from": "cockpit",
+      "to": "main-generator",
+      "kind": "depends-on",
+      "description": "reset discards RESET_DUST_DRAWS draws."
+    }
+  ]
+}

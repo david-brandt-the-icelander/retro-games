@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Browser game contracts",
+  "folder": "games/hivestorm/src",
+  "entities": [
+    {
+      "id": "online-messages",
+      "title": "Online game messages",
+      "summary": "What a Hivestorm browser sends the other player through the games hub's relay.",
+      "contractType": "message",
+      "consumers": [
+        "The other player's browser, running the same version of Hivestorm",
+        "The games hub's relay, which passes messages on in order"
+      ],
+      "guarantees": [
+        "start: { slots, seed, delay, ticket }, sent by the host; ticket is the server-issued { id, seed } or null",
+        "in: { f, b }, the sender's controls from step f on, each the bits left 1, right 2, fire 4",
+        "sum: { f, h }, a fingerprint of step f (the frame, the ship, the turn, the aliens left, the sway, the shot, the bullets, each player's score and ships, and the generator's state)",
+        "rtt: { ms }, the sender's round trip, when it changes by 5 ms or more",
+        "name: { player, name }, a player's name for the table, or null",
+        "table: { highlight }, the table rows (0 to 9) the host's submission made"
+      ],
+      "compatibility": "start, in, sum and rtt come from src/online.ts, which is the same file in Rally and Shatterbelt and changes with them (Rally's online-messages contract). The ticket on start, name and table, and what is packed into in and fingerprinted into sum, are Hivestorm's own: both browsers must run the same build.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "startOnline"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "pack"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "gamePrint"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "offerTable"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "roomMessage"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Lockstep.flush"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/contracts.json",
+          "entityId": "online-messages"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/backlog.json",
+          "entityId": "online-copies"
+        }
+      ]
+    }
+  ]
+}

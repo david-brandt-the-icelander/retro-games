@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Chess rules backlog",
+  "folder": "games/chess/godot/chess",
+  "entities": [
+    {
+      "id": "two-rule-sets",
+      "title": "Nothing checks that the client's rules agree with the server's",
+      "summary": "The client judges games with rules.gd and the server with chess.js (shared/rules.ts); the two are tested separately and never against each other.",
+      "type": "debt",
+      "compromise": "The Godot client has its own GDScript rules instead of the server's; rules.gd says it is \"the same rules\", and only each side's own tests back that.",
+      "cost": "Where they differ (insufficient material, SAN, or a draw rule), the client shows a result, a move or a hint the server disagrees with: an online move it lets the player make is refused, or a game against the computer it ends is refused by POST games/computer as not over.",
+      "acceptanceCriteria": [
+        "A check plays the same move lists through rules.gd and shared/rules.ts and compares legal moves, SAN and results, or the client uses the server's judgement."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/chess/godot/chess/rules.gd",
+        "description": "The class comment: the server judges with chess.js; this is the same rules for the board."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess"
+        },
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "boardOutcome"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "saveComputerGame"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/shared/.dev/backlog.json",
+          "entityId": "browser-leftovers"
+        }
+      ]
+    }
+  ]
+}

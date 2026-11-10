@@ -1,0 +1,191 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "Chess Worker settings",
+  "folder": "games/chess/worker",
+  "entities": [
+    {
+      "id": "db",
+      "title": "Database binding",
+      "summary": "The D1 database chess.",
+      "key": "DB",
+      "type": "D1 binding",
+      "sensitive": false,
+      "scope": "per Worker; also the GameRoom's",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "d1_databases"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "AuthEnv"
+        }
+      ]
+    },
+    {
+      "id": "assets",
+      "title": "Static assets",
+      "summary": "The built game in dist/; the Worker runs first for the page, api/*, auth/* and index.wasm.",
+      "key": "ASSETS",
+      "type": "assets binding",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "assets"
+        },
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "Env"
+        }
+      ]
+    },
+    {
+      "id": "rooms",
+      "title": "Game rooms",
+      "summary": "The GameRoom Durable Object namespace, one object per online game named by its id.",
+      "key": "ROOMS",
+      "type": "Durable Object binding",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "durable_objects"
+        },
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "migrations"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "ApiEnv"
+        }
+      ]
+    },
+    {
+      "id": "accounts",
+      "title": "Login service",
+      "summary": "Service binding to icelander.net's login service (the accounts Worker, entrypoint Internal).",
+      "key": "ACCOUNTS",
+      "type": "service binding",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "details": "Without it, or without ACCOUNTS_JWKS, nobody is signed in and the sign-in methods google and github are not offered.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "services"
+        },
+        {
+          "path": "vendor/icelander-auth/index.js",
+          "symbol": "createAuth"
+        }
+      ]
+    },
+    {
+      "id": "accounts-jwks",
+      "title": "Login service keys",
+      "summary": "The login service's public keys, as JWKS JSON, for checking a sign-in's token.",
+      "key": "ACCOUNTS_JWKS",
+      "type": "string (JSON)",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "validation": "Must parse to at least one key, or sign-in is not configured.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "vars"
+        },
+        {
+          "path": "vendor/icelander-auth/index.js",
+          "symbol": "parseJwks"
+        }
+      ]
+    },
+    {
+      "id": "mail-from",
+      "title": "Invitation sender",
+      "summary": "The From of invitation emails; empty sends none.",
+      "key": "MAIL_FROM",
+      "type": "string",
+      "sensitive": false,
+      "default": "empty",
+      "scope": "per Worker",
+      "takesEffect": "per-use",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "vars"
+        },
+        {
+          "path": "games/chess/worker/mail.ts",
+          "symbol": "canMail"
+        }
+      ]
+    },
+    {
+      "id": "resend-api-key",
+      "title": "Resend API key",
+      "summary": "The key invitation emails are sent with; without it none are sent and the inviter passes the link on.",
+      "key": "RESEND_API_KEY",
+      "type": "secret",
+      "sensitive": true,
+      "default": "unset",
+      "scope": "per Worker (wrangler secret)",
+      "takesEffect": "per-use",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/mail.ts",
+          "symbol": "MailEnv"
+        },
+        {
+          "path": "games/chess/worker/mail.ts",
+          "symbol": "sendMail"
+        },
+        {
+          "path": "games/chess/.dev.vars.example"
+        }
+      ]
+    },
+    {
+      "id": "dev-login",
+      "title": "Development sign-in",
+      "summary": "\"1\" adds a sign-in that takes any address (auth/dev), and turns on the library's stand-in sign-in, which answers only on a local host.",
+      "key": "DEV_LOGIN",
+      "type": "string",
+      "sensitive": false,
+      "default": "unset (off)",
+      "scope": "local development only, in .dev.vars; never in production",
+      "takesEffect": "per-use",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "AuthEnv"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "providers"
+        },
+        {
+          "path": "games/chess/.dev.vars.example"
+        }
+      ]
+    }
+  ]
+}

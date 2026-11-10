@@ -3,7 +3,7 @@
   "kind": "state",
   "title": "Gambit screen navigation state diagram",
   "folder": "games/chess/godot/scripts",
-  "description": "Which screen the shell shows in front of the 3D table. Main._screen_name changes only in go(), which frees the old screen (a GameScreen closes its live connection and cancels Stockfish on the way out), stops the lobby's 10-second refresh, and shows the new one; go() also pushes onto a back stack of up to 12 entries that go(\"back\") pops. The top bar is there from the start and stays on every screen, so its buttons lead from each state. go() waits for Api.load_me() before showing the lobby, contact or history. A provider sign-in leaves the page for the provider and comes back as a fresh start; it is not a transition here. Desktop-only development switches (--goto and others) are left out.",
+  "description": "Which screen the shell shows in front of the 3D table. Main._screen_name changes only in go(), which frees the old screen (a GameScreen closes its live connection and cancels Stockfish on the way out), stops the lobby's 10-second refresh, and shows the new one; go() also pushes onto a back stack of up to 12 entries that go(\"back\") pops. The top bar is there from the start and stays on every screen, so its buttons lead from each state. go() waits for Api.load_me() before showing the lobby, contact or history. Continue with Google or GitHub leaves the page for icelander.net's sign-in (auth/login/{provider} redirects to the host's /auth/sign-in) and comes back as a fresh start; it is not a transition here. Desktop-only development switches (--goto and others) are left out.",
   "sources": [
     {
       "path": "games/chess/godot/scripts/main.gd",

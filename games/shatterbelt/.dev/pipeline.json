@@ -1,0 +1,71 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/pipeline.schema.json",
+  "kind": "pipeline",
+  "title": "Shatterbelt pipeline",
+  "folder": "games/shatterbelt",
+  "entities": [
+    {
+      "id": "pull-request",
+      "title": "On a pull request",
+      "summary": "Shatterbelt is typechecked, tested and built, and every .dev diagram is validated.",
+      "trigger": "A pull request that changes games/shatterbelt, or anything under .github/ (ci.yml).",
+      "checks": [
+        "npm ci",
+        "npm test: tsc --noEmit, then the node:test suites in test/",
+        "npm run build",
+        "No .dev folders in dist/: the build must not ship the folders' documentation",
+        "python3 Meta/Agents/Skills/validate_diagrams.py, for the whole repository",
+        "The Database migration check, when worker/schema.sql or worker/migrations/ change"
+      ],
+      "blocks": "merge",
+      "notChecked": [
+        "The knowledge files: Meta/Agents/Knowledge/validate_knowledge.py is not run in CI.",
+        "Behavior in a real browser: the page, input, drawing and sound.",
+        "The games hub's relay and lobby, and the sign-in routes on icelander.net."
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/game.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/scripts/changed-games.sh",
+          "symbol": "games"
+        }
+      ]
+    },
+    {
+      "id": "deploy",
+      "title": "On a push to main",
+      "summary": "The same steps again, then wrangler deploy.",
+      "trigger": "A push to main that changes games/shatterbelt or .github/, or Run workflow on the Deploy workflow (shatterbelt or all).",
+      "checks": [
+        "The migration gate: every database change since the last deploy has been acknowledged",
+        "npm test",
+        "npm run build",
+        "No .dev folders in dist/: the build must not ship the folders' documentation",
+        "npx wrangler deploy"
+      ],
+      "blocks": "release",
+      "secrets": [
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Database migrations"
+        }
+      ]
+    }
+  ]
+}

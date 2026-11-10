@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Flight",
+  "folder": "games/lodestar/src/capabilities/flight",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Flight",
+      "summary": "The player's attitude and speed, and how every object in the bubble moves and turns.",
+      "purpose": "Holds the flight model of RULES B.5 to B.8: roll and pitch rates with damping and auto-centre, the speed keys, the half-tick substep that carries the universe past and rotates it around the player, each object's own motion, and re-orthonormalisation every 16 ticks.",
+      "boundaries": [
+        "A capability: it uses no feature or use case (tests/layers.rs).",
+        "The player never moves: everything else is moved around the origin."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/flight/attitude.rs",
+          "symbol": "Attitude"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/flight/motion.rs",
+          "symbol": "move_substep"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/capabilities/flight/flight.md",
+          "label": "Flight (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

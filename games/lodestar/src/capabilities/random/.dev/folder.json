@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Random generators",
+  "folder": "games/lodestar/src/capabilities/random",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Random generators",
+      "summary": "The main generator every rule draws from, and the cosmetic generator the picture draws from.",
+      "purpose": "Declares the two deterministic generators (RULES C.2.1 and deliberate difference 3): MainGenerator, whose draws are part of the rules and their order, and CosmeticGenerator, for the picture only.",
+      "boundaries": [
+        "A capability: it uses no feature or use case (tests/layers.rs).",
+        "Nothing in the sim may use any other source of randomness."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "MainGenerator"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "CosmeticGenerator"
+        }
+      ]
+    }
+  ]
+}

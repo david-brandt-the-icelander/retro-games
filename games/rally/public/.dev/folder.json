@@ -10,7 +10,8 @@
       "summary": "The game's HTML page, its styles and the headers Cloudflare serves with it.",
       "purpose": "Holds what the build copies unchanged into dist/: index.html with every screen as a panel, rally.css, and _headers with the content security policy.",
       "boundaries": [
-        "No script: the build adds game.js from src/main.ts."
+        "No script: the build adds game.js from src/main.ts.",
+        "build.mjs skips this .dev/ when it copies the folder, so it is never served (games/.dev/decisions.json, publish-dev-files)."
       ],
       "evidenceStatus": "source-verified",
       "sources": [

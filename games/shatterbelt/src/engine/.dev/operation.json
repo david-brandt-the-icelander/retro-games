@@ -1,0 +1,167 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "Engine operations",
+  "folder": "games/shatterbelt/src/engine",
+  "description": "The functions through which the page and the Worker drive a game.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/src/engine/game.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/shatterbelt/src/engine/replay.ts",
+      "symbol": "replay"
+    }
+  ],
+  "entities": [
+    {
+      "id": "new-game",
+      "name": "Start a game",
+      "description": "A fresh game from a mode, a number of players and a seed.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "newGame"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/shatterbelt/src/engine/game.ts",
+        "symbol": "newGame"
+      },
+      "action": "query",
+      "transport": "exported function newGame(mode, players, seed)",
+      "authorization": "None: an in-process function. The page (src/main.ts) and replay() call it.",
+      "result": "A new Game: one ship per player at its spawn point (the middle for one, a ring for more), each with 3 lives and guarded for 3 s; no ships in attract mode. The first wave comes after WAVE.opening.",
+      "failures": [
+        "players outside 1 to 9 is clamped, not refused."
+      ]
+    },
+    {
+      "id": "step",
+      "name": "Step a game",
+      "description": "Advances a game by one fixed step of 1/60 s with every player's controls.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "step"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/shatterbelt/src/engine/game.ts",
+        "symbol": "step"
+      },
+      "action": "command",
+      "transport": "exported function step(game, inputs)",
+      "authorization": "None: an in-process function.",
+      "result": "The game is moved on in place: ships, shots, rocks, pods and drones move and collide, waves start and clear, scores and lives change, and Game.over turns true once every player is out. Game.events lists what happened in this step.",
+      "failures": [
+        "A missing input plays as IDLE."
+      ]
+    },
+    {
+      "id": "standings",
+      "name": "Rank the players",
+      "description": "The ships of a game, best score first.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "standings"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/shatterbelt/src/engine/game.ts",
+        "symbol": "standings"
+      },
+      "action": "query",
+      "transport": "exported function standings(game)",
+      "authorization": "None: an in-process function.",
+      "result": "A new array of the ships, best score first; ties keep player order.",
+      "failures": []
+    },
+    {
+      "id": "record",
+      "name": "Record a step's controls",
+      "description": "Adds one step's controls to a game's recording, logging only changes.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "Recorder.record"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "toBits"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/shatterbelt/src/engine/replay.ts",
+        "symbol": "Recorder.record"
+      },
+      "action": "command",
+      "transport": "method Recorder.record(inputs), called right before each step()",
+      "authorization": "None: an in-process function.",
+      "result": "For each player whose controls changed, a triple [steps since the previous change, player, controls as bits] is appended to the log; the step count goes up by one.",
+      "failures": []
+    },
+    {
+      "id": "valid-recording",
+      "name": "Check a recording's shape",
+      "description": "Whether a value is a well-formed recording, before it is played.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "validRecording"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/shatterbelt/src/engine/replay.ts",
+        "symbol": "validRecording"
+      },
+      "action": "query",
+      "transport": "exported function validRecording(value)",
+      "authorization": "None: an in-process function. The Worker's score() calls it on a submission.",
+      "result": "true for a mode of coop or versus, 1 to 9 players, a 32-bit seed, 1 to MAX_STEPS steps, and a log of whole triples with valid players and 5-bit controls, at most MAX_LOG numbers long.",
+      "failures": [
+        "Anything else is false."
+      ]
+    },
+    {
+      "id": "replay",
+      "name": "Replay a recording",
+      "description": "Plays a recorded game again through the engine.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "replay"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/shatterbelt/src/engine/replay.ts",
+        "symbol": "replay"
+      },
+      "action": "query",
+      "transport": "exported function replay(recording)",
+      "authorization": "None: an in-process function. The Worker (worker/scores.ts) calls it on every submission.",
+      "result": "The finished Game, with every player's score and the wave reached.",
+      "failures": [
+        "A recording that fails validRecording: null.",
+        "The game ends before the recording's last step: null.",
+        "The game hasn't ended by the last step, or some changes in the log were never used: null."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/shatterbelt/src/engine",
+      "path": "games/shatterbelt/src/engine/.dev/capability.json",
+      "relationship": "The capability they belong to."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/shatterbelt/src",
+      "path": "games/shatterbelt/src/.dev/use-case.json",
+      "relationship": "The use cases whose steps call them."
+    }
+  ]
+}

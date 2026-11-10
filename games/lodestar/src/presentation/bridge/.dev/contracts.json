@@ -1,0 +1,103 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Presentation bridge contracts",
+  "folder": "games/lodestar/src/presentation/bridge",
+  "entities": [
+    {
+      "id": "simhost-gdscript-api",
+      "title": "SimHost's GDScript interface",
+      "summary": "The method names, the string names of presses, screens and modes, and the Dictionary keys the scenes read.",
+      "contractType": "api",
+      "consumers": [
+        "The Godot scenes: game.gd, space.gd, hud.gd, the panels in ui/, script_runner.gd"
+      ],
+      "guarantees": [
+        "Presses by name: start, launch, hyperspace, galaxy_drive, unarm_missile, arm_missile, fire_missile, area_blast, escape_pod, in_system_jump, ecm, auto_dock, pause, resume, quit, toggle_auto_centre, toggle_damping",
+        "Screens by name: space, galaxy, local, system, status, market, inventory, equipment",
+        "Modes by name: title, docked, tunnel_launch, tunnel_dock, tunnel_jump, tunnel_misjump, tunnel_galactic, flight, dying, escape",
+        "save_pilot answers saved, not_docked or no_name; load_pilot an empty string, not_title, not_found or rejected",
+        "Positions in Godot metres (0.2 m a sim unit), x right, y up, the sim's forward z as −Z"
+      ],
+      "compatibility": "GDScript is not compiled against it: a renamed method or key fails only when the scene runs. Rebuild the library (cargo build) after a change; the smoke test (--script=@smoke) exercises the main paths.",
+      "definition": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "press_from_name"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "screen_name"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "mode_name"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "metres"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "documents",
+          "path": "games/lodestar/src/presentation/bridge/.dev/operation.json"
+        }
+      ]
+    },
+    {
+      "id": "sim-event-signals",
+      "title": "SimHost's signals",
+      "summary": "ticked(tick) after every tick, mount_selected(mount), and sim_event(kind, data) for every event of the tick, in order.",
+      "contractType": "message",
+      "consumers": [
+        "game.gd, space.gd, hub.gd and its pages, which connect to the signals"
+      ],
+      "guarantees": [
+        "One sim_event per Event of the tick, in the tick's order, before ticked",
+        "kind is a lower-case name (mode, paused, hyperspace, laser_fired, bought …) and data a Dictionary of that event's fields"
+      ],
+      "compatibility": "Changes with FlyInSystem's Event and SimHost::describe; the scenes match on kind and read data by key.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::run_tick"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::describe"
+        }
+      ]
+    },
+    {
+      "id": "held-action-names",
+      "title": "Held actions in the input map",
+      "summary": "SimHost samples seven input-map actions at every tick: dive, climb, roll_left, roll_right, speed_up, slow_down and fire.",
+      "contractType": "configuration",
+      "consumers": [
+        "project.godot's [input] section, which must define them"
+      ],
+      "guarantees": [
+        "The names are RULES D.5's action names, sampled once per tick"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "HELD"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "held_actions"
+        },
+        {
+          "path": "games/lodestar/project.godot",
+          "symbol": "input"
+        }
+      ]
+    }
+  ]
+}

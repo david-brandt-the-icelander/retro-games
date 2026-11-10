@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Design documents",
+  "folder": "games/lodestar/docs",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Design documents",
+      "summary": "The clean-room documents the code is written from: DESIGN, RULES, GDD, ART-BIBLE and UI-DESIGN, with their example screens.",
+      "purpose": "Holds create-retro-game's approved documents for LodeStar. RULES is the behaviour spec every rule in src/ cites; the GDD holds the names, data and decisions; DESIGN the architecture and layout; ART-BIBLE and UI-DESIGN the look, the HUD and the screens. images/ and screens/ hold example screens and renders that the documents and README show.",
+      "boundaries": [
+        "Implementers read only these documents and the knowledge documents beside the code.",
+        "The .gdignore keeps Godot from importing anything here."
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Project layout"
+        },
+        {
+          "path": "games/lodestar/docs/RULES.md",
+          "symbol": "Deliberate differences from the baseline"
+        },
+        {
+          "path": "games/lodestar/docs/.gdignore",
+          "symbol": ".gdignore"
+        }
+      ]
+    }
+  ]
+}

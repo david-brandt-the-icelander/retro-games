@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "UI verification",
+  "folder": "games/hivestorm/src/ui",
+  "entities": [
+    {
+      "id": "art",
+      "title": "Pixel art and font",
+      "summary": "Every sprite is a clean pixel map, and every glyph the right size.",
+      "subject": [
+        {
+          "path": "games/hivestorm/src/ui/art.ts"
+        }
+      ],
+      "criteria": [
+        "Every sprite (each alien kind in both frames, the ship and the wave cell) is rectangular, and every colour it uses is in its palette",
+        "Every glyph of the font is 5×7"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/art.test.ts",
+          "symbol": "every sprite is rectangular and every colour is in its palette",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/art.test.ts",
+          "symbol": "every font glyph is 5×7",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/scores.test.ts",
+          "symbol": "a name is cleaned to what the game's font can draw, up to 12 characters",
+          "command": "npm test"
+        }
+      ],
+      "notChecked": [
+        "Drawing, input and sound: nothing runs render.ts, input.ts or sound.ts in the tests, which have no browser."
+      ]
+    }
+  ]
+}

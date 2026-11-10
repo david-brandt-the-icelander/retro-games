@@ -1,0 +1,51 @@
+{
+  "$schema": "../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Workflows",
+  "folder": ".github",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Workflows",
+      "summary": "The GitHub Actions that test every pull request and deploy each changed game from main.",
+      "purpose": "Holds the workflows and their scripts: ci.yml validates the .dev diagrams and tests and builds each game a pull request changes; deploy.yml deploys each game a push to main changes, or one or all games by hand; game.yml is the one game's test, build and deploy that both call; migrations.yml is the Database migration check on pull requests. scripts/ lists the changed games, finds the last deployed commit and runs the migration gate.",
+      "boundaries": [
+        "Each game's pipeline, as it applies to that game, is described in that game's .dev/pipeline.json; this record only places the files.",
+        "Deploying needs the repository secret CLOUDFLARE_API_TOKEN; production database migrations are applied by hand, outside these workflows."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/game.yml",
+          "symbol": "on.workflow_call"
+        },
+        {
+          "path": ".github/workflows/migrations.yml",
+          "symbol": "on.pull_request"
+        },
+        {
+          "path": ".github/scripts/changed-games.sh",
+          "symbol": "all"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/rally/.dev/pipeline.json",
+          "label": "Rally's pipeline, for example"
+        },
+        {
+          "path": "docs/database-migrations.md",
+          "label": "Database migrations"
+        }
+      ]
+    }
+  ]
+}

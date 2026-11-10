@@ -1,0 +1,307 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Godot client features",
+  "folder": "games/chess/godot/scripts",
+  "description": "What the client offers players.",
+  "sources": [
+    {
+      "path": "games/chess/godot/scripts/game_screen.gd",
+      "symbol": "GameScreen"
+    },
+    {
+      "path": "games/chess/godot/scripts/main.gd",
+      "symbol": "Main"
+    }
+  ],
+  "entities": [
+    {
+      "id": "live-online-game",
+      "name": "Live online game",
+      "description": "An online game shown as it happens on both screens.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._on_board_move"
+        },
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "Live"
+        }
+      ],
+      "behavior": "A move shows at once and is sent with the number of moves it follows; the server's answer confirms it or the board goes back to the server's game. While the game is in play a WebSocket brings every change, and reconnects with back-off (half a second, doubling to 15 seconds) while Reconnecting… shows. Draw offers show as a banner with Accept and Decline; Resign asks Sure? first; a finished game offers Rematch with the colours swapped.",
+      "outcome": "Two players can play at their own pace, leave and come back, and always see the game as the server has it.",
+      "constraints": [
+        "Moves only on the player's turn, at the latest position, and not while an action is waiting for its answer.",
+        "The live connection is opened only for a game still in play when the screen opens.",
+        "Chat messages up to 500 characters."
+      ],
+      "implementation": [
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._act"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._apply"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._can_move"
+        },
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "Live._process"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._rematch"
+        }
+      ]
+    },
+    {
+      "id": "timed-transcript",
+      "name": "The transcript",
+      "description": "Every move, message, offer and result of a game in one list, with times.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._render_transcript"
+        }
+      ],
+      "behavior": "The transcript shows each entry with its clock time, a day heading wherever the date changes, each move's SAN with how long it took, chat as bubbles with the sender's picture, and offers, resignations and the result as notes. Clicking a move shows that position with a Looking at move n of m banner until Back to the game.",
+      "outcome": "A game reads as a conversation, and any earlier position can be looked at without leaving it.",
+      "constraints": [
+        "Looking back is only for looking: no move can be made from an earlier position."
+      ],
+      "implementation": [
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._render_transcript"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._move_row"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._jump_to_ply"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._update_viewing"
+        },
+        {
+          "path": "games/chess/godot/scripts/ui.gd",
+          "symbol": "UI.day"
+        },
+        {
+          "path": "games/chess/godot/scripts/ui.gd",
+          "symbol": "UI.duration"
+        }
+      ]
+    },
+    {
+      "id": "replay-playback",
+      "name": "Replays at the game's own pace",
+      "description": "A finished game played back as it was played.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._wait_before"
+        }
+      ],
+      "behavior": "A replay steps through the transcript entry by entry, or plays it, waiting between entries as long as the players did divided by the pace (1×, 4× or 16×), never less than 0.35 or more than 3 seconds. Start, Back, Next, End, the slider and the moves in the transcript move to any entry.",
+      "outcome": "A player can relive a game, chat included, in minutes.",
+      "constraints": [
+        "Pauses are capped at 3 seconds.",
+        "Changing the pace does not stop a replay that is playing."
+      ],
+      "implementation": [
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._toggle_play"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._process"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._seek"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._set_speed"
+        }
+      ]
+    },
+    {
+      "id": "computer-game-on-device",
+      "name": "A game against the computer kept on the device",
+      "description": "The game against Stockfish survives a reload and can be taken back.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main.save_computer"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._take_back"
+        }
+      ],
+      "behavior": "The game is saved to user://computer.json at the start and after every move; the title screen offers Continue while it is in play. Take back removes the player's last move and the computer's answer, or only the player's move while the computer is thinking. When it ends it goes to the server's history if the player is signed in, otherwise to the device's, which keeps the last 50.",
+      "outcome": "A player can stop and come back to a game against the computer, and keep it.",
+      "constraints": [
+        "One game against the computer at a time per device.",
+        "Signed out, the history is on this device only, at most 50 games."
+      ],
+      "implementation": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._new_computer_game"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._home"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._computer_play"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._take_back"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main.finish_computer"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._local_history"
+        }
+      ]
+    },
+    {
+      "id": "lobby",
+      "name": "The lobby",
+      "description": "Invitations both ways, games in play and contacts, kept fresh.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._lobby"
+        }
+      ],
+      "behavior": "Friends shows the invitation form, Invitations for you, Your games (marked Your move or Their move, and draw offered), Waiting for an answer with each link to copy, and Contacts with each record. It refreshes every 10 seconds, and the tab's title counts what waits for the player: \"(n) Gambit\".",
+      "outcome": "A player sees at a glance what needs them.",
+      "constraints": [
+        "Only for a signed-in player; signed out it shows the sign-in card.",
+        "The server lists at most 50 of each kind and 500 contacts."
+      ],
+      "implementation": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._lobby"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._fill_incoming"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._fill_active"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._fill_outgoing"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._fill_contacts"
+        }
+      ]
+    },
+    {
+      "id": "table",
+      "name": "The 3D table",
+      "description": "A board and pieces modelled in code, moved with the mouse.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/board3d.gd",
+          "symbol": "Board3D"
+        },
+        {
+          "path": "games/chess/godot/scripts/pieces.gd",
+          "symbol": "PieceMeshes"
+        }
+      ],
+      "behavior": "A piece of the side to move is picked by clicking or dragging; gold dots mark its quiet moves and rings its captures; a pawn reaching the last rank asks for a piece. Dragging the empty table or the right button turns the camera, the wheel zooms, and Turn the board shows the other side. The table turns slowly behind the title screen and rests behind the lists.",
+      "outcome": "Playing feels like moving real pieces on a real board.",
+      "constraints": [
+        "Mouse or touch only: the board has no keyboard control.",
+        "Only the side the game screen allows may move."
+      ],
+      "implementation": [
+        {
+          "path": "games/chess/godot/scripts/board3d.gd",
+          "symbol": "Board3D._down"
+        },
+        {
+          "path": "games/chess/godot/scripts/board3d.gd",
+          "symbol": "Board3D._up"
+        },
+        {
+          "path": "games/chess/godot/scripts/board3d.gd",
+          "symbol": "Board3D.finish_promotion"
+        },
+        {
+          "path": "games/chess/godot/scripts/board3d.gd",
+          "symbol": "Board3D.face"
+        },
+        {
+          "path": "games/chess/godot/scripts/pieces.gd",
+          "symbol": "PieceMeshes"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/use-case.json",
+      "relationship": "The use cases that exercise them."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/chess/worker",
+      "path": "games/chess/worker/.dev/feature.json",
+      "relationship": "The server features behind them."
+    },
+    {
+      "kind": "state",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/Live.state-diagram.json",
+      "relationship": "The live connection's lifecycle."
+    },
+    {
+      "kind": "state",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/GameScreenReplay.state-diagram.json",
+      "relationship": "Replay playback."
+    },
+    {
+      "kind": "state",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/GameScreenComputer.state-diagram.json",
+      "relationship": "A game against the computer."
+    },
+    {
+      "kind": "state",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/Board3D.state-diagram.json",
+      "relationship": "Picking and moving pieces."
+    }
+  ]
+}

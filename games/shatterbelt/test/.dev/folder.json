@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Tests",
+  "folder": "games/shatterbelt/test",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Tests",
+      "summary": "The node:test suites for the engine's rules, whole-game simulations, replays and the server's checks, online lockstep, and the sign-in.",
+      "purpose": "Checks the game without a browser: build.mjs --test bundles each *.test.ts into dist-test/, and npm test runs them after the typecheck.",
+      "boundaries": [
+        "What each suite checks is recorded in the verification files of the folders it checks: src/engine, src and worker.",
+        "online.test.ts is the same file in Rally and Hivestorm, as src/online.ts is."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/build.mjs",
+          "symbol": "--test"
+        },
+        {
+          "path": "games/shatterbelt/package.json",
+          "symbol": "test"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/backlog.json",
+          "entityId": "online-copies"
+        }
+      ]
+    }
+  ]
+}

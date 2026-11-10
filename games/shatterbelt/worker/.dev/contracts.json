@@ -1,0 +1,118 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "High-score Worker contracts",
+  "folder": "games/shatterbelt/worker",
+  "entities": [
+    {
+      "id": "score-api",
+      "title": "High-score API",
+      "summary": "POST game, POST score and GET scores under /games/retro/shatterbelt/api/.",
+      "contractType": "http-api",
+      "consumers": [
+        "src/net.ts"
+      ],
+      "guarantees": [
+        "POST game answers { id, seed }",
+        "POST score takes { id, recording: { mode, players, steps, log }, names } with one name or null per player, and answers { results: [{ player, score, wave, name, rank }] } for every player",
+        "GET scores answers { scores: [{ name, score, wave, mode, players }] }, at most 10, best first",
+        "Errors are JSON { error } with 400, 404, 409, 413, 422 or 500; the sign-in library's own 401 and 403 have { code, message }",
+        "Responses are never cached (Cache-Control: no-store)",
+        "GET scores needs no sign-in"
+      ],
+      "definition": "games/shatterbelt/worker/index.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "Submission"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "json"
+        },
+        {
+          "path": "games/shatterbelt/src/net.ts",
+          "symbol": "submitGame"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "documents",
+          "path": "games/shatterbelt/worker/.dev/operation.json"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/shatterbelt/src/engine/.dev/contracts.json",
+          "entityId": "recording"
+        }
+      ]
+    },
+    {
+      "id": "database",
+      "title": "shatterbelt-scores tables",
+      "summary": "games (issued seeds) and scores (one row per named player of a replayed game) in D1.",
+      "contractType": "persistence",
+      "consumers": [
+        "The live D1 database shatterbelt-scores"
+      ],
+      "guarantees": [
+        "A score's id is the seed's id and the player's index, as id:player, and its game column names the seed",
+        "A score stores the name, score, wave, mode and number of players; nothing else about the player",
+        "Scores are listed best first, ties oldest first (index scores_by_score)"
+      ],
+      "compatibility": "schema.sql describes a fresh database; the live one changes only through worker/migrations/ (none yet), applied by hand before merging.",
+      "definition": "games/shatterbelt/worker/schema.sql",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/schema.sql",
+          "symbol": "scores"
+        },
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "submitScore"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/.dev/runbooks.json",
+          "entityId": "change-database"
+        }
+      ]
+    },
+    {
+      "id": "pages",
+      "title": "Public addresses",
+      "summary": "The game at /games/retro/shatterbelt/, its scores at /games/retro/shatterbelt/scores/, and the old /retro-games/shatterbelt address.",
+      "contractType": "url",
+      "consumers": [
+        "Players' bookmarks and links from icelander.net, and the multiplayer page, which opens the game with ?match=ID&mode=coop or versus"
+      ],
+      "guarantees": [
+        "/games/retro/shatterbelt/scores redirects to the page with a trailing slash",
+        "Every path under /retro-games/shatterbelt redirects with 308 to the same path under /games/retro/shatterbelt"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "PATH"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "SCORES_PAGE"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "OLD_PATH"
+        }
+      ]
+    }
+  ]
+}

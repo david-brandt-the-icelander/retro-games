@@ -1,0 +1,102 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Hyperspace countdown",
+  "folder": "games/lodestar/src/features/hyperspace",
+  "description": "The hyperspace countdown (RULES A.5.4, B.16.2, deliberate differences 5 and 6). Countdown holds the state; the keys, navigation, docking, death and the flight tick move it.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/hyperspace/countdown.rs",
+      "symbol": "Countdown"
+    },
+    {
+      "path": "games/lodestar/src/features/hyperspace/jump.rs",
+      "symbol": "press_hyperspace"
+    },
+    {
+      "path": "games/lodestar/src/features/hyperspace/jump.rs",
+      "symbol": "press_galaxy_drive"
+    },
+    {
+      "path": "games/lodestar/src/features/hyperspace/navigation.rs",
+      "symbol": "Navigation::select"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+      "symbol": "FlyInSystem::flight_logic"
+    }
+  ],
+  "machine": "Countdown { inner, shown, destination } (src/features/hyperspace/countdown.rs)",
+  "initialState": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "description": "shown 0: no countdown running."
+    },
+    {
+      "id": "to-system",
+      "description": "Counting down to a normal jump: destination System(selection), shown 15 to 1."
+    },
+    {
+      "id": "to-next-galaxy",
+      "description": "Counting down to a galactic jump: destination NextGalaxy."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "idle",
+      "to": "to-system",
+      "trigger": "press_hyperspace",
+      "guard": "not docked; the selected system is not here and is within the fuel",
+      "action": "HyperspaceKey::Started; both values 15."
+    },
+    {
+      "from": "idle",
+      "to": "to-next-galaxy",
+      "trigger": "press_galaxy_drive",
+      "guard": "not docked; a galaxy drive is fitted",
+      "action": "The drive is used up and legal status cleared at the press."
+    },
+    {
+      "from": "to-system",
+      "to": "to-system",
+      "trigger": "a new selection (Navigation::select)",
+      "guard": "0 < distance ≤ fuel",
+      "action": "The destination changes (deliberate difference 6); otherwise the old one stays."
+    },
+    {
+      "from": "to-system",
+      "to": "to-system",
+      "trigger": "Countdown::tick in Flight or Death mode",
+      "guard": "shown does not reach 0"
+    },
+    {
+      "from": "to-next-galaxy",
+      "to": "to-next-galaxy",
+      "trigger": "Countdown::tick in Flight or Death mode",
+      "guard": "shown does not reach 0"
+    },
+    {
+      "from": "to-system",
+      "to": "idle",
+      "trigger": "Countdown::tick reaches 0 (85 ticks)",
+      "action": "hyperspace::jump and the hyperspace tunnel."
+    },
+    {
+      "from": "to-next-galaxy",
+      "to": "idle",
+      "trigger": "Countdown::tick reaches 0 (85 ticks)",
+      "action": "hyperspace::jump to the next Reach and the tunnel."
+    },
+    {
+      "from": "to-system",
+      "to": "idle",
+      "trigger": "cancel: docking, entering the docked state, death (deliberate difference 5) or the return to the title"
+    },
+    {
+      "from": "to-next-galaxy",
+      "to": "idle",
+      "trigger": "cancel: docking, entering the docked state, death (deliberate difference 5) or the return to the title"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Browser game",
+  "folder": "games/hivestorm/src",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Browser game",
+      "summary": "Everything that runs in the player's browser.",
+      "purpose": "Wires the pure engine to the page: the fixed 60-steps-a-second loop, recording, the title and table screens, the name form, the high-score client, and online games played in lockstep, taking turns.",
+      "boundaries": [
+        "The rules live in engine/; drawing, controls and sound in ui/.",
+        "The relay for online games and the multiplayer lobby are the games hub's; this folder only connects to them.",
+        "name.ts is also bundled into the Worker, which cleans names the same way."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "frame"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Lockstep"
+        },
+        {
+          "path": "games/hivestorm/worker/scores.ts",
+          "symbol": "cleanName"
+        }
+      ]
+    }
+  ]
+}

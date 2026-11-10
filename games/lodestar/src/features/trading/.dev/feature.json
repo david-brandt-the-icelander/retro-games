@@ -1,0 +1,81 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Trading",
+  "folder": "games/lodestar/src/features/trading",
+  "description": "Buying and selling at the market panel. The feature document, trading.md, is the primary record.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/trading/mod.rs",
+      "symbol": "buy"
+    },
+    {
+      "path": "games/lodestar/src/features/trading/mod.rs",
+      "symbol": "sell"
+    }
+  ],
+  "entities": [
+    {
+      "id": "market-panel-trading",
+      "name": "Trading at the market panel",
+      "description": "Docked, the pilot buys and sells any goods, in any order, a quantity at a time.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "buy"
+        },
+        {
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "sell"
+        },
+        {
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "max_buy"
+        },
+        {
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "max_sell"
+        }
+      ],
+      "behavior": "A buy takes quantity × price from the cash, adds the cargo and lowers the availability; a sale adds the cash and lowers the cargo. Prices use the current system's economy and the pilot's stored market byte. The stepper offers at most max_buy (the smallest of availability, hold room and the whole units the cash pays for) or max_sell (the cargo held).",
+      "outcome": "The pilot makes a living by buying cheap and selling dear.",
+      "constraints": [
+        "Only while docked: FlyInSystem drops Buy and Sell presses in any other mode.",
+        "A buy is refused in the order more than available, no room, not enough cash; a refusal changes nothing.",
+        "Selling never restores availability; there is no price spread (deliberate difference 12)."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "buy"
+        },
+        {
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "sell"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::docked_press"
+        },
+        {
+          "path": "games/lodestar/src/presentation/ui/market_page.gd",
+          "symbol": "market_page.gd"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The pilot's goals that exercise it."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/lodestar/src/capabilities/market",
+      "path": "games/lodestar/src/capabilities/market/.dev/capability.json",
+      "relationship": "Prices, availability and hold space."
+    }
+  ]
+}

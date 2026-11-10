@@ -65,15 +65,16 @@
     {
       "from": "inOffice",
       "to": "escaped",
-      "trigger": "revolution(): fleeing, by choice or after choosing a helper who won't help",
-      "guard": "the helicopter starts, or the escape on foot isn't caught"
+      "trigger": "revolution(): fleeing, when asked whether to escape, or after choosing a helper who won't help",
+      "guard": "by helicopter, only when fleeing by choice, if one was bought and it starts; otherwise on foot over the mountains, if not caughtOnFoot()",
+      "action": "The helicopter escape screen, or the mountains and the escaped screen."
     },
     {
       "from": "inOffice",
       "to": "dead",
-      "trigger": "revolution(): fleeing on foot, or choosing a helper who won't help",
+      "trigger": "revolution(): fleeing on foot (no helicopter, or it fails to start), or after choosing a helper who won't help",
       "guard": "caughtOnFoot()",
-      "action": "The caught screen."
+      "action": "The mountains, then the caught screen."
     },
     {
       "from": "inOffice",
@@ -87,7 +88,7 @@
       "to": "inOffice",
       "trigger": "revolution(): fight()",
       "guard": "the revolt is crushed",
-      "action": "Punish the rebels if asked; afterVictory() pauses plots for two months."
+      "action": "Punish the rebels if asked; afterVictory() sets the helper's strength to 9 and the plot pause to this month + 2."
     }
   ]
 }
