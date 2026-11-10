@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Engine decisions",
+  "folder": "games/hivestorm/src/engine",
+  "entities": [
+    {
+      "id": "own-trig",
+      "title": "The engine's own sine and cosine",
+      "summary": "Peel arcs and weaving use dsin and dcos, built from + − × ÷, never Math.sin or Math.cos.",
+      "status": "accepted",
+      "context": "The server replays every submitted game and must reach exactly the positions the player saw. Math.sin and Math.cos are not promised to agree bit for bit between JavaScript engines; IEEE + − × ÷ are.",
+      "options": [
+        {
+          "title": "Math.sin and Math.cos",
+          "consequences": "Simple, but a browser and the server may disagree in the last bit, and a replay drift apart."
+        },
+        {
+          "title": "A polynomial of plain arithmetic",
+          "consequences": "Exact everywhere; good to about 1e-7 after reducing the angle to [−π/2, π/2]."
+        }
+      ],
+      "decision": "trig.ts reduces the angle with Math.round and a multiple of 2π, folds it into [−π/2, π/2], and evaluates a nested Taylor series to the x¹¹ term; dcos(x) is dsin(x + π/2).",
+      "rationale": "The same arithmetic in every engine gives the same game in every browser and on the server.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/trig.ts",
+          "symbol": "dsin"
+        },
+        {
+          "path": "games/hivestorm/src/engine/trig.ts",
+          "symbol": "dcos"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.moveAliens"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/hivestorm/src/engine/.dev/verification.json",
+          "entityId": "replay"
+        }
+      ]
+    },
+    {
+      "id": "pause-is-input",
+      "title": "Pausing is a recorded input",
+      "summary": "A pause, even one the page makes when the tab is hidden, reaches the engine as an input on a frame and is recorded with the rest.",
+      "status": "accepted",
+      "context": "A paused frame changes nothing, but the replay must know which frames were paused, or it would play them.",
+      "decision": "Input carries a pause press; step() toggles Game.paused on it outside the title screen and changes nothing else while paused. The page queues a pause press when the tab is hidden (Controls.queuePause) instead of stopping the loop.",
+      "rationale": "The recording, and so the server's replay, sees the pause on the frame it happened.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.step"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "toBits"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "visibilitychange"
+        },
+        {
+          "path": "games/hivestorm/src/ui/input.ts",
+          "symbol": "Controls.queuePause"
+        }
+      ]
+    }
+  ]
+}

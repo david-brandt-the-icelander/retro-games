@@ -1,0 +1,263 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Browser game features",
+  "folder": "games/hivestorm/src",
+  "description": "What the page offers a player, on top of the engine's rules.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/main.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/hivestorm/src/main.ts",
+      "symbol": "joinMatch"
+    },
+    {
+      "path": "games/hivestorm/src/main.ts",
+      "symbol": "offerTable"
+    }
+  ],
+  "entities": [
+    {
+      "id": "play-the-hive",
+      "name": "Play the hive",
+      "description": "A one-player game in the browser, at a steady 60 steps a second, with keys or touch buttons.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "frame"
+        },
+        {
+          "path": "games/hivestorm/src/ui/input.ts",
+          "symbol": "Controls"
+        }
+      ],
+      "behavior": "1 or PLAY starts a game. The arrow keys, A/D (or Z/X) and the ◀ ▶ buttons move the ship; Space, ↑, W, Ctrl, Enter or FIRE fire, held to keep firing. P, Esc or PAUSE pauses, and so does hiding the tab; M or SOUND turns the sound on or off. The page asks the server for the next game's seed ahead of time, so starting never waits, and records every frame of the game from the press that started it.",
+      "outcome": "A game on any computer, phone or tablet that can afterwards be checked by the server.",
+      "constraints": [
+        "One player per device: nothing on the page starts a two-player game.",
+        "A game the server issued no seed for still plays, but cannot be entered on the table."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "fetchTicket"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "frame"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "toggleSound"
+        },
+        {
+          "path": "games/hivestorm/src/ui/input.ts",
+          "symbol": "Controls"
+        },
+        {
+          "path": "games/hivestorm/src/ui/render.ts",
+          "symbol": "render"
+        },
+        {
+          "path": "games/hivestorm/src/ui/sound.ts",
+          "symbol": "Sound.play"
+        }
+      ]
+    },
+    {
+      "id": "online-turns",
+      "name": "Online game with a friend, taking turns",
+      "description": "Two signed-in players, each on their own device, play one two-player game, taking turns.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "joinMatch"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "stepOnline"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Lockstep"
+        }
+      ],
+      "behavior": "Opened from the multiplayer page with ?match=ID, the page connects to the games hub's relay for that match and waits for the other player. The host (the lowest slot still in the room) starts the game with its server-issued seed, if it has one, and a delay that suits both connections; the other browser starts from the same seed. Each browser runs the whole game and sends only its own player's left, right and fire, a few steps ahead; each step plays the controls of the player whose turn it is, or of the one still there if that player has left. Every 120 steps the browsers compare a fingerprint of the game, and end it if they differ. The line under the screen says which player you are and whose turn it is, and who is being waited for.",
+      "outcome": "Both players see exactly the same two-player game, each playing their own turns, and each can put their own score on the table.",
+      "constraints": [
+        "Cannot be paused, and hiding the tab makes the other player wait.",
+        "Two players.",
+        "A game cut short by a lost connection or a difference in the games ends without a score."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "joinMatch"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "startOnline"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "roomMessage"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "beginOnline"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "stepOnline"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "endOnline"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "gamePrint"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "showNet"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Room"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Lockstep"
+        }
+      ]
+    },
+    {
+      "id": "table-entry",
+      "name": "Entering the high-score table",
+      "description": "When a game ends, each player whose score makes the top ten may give a name for the table.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "offerTable"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "askName"
+        }
+      ],
+      "behavior": "A form under the screen asks for the name, with ENTER and SKIP; Escape skips. The typed name is cleaned as the table will show it, and refused if no letter or digit is left. The page sends the game's seed id, its recorded controls and a name, or null, per player; the server replays it. On success the table screen shows for 15 seconds with the new rows flashing. Online, each browser asks only its own player, and the host's browser (or, if the host has left, the other) sends the game once it has the other player's name (or after 90 seconds without it); both browsers then show the new rows.",
+      "outcome": "The players' scores, as the server's replay computed them, are on the public table under the names they chose.",
+      "constraints": [
+        "A score must beat the tenth row of the table (or the table must have fewer than ten rows), and be above 0.",
+        "Up to 12 characters: letters, digits, spaces and . - ' _.",
+        "Only the name is sent: no email or other personal data.",
+        "The form keeps password managers and autofill out of the field."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "offerTable"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "askName"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "newOnline"
+        },
+        {
+          "path": "games/hivestorm/src/scores.ts",
+          "symbol": "qualifies"
+        },
+        {
+          "path": "games/hivestorm/src/scores.ts",
+          "symbol": "submitGame"
+        },
+        {
+          "path": "games/hivestorm/src/name.ts",
+          "symbol": "cleanName"
+        }
+      ]
+    },
+    {
+      "id": "title-and-table",
+      "name": "Title screens and the table",
+      "description": "Between games, the title and the high-score table take turns on the screen.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "frame"
+        },
+        {
+          "path": "games/hivestorm/src/ui/render.ts",
+          "symbol": "drawTable"
+        }
+      ],
+      "behavior": "On the title screens the title, with each alien's points, shows for 10 seconds and then the top ten for 10, over and over, while the hive sways. The high score at the top of the screen is the best of this browser's own and the table's top score, and is remembered in this browser.",
+      "outcome": "A player sees what to aim for before they start.",
+      "constraints": [
+        "Without the server, the table screen says TABLE NOT AVAILABLE."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "frame"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "refreshTable"
+        },
+        {
+          "path": "games/hivestorm/src/scores.ts",
+          "symbol": "loadTable"
+        },
+        {
+          "path": "games/hivestorm/src/ui/render.ts",
+          "symbol": "drawAttract"
+        },
+        {
+          "path": "games/hivestorm/src/ui/render.ts",
+          "symbol": "drawTable"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/hivestorm/src",
+      "path": "games/hivestorm/src/.dev/use-case.json",
+      "relationship": "The use cases that exercise these features."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/hivestorm/src",
+      "path": "games/hivestorm/src/.dev/capability.json",
+      "relationship": "The capability the online game belongs to."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/hivestorm/src/engine",
+      "path": "games/hivestorm/src/engine/.dev/feature.json",
+      "relationship": "The engine features they rely on."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/hivestorm/worker",
+      "path": "games/hivestorm/worker/.dev/feature.json",
+      "relationship": "The server side of the table."
+    }
+  ]
+}

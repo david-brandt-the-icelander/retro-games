@@ -1,0 +1,76 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Browser game capability",
+  "folder": "games/hivestorm/src",
+  "description": "What the browser side offers beyond the engine.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/online.ts",
+      "symbol": "Lockstep"
+    }
+  ],
+  "entities": [
+    {
+      "id": "online-lockstep",
+      "name": "Online lockstep play",
+      "description": "Keeps two browsers playing exactly the same game.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Room"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Lockstep"
+        }
+      ],
+      "responsibility": "Connects to a match's relay, measures each connection, and hands the page every player's controls for each step only when all of them are known, checking now and then that the browsers agree. The file is the same in Rally and Shatterbelt.",
+      "operations": [
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Room.open"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Lockstep.local"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Lockstep.next"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Lockstep.check"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "everyoneIn"
+        }
+      ],
+      "access": [
+        "Only the signed-in players the lobby put in the match may connect; the games hub's relay checks this, not this code."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "feature",
+      "folder": "games/hivestorm/src",
+      "path": "games/hivestorm/src/.dev/feature.json",
+      "relationship": "The online game it carries."
+    },
+    {
+      "kind": "state",
+      "folder": "games/hivestorm/src",
+      "path": "games/hivestorm/src/.dev/Room.state-diagram.json",
+      "relationship": "The life of the connection to the relay."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/rally/src",
+      "path": "games/rally/src/.dev/capability.json",
+      "relationship": "Rally's copy of the same file offers the same capability."
+    }
+  ]
+}

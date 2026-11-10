@@ -1,0 +1,345 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Engine features",
+  "folder": "games/hivestorm/src/engine",
+  "description": "The game itself: the hive and its dives, the ship, scoring, waves, turns and replays.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/engine/game.ts",
+      "symbol": "Game"
+    },
+    {
+      "path": "games/hivestorm/src/engine/rules.ts",
+      "symbol": "RULES"
+    },
+    {
+      "path": "games/hivestorm/src/engine/replay.ts",
+      "symbol": "replay"
+    }
+  ],
+  "entities": [
+    {
+      "id": "swaying-hive",
+      "name": "A swaying hive of 37 aliens",
+      "description": "The aliens sit in a hive of five rows that sways from side to side.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "LAYOUT"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.home"
+        }
+      ],
+      "behavior": "Three queens on the top row, then seven guards, nine drones and two rows of nine workers, each in a fixed slot of a nine-column hive. The hive sways 26 px either side of the centre at 0.2 px a frame, and an alien at home sits in its slot as it moves.",
+      "outcome": "A target that is never still, and a hive that thins out in a shape the player can read.",
+      "constraints": [
+        "37 slots (SLOTS), all on screen at either end of the sway."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "LAYOUT"
+        },
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "SLOTS"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.swayHive"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.home"
+        }
+      ]
+    },
+    {
+      "id": "dives",
+      "name": "Peel-off dives, escorts and the swarm",
+      "description": "Aliens leave the ends of the hive, swoop at the ship firing, and come back in at the top.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.launchDives"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.moveAliens"
+        }
+      ],
+      "behavior": "Every so often an alien peels off on a circular arc and dives, steering toward the ship and weaving as it comes. Three times in ten, when a queen is at home, a queen dives instead, with up to two guards from within one column of her flying in formation; otherwise an alien other than a queen leaves from the left or right end of the hive. Divers fire a few bullets aimed at the ship while they are between the hive and the ship. An alien that flies off the bottom comes back in at the top and returns to its slot. When five or fewer are left they stop going home: they dive one after another, with no limit on how many are out.",
+      "outcome": "The danger comes from the divers, and the player chooses between shooting the hive and shooting what is coming.",
+      "constraints": [
+        "At most min(2 + ⌊(wave − 1)/2⌋, 7) out at once, until the swarm.",
+        "A dive every max(35, 130 − 10 × wave) frames, give or take 30%; every 25 frames in a swarm.",
+        "Divers fire only between 40 px from the top and 50 px above the ship."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.launchDives"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.startDive"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.moveAliens"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.maybeFire"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.wrap"
+        },
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "maxDivers"
+        },
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "diveInterval"
+        }
+      ]
+    },
+    {
+      "id": "ship",
+      "name": "One ship, one shot",
+      "description": "The player moves a ship along the bottom and fires one shot at a time.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.movePlayer"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.collide"
+        }
+      ],
+      "behavior": "Left and right move the ship 1.6 px a frame between the screen's edges; fire launches a shot only when none is in the air. A bullet that reaches the ship, or a diving alien that rams it, destroys it; the rammer is destroyed too and still scores. A pause press stops the game until the next one.",
+      "outcome": "A fixed-shooter's discipline: a missed shot costs time.",
+      "constraints": [
+        "One shot in the air.",
+        "Three ships to start."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.movePlayer"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.collide"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.killPlayer"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.step"
+        }
+      ]
+    },
+    {
+      "id": "scoring",
+      "name": "Scoring, the queen's bonus and the extra ship",
+      "description": "Each kind of alien is worth more diving than at home, and a diving queen most of all.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "POINTS"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.pointsFor"
+        }
+      ],
+      "behavior": "Queens score 60 at home, guards 50, drones 40 and workers 30; diving, guards score 100, drones 80 and workers 60. A diving queen scores 200, or 400 or 800 if one or two of her escorts were shot first on that dive, and shows what she was worth where she fell. One extra ship comes at 7,000 points.",
+      "outcome": "Taking on a diving queen and her escorts is the way to a high score.",
+      "constraints": [
+        "The extra ship comes once.",
+        "Points are the same on every wave."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "POINTS"
+        },
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "QUEEN_BONUS"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.pointsFor"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.kill"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.addScore"
+        }
+      ]
+    },
+    {
+      "id": "waves",
+      "name": "Waves that get harder",
+      "description": "Clearing the hive brings a full one, which dives faster, more often and with more out at once.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "diveSpeed"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.step"
+        }
+      ],
+      "behavior": "When the last alien falls the wave number goes up, and after a pause a full hive returns. Dive speed rises by 0.08 px a frame per wave, the gap between dives shrinks by 10 frames per wave, one more alien may be out every second wave, and from wave 3 divers may carry more bullets.",
+      "outcome": "A game ends sooner or later however well it is played.",
+      "constraints": [
+        "Dive speed at most 2.3 px a frame; at least 35 frames between dives; at most 7 out at once."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "diveSpeed"
+        },
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "diveInterval"
+        },
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "maxDivers"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.startDive"
+        }
+      ]
+    },
+    {
+      "id": "turns",
+      "name": "Two players taking turns",
+      "description": "A two-player game alternates turns, each player with their own hive, score, ships and wave.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.nextTurn"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.afterDeath"
+        }
+      ],
+      "behavior": "The turn passes each time a ship is lost. Each player's survivors are kept and their hive comes back as they left it on their next turn. A player with no ships left is out; the other plays on alone, and the game ends when both are out.",
+      "outcome": "Two players compete on the same game, score against score.",
+      "constraints": [
+        "Two players at most.",
+        "The engine takes one Input a frame: the page decides whose controls it is (src/main.ts, online)."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.start"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.afterDeath"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.nextTurn"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.enterReady"
+        }
+      ]
+    },
+    {
+      "id": "replayable-game",
+      "name": "Games that replay exactly",
+      "description": "A whole game can be played again, bit for bit, from its seed and its recorded controls.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "replay"
+        },
+        {
+          "path": "games/hivestorm/src/engine/trig.ts",
+          "symbol": "dsin"
+        }
+      ],
+      "behavior": "Every game starts from the same state and a fresh generator seeded from nextSeed, whatever the title screen was doing. Each frame's controls, pauses included, pack into six bits and are recorded as runs of the same bits. Sine and cosine are computed from + − × ÷ only. Replaying the seed and the runs plays the same game and gives each player's score and wave.",
+      "outcome": "The server can check every score it lists, and recordings stay a few kilobytes a minute.",
+      "constraints": [
+        "At most two hours (MAX_FRAMES, 432,000 frames) and 200,000 runs.",
+        "The runs must start a game on their first frame and end it on their last."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.start"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "Recorder"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "toBits"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "replay"
+        },
+        {
+          "path": "games/hivestorm/src/engine/trig.ts",
+          "symbol": "dsin"
+        },
+        {
+          "path": "games/hivestorm/src/engine/rng.ts",
+          "symbol": "Rng"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/hivestorm/src/engine",
+      "path": "games/hivestorm/src/engine/.dev/capability.json",
+      "relationship": "The capability these features make up."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/hivestorm/src/engine",
+      "path": "games/hivestorm/src/engine/.dev/operation.json",
+      "relationship": "The operations that carry them out."
+    },
+    {
+      "kind": "state",
+      "folder": "games/hivestorm/src/engine",
+      "path": "games/hivestorm/src/engine/.dev/Game.state-diagram.json",
+      "relationship": "The phases a game moves through."
+    },
+    {
+      "kind": "state",
+      "folder": "games/hivestorm/src/engine",
+      "path": "games/hivestorm/src/engine/.dev/Alien.state-diagram.json",
+      "relationship": "How one alien flies."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/observability.schema.json",
+  "kind": "observability",
+  "title": "Hivestorm observability",
+  "folder": "games/hivestorm",
+  "entities": [
+    {
+      "id": "web-analytics",
+      "title": "Cloudflare Web Analytics",
+      "summary": "Page views reported by Cloudflare's beacon, which Cloudflare injects into the page.",
+      "signalType": "metric",
+      "meaning": "Visits to the game's page and its scores page.",
+      "access": "The Cloudflare account's owners.",
+      "excludes": [
+        "Anything inside the game: games, scores and names are not reported."
+      ],
+      "details": "The page's and the scores page's content security policies allow the beacon's script and reports; nothing in this folder emits them. The Worker writes no logs or metrics of its own: an unexpected error in the API becomes a 500 with { error: \"server error\" } and is not recorded.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/hivestorm/public/_headers",
+          "symbol": "Content-Security-Policy"
+        },
+        {
+          "path": "games/hivestorm/worker/look.ts",
+          "symbol": "sitePage"
+        },
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "default.fetch"
+        }
+      ]
+    },
+    {
+      "id": "play-time",
+      "title": "Play time (the games hub's play.js)",
+      "summary": "The page loads the games hub's /games/play.js, tagged data-game=\"hivestorm\".",
+      "signalType": "event",
+      "meaning": "The games hub's record of play in Hivestorm. What it records, and where, is the hub's and was not checked here.",
+      "access": "Not known from this repository.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/hivestorm/public/index.html",
+          "symbol": "/games/play.js"
+        }
+      ]
+    }
+  ]
+}

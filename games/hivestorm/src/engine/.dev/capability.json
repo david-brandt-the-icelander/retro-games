@@ -1,0 +1,74 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Engine capability",
+  "folder": "games/hivestorm/src/engine",
+  "description": "What the engine can do for the page and the Worker.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/engine/game.ts",
+      "symbol": "Game.step"
+    },
+    {
+      "path": "games/hivestorm/src/engine/replay.ts",
+      "symbol": "replay"
+    }
+  ],
+  "entities": [
+    {
+      "id": "deterministic-game",
+      "name": "Deterministic hive shooter",
+      "description": "Plays, records and replays a game of Hivestorm with no DOM, timers or randomness of its own.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "replay"
+        },
+        {
+          "path": "games/hivestorm/src/engine/trig.ts",
+          "symbol": "dsin"
+        }
+      ],
+      "responsibility": "Holds the rules of the game and plays it one frame at a time, so the same seed and controls always give the same game in every browser and on the server.",
+      "operations": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.step"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "Recorder.push"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "replay"
+        }
+      ],
+      "access": [
+        "Nothing checks: it is a library bundled into the page (src/main.ts) and the Worker (worker/scores.ts re-exports replay)."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/hivestorm/src/engine",
+      "path": "games/hivestorm/src/engine/.dev/operation.json",
+      "relationship": "The operations through which it is reached."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/hivestorm/src/engine",
+      "path": "games/hivestorm/src/engine/.dev/feature.json",
+      "relationship": "The features it offers."
+    }
+  ]
+}

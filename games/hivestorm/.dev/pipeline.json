@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/pipeline.schema.json",
+  "kind": "pipeline",
+  "title": "Hivestorm pipeline",
+  "folder": "games/hivestorm",
+  "entities": [
+    {
+      "id": "pull-request",
+      "title": "On a pull request",
+      "summary": "Hivestorm is typechecked, tested and built, and every .dev diagram is validated.",
+      "trigger": "A pull request that changes games/hivestorm, or anything under .github/ (ci.yml, .github/scripts/changed-games.sh).",
+      "checks": [
+        "npm ci",
+        "npm test: tsc --noEmit, then the node:test suites in test/",
+        "npm run build",
+        "python3 Meta/Agents/Skills/validate_diagrams.py, for the whole repository",
+        "The Database migration check, when worker/schema.sql or worker/migrations/ change"
+      ],
+      "blocks": "merge",
+      "notChecked": [
+        "The knowledge files: Meta/Agents/Knowledge/validate_knowledge.py is not run in CI.",
+        "Behavior in a real browser: drawing, input, sound and the page loop.",
+        "The games hub's relay and sign-in routes."
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/game.yml",
+          "symbol": "jobs"
+        }
+      ]
+    },
+    {
+      "id": "deploy",
+      "title": "On a push to main",
+      "summary": "The same steps again, then wrangler deploy.",
+      "trigger": "A push to main that changes games/hivestorm or .github/, or Run workflow on the Deploy workflow (one game or all).",
+      "checks": [
+        "The migration gate: every database change since the last deploy has been acknowledged",
+        "npm test",
+        "npm run build",
+        "npx wrangler deploy"
+      ],
+      "blocks": "release",
+      "secrets": [
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Database migrations"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,254 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/glossary.schema.json",
+  "kind": "glossary",
+  "title": "Hivestorm glossary",
+  "folder": "games/hivestorm",
+  "entities": [
+    {
+      "id": "hive",
+      "title": "Hive",
+      "summary": "The 37 aliens in their slots, five rows across nine columns, swaying side to side; also one player's set of survivors, kept between turns.",
+      "aliases": [
+        "formation"
+      ],
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "LAYOUT"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "PlayerState"
+        }
+      ]
+    },
+    {
+      "id": "queen",
+      "title": "Queen",
+      "summary": "The crowned alien on the hive's top row; three in a hive. Diving, she is worth 200, 400 or 800.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "QUEEN_BONUS"
+        }
+      ]
+    },
+    {
+      "id": "guard",
+      "title": "Guard",
+      "summary": "The magenta alien on the second row; seven in a hive. A guard beside a diving queen may fly with her as an escort.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "LAYOUT"
+        }
+      ]
+    },
+    {
+      "id": "drone",
+      "title": "Drone",
+      "summary": "The orange alien on the third row; nine in a hive.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "LAYOUT"
+        }
+      ]
+    },
+    {
+      "id": "worker-alien",
+      "title": "Worker (alien)",
+      "summary": "The yellow alien on the two bottom rows; eighteen in a hive.",
+      "notToBeConfusedWith": [
+        "The Cloudflare Worker in worker/, which serves the game and keeps the table."
+      ],
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "LAYOUT"
+        }
+      ]
+    },
+    {
+      "id": "peel",
+      "title": "Peel",
+      "summary": "An alien turning out of the hive on a circular arc, before it dives.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.startDive"
+        }
+      ]
+    },
+    {
+      "id": "dive",
+      "title": "Dive",
+      "summary": "An alien flying down at the ship, steering toward it and firing, until it leaves the bottom of the screen.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.moveAliens"
+        }
+      ]
+    },
+    {
+      "id": "escort",
+      "title": "Escort",
+      "summary": "A guard flying in formation with a diving queen; each escort shot first raises what the queen is worth.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.launchDives"
+        }
+      ]
+    },
+    {
+      "id": "swarm",
+      "title": "Swarm",
+      "summary": "Five or fewer aliens left: they no longer go home, and dive one after another.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.swarm"
+        }
+      ]
+    },
+    {
+      "id": "wave",
+      "title": "Wave",
+      "summary": "One hive, from full to cleared. Each player has their own wave number, and each wave dives faster and more often.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "diveSpeed"
+        }
+      ]
+    },
+    {
+      "id": "turn",
+      "title": "Turn",
+      "summary": "In a two-player game, one player's play until they lose a ship; then the other plays, if they still have ships.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.nextTurn"
+        }
+      ]
+    },
+    {
+      "id": "frame",
+      "title": "Frame",
+      "summary": "One fixed step of the game, 1/60 s. Recordings, replays and online lockstep count in frames.",
+      "aliases": [
+        "step"
+      ],
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "STEP"
+        }
+      ]
+    },
+    {
+      "id": "seed",
+      "title": "Seed",
+      "summary": "A 32-bit number that fixes every random choice in a game. The server issues it for a game that may enter the table.",
+      "sources": [
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "issueGame"
+        }
+      ]
+    },
+    {
+      "id": "ticket",
+      "title": "Ticket",
+      "summary": "The browser's name for a server-issued seed with its id, fetched ahead of the game that uses it.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/scores.ts",
+          "symbol": "Ticket"
+        }
+      ]
+    },
+    {
+      "id": "runs",
+      "title": "Runs",
+      "summary": "A game's recorded controls: [bits, count] pairs, each a run of frames with the same six input bits.",
+      "aliases": [
+        "recording"
+      ],
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "Recorder"
+        }
+      ]
+    },
+    {
+      "id": "lockstep",
+      "title": "Lockstep",
+      "summary": "Online play in which every browser runs the whole game and steps only once it has every player's controls for that step.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Lockstep"
+        }
+      ]
+    },
+    {
+      "id": "delay",
+      "title": "Delay",
+      "summary": "How many steps ahead a browser schedules its own player's controls online, chosen at the start from the measured connections.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "delaySteps"
+        }
+      ]
+    },
+    {
+      "id": "fingerprint",
+      "title": "Fingerprint",
+      "summary": "A hash of the game's numbers that the browsers compare every 120 steps online, to notice if their games differ.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "gamePrint"
+        }
+      ]
+    },
+    {
+      "id": "host",
+      "title": "Host",
+      "summary": "Online, the browser in the lowest slot still in the room: it starts the game, and is player 1.",
+      "notToBeConfusedWith": [
+        "The player who started the game in the lobby: usually the same, unless they left."
+      ],
+      "sources": [
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Room.host"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "startOnline"
+        }
+      ]
+    },
+    {
+      "id": "games-hub",
+      "title": "Games hub",
+      "summary": "The site's games Worker in another repository: the multiplayer lobby, the match relay, sign-in on this host and /games/play.js.",
+      "aliases": [
+        "recreations"
+      ],
+      "sources": [
+        {
+          "path": "games/hivestorm/README.md",
+          "symbol": "Playing online"
+        }
+      ]
+    }
+  ]
+}

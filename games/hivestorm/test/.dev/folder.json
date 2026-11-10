@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Tests",
+  "folder": "games/hivestorm/test",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Tests",
+      "summary": "The node:test suites for the engine, the art, replay and the high-score API, online play and the sign-in.",
+      "purpose": "Checks the game without a browser: build.mjs --test bundles each *.test.ts into dist-test/, and npm test runs them after the typecheck.",
+      "boundaries": [
+        "What each suite checks is recorded in the verification files of the folders it checks: src/engine, src/ui, src and worker.",
+        "online.test.ts is the same file in Rally and Shatterbelt, as src/online.ts is."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/build.mjs",
+          "symbol": "--test"
+        },
+        {
+          "path": "games/hivestorm/package.json",
+          "symbol": "test"
+        }
+      ]
+    }
+  ]
+}

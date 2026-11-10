@@ -1,0 +1,101 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "High-score Worker features",
+  "folder": "games/hivestorm/worker",
+  "description": "What the Worker offers players.",
+  "sources": [
+    {
+      "path": "games/hivestorm/worker/index.ts",
+      "symbol": "submitScore"
+    }
+  ],
+  "entities": [
+    {
+      "id": "unfakeable-scores",
+      "name": "High scores that can't be faked",
+      "description": "A score is listed only as the server's replay of the game computes it.",
+      "sources": [
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "replay"
+        }
+      ],
+      "behavior": "The server issues the seed. The browser sends the game's recorded controls with a name, or null, for each player, and the Worker replays the whole game with the same engine from that seed. It claims the seed and stores, for each player who gave a name and scored, the score and wave the replay reached, with the number of players. Each entry comes back with its rank.",
+      "outcome": "Players can trust the table: a score cannot be typed in, edited or submitted twice, and in a two-player game each player's score is their own.",
+      "constraints": [
+        "Seeds expire after 24 hours unused.",
+        "Games of up to two hours.",
+        "Names of up to 12 characters, cleaned the same way as in the browser.",
+        "One- and two-player games share one table; the Game column says which."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "issueGame"
+        },
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/hivestorm/worker/scores.ts",
+          "symbol": "replay"
+        },
+        {
+          "path": "games/hivestorm/worker/scores.ts",
+          "symbol": "cleanName"
+        }
+      ]
+    },
+    {
+      "id": "public-scores-page",
+      "name": "Public scores page",
+      "description": "The table as a page of icelander.net.",
+      "sources": [
+        {
+          "path": "games/hivestorm/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        }
+      ],
+      "behavior": "The best 25 scores are listed with the name, score, wave reached and whether it was a one- or two-player game, in the site's look, with inline styles so the strict content policy holds.",
+      "outcome": "Anyone can see the table without signing in or opening the game.",
+      "constraints": [
+        "25 rows.",
+        "Names are escaped."
+      ],
+      "implementation": [
+        {
+          "path": "games/hivestorm/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        },
+        {
+          "path": "games/hivestorm/worker/look.ts",
+          "symbol": "sitePage"
+        },
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "loadTop"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/hivestorm/worker",
+      "path": "games/hivestorm/worker/.dev/capability.json",
+      "relationship": "The capability these features belong to."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/hivestorm/worker",
+      "path": "games/hivestorm/worker/.dev/operation.json",
+      "relationship": "The operations they call."
+    }
+  ]
+}

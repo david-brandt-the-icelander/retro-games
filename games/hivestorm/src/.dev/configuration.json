@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "Browser game settings",
+  "folder": "games/hivestorm/src",
+  "entities": [
+    {
+      "id": "high-score",
+      "title": "High score",
+      "summary": "The best score seen in this browser, shown at the top of the screen.",
+      "key": "localStorage hivestorm.hiscore",
+      "type": "whole number",
+      "default": "0",
+      "sensitive": false,
+      "scope": "per browser",
+      "takesEffect": "at-startup",
+      "details": "Raised to the table's top score whenever the table loads, and saved whenever it changes. A private window that refuses storage starts at 0 each time.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "HI_KEY"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "refreshTable"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "frame"
+        }
+      ]
+    },
+    {
+      "id": "sound",
+      "title": "Sound",
+      "summary": "Whether sound is on, remembered in this browser.",
+      "key": "localStorage hivestorm.sound",
+      "type": "on | off",
+      "default": "on",
+      "sensitive": false,
+      "scope": "per browser",
+      "takesEffect": "per-use",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "SOUND_KEY"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "toggleSound"
+        }
+      ]
+    }
+  ]
+}
