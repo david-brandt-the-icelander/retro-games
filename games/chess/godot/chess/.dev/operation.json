@@ -1,0 +1,137 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "Chess rules operations",
+  "folder": "games/chess/godot/chess",
+  "description": "The rules' public functions, as the scripts call them.",
+  "sources": [
+    {
+      "path": "games/chess/godot/chess/rules.gd",
+      "symbol": "Chess"
+    }
+  ],
+  "entities": [
+    {
+      "id": "from-moves",
+      "name": "Play out a game",
+      "description": "A game from its UCI moves: every position, the SAN of each move and the result.",
+      "sources": [
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.Game.from_moves"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.Game._judge"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/godot/chess/rules.gd",
+        "symbol": "Chess.Game.from_moves"
+      },
+      "action": "query",
+      "transport": "GDScript static function",
+      "authorization": "None.",
+      "result": "A Chess.Game; result is 1-0, 0-1 or 1/2-1/2 with its reason (checkmate, stalemate, material, repetition, fifty) when the board ends the game, otherwise *.",
+      "failures": [
+        "An illegal move stops the replay there: the game holds the moves before it."
+      ]
+    },
+    {
+      "id": "play",
+      "name": "Play one move",
+      "description": "Adds a UCI move to a game and judges the new position.",
+      "sources": [
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.Game.play"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/godot/chess/rules.gd",
+        "symbol": "Chess.Game.play"
+      },
+      "action": "command",
+      "transport": "GDScript method on Chess.Game",
+      "authorization": "None.",
+      "result": "true, with the move, its SAN and the new position added and the result judged again.",
+      "failures": [
+        "The move is not legal: false, and the game is unchanged."
+      ]
+    },
+    {
+      "id": "legal-moves",
+      "name": "List the legal moves",
+      "description": "Every legal move in a position.",
+      "sources": [
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.legal_moves"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess._pseudo"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/godot/chess/rules.gd",
+        "symbol": "Chess.legal_moves"
+      },
+      "action": "query",
+      "transport": "GDScript static function",
+      "authorization": "None.",
+      "result": "The moves as ints (from, to, promotion, flags), including castling, en passant and promotions; those leaving the king in check are left out.",
+      "failures": []
+    },
+    {
+      "id": "parse-uci",
+      "name": "Read a UCI move",
+      "description": "The legal move a UCI string names in a position.",
+      "sources": [
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.parse_uci"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/godot/chess/rules.gd",
+        "symbol": "Chess.parse_uci"
+      },
+      "action": "query",
+      "transport": "GDScript static function",
+      "authorization": "None.",
+      "result": "The move as an int.",
+      "failures": [
+        "Not a legal move in the position: -1."
+      ]
+    },
+    {
+      "id": "describe",
+      "name": "Say how a game ended",
+      "description": "A result and reason in words, with the players' names.",
+      "sources": [
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.describe"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/godot/chess/rules.gd",
+        "symbol": "Chess.describe"
+      },
+      "action": "query",
+      "transport": "GDScript static function",
+      "authorization": "None.",
+      "result": "For example \"Checkmate. Ann wins\" or \"Draw agreed\"; \"In play\" for *.",
+      "failures": []
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/chess/godot/chess",
+      "path": "games/chess/godot/chess/.dev/capability.json",
+      "relationship": "The capability they belong to."
+    }
+  ]
+}

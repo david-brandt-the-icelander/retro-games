@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Reference renders",
+  "folder": "games/chess/scripts/reference",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Reference renders",
+      "summary": "Recreates the design's reference scenario and renders every reference state of docs/screens/.",
+      "purpose": "seed.py fills a fresh local database with the scenario's players, invitations and games through the dev sign-in and the API; retime.py spreads their times over the last week; local_history.py writes a signed-out player's history; render.sh runs the desktop build under Xvfb once per state with the development switches and --shot; contact_sheet.py lays the renders out on one sheet.",
+      "boundaries": [
+        "It needs a local dev server with DEV_LOGIN=1; it never touches the production database.",
+        "What \"visually correct\" means, and the reference scenario, are docs/DESIGN.md's."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/scripts/reference/render.sh"
+        },
+        {
+          "path": "games/chess/scripts/reference/seed.py",
+          "symbol": "login"
+        },
+        {
+          "path": "games/chess/scripts/reference/retime.py"
+        },
+        {
+          "path": "games/chess/scripts/reference/local_history.py"
+        },
+        {
+          "path": "games/chess/scripts/reference/contact_sheet.py"
+        }
+      ],
+      "links": [
+        {
+          "label": "Gambit design: acceptance and the reference scenario",
+          "path": "games/chess/docs/DESIGN.md"
+        }
+      ]
+    }
+  ]
+}

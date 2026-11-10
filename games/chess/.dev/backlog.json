@@ -1,0 +1,46 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Gambit backlog",
+  "folder": "games/chess",
+  "entities": [
+    {
+      "id": "old-oauth-settings",
+      "title": ".dev.vars.example still lists the old OAuth secrets",
+      "summary": "The example settings keep commented GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET lines that nothing reads.",
+      "type": "debt",
+      "compromise": "They were left when sign-in moved to icelander.net's login service.",
+      "cost": "A developer may think local sign-in needs OAuth credentials; only DEV_LOGIN matters locally.",
+      "acceptanceCriteria": [
+        ".dev.vars.example names only settings the Worker reads."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/chess/.dev.vars.example",
+        "description": "The commented lines, against worker/auth.ts and worker/mail.ts."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/.dev.vars.example"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "AuthEnv"
+        },
+        {
+          "path": "games/chess/worker/mail.ts",
+          "symbol": "MailEnv"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/scripts/reference/.dev/backlog.json",
+          "entityId": "render-oauth-ids"
+        }
+      ]
+    }
+  ]
+}

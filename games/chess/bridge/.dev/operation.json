@@ -1,0 +1,170 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "Page bridge operations",
+  "folder": "games/chess/bridge",
+  "description": "window.chessBridge: what the Godot game asks of the page.",
+  "sources": [
+    {
+      "path": "games/chess/bridge/main.ts",
+      "symbol": "chessBridge"
+    }
+  ],
+  "entities": [
+    {
+      "id": "best-move",
+      "name": "Ask the computer for a move",
+      "description": "Stockfish's move after the given moves, at strength 1–8.",
+      "sources": [
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "bestMove"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "Engine.bestMove"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "commandsFor"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/bridge/main.ts",
+        "symbol": "bestMove"
+      },
+      "action": "query",
+      "transport": "window.chessBridge.bestMove(moves, level, done), called by Api.engine_move through JavaScriptBridge",
+      "authorization": "None: anything in the page may call it.",
+      "result": "done(uci) with Stockfish's bestmove, after at least the strength's pause (450 ms at strength 1, none at 7 and 8).",
+      "failures": [
+        "The engine cannot start (no Web Worker, or the Worker reports an error): done(\"\").",
+        "The search is cancelled, or another starts, before it answers: done is never called."
+      ]
+    },
+    {
+      "id": "cancel-engine",
+      "name": "Cancel the search",
+      "description": "Stops any search; its answer is thrown away.",
+      "sources": [
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "cancelEngine"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "Engine.cancel"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/bridge/engine.ts",
+        "symbol": "Engine.cancel"
+      },
+      "action": "command",
+      "transport": "window.chessBridge.cancelEngine(), called by Api.engine_cancel",
+      "authorization": "None.",
+      "result": "The current search, if any, is stopped with UCI stop and its bestmove ignored.",
+      "failures": []
+    },
+    {
+      "id": "preload-engine",
+      "name": "Start the engine early",
+      "description": "Warms Stockfish up so the first move comes quickly.",
+      "sources": [
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "preloadEngine"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "Engine.preload"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/bridge/engine.ts",
+        "symbol": "Engine.preload"
+      },
+      "action": "command",
+      "transport": "window.chessBridge.preloadEngine(), called by Api.engine_preload on the set-up screen and a computer game",
+      "authorization": "None.",
+      "result": "The Web Worker is created and sent uci.",
+      "failures": [
+        "The engine cannot start: nothing is said now; the next bestMove answers \"\"."
+      ]
+    },
+    {
+      "id": "take-challenge",
+      "name": "Take the invitation in the address",
+      "description": "The ?challenge=ID the page was opened with, once.",
+      "sources": [
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "takeChallenge"
+        },
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "pendingChallenge"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/bridge/main.ts",
+        "symbol": "takeChallenge"
+      },
+      "action": "command",
+      "transport": "window.chessBridge.takeChallenge(), called by Api.challenge_in_address when the game starts",
+      "authorization": "None.",
+      "result": "The id (8 to 40 lowercase letters and digits), and the address without it; \"\" if there was none or it was already taken.",
+      "failures": [
+        "An id of another shape is ignored: \"\"."
+      ]
+    },
+    {
+      "id": "navigate",
+      "name": "Leave for a sign-in page",
+      "description": "Sends the browser to an address, with where to come back to.",
+      "sources": [
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "navigate"
+        },
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "returnPath"
+        },
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "sign_in"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/chess/bridge/main.ts",
+        "symbol": "navigate"
+      },
+      "action": "command",
+      "transport": "window.chessBridge.navigate(url), called by Api.sign_in with auth/login/{provider}?return= returnPath()",
+      "authorization": "None.",
+      "result": "The page is left; an invitation not yet taken survives in the return address.",
+      "failures": []
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/chess/bridge",
+      "path": "games/chess/bridge/.dev/capability.json",
+      "relationship": "The capability these operations belong to."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/chess/bridge",
+      "path": "games/chess/bridge/.dev/feature.json",
+      "relationship": "The feature the engine operations carry out."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/use-case.json",
+      "relationship": "The use cases that call them: playing the computer, and answering an invitation from its link."
+    }
+  ]
+}

@@ -35,7 +35,8 @@
       "id": "browser",
       "name": "Player's browser",
       "kind": "client",
-      "description": "Runs the Godot WebAssembly export (WebGL 2) and the page bridge."
+      "description": "Runs the Godot WebAssembly export (WebGL 2) and the page bridge.",
+      "actor": "Actors/player.md"
     },
     {
       "id": "stockfish",

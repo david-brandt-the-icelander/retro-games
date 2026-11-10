@@ -1,0 +1,272 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/glossary.schema.json",
+  "kind": "glossary",
+  "title": "Gambit glossary",
+  "folder": "games/chess",
+  "entities": [
+    {
+      "id": "gambit",
+      "title": "Gambit",
+      "summary": "The game; its folder, Worker, database and path are all called chess (/games/retro/chess).",
+      "sources": [
+        {
+          "path": "games/chess/godot/project.godot",
+          "symbol": "config/name"
+        },
+        {
+          "path": "games/chess/wrangler.jsonc",
+          "symbol": "name"
+        }
+      ]
+    },
+    {
+      "id": "invitation",
+      "title": "Invitation",
+      "summary": "An offer of an online game, from a player to an email address, with the colour the sender plays; answered once: accepted, declined or cancelled.",
+      "sources": [
+        {
+          "path": "games/chess/shared/protocol.ts",
+          "symbol": "Challenge"
+        },
+        {
+          "path": "games/chess/worker/schema.sql",
+          "symbol": "challenges"
+        }
+      ],
+      "aliases": [
+        "challenge (in the code, the API and the database)"
+      ]
+    },
+    {
+      "id": "contact",
+      "title": "Contact",
+      "summary": "Someone a player has played: made for both when an invitation is accepted, shown with the record against them.",
+      "sources": [
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "contacts"
+        },
+        {
+          "path": "games/chess/shared/protocol.ts",
+          "symbol": "Contact"
+        }
+      ],
+      "notToBeConfusedWith": [
+        "A friend in the top bar's Friends, which is the lobby"
+      ]
+    },
+    {
+      "id": "record",
+      "title": "Record",
+      "summary": "Wins, losses and draws in finished online games against one contact, from the owner's side.",
+      "sources": [
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "contacts"
+        },
+        {
+          "path": "games/chess/godot/scripts/ui.gd",
+          "symbol": "UI.record"
+        }
+      ]
+    },
+    {
+      "id": "lobby",
+      "title": "Lobby",
+      "summary": "The Friends screen: the invitation form, invitations both ways, games in play and contacts.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._lobby"
+        },
+        {
+          "path": "games/chess/shared/protocol.ts",
+          "symbol": "Lobby"
+        }
+      ],
+      "aliases": [
+        "Friends"
+      ]
+    },
+    {
+      "id": "transcript",
+      "title": "Transcript",
+      "summary": "A game's entries in order, each with its time: start, moves, chat, draw offers and refusals, resignation and the end.",
+      "sources": [
+        {
+          "path": "games/chess/worker/schema.sql",
+          "symbol": "game_events"
+        },
+        {
+          "path": "games/chess/shared/protocol.ts",
+          "symbol": "GameEvent"
+        }
+      ],
+      "aliases": [
+        "game_events",
+        "events"
+      ]
+    },
+    {
+      "id": "ply",
+      "title": "Ply",
+      "summary": "One move by one side. An action's ply is how many moves were made when the player chose it, so a move made on an old position is refused.",
+      "sources": [
+        {
+          "path": "games/chess/shared/protocol.ts",
+          "symbol": "Action"
+        },
+        {
+          "path": "games/chess/worker/actions.ts",
+          "symbol": "applyAction"
+        }
+      ],
+      "notToBeConfusedWith": [
+        "A move in the transcript's numbering, where a move by each side is one move"
+      ]
+    },
+    {
+      "id": "uci",
+      "title": "UCI move",
+      "summary": "A move written as from-square, to-square and an optional promotion piece: e2e4, e7e8q. How the API, the database and Stockfish hold moves.",
+      "sources": [
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "UCI"
+        }
+      ],
+      "notToBeConfusedWith": [
+        "SAN, how the transcript shows moves"
+      ]
+    },
+    {
+      "id": "san",
+      "title": "SAN",
+      "summary": "Standard Algebraic Notation, how the transcript writes moves: Nf3, exd5, O-O, bxa8=Q, Qh4#.",
+      "sources": [
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.san"
+        }
+      ]
+    },
+    {
+      "id": "result",
+      "title": "Result and reason",
+      "summary": "1-0, 0-1, 1/2-1/2, or * in play; with why it ended: checkmate, stalemate, material, repetition, fifty, resign or agreement. abandoned is named in the types, but nothing sets it.",
+      "sources": [
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "Reason"
+        },
+        {
+          "path": "games/chess/godot/chess/rules.gd",
+          "symbol": "Chess.describe"
+        }
+      ]
+    },
+    {
+      "id": "draw-offer",
+      "title": "Draw offer",
+      "summary": "One side's offer of a draw: the other accepts or declines, a move refuses it, and offering back accepts.",
+      "sources": [
+        {
+          "path": "games/chess/worker/actions.ts",
+          "symbol": "applyAction"
+        },
+        {
+          "path": "games/chess/shared/protocol.ts",
+          "symbol": "GameView"
+        }
+      ]
+    },
+    {
+      "id": "strength",
+      "title": "Strength",
+      "summary": "One of the computer's eight levels, from Pawn Pusher to Stockfish: a Stockfish Skill Level and a search depth or time.",
+      "sources": [
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "STRENGTH"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "LEVELS"
+        }
+      ],
+      "aliases": [
+        "level"
+      ]
+    },
+    {
+      "id": "room",
+      "title": "Room",
+      "summary": "The GameRoom Durable Object of one online game, which takes its actions one at a time.",
+      "sources": [
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom"
+        }
+      ]
+    },
+    {
+      "id": "live",
+      "title": "Live connection",
+      "summary": "The WebSocket from a game screen to its room, which sends the whole game after every change.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "Live"
+        },
+        {
+          "path": "games/chess/shared/protocol.ts",
+          "symbol": "LiveMessage"
+        }
+      ]
+    },
+    {
+      "id": "pace",
+      "title": "Pace",
+      "summary": "How much faster than it was played a replay plays: 1×, 4× or 16×.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._set_speed"
+        }
+      ]
+    },
+    {
+      "id": "local-game",
+      "title": "Local game",
+      "summary": "A game against the computer kept on the device (user://), with an id starting local-.",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._new_computer_game"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._game_row"
+        }
+      ]
+    },
+    {
+      "id": "dev-sign-in",
+      "title": "Development sign-in",
+      "summary": "The stand-in sign-in that takes any address, only with DEV_LOGIN=1 on a local host.",
+      "sources": [
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "handleAuth"
+        },
+        {
+          "path": "games/chess/.dev.vars.example"
+        }
+      ],
+      "aliases": [
+        "dev login",
+        "auth/dev"
+      ]
+    }
+  ]
+}

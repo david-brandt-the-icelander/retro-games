@@ -1,0 +1,208 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Chess Worker verification",
+  "folder": "games/chess/worker",
+  "entities": [
+    {
+      "id": "invitation-to-mate",
+      "title": "An invitation, accepted, played to mate",
+      "summary": "Invite by email, find it after signing in, accept once, play to mate, chat after, and see it in both histories and contacts.",
+      "subject": [
+        {
+          "path": "games/chess/worker/.dev/feature.json",
+          "entityId": "invite-by-email"
+        },
+        {
+          "path": "games/chess/worker/.dev/feature.json",
+          "entityId": "contacts-and-records"
+        },
+        {
+          "path": "games/chess/worker/.dev/feature.json",
+          "entityId": "history"
+        }
+      ],
+      "criteria": [
+        "An invitation to a cleaned address is stored and linked; not to oneself or a non-address",
+        "Only the addressee can accept, once; only the players see the game",
+        "Four moves end the game by checkmate, broadcast four times; a later action is refused but chat is kept",
+        "Both players have each other as contacts with the record; an invitation alone makes no contact"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/chess/test/api.test.ts",
+          "symbol": "a challenge by email, accepted, played to mate, in both players' history and contacts",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/chess/test/api.test.ts",
+          "symbol": "declining and cancelling invitations; removing a contact",
+          "command": "npm test"
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/test/api.test.ts"
+        }
+      ]
+    },
+    {
+      "id": "actions",
+      "title": "What an action does to a game",
+      "summary": "Turn order, stale plies, mate, draw offers and answers, resignation and chat.",
+      "subject": [
+        {
+          "path": "games/chess/worker/.dev/feature.json",
+          "entityId": "server-referee"
+        },
+        {
+          "path": "games/chess/worker/.dev/Game.state-diagram.json"
+        }
+      ],
+      "criteria": [
+        "Out of turn, a stale ply or an illegal move is refused",
+        "Mate ends the game with move and end entries",
+        "Offering back accepts; a move withdraws an offer; only the other side accepts or declines",
+        "Chat is cleaned, logged with its side, allowed after the game and never empty",
+        "Malformed actions are rejected"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/chess/test/rules.test.ts",
+          "symbol": "actions: turn order, stale moves, mate ends the game",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/chess/test/rules.test.ts",
+          "symbol": "actions: draw offers, accepting, declining, and a move answering one",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/chess/test/rules.test.ts",
+          "symbol": "chat: cleaned, logged with its side, allowed after the game too, never empty",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/chess/test/rules.test.ts",
+          "symbol": "validAction rejects malformed input",
+          "command": "npm test"
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/test/rules.test.ts"
+        },
+        {
+          "path": "games/chess/worker/actions.ts",
+          "symbol": "applyAction"
+        }
+      ],
+      "details": "The suites drive RoomCore directly; GameRoom's WebSockets, hibernation and the save conflict (409 \"The board changed\") are not tested."
+    },
+    {
+      "id": "sign-in",
+      "title": "Sign-in",
+      "summary": "Signed out, only /me answers; sign-in goes to the host's; the login service is asked on every request; a person plays as the address Gambit knows.",
+      "subject": [
+        {
+          "path": "games/chess/worker/.dev/capability.json",
+          "entityId": "signed-in-page"
+        }
+      ],
+      "criteria": [
+        "Signed out, /me says so and the rest is 401; auth/dev is 404 without DEV_LOGIN",
+        "Return paths outside the game become its front page",
+        "login and the old callbacks redirect to /auth/sign-in; sign-out clears site_session and refuses another origin",
+        "A person known by an older address plays as it; a session the login service drops signs them out at once",
+        "A Bearer token works like the cookie"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/chess/test/api.test.ts",
+          "symbol": "signed out: /me says so; everything else needs sign-in; dev sign-in only when enabled",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/chess/test/api.test.ts",
+          "symbol": "sign-in goes to icelander.net's one sign-in; signing out is the site's",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/chess/test/api.test.ts",
+          "symbol": "through the login service: checked on every request, and a person plays as the address Gambit knows",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/chess/test/api.test.ts",
+          "symbol": "profile pictures only from Google or GitHub; a Bearer token works like the cookie",
+          "command": "npm test"
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/test/api.test.ts"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "currentUser"
+        }
+      ],
+      "details": "The page's games:play check (requirePlayer) has no test here."
+    },
+    {
+      "id": "writes-and-computer-games",
+      "title": "Cross-site writes and games against the computer",
+      "summary": "A POST from another origin is refused; a game against the computer is stored only when legal and over.",
+      "subject": [
+        {
+          "path": "games/chess/worker/.dev/feature.json",
+          "entityId": "history"
+        }
+      ],
+      "criteria": [
+        "A POST with another Origin is 403",
+        "Unfinished or illegal computer games are 422",
+        "A resigned game is stored with start, move, resign and end, keeping the move times",
+        "The computer is named from LEVELS"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/chess/test/api.test.ts",
+          "symbol": "cross-site and non-JSON writes are refused",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/chess/test/api.test.ts",
+          "symbol": "games against the computer: saved only when finished and legal",
+          "command": "npm test"
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/test/api.test.ts"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "saveComputerGame"
+        }
+      ],
+      "details": "The test name says non-JSON writes too, but it sends only a cross-origin one."
+    }
+  ]
+}

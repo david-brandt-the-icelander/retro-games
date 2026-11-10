@@ -1,0 +1,327 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/requirements.schema.json",
+  "kind": "requirements",
+  "title": "Gambit requirements",
+  "folder": "games/chess",
+  "entities": [
+    {
+      "id": "invite-by-email",
+      "title": "Invite anyone by email",
+      "summary": "A player invites a friend by email address, whether or not the friend has played before.",
+      "statement": "A signed-in player can invite any email address to an online game and choose their colour; the friend finds the invitation when they sign in with that address, gets an email when sending is set up, and the inviter gets a link to send either way.",
+      "rationale": "GDD pillar 2, Play anyone, any time.",
+      "acceptanceCriteria": [
+        "An invitation to an address nobody has used yet is waiting when someone signs in with it.",
+        "Without email set up, the inviter still gets a working link.",
+        "An invitation is answered once."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/docs/GDD.md",
+        "description": "Pillar 2: invitations go to an email address; a game waits as long as it needs to."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "createChallenge"
+        },
+        {
+          "path": "games/chess/worker/mail.ts",
+          "symbol": "canMail"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/chess/worker/.dev/verification.json",
+          "entityId": "invitation-to-mate"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/chess/worker/.dev/feature.json",
+          "entityId": "invite-by-email"
+        }
+      ]
+    },
+    {
+      "id": "own-pace",
+      "title": "Play at your own pace",
+      "summary": "An online game waits as long as it needs to; either player can leave and come back days later.",
+      "statement": "Online games have no clocks; a game in play is kept on the server and opens again where it was.",
+      "rationale": "Correspondence-style chess between friends in different places.",
+      "acceptanceCriteria": [
+        "A game left for days opens at the same position with its whole transcript.",
+        "Whose move it is shows in the lobby."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/docs/GDD.md",
+        "description": "Pillar 2 and the decision log: no clocks, correspondence-style games."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "activeGames"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._fill_active"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/godot/scripts/.dev/feature.json",
+          "entityId": "live-online-game"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/chess/.dev/decisions.json",
+          "entityId": "correspondence"
+        }
+      ]
+    },
+    {
+      "id": "server-referee",
+      "title": "The server is the referee",
+      "summary": "Every online move and message is checked on the server.",
+      "statement": "The server checks every online action (turn, legality, offers) with chess.js before it is saved, and both players get the game as the server has it.",
+      "rationale": "GDD pillar 4: neither player's client can be trusted with the other's game.",
+      "acceptanceCriteria": [
+        "An illegal move, a move out of turn or a stale one is refused and the board put back.",
+        "Only the game's two players can act in it.",
+        "Two actions on one game never race."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/docs/GDD.md",
+        "description": "Pillar 4: online moves are checked on the server."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/actions.ts",
+          "symbol": "applyAction"
+        },
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "RoomCore.act"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/chess/worker/.dev/verification.json",
+          "entityId": "actions"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/chess/worker/.dev/feature.json",
+          "entityId": "server-referee"
+        }
+      ]
+    },
+    {
+      "id": "conversation",
+      "title": "A game is a conversation",
+      "summary": "Moves and chat share one transcript, with times, kept and replayable.",
+      "statement": "Every move, message, draw offer, refusal, resignation and result goes into the game's transcript with the time it happened; the transcript is kept with the game and shown in play and in replay.",
+      "rationale": "GDD pillar 3.",
+      "acceptanceCriteria": [
+        "The transcript lists moves and messages in the order they happened, with clock times and how long each move took.",
+        "Chat works during and after the game."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/docs/GDD.md",
+        "description": "Pillar 3: moves and chat share one transcript, with times, kept forever and replayable."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/schema.sql",
+          "symbol": "game_events"
+        },
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._render_transcript"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/godot/scripts/.dev/feature.json",
+          "entityId": "timed-transcript"
+        },
+        {
+          "relation": "verified-by",
+          "path": "games/chess/worker/.dev/verification.json",
+          "entityId": "invitation-to-mate"
+        }
+      ]
+    },
+    {
+      "id": "replays",
+      "title": "Replays at the game's own pace",
+      "summary": "A finished game plays back at the pace it was played, sped up.",
+      "statement": "History lists every finished game; a replay steps through it, or plays it at 1×, 4× or 16× the pace it was played, with pauses capped at three seconds.",
+      "rationale": "Reliving a game, chat and timing included.",
+      "acceptanceCriteria": [
+        "Play, Back, Next, the slider and the moves in the transcript all move the replay.",
+        "No pause in playback is longer than three seconds."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/docs/GDD.md",
+        "description": "Decision log: replays play back at the game's own pace, sped up 1×, 4× or 16×, with pauses capped at 3 s."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/game_screen.gd",
+          "symbol": "GameScreen._wait_before"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "finishedGames"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/godot/scripts/.dev/feature.json",
+          "entityId": "replay-playback"
+        }
+      ]
+    },
+    {
+      "id": "contacts",
+      "title": "Contacts are the people you have played",
+      "summary": "Everyone a player has played is a contact, with the record against them.",
+      "statement": "A contact is made when an invitation is accepted; it shows name, address, picture and wins, losses and draws, opens to every game together, and can be invited again or removed.",
+      "rationale": "Finding friends again; contacts cannot be added by hand.",
+      "acceptanceCriteria": [
+        "Accepting an invitation makes each the other's contact; an invitation alone does not.",
+        "The record counts finished online games from the owner's side."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/docs/GDD.md",
+        "description": "Decision log: contacts are the people you have played, with your history against each."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "contacts"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._contact"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/chess/worker/.dev/verification.json",
+          "entityId": "invitation-to-mate"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/chess/worker/.dev/feature.json",
+          "entityId": "contacts-and-records"
+        }
+      ]
+    },
+    {
+      "id": "computer",
+      "title": "Play the computer at eight strengths",
+      "summary": "Stockfish in the browser, from beginner to full strength.",
+      "statement": "A player can play Stockfish at one of eight strengths and a chosen colour; the game is kept on the device, can be taken back and resumed, and goes to the history when it ends, after the server has checked it.",
+      "rationale": "Something to play when no friend is around.",
+      "acceptanceCriteria": [
+        "Each strength sets Stockfish's Skill Level and search limit as the README's table gives them.",
+        "A reload offers Continue.",
+        "A finished game is stored only if its moves are legal and it is over or resigned."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/README.md",
+        "description": "Gambit's README, written for players and developers."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "STRENGTH"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main.finish_computer"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "saveComputerGame"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/chess/bridge/.dev/verification.json",
+          "entityId": "strengths"
+        },
+        {
+          "relation": "verified-by",
+          "path": "games/chess/worker/.dev/verification.json",
+          "entityId": "writes-and-computer-games"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/chess/godot/scripts/.dev/feature.json",
+          "entityId": "computer-game-on-device"
+        }
+      ]
+    },
+    {
+      "id": "sign-in",
+      "title": "One sign-in for icelander.net",
+      "summary": "Gambit uses icelander.net's sign-in, with Google or GitHub, like every game on the host.",
+      "statement": "The game needs a sign-in to icelander.net through its login service; Gambit keeps its own record of each player by address, so a person keeps their games, contacts and history.",
+      "rationale": "The games are part of icelander.net; and email, name and picture must be known for invitations and contacts.",
+      "acceptanceCriteria": [
+        "Opening the game signed out leads to the host's sign-in and back.",
+        "A person known by an older address keeps playing as it."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/chess/README.md",
+        "description": "Gambit's README, written for players and developers."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "currentUser"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/chess/worker/.dev/verification.json",
+          "entityId": "sign-in"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/chess/worker/.dev/decisions.json",
+          "entityId": "login-service"
+        }
+      ]
+    }
+  ]
+}

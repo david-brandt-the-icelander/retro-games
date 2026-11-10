@@ -1,0 +1,99 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Page bridge capabilities",
+  "folder": "games/chess/bridge",
+  "description": "What the page bridge does for the game.",
+  "sources": [
+    {
+      "path": "games/chess/bridge/main.ts",
+      "symbol": "chessBridge"
+    }
+  ],
+  "entities": [
+    {
+      "id": "computer-opponent",
+      "name": "Computer opponent",
+      "description": "Stockfish 19, in the player's browser, at eight strengths.",
+      "sources": [
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "Engine"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "STRENGTH"
+        }
+      ],
+      "responsibility": "Runs Stockfish in a Web Worker on first use and answers one move at a time at the strength asked for.",
+      "operations": [
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "bestMove"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "Engine.cancel"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "Engine.preload"
+        }
+      ],
+      "access": [
+        "Nothing checks: any script in the page may ask; only the game does."
+      ]
+    },
+    {
+      "id": "page-services",
+      "name": "Page services",
+      "description": "What only the page can do for the game.",
+      "sources": [
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "chessBridge"
+        }
+      ],
+      "responsibility": "The game's address and return path, the invitation in the address, leaving for sign-in, the tab's title and the clipboard.",
+      "operations": [
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "takeChallenge"
+        },
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "navigate"
+        },
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "returnPath"
+        },
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "setTitle"
+        },
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "copy"
+        }
+      ],
+      "access": [
+        "Nothing checks: any script in the page may call them."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/chess/bridge",
+      "path": "games/chess/bridge/.dev/operation.json",
+      "relationship": "The operations through which they are reached."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/chess/bridge",
+      "path": "games/chess/bridge/.dev/feature.json",
+      "relationship": "The feature the computer opponent offers."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Web shell",
+  "folder": "games/chess/godot/web_shell",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Web shell",
+      "summary": "The HTML page the Godot web export runs in.",
+      "purpose": "shell.html is the export's custom HTML shell: the canvas, the loading screen (CHESS, BEAUTIFULLY, Gambit and a progress bar) and the script tags for Godot's loader and bridge.js. Godot fills in $GODOT_CONFIG, $GODOT_HEAD_INCLUDE and $GODOT_URL when it exports.",
+      "boundaries": [
+        "The page's styles are web/shell.css; what the page does is bridge/.",
+        "The element ids bridge/main.ts reads are recorded as a contract in bridge/.dev/contracts.json.",
+        "The Web export leaves this folder out of the pack (exclude_filter): only the shell it produces is served."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/web_shell/shell.html",
+          "symbol": "godot-config"
+        },
+        {
+          "path": "games/chess/godot/export_presets.cfg",
+          "symbol": "html/custom_html_shell"
+        },
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "startGame"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/chess/bridge/.dev/contracts.json",
+          "entityId": "page-elements"
+        }
+      ]
+    }
+  ]
+}

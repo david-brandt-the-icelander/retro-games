@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Reference render backlog",
+  "folder": "games/chess/scripts/reference",
+  "entities": [
+    {
+      "id": "render-oauth-ids",
+      "title": "render.sh still asks for dummy Google and GitHub client ids",
+      "summary": "render.sh's header says .dev.vars needs dummy GOOGLE_/GITHUB_ client ids and secrets so the sign-in screen shows both buttons; the Worker no longer reads them.",
+      "type": "debt",
+      "compromise": "The instructions were written for Gambit's own OAuth sign-in and were not updated when sign-in moved to icelander.net's login service.",
+      "cost": "Someone rendering the sign-in state follows steps that do nothing: the buttons now appear only when the login service is configured (ACCOUNTS and ACCOUNTS_JWKS), so the 02-sign-in render may not show them locally.",
+      "acceptanceCriteria": [
+        "render.sh says what makes the sign-in state show both buttons with the current Worker, or the scenario renders that state another way."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/chess/scripts/reference/render.sh",
+        "description": "The script's opening comment, against worker/auth.ts providers()."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/scripts/reference/render.sh"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "providers"
+        }
+      ]
+    }
+  ]
+}

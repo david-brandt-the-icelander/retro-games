@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Shared references",
+  "folder": "games/chess/shared",
+  "entities": [
+    {
+      "id": "chess-js",
+      "title": "chess.js",
+      "summary": "The chess library the server judges moves with (BSD-2-Clause).",
+      "relevance": "play() and replay() make moves with Chess.move; boardOutcome() asks isCheckmate, isStalemate, isInsufficientMaterial, isThreefoldRepetition and isDrawByFiftyMoves. What chess.js counts as a draw is what the server counts.",
+      "url": "https://github.com/jhlywa/chess.js",
+      "sources": [
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "boardOutcome"
+        },
+        {
+          "path": "games/chess/package.json",
+          "symbol": "dependencies"
+        }
+      ]
+    },
+    {
+      "id": "uci-moves",
+      "title": "UCI move notation",
+      "summary": "Moves as from-square, to-square and an optional promotion piece: e2e4, e7e8q.",
+      "relevance": "Every move the API, the database and the transcript hold is in this notation (rules.ts UCI); Stockfish speaks it too.",
+      "url": "https://www.chessprogramming.org/UCI",
+      "sources": [
+        {
+          "path": "games/chess/shared/rules.ts",
+          "symbol": "UCI"
+        },
+        {
+          "path": "games/chess/worker/schema.sql",
+          "symbol": "games"
+        }
+      ]
+    }
+  ]
+}

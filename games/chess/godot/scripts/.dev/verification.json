@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Godot client verification",
+  "folder": "games/chess/godot/scripts",
+  "entities": [
+    {
+      "id": "formats",
+      "title": "Text formats",
+      "summary": "Durations, how long ago, day headings, clock times, move counts, records and move numbers, as docs/UI-DESIGN.md's Formats give them.",
+      "subject": [
+        {
+          "path": "games/chess/godot/scripts/.dev/feature.json",
+          "entityId": "timed-transcript"
+        }
+      ],
+      "criteria": [
+        "9s, 2m 05s, 4h 37m, 2d 4h",
+        "just now, 44 min ago, 3 h ago, then a date with the year when it isn't this year",
+        "Today, Yesterday, then the weekday and date",
+        "No moves yet, 1 move, 4 moves",
+        "1 win · 0 losses · 0 draws",
+        "3. for White, 3… for Black"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/chess/godot/tests/test_formats.gd",
+          "symbol": "_init",
+          "command": "npm run test:godot"
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/tests/test_formats.gd",
+          "symbol": "_init"
+        },
+        {
+          "path": "games/chess/godot/scripts/ui.gd",
+          "symbol": "UI.duration"
+        },
+        {
+          "path": "games/chess/godot/scripts/ui.gd",
+          "symbol": "UI.ago"
+        }
+      ]
+    },
+    {
+      "id": "visual",
+      "title": "Visually correct",
+      "summary": "Each of the 23 reference states renders like its image in docs/screens/.",
+      "subject": [
+        {
+          "path": "games/chess/godot/scripts/.dev/feature.json",
+          "entityId": "table"
+        }
+      ],
+      "criteria": [
+        "docs/DESIGN.md's acceptance: layout within 2 px, the same text and colours, the masked areas aside"
+      ],
+      "checks": [
+        {
+          "type": "manual",
+          "description": "Run scripts/reference's render runbook and compare each render with its reference.",
+          "path": "games/chess/scripts/reference/.dev/runbooks.json"
+        }
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/docs/DESIGN.md",
+          "symbol": "Acceptance"
+        },
+        {
+          "path": "games/chess/scripts/reference/render.sh"
+        }
+      ]
+    },
+    {
+      "id": "screens-and-games",
+      "title": "Screens and games",
+      "summary": "No automated test drives the screens, an online game, the computer game or a replay.",
+      "subject": [
+        {
+          "path": "games/chess/godot/scripts/.dev/use-case.json",
+          "entityId": "play-online"
+        }
+      ],
+      "criteria": [
+        "The use cases in godot/scripts/.dev/use-case.json work end to end in a browser"
+      ],
+      "checks": [
+        {
+          "type": "manual",
+          "description": "With npm run dev and DEV_LOGIN=1, play two players in two browsers (or one private window): invite, accept, play to the end with chat and a draw offer, rematch; play the computer, reload, Continue, Take back; replay a game at each pace."
+        }
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/chess/README.md",
+          "symbol": "Develop"
+        }
+      ]
+    }
+  ]
+}

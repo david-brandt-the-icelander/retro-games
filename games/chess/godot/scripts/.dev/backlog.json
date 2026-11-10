@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Godot client backlog",
+  "folder": "games/chess/godot/scripts",
+  "entities": [
+    {
+      "id": "own-link-toast",
+      "title": "Opening one's own invitation link shows an empty error toast",
+      "summary": "When the address holds an invitation the player sent themselves and it is still open, the lobby shows a red toast with no text.",
+      "type": "defect",
+      "expected": "Nothing is said: the invitation is under Waiting for an answer (GDD decision log, the build's open points).",
+      "observed": "The lobby's first refresh does not find the id among Invitations for you, asks api/challenges/{id}, gets the open invitation (200), and falls through to toast(c.error, true) with an empty error.",
+      "reproduction": [
+        "Signed in, send an invitation",
+        "Open its link (…/?challenge=ID) in the same browser"
+      ],
+      "acceptanceCriteria": [
+        "An open invitation the player sent shows no toast."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/chess/godot/scripts/main.gd",
+        "description": "Main._lobby's handling of the invitation in the address, against docs/GDD.md's decision log."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main._lobby"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main.toast"
+        },
+        {
+          "path": "games/chess/docs/GDD.md",
+          "symbol": "Decision log"
+        }
+      ]
+    }
+  ]
+}

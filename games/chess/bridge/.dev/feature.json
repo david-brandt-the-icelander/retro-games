@@ -1,0 +1,85 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Page bridge features",
+  "folder": "games/chess/bridge",
+  "description": "What the bridge offers players.",
+  "sources": [
+    {
+      "path": "games/chess/bridge/engine.ts",
+      "symbol": "Engine"
+    }
+  ],
+  "entities": [
+    {
+      "id": "computer-strengths",
+      "name": "Stockfish at eight strengths",
+      "description": "The computer opponent plays from beginner to full strength, in the browser.",
+      "sources": [
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "STRENGTH"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "commandsFor"
+        }
+      ],
+      "behavior": "Each strength sets Stockfish's Skill Level and a search limit: 0 and depth 1 at strength 1, rising to 18 and one second at 7 and 20 and two seconds at 8. The weakest strengths wait a short moment before answering so they feel like an opponent. A search can be cancelled, and its answer is then dropped.",
+      "outcome": "A player can play the computer at a strength that suits them without a server or an account.",
+      "constraints": [
+        "One search at a time; a new one or a cancel makes the old answer stale.",
+        "Single-threaded lite WebAssembly build: no cross-origin isolation needed, and weaker than full Stockfish at the same settings.",
+        "Only in the browser: the desktop build gets no move."
+      ],
+      "implementation": [
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "Engine.bestMove"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "Engine.start"
+        },
+        {
+          "path": "games/chess/bridge/engine.ts",
+          "symbol": "commandsFor"
+        },
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "bestMove"
+        },
+        {
+          "path": "games/chess/build.mjs",
+          "symbol": "stockfish"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/chess/bridge",
+      "path": "games/chess/bridge/.dev/capability.json",
+      "relationship": "The capability that offers it."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/chess/bridge",
+      "path": "games/chess/bridge/.dev/operation.json",
+      "relationship": "The operations it uses."
+    },
+    {
+      "kind": "state",
+      "folder": "games/chess/bridge",
+      "path": "games/chess/bridge/.dev/Engine.state-diagram.json",
+      "relationship": "The engine's lifecycle."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/chess/godot/scripts",
+      "path": "games/chess/godot/scripts/.dev/use-case.json",
+      "relationship": "The use case that exercises it: play the computer."
+    }
+  ]
+}

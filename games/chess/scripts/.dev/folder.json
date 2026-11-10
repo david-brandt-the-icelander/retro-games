@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Development scripts",
+  "folder": "games/chess/scripts",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Development scripts",
+      "summary": "Scripts for working on Gambit that are not part of the game; today only the reference renders.",
+      "purpose": "Holds reference/, which recreates the design's reference scenario on a local dev server and renders it for comparison.",
+      "boundaries": [
+        "Nothing here is built, tested or deployed."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/scripts/reference/render.sh"
+        },
+        {
+          "path": "games/chess/README.md",
+          "symbol": "Design"
+        }
+      ]
+    }
+  ]
+}

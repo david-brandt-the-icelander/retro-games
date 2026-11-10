@@ -199,7 +199,8 @@
         "DB: D1Database",
         "DEV_LOGIN?: string",
         "ACCOUNTS?: AccountsBinding (from vendor/icelander-auth)",
-        "ACCOUNTS_JWKS?: string"
+        "ACCOUNTS_JWKS?: string",
+        "DEV_SIGN_IN?: string (from vendor/icelander-auth; set to \"true\" when DEV_LOGIN is \"1\")"
       ]
     },
     {

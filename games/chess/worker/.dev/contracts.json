@@ -1,0 +1,159 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Chess Worker contracts",
+  "folder": "games/chess/worker",
+  "entities": [
+    {
+      "id": "api",
+      "title": "Gambit's HTTP API",
+      "summary": "The JSON routes under /games/retro/chess/api/ and auth/, with the types in shared/protocol.ts.",
+      "contractType": "http-api",
+      "consumers": [
+        "godot/scripts/api.gd (Api)",
+        "scripts/reference/seed.py and local_history.py"
+      ],
+      "guarantees": [
+        "Bodies are the shapes in shared/protocol.ts: Me, Lobby, Challenge, Contact, GameView with its events",
+        "Errors are JSON { error } with 400, 401, 403, 404, 409, 422, 429 or 500",
+        "Responses are not cached (Cache-Control: no-store), except profile pictures (private, a day)",
+        "Every route but me needs a sign-in; a POST must be JSON from this origin",
+        "A cookie (site_session) or, for desktop builds, Authorization: Bearer identifies the player"
+      ],
+      "compatibility": "The Worker and the Godot export deploy together, but a browser may keep an older page open across a deploy; adding fields is safe, renaming or removing them is not.",
+      "definition": "games/chess/shared/protocol.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "json"
+        },
+        {
+          "path": "games/chess/shared/protocol.ts",
+          "symbol": "GameView"
+        },
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "request"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "documents",
+          "path": "games/chess/worker/.dev/operation.json"
+        }
+      ]
+    },
+    {
+      "id": "live",
+      "title": "The live connection",
+      "summary": "WebSocket api/games/{id}/live: the whole game after every change.",
+      "contractType": "message",
+      "consumers": [
+        "godot/scripts/api.gd (Api.Live)"
+      ],
+      "guarantees": [
+        "{ t: \"state\", game } on connecting and after every saved action",
+        "\"ping\" is answered with { t: \"pong\" }",
+        "Only the game's two players may connect"
+      ],
+      "compatibility": "LiveMessage in shared/protocol.ts also names { t: \"error\" }, which nothing sends; the client uses only state.",
+      "definition": "games/chess/shared/protocol.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom.fetch"
+        },
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "GameRoom.webSocketMessage"
+        },
+        {
+          "path": "games/chess/shared/protocol.ts",
+          "symbol": "LiveMessage"
+        },
+        {
+          "path": "games/chess/godot/scripts/api.gd",
+          "symbol": "Live._process"
+        }
+      ]
+    },
+    {
+      "id": "invitation-link",
+      "title": "The invitation link",
+      "summary": "https://…/games/retro/chess/?challenge=ID, in invitation emails and copied by players.",
+      "contractType": "url",
+      "consumers": [
+        "Invitation emails already sent, and links players have passed on",
+        "bridge/main.ts (takeChallenge)"
+      ],
+      "guarantees": [
+        "The link opens the game, through sign-in if need be, and the lobby answers the invitation it names",
+        "The old sign-in addresses auth/login/{provider} and auth/callback/{provider} still lead to the host's sign-in"
+      ],
+      "compatibility": "Links in sent emails cannot be changed: the path and the challenge parameter must keep working.",
+      "definition": "games/chess/worker/api.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "challengeLink"
+        },
+        {
+          "path": "games/chess/bridge/main.ts",
+          "symbol": "takeChallenge"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "handleAuth"
+        }
+      ]
+    },
+    {
+      "id": "database",
+      "title": "The chess database",
+      "summary": "users, challenges, games, game_events and contacts in D1.",
+      "contractType": "persistence",
+      "consumers": [
+        "The live D1 database chess",
+        "The GameRoom objects, which save games in it"
+      ],
+      "guarantees": [
+        "A game's moves are UCI moves separated by spaces; its transcript is game_events in seq order",
+        "A game against the computer has NULL for the computer's side",
+        "Users are keyed by address, as the login service gives it"
+      ],
+      "compatibility": "schema.sql describes a fresh database; every statement can run again. The live one changes only through migrations applied by hand (docs/database-migrations.md); retire-sessions.sql, which drops the old sign-in's sessions table, is such a change but sits outside worker/migrations/.",
+      "definition": "games/chess/worker/schema.sql",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/schema.sql",
+          "symbol": "games"
+        },
+        {
+          "path": "games/chess/worker/schema.sql",
+          "symbol": "game_events"
+        },
+        {
+          "path": "games/chess/worker/retire-sessions.sql"
+        },
+        {
+          "path": "games/chess/worker/db.ts",
+          "symbol": "toView"
+        }
+      ],
+      "links": [
+        {
+          "label": "Database migrations",
+          "path": "docs/database-migrations.md"
+        }
+      ]
+    }
+  ]
+}
