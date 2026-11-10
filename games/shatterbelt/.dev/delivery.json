@@ -10,7 +10,7 @@
       "summary": "The shatterbelt Worker at icelander.net/games/retro/shatterbelt* and icelander.net/retro-games/shatterbelt*, with its static game and the D1 database shatterbelt-scores.",
       "environment": "production",
       "purpose": "The game players reach at icelander.net/games/retro/shatterbelt/ and its public scores page.",
-      "deployedBy": "The Deploy workflow on every push to main that changes games/shatterbelt (or anything under .github/); by hand with Run workflow; or `npm run deploy` with a Cloudflare token.",
+      "deployedBy": "The Deploy workflow on every push to main that changes games/shatterbelt outside its .dev folders (or anything under .github/ outside .github/.dev); by hand with Run workflow; or `npm run deploy` with a Cloudflare token.",
       "approvals": [
         "A pull request: main accepts nothing else.",
         "A reviewer on the repository's production environment, if one is set."
