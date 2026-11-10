@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Browser game references",
+  "folder": "games/rally/src",
+  "entities": [
+    {
+      "id": "fnv-1a",
+      "title": "FNV-1a hash",
+      "summary": "The hash behind the online fingerprint.",
+      "relevance": "fingerprint() hashes each number's 64 bits with FNV-1a's offset basis and prime.",
+      "url": "http://www.isthe.com/chongo/tech/comp/fnv/",
+      "sources": [
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "fingerprint"
+        }
+      ]
+    }
+  ]
+}

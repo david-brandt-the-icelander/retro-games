@@ -52,13 +52,14 @@ npm run dev       # rebuild on change; serve dist/ with any static server
 | `src/engine/rng.ts` | The seeded generator, so a match replays exactly in tests |
 | `src/ui/` | Canvas drawing (`render.ts`), keys/touch/mouse (`input.ts`) and synthesised sound (`sound.ts`) |
 | `src/engine/match.ts` | Scoring, and a one-player match as the table sees it: the recorder, and `replay(seed, level, recording)`, which the server runs |
-| `src/names.ts`, `src/scores.ts` | The name rules (the same as Samosa's), and the browser's side of the table: seeds, submitting, the session name |
+| `src/name.ts`, `src/scores.ts` | The name rules (the same as Samosa's), and the browser's side of the table: seeds, submitting, the session name |
 | `src/ui/entry.ts` | The name entry: underlined slots, the blinking cursor, the on-screen keyboard |
 | `src/main.ts` | Menus, the fixed-step frame loop (120 Hz), recording, name entry, the table, the scoreboard, online matches and layout. A computer-against-computer match plays behind the menus. |
 | `src/online.ts` | Online play in the browser: the match's WebSocket and the lockstep |
 | `worker/` | The Worker: the high-score API (seeds, replay, table), the public scores page in icelander.net's look, and the D1 schema |
 | `public/` | The page, its styles, and `_headers` (strict CSP: everything comes from this origin) |
 | `test/` | node:test suites |
+| `.dev/` (here and in each folder) | Diagrams, use cases, journeys, features and knowledge files: requirements, decisions, contracts, delivery, runbooks, limitations and the rest |
 
 ## Deploy
 

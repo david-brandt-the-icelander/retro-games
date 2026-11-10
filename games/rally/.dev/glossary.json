@@ -1,0 +1,130 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/glossary.schema.json",
+  "kind": "glossary",
+  "title": "Rally glossary",
+  "folder": "games/rally",
+  "entities": [
+    {
+      "id": "rally",
+      "title": "Rally",
+      "summary": "The game; and, in the engine, the returns made since the last serve (State.rally).",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "State"
+        }
+      ]
+    },
+    {
+      "id": "side",
+      "title": "Side",
+      "summary": "0 for the left paddle, 1 for the right. Against the computer the player is side 0.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "Side"
+        }
+      ]
+    },
+    {
+      "id": "seed",
+      "title": "Seed",
+      "summary": "A 32-bit number that fixes every random choice in a match. The server issues it for a one-player match that may enter the table.",
+      "sources": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "issueGame"
+        }
+      ]
+    },
+    {
+      "id": "tick",
+      "title": "Tick",
+      "summary": "One fixed step of a match, 1/120 s. Recordings, replays and online lockstep count in ticks.",
+      "aliases": [
+        "step"
+      ],
+      "sources": [
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "DT"
+        }
+      ]
+    },
+    {
+      "id": "recording",
+      "title": "Recording",
+      "summary": "A one-player match's player controls: the tick count, and one move per change of control.",
+      "aliases": [
+        "moves"
+      ],
+      "sources": [
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "Recording"
+        }
+      ]
+    },
+    {
+      "id": "level",
+      "title": "Level",
+      "summary": "How well the computer plays: easy, normal or hard. It also sets what each point is worth.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/ai.ts",
+          "symbol": "LEVELS"
+        }
+      ]
+    },
+    {
+      "id": "lockstep",
+      "title": "Lockstep",
+      "summary": "Online play in which every browser runs the whole match and steps only once it has every player's controls for that step.",
+      "sources": [
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Lockstep"
+        }
+      ]
+    },
+    {
+      "id": "delay",
+      "title": "Delay",
+      "summary": "How many steps ahead a browser schedules its own player's controls online, chosen at the start from the measured connections.",
+      "notToBeConfusedWith": [
+        "The serve delay, 0.9 s with the ball on the server's paddle."
+      ],
+      "sources": [
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "delaySteps"
+        }
+      ]
+    },
+    {
+      "id": "fingerprint",
+      "title": "Fingerprint",
+      "summary": "A hash of the match's numbers that the browsers compare every 120 steps online, to notice if their matches differ.",
+      "sources": [
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "fingerprint"
+        }
+      ]
+    },
+    {
+      "id": "games-hub",
+      "title": "Games hub",
+      "summary": "The site's games Worker in another repository: the multiplayer lobby, the match relay and /games/me.",
+      "aliases": [
+        "recreations"
+      ],
+      "sources": [
+        {
+          "path": "games/rally/README.md",
+          "symbol": "Playing online"
+        }
+      ]
+    }
+  ]
+}

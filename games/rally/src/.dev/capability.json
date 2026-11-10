@@ -1,0 +1,64 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Browser game capability",
+  "folder": "games/rally/src",
+  "description": "What the browser side offers beyond the engine.",
+  "sources": [
+    {
+      "path": "games/rally/src/online.ts",
+      "symbol": "Lockstep"
+    }
+  ],
+  "entities": [
+    {
+      "id": "online-lockstep",
+      "name": "Online lockstep play",
+      "description": "Keeps two or more browsers playing exactly the same match.",
+      "sources": [
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Room"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Lockstep"
+        }
+      ],
+      "responsibility": "Connects to a match's relay, measures each connection, and hands the page every player's controls for each step only when all of them are known, checking now and then that the browsers agree.",
+      "operations": [
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Room.open"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Lockstep.local"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Lockstep.next"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Lockstep.check"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "everyoneIn"
+        }
+      ],
+      "access": [
+        "Only the signed-in players the lobby put in the match may connect; the games hub's relay checks this, not this code."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "feature",
+      "folder": "games/rally/src",
+      "path": "games/rally/src/.dev/feature.json",
+      "relationship": "The online match it carries."
+    }
+  ]
+}

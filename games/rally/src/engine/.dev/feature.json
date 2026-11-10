@@ -1,0 +1,173 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Engine features",
+  "folder": "games/rally/src/engine",
+  "description": "The game itself: its rules, its returns, the computer and replays.",
+  "sources": [
+    {
+      "path": "games/rally/src/engine/rules.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/rally/src/engine/ai.ts",
+      "symbol": "Cpu"
+    },
+    {
+      "path": "games/rally/src/engine/match.ts",
+      "symbol": "replay"
+    }
+  ],
+  "entities": [
+    {
+      "id": "table-tennis-scoring",
+      "name": "Table-tennis scoring",
+      "description": "Matches are scored as table tennis is.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "winnerOf"
+        },
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "serverFor"
+        }
+      ],
+      "behavior": "The first side to 11 points wins, by two clear points. The serve changes every two points, and every point once both sides have 10. The ball rests on the server's paddle for 0.9 s before it is served, and play pauses 0.7 s after each point.",
+      "outcome": "Players get the scoring they know from table tennis, and a server who chooses where to serve from.",
+      "constraints": [
+        "WIN_POINTS is 11 and WIN_BY is 2.",
+        "A serve leaves at most 22° from straight."
+      ],
+      "implementation": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "winnerOf"
+        },
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "serverFor"
+        },
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "step"
+        }
+      ]
+    },
+    {
+      "id": "returns",
+      "name": "Returns that steepen and speed up",
+      "description": "Where the ball meets the paddle decides how it leaves.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "returnBall"
+        }
+      ],
+      "behavior": "A ball returned off the paddle's centre leaves straight; the nearer the tip, the steeper, up to 55°. Every return is 6% faster than the last, up to 960 px/s. The ball is moved in sub-steps of at most a third of its size, so even at top speed it cannot pass through a paddle.",
+      "outcome": "Rallies get harder as they go on, and aiming off-centre is a skill.",
+      "constraints": [
+        "Slopes, not angles: tan 55° is the steepest.",
+        "Top speed 960 px/s on an 800 × 480 table."
+      ],
+      "implementation": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "returnBall"
+        },
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "moveBall"
+        },
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "step"
+        }
+      ]
+    },
+    {
+      "id": "computer-opponent",
+      "name": "Computer opponent at three levels",
+      "description": "The computer plays the right-hand paddle at easy, normal or hard.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/ai.ts",
+          "symbol": "LEVELS"
+        }
+      ],
+      "behavior": "The computer looks at the ball every so often (0.3 s on easy, 0.08 s on hard), works out where the ball will reach its paddle, bounces included, and moves there no faster than its level allows. Its guess is off by a random amount that grows with the ball's speed, and on harder levels it aims off-centre for sharper returns.",
+      "outcome": "Fast, sharp returns beat it; hard beats easy.",
+      "constraints": [
+        "Top speed is 50%, 72% or 95% of a player's key speed.",
+        "The guess's error grows as the ball's speed to the power 1.5."
+      ],
+      "implementation": [
+        {
+          "path": "games/rally/src/engine/ai.ts",
+          "symbol": "Cpu"
+        },
+        {
+          "path": "games/rally/src/engine/ai.ts",
+          "symbol": "predictY"
+        },
+        {
+          "path": "games/rally/src/engine/ai.ts",
+          "symbol": "LEVELS"
+        }
+      ]
+    },
+    {
+      "id": "replayable-match",
+      "name": "Matches that replay exactly",
+      "description": "A one-player match can be played again, bit for bit, from what was recorded.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "replay"
+        }
+      ],
+      "behavior": "The player's control is recorded once per change, in whole pixels, at a fixed step of 1/120 s. The computer's random numbers come from a seed derived from the match's. Replaying the seed, the level and the recording plays the same match and gives the same score.",
+      "outcome": "The server can check every score it lists, and recordings stay small.",
+      "constraints": [
+        "At most 30 minutes (216,000 ticks).",
+        "Only + − × ÷ and √ in the engine, and only its seeded generator for random numbers."
+      ],
+      "implementation": [
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "Recorder"
+        },
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "replay"
+        },
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "quantise"
+        },
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "cpuSeed"
+        },
+        {
+          "path": "games/rally/src/engine/rng.ts",
+          "symbol": "rng"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/rally/src/engine",
+      "path": "games/rally/src/engine/.dev/capability.json",
+      "relationship": "The capability these features make up."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/rally/src/engine",
+      "path": "games/rally/src/engine/.dev/operation.json",
+      "relationship": "The operations that carry them out."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Rally",
+  "folder": "games/rally",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Rally",
+      "summary": "A table-tennis game for the browser: play the computer, or a friend online, each on their own device, with a replay-checked high-score table.",
+      "purpose": "Holds the whole game: the browser game in src/, the Worker that serves it and keeps the high-score table in worker/, the page in public/, and the tests in test/. It is one npm project and one Cloudflare Worker.",
+      "boundaries": [
+        "Online matches are relayed by the games hub, which lives in another repository; this folder only connects to it.",
+        "The sign-in is icelander.net's; the Worker checks it with the shared library in vendor/icelander-auth/, never edited here."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/README.md",
+          "symbol": "Develop"
+        },
+        {
+          "path": "games/rally/wrangler.jsonc",
+          "symbol": "main"
+        }
+      ]
+    }
+  ]
+}

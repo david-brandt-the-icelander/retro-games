@@ -1,0 +1,91 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/limitations.schema.json",
+  "kind": "limitations",
+  "title": "Rally limitations",
+  "folder": "games/rally",
+  "entities": [
+    {
+      "id": "no-shared-device",
+      "title": "No two players on one device",
+      "summary": "Two people play each other only online, each on their own device.",
+      "impact": "A friend in the same room needs a second device.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/rally/README.md",
+          "symbol": "How to play"
+        }
+      ]
+    },
+    {
+      "id": "online-off-table",
+      "title": "Online matches don't go on the table",
+      "summary": "Only one-player matches against the computer can be entered.",
+      "impact": "An online win is not recorded anywhere.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "beginOnline"
+        }
+      ]
+    },
+    {
+      "id": "online-no-pause",
+      "title": "Online matches can't be paused",
+      "summary": "Esc opens a menu over an online match, which goes on.",
+      "impact": "A player who looks away keeps playing; a hidden tab makes the other player wait.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "playingOnline"
+        }
+      ]
+    },
+    {
+      "id": "offline-no-entry",
+      "title": "Offline matches can't be entered",
+      "summary": "A match the server issued no seed for still plays, but cannot go on the table.",
+      "impact": "A player whose connection drops before the match loses the chance to enter it.",
+      "workaround": "Start another match once the connection is back.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "start"
+        }
+      ]
+    },
+    {
+      "id": "thirty-minutes",
+      "title": "Thirty-minute replays",
+      "summary": "The server replays matches of up to 30 minutes, and seeds expire after 24 hours unused.",
+      "impact": "A longer match, or one submitted a day later, is refused.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "MAX_TICKS"
+        },
+        {
+          "path": "games/rally/worker/scores.ts",
+          "symbol": "SEED_LIFETIME_MS"
+        }
+      ]
+    },
+    {
+      "id": "ascii-names",
+      "title": "Plain names",
+      "summary": "Names are up to 12 plain characters; accents are dropped and a few letters spelled out (Þór becomes Thor).",
+      "impact": "Names in other scripts cannot be shown.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/name.ts",
+          "symbol": "cleanName"
+        }
+      ]
+    }
+  ]
+}

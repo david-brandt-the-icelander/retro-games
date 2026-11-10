@@ -1,0 +1,366 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-use-case/schema.json",
+  "kind": "use-case",
+  "title": "Browser game use cases",
+  "folder": "games/rally/src",
+  "description": "What a player does with the page, step by step.",
+  "sources": [
+    {
+      "path": "games/rally/src/main.ts",
+      "symbol": "start"
+    },
+    {
+      "path": "games/rally/src/main.ts",
+      "symbol": "joinMatch"
+    }
+  ],
+  "entities": [
+    {
+      "id": "play-and-enter-table",
+      "name": "Play the computer and enter the table",
+      "description": "A player plays a one-player match and puts it on the high-score table.",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "start"
+        },
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "entryKey"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Play a match against the computer and see it ranked on the table.",
+      "preconditions": [
+        "The player is signed in to icelander.net with the games:play role.",
+        "The title screen is showing."
+      ],
+      "postconditions": [
+        "The match's score, as the server's replay computed it, is on the table under the player's name.",
+        "The name is saved for the browser session."
+      ],
+      "flow": [
+        {
+          "id": "choose",
+          "actor": "Player",
+          "action": "Chooses the computer's level and starts a match.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "setLevel"
+            },
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "act"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "seed",
+          "actor": "Page",
+          "action": "Asks the server for the match's seed and starts recording.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "start"
+            },
+            {
+              "path": "games/rally/src/scores.ts",
+              "symbol": "startMatch"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "play",
+          "actor": "Player",
+          "action": "Plays the match to its end with keys, touch or the mouse.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "controls"
+            },
+            {
+              "path": "games/rally/src/ui/input.ts",
+              "symbol": "Input.one"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "offer",
+          "actor": "Page",
+          "action": "Offers the name entry, filled in with the session's or the signed-in player's name.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "gameOver"
+            },
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "offerEntry"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "name",
+          "actor": "Player",
+          "action": "Types or corrects the name and presses ENTER.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "entryKey"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "submit",
+          "actor": "Page",
+          "action": "Sends the seed's id, the name, the level and the recording; the server replays the match.",
+          "sources": [
+            {
+              "path": "games/rally/src/scores.ts",
+              "symbol": "submitMatch"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "table",
+          "actor": "Page",
+          "action": "Shows the table with the player's row marked and their rank.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "showScores"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "seed",
+          "condition": "The server cannot be reached.",
+          "outcome": "The match plays, but its result says it can't go on the table.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "start"
+            },
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "gameOver"
+            }
+          ]
+        },
+        {
+          "atStep": "offer",
+          "condition": "The player won no points.",
+          "outcome": "No name entry: the result is shown.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "gameOver"
+            }
+          ]
+        },
+        {
+          "atStep": "name",
+          "condition": "The player presses SKIP or Escape.",
+          "outcome": "The match stays off the table and the result is shown.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "entryKey"
+            }
+          ]
+        },
+        {
+          "atStep": "submit",
+          "condition": "The table can't be reached.",
+          "outcome": "The entry stays open and ENTER tries again.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "entryKey"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    },
+    {
+      "id": "play-online",
+      "name": "Play a friend online",
+      "description": "Two players, each on their own device, play a match started from the multiplayer page.",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "joinMatch"
+        },
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "beginOnline"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Play a match against a friend who is somewhere else.",
+      "preconditions": [
+        "Both players are signed in.",
+        "The multiplayer page has started a match and opened this page with ?match=ID."
+      ],
+      "postconditions": [
+        "Both players have seen the same match and its result.",
+        "Nothing is stored."
+      ],
+      "flow": [
+        {
+          "id": "connect",
+          "actor": "Page",
+          "action": "Connects to the match's relay and waits for the other player.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "joinMatch"
+            },
+            {
+              "path": "games/rally/src/online.ts",
+              "symbol": "Room.open"
+            },
+            {
+              "path": "games/rally/src/online.ts",
+              "symbol": "everyoneIn"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "start",
+          "actor": "Page",
+          "action": "The host's page sends a seed and a delay; both pages begin the match.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "startOnline"
+            },
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "beginOnline"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "play",
+          "actor": "Player",
+          "action": "Plays the match; each page steps only with both players' controls.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "stepOnline"
+            },
+            {
+              "path": "games/rally/src/online.ts",
+              "symbol": "Lockstep.next"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "result",
+          "actor": "Page",
+          "action": "Shows who won, and BACK TO MULTIPLAYER for another match.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "endOnline"
+            },
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "showOver"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "connect",
+          "condition": "The match has ended, never existed, belongs to other players, or can't be reached.",
+          "outcome": "The page says why and links back to the multiplayer page.",
+          "sources": [
+            {
+              "path": "games/rally/src/online.ts",
+              "symbol": "REFUSALS"
+            },
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "joinMatch"
+            }
+          ]
+        },
+        {
+          "atStep": "start",
+          "condition": "The other player never arrives.",
+          "outcome": "The page asks the player to start a new game from the multiplayer page.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "startOnline"
+            }
+          ]
+        },
+        {
+          "atStep": "play",
+          "condition": "The other player leaves, the connection is lost, or the fingerprints differ.",
+          "outcome": "The match ends as RIVAL LEFT, CONNECTION LOST or OUT OF STEP.",
+          "sources": [
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "beginOnline"
+            },
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "roomMessage"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md",
+      "supportingActors": [
+        {
+          "name": "The other player",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/rally/worker",
+      "path": "games/rally/worker/.dev/operation.json",
+      "relationship": "The server operations the first use case calls."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/rally/src",
+      "path": "games/rally/src/.dev/feature.json",
+      "relationship": "The features these use cases exercise."
+    },
+    {
+      "kind": "user-journey",
+      "folder": "games/rally",
+      "path": "games/rally/.dev/user-journey.json",
+      "relationship": "The journeys these use cases are part of."
+    }
+  ]
+}

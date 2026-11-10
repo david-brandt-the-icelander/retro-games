@@ -1,0 +1,156 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "High-score Worker operations",
+  "folder": "games/rally/worker",
+  "description": "The routes the Rally Worker answers; everything else under its route is a static asset.",
+  "sources": [
+    {
+      "path": "games/rally/worker/index.ts",
+      "symbol": "default.fetch"
+    }
+  ],
+  "entities": [
+    {
+      "id": "game-page",
+      "name": "Open the game",
+      "description": "The game's page, for players who are signed in.",
+      "sources": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "gamePage"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/rally/worker/index.ts",
+        "symbol": "gamePage"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/rally/ or /games/retro/rally/index.html",
+      "authorization": "Signed in to icelander.net with the games:play role (AUTH.requireRole).",
+      "result": "The page from the static assets, marked Cache-Control: private, no-cache.",
+      "failures": [
+        "Signed out: a redirect to /auth/sign-in that returns to the same address afterwards."
+      ]
+    },
+    {
+      "id": "issue-game",
+      "name": "Issue a match's seed",
+      "description": "Starts a one-player match that may later enter the table.",
+      "sources": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "issueGame"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/rally/worker/index.ts",
+        "symbol": "issueGame"
+      },
+      "action": "command",
+      "transport": "POST /games/retro/rally/api/game",
+      "authorization": "Signed in to icelander.net with the games:play role (AUTH.requireRole, with api: true).",
+      "result": "{ id, seed }: a new random id and 32-bit seed, stored as unused. Unused seeds older than 24 hours are deleted on the way.",
+      "failures": [
+        "Not signed in, or without the role: the sign-in library's refusal.",
+        "A database error: 500 { error: \"server error\" }."
+      ]
+    },
+    {
+      "id": "submit-score",
+      "name": "Submit a match",
+      "description": "Puts a finished one-player match on the table, after replaying it.",
+      "sources": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/rally/worker/scores.ts",
+          "symbol": "parseSubmission"
+        },
+        {
+          "path": "games/rally/worker/scores.ts",
+          "symbol": "verify"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/rally/worker/index.ts",
+        "symbol": "submitScore"
+      },
+      "action": "command",
+      "transport": "POST /games/retro/rally/api/score",
+      "authorization": "Signed in to icelander.net with the games:play role (AUTH.requireRole, with api: true).",
+      "result": "The seed is marked used and the replay's score stored under the cleaned name; returns { score, rank, name }.",
+      "failures": [
+        "Body over 2,000,000 bytes: 413.",
+        "Not JSON, or a bad game id, name or level: 400.",
+        "A seed that is unknown, used or older than 24 hours: 409.",
+        "Moves that do not replay a whole match: 422.",
+        "Not signed in, or without the role: the sign-in library's refusal."
+      ]
+    },
+    {
+      "id": "list-scores",
+      "name": "Read the table",
+      "description": "The best ten matches, as JSON for the game's own table.",
+      "sources": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "loadTop"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/rally/worker/index.ts",
+        "symbol": "loadTop"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/rally/api/scores",
+      "authorization": "None: the table is public.",
+      "result": "{ scores: [{ name, score, level, mine, theirs, won }] }, best first, ties oldest first.",
+      "failures": [
+        "A database error: 500."
+      ]
+    },
+    {
+      "id": "scores-page",
+      "name": "Show the scores page",
+      "description": "The best 25 matches as a web page in icelander.net's look.",
+      "sources": [
+        {
+          "path": "games/rally/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/rally/worker/scores-page.ts",
+        "symbol": "scoresPage"
+      },
+      "action": "query",
+      "transport": "GET /games/retro/rally/scores/",
+      "authorization": "None: the page is public.",
+      "result": "An HTML page with names escaped; /games/retro/rally/scores redirects to it with 301.",
+      "failures": []
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/rally/worker",
+      "path": "games/rally/worker/.dev/capability.json",
+      "relationship": "The capability these routes expose."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/rally/worker",
+      "path": "games/rally/worker/.dev/feature.json",
+      "relationship": "The feature they carry out."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/rally/src",
+      "path": "games/rally/src/.dev/use-case.json",
+      "relationship": "The use case that calls them."
+    }
+  ]
+}

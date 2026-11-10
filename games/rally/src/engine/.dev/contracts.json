@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Engine contracts",
+  "folder": "games/rally/src/engine",
+  "entities": [
+    {
+      "id": "recording",
+      "title": "Recording format",
+      "summary": "{ ticks, moves }: what the browser sends and the Worker replays.",
+      "contractType": "data-format",
+      "consumers": [
+        "worker/index.ts, through POST /api/score",
+        "src/main.ts, which records"
+      ],
+      "guarantees": [
+        "One move [tick, dir, target] per change of control, ticks increasing",
+        "target -1 for keys; otherwise a whole pixel from 0 to 480 with dir 0",
+        "At most 216,000 ticks"
+      ],
+      "compatibility": "Any change to rules.ts, ai.ts or match.ts changes what a recording replays to. Scores already on the table are not replayed again, and a match in progress during a deploy may be refused.",
+      "definition": "games/rally/src/engine/match.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "Recording"
+        },
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "wellFormed"
+        }
+      ]
+    }
+  ]
+}

@@ -10,22 +10,25 @@ The games' engines must stay deterministic: the server replays every submitted g
 
 Read [`docs/database-migrations.md`](docs/database-migrations.md) before changing a game's database. A game's `worker/schema.sql` describes a fresh database; the live one changes only through files in its `worker/migrations/`. A pull request that changes either fails its "Database migration" check, and the deploy refuses to run, until production's database has been migrated and the pull request's description says so.
 
-## Architecture diagrams
+## Architecture diagrams and knowledge files
 
-Architecture is documented per folder, as JSON diagrams in `.dev/` directories next to the code, following the skills in `Meta/Agents/Skills/`. Read a folder's diagrams before changing it.
+Each folder documents itself in a `.dev/` directory next to its code, as JSON following the skills in `Meta/Agents/Skills/` and the knowledge catalogue in `Meta/Agents/Knowledge/` (human-assisted software development). Read a folder's `.dev` files before changing it. `populate-dev` decides what a folder needs; the diagrams are:
 
 - `describe-component-diagram`: the folder is a cohesive capability, adapter, boundary or subsystem (a game, its `src`, `src/engine`, `src/ui`, `src/zx`, `worker`, or Gambit's `godot`, `godot/scripts`, `godot/chess`, `bridge`, `shared`).
 - `describe-class-diagram`: the folder itself declares more than one class.
 - `describe-state-diagram`: the folder implements a state machine. One `<Identifier>.state-diagram.json` per machine, named after the class or type it belongs to.
 - `describe-deployment-diagram`: the folder holds something independently deployable (each game, with its `wrangler.jsonc`).
 
-Every actor a journey, use case, feature document or diagram names has a file in `Actors/` at the repository root, written with `describe-actor` and linked from whatever names it; delete an actor nothing links to. Update the diagrams and actors in the same commit as the code they describe, and delete a diagram that stops applying. Before finishing, run the validator from the repository root, with the `jsonschema` package installed:
+What a folder does, offers and exposes goes in its use cases, user journeys, capabilities, features and operations (`describe-use-case`, `describe-user-journey`, `describe-capability`, `describe-feature`, `describe-operation`). What it intends, promises and needs (requirements, backlog items, decisions, blockers, contracts, verification, delivery, configuration, runbooks, limitations and the rest) goes in knowledge files, written with `describe-knowledge`. Wanted work is a `backlog` item in the folder that will own it, and a question only the owner can answer is a `decisions` record with `status: open`.
+
+Every actor a use case, journey or diagram names has a file in `Actors/` at the repository root, written with `describe-actor` and linked from whatever names it; delete an actor nothing links to. Update the `.dev` files and actors in the same commit as the code they describe, and delete one that stops applying. Before finishing, run both validators from the repository root, with the `jsonschema` package installed:
 
 ```bash
 python3 Meta/Agents/Skills/validate_diagrams.py
+python3 Meta/Agents/Knowledge/validate_knowledge.py
 ```
 
-The skills come from <https://github.com/david-brandt-the-icelander/processes/tree/main/Agents/Skills>. Change them there and copy them here, so there is one version.
+The skills and the catalogue come from <https://github.com/david-brandt-the-icelander/human-assisted-software-development> (`Agents/Skills` and `Agents/Knowledge`). Change them there and copy them here, so there is one version. `Meta/Agents/Skills/knowledge-driven-development` is the exception: LodeStar still uses it.
 
 ## LodeStar
 

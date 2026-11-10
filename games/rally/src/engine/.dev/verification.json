@@ -1,0 +1,180 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Engine verification",
+  "folder": "games/rally/src/engine",
+  "entities": [
+    {
+      "id": "scoring",
+      "title": "Scoring and serving",
+      "summary": "Win by two from 11; the serve changes every two points, then every point.",
+      "subject": [
+        {
+          "path": "games/rally/src/engine/.dev/feature.json",
+          "entityId": "table-tennis-scoring"
+        }
+      ],
+      "criteria": [
+        "First to 11 wins, but only by two clear points",
+        "The serve changes every two points, and every point from 10–10",
+        "The match ends with a winner and stops scoring",
+        "A missed ball is a point, then a pause, then the next serve"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/rally/test/rules.test.ts",
+          "symbol": "first to 11 wins, but only by two clear points",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/rules.test.ts",
+          "symbol": "the serve changes every two points, and every point from 10–10",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/rules.test.ts",
+          "symbol": "the match ends with a winner and stops scoring",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/rules.test.ts",
+          "symbol": "a missed ball is a point to the other side, then a pause, then the next serve",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "returns",
+      "title": "Returns and movement",
+      "summary": "Angles, speed-ups, bounces and the paddles' limits.",
+      "subject": [
+        {
+          "path": "games/rally/src/engine/.dev/feature.json",
+          "entityId": "returns"
+        }
+      ],
+      "criteria": [
+        "A centred hit goes straight back, faster",
+        "A hit near the tip leaves steeply",
+        "Never faster than MAX_SPEED",
+        "Never through a paddle",
+        "Paddles stay on the table"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/rally/test/rules.test.ts",
+          "symbol": "a centred hit goes straight back, faster",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/rules.test.ts",
+          "symbol": "a hit near the tip leaves at a steep angle, toward that tip's side",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/rules.test.ts",
+          "symbol": "the ball never goes faster than MAX_SPEED",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/rules.test.ts",
+          "symbol": "even at top speed the ball can't slip through a paddle",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/rules.test.ts",
+          "symbol": "the paddles stay on the table",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "computer",
+      "title": "The computer",
+      "summary": "It predicts bounces, finishes matches properly, and its levels are ordered.",
+      "subject": [
+        {
+          "path": "games/rally/src/engine/.dev/feature.json",
+          "entityId": "computer-opponent"
+        }
+      ],
+      "criteria": [
+        "predictY follows the ball through its bounces",
+        "Computer matches end with a proper score",
+        "Hard beats easy"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/rally/test/ai.test.ts",
+          "symbol": "predictY follows the ball through its bounces",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/ai.test.ts",
+          "symbol": "computer matches finish with a proper table-tennis score",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/ai.test.ts",
+          "symbol": "a harder computer beats an easier one",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "replay",
+      "title": "Replays",
+      "summary": "A recorded match replays to the same score, and nothing else does.",
+      "subject": [
+        {
+          "path": "games/rally/src/engine/.dev/feature.json",
+          "entityId": "replayable-match"
+        }
+      ],
+      "criteria": [
+        "A recorded match replays to the same score",
+        "Recordings that don't play exactly one whole match are refused",
+        "Another seed or level scores differently or not at all",
+        "The same seed plays the same match"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/rally/test/match.test.ts",
+          "symbol": "a recorded match replays to the same score",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/match.test.ts",
+          "symbol": "a replay refuses recordings that don't play exactly one whole match",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/match.test.ts",
+          "symbol": "a recording made against one seed or level scores differently, or not at all, on another",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/rally/test/ai.test.ts",
+          "symbol": "the same seed plays the same match",
+          "command": "npm test"
+        }
+      ]
+    }
+  ]
+}

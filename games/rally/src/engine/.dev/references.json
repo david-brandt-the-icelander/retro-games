@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Engine references",
+  "folder": "games/rally/src/engine",
+  "entities": [
+    {
+      "id": "table-tennis-laws",
+      "title": "The Laws of Table Tennis",
+      "summary": "The scoring Rally follows.",
+      "relevance": "Games to 11 won by two clear points, and the order of serving, follow the laws of table tennis.",
+      "citation": "ITTF Statutes, The Laws of Table Tennis",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rules.ts",
+          "symbol": "WIN_POINTS"
+        }
+      ]
+    },
+    {
+      "id": "mulberry32",
+      "title": "mulberry32",
+      "summary": "The seeded generator in rng.ts.",
+      "relevance": "A small 32-bit generator built from Math.imul and shifts, so every engine computes the same sequence.",
+      "sources": [
+        {
+          "path": "games/rally/src/engine/rng.ts",
+          "symbol": "rng"
+        }
+      ]
+    }
+  ]
+}

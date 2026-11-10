@@ -1,0 +1,101 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "High-score Worker features",
+  "folder": "games/rally/worker",
+  "description": "What the Worker offers players.",
+  "sources": [
+    {
+      "path": "games/rally/worker/index.ts",
+      "symbol": "submitScore"
+    }
+  ],
+  "entities": [
+    {
+      "id": "unfakeable-scores",
+      "name": "High scores that can't be faked",
+      "description": "A score is listed only as the server's replay of the match computes it.",
+      "sources": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/rally/src/engine/match.ts",
+          "symbol": "replay"
+        }
+      ],
+      "behavior": "The server issues the seed, the browser sends the player's recorded moves with a name and the computer's level, and the Worker replays the whole match with the same engine before storing the score the replay produced. Each seed enters once.",
+      "outcome": "Players can trust the table: a score cannot be typed in, edited or submitted twice.",
+      "constraints": [
+        "Seeds expire after 24 hours unused.",
+        "Matches up to 30 minutes.",
+        "Names of up to 12 characters, cleaned the same way as in the browser.",
+        "Only one-player matches against the computer."
+      ],
+      "implementation": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "issueGame"
+        },
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/rally/worker/scores.ts",
+          "symbol": "parseSubmission"
+        },
+        {
+          "path": "games/rally/worker/scores.ts",
+          "symbol": "verify"
+        }
+      ]
+    },
+    {
+      "id": "public-scores-page",
+      "name": "Public scores page",
+      "description": "The table as a page of icelander.net.",
+      "sources": [
+        {
+          "path": "games/rally/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        }
+      ],
+      "behavior": "The best 25 matches are listed with the name, score, the computer's level and the match's result, in the site's look, with inline styles so the strict content policy holds.",
+      "outcome": "Anyone can see the table without signing in or opening the game.",
+      "constraints": [
+        "25 rows.",
+        "Names are escaped."
+      ],
+      "implementation": [
+        {
+          "path": "games/rally/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        },
+        {
+          "path": "games/rally/worker/look.ts",
+          "symbol": "sitePage"
+        },
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "loadTop"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/rally/worker",
+      "path": "games/rally/worker/.dev/capability.json",
+      "relationship": "The capability these features belong to."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/rally/worker",
+      "path": "games/rally/worker/.dev/operation.json",
+      "relationship": "The operations they call."
+    }
+  ]
+}

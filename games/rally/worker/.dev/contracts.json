@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "High-score Worker contracts",
+  "folder": "games/rally/worker",
+  "entities": [
+    {
+      "id": "score-api",
+      "title": "High-score API",
+      "summary": "POST game, POST score and GET scores under /games/retro/rally/api/.",
+      "contractType": "http-api",
+      "consumers": [
+        "src/scores.ts"
+      ],
+      "guarantees": [
+        "Errors are JSON { error } with 400, 404, 409, 413, 422 or 500",
+        "Responses are never cached (Cache-Control: no-store)",
+        "GET scores needs no sign-in"
+      ],
+      "definition": "games/rally/worker/index.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/rally/worker/scores.ts",
+          "symbol": "json"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "documents",
+          "path": "games/rally/worker/.dev/operation.json"
+        }
+      ]
+    },
+    {
+      "id": "database",
+      "title": "rally-scores tables",
+      "summary": "games (issued seeds) and scores (replayed matches) in D1.",
+      "contractType": "persistence",
+      "consumers": [
+        "The live D1 database rally-scores"
+      ],
+      "guarantees": [
+        "A score's id is the id of the seed it was played from",
+        "Scores are listed best first, ties oldest first (index scores_by_score)"
+      ],
+      "compatibility": "schema.sql describes a fresh database; the live one changes only through worker/migrations/, applied by hand before merging.",
+      "definition": "games/rally/worker/schema.sql",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/worker/schema.sql",
+          "symbol": "scores"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/rally/.dev/runbooks.json",
+          "entityId": "change-database"
+        }
+      ]
+    },
+    {
+      "id": "pages",
+      "title": "Public addresses",
+      "summary": "The game at /games/retro/rally/ and its scores at /games/retro/rally/scores/.",
+      "contractType": "url",
+      "consumers": [
+        "Players' bookmarks and links from icelander.net and the multiplayer page (which adds ?match=ID)"
+      ],
+      "guarantees": [
+        "/games/retro/rally/scores redirects to the page with a trailing slash"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/worker/scores.ts",
+          "symbol": "PATH"
+        },
+        {
+          "path": "games/rally/worker/scores.ts",
+          "symbol": "SCORES_PAGE"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Browser game backlog",
+  "folder": "games/rally/src",
+  "entities": [
+    {
+      "id": "online-copies",
+      "title": "Check that online.ts stays identical in three games",
+      "summary": "src/online.ts and test/online.test.ts are copied in Rally, Shatterbelt and Hivestorm, and nothing checks the copies agree.",
+      "type": "debt",
+      "compromise": "The file is copied rather than shared, and kept identical by hand.",
+      "cost": "A fix made in one game and not the others would put the games' online play out of step with each other, and nothing would say so.",
+      "acceptanceCriteria": [
+        "A check in CI fails when the three copies differ, or the file is shared from one place."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/rally/src/online.ts",
+        "description": "The file's opening comment: the same file is in Rally, Shatterbelt and Hivestorm."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Room"
+        }
+      ]
+    },
+    {
+      "id": "name-copies",
+      "title": "Check that the name rules stay identical to Samosa's",
+      "summary": "src/name.ts must match games/dictator/src/name.ts, and nothing checks it.",
+      "type": "debt",
+      "compromise": "The rules are copied, and the comment asks to keep the two identical.",
+      "cost": "A name valid in one game could be refused by the other's table.",
+      "acceptanceCriteria": [
+        "A check fails when the two files' rules differ, or the rules are shared from one place."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/rally/src/name.ts",
+        "description": "The file's opening comment."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/name.ts",
+          "symbol": "cleanName"
+        }
+      ]
+    }
+  ]
+}

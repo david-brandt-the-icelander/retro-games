@@ -1,0 +1,160 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-user-journey/schema.json",
+  "kind": "user-journey",
+  "title": "Rally journeys",
+  "folder": "games/rally",
+  "description": "Players' experience of Rally, as its README describes it to them.",
+  "sources": [
+    {
+      "path": "games/rally/README.md",
+      "symbol": "How to play"
+    }
+  ],
+  "entities": [
+    {
+      "id": "climb-the-table",
+      "name": "Climb the high-score table",
+      "description": "A player plays the computer, enters a match on the table and comes back to see it.",
+      "sources": [
+        {
+          "path": "games/rally/README.md",
+          "symbol": "High scores"
+        }
+      ],
+      "persona": "Player",
+      "goal": "Get a name onto the public table, higher than before.",
+      "stages": [
+        {
+          "id": "sign-in",
+          "context": "Arrives at the game signed out.",
+          "touchpoint": "icelander.net's sign-in",
+          "action": "Signs in, and is sent back to the game.",
+          "outcome": "The title screen, with a match playing behind it.",
+          "sources": [
+            {
+              "path": "games/rally/worker/index.ts",
+              "symbol": "gamePage"
+            }
+          ]
+        },
+        {
+          "id": "match",
+          "context": "Picks a level; harder levels score more.",
+          "touchpoint": "The game's table",
+          "action": "Plays to 11, by two clear points.",
+          "outcome": "A score: 100, 200 or 300 a point, and ten points' worth for a win.",
+          "sources": [
+            {
+              "path": "games/rally/README.md",
+              "symbol": "How to play"
+            },
+            {
+              "path": "games/rally/README.md",
+              "symbol": "High scores"
+            }
+          ]
+        },
+        {
+          "id": "enter",
+          "context": "The match is over.",
+          "touchpoint": "The name entry",
+          "action": "Keeps or types a name of up to 12 characters, and saves.",
+          "outcome": "The table, with the new row marked and its rank.",
+          "sources": [
+            {
+              "path": "games/rally/README.md",
+              "symbol": "High scores"
+            }
+          ]
+        },
+        {
+          "id": "share",
+          "context": "Later, or on another device.",
+          "touchpoint": "icelander.net/games/retro/rally/scores/",
+          "action": "Opens the public scores page.",
+          "outcome": "The table, checked by replay, for anyone to see.",
+          "sources": [
+            {
+              "path": "games/rally/README.md",
+              "symbol": "High scores"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    },
+    {
+      "id": "play-a-friend",
+      "name": "Play a friend online",
+      "description": "Two friends, each on their own device, meet in the multiplayer lobby and play.",
+      "sources": [
+        {
+          "path": "games/rally/README.md",
+          "symbol": "Playing online"
+        }
+      ],
+      "persona": "Player",
+      "goal": "Play a friend who is somewhere else, as often as they like.",
+      "stages": [
+        {
+          "id": "lobby",
+          "context": "Both are signed in to the games.",
+          "touchpoint": "The multiplayer page (the games hub)",
+          "action": "One starts a Rally game and waits; the other joins by typing that player's address.",
+          "outcome": "A countdown, cut short when everyone presses Ready.",
+          "sources": [
+            {
+              "path": "games/rally/README.md",
+              "symbol": "Playing online"
+            }
+          ]
+        },
+        {
+          "id": "match",
+          "context": "The game opens on both devices.",
+          "touchpoint": "The game's table",
+          "action": "Each plays their own paddle; the scoreboard names the other.",
+          "outcome": "The same match on both screens; a slow connection makes the other wait, and they are told.",
+          "sources": [
+            {
+              "path": "games/rally/README.md",
+              "symbol": "Playing online"
+            }
+          ]
+        },
+        {
+          "id": "again",
+          "context": "The match is over.",
+          "touchpoint": "The result panel",
+          "action": "Chooses BACK TO MULTIPLAYER.",
+          "outcome": "The lobby, ready for another game.",
+          "sources": [
+            {
+              "path": "games/rally/README.md",
+              "symbol": "Playing online"
+            },
+            {
+              "path": "games/rally/src/main.ts",
+              "symbol": "act"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md",
+      "supportingActors": [
+        {
+          "name": "The other player",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/rally/src",
+      "path": "games/rally/src/.dev/use-case.json",
+      "relationship": "The use cases behind the journeys' stages."
+    }
+  ]
+}

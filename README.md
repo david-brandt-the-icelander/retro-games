@@ -19,7 +19,7 @@ Pushing to `main` deploys each game whose folder changed (`.github/workflows/dep
 
 ## Architecture
 
-Each folder with something architectural to say has a `.dev/` directory of JSON diagrams (component, class, state and deployment), drawn from the code and checked by `Meta/Agents/Skills/validate_diagrams.py`. They can be browsed at [icelander.net/v1/apps/architecture-browser](https://icelander.net/v1/apps/architecture-browser?url=https://github.com/david-brandt-the-icelander/retro-games). Agents read `AGENTS.md`.
+Each folder with something to say about itself has a `.dev/` directory of JSON: diagrams (component, class, state and deployment) and behavior views drawn from the code, checked by `Meta/Agents/Skills/validate_diagrams.py`, and knowledge files (requirements, decisions, contracts, delivery, runbooks and the like), checked by `Meta/Agents/Knowledge/validate_knowledge.py`. Rally has the full set. They can be browsed at [icelander.net/v1/apps/architecture-browser](https://icelander.net/v1/apps/architecture-browser?url=https://github.com/david-brandt-the-icelander/retro-games). Agents read `AGENTS.md`.
 
 ## Agent skills
 
