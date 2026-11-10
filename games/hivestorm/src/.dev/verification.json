@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Browser game verification",
+  "folder": "games/hivestorm/src",
+  "entities": [
+    {
+      "id": "lockstep",
+      "title": "Lockstep",
+      "summary": "Browsers play the same steps, notice drift, and agree on who left.",
+      "subject": [
+        {
+          "path": "games/hivestorm/src/.dev/feature.json",
+          "entityId": "online-turns"
+        },
+        {
+          "path": "games/hivestorm/src/.dev/capability.json",
+          "entityId": "online-lockstep"
+        }
+      ],
+      "criteria": [
+        "Browsers play the same steps whatever the delays",
+        "A player who leaves plays on as null from the same step for everyone",
+        "Browsers notice when their games drift apart",
+        "The delay covers the slowest two players' connections"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/online.test.ts",
+          "symbol": "browsers in lockstep play the same steps, whatever the delays",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/online.test.ts",
+          "symbol": "a player who leaves plays on as null from the same step for everyone",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/online.test.ts",
+          "symbol": "browsers notice when their games drift apart",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/online.test.ts",
+          "symbol": "the delay covers the slowest two players' connections",
+          "command": "npm test"
+        }
+      ],
+      "notChecked": [
+        "main.ts's side of an online game: taking turns, the start message, names and the shared submission. Nothing tests the page."
+      ]
+    },
+    {
+      "id": "names",
+      "title": "Names",
+      "summary": "Names are cleaned to what the game's font can draw, up to 12 characters.",
+      "subject": [
+        {
+          "path": "games/hivestorm/src/.dev/feature.json",
+          "entityId": "table-entry"
+        }
+      ],
+      "criteria": [
+        "Accents are dropped and a few letters spelled out (Þórður becomes Thordur)",
+        "Markup characters are removed, and a name with no letter or digit is empty",
+        "Every character of a cleaned name has a glyph in the game's font",
+        "Never more than 12 characters"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/scores.test.ts",
+          "symbol": "a name is cleaned to what the game's font can draw, up to 12 characters",
+          "command": "npm test"
+        }
+      ]
+    }
+  ]
+}

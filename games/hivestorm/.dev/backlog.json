@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Hivestorm backlog",
+  "folder": "games/hivestorm",
+  "entities": [
+    {
+      "id": "stale-notes",
+      "title": "Two notes in the folder no longer match the code",
+      "summary": "wrangler.jsonc calls the game open to everyone, and the README names the wrong build folder.",
+      "type": "defect",
+      "expected": "The notes say what the code does: the game's page needs a sign-in, and npm run build writes the site to dist/games/retro/hivestorm/.",
+      "observed": "wrangler.jsonc's opening comment says the Worker serves \"the static game, open to everyone\", but gamePage() and the assets' run_worker_first make the page need a sign-in (as the same file's assets comment says). The README's Code section says npm run build makes \"static site in dist/retro/hivestorm/\", but build.mjs's BASE_PATH puts it in dist/games/retro/hivestorm/.",
+      "acceptanceCriteria": [
+        "wrangler.jsonc's opening comment says the page needs a sign-in and the table is public.",
+        "The README names dist/games/retro/hivestorm/."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/hivestorm/wrangler.jsonc",
+        "description": "Found while documenting Hivestorm's folders, reading the comments against worker/index.ts and build.mjs."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/wrangler.jsonc",
+          "symbol": "assets"
+        },
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "gamePage"
+        },
+        {
+          "path": "games/hivestorm/build.mjs",
+          "symbol": "BASE_PATH"
+        },
+        {
+          "path": "games/hivestorm/README.md",
+          "symbol": "Code"
+        }
+      ]
+    }
+  ]
+}

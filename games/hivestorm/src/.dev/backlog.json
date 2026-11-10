@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Browser game backlog",
+  "folder": "games/hivestorm/src",
+  "entities": [
+    {
+      "id": "retry-name-ignored",
+      "title": "The name typed when resending a score is ignored",
+      "summary": "After a failed submission the form asks for a name again, but sends the first name whatever is typed.",
+      "type": "defect",
+      "expected": "When the score could not be sent, the retry either sends the name now in the form, or does not ask for one.",
+      "observed": "offerTable() shows askName(\"Send your score again? Your name:\") and only checks whether it returned null (SKIP); the name returned is discarded, and submitGame() is called again with the names from before.",
+      "reproduction": [
+        "Finish a one-player game with a score that makes the table, with the API unreachable.",
+        "Enter a name; the form returns saying the score could not be sent.",
+        "Type a different name and press ENTER once the API is back: the first name is on the table."
+      ],
+      "acceptanceCriteria": [
+        "The name on the table is the one in the form when ENTER was last pressed, or the retry offers only TRY AGAIN and SKIP."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/hivestorm/src/main.ts",
+        "description": "Found while documenting Hivestorm's folders: offerTable's retry loop."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "offerTable"
+        }
+      ]
+    }
+  ]
+}

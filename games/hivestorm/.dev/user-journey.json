@@ -1,0 +1,185 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-user-journey/schema.json",
+  "kind": "user-journey",
+  "title": "Hivestorm journeys",
+  "folder": "games/hivestorm",
+  "description": "Players' experience of Hivestorm, as its README describes it to them.",
+  "sources": [
+    {
+      "path": "games/hivestorm/README.md",
+      "symbol": "Playing"
+    }
+  ],
+  "entities": [
+    {
+      "id": "climb-the-table",
+      "name": "Climb the high-score table",
+      "description": "A player takes on the hive, enters a game on the table and comes back to see it.",
+      "sources": [
+        {
+          "path": "games/hivestorm/README.md",
+          "symbol": "Rules"
+        }
+      ],
+      "persona": "Player",
+      "goal": "Get a name onto the public table, higher than before.",
+      "stages": [
+        {
+          "id": "sign-in",
+          "context": "Arrives at the game signed out.",
+          "touchpoint": "icelander.net's sign-in",
+          "action": "Signs in, and is sent back to the game.",
+          "outcome": "The title screens, showing the points for each alien and the top ten in turn.",
+          "sources": [
+            {
+              "path": "games/hivestorm/worker/index.ts",
+              "symbol": "gamePage"
+            },
+            {
+              "path": "games/hivestorm/README.md",
+              "symbol": "Rules"
+            }
+          ]
+        },
+        {
+          "id": "game",
+          "context": "Three ships, and an extra one at 7,000.",
+          "touchpoint": "The game's screen, with keys or the touch buttons",
+          "action": "Presses 1, shoots the hive and the divers, and takes on diving queens for their bonus, wave after wave.",
+          "outcome": "A score and the wave reached, when the last ship is lost.",
+          "sources": [
+            {
+              "path": "games/hivestorm/README.md",
+              "symbol": "Playing"
+            },
+            {
+              "path": "games/hivestorm/README.md",
+              "symbol": "Rules"
+            }
+          ]
+        },
+        {
+          "id": "enter",
+          "context": "The score makes the top ten.",
+          "touchpoint": "The name form under the screen",
+          "action": "Types a name and presses ENTER.",
+          "outcome": "The table, with the new row flashing.",
+          "sources": [
+            {
+              "path": "games/hivestorm/README.md",
+              "symbol": "Rules"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "offerTable"
+            }
+          ]
+        },
+        {
+          "id": "share",
+          "context": "Later, or on another device.",
+          "touchpoint": "icelander.net/games/retro/hivestorm/scores/",
+          "action": "Opens the public scores page.",
+          "outcome": "The top 25, each checked by replay, for anyone to see.",
+          "sources": [
+            {
+              "path": "games/hivestorm/README.md",
+              "symbol": "Rules"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    },
+    {
+      "id": "play-a-friend",
+      "name": "Play a friend online",
+      "description": "Two friends, each on their own device, meet in the multiplayer lobby and play a two-player game, taking turns.",
+      "sources": [
+        {
+          "path": "games/hivestorm/README.md",
+          "symbol": "Playing online"
+        }
+      ],
+      "persona": "Player",
+      "goal": "Play a friend who is somewhere else, score against score.",
+      "stages": [
+        {
+          "id": "lobby",
+          "context": "Both are signed in to the games.",
+          "touchpoint": "The multiplayer page (the games hub)",
+          "action": "One starts a Hivestorm game and waits; the other joins by typing that player's address.",
+          "outcome": "A countdown, cut short when everyone presses Ready.",
+          "sources": [
+            {
+              "path": "games/hivestorm/README.md",
+              "symbol": "Playing online"
+            }
+          ]
+        },
+        {
+          "id": "turns",
+          "context": "The game opens on both devices; whoever joined the lobby's game first is player 1.",
+          "touchpoint": "The game's screen, and the line under it",
+          "action": "Each plays their own turns and watches the other's; the turn passes when a ship is lost.",
+          "outcome": "The same game on both screens; a slow connection makes the other wait, and they are told. If one leaves, the other plays both turns.",
+          "sources": [
+            {
+              "path": "games/hivestorm/README.md",
+              "symbol": "Playing online"
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "context": "Both are out of ships.",
+          "touchpoint": "The game over screen and the name form",
+          "action": "Sees who won, and enters a name if their score makes the table.",
+          "outcome": "Each player's score on the table under their own name, sent once by the host's browser.",
+          "sources": [
+            {
+              "path": "games/hivestorm/README.md",
+              "symbol": "Playing online"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "offerTable"
+            }
+          ]
+        },
+        {
+          "id": "again",
+          "context": "The game is over.",
+          "touchpoint": "BACK TO MULTIPLAYER, under the screen",
+          "action": "Follows it.",
+          "outcome": "The lobby, ready for another game.",
+          "sources": [
+            {
+              "path": "games/hivestorm/README.md",
+              "symbol": "Playing online"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "showNet"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md",
+      "supportingActors": [
+        {
+          "name": "The other player",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/hivestorm/src",
+      "path": "games/hivestorm/src/.dev/use-case.json",
+      "relationship": "The use cases behind the journeys' stages."
+    }
+  ]
+}

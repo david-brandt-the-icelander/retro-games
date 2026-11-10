@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Engine",
+  "folder": "games/hivestorm/src/engine",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Engine",
+      "summary": "The pure game: the hive, its dives, the ship, scoring, turns, recording and replay.",
+      "purpose": "Plays a game of Hivestorm frame by frame (1/60 s) with no DOM, timers or randomness of its own, so the page, the tests and the Worker all get the same game from the same seed and controls.",
+      "boundaries": [
+        "Only + − × ÷ and exact helpers (Math.abs, sign, round, floor, min, max), with its own dsin and dcos for angles; random numbers only from rng.ts.",
+        "Knows nothing of the page, the network or the database: the page draws it and the Worker replays it."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.step"
+        },
+        {
+          "path": "games/hivestorm/src/engine/trig.ts",
+          "symbol": "dsin"
+        },
+        {
+          "path": "games/hivestorm/src/engine/rng.ts",
+          "symbol": "Rng"
+        }
+      ]
+    }
+  ]
+}

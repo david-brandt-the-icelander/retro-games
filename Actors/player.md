@@ -4,6 +4,7 @@
 **Evidence:** `games/rally/worker/index.ts` (`AUTH`, `gamePage`: the page and the score API need a sign-in to icelander.net with the `games:play` role), `games/rally/src/main.ts` (`start`, `joinMatch`), `games/rally/src/scores.ts` (`defaultName`)
 **Evidence (Gambit):** `games/chess/worker/index.ts` (`default.fetch`: the page needs a sign-in to icelander.net with the `games:play` role), `games/chess/worker/auth.ts` (`currentUser`: Gambit's own player record, keyed by address), `games/chess/worker/api.ts` (`handleApi`: an invitation is answered by the player signed in with the address it was sent to), `games/chess/godot/scripts/main.gd` (`Main._lobby`, `Main._setup`, `Main._history`)
 Samosa: `games/dictator/worker/index.ts` (`AUTH`, `gamePage`: the page and the score API need a sign-in to icelander.net with the `games:play` role), `games/dictator/src/main.ts` (`title`, `io`, `offerTable`), `games/dictator/src/scores.ts` (`defaultName`)
+**Evidence (Hivestorm):** `games/hivestorm/worker/index.ts` (`AUTH`, `gamePage`: the same sign-in and role), `games/hivestorm/src/ui/input.ts` (`Controls`), `games/hivestorm/src/main.ts` (`step`, `joinMatch`, `offerTable`)
 
 ## What they want from the system
 
@@ -14,6 +15,8 @@ Samosa: `games/dictator/worker/index.ts` (`AUTH`, `gamePage`: the page and the s
 - To look back on their Gambit games and their record against each friend ([Gambit's use cases](../games/chess/godot/scripts/.dev/use-case.json), `replay-a-game`, `visit-a-contact`; [journeys](../games/chess/.dev/user-journey.json), `relive-a-game`).
 - To rule Samosa's Nicaragua for as long and as well as they can, month by month, and get out alive with money in Switzerland ([Samosa's use cases](../games/dictator/src/engine/.dev/use-case.json), `survive-a-month`; [journeys](../games/dictator/.dev/user-journey.json), `a-reign`).
 - To put a reign of Samosa on its high-score table, and see it ranked ([Samosa's use cases](../games/dictator/src/.dev/use-case.json), `reign-and-enter-table`; [journeys](../games/dictator/.dev/user-journey.json), `climb-the-table`).
+- To play Hivestorm against the hive and get onto its high-score table ([Hivestorm's use cases](../games/hivestorm/src/.dev/use-case.json), `play-and-enter-table`; [journeys](../games/hivestorm/.dev/user-journey.json), `climb-the-table`).
+- To play a friend at Hivestorm on another device, taking turns, each with their own score on the table ([Hivestorm's use cases](../games/hivestorm/src/.dev/use-case.json), `play-online`; [journeys](../games/hivestorm/.dev/user-journey.json), `play-a-friend`).
 
 ## How they reach it
 
@@ -21,3 +24,4 @@ Rally's page at icelander.net/games/retro/rally/, signed in to icelander.net, wi
 
 Gambit is at icelander.net/games/retro/chess/, signed in to icelander.net, with a mouse or a touch screen. An invitation's link (`?challenge=ID`) opens it at that invitation; the friend invited is a player too, known by the email address the invitation was sent to.
 Samosa's page at icelander.net/games/retro/samosa/, signed in to icelander.net, with a keyboard, or on a touch screen with the keypad of the keys each prompt accepts; its scores page needs no sign-in.
+Hivestorm's page at icelander.net/games/retro/hivestorm/, signed in to icelander.net, with a keyboard or the touch buttons under the screen. Its online games also start on the multiplayer page, which opens the game with `?match=ID`; there, the other player plays their own turns of the same two-player game.

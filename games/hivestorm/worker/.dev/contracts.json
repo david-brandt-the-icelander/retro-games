@@ -1,0 +1,109 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "High-score Worker contracts",
+  "folder": "games/hivestorm/worker",
+  "entities": [
+    {
+      "id": "score-api",
+      "title": "High-score API",
+      "summary": "POST game, POST score and GET scores under /games/retro/hivestorm/api/.",
+      "contractType": "http-api",
+      "consumers": [
+        "src/scores.ts"
+      ],
+      "guarantees": [
+        "POST game answers { id, seed }",
+        "POST score takes { id, runs, names }, one name or null per player, and answers { entries: [{ player, name, score, wave, rank }] } with player counted from 1",
+        "GET scores answers { scores: [{ name, score, wave, players }] }, at most ten",
+        "Errors are JSON { error } with 400, 404, 409, 413, 422 or 500; the sign-in library's refusal is 401",
+        "Responses are never cached (Cache-Control: no-store)",
+        "GET scores needs no sign-in"
+      ],
+      "definition": "games/hivestorm/worker/index.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/hivestorm/worker/scores.ts",
+          "symbol": "json"
+        },
+        {
+          "path": "games/hivestorm/src/scores.ts",
+          "symbol": "Entry"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "documents",
+          "path": "games/hivestorm/worker/.dev/operation.json"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/hivestorm/src/engine/.dev/contracts.json",
+          "entityId": "recording"
+        }
+      ]
+    },
+    {
+      "id": "database",
+      "title": "hivestorm-scores tables",
+      "summary": "games (issued seeds) and scores (replayed players' scores) in D1.",
+      "contractType": "persistence",
+      "consumers": [
+        "The live D1 database hivestorm-scores"
+      ],
+      "guarantees": [
+        "A score row is keyed by its game (the seed's id) and the player (0 or 1), and records how many played",
+        "Scores are listed best first, ties oldest first (index scores_by_score)",
+        "Only the name is stored about a player"
+      ],
+      "compatibility": "schema.sql describes a fresh database; the live one changes only through worker/migrations/, applied by hand before merging. Hivestorm has no migration yet.",
+      "definition": "games/hivestorm/worker/schema.sql",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/worker/schema.sql",
+          "symbol": "scores"
+        },
+        {
+          "path": "games/hivestorm/worker/schema.sql",
+          "symbol": "games"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/hivestorm/.dev/runbooks.json",
+          "entityId": "change-database"
+        }
+      ]
+    },
+    {
+      "id": "pages",
+      "title": "Public addresses",
+      "summary": "The game at /games/retro/hivestorm/ and its scores at /games/retro/hivestorm/scores/.",
+      "contractType": "url",
+      "consumers": [
+        "Players' bookmarks, and links from icelander.net and the multiplayer page (which adds ?match=ID)"
+      ],
+      "guarantees": [
+        "/games/retro/hivestorm/scores redirects to the page with a trailing slash"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/worker/scores.ts",
+          "symbol": "PATH"
+        },
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "SCORES_PAGE"
+        }
+      ]
+    }
+  ]
+}

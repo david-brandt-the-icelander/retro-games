@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Engine contracts",
+  "folder": "games/hivestorm/src/engine",
+  "entities": [
+    {
+      "id": "recording",
+      "title": "Recording format",
+      "summary": "runs: [bits, count, bits, count, …], what the browser sends and the Worker replays.",
+      "contractType": "data-format",
+      "consumers": [
+        "worker/index.ts, through POST /games/retro/hivestorm/api/score",
+        "src/main.ts, which records every frame of a game"
+      ],
+      "guarantees": [
+        "Each frame's Input is six bits: left 1, right 2, fire 4, start1 8, start2 16, pause 32",
+        "Runs are [bits, count] pairs, count a whole number of at least 1, consecutive frames with the same bits in one run",
+        "The recording starts on the frame that starts the game and ends on the frame it ended",
+        "At most 432,000 frames (two hours) and 200,000 runs"
+      ],
+      "compatibility": "Any change to game.ts, rules.ts, rng.ts or trig.ts changes what a recording replays to. Scores already on the table are not replayed again, but a game in progress during a deploy may be refused or scored differently.",
+      "definition": "games/hivestorm/src/engine/replay.ts",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "toBits"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "Recorder"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "MAX_FRAMES"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "replay"
+        }
+      ]
+    }
+  ]
+}

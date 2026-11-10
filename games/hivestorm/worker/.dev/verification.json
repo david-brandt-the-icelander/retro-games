@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "High-score Worker verification",
+  "folder": "games/hivestorm/worker",
+  "entities": [
+    {
+      "id": "submissions",
+      "title": "Submissions and the scores page",
+      "summary": "A replayed game is scored once; made-up or mismatched submissions are refused; the page escapes names.",
+      "subject": [
+        {
+          "path": "games/hivestorm/worker/.dev/feature.json",
+          "entityId": "unfakeable-scores"
+        },
+        {
+          "path": "games/hivestorm/worker/.dev/feature.json",
+          "entityId": "public-scores-page"
+        },
+        {
+          "path": "games/hivestorm/worker/.dev/Seed.state-diagram.json"
+        }
+      ],
+      "criteria": [
+        "The API issues a seed, scores a replayed two-player game once, only for the player who gave a name, and lists it on the API and the page",
+        "Made-up controls and a wrong number of names are refused with 422, bad names with 400 and an unknown seed with 409, and the seed stays usable",
+        "The web page lists the scores, escapes names and carries the site's footer"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/scores.test.ts",
+          "symbol": "the API issues a seed, scores a replayed two-player game once, and lists it",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/scores.test.ts",
+          "symbol": "the API refuses made-up controls, wrong player counts and bad names, and keeps the seed usable",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/scores.test.ts",
+          "symbol": "the high-score web page lists the scores, escapes names, and carries the site's footer",
+          "command": "npm test"
+        }
+      ],
+      "notChecked": [
+        "Real D1: the tests stand in for it with an object that understands only the statements index.ts uses.",
+        "That an unused seed expires after 24 hours."
+      ]
+    },
+    {
+      "id": "sign-in",
+      "title": "Sign-in",
+      "summary": "The page and the score API need a sign-in.",
+      "subject": [
+        {
+          "path": "games/hivestorm/worker/.dev/capability.json",
+          "entityId": "signed-in-page"
+        }
+      ],
+      "criteria": [
+        "Someone signed out is sent to sign in, and back to the same address",
+        "The page is served privately to anyone signed in",
+        "A new game or a score needs a sign-in, and an unreachable login service counts as signed out"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/sign-in.test.ts",
+          "symbol": "sign-in: the game's page sends someone signed out to sign in, and back",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/sign-in.test.ts",
+          "symbol": "sign-in: the page is served to anyone signed in, privately",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/hivestorm/test/sign-in.test.ts",
+          "symbol": "sign-in: a new game or a score needs a sign-in; the login service out of reach is signed out",
+          "command": "npm test"
+        }
+      ],
+      "notChecked": [
+        "That vendor/icelander-auth is icelander.net's, unedited: Rally's test/sign-in.test.ts checks the one shared copy."
+      ]
+    }
+  ]
+}

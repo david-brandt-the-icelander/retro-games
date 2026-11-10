@@ -1,0 +1,114 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/quality-requirements.schema.json",
+  "kind": "quality-requirements",
+  "title": "Hivestorm quality requirements",
+  "folder": "games/hivestorm",
+  "entities": [
+    {
+      "id": "determinism",
+      "title": "The same game in every browser and on the server",
+      "summary": "The engine must give bit-identical results everywhere.",
+      "area": "correctness",
+      "requirement": "Engine code uses only + − × ÷ and exact helpers, its own sine and cosine, and random numbers only from its own seeded generator, so a game replays exactly in every browser and in the Worker, and two browsers online stay in step.",
+      "measuredBy": "The replay tests (a recorded one- or two-player game replays to the same scores; dsin and dcos agree with Math's), and the online fingerprint, compared between browsers every 120 steps.",
+      "origin": {
+        "kind": "document",
+        "reference": "AGENTS.md",
+        "description": "The repository's agent instructions: the games' engines must stay deterministic."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/trig.ts",
+          "symbol": "dsin"
+        },
+        {
+          "path": "games/hivestorm/src/engine/rng.ts",
+          "symbol": "Rng"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.start"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "gamePrint"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/hivestorm/src/engine/.dev/verification.json",
+          "entityId": "replay"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/hivestorm/src/engine/.dev/decisions.json",
+          "entityId": "own-trig"
+        }
+      ]
+    },
+    {
+      "id": "replay-speed",
+      "title": "Replays are cheap for the server",
+      "summary": "The Worker replays a whole game on every submission, so a replay must be fast.",
+      "area": "performance",
+      "requirement": "The README gives about 1 ms of replay per minute of play; games of up to two hours are accepted.",
+      "measuredBy": "Nothing measures it: no test times a replay (Rally's test/match.test.ts has such a test; Hivestorm has none).",
+      "origin": {
+        "kind": "document",
+        "reference": "games/hivestorm/README.md",
+        "description": "Hivestorm's README, How scores are checked."
+      },
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/hivestorm/README.md",
+          "symbol": "How scores are checked"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "MAX_FRAMES"
+        }
+      ]
+    },
+    {
+      "id": "strict-csp",
+      "title": "Everything from this origin",
+      "summary": "The page loads nothing from elsewhere except Cloudflare Web Analytics.",
+      "area": "security",
+      "requirement": "The page's content security policy allows scripts, styles, images and connections only from icelander.net (and wss://icelander.net for online games), plus Cloudflare's analytics beacon; no framing, form submissions, plugins or base URL changes.",
+      "measuredBy": "public/_headers, read by Cloudflare's static assets; the scores page sets its own policy in worker/look.ts.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/public/_headers",
+          "symbol": "Content-Security-Policy"
+        },
+        {
+          "path": "games/hivestorm/worker/look.ts",
+          "symbol": "sitePage"
+        }
+      ]
+    },
+    {
+      "id": "small-recordings",
+      "title": "Recordings stay small",
+      "summary": "A recorded game is a few kilobytes a minute.",
+      "area": "capacity",
+      "requirement": "Controls are recorded as runs of identical frames, so a submission stays well under the Worker's 2,000,000-character limit for a game of over an hour.",
+      "measuredBy": "Nothing measures it; MAX_BODY_BYTES's comment states the estimate.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/hivestorm/worker/scores.ts",
+          "symbol": "MAX_BODY_BYTES"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "Recorder"
+        }
+      ]
+    }
+  ]
+}

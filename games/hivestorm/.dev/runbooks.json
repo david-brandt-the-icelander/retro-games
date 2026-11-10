@@ -1,0 +1,59 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/runbooks.schema.json",
+  "kind": "runbooks",
+  "title": "Hivestorm runbooks",
+  "folder": "games/hivestorm",
+  "entities": [
+    {
+      "id": "setup",
+      "title": "Work on Hivestorm",
+      "summary": "Install, test and build the game in its folder.",
+      "purpose": "setup",
+      "when": "Before changing anything in games/hivestorm.",
+      "steps": [
+        "cd games/hivestorm",
+        "npm ci",
+        "npm test (typecheck, then the test suites)",
+        "npm run build (into dist/games/retro/hivestorm/, with _headers at dist/; BASE_PATH=\"\" builds at the root)",
+        "npm run dev rebuilds on change; serve dist/ with any static server"
+      ],
+      "verify": "npm test passes.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/hivestorm/README.md",
+          "symbol": "Code"
+        },
+        {
+          "path": "games/hivestorm/package.json",
+          "symbol": "scripts"
+        },
+        {
+          "path": "games/hivestorm/build.mjs",
+          "symbol": "BASE_PATH"
+        }
+      ]
+    },
+    {
+      "id": "change-database",
+      "title": "Change the database",
+      "summary": "A schema change is a migration applied by hand before merging.",
+      "purpose": "operate",
+      "when": "worker/schema.sql has to change.",
+      "steps": [
+        "Add games/hivestorm/worker/migrations/NNNN-what-it-does.sql, numbered from 0002 (Hivestorm has none yet), with a comment saying why",
+        "Make the same change in worker/schema.sql",
+        "Try it locally: npx wrangler d1 execute hivestorm-scores --local --file worker/migrations/<file>",
+        "Apply it to production before merging, and say so in the pull request's description"
+      ],
+      "verify": "The Database migration check passes.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Writing a migration"
+        }
+      ]
+    }
+  ]
+}

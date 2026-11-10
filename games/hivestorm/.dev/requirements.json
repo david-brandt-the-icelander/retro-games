@@ -1,0 +1,271 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/requirements.schema.json",
+  "kind": "requirements",
+  "title": "Hivestorm requirements",
+  "folder": "games/hivestorm",
+  "entities": [
+    {
+      "id": "scoring",
+      "title": "Points for each alien",
+      "summary": "Each kind of alien scores its own points, more when shot diving, and a diving queen more for each escort shot first.",
+      "statement": "Shot (or rammed) in the hive, a queen scores 60, a guard 50, a drone 40 and a worker 30. Diving, a guard scores 100, a drone 80 and a worker 60, and a queen 200, or 400 or 800 if one or two of the escorts on her dive were shot first.",
+      "rationale": "The README gives players these numbers, and the title screen shows them.",
+      "acceptanceCriteria": [
+        "A worker shot at home scores 30; a guard shot diving scores 100.",
+        "A diving queen with none, one or two escorts shot first scores 200, 400 or 800.",
+        "A diving alien that rams the ship destroys both and still scores."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/hivestorm/README.md",
+        "description": "Hivestorm's README, written for players and developers (Rules)."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "POINTS"
+        },
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "QUEEN_BONUS"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.pointsFor"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/hivestorm/src/engine/.dev/verification.json",
+          "entityId": "scoring"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/hivestorm/src/engine/.dev/feature.json",
+          "entityId": "scoring"
+        }
+      ]
+    },
+    {
+      "id": "ships-and-waves",
+      "title": "Ships, waves and the swarm",
+      "summary": "Three ships and one extra at 7,000; each wave harder; the last five aliens never go home.",
+      "statement": "A player starts with 3 ships and gets one extra ship at 7,000 points. Clearing the hive starts the next wave, which dives faster and more often with more aliens out at once. When only 5 aliens are left they stop going home and dive one after another. A queen may dive with up to two guards from beside her.",
+      "acceptanceCriteria": [
+        "The extra ship comes once.",
+        "Clearing the hive raises the wave and brings back all 37 aliens."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/hivestorm/README.md",
+        "description": "Hivestorm's README, written for players and developers (Rules)."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "RULES"
+        },
+        {
+          "path": "games/hivestorm/src/engine/rules.ts",
+          "symbol": "maxDivers"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.launchDives"
+        },
+        {
+          "path": "games/hivestorm/src/engine/game.ts",
+          "symbol": "Game.wrap"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/hivestorm/src/engine/.dev/verification.json",
+          "entityId": "scoring"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/hivestorm/src/engine/.dev/feature.json",
+          "entityId": "waves"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/hivestorm/src/engine/.dev/feature.json",
+          "entityId": "dives"
+        }
+      ]
+    },
+    {
+      "id": "unfakeable-scores",
+      "title": "Scores can't be faked",
+      "summary": "A score on the table is only ever what the server's replay of the game computed.",
+      "statement": "The server issues each game's seed, replays the recorded controls with the same engine before listing any score, and accepts each seed once.",
+      "rationale": "A public table is only worth climbing if nobody can type a score into it.",
+      "acceptanceCriteria": [
+        "Controls that do not play exactly one whole game are refused.",
+        "A game with a different number of players than names is refused.",
+        "A used seed is refused."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/hivestorm/README.md",
+        "description": "Hivestorm's README, written for players and developers (How scores are checked)."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/hivestorm/src/engine/replay.ts",
+          "symbol": "replay"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/hivestorm/src/engine/.dev/verification.json",
+          "entityId": "replay"
+        },
+        {
+          "relation": "verified-by",
+          "path": "games/hivestorm/worker/.dev/verification.json",
+          "entityId": "submissions"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/hivestorm/worker/.dev/feature.json",
+          "entityId": "unfakeable-scores"
+        }
+      ]
+    },
+    {
+      "id": "own-devices",
+      "title": "Friends play on their own devices, taking turns",
+      "summary": "Two players can play each other online, each on their own computer, phone or tablet, as they would take turns on one machine.",
+      "statement": "An online game started from the multiplayer page is played by two signed-in players on two devices, who see exactly the same two-player game. Each plays their own turns with their own controls and watches the other's; if one leaves, the other plays both turns. Each can put their own score on the table. There is no two-player game on one device.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/hivestorm/README.md",
+        "description": "Hivestorm's README, written for players and developers (Playing online)."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "stepOnline"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Lockstep"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "offerTable"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/hivestorm/src/.dev/verification.json",
+          "entityId": "lockstep"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/hivestorm/src/.dev/feature.json",
+          "entityId": "online-turns"
+        }
+      ]
+    },
+    {
+      "id": "sign-in",
+      "title": "Playing needs a sign-in",
+      "summary": "The game and its score API are for players signed in to icelander.net; the table stays public.",
+      "statement": "The game's page, a new game's seed and a score submission need a sign-in to icelander.net with the games:play role. The table, as JSON or as a page, needs none.",
+      "origin": {
+        "kind": "document",
+        "reference": "README.md",
+        "description": "The repository README: every game needs icelander.net's sign-in; the high-score tables stay public."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "AUTH"
+        },
+        {
+          "path": "games/hivestorm/worker/index.ts",
+          "symbol": "gamePage"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/hivestorm/worker/.dev/verification.json",
+          "entityId": "sign-in"
+        }
+      ]
+    },
+    {
+      "id": "keys-or-touch",
+      "title": "Keys or touch",
+      "summary": "The game can be played with a keyboard or with buttons on a touch screen.",
+      "statement": "1 or PLAY starts a game; ← → (or A D) or ◀ ▶ move; Space (or ↑, Ctrl, Enter) or FIRE fire, held to keep firing; P or Esc or PAUSE pauses; M or SOUND turns the sound on or off.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/hivestorm/README.md",
+        "description": "Hivestorm's README, written for players and developers (Playing)."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/ui/input.ts",
+          "symbol": "Controls"
+        },
+        {
+          "path": "games/hivestorm/public/index.html",
+          "symbol": "pad"
+        }
+      ]
+    },
+    {
+      "id": "names-only",
+      "title": "Only a name is stored",
+      "summary": "A score is stored with a name of up to 12 characters, and nothing else about the player.",
+      "statement": "The table stores a name of up to 12 plain characters with each score, with the wave reached and how many played. No email address or other personal data is asked for or kept.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/hivestorm/README.md",
+        "description": "Hivestorm's README, written for players and developers (Rules, High scores)."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/worker/schema.sql",
+          "symbol": "scores"
+        },
+        {
+          "path": "games/hivestorm/src/name.ts",
+          "symbol": "cleanName"
+        }
+      ]
+    },
+    {
+      "id": "original",
+      "title": "An original game",
+      "summary": "Hivestorm copies none of the formation-and-dive shooters it follows: its name, creatures, art, sounds, text, scoring numbers and code are its own.",
+      "statement": "Hivestorm belongs to the formation-and-dive shooter genre of the late 1970s but takes no name, creature, pixel art, sound, screen text, scoring number or code from any title in it.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/hivestorm/README.md",
+        "description": "Hivestorm's README, written for players and developers."
+      },
+      "evidenceStatus": "documented"
+    }
+  ]
+}

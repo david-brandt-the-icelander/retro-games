@@ -1,0 +1,472 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-use-case/schema.json",
+  "kind": "use-case",
+  "title": "Browser game use cases",
+  "folder": "games/hivestorm/src",
+  "description": "What a player does with the page, step by step.",
+  "sources": [
+    {
+      "path": "games/hivestorm/src/main.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/hivestorm/src/main.ts",
+      "symbol": "joinMatch"
+    }
+  ],
+  "entities": [
+    {
+      "id": "play-and-enter-table",
+      "name": "Play the hive and enter the table",
+      "description": "A player plays a one-player game and puts it on the high-score table.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "offerTable"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Play a game against the hive and see the score ranked on the table.",
+      "preconditions": [
+        "The player is signed in to icelander.net with the games:play role.",
+        "The title screens are showing."
+      ],
+      "postconditions": [
+        "The game's score, as the server's replay computed it, is on the table under the player's name.",
+        "The table screen shows with the new row flashing."
+      ],
+      "flow": [
+        {
+          "id": "seed",
+          "actor": "Page",
+          "action": "Asks the server for the next game's seed ahead of time, and sets it as the game's next seed.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "fetchTicket"
+            },
+            {
+              "path": "games/hivestorm/src/scores.ts",
+              "symbol": "newTicket"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "start",
+          "actor": "Player",
+          "action": "Presses 1 or PLAY.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/ui/input.ts",
+              "symbol": "Controls"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "record",
+          "actor": "Page",
+          "action": "Starts the game from the server's seed, starts recording every frame, and fetches a seed for the next game.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "step"
+            },
+            {
+              "path": "games/hivestorm/src/engine/replay.ts",
+              "symbol": "Recorder"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "play",
+          "actor": "Player",
+          "action": "Moves and fires, with keys or the buttons, pausing when they like, until the last ship is lost.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/ui/input.ts",
+              "symbol": "Controls.read"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "frame"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "offer",
+          "actor": "Page",
+          "action": "Stops recording and, as the score makes the top ten, asks for a name in a form under the screen.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "offerTable"
+            },
+            {
+              "path": "games/hivestorm/src/scores.ts",
+              "symbol": "qualifies"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "askName"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "name",
+          "actor": "Player",
+          "action": "Types a name and presses ENTER.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "askName"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "submit",
+          "actor": "Page",
+          "action": "Sends the seed's id, the recorded controls and the name; the server replays the game.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/scores.ts",
+              "symbol": "submitGame"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "table",
+          "actor": "Page",
+          "action": "Reloads the table and shows it for 15 seconds with the player's row flashing.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "offerTable"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "refreshTable"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "seed",
+          "condition": "No seed has arrived from the server by the time the game starts.",
+          "outcome": "The game plays from a seed of the page's own, and no name is asked for at the end; the page does not say why.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "step"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "offerTable"
+            }
+          ]
+        },
+        {
+          "atStep": "offer",
+          "condition": "The score is 0, or does not beat the tenth row of a full table.",
+          "outcome": "No form: the title screens return.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/scores.ts",
+              "symbol": "qualifies"
+            }
+          ]
+        },
+        {
+          "atStep": "name",
+          "condition": "The player presses SKIP or Escape.",
+          "outcome": "The game stays off the table.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "askName"
+            }
+          ]
+        },
+        {
+          "atStep": "name",
+          "condition": "Nothing usable is left of the name once cleaned.",
+          "outcome": "The form stays, asking for a name with at least one letter or digit.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "askName"
+            },
+            {
+              "path": "games/hivestorm/src/name.ts",
+              "symbol": "cleanName"
+            }
+          ]
+        },
+        {
+          "atStep": "submit",
+          "condition": "The server can't be reached or refuses the game.",
+          "outcome": "The form returns, saying the score could not be sent; ENTER sends it again and SKIP gives up.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "offerTable"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    },
+    {
+      "id": "play-online",
+      "name": "Play a friend online, taking turns",
+      "description": "Two players, each on their own device, play a two-player game started from the multiplayer page.",
+      "sources": [
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "joinMatch"
+        },
+        {
+          "path": "games/hivestorm/src/main.ts",
+          "symbol": "beginOnline"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Play a two-player game against a friend who is somewhere else, and put their own score on the table.",
+      "preconditions": [
+        "Both players are signed in.",
+        "The multiplayer page has started a Hivestorm game and opened this page with ?match=ID."
+      ],
+      "postconditions": [
+        "Both players have seen the same game and its result.",
+        "Each player whose score made the table and who gave a name is on it, as the server's replay computed."
+      ],
+      "flow": [
+        {
+          "id": "connect",
+          "actor": "Page",
+          "action": "Connects to the match's relay and waits for the other player, up to 15 seconds.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "joinMatch"
+            },
+            {
+              "path": "games/hivestorm/src/online.ts",
+              "symbol": "Room.open"
+            },
+            {
+              "path": "games/hivestorm/src/online.ts",
+              "symbol": "everyoneIn"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "start",
+          "actor": "Page",
+          "action": "The host's page sends the slots, a seed with its server ticket, and a delay; both pages start a two-player game from the title on the same step.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "startOnline"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "roomMessage"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "beginOnline"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "stepOnline"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "play",
+          "actor": "Player",
+          "action": "Plays their own turns and watches the other's; each page steps only with both players' controls.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "stepOnline"
+            },
+            {
+              "path": "games/hivestorm/src/online.ts",
+              "symbol": "Lockstep.next"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "over",
+          "actor": "Page",
+          "action": "Says who won, offers the way back to the multiplayer page, and asks this browser's player for a name if their score makes the table.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "endOnline"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "showNet"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "offerTable"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "name",
+          "actor": "Player",
+          "action": "Types a name and presses ENTER, or skips.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "askName"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "submit",
+          "actor": "Page",
+          "action": "Each page tells the other its player's name; the host's page waits for it (up to 90 seconds), sends the game with both names, and tells the other page which rows are new.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "offerTable"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "newOnline"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "connect",
+          "condition": "The match has ended, never existed, belongs to other players, or can't be reached.",
+          "outcome": "The line under the screen says why, with BACK TO MULTIPLAYER.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/online.ts",
+              "symbol": "REFUSALS"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "joinMatch"
+            }
+          ]
+        },
+        {
+          "atStep": "start",
+          "condition": "The other player never arrives.",
+          "outcome": "THE OTHER PLAYER DIDN'T ARRIVE, with the way back to the multiplayer page.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "startOnline"
+            }
+          ]
+        },
+        {
+          "atStep": "start",
+          "condition": "The host had no seed from the server.",
+          "outcome": "The game plays from a seed of the host's own, and cannot be entered on the table.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "startOnline"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "offerTable"
+            }
+          ]
+        },
+        {
+          "atStep": "play",
+          "condition": "The other player leaves.",
+          "outcome": "PLAYER LEFT: YOU PLAY BOTH TURNS; the game goes on with this player's controls for both.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "beginOnline"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "stepOnline"
+            }
+          ]
+        },
+        {
+          "atStep": "play",
+          "condition": "The connection is lost, or the fingerprints differ.",
+          "outcome": "The game is cut short, back to the title with nothing recorded, as CONNECTION LOST or OUT OF STEP: THE GAMES DIFFERED.",
+          "sources": [
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "roomMessage"
+            },
+            {
+              "path": "games/hivestorm/src/main.ts",
+              "symbol": "endOnline"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md",
+      "supportingActors": [
+        {
+          "name": "The other player",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/hivestorm/worker",
+      "path": "games/hivestorm/worker/.dev/operation.json",
+      "relationship": "The server operations both use cases call."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/hivestorm/src",
+      "path": "games/hivestorm/src/.dev/feature.json",
+      "relationship": "The features these use cases exercise."
+    },
+    {
+      "kind": "user-journey",
+      "folder": "games/hivestorm",
+      "path": "games/hivestorm/.dev/user-journey.json",
+      "relationship": "The journeys these use cases are part of."
+    }
+  ]
+}

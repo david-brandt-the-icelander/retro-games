@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Hivestorm decisions",
+  "folder": "games/hivestorm",
+  "entities": [
+    {
+      "id": "rooms-to-hub",
+      "title": "Online rooms belong to the games hub",
+      "summary": "The Durable Object that held online rooms moved to the games hub; Hivestorm only connects to it.",
+      "status": "accepted",
+      "context": "Rally, Shatterbelt and Hivestorm all play online, and players meet in one multiplayer lobby.",
+      "decision": "The relay is a Durable Object per match in the games hub, at /games/multiplayer/match/{ID}. Hivestorm's Worker deletes its old Room class, and both migration entries are kept.",
+      "rationale": "One lobby and one relay for every game; Cloudflare applies migrations in order, so removing the first entry would break the deploy.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/wrangler.jsonc",
+          "symbol": "migrations"
+        },
+        {
+          "path": "games/hivestorm/src/online.ts",
+          "symbol": "Room.open"
+        },
+        {
+          "path": "games/hivestorm/README.md",
+          "symbol": "Code"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/rally/.dev/decisions.json",
+          "entityId": "rooms-to-hub"
+        }
+      ]
+    },
+    {
+      "id": "publish-dev-files",
+      "title": "Should public/.dev be published with the game?",
+      "summary": "The build copies public/ into dist/ whole, so public/.dev/folder.json is uploaded with the static assets and served under the game's address.",
+      "status": "open",
+      "context": "build.mjs copies public/ with cpSync(\"public\", site, { recursive: true }), which copies dot-folders, so public/.dev/folder.json lands at dist/games/retro/hivestorm/.dev/folder.json (checked by running the build). Wrangler's assets upload ignores only .assetsignore, _redirects and _headers unless an .assetsignore says otherwise, and Hivestorm has none, so the deploy would serve the file at icelander.net/games/retro/hivestorm/.dev/folder.json. It holds no secret, only a description of the folder. Rally's public/.dev/folder.json is in the same position.",
+      "options": [
+        {
+          "title": "Leave it",
+          "consequences": "A small JSON file describing the page folder is public. Nothing else changes."
+        },
+        {
+          "title": "Skip .dev when copying public/ (build.mjs)",
+          "consequences": "dist/ holds only the game; a change to build.mjs in each game that copies public/."
+        },
+        {
+          "title": "Add an .assetsignore to public/ listing .dev",
+          "consequences": "The file is built but not uploaded; .assetsignore itself is never uploaded."
+        },
+        {
+          "title": "Write no .dev folder in public/",
+          "consequences": "The page folder goes undocumented, against AGENTS.md's rule that every maintained folder documents itself."
+        }
+      ],
+      "waitingOn": "The repository owner",
+      "details": "It blocks no work, but the merge that brings public/.dev/folder.json to main deploys it. The same question applies to every game whose build copies public/, and may be better answered once for all of them.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hivestorm/build.mjs",
+          "symbol": "cpSync"
+        },
+        {
+          "path": "games/hivestorm/wrangler.jsonc",
+          "symbol": "assets"
+        }
+      ]
+    }
+  ]
+}
