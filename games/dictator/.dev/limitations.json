@@ -1,0 +1,127 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/limitations.schema.json",
+  "kind": "limitations",
+  "title": "Samosa limitations",
+  "folder": "games/dictator",
+  "entities": [
+    {
+      "id": "offline-no-entry",
+      "title": "Offline reigns can't be entered",
+      "summary": "A reign the server issued no seed for still plays, with a seed of the browser's own, but cannot go on the table.",
+      "impact": "A player whose connection drops before the reign starts loses the chance to enter it; the name entry is never offered.",
+      "workaround": "Start another reign once the connection is back.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "startReign"
+        },
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "newGame"
+        }
+      ]
+    },
+    {
+      "id": "replay-limits",
+      "title": "A day and 20,000 keys",
+      "summary": "The server replays reigns of up to 20,000 keys, each key at most 12 characters, and seeds expire after 24 hours unused.",
+      "impact": "A longer reign, or one submitted a day after it started, is refused.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "MAX_KEYS"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "SEED_LIFETIME_MS"
+        }
+      ]
+    },
+    {
+      "id": "ascii-names",
+      "title": "Plain names",
+      "summary": "Names are up to 12 plain characters; accents are dropped and a few letters spelled out (Þór becomes Thor). The name entry types only capitals, digits, dots, hyphens and spaces.",
+      "impact": "Names in other scripts cannot be shown.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/name.ts",
+          "symbol": "cleanName"
+        },
+        {
+          "path": "games/dictator/src/name.ts",
+          "symbol": "KEY_CHARS"
+        }
+      ]
+    },
+    {
+      "id": "best-in-browser",
+      "title": "The best rating is this browser's",
+      "summary": "The best rating shown on the welcome screen is kept in this browser's local storage only.",
+      "impact": "Another browser or device starts with no best; with storage blocked there is no best at all, and the game still runs.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "loadBest"
+        },
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "store"
+        }
+      ]
+    },
+    {
+      "id": "no-saved-games",
+      "title": "No saved games",
+      "summary": "A reign cannot be saved or resumed; closing the page ends it.",
+      "impact": "A reign must be played in one sitting.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/dictator/docs/GDD.md",
+          "symbol": "12. Scope and non-goals"
+        }
+      ]
+    },
+    {
+      "id": "english-only",
+      "title": "English only",
+      "summary": "Every string is in English, in src/ui/text.ts.",
+      "impact": "No translations; the text budget leaves room to add them.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/dictator/docs/GDD.md",
+          "symbol": "12. Scope and non-goals"
+        },
+        {
+          "path": "games/dictator/src/ui/text.ts",
+          "symbol": "TITLE"
+        }
+      ]
+    },
+    {
+      "id": "one-offer-a-month",
+      "title": "One report offer a month",
+      "summary": "State Security offers its file only once a month, at the month's end; the original offered it up to four times.",
+      "impact": "A player cannot see the plots between the dangers and the decision; the file shows the statuses as of the month's last plot check.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "month"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/dictator/src/engine/.dev/decisions.json",
+          "entityId": "one-report-offer"
+        }
+      ]
+    }
+  ]
+}

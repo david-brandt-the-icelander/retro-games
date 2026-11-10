@@ -1,0 +1,323 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Engine features",
+  "folder": "games/dictator/src/engine",
+  "description": "The game itself, as docs/RULES.md states it: the month, the audience, the decisions, the reports, the dangers, revolution and the rating.",
+  "sources": [
+    {
+      "path": "games/dictator/src/engine/flow.ts",
+      "symbol": "playGame"
+    },
+    {
+      "path": "games/dictator/src/engine/rules.ts",
+      "symbol": "checkPlots"
+    }
+  ],
+  "entities": [
+    {
+      "id": "month",
+      "name": "A month in RULES' order",
+      "description": "Each month runs the same steps in the same order, with plot checks between them.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "month"
+        }
+      ],
+      "behavior": "The month's hidden threshold (2–4) and revolution strength (10–12) are rolled, the month number goes up, and then come the plot check, the accounts (a treasury in debt pays nothing and costs the Army's and the police's goodwill, the police's strength and one bodyguard; a treasury in credit pays the costs, even into debt; exactly 0 does nothing), the audience, the assassination and war checks, the decision, the news and the revolution check, with a plot check after each step RULES names. The month ends with the report offer.",
+      "outcome": "The month always unfolds the way the original's did, so its strategy carries over.",
+      "constraints": [
+        "Plots are not worked out in months 1 and 2, nor while the month is below the plot pause.",
+        "A reign that ends mid-month never reaches the month's report offer.",
+        "There is no time limit and no victory: a reign ends only by death or escape."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "month"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "rollMood"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "settleAccounts"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "checkPlots"
+        }
+      ]
+    },
+    {
+      "id": "audience",
+      "name": "The audience",
+      "description": "Each month one faction asks a favour, which the President grants or refuses.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "audience"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "chooseRequest"
+        }
+      ],
+      "behavior": "One of the 24 requests is chosen: the first unused one within 22 places of a random start, all marks reset when none is found. The adviser is offered and, on Y, lists every group's change. The dialog shows the money; Y grants the request (its changes, then its money), any other key refuses it, which costs the faction exactly the popularity it would have gained. A request the treasury cannot cover shows the cash-short notice and must be refused.",
+      "outcome": "Every month forces a choice between factions, with the cost known in advance if the President asks.",
+      "constraints": [
+        "Asking for advice draws nothing and changes nothing.",
+        "Popularity and strength stay within 0–9; monthly costs never go below 0."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "audience"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "consider"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "isAffordable"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "grantRequest"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "refuseRequest"
+        },
+        {
+          "path": "games/dictator/src/engine/data.ts",
+          "symbol": "REQUESTS"
+        }
+      ]
+    },
+    {
+      "id": "decisions",
+      "name": "Presidential decisions",
+      "description": "Once a month the President may take one of 19 decisions from five sections, or none.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "decide"
+        }
+      ],
+      "behavior": "1–5 open a section; its available options are listed by number. A normal decision offers advice and a dialog like a request, and on Y is taken: its changes and money, two more bodyguards for the guard decision, the helicopter for the helicopter decision. The Swiss account moves half the treasury, rounded down, to Switzerland. A loan from Moscow or Washington is too early before month 3 plus a random wait of 0–4, given only once by each, refused if that power is disaffected, and otherwise worth its popularity × 30 plus 0–199.",
+      "outcome": "The President can buy loyalty, protection, a way out, money or strength, at a price.",
+      "constraints": [
+        "At most one decision a month; any key but 1–5 at the menu takes none.",
+        "Every decision is used once taken, except more guards and the Swiss account; a granted loan hides its option.",
+        "An unlisted or used number, or a declined dialog, goes back to the menu."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "decide"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "takeDecision"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "moveToSwiss"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "requestLoan"
+        },
+        {
+          "path": "games/dictator/src/engine/data.ts",
+          "symbol": "SECTIONS"
+        }
+      ]
+    },
+    {
+      "id": "reports",
+      "name": "State Security's file",
+      "description": "The only view of the plots: free at the start and at the end, and for sale once a month.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "reportOffer"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "reportAvailability"
+        }
+      ],
+      "behavior": "A free report opens the reign and a final one closes it. At the end of every month State Security offers its file for 1 (a thousand dollars) if its popularity and strength are both above the threshold and the treasury holds money; Y buys it. The file shows every group's popularity and strength, each plot, the bodyguard and the revolution strength.",
+      "outcome": "The player can see who plots, at a price, when the police can be trusted.",
+      "constraints": [
+        "One offer a month, at its end.",
+        "An offer draws no random number.",
+        "The file shows the plots as of the month's last plot check."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "reportOffer"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "reportAvailability"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "buyReport"
+        }
+      ]
+    },
+    {
+      "id": "dangers",
+      "name": "Assassins, war and news",
+      "description": "Each month an assassin may strike, Honduras may threaten or invade, and a headline may shake things up.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "assassination"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "war"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "news"
+        }
+      ],
+      "behavior": "One faction, picked at random, strikes if it plans an assassination: it kills if all three factions plan one, or by a coin flip if the police are both unloved and weak. A Neighbour that is unloved and strong threatens war, which rallies the Army, Peasants, Landowners and police, or one time in three invades: the loyal home groups and the bodyguard fight every disaffected group, with a swing of −1 to +1. A won war wipes out the Neighbour's strength; a lost one means the helicopter, which starts two times in three, or execution. One month in three a headline not yet printed changes popularity and strength.",
+      "outcome": "Neglected groups turn into deadly threats, and the helicopter can be a way out.",
+      "constraints": [
+        "The war check runs even after a failed assassination attempt.",
+        "Six headlines, each printed once; news moves no money."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "assassinStrikes"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "attemptKills"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "isNeighbourHostile"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "neighbourWins"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "newsToday"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "printHeadline"
+        }
+      ]
+    },
+    {
+      "id": "revolution",
+      "name": "Revolution: run or fight",
+      "description": "A faction with a strong enough ally rises; the President flees or fights.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "revolution"
+        }
+      ],
+      "behavior": "Up to three random picks of a faction; the first that plans a revolution rises. Y to the escape question flees: by helicopter if bought and it starts, else on foot over the mountains, caught more often the stronger the Contras. Otherwise the President fights, asking one of the groups above the threshold for help (1–6). The revolt is crushed if the rebels' combined strength is at most the bodyguard's plus the helper's plus a swing of −1 to +1. A crushed revolt may be punished (the faction and its ally to 0), the helper grows to 9, and plots stay clear until the month after next (the plot pause becomes this month + 2).",
+      "outcome": "The reign's crisis: escape with the Swiss money, or win and rule on.",
+      "constraints": [
+        "Choosing a group not on the help list is a joke: the President runs, on foot, without the helicopter.",
+        "With no group above the threshold, the President fights alone.",
+        "Only 1–6 answer the help list; other keys show it again."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "escape"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "fight"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "whoRises"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "caughtOnFoot"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "revoltCrushed"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "afterVictory"
+        }
+      ]
+    },
+    {
+      "id": "rating",
+      "name": "The rating and the best",
+      "description": "A reign ends with a score and the best so far.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "rate"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "playGame"
+        }
+      ],
+      "behavior": "A dead President gets a funeral. The rating adds the popularity of all eight groups and 3 a month; a President who got out alive adds 10 and 1 for every 10 thousand in Switzerland. The best so far includes this reign, and a new best is flagged only when it is beaten. A final report follows.",
+      "outcome": "A number to beat, which rewards different strategies: popular, long-lived, or rich and alive.",
+      "constraints": [
+        "The Swiss account counts only if the President survives."
+      ],
+      "implementation": [
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "rate"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "playGame"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/capability.json",
+      "relationship": "The capability these features make up."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/use-case.json",
+      "relationship": "The use case that exercises them."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/dictator/src",
+      "path": "games/dictator/src/.dev/feature.json",
+      "relationship": "What the page adds around them."
+    }
+  ]
+}

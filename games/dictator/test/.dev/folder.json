@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Tests",
+  "folder": "games/dictator/test",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Tests",
+      "summary": "The node:test suites for the rules, the reign's flow, input, the generator, pacing, layout, the display, the high-score code, the sign-in, the clean-room guard, and the bots.",
+      "purpose": "Checks the game without a browser: build.mjs --test bundles each *.test.ts into dist-test/, and npm test runs them after the typecheck. helpers.ts drives a reign headless with scripted keys and records a snapshot at every screen; samples.ts lists the worst-case screens the layout tests and the contact sheet share; original-hashes.json holds the guard test's truncated hashes of the original's strings, and no text.",
+      "boundaries": [
+        "What each suite checks is recorded in the verification files of the folders it checks.",
+        "Parity with the baseline runs outside this repository; it is not a test here."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/build.mjs",
+          "symbol": "--test"
+        },
+        {
+          "path": "games/dictator/test/helpers.ts",
+          "symbol": "recorder"
+        },
+        {
+          "path": "games/dictator/test/samples.ts",
+          "symbol": "SAMPLES"
+        }
+      ]
+    }
+  ]
+}

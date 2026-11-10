@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "High-score Worker backlog",
+  "folder": "games/dictator/worker",
+  "entities": [
+    {
+      "id": "all-games-link",
+      "title": "\"All the games\" on the scores page leads to the site's home",
+      "summary": "The scores page's side link \"← All the games\" points at /, which on icelander.net is the home page, not the games.",
+      "type": "defect",
+      "expected": "The link leads to the games page, /games/, as the page's own navigation and footer do.",
+      "observed": "scoresPage writes href=\"/\". It pointed at /games/ when the page was added, changed to / when the games moved to games.icelander.net (where / was the games page), and was not changed back when they moved to icelander.net/games/retro/.",
+      "acceptanceCriteria": [
+        "The link on /games/retro/samosa/scores/ opens icelander.net/games/."
+      ],
+      "origin": {
+        "kind": "review",
+        "by": "Documenting agent",
+        "date": "2026-11-10",
+        "description": "Found while reading scores-page.ts and its history (commits abd19dd and 4bc32c5) for the .dev files."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        },
+        {
+          "path": "games/dictator/worker/look.ts",
+          "symbol": "sitePage"
+        }
+      ]
+    }
+  ]
+}

@@ -38,6 +38,7 @@
         "clipped: number",
         "hasFooter: boolean",
         "version: number",
+        "clears: number",
         "cls(attr: Attr, border = this.border): void",
         "setBorder(colour: number): void",
         "attrAt(col: number, row: number): Attr",
@@ -61,7 +62,7 @@
         "games/dictator/src/zx/display.ts"
       ],
       "members": [
-        "constructor(canvas: HTMLCanvasElement, screen: ZXScreen, room?: () => readonly [width: number, height: number])",
+        "constructor(readonly canvas: HTMLCanvasElement, readonly screen: ZXScreen, private readonly room: () => readonly [width: number, height: number] = …)",
         "fit(): void"
       ]
     },
@@ -117,7 +118,13 @@
       "sources": [
         "games/dictator/src/zx/input.ts"
       ],
-      "members": []
+      "members": [
+        "offer?: Offer",
+        "tapCounts?: boolean",
+        "typing?: readonly string[]",
+        "tapKey?: (clientX: number, clientY: number) => string | null",
+        "timeoutMs?: number"
+      ]
     },
     {
       "id": "zx.Note",
@@ -128,6 +135,17 @@
       ],
       "members": [
         "[seconds: number, pitch: number | null | \"noise\"]"
+      ]
+    },
+    {
+      "id": "zx.Offer",
+      "name": "Offer",
+      "kind": "type",
+      "sources": [
+        "games/dictator/src/zx/input.ts"
+      ],
+      "members": [
+        "ReadonlyArray<readonly [key: string, label: string]>"
       ]
     }
   ],
@@ -155,6 +173,18 @@
       "to": "zx.Note",
       "kind": "depends-on",
       "description": "Plays notes."
+    },
+    {
+      "from": "zx.WaitOptions",
+      "to": "zx.Offer",
+      "kind": "depends-on",
+      "description": "The buttons the touch keypad shows."
+    },
+    {
+      "from": "zx.Input",
+      "to": "zx.Offer",
+      "kind": "depends-on",
+      "description": "Builds one keypad button per offered key."
     }
   ]
 }

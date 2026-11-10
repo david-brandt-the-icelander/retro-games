@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "Browser game settings",
+  "folder": "games/dictator/src",
+  "entities": [
+    {
+      "id": "sound",
+      "title": "Sound",
+      "summary": "Whether sound is on, remembered in this browser.",
+      "key": "localStorage samosa.sound",
+      "type": "on | off",
+      "default": "on",
+      "sensitive": false,
+      "scope": "per browser",
+      "takesEffect": "per-use",
+      "details": "Read once when the page loads; M or the sound button changes it at once and stores it. Audio still waits for the first key or tap, as browsers require.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "SOUND_KEY"
+        },
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "toggleSound"
+        }
+      ]
+    },
+    {
+      "id": "best",
+      "title": "Best rating",
+      "summary": "The best rating so far in this browser, shown on the welcome screen.",
+      "key": "localStorage samosa.best",
+      "type": "whole number ≥ 0",
+      "default": "none",
+      "sensitive": false,
+      "scope": "per browser",
+      "takesEffect": "per-use",
+      "details": "Read at the start of each reign and written at its end. Anything that is not a non-negative number counts as none.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "BEST_KEY"
+        },
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "loadBest"
+        }
+      ]
+    }
+  ]
+}

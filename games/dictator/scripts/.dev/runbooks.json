@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/runbooks.schema.json",
+  "kind": "runbooks",
+  "title": "Scripts runbooks",
+  "folder": "games/dictator/scripts",
+  "entities": [
+    {
+      "id": "contact-sheet",
+      "title": "Render the contact sheet",
+      "summary": "Every sample screen as one PNG, to review the look after a change to a painter, the text or the art.",
+      "purpose": "review",
+      "when": "After changing anything in src/ui/ or src/zx/ that changes what a screen looks like.",
+      "steps": [
+        "cd games/dictator",
+        "npm run sheet (writes docs/contact-sheet.png)",
+        "For only some screens: node build.mjs --test, then node dist-test/scripts/contact-sheet.mjs <out.png> <pattern>; SHEET_PAIRS sets how many screens a row holds (3 by default)"
+      ],
+      "verify": "The PNG shows every sample with its name, FLASH off and on; npm test's layout tests pass for the same samples.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/package.json",
+          "symbol": "sheet"
+        },
+        {
+          "path": "games/dictator/scripts/contact-sheet.ts",
+          "symbol": "PAIRS"
+        },
+        {
+          "path": "games/dictator/README.md",
+          "symbol": "Develop"
+        }
+      ]
+    }
+  ]
+}

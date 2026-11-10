@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Platform layer",
+  "folder": "games/dictator/src/zx",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Platform layer",
+      "summary": "A model of the ZX Spectrum for this game's look: the display, its own font, one-key-at-a-time input and beeper sound.",
+      "purpose": "Gives the UI a 256×192 bitmap with a 32×24 grid of INK, PAPER, BRIGHT and FLASH attributes and a border, rendered to RGBA as a pure function and shown on a canvas; reads the keyboard, the touch keypad and taps one key per prompt; and plays square-wave notes, rests and noise.",
+      "boundaries": [
+        "Knows nothing of the game: which keys mean what is the engine's (RULES §15.1), what is drawn is the UI's.",
+        "Keys it reserves (M, for sound) never reach a prompt."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/zx/screen.ts",
+          "symbol": "ZXScreen"
+        },
+        {
+          "path": "games/dictator/src/zx/input.ts",
+          "symbol": "Input.reserve"
+        },
+        {
+          "path": "games/dictator/src/zx/sound.ts",
+          "symbol": "Sound"
+        }
+      ]
+    }
+  ]
+}

@@ -49,7 +49,7 @@
     {
       "id": "page",
       "name": "Page (main.ts)",
-      "responsibility": "The title, how to play, About and the sound toggle; presents each engine screen, logs every key and offers the table.",
+      "responsibility": "The title, how to play, About, the high-score table and the sound toggle; presents each engine screen, logs every key and offers the table.",
       "folder": "games/dictator/src"
     },
     {
@@ -61,7 +61,7 @@
     {
       "id": "names",
       "name": "Name rules (name.ts)",
-      "responsibility": "Cleans names for the table, the same as Rally's rules.",
+      "responsibility": "Cleans names for the table, the same in the browser and on the server; Rally's src/name.ts copies its rules.",
       "folder": "games/dictator/src"
     },
     {
@@ -74,7 +74,7 @@
     {
       "id": "hub",
       "name": "Games hub",
-      "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): /games/me, the sign-in pages and the play-time script. Samosa has no online play.",
       "external": true
     }
   ],
@@ -143,7 +143,7 @@
       "from": "page",
       "to": "names",
       "kind": "depends-on",
-      "description": "Cleans the typed name."
+      "description": "Cleans the typed name, and turns typed keys into name characters."
     },
     {
       "from": "ui",
@@ -161,7 +161,7 @@
       "from": "ui",
       "to": "names",
       "kind": "depends-on",
-      "description": "The name entry's length and characters."
+      "description": "NAME_MAX, the number of slots in the name entry."
     },
     {
       "from": "scores",
@@ -179,7 +179,7 @@
       "from": "scores",
       "to": "hub",
       "kind": "depends-on",
-      "description": "GET /me for the signed-in player's name."
+      "description": "GET /games/me for the signed-in player's name."
     }
   ]
 }

@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Design documents backlog",
+  "folder": "games/dictator/docs",
+  "entities": [
+    {
+      "id": "design-docs-out-of-date",
+      "title": "The GDD and RULES still state things later decisions changed",
+      "summary": "GDD §6 still offers reports several times a month, GDD §10 and §12 promise no account and an offline page, and RULES.md's status line still waits for the owner's approval.",
+      "type": "defect",
+      "expected": "The documents agree with the decisions they record and with the code: one report offer a month (RULES §4 step 15); the page needs a sign-in to icelander.net, so it is not usable signed out or offline before it loads; RULES.md approved (GDD §14: approved on merge).",
+      "observed": "GDD §6, Core loop, step 8: the intelligence reports are \"offered several times a month\". GDD §10: \"no account, no cookies\" and a page that \"keeps working offline once loaded\"; GDD §12: \"No accounts\". RULES.md: \"owner approval: _pending_\".",
+      "acceptanceCriteria": [
+        "GDD §6, §10 and §12 match the decision log in GDD §14 and worker/index.ts's sign-in.",
+        "RULES.md's status line records the approval."
+      ],
+      "origin": {
+        "kind": "review",
+        "by": "Documenting agent",
+        "date": "2026-11-10",
+        "description": "Found while reading the design documents against the code for the .dev files."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/docs/GDD.md",
+          "symbol": "6. Core loop"
+        },
+        {
+          "path": "games/dictator/docs/GDD.md",
+          "symbol": "10. Platforms and controls"
+        },
+        {
+          "path": "games/dictator/docs/GDD.md",
+          "symbol": "14. Decision log"
+        },
+        {
+          "path": "games/dictator/docs/RULES.md",
+          "symbol": "Dictator remake: behaviour spec"
+        },
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "gamePage"
+        }
+      ]
+    }
+  ]
+}

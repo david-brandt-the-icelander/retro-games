@@ -1,0 +1,121 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "Engine operations",
+  "folder": "games/dictator/src/engine",
+  "description": "The functions index.ts exports, through which the page, the Worker and the tests drive a reign.",
+  "sources": [
+    {
+      "path": "games/dictator/src/engine/index.ts",
+      "symbol": "playGame"
+    }
+  ],
+  "entities": [
+    {
+      "id": "new-game",
+      "name": "Start a reign",
+      "description": "A fresh state with RULES §1 and §2's starting values and a generator seeded from the given seed.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "newGame"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/dictator/src/engine/state.ts",
+        "symbol": "newGame"
+      },
+      "action": "query",
+      "transport": "exported function",
+      "authorization": "None: an in-process function. The page (src/main.ts), the Worker (worker/scores.ts) and the tests call it.",
+      "result": "A new GameState: month 0, treasury 1000, costs 60, bodyguard 4, every group at its starting popularity and strength. Without a seed, one is drawn with Math.random (the page does this when the server issued none).",
+      "failures": []
+    },
+    {
+      "id": "play-game",
+      "name": "Play a reign",
+      "description": "Plays one reign from the welcome screen to the final report, showing every screen through io.show and reading the key it resolves with.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "playGame"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/dictator/src/engine/flow.ts",
+        "symbol": "playGame"
+      },
+      "action": "command",
+      "transport": "exported async function, playGame(io, state, best)",
+      "authorization": "None: an in-process function. The page, the Worker's replay and the tests call it.",
+      "result": "The state is changed in place to the reign's end (alive or escaped set); resolves with { score, best }, best including this reign.",
+      "failures": [
+        "Whatever io.show throws is passed on: the Worker's replay throws when the keys run out, and treats that as a refusal."
+      ]
+    },
+    {
+      "id": "snapshot",
+      "name": "Take a snapshot",
+      "description": "The state in RULES' own terms, for comparison step by step with a reference model.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/snapshot.ts",
+          "symbol": "snapshot"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/dictator/src/engine/snapshot.ts",
+        "symbol": "snapshot"
+      },
+      "action": "query",
+      "transport": "exported function",
+      "authorization": "None: an in-process function. The tests and the parity harness call it.",
+      "result": "A Snapshot: copies of every field, renamed as RULES names them (pop, str, status, ally, presidentStrength and the rest).",
+      "failures": []
+    },
+    {
+      "id": "read-key",
+      "name": "Read a key as an answer",
+      "description": "How the engine reads a raw key: isYes for yes or no, digit for a number from a menu.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "isYes"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "digit"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/dictator/src/engine/flow.ts",
+        "symbol": "isYes"
+      },
+      "action": "query",
+      "transport": "exported functions isYes(key) and digit(key, max)",
+      "authorization": "None: in-process functions. The page uses isYes to choose the key's blip.",
+      "result": "isYes: true for Y or y only. digit: 1…max for a single digit key in range, else 0.",
+      "failures": []
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/capability.json",
+      "relationship": "The capability these operations expose."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/feature.json",
+      "relationship": "The features these operations carry out."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/dictator/src/engine",
+      "path": "games/dictator/src/engine/.dev/use-case.json",
+      "relationship": "The month that playGame plays, step by step."
+    }
+  ]
+}

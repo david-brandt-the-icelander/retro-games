@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Engine",
+  "folder": "games/dictator/src/engine",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Engine",
+      "summary": "The pure game: one reign as an async flow over a single show(screen) → key interface, with the rules, the data tables and one seeded generator.",
+      "purpose": "Plays a reign exactly as docs/RULES.md says, with no DOM and no timers, so the page, the tests, the bots and the Worker all get the same reign from the same seed and keys. snapshot() gives the state in RULES' own terms, for comparison with the baseline.",
+      "boundaries": [
+        "Random numbers only through draw and pick in state.ts, in RULES §15.4's order.",
+        "Knows nothing of how a screen looks or sounds, of the page, the network or the database: it only says which Screen to show and reads the raw key that answers it.",
+        "Written from docs/ alone; the baseline is never read here."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/index.ts",
+          "symbol": "playGame"
+        },
+        {
+          "path": "games/dictator/src/engine/screens.ts",
+          "symbol": "IO"
+        },
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "draw"
+        }
+      ]
+    }
+  ]
+}

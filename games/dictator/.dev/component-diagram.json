@@ -16,6 +16,10 @@
     {
       "path": "games/dictator/src/main.ts",
       "symbol": "offerTable"
+    },
+    {
+      "path": "games/dictator/public/index.html",
+      "symbol": "/games/play.js"
     }
   ],
   "components": [
@@ -28,7 +32,7 @@
     {
       "id": "client",
       "name": "Browser game",
-      "responsibility": "The engine, drawing, input, sound, menus and, where it has them, online play.",
+      "responsibility": "The engine, the screens drawn on an emulated Spectrum display, input, sound, the title and its extras, and the browser's side of the high-score table.",
       "folder": "games/dictator/src",
       "diagram": "games/dictator/src/.dev/component-diagram.json"
     },
@@ -42,7 +46,7 @@
     {
       "id": "hub",
       "name": "Games hub",
-      "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
+      "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker). Samosa uses its sign-in pages (/auth/…), /games/me and the play-time script /games/play.js; it has no online play.",
       "external": true
     },
     {
@@ -81,7 +85,7 @@
       "from": "client",
       "to": "hub",
       "kind": "depends-on",
-      "description": "Reads /me for a signed-in player's name."
+      "description": "Loads /games/play.js on the page, and reads /games/me for a signed-in player's name."
     },
     {
       "from": "worker",

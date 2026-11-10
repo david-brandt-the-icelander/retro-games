@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "UI",
+  "folder": "games/dictator/src/ui",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "UI",
+      "summary": "Everything the player sees and hears: one painter per engine screen, the extras, the strings, the pixel art, the sound motifs, the name entry and the sound overlay.",
+      "purpose": "Draws each engine Screen on a ZXScreen, cell for cell from docs/UI-DESIGN.md, and says how it is presented: the keypad offer, how long it holds before it reads a key, whether it moves on by itself, its sound, its animation steps and its screen-reader text. Every player-facing string is in text.ts and every melody in sounds.ts, written in the art bible's notation.",
+      "boundaries": [
+        "Decides nothing about the game: the engine does.",
+        "Waits for no key and keeps no time itself: src/main.ts presents what a painter returns."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "drawScreen"
+        },
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "Presentation"
+        },
+        {
+          "path": "games/dictator/src/ui/text.ts",
+          "symbol": "LABELS"
+        }
+      ]
+    }
+  ]
+}

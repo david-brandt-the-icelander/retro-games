@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Database migrations",
+  "folder": "games/dictator/worker/migrations",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Database migrations",
+      "summary": "The SQL files through which the live samosa-scores database changes, numbered from 0002.",
+      "purpose": "worker/schema.sql describes a fresh database and was applied once; every later change to the live database is a file here, applied by hand before its pull request is merged, and made in schema.sql too so that a fresh database ends up the same.",
+      "boundaries": [
+        "Applied by hand with wrangler, never by the deploy; the Database migration check and the deploy gate refuse a change here nobody has acknowledged (docs/database-migrations.md).",
+        "A file that has been applied is never edited or run again."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/worker/migrations/0002-drop-email.sql",
+          "symbol": "scores"
+        },
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Writing a migration"
+        }
+      ]
+    }
+  ]
+}

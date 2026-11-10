@@ -1,0 +1,707 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Engine verification",
+  "folder": "games/dictator/src/engine",
+  "entities": [
+    {
+      "id": "rules",
+      "title": "The rules, one by one",
+      "summary": "One test per rule in RULES §1–§14 and §17, at its boundaries, including the probabilities over seeded runs.",
+      "subject": [
+        {
+          "path": "games/dictator/src/engine/.dev/feature.json",
+          "entityId": "month"
+        },
+        {
+          "path": "games/dictator/src/engine/.dev/feature.json",
+          "entityId": "audience"
+        },
+        {
+          "path": "games/dictator/src/engine/.dev/feature.json",
+          "entityId": "decisions"
+        },
+        {
+          "path": "games/dictator/src/engine/.dev/feature.json",
+          "entityId": "reports"
+        },
+        {
+          "path": "games/dictator/src/engine/.dev/feature.json",
+          "entityId": "dangers"
+        },
+        {
+          "path": "games/dictator/src/engine/.dev/feature.json",
+          "entityId": "revolution"
+        },
+        {
+          "path": "games/dictator/src/engine/.dev/feature.json",
+          "entityId": "rating"
+        }
+      ],
+      "criteria": [
+        "Starting values, clamping and costs that never go below 0",
+        "The mood roll, disaffection at or below the threshold, the accounts in debt, in credit and at exactly 0",
+        "Plots: months 1 and 2, the pause, the ally's order and who never counts",
+        "Reports, requests, affordability, granting and refusing",
+        "Decisions, the Swiss account and loans, in RULES' order of checks",
+        "Assassination, war, news and revolution, with their odds",
+        "The rating, and the data tables' sizes and order"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "a reign starts with RULES §1 and §2's values",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "changes clamp each group to 0-9",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "monthly costs never fall below 0",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "the mood: threshold 2-4 then revolution strength 10-12, each equally likely",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "disaffected means popularity at or below the threshold",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "accounts: in debt, nothing is paid and four values drop by 1",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "accounts: the bankrupt penalties stop at 0",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "accounts: in credit the costs are paid, even into debt; exactly 0 does nothing",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "plots: nothing happens in months 1 and 2, statuses are kept",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "plots: cleared and suppressed while the month is below the pause",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "plots: a disaffected faction rises with the first strong enough disaffected group, else hires an assassin",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "plots: the faction itself and loyal groups never count as allies",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "reports: available only with money, loyal police and strong police (strictly above)",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "requests: the first unused from a random start, wrapping, and marked used at once",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "requests: only 22 places are looked at; if none is unused, all marks reset and it draws again",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "affordability follows RULES §8.3 exactly",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "granting applies the changes, then the money; costs never below 0",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "refusing costs the requester exactly what it would have gained, and nothing else",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "the five sections hold D1-D6, D7-D9, D10-D13, D14-D16 and D17-D19 in order",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "a decision is used once taken, except the bodyguard and the Swiss account",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "the bodyguard adds 2 to the President's strength with no upper limit",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "the helicopter decision gives the helicopter",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "the Swiss account takes half the treasury rounded down, if that is at least 1",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "loans: too early below month 3 + pick(5); always drawn first",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "loans: refused when the power is disaffected; granted is popularity × 30 + pick(200), once",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "loans: the checks run too early, no more, refused, granted",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "assassination: one pick(3) for the faction; only a plotting assassin strikes",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "assassination: all three plotting kills without a draw; strong or loyal police foil it",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "assassination: unloved and weak police leave it to a coin flip (0 kills)",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "war: the Neighbour is hostile when unloved (≤) and strong (≥ the threshold)",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "war: one chance in three of invasion",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "war: a threat rallies the Army, Peasants, Landowners and police",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "war: the forces count loyal home groups plus the President, against every disaffected group",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "war: the Neighbour wins if its force plus the swing reaches ours",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "the swing is -1, 0 or +1 and the helicopter starts two times in three",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "news: one chance in three, then the first unused headline from pick(6)",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "news: with all six used there is no news, but pick(6) is still drawn",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "news: a headline is marked used and moves no money",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "revolution: up to three picks, stopping at the first faction that plans one",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "revolution: helpers are groups 1-6 above the threshold; rebels add the ally's strength",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "on foot: caught when floor(u × (guerrillas ÷ 3 + 0.4)) is not 0",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "the revolt is crushed when the rebels are at most the President, the helper and the swing",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "punishment zeroes the rebel faction and its ally; victory sets the helper to 9 and pauses plots",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "the rating: popularity + 3 a month, and if alive 10 + floor(Swiss ÷ 10)",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rules.test.ts",
+          "symbol": "the data tables have RULES §17's sizes and order",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "month-flow",
+      "title": "The reign's flow",
+      "summary": "Screens come in RULES §4's order, every ending is reached as RULES says, and the report offer is the month's last step.",
+      "subject": [
+        {
+          "path": "games/dictator/src/engine/.dev/feature.json",
+          "entityId": "month"
+        },
+        {
+          "path": "games/dictator/src/engine/.dev/use-case.json"
+        }
+      ],
+      "criteria": [
+        "The reign opens with welcome, the treasury and a free first report",
+        "A calm month, a bankrupt month, the audience and the decision follow RULES §4",
+        "Every ending: assassinated, executed, flown out, caught, escaped on foot, overthrown",
+        "Exactly one report offer per completed month, none in a reign's last month",
+        "The rating and the best",
+        "The same seed and keys replay the same reign"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "the reign opens with welcome, the treasury and a free first report, then month 1",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "a calm month follows RULES §4: audience, decision, news, then the month's only report offer",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "a bankrupt month: penalties first, then the notice and a plot check; the offer waits for the month's end",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "the treasury at exactly 0 neither pays nor is penalised",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "a bought report costs 1 and shows the month",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "granting a request applies it; refusing costs the requester its gain",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "an unaffordable request: the dialog by itself, cash short, must refuse, then refused",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "advice is offered after the audience and shown on yes, changing nothing",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "taking a decision: section, advice offer, dialog, treasury; the report offer ends the month",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "declining a decision's dialog goes back to the menu",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "the Swiss account: its own screen, and the decision is over; repeatable",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "the bodyguard decision adds 2 and stays available",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "a loan: wait, result, treasury, and the decision is over; too early in month 1",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "a granted loan draws pick(5) then pick(200) and hides the option",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "a used-up section shows the note and returns to the menu",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "an unaffordable decision: dialog by itself, cash short, back to the menu",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "ending: killed when all three factions hire assassins",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "an assassin can miss, and the war check still follows",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "ending: executed after a lost war without a helicopter",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "ending: a lost war with a helicopter: away (2 in 3) or executed under the failed helicopter",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "a won war wipes out the Neighbour's strength and the month goes on to the decision",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "a threat of war rallies the home groups, then the decision",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "ending: escape on foot, caught or across the border",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "ending: escape by helicopter after a revolt, or a dead engine and the mountains",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "ending: overthrown when the rebels are too strong",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "a crushed revolt: punish, the helper to 9, plots paused, a plot check, then the month's only report offer",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "exactly one report offer per completed month, its last step, after the revolution check; offers draw nothing",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "no report offer after a game-ending screen: the reign's last month has none",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "the help list ignores other keys and shows itself again; an unlisted group is a joke and a run",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "alone: no one to ask, any key, and the fight goes on without a helper",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "the rating counts popularity, months, and for the living 10 and the Swiss money",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "the best so far includes this reign; a new best is flagged only when beaten",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "the same seed and keys replay the same reign",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "draw-order",
+      "title": "The generator and the order of draws",
+      "summary": "The generator matches RULES §15.4, and a month draws in exactly RULES' order, nothing else drawing.",
+      "subject": [
+        {
+          "path": "games/dictator/src/engine/.dev/decisions.json",
+          "entityId": "draw-before-reveal"
+        },
+        {
+          "path": "games/dictator/src/engine/.dev/contracts.json",
+          "entityId": "snapshot"
+        }
+      ],
+      "criteria": [
+        "The generator follows RULES §15.4 exactly",
+        "pick(n) is floor(u × n)",
+        "A quiet month draws in RULES §15.4's order",
+        "Advice, dialogs, reports, the Swiss account and plots draw nothing",
+        "snapshot has exactly the parity shape"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rng.test.ts",
+          "symbol": "the generator follows RULES §15.4 exactly, and its state is the seed plus a constant per draw",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rng.test.ts",
+          "symbol": "pick(n) is floor(u × n), uniform over 0…n−1",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rng.test.ts",
+          "symbol": "nothing draws but the rules: advice, dialogs, reports, the Swiss account and plots do not",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/rng.test.ts",
+          "symbol": "snapshot has exactly the parity shape, in RULES' terms",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/flow.test.ts",
+          "symbol": "a quiet month draws exactly in RULES §15.4 order",
+          "command": "npm test"
+        },
+        {
+          "type": "manual",
+          "description": "The verify role's parity run: at least 10,000 reigns per key policy against the baseline, the full state compared after every screen (docs/TEST-PLAN.md row 6). It runs outside this repository."
+        }
+      ]
+    },
+    {
+      "id": "input-quirks",
+      "title": "Input quirks",
+      "summary": "Only Y means yes; digits count only in range; keys a screen doesn't expect mean no or next.",
+      "subject": [
+        {
+          "path": "games/dictator/src/engine/.dev/decisions.json",
+          "entityId": "y-either-case"
+        },
+        {
+          "path": "games/dictator/.dev/requirements.json",
+          "entityId": "one-key"
+        }
+      ],
+      "criteria": [
+        "Only Y and y mean yes",
+        "Only single digits 1…max count",
+        "Any key but 1–5 at the menu is no decision; an unlisted or used number goes back",
+        "The screens the original timed ignore their key",
+        "An unavailable report offer only waits: Y does not buy",
+        "M is like any other key to the engine"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/input.test.ts",
+          "symbol": "only Y and y mean yes",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/input.test.ts",
+          "symbol": "digits: only single keys 1…max count",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/input.test.ts",
+          "symbol": "Y in either case buys a report; any other key skips it",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/input.test.ts",
+          "symbol": "any key but Y refuses the request; Y grants it",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/input.test.ts",
+          "symbol": "at the menu, any key but 1-5 means no decision this month",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/input.test.ts",
+          "symbol": "in a section, an unlisted or used number goes back to the menu without an error",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/input.test.ts",
+          "symbol": "the screens the original timed ignore the key they return",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/input.test.ts",
+          "symbol": "an unavailable report offer only waits for any key: Y does not buy",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/dictator/test/input.test.ts",
+          "symbol": "the engine treats an M like any other key: the platform keeps it from reaching the game",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "termination",
+      "title": "Every reign ends",
+      "summary": "Bots with six key policies play 6,000 reigns, checking the state's bounds at every screen.",
+      "subject": [
+        {
+          "path": "games/dictator/.dev/quality-requirements.json",
+          "entityId": "every-reign-ends"
+        }
+      ],
+      "criteria": [
+        "Every reign ends with the final report, without an error",
+        "Groups stay 0–9; costs, the bodyguard and the Swiss account never go negative; the Swiss account and the month never fall",
+        "Every engine screen kind is shown at least once"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/dictator/test/bot.test.ts",
+          "symbol": "bots play 6,000 full reigns without errors, and every reign ends with the final report",
+          "command": "npm test"
+        }
+      ]
+    }
+  ]
+}

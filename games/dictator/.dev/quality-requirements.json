@@ -1,0 +1,140 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/quality-requirements.schema.json",
+  "kind": "quality-requirements",
+  "title": "Samosa quality requirements",
+  "folder": "games/dictator",
+  "entities": [
+    {
+      "id": "determinism",
+      "title": "The same reign in every browser and on the server",
+      "summary": "The engine must give the same reign from the same seed and keys, wherever it runs.",
+      "area": "correctness",
+      "requirement": "Engine code draws random numbers only through its own seeded generator (draw and pick in state.ts), in the order RULES §15.4 gives, and uses no timers, DOM or Math.random once a reign has its seed, so the Worker replays a reign exactly as the browser played it.",
+      "measuredBy": "test/flow.test.ts, \"the same seed and keys replay the same reign\"; test/scores.test.ts, \"a replay from the seed and the keys gives the same score\"; test/rng.test.ts, the generator and the draw order.",
+      "origin": {
+        "kind": "document",
+        "reference": "AGENTS.md",
+        "description": "The repository's agent instructions: the games' engines must stay deterministic."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "draw"
+        },
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "pick"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "replay"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/src/engine/.dev/verification.json",
+          "entityId": "draw-order"
+        },
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/worker/.dev/verification.json",
+          "entityId": "replay"
+        }
+      ]
+    },
+    {
+      "id": "every-reign-ends",
+      "title": "Every reign ends",
+      "summary": "Whatever keys are pressed, a reign reaches its final report without an error.",
+      "area": "reliability",
+      "requirement": "For any sequence of keys, including keys no prompt expects, a reign ends with the final report, and the state stays within its bounds at every screen (groups 0–9; costs, bodyguard and Swiss account never negative).",
+      "measuredBy": "test/bot.test.ts: six key policies × 1,000 seeds, invariants checked at every screen.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/test/bot.test.ts",
+          "symbol": "bots play 6,000 full reigns without errors, and every reign ends with the final report"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/src/engine/.dev/verification.json",
+          "entityId": "termination"
+        }
+      ]
+    },
+    {
+      "id": "strict-csp",
+      "title": "Everything from this origin",
+      "summary": "The page loads nothing from elsewhere except Cloudflare Web Analytics.",
+      "area": "security",
+      "requirement": "The page's content security policy allows scripts, styles, images and connections only from its own origin, plus Cloudflare's analytics beacon and its reports; no framing, forms, plugins or base URL changes. The scores page has its own, stricter policy with inline styles only.",
+      "measuredBy": "public/_headers, served by Cloudflare's static assets; worker/look.ts, sitePage, for the scores page.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/public/_headers",
+          "symbol": "Content-Security-Policy"
+        },
+        {
+          "path": "games/dictator/worker/look.ts",
+          "symbol": "sitePage"
+        }
+      ]
+    },
+    {
+      "id": "safe-flashing",
+      "title": "Flashing stays slow and small",
+      "summary": "FLASH swaps every 0.32 s, and a screen flashes at most a small area.",
+      "area": "accessibility",
+      "requirement": "Flashing stays under 3 Hz: FLASH swaps ink and paper every 320 ms, as on the Spectrum. A screen drawn in full flashes only its cursor; while a held screen waits out its time it flashes only the alarm lamp or the rifle sight.",
+      "measuredBy": "test/layout.test.ts, \"every screen, drawn in full, has the footer, and its cursor is the only flash\" and \"while a held screen waits out its time, it flashes only the alarm lamp or the rifle sight, and nothing in the footer rows\".",
+      "origin": {
+        "kind": "document",
+        "reference": "games/dictator/docs/GDD.md",
+        "description": "GDD §11, Accessibility: flashing under 3 Hz."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/zx/display.ts",
+          "symbol": "FLASH_MS"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/src/ui/.dev/verification.json",
+          "entityId": "layout"
+        }
+      ]
+    },
+    {
+      "id": "touch-targets",
+      "title": "Touch targets of at least 44 pixels",
+      "summary": "Every keypad button and the sound button is at least 44 × 44 CSS pixels.",
+      "area": "accessibility",
+      "requirement": "Keypad buttons and the sound button are at least 44 CSS pixels wide and tall.",
+      "measuredBy": "public/zx.css (min-width and min-height of #keypad button and #sound); checked by hand in the browser (docs/TEST-PLAN.md row 13).",
+      "origin": {
+        "kind": "document",
+        "reference": "games/dictator/docs/GDD.md",
+        "description": "GDD §10: touch targets are at least 44 × 44 CSS pixels."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/public/zx.css",
+          "symbol": "#keypad button"
+        },
+        {
+          "path": "games/dictator/public/zx.css",
+          "symbol": "#sound"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Samosa",
+  "folder": "games/dictator",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Samosa",
+      "summary": "A clean-room remake of a 1983 ZX Spectrum strategy game for the browser: rule Nicaragua month by month until you are killed or flee, then put the reign on a replay-checked high-score table.",
+      "purpose": "Holds the whole game: the browser game in src/, the Worker that serves it and keeps the high-score table in worker/, the page in public/, the tests in test/, the contact-sheet renderer in scripts/ and the design documents in docs/. It is one npm project and one Cloudflare Worker. The folder is named dictator; the game, its Worker, its address and its database are named samosa.",
+      "boundaries": [
+        "The rules are docs/RULES.md's; the code follows them and changes no rule.",
+        "The faithful baseline the remake was checked against lives in a private repository and is never copied here; test/guard.test.ts keeps only hashes of the original's strings.",
+        "The sign-in is icelander.net's; the Worker checks it with the shared library in vendor/icelander-auth/, never edited here.",
+        "/games/me, /games/play.js and the sign-in pages under /auth/ are the games hub's, in another repository; this folder only calls them."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/README.md",
+          "symbol": "Develop"
+        },
+        {
+          "path": "games/dictator/wrangler.jsonc",
+          "symbol": "main"
+        },
+        {
+          "path": "games/dictator/package.json",
+          "symbol": "scripts"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,271 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/requirements.schema.json",
+  "kind": "requirements",
+  "title": "Samosa requirements",
+  "folder": "games/dictator",
+  "entities": [
+    {
+      "id": "plays-the-same",
+      "title": "Plays the same as the original",
+      "summary": "Every rule, number, check order, random draw and input quirk of the 1983 game is kept, as docs/RULES.md states them.",
+      "statement": "A reign follows docs/RULES.md exactly: the eight groups and their starting values, the month's fifteen steps in order, every formula and threshold, the draws in RULES §15.4's order, and the keys of §15.1. The only differences from the faithful baseline are the owner's decisions RULES §15.6 lists.",
+      "rationale": "The remake's first pillar: plays the same, looks new (GDD §2).",
+      "acceptanceCriteria": [
+        "Each rule in RULES §3–§14 has a test, at its boundaries.",
+        "A quiet month draws exactly in RULES §15.4's order.",
+        "The parity run against the baseline shows no unexplained difference (docs/TEST-PLAN.md row 6)."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/dictator/docs/GDD.md",
+        "description": "GDD §2, pillar 1, and docs/RULES.md, approved by the owner."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "playGame"
+        },
+        {
+          "path": "games/dictator/src/engine/rules.ts",
+          "symbol": "checkPlots"
+        },
+        {
+          "path": "games/dictator/docs/RULES.md",
+          "symbol": "15.6 Deliberate differences from the baseline"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/src/engine/.dev/verification.json",
+          "entityId": "rules"
+        },
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/src/engine/.dev/verification.json",
+          "entityId": "month-flow"
+        },
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/src/engine/.dev/verification.json",
+          "entityId": "draw-order"
+        }
+      ]
+    },
+    {
+      "id": "looks-new",
+      "title": "Shares none of the original's expression",
+      "summary": "No text, invented name, screen design, picture, tune or code structure is taken from the original.",
+      "statement": "Every word, name, screen, picture and sound is Samosa's own. No string or invented name from the original appears anywhere in the game's sources, page or documents; the About screen and the README carry the factual credit line.",
+      "rationale": "The remake is published; only the rules, which are not protected, are kept (docs/PROVENANCE.md).",
+      "acceptanceCriteria": [
+        "test/guard.test.ts finds none of the hashed original strings in any file of the game.",
+        "The About screen and the README carry the credit line as GDD §1 gives it."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/dictator/docs/PROVENANCE.md",
+        "description": "The provenance inventory: what is kept and what is replaced."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/test/guard.test.ts",
+          "symbol": "no string or name from the original appears in the game"
+        },
+        {
+          "path": "games/dictator/src/ui/text.ts",
+          "symbol": "ABOUT"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/test/.dev/verification.json",
+          "entityId": "clean-room-guard"
+        }
+      ]
+    },
+    {
+      "id": "unfakeable-scores",
+      "title": "Scores can't be faked",
+      "summary": "A score on the table is only ever what the server's replay of the reign computed.",
+      "statement": "The server issues each reign's seed, replays the reign from that seed and the keys the player pressed with the same engine before listing it, and accepts each seed once.",
+      "rationale": "A public table is only worth climbing if nobody can type a score into it.",
+      "acceptanceCriteria": [
+        "Keys that do not play exactly one whole reign are refused.",
+        "A used, unknown or expired seed is refused.",
+        "The same seed and keys always replay to the same score."
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/dictator/README.md",
+        "description": "README, The high-score table; GDD §14, the owner's decision of 2026-11-06."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/dictator/worker/scores.ts",
+          "symbol": "replay"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/worker/.dev/verification.json",
+          "entityId": "replay"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/dictator/worker/.dev/feature.json",
+          "entityId": "unfakeable-scores"
+        }
+      ]
+    },
+    {
+      "id": "sign-in",
+      "title": "Playing needs a sign-in",
+      "summary": "The game and its score API are for players signed in to icelander.net; the table stays public.",
+      "statement": "The game's page, a new reign's seed and a score submission need a sign-in to icelander.net with the games:play role. The table, as JSON or as a page, needs none.",
+      "origin": {
+        "kind": "document",
+        "reference": "README.md",
+        "description": "The repository README: every game needs icelander.net's sign-in; the high-score tables stay public."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "AUTH"
+        },
+        {
+          "path": "games/dictator/worker/index.ts",
+          "symbol": "gamePage"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/worker/.dev/verification.json",
+          "entityId": "sign-in"
+        }
+      ]
+    },
+    {
+      "id": "names-only",
+      "title": "Only a name is stored",
+      "summary": "A reign is stored with a name of up to 12 characters, and nothing else about the player.",
+      "statement": "The table stores a name of up to 12 plain characters with each reign. No email address or other personal data is asked for or stored; a signed-in player's address before the @ is only offered as a starting name.",
+      "rationale": "The owner decided the table asks for a name, not an email (GDD §14, 2026-11-06).",
+      "origin": {
+        "kind": "owner",
+        "by": "Owner",
+        "date": "2026-11-06",
+        "reference": "games/dictator/docs/GDD.md",
+        "description": "GDD §14, decision log: names replace emails on the table."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/worker/schema.sql",
+          "symbol": "scores"
+        },
+        {
+          "path": "games/dictator/src/name.ts",
+          "symbol": "cleanName"
+        },
+        {
+          "path": "games/dictator/src/scores.ts",
+          "symbol": "defaultName"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/dictator/src/.dev/decisions.json",
+          "entityId": "name-not-email"
+        }
+      ]
+    },
+    {
+      "id": "one-key",
+      "title": "One key per prompt, on any device",
+      "summary": "Every prompt is answered with one key: on a keyboard, on a touch keypad, or by tapping the screen.",
+      "statement": "Each prompt waits for a single key, never a typed line (except the name for the table). Y means yes in either case and any other key no or next; 1–5 choose a menu section, option numbers choose inside it, and 1–6 the helper in a revolution. On a touch screen a keypad offers the keys that matter, and tapping the screen counts as any key except at the help list. M turns sound on and off and never reaches the game.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/dictator/docs/GDD.md",
+        "description": "GDD §10, Platforms and controls; RULES §15.1."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "isYes"
+        },
+        {
+          "path": "games/dictator/src/engine/flow.ts",
+          "symbol": "digit"
+        },
+        {
+          "path": "games/dictator/src/zx/input.ts",
+          "symbol": "Input"
+        },
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "toggleSound"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/src/engine/.dev/verification.json",
+          "entityId": "input-quirks"
+        },
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/src/zx/.dev/verification.json",
+          "entityId": "platform"
+        }
+      ]
+    },
+    {
+      "id": "playable-without-sight-or-sound",
+      "title": "Playable with a screen reader, and muted",
+      "summary": "Every screen has a text version, and nothing is told by colour, flashing or sound alone.",
+      "statement": "Every screen is mirrored to a live region in reading order, ending with the keys it accepts; alarms and deaths are announced assertively. A plot is marked in words, debt with a minus sign and a warning, and every sound has an on-screen message. The whole game, extras included, works with the keyboard alone.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/dictator/docs/GDD.md",
+        "description": "GDD §11, Accessibility."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/main.ts",
+          "symbol": "announce"
+        },
+        {
+          "path": "games/dictator/src/ui/screens.ts",
+          "symbol": "Presentation"
+        },
+        {
+          "path": "games/dictator/public/index.html",
+          "symbol": "screen-alert"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/dictator/src/ui/.dev/verification.json",
+          "entityId": "layout"
+        }
+      ]
+    }
+  ]
+}

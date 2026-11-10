@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Engine references",
+  "folder": "games/dictator/src/engine",
+  "entities": [
+    {
+      "id": "mulberry32",
+      "title": "mulberry32",
+      "summary": "The seeded generator in state.ts.",
+      "relevance": "draw() adds 0x6D2B79F5 to a 32-bit state and mixes it with Math.imul and shifts, so every JavaScript engine computes the same sequence; RULES §15.4 writes it out, and test/rng.test.ts checks it against that.",
+      "sources": [
+        {
+          "path": "games/dictator/src/engine/state.ts",
+          "symbol": "draw"
+        }
+      ]
+    }
+  ]
+}

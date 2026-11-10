@@ -1,0 +1,49 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Platform layer decisions",
+  "folder": "games/dictator/src/zx",
+  "entities": [
+    {
+      "id": "own-font",
+      "title": "A font of our own",
+      "summary": "The 8×8 character set is drawn for this project; it is not the Sinclair ROM font.",
+      "status": "accepted",
+      "context": "The Spectrum look needs an 8×8 font, and the machine's own ROM font is someone else's work.",
+      "decision": "Glyphs in the Spectrum's style, drawn for this project as rows of # and . in font.ts: capitals and digits in rows 1–6 and columns 1–6, lower case with a five-row x-height and descenders in row 7.",
+      "rationale": "Keeps the look without copying the ROM; PROVENANCE.md keeps it as the remake's own work.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/zx/font.ts",
+          "symbol": "GLYPHS"
+        },
+        {
+          "path": "games/dictator/docs/PROVENANCE.md",
+          "symbol": "Inventory of the baseline"
+        }
+      ]
+    },
+    {
+      "id": "platform-keys",
+      "title": "Platform keys never reach the game",
+      "summary": "A key the platform reserves, such as M for sound, never answers a prompt.",
+      "status": "accepted",
+      "context": "In the original every key answers a prompt; a sound key that also counted as \"no\" or \"next\" would change the input semantics.",
+      "decision": "Input.reserve takes a key out of play: it runs its action and is not passed on, except while a name is typed, when M is a letter.",
+      "rationale": "The engine's input stays exactly RULES §15.1's, and parity holds (GDD §13, the M-key risk).",
+      "decidedBy": "Spec role, from the designer's questions (GDD §14)",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/src/zx/input.ts",
+          "symbol": "Input.reserve"
+        },
+        {
+          "path": "games/dictator/src/zx/input.ts",
+          "symbol": "WaitOptions"
+        }
+      ]
+    }
+  ]
+}
