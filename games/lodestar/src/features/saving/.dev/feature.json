@@ -1,0 +1,114 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Saving",
+  "folder": "games/lodestar/src/features/saving",
+  "description": "Keeping the pilot. The feature document, saving.md, is the primary record.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/saving/pilots.rs",
+      "symbol": "Pilots"
+    },
+    {
+      "path": "games/lodestar/src/features/saving/record.rs",
+      "symbol": "encode"
+    },
+    {
+      "path": "games/lodestar/src/features/saving/record.rs",
+      "symbol": "decode_over"
+    }
+  ],
+  "entities": [
+    {
+      "id": "save-and-restore",
+      "name": "Save at a station, return to the save on death",
+      "description": "The pilot saves under a name while docked; death and loading return to that save.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "Pilots::save"
+        },
+        {
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "Pilots::load"
+        },
+        {
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "Pilots::on_death"
+        }
+      ],
+      "behavior": "Two copies of the pilot are kept: the playing one and the saved one. Saving names the pilot, copies it to the saved pilot and writes its record under the name; loading on the title reads a record, and when it is accepted it becomes both the saved and the playing pilot. Death and starting from the title make the playing pilot a copy of the saved one.",
+      "outcome": "What the pilot has earned lasts between sessions, and only as far as the last save.",
+      "constraints": [
+        "Saving only while docked (SaveOutcome::NotDocked otherwise).",
+        "A name is 1 to 7 of A–Z and 0–9, letters stored in capitals (validate_name); an empty name saves nothing.",
+        "Loading only on the title.",
+        "A missing or rejected record changes nothing."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "Pilots"
+        },
+        {
+          "path": "games/lodestar/src/features/saving/name.rs",
+          "symbol": "validate_name"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::save"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::load"
+        }
+      ]
+    },
+    {
+      "id": "checked-record",
+      "name": "A record that cannot be edited into an impossible pilot",
+      "description": "A record read back is accepted only when it is whole, in range and its check matches.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "decode_over"
+        },
+        {
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "LoadError"
+        }
+      ],
+      "behavior": "A record is LodeStar's own text: a header with the format version, one line per saved field, and a CRC-32 check over the canonical text. Missing fields take the start pilot's values before the check; a wrong header or version, a malformed, out-of-range or repeated field, or a missing or wrong check rejects it.",
+      "outcome": "A hand-edited or damaged record never puts the sim in a state the rules do not allow.",
+      "constraints": [
+        "VERSION is 1; another version is rejected.",
+        "Unknown keys are ignored.",
+        "It does not read or write the baseline's records (deliberate difference 11)."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "encode"
+        },
+        {
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "decode_over"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The pilot's goals that exercise it."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/lodestar/src/infrastructure",
+      "path": "games/lodestar/src/infrastructure/.dev/operation.json",
+      "relationship": "Stores and fetches the records as files."
+    }
+  ]
+}

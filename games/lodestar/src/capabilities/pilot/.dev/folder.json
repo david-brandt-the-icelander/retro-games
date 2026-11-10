@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "The pilot",
+  "folder": "games/lodestar/src/capabilities/pilot",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "The pilot",
+      "summary": "Everything about the player that is saved, and the values derived from it.",
+      "purpose": "Declares the saved pilot of RULES A.7 (name, position, galaxy, cash, fuel, lasers, hold, cargo, fitted equipment, missiles, legal status, market and kills), the start pilot from GDD § 5.4, and the rank, legal label and contraband derived from it.",
+      "boundaries": [
+        "A capability: it uses no feature or use case (tests/layers.rs).",
+        "Saving and loading the pilot is the saving feature's."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/pilot/mod.rs",
+          "symbol": "Pilot"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/pilot/mod.rs",
+          "symbol": "Pilot::start"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Equipment capability",
+  "folder": "games/lodestar/src/capabilities/equipment",
+  "description": "What the equipment shop can do.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+      "symbol": "buy_offered"
+    }
+  ],
+  "entities": [
+    {
+      "id": "equipment-shop",
+      "name": "Equipment shop",
+      "description": "Offers, prices and fits the twelve items.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "Item"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "buy"
+        }
+      ],
+      "responsibility": "Says which items a tech level offers and at what price, and buys one for the pilot with its effect, or refuses it.",
+      "operations": [
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "offered"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "listing"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "price"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "buy_offered"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "escape_pod_rescue"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "scoop_sun_fuel"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "energy_recharge"
+        }
+      ],
+      "access": [
+        "Nothing checks: an in-process library inside lodestar-core.",
+        "FlyInSystem accepts an Equip press only while docked (docked_press)."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "class",
+      "folder": "games/lodestar/src/capabilities/equipment",
+      "path": "games/lodestar/src/capabilities/equipment/.dev/class-diagram.json",
+      "relationship": "Its types."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The pilot's goals that exercise it."
+    }
+  ]
+}

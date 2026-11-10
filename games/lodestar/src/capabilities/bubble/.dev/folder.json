@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "The bubble",
+  "folder": "games/lodestar/src/capabilities/bubble",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "The bubble",
+      "summary": "The ordered list of at most 13 objects near the player.",
+      "purpose": "Keeps the bubble (RULES B.9, C.1, C.3.3): the objects, their slots and per-type counts. Adding to a full bubble fails silently; removing shifts later objects down a slot.",
+      "boundaries": [
+        "A capability: it uses no feature or use case (tests/layers.rs).",
+        "Where objects are placed, and the station's replacement by the sun, belong to the features that use the bubble."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "Bubble"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "CAPACITY"
+        }
+      ]
+    }
+  ]
+}

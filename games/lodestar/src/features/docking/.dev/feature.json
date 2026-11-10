@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Docking",
+  "folder": "games/lodestar/src/features/docking",
+  "description": "Docking with the station by hand or by the auto-dock. The feature document, docking.md, is the primary record.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/docking/mod.rs",
+      "symbol": "docking_contact"
+    },
+    {
+      "path": "games/lodestar/src/features/docking/mod.rs",
+      "symbol": "auto_dock"
+    }
+  ],
+  "entities": [
+    {
+      "id": "manual-docking",
+      "name": "Docking by hand",
+      "description": "The pilot flies into the station's slot, lined up and level, and is inside.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "docking_contact"
+        },
+        {
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "docking_checks_pass"
+        }
+      ],
+      "behavior": "When the player is inside the station's docking box, four checks decide: the station is not hostile, its slot faces the player, it is nearly dead ahead, and the slot is level with the player's wings. All four pass: the countdown is cancelled and the 16-tick docking tunnel starts, while the rest of the tick still runs. A failure is the combat rules': death at speed 5 or more, otherwise a bump.",
+      "outcome": "Docking is a skill that ends every run in safety.",
+      "constraints": [
+        "The box is DOCKING_BOX (128) sim units on each axis.",
+        "The thresholds are SLOT_FACING, DEAD_AHEAD and SLOT_LEVEL; FATAL_DOCKING_SPEED is 5.",
+        "No collision with the station's hull outside the box (RULES B.23 Q-B16).",
+        "A dying player or one already in a tunnel does not dock."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "docking_contact"
+        },
+        {
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "docking_checks_pass"
+        },
+        {
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "dock"
+        },
+        {
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "finish_docking"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::contact"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "failed_docking"
+        }
+      ]
+    },
+    {
+      "id": "auto-dock",
+      "name": "Auto-berth",
+      "description": "With the docking computer fitted, a press docks at once from anywhere in the safe zone.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "auto_dock"
+        }
+      ],
+      "behavior": "The auto-dock press succeeds when the auto-dock is fitted, the station is present and it is not hostile; the docking tunnel starts and the tick's later queued actions and the laser are skipped. Otherwise nothing happens.",
+      "outcome": "A safe way in for a pilot who can afford it.",
+      "constraints": [
+        "Needs Fitted::auto_dock.",
+        "Only in the safe zone (Cockpit::station_present).",
+        "It does not fly the ship in: the baseline docks at once (RULES B.22)."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/docking/mod.rs",
+          "symbol": "auto_dock"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::queued_actions"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The pilot's goals that exercise it."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/station",
+      "path": "games/lodestar/src/features/station/.dev/feature.json",
+      "relationship": "The station and its safe zone."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/lodestar/src/capabilities/combat",
+      "path": "games/lodestar/src/capabilities/combat/.dev/capability.json",
+      "relationship": "Applies a failed docking's bump or death."
+    }
+  ]
+}

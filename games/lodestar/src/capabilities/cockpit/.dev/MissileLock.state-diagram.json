@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Missile lock",
+  "folder": "games/lodestar/src/capabilities/cockpit",
+  "description": "The player's missile control (RULES C.7.1, C.7.2, C.7.4). The state is the cockpit's MissileLock; its transitions are made by the combat capability's missile functions, which the flight tick calls, and by Cockpit::reset.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+      "symbol": "MissileLock"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+      "symbol": "arm_missile"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+      "symbol": "try_lock"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+      "symbol": "fire_missile"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+      "symbol": "fix_up_lock"
+    }
+  ],
+  "machine": "Cockpit.missile: MissileLock { armed, target } (src/capabilities/cockpit/mod.rs)",
+  "initialState": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "description": "armed false, target None: no missile armed."
+    },
+    {
+      "id": "armed",
+      "description": "armed true, target None: searching for a target in the active mount's sights."
+    },
+    {
+      "id": "locked",
+      "description": "armed false, target Some(slot): locked on the object in that slot."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "idle",
+      "to": "armed",
+      "trigger": "arm_missile (the target press)",
+      "guard": "the pilot carries a missile"
+    },
+    {
+      "from": "armed",
+      "to": "locked",
+      "trigger": "try_lock in the slot loop's sights step",
+      "guard": "the object is in the active mount's sights (deliberate difference 8) and the space view shows",
+      "action": "The beep; Event::MissileLocked."
+    },
+    {
+      "from": "armed",
+      "to": "idle",
+      "trigger": "unarm_missile",
+      "guard": "the pilot carries a missile"
+    },
+    {
+      "from": "locked",
+      "to": "idle",
+      "trigger": "unarm_missile",
+      "guard": "the pilot carries a missile"
+    },
+    {
+      "from": "locked",
+      "to": "idle",
+      "trigger": "fire_missile",
+      "guard": "the bubble has room",
+      "action": "The missile is added aimed at the target, the target becomes angry, one missile is used."
+    },
+    {
+      "from": "locked",
+      "to": "locked",
+      "trigger": "fire_missile",
+      "guard": "the bubble is full",
+      "action": "The jammed message; the lock is kept."
+    },
+    {
+      "from": "locked",
+      "to": "idle",
+      "trigger": "the locked object leaves the bubble (fix_up_lock)",
+      "action": "The target-lost message."
+    },
+    {
+      "from": "locked",
+      "to": "locked",
+      "trigger": "an earlier slot's object leaves the bubble (fix_up_lock)",
+      "action": "The lock moves down one slot."
+    },
+    {
+      "from": "armed",
+      "to": "idle",
+      "trigger": "Cockpit::reset: the start from the title, the launch, an arrival, docking, the escape-pod rescue, death and quitting to the title"
+    },
+    {
+      "from": "locked",
+      "to": "idle",
+      "trigger": "Cockpit::reset: the start from the title, the launch, an arrival, docking, the escape-pod rescue, death and quitting to the title"
+    }
+  ]
+}

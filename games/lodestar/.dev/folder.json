@@ -1,0 +1,48 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "LodeStar",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "LodeStar",
+      "summary": "A desktop space trading and combat game: its rules in Rust, its picture in Godot 4.",
+      "purpose": "Holds the whole game: the Rust workspace (the lodestar-core crate in src/, and the infrastructure, bridge and GDExtension crates beside it), the Godot project that presents it, the clean-room design documents in docs/, the ship assets and the workspace tests. It is built with cargo and run or exported by Godot; there is no server and no web build.",
+      "boundaries": [
+        "The rules come only from docs/RULES.md and the knowledge documents beside the code; the private baseline the spec was written from is never read or copied here.",
+        "Its feature, use-case and component Markdown documents are the primary record of what is built (knowledge-driven development); these .dev files describe folders and link to them.",
+        "It is not an npm project, so the repository's game workflow (.github/scripts/changed-games.sh lists only games with a package.json) neither tests nor deploys it."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/Cargo.toml",
+          "symbol": "workspace"
+        },
+        {
+          "path": "games/lodestar/project.godot",
+          "symbol": "run/main_scene"
+        },
+        {
+          "path": "games/lodestar/lodestar.gdextension",
+          "symbol": "libraries"
+        },
+        {
+          "path": "games/lodestar/README.md",
+          "symbol": "Develop"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/README.md",
+          "label": "README"
+        },
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "label": "Overall design"
+        }
+      ]
+    }
+  ]
+}

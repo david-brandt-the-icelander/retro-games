@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "lodestar-core and the layered source",
+  "folder": "games/lodestar/src",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "lodestar-core and the layered source",
+      "summary": "The game's source, layered: the lodestar-core crate (use cases, features, capabilities) and, around it, infrastructure, presentation and hosting.",
+      "purpose": "src/lib.rs is the lodestar-core crate: the deterministic rules with no engine dependency, in three layers that point inward (use_cases → features → capabilities). The other folders are the outer layers: infrastructure/ (lodestar-infrastructure), presentation/ (the lodestar-bridge crate and the Godot scenes), hosting/ (lodestar-godot, the GDExtension library).",
+      "boundaries": [
+        "Nothing in lodestar-core depends on Godot; the crate graph keeps it out, and tests/layers.rs keeps the inner layers pointing inward.",
+        "The sim uses f64 with + − × ÷ and sqrt, plus only the functions RULES names, and draws random numbers only from its own seeded generators."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/lib.rs",
+          "symbol": "use_cases"
+        },
+        {
+          "path": "games/lodestar/src/lib.rs",
+          "symbol": "capabilities"
+        },
+        {
+          "path": "games/lodestar/Cargo.toml",
+          "symbol": "workspace.members"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "label": "DESIGN § Project layout"
+        }
+      ]
+    }
+  ]
+}

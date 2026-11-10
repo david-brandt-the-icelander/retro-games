@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Random capability",
+  "folder": "games/lodestar/src/capabilities/random",
+  "description": "The sim's two random generators.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/random/mod.rs",
+      "symbol": "MainGenerator"
+    }
+  ],
+  "entities": [
+    {
+      "id": "random-numbers",
+      "name": "Deterministic random numbers",
+      "description": "The only source of randomness in the sim.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "MainGenerator"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "CosmeticGenerator"
+        }
+      ],
+      "responsibility": "Draws the main generator's numbers, whose order is part of the rules, and the cosmetic generator's, which only the picture uses.",
+      "operations": [
+        {
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "MainGenerator::draw"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "MainGenerator::byte"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "MainGenerator::discard"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "CosmeticGenerator::byte"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "CosmeticGenerator::unit"
+        }
+      ],
+      "access": [
+        "Nothing checks: an in-process library inside lodestar-core.",
+        "FlyInSystem owns the one MainGenerator and passes it to every rule that draws."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "class",
+      "folder": "games/lodestar/src/capabilities/random",
+      "path": "games/lodestar/src/capabilities/random/.dev/class-diagram.json",
+      "relationship": "Its types."
+    }
+  ]
+}

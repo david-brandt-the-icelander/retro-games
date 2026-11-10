@@ -1,0 +1,121 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How trading is checked",
+  "folder": "games/lodestar/src/features/trading",
+  "entities": [
+    {
+      "id": "trading",
+      "title": "Trading at the market panel",
+      "summary": "The 14 tests in src/features/trading/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/features/trading/.dev/feature.json",
+          "entityId": "market-panel-trading"
+        }
+      ],
+      "criteria": [
+        "A first hold of grain",
+        "Max buy is limited by availability",
+        "Max buy is limited by the hold",
+        "Max buy is limited by whole units of cash",
+        "Buy refusals change nothing",
+        "Buy refusals come in rule order",
+        "Buying nothing is allowed and changes nothing",
+        "Hold free goods need only availability and cash",
+        "Hold free goods count past a byte",
+        "Partial sales at the current price",
+        "Selling never restores availability",
+        "The special item can be sold",
+        "Prices use the stored market byte",
+        "A price of zero does not limit the quantity"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "a_first_hold_of_grain",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "max_buy_is_limited_by_availability",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "max_buy_is_limited_by_the_hold",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "max_buy_is_limited_by_whole_units_of_cash",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "buy_refusals_change_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "buy_refusals_come_in_rule_order",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "buying_nothing_is_allowed_and_changes_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "hold_free_goods_need_only_availability_and_cash",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "hold_free_goods_count_past_a_byte",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "partial_sales_at_the_current_price",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "selling_never_restores_availability",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "the_special_item_can_be_sold",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "prices_use_the_stored_market_byte",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/features/trading/mod.rs",
+          "symbol": "a_price_of_zero_does_not_limit_the_quantity",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

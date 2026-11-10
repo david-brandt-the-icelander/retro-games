@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Escape pod decisions",
+  "folder": "games/lodestar/src/features/escape_pod",
+  "entities": [
+    {
+      "id": "safe-pod-launch",
+      "title": "The pod launches safely",
+      "summary": "The abandoned hull is left out of collisions on the launch tick.",
+      "status": "accepted",
+      "context": "In the baseline the hull can hit the player as the pod leaves.",
+      "decision": "Escape::spares keeps the hull's slot out of the contact step (RULES 5, deliberate difference 7).",
+      "rationale": "Abandoning ship never kills the pilot.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "Escape::spares"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::process"
+        }
+      ]
+    }
+  ]
+}

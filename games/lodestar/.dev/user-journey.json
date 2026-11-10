@@ -1,0 +1,228 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-user-journey/schema.json",
+  "kind": "user-journey",
+  "title": "LodeStar journeys",
+  "folder": "games/lodestar",
+  "description": "A pilot's experience over a session, as the GDD's player experience and core loop describe it and the plain client implements it.",
+  "sources": [
+    {
+      "path": "games/lodestar/docs/GDD.md",
+      "symbol": "6. Player experience"
+    },
+    {
+      "path": "games/lodestar/docs/GDD.md",
+      "symbol": "7. Core loop"
+    },
+    {
+      "path": "games/lodestar/docs/UI-DESIGN.md",
+      "symbol": "Flow between screens"
+    }
+  ],
+  "entities": [
+    {
+      "id": "trading-run",
+      "name": "A trading run",
+      "description": "From one docking to the next: trade, launch, jump, approach and dock, then save.",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/GDD.md",
+          "symbol": "The arc of a session"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem"
+        }
+      ],
+      "persona": "Pilot",
+      "goal": "Profit from a run between two stations, and keep it.",
+      "stages": [
+        {
+          "id": "start",
+          "context": "Starts the game.",
+          "touchpoint": "The title",
+          "action": "Continues with the last saved pilot, or loads one by name.",
+          "outcome": "Docked at the system nearest the pilot's position.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/ui/title.gd",
+              "symbol": "_choose"
+            },
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::begin"
+            }
+          ]
+        },
+        {
+          "id": "plan",
+          "context": "Docked in the hangar.",
+          "touchpoint": "The hub: the market, charts, system data and status pages",
+          "action": "Studies the market and the charts, buys a hold, buys equipment.",
+          "outcome": "Cargo and equipment for the run.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/ui/hub.gd",
+              "symbol": "open"
+            },
+            {
+              "path": "games/lodestar/src/presentation/ui/market_page.gd",
+              "symbol": "handle_key"
+            },
+            {
+              "path": "games/lodestar/docs/GDD.md",
+              "symbol": "7. Core loop"
+            }
+          ]
+        },
+        {
+          "id": "launch",
+          "context": "Ready to go.",
+          "touchpoint": "The launch tunnel",
+          "action": "Launches.",
+          "outcome": "Flying in the safe zone with the station behind; contraband aboard goes on the record.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::tunnel_step"
+            },
+            {
+              "path": "games/lodestar/src/features/station/mod.rs",
+              "symbol": "launch"
+            }
+          ]
+        },
+        {
+          "id": "jump",
+          "context": "Clear of the station, a destination in range.",
+          "touchpoint": "The chart and the HUD's countdown",
+          "action": "Selects a system and starts the 85-tick countdown, then survives it.",
+          "outcome": "The hyperspace tunnel, then a new system with a new market; or the Deep.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/ui/chart_page.gd",
+              "symbol": "distance"
+            },
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+              "symbol": "FlyInSystem::flight_logic"
+            }
+          ]
+        },
+        {
+          "id": "approach",
+          "context": "Arrived far from the planet.",
+          "touchpoint": "The space view and the HUD",
+          "action": "Hops towards the planet when nothing is near, fights or flees what arrives, finds the station.",
+          "outcome": "In the safe zone near the station.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/features/in_system_jump/mod.rs",
+              "symbol": "in_system_jump"
+            },
+            {
+              "path": "games/lodestar/src/features/spawning/periodic.rs",
+              "symbol": "periodic_spawn"
+            },
+            {
+              "path": "games/lodestar/src/features/station/mod.rs",
+              "symbol": "station_appearance"
+            }
+          ]
+        },
+        {
+          "id": "dock",
+          "context": "Near the station.",
+          "touchpoint": "The station's slot, or the auto-berth",
+          "action": "Matches the slot by hand or uses the auto-berth.",
+          "outcome": "The docking tunnel, then docked.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+              "symbol": "FlyInSystem::contact"
+            }
+          ]
+        },
+        {
+          "id": "save",
+          "context": "Docked after the run.",
+          "touchpoint": "The hub's market and pilot pages",
+          "action": "Sells the cargo, saves the pilot.",
+          "outcome": "Profit kept: death now returns here.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/presentation/ui/pilot_page.gd",
+              "symbol": "save"
+            },
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::save"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/pilot.md"
+    },
+    {
+      "id": "losing-the-ship",
+      "name": "Losing the ship",
+      "description": "A run that ends badly: death returns the pilot to the last save.",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/GDD.md",
+          "symbol": "7. Core loop"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::end_death"
+        }
+      ],
+      "persona": "Pilot",
+      "goal": "Carry on after a crash, a lost fight or a botched docking.",
+      "stages": [
+        {
+          "id": "die",
+          "context": "A crash, a burn, a fatal docking or a lost fight.",
+          "touchpoint": "The space view and the HUD's death notice",
+          "action": "Watches the wreckage for 61 ticks.",
+          "outcome": "The title.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::die"
+            },
+            {
+              "path": "games/lodestar/src/presentation/hud/hud.gd",
+              "symbol": "NOTE_DEATH"
+            }
+          ]
+        },
+        {
+          "id": "again",
+          "context": "On the title.",
+          "touchpoint": "The title",
+          "action": "Continues.",
+          "outcome": "Docked with the last saved pilot; everything since that save is gone.",
+          "sources": [
+            {
+              "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+              "symbol": "FlyInSystem::begin"
+            },
+            {
+              "path": "games/lodestar/src/features/death/mod.rs",
+              "symbol": "return_to_title"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/pilot.md"
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The goals behind the stages."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Ship types",
+  "folder": "games/lodestar/src/capabilities/ships",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Ship types",
+      "summary": "The type numbers and the rule stats of every ship and object.",
+      "purpose": "Declares the type numbers several rules compare (1 to 13, and 128 to 130 for the planets and the sun) and each type's stats from GDD § 5.5: canisters, hit size, bounty, energy, speed, laser and missiles.",
+      "boundaries": [
+        "A capability: it uses no feature or use case (tests/layers.rs).",
+        "Presentation-only fields (gun point, explosion points, model) live in the art, not here."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/ships/mod.rs",
+          "symbol": "stats"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/ships/mod.rs",
+          "symbol": "ShipStats"
+        }
+      ]
+    }
+  ]
+}

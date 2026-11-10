@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "lodestar-godot source",
+  "folder": "games/lodestar/src/hosting/godot/src",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "lodestar-godot source",
+      "summary": "The crate's one source file, lib.rs.",
+      "purpose": "Holds LodeStarExtension, the GDExtension entry point, and the re-export of SimHost. The crate's views are one folder up, at src/hosting/godot.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/hosting/godot/src/lib.rs",
+          "symbol": "LodeStarExtension"
+        }
+      ]
+    }
+  ]
+}

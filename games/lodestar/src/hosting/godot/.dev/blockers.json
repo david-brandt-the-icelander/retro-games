@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/blockers.schema.json",
+  "kind": "blockers",
+  "title": "Desktop build blockers",
+  "folder": "games/lodestar/src/hosting/godot",
+  "entities": [
+    {
+      "id": "windows-and-macos-builds",
+      "title": "Windows and macOS builds",
+      "summary": "The Windows and macOS libraries and exports have never been built.",
+      "status": "active",
+      "blocked": [
+        {
+          "path": "games/lodestar/.dev/requirements.json",
+          "entityId": "desktop-only"
+        },
+        {
+          "path": "games/lodestar/src/hosting/godot/desktop-build.md"
+        }
+      ],
+      "cause": "The library has to be built on each platform (or by a CI runner with its Rust target), and the work so far was done on Linux only. The goal is a runnable Windows build with lodestar_godot.dll and a signed universal macOS app with liblodestar_godot.dylib.",
+      "unblockWhen": "A Windows and a macOS machine, or CI runners for them, build the library and the export.",
+      "canUnblock": "The owner",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/src/hosting/godot/desktop-build.md",
+          "symbol": "Behaviors"
+        },
+        {
+          "path": "games/lodestar/export_presets.cfg",
+          "symbol": "preset.1"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/hosting/godot/desktop-build.md",
+          "label": "desktop-build.md (the ⚠️⛔ marks)"
+        }
+      ]
+    },
+    {
+      "id": "ci-for-lodestar",
+      "title": "cargo test and export starts on every pull request",
+      "summary": "No workflow tests or exports LodeStar.",
+      "status": "active",
+      "blocked": [
+        {
+          "path": "games/lodestar/.dev/pipeline.json",
+          "entityId": "pull-request"
+        }
+      ],
+      "cause": "Every pull request should run cargo test and a headless start of each platform's export, but the repository's game workflow runs only games with a package.json (changed-games.sh) and has no Windows or macOS runners.",
+      "unblockWhen": "A workflow job for LodeStar, with Linux, Windows and macOS runners, is added to .github/workflows.",
+      "canUnblock": "The owner, who approves workflow changes",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": ".github/scripts/changed-games.sh",
+          "symbol": "package.json"
+        },
+        {
+          "path": "games/lodestar/src/hosting/godot/desktop-build.md",
+          "symbol": "Behaviors"
+        }
+      ]
+    }
+  ]
+}

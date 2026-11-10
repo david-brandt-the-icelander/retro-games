@@ -1,0 +1,333 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Capabilities component diagram",
+  "folder": "games/lodestar/src/capabilities",
+  "description": "The twelve capabilities and how they use one another, read from their non-test `use crate::capabilities::` imports. None uses a feature or a use case. Each child's types are in its own class diagram where it declares several.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/mod.rs",
+      "symbol": "capabilities"
+    },
+    {
+      "path": "games/lodestar/tests/layers.rs",
+      "symbol": "capabilities_depend_on_nothing_further_out"
+    }
+  ],
+  "components": [
+    {
+      "id": "capabilities",
+      "name": "Capabilities",
+      "responsibility": "lodestar-core's innermost layer.",
+      "folder": "games/lodestar/src/capabilities"
+    },
+    {
+      "id": "ai",
+      "name": "ai",
+      "responsibility": "How every non-player object thinks, launches its children and becomes angry (RULES C.5).",
+      "folder": "games/lodestar/src/capabilities/ai"
+    },
+    {
+      "id": "bubble",
+      "name": "bubble",
+      "responsibility": "The ordered list of at most 13 objects and their per-type counts.",
+      "folder": "games/lodestar/src/capabilities/bubble"
+    },
+    {
+      "id": "cockpit",
+      "name": "cockpit",
+      "responsibility": "The player's in-flight state that a reset sets again, and the missile lock.",
+      "folder": "games/lodestar/src/capabilities/cockpit"
+    },
+    {
+      "id": "combat",
+      "name": "combat",
+      "responsibility": "Lasers, missiles, E.C.M., area blast, damage, contact, explosions, kills, bounties and the law, and the slot loop's combat steps.",
+      "folder": "games/lodestar/src/capabilities/combat"
+    },
+    {
+      "id": "equipment",
+      "name": "equipment",
+      "responsibility": "The twelve items, their offer by tech level, prices and effects.",
+      "folder": "games/lodestar/src/capabilities/equipment"
+    },
+    {
+      "id": "flight",
+      "name": "flight",
+      "responsibility": "Attitude, speed, motion and re-orthonormalisation.",
+      "folder": "games/lodestar/src/capabilities/flight"
+    },
+    {
+      "id": "market",
+      "name": "market",
+      "responsibility": "Goods, prices, availability, the market byte and the hold.",
+      "folder": "games/lodestar/src/capabilities/market"
+    },
+    {
+      "id": "pilot",
+      "name": "pilot",
+      "responsibility": "The saved pilot, the start pilot, rank, legal label and contraband.",
+      "folder": "games/lodestar/src/capabilities/pilot"
+    },
+    {
+      "id": "random",
+      "name": "random",
+      "responsibility": "The main and the cosmetic generators.",
+      "folder": "games/lodestar/src/capabilities/random"
+    },
+    {
+      "id": "ships",
+      "name": "ships",
+      "responsibility": "Type numbers and ship stats.",
+      "folder": "games/lodestar/src/capabilities/ships"
+    },
+    {
+      "id": "space",
+      "name": "space",
+      "responsibility": "Vectors, the coarse, fine and far tests, and sign-magnitude counters.",
+      "folder": "games/lodestar/src/capabilities/space"
+    },
+    {
+      "id": "universe",
+      "name": "universe",
+      "responsibility": "Galaxies, systems, names, distance, range, destinations and the charts.",
+      "folder": "games/lodestar/src/capabilities/universe"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "capabilities",
+      "to": "ai",
+      "kind": "contains",
+      "description": "pub mod ai."
+    },
+    {
+      "from": "capabilities",
+      "to": "bubble",
+      "kind": "contains",
+      "description": "pub mod bubble."
+    },
+    {
+      "from": "capabilities",
+      "to": "cockpit",
+      "kind": "contains",
+      "description": "pub mod cockpit."
+    },
+    {
+      "from": "capabilities",
+      "to": "combat",
+      "kind": "contains",
+      "description": "pub mod combat."
+    },
+    {
+      "from": "capabilities",
+      "to": "equipment",
+      "kind": "contains",
+      "description": "pub mod equipment."
+    },
+    {
+      "from": "capabilities",
+      "to": "flight",
+      "kind": "contains",
+      "description": "pub mod flight."
+    },
+    {
+      "from": "capabilities",
+      "to": "market",
+      "kind": "contains",
+      "description": "pub mod market."
+    },
+    {
+      "from": "capabilities",
+      "to": "pilot",
+      "kind": "contains",
+      "description": "pub mod pilot."
+    },
+    {
+      "from": "capabilities",
+      "to": "random",
+      "kind": "contains",
+      "description": "pub mod random."
+    },
+    {
+      "from": "capabilities",
+      "to": "ships",
+      "kind": "contains",
+      "description": "pub mod ships."
+    },
+    {
+      "from": "capabilities",
+      "to": "space",
+      "kind": "contains",
+      "description": "pub mod space."
+    },
+    {
+      "from": "capabilities",
+      "to": "universe",
+      "kind": "contains",
+      "description": "pub mod universe."
+    },
+    {
+      "from": "ai",
+      "to": "bubble",
+      "kind": "depends-on",
+      "description": "Thinks over the bubble's objects and adds launched ones."
+    },
+    {
+      "from": "ai",
+      "to": "cockpit",
+      "kind": "depends-on",
+      "description": "Starts the E.C.M. pulse and shows the incoming-missile message."
+    },
+    {
+      "from": "ai",
+      "to": "random",
+      "kind": "depends-on",
+      "description": "Every decision draws from the main generator."
+    },
+    {
+      "from": "ai",
+      "to": "ships",
+      "kind": "depends-on",
+      "description": "Reads type numbers and stats."
+    },
+    {
+      "from": "ai",
+      "to": "space",
+      "kind": "depends-on",
+      "description": "Vectors and distance tests."
+    },
+    {
+      "from": "bubble",
+      "to": "ships",
+      "kind": "depends-on",
+      "description": "Objects carry a type number; counts are per type."
+    },
+    {
+      "from": "bubble",
+      "to": "space",
+      "kind": "depends-on",
+      "description": "Objects carry positions and orientation vectors."
+    },
+    {
+      "from": "cockpit",
+      "to": "flight",
+      "kind": "depends-on",
+      "description": "Holds the Attitude and resets speed to RESET_SPEED."
+    },
+    {
+      "from": "cockpit",
+      "to": "pilot",
+      "kind": "depends-on",
+      "description": "The active mount is a pilot Mount."
+    },
+    {
+      "from": "cockpit",
+      "to": "random",
+      "kind": "depends-on",
+      "description": "A reset discards the 54 stardust draws."
+    },
+    {
+      "from": "combat",
+      "to": "ai",
+      "kind": "depends-on",
+      "description": "Runs each think and applies the Thought; anger and missile retargeting."
+    },
+    {
+      "from": "combat",
+      "to": "bubble",
+      "kind": "depends-on",
+      "description": "Steps over the bubble's slots."
+    },
+    {
+      "from": "combat",
+      "to": "cockpit",
+      "kind": "depends-on",
+      "description": "Shields, energy, heat, the lock and the timers."
+    },
+    {
+      "from": "combat",
+      "to": "flight",
+      "kind": "depends-on",
+      "description": "The speed a failed slow docking leaves (FAILED_DOCKING_SPEED)."
+    },
+    {
+      "from": "combat",
+      "to": "market",
+      "kind": "depends-on",
+      "description": "Scooping a canister, and cargo lost to damage."
+    },
+    {
+      "from": "combat",
+      "to": "pilot",
+      "kind": "depends-on",
+      "description": "Cash, kills, legal status, missiles and equipment."
+    },
+    {
+      "from": "combat",
+      "to": "random",
+      "kind": "depends-on",
+      "description": "Explosion seeds, damage rolls, laser jitter."
+    },
+    {
+      "from": "combat",
+      "to": "ships",
+      "kind": "depends-on",
+      "description": "Bounties, hit sizes and energies."
+    },
+    {
+      "from": "combat",
+      "to": "space",
+      "kind": "depends-on",
+      "description": "The sights test and collision distances."
+    },
+    {
+      "from": "equipment",
+      "to": "pilot",
+      "kind": "depends-on",
+      "description": "Takes cash and changes what the pilot has fitted."
+    },
+    {
+      "from": "flight",
+      "to": "bubble",
+      "kind": "depends-on",
+      "description": "Moves every object in the bubble."
+    },
+    {
+      "from": "flight",
+      "to": "ships",
+      "kind": "depends-on",
+      "description": "Planets and the sun turn differently from ships."
+    },
+    {
+      "from": "flight",
+      "to": "space",
+      "kind": "depends-on",
+      "description": "Vector maths and sign-magnitude counters."
+    },
+    {
+      "from": "market",
+      "to": "pilot",
+      "kind": "depends-on",
+      "description": "Stores the market byte and availability; reads and changes the cargo."
+    },
+    {
+      "from": "market",
+      "to": "random",
+      "kind": "depends-on",
+      "description": "Draws the market byte and a canister's contents."
+    },
+    {
+      "from": "universe",
+      "to": "ships",
+      "kind": "depends-on",
+      "description": "A system's planet type."
+    },
+    {
+      "from": "universe",
+      "to": "space",
+      "kind": "depends-on",
+      "description": "A system's planet and sun positions."
+    }
+  ]
+}

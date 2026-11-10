@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "Space scene configuration",
+  "folder": "games/lodestar/src/presentation/space",
+  "entities": [
+    {
+      "id": "yaw",
+      "title": "Camera yaw",
+      "summary": "Places the orbit camera at a yaw, in degrees, for a screenshot.",
+      "key": "--yaw=<degrees>",
+      "type": "number",
+      "default": "the default orbit",
+      "sensitive": false,
+      "scope": "per run",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/space/orbit_camera.gd",
+          "symbol": "--yaw="
+        }
+      ]
+    },
+    {
+      "id": "zoom",
+      "title": "Camera zoom",
+      "summary": "The orbit camera's zoom in ship lengths, clamped to MIN_ZOOM..MAX_ZOOM.",
+      "key": "--zoom=<n>",
+      "type": "number",
+      "default": "the default zoom",
+      "sensitive": false,
+      "scope": "per run",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/space/orbit_camera.gd",
+          "symbol": "--zoom="
+        }
+      ]
+    }
+  ]
+}

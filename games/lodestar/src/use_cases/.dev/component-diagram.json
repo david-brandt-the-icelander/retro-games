@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Use cases component diagram",
+  "folder": "games/lodestar/src/use_cases",
+  "description": "The use-case layer: one use case, flying in a system, which owns the tick and calls the features and capabilities.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/use_cases/mod.rs",
+      "symbol": "fly_in_system"
+    },
+    {
+      "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+      "symbol": "FlyInSystem"
+    }
+  ],
+  "components": [
+    {
+      "id": "use-cases",
+      "name": "Use cases",
+      "responsibility": "lodestar-core's outermost layer.",
+      "folder": "games/lodestar/src/use_cases"
+    },
+    {
+      "id": "fly-in-system",
+      "name": "fly_in_system",
+      "responsibility": "The game from the title to the end: the 12 Hz tick, the modes and the flight tick's order.",
+      "folder": "games/lodestar/src/use_cases/fly_in_system"
+    },
+    {
+      "id": "features",
+      "name": "Features",
+      "responsibility": "The behaviours the tick calls.",
+      "folder": "games/lodestar/src/features",
+      "diagram": "games/lodestar/src/features/.dev/component-diagram.json"
+    },
+    {
+      "id": "capabilities",
+      "name": "Capabilities",
+      "responsibility": "The state and rules the tick keeps and calls.",
+      "folder": "games/lodestar/src/capabilities",
+      "diagram": "games/lodestar/src/capabilities/.dev/component-diagram.json"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "use-cases",
+      "to": "fly-in-system",
+      "kind": "contains",
+      "description": "pub mod fly_in_system."
+    },
+    {
+      "from": "fly-in-system",
+      "to": "features",
+      "kind": "depends-on",
+      "description": "All ten features, each at its step of RULES' order."
+    },
+    {
+      "from": "fly-in-system",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Keeps the cockpit, the bubble and the main generator; calls combat, flight, equipment and the market."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Bridge backlog",
+  "folder": "games/lodestar/src/presentation/bridge",
+  "entities": [
+    {
+      "id": "interpolate-after-shift",
+      "title": "Interpolate an object that moved down a slot from its own pose",
+      "summary": "When an object leaves the bubble, the objects after it shift down a slot, and the next frame interpolates each from the pose of the object that was in its new slot.",
+      "type": "defect",
+      "expected": "An object that moved down a slot is drawn between its own previous and current positions.",
+      "actual": "SimHost keeps the previous poses by slot; a shifted object of the same kind as the slot's previous occupant is interpolated from that other object's position and orientation for one tick.",
+      "acceptanceCriteria": [
+        "After a removal, every remaining object is interpolated from its own previous pose"
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/src/presentation/bridge/bridge.md",
+        "description": "The ⚠️ in bridge.md § What the scenes read."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::objects"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::run_tick"
+        }
+      ]
+    }
+  ]
+}

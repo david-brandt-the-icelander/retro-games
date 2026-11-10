@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Planet and sun",
+  "folder": "games/lodestar/src/features/planet_and_sun",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Planet and sun",
+      "summary": "Placing the two bodies on arrival, the altitude check and crashing, the sun's heat and fuel scooping.",
+      "purpose": "Places the planet and the sun (RULES B.10.1) and runs the altitude and sun checks the flight tick makes every 32 ticks (B.14, B.15.1, B.15.2).",
+      "boundaries": [
+        "A feature: it uses capabilities and other features, never a use case (tests/layers.rs).",
+        "It does not scoop objects; that is combat's contact step."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "place_on_arrival"
+        },
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/mod.rs",
+          "symbol": "planet_and_sun_checks"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/features/planet_and_sun/planet_and_sun.md",
+          "label": "Planet and sun (feature document)"
+        }
+      ]
+    }
+  ]
+}

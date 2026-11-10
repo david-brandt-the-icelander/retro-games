@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Presentation",
+  "folder": "games/lodestar/src/presentation",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Presentation",
+      "summary": "Everything the pilot sees and presses: the bridge crate and the Godot scenes and scripts.",
+      "purpose": "Groups the outermost layer: bridge/ (lodestar-bridge, the Rust classes GDScript calls), game/ (the main scene and its keys), space/ (the 3D picture and camera), ships/ (the ship rig), hud/, ui/ (the panels) and text/ (every word).",
+      "boundaries": [
+        "Scenes reach the sim only through SimHost; they read snapshots and events and never write the sim's state."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/project.godot",
+          "symbol": "run/main_scene"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/lib.rs",
+          "symbol": "SimHost"
+        }
+      ]
+    }
+  ]
+}

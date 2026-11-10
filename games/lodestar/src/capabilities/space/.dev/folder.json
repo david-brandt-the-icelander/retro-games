@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Space",
+  "folder": "games/lodestar/src/capabilities/space",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Space",
+      "summary": "Vectors in sim units, the coarse, fine and far tests, and sign-magnitude turn counters.",
+      "purpose": "Declares Vec3 and SignMagnitude and the distance tests the rules use (RULES B.1, B.7.1, C.1).",
+      "boundaries": [
+        "A capability: it uses no feature or use case (tests/layers.rs)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/space/mod.rs",
+          "symbol": "Vec3"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/space/mod.rs",
+          "symbol": "SignMagnitude"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Saving decisions",
+  "folder": "games/lodestar/src/features/saving",
+  "entities": [
+    {
+      "id": "own-record-format",
+      "title": "A record in LodeStar's own format",
+      "summary": "Saves are LodeStar text records with the baseline's accept and reject behaviour, not the baseline's files.",
+      "status": "accepted",
+      "context": "The baseline's record format is the original's; only its accept and reject behaviour matters to play.",
+      "decision": "A text record with a version header, one line per field and a CRC-32 check over the canonical text (RULES A.8.4 allows any check with the same effect).",
+      "rationale": "Readable and safe to import, and nothing of the original's format is copied (deliberate difference 11).",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "encode"
+        },
+        {
+          "path": "games/lodestar/src/features/saving/record.rs",
+          "symbol": "decode_over"
+        }
+      ]
+    }
+  ]
+}

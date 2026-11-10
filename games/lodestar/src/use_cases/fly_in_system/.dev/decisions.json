@@ -1,0 +1,48 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Fly-in-a-system decisions",
+  "folder": "games/lodestar/src/use_cases/fly_in_system",
+  "entities": [
+    {
+      "id": "countdown-on-pod-launch-tick",
+      "title": "What a countdown does on the tick an escape pod launches",
+      "summary": "The baseline would still run the countdown on that tick; RULES does not say what then happens. LodeStar runs it only in Flight and Death modes.",
+      "status": "open",
+      "context": "Step 11 of the flight tick runs the countdown. Launching the pod switches to Escape mode earlier in the same tick, so FlyInSystem skips the countdown that tick, and from then on Escape mode never runs the flight tick. fly_in_system.md marks this ⚠️, and no test covers it.",
+      "options": [
+        {
+          "title": "Keep LodeStar's behaviour",
+          "consequences": "A countdown that would end on the pod's tick never jumps; RULES records it as a deliberate difference."
+        },
+        {
+          "title": "Follow the baseline",
+          "consequences": "The spec-and-verify role first finds what the baseline then does, RULES says so, and the tick runs the countdown on the pod's tick."
+        }
+      ],
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/src/use_cases/fly_in_system/fly_in_system.md",
+        "description": "The ⚠️ in Fly in a system § The flight tick."
+      },
+      "waitingOn": "The owner, with the spec-and-verify role (the only role that reads the baseline)",
+      "blocks": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/fly_in_system.md",
+          "description": "The ⚠️ in § The flight tick, and a test of the edge case."
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::flight_logic"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/fly_in_system.md",
+          "symbol": "The flight tick"
+        }
+      ]
+    }
+  ]
+}

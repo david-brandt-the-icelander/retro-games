@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Equipment",
+  "folder": "games/lodestar/src/capabilities/equipment",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Equipment",
+      "summary": "The twelve items a station sells, by tech level, their prices and what buying each does.",
+      "purpose": "Owns the equipment shop of RULES A.12: the items in their fixed order, which a system offers by tech level, prices, and the effect of buying each one, as the list-based panel calls it (deliberate difference 12); also the escape-pod rescue, sun-fuel scooping and the energy recharge rate the fitted items set.",
+      "boundaries": [
+        "A capability: it uses no feature or use case (tests/layers.rs).",
+        "Names and prices are the GDD's (§ 4.8, § 5.3)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "buy_offered"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "Item"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/capabilities/equipment/equipment.md",
+          "label": "Equipment (knowledge document)"
+        }
+      ]
+    }
+  ]
+}

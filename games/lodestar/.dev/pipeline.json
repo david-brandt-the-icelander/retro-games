@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/pipeline.schema.json",
+  "kind": "pipeline",
+  "title": "LodeStar pipeline",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "pull-request",
+      "title": "On a pull request",
+      "summary": "Only the repository-wide diagram check runs; LodeStar itself is not built or tested in CI.",
+      "trigger": "A pull request (ci.yml).",
+      "checks": [
+        "python3 Meta/Agents/Skills/validate_diagrams.py, for the whole repository"
+      ],
+      "blocks": "merge, when the check fails",
+      "notChecked": [
+        "cargo test: changed-games.sh lists only games with a package.json, so the game job never runs for LodeStar",
+        "The Godot import, the smoke test and the exports",
+        "The knowledge files: Meta/Agents/Knowledge/validate_knowledge.py is not run in CI"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/scripts/changed-games.sh",
+          "symbol": "package.json"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lodestar/src/hosting/godot/.dev/blockers.json",
+          "entityId": "ci-for-lodestar"
+        }
+      ]
+    },
+    {
+      "id": "main",
+      "title": "On a merge to main",
+      "summary": "Nothing: the Deploy workflow neither builds nor deploys LodeStar.",
+      "trigger": "A push to main (deploy.yml).",
+      "checks": [
+        "None for LodeStar"
+      ],
+      "notChecked": [
+        "Everything; LodeStar is not among deploy.yml's games"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "options"
+        }
+      ]
+    }
+  ]
+}

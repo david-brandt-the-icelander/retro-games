@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How ships is checked",
+  "folder": "games/lodestar/src/capabilities/ships",
+  "entities": [
+    {
+      "id": "ships",
+      "title": "Ship types and their stats",
+      "summary": "The 1 tests in src/capabilities/ships/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/ships/.dev/folder.json",
+          "entityId": "folder"
+        }
+      ],
+      "criteria": [
+        "Relationships the rules rely on"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ships/mod.rs",
+          "symbol": "relationships_the_rules_rely_on",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

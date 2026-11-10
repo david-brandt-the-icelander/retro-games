@@ -11,7 +11,7 @@
     },
     {
       "path": "games/lodestar/src/lib.rs",
-      "symbol": "lodestar_core"
+      "symbol": "use_cases"
     },
     {
       "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
@@ -31,7 +31,7 @@
     },
     {
       "path": "games/lodestar/src/features/mod.rs",
-      "symbol": "features"
+      "symbol": "hyperspace"
     },
     {
       "path": "games/lodestar/src/capabilities/mod.rs",
@@ -40,6 +40,10 @@
     {
       "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
       "symbol": "PilotFiles"
+    },
+    {
+      "path": "games/lodestar/Cargo.toml",
+      "symbol": "package"
     }
   ],
   "components": [
@@ -50,22 +54,32 @@
       "folder": "games/lodestar"
     },
     {
+      "id": "core",
+      "name": "lodestar-core",
+      "responsibility": "The rules as one crate with no engine dependency: use cases, features and capabilities (src/lib.rs).",
+      "folder": "games/lodestar/src",
+      "diagram": "games/lodestar/src/.dev/component-diagram.json"
+    },
+    {
       "id": "capabilities",
       "name": "Capabilities",
       "responsibility": "Reusable rules with no outward dependencies: random generators, space maths, ships, the bubble, the pilot, the cockpit (the player's in-flight state), the universe, the market, equipment, flight, combat and the ship AI.",
-      "folder": "games/lodestar/src/capabilities"
+      "folder": "games/lodestar/src/capabilities",
+      "diagram": "games/lodestar/src/capabilities/.dev/component-diagram.json"
     },
     {
       "id": "features",
       "name": "Features",
       "responsibility": "Behaviours built from capabilities: hyperspace, spawning, the station, docking, the planet and sun, the in-system jump, the escape pod, death, saving and loading the pilot, and trading at the market panel.",
-      "folder": "games/lodestar/src/features"
+      "folder": "games/lodestar/src/features",
+      "diagram": "games/lodestar/src/features/.dev/component-diagram.json"
     },
     {
       "id": "use-cases",
       "name": "Use cases",
       "responsibility": "A pilot's goals; so far flying in a system, which owns the 12 Hz tick.",
-      "folder": "games/lodestar/src/use_cases"
+      "folder": "games/lodestar/src/use_cases",
+      "diagram": "games/lodestar/src/use_cases/.dev/component-diagram.json"
     },
     {
       "id": "infrastructure",
@@ -102,27 +116,33 @@
   "relationships": [
     {
       "from": "game",
+      "to": "core",
+      "kind": "contains",
+      "description": "The workspace's root package (Cargo.toml [package])."
+    },
+    {
+      "from": "game",
       "to": "infrastructure",
       "kind": "contains",
       "description": "A workspace member crate."
     },
     {
-      "from": "game",
+      "from": "core",
       "to": "capabilities",
       "kind": "contains",
-      "description": "Part of the lodestar-core crate (src/lib.rs)."
+      "description": "A module of lodestar-core (src/lib.rs)."
     },
     {
-      "from": "game",
+      "from": "core",
       "to": "use-cases",
       "kind": "contains",
-      "description": "Part of the lodestar-core crate (src/lib.rs)."
+      "description": "A module of lodestar-core (src/lib.rs)."
     },
     {
-      "from": "game",
+      "from": "core",
       "to": "features",
       "kind": "contains",
-      "description": "Part of the lodestar-core crate (src/lib.rs)."
+      "description": "A module of lodestar-core (src/lib.rs)."
     },
     {
       "from": "game",
@@ -146,7 +166,7 @@
       "from": "use-cases",
       "to": "capabilities",
       "kind": "depends-on",
-      "description": "FlyInSystem owns a MainGenerator."
+      "description": "FlyInSystem keeps the cockpit, the bubble and the main generator, and calls combat and flight in the slot loop."
     },
     {
       "from": "bridge",
@@ -182,7 +202,7 @@
       "from": "features",
       "to": "capabilities",
       "kind": "depends-on",
-      "description": "Trading uses the market and the pilot; saving uses the pilot."
+      "description": "Every feature is built from capabilities: the bubble, the cockpit, the pilot, the universe, the market and the rest."
     },
     {
       "from": "infrastructure",
@@ -195,6 +215,24 @@
       "to": "infrastructure",
       "kind": "depends-on",
       "description": "SimHost saves and loads pilots through PilotFiles under user://pilots."
+    },
+    {
+      "from": "use-cases",
+      "to": "features",
+      "kind": "depends-on",
+      "description": "FlyInSystem calls every feature: docking, the station, hyperspace, spawning, death, the escape pod, saving, trading and the rest."
+    },
+    {
+      "from": "bridge",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "The readouts (views.rs) read the cockpit, the pilot, the bubble, the universe, the market and equipment."
+    },
+    {
+      "from": "bridge",
+      "to": "features",
+      "kind": "depends-on",
+      "description": "The readouts read hyperspace's navigation and countdown, trading's limits and death's cause; saving's outcomes are mapped to strings."
     }
   ]
 }

@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How cockpit is checked",
+  "folder": "games/lodestar/src/capabilities/cockpit",
+  "entities": [
+    {
+      "id": "cockpit",
+      "title": "The cockpit",
+      "summary": "The 7 tests in src/capabilities/cockpit/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/.dev/capability.json",
+          "entityId": "cockpit"
+        }
+      ],
+      "criteria": [
+        "A reset sets the rules values and keeps the mount",
+        "Energy drains to a floor of one",
+        "Recharge feeds the aft shield first",
+        "The counter wraps and says when it reaches zero",
+        "Messages last twenty two ticks",
+        "Ecm restarts without changing the player flag",
+        "A lock follows removals"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "a_reset_sets_the_rules_values_and_keeps_the_mount",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "energy_drains_to_a_floor_of_one",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "recharge_feeds_the_aft_shield_first",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "the_counter_wraps_and_says_when_it_reaches_zero",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "messages_last_twenty_two_ticks",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "ecm_restarts_without_changing_the_player_flag",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "a_lock_follows_removals",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

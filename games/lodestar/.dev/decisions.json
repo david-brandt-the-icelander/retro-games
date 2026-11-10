@@ -1,0 +1,166 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "LodeStar decisions",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "rust-sim-godot-picture",
+      "title": "The sim in Rust, the picture in Godot 4",
+      "summary": "A pure, deterministic Rust sim at 12 Hz with no engine dependency, presented by Godot 4 through godot-rust.",
+      "status": "accepted",
+      "context": "The mechanics must stay retro and provable by replay while the art is modern.",
+      "decision": "lodestar-core holds the rules with no Godot dependency; lodestar-bridge and lodestar-godot present it through gdext; scenes and scripts are GDScript.",
+      "rationale": "Rust for the rules, Godot for the picture; the same crates run headless in tests, in parity replays and later in a server.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/Cargo.toml",
+          "symbol": "workspace"
+        },
+        {
+          "path": "games/lodestar/src/lib.rs",
+          "symbol": "use_cases"
+        },
+        {
+          "path": "games/lodestar/src/hosting/godot/src/lib.rs",
+          "symbol": "LodeStarExtension"
+        }
+      ]
+    },
+    {
+      "id": "desktop-only",
+      "title": "Desktop only",
+      "summary": "Windows, macOS and Linux; the web build is out of scope.",
+      "status": "accepted",
+      "context": "godot-rust in Godot's web export is still experimental.",
+      "decision": "Native desktop exports only; keyboard and mouse.",
+      "rationale": "Desktop removes the sign-in gate, file-size limits and browser-owned keys.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/export_presets.cfg",
+          "symbol": "preset.0"
+        },
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Desktop build"
+        }
+      ]
+    },
+    {
+      "id": "hybrid",
+      "title": "Hybrid: one sim for single-player and a later server",
+      "summary": "Single-player embeds the sim; a later multiplayer server runs the same crate as the authority.",
+      "status": "accepted",
+      "context": "Multiplayer may come later and must not drift from the client's rules.",
+      "decision": "Nothing in the single-player design may assume the sim lives in the same process as the picture: the presentation reads snapshots and events only.",
+      "rationale": "One set of rules, so a server never drifts from the client.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost"
+        },
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Architecture"
+        }
+      ]
+    },
+    {
+      "id": "layered-source",
+      "title": "Source layered after the diagrams essay",
+      "summary": "Use cases → features → capabilities in Rust, with infrastructure, presentation and hosting around them, and .dev views beside the code.",
+      "status": "accepted",
+      "context": "Agents find their way by the folders.",
+      "decision": "The layout of DESIGN § Project layout, enforced by the crate graph and tests/layers.rs.",
+      "rationale": "The diagrams stay true and the dependencies point inward.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/tests/layers.rs",
+          "symbol": "violations"
+        },
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Project layout"
+        }
+      ]
+    },
+    {
+      "id": "third-person-camera",
+      "title": "You always see your ship",
+      "summary": "An EVE-style orbit camera, space-anchored by default, zoom 1.5× to 5× the ship's length.",
+      "status": "accepted",
+      "context": "The original shows the view from the cockpit; LodeStar's art shows the ship.",
+      "decision": "The one deliberate change to how the game plays; the four mounts stay and the pilot picks the active one.",
+      "rationale": "The owner's choice; the rules and scanner stay as they are and play-testing decides any retune.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/space/orbit_camera.gd",
+          "symbol": "MIN_ZOOM"
+        }
+      ]
+    },
+    {
+      "id": "clean-room-roles",
+      "title": "Clean-room roles",
+      "summary": "Implementers read only docs/ and the documents beside the code; only the spec-and-verify role reads the baseline.",
+      "status": "accepted",
+      "context": "The repository is public and the remake must not copy the original or the private faithful clone.",
+      "decision": "RULES is written from the baseline in LodeStar's own words; the code is written from RULES; parity is proven with data-swapped traces.",
+      "rationale": "Nothing of the original's data or expression enters the repository.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Starting point: a clean room from the private recreation"
+        }
+      ]
+    }
+  ]
+}

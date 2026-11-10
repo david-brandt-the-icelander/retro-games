@@ -1,0 +1,405 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How universe is checked",
+  "folder": "games/lodestar/src/capabilities/universe",
+  "entities": [
+    {
+      "id": "chart",
+      "title": "The charts' behaviour as pure functions",
+      "summary": "The 11 tests in src/capabilities/universe/chart.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/universe/.dev/capability.json",
+          "entityId": "universe"
+        }
+      ],
+      "criteria": [
+        "Taps move one unit with up negative",
+        "Taps stop at the galaxy edges",
+        "Held arrows repeat only docked on even ticks",
+        "Opposite held arrows cancel and edges hold each axis alone",
+        "Home puts the cursor on the pilot and select snaps it",
+        "Galaxy chart halves y and quarters the fuel",
+        "Local chart window and scale",
+        "Local cursor cross window is lopsided",
+        "Labels take their row then below then above",
+        "A free row above row 3 hides the system",
+        "Home galaxy local chart shows home with a label"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/chart.rs",
+          "symbol": "taps_move_one_unit_with_up_negative",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/chart.rs",
+          "symbol": "taps_stop_at_the_galaxy_edges",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/chart.rs",
+          "symbol": "held_arrows_repeat_only_docked_on_even_ticks",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/chart.rs",
+          "symbol": "opposite_held_arrows_cancel_and_edges_hold_each_axis_alone",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/chart.rs",
+          "symbol": "home_puts_the_cursor_on_the_pilot_and_select_snaps_it",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/chart.rs",
+          "symbol": "galaxy_chart_halves_y_and_quarters_the_fuel",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/chart.rs",
+          "symbol": "local_chart_window_and_scale",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/chart.rs",
+          "symbol": "local_cursor_cross_window_is_lopsided",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/chart.rs",
+          "symbol": "labels_take_their_row_then_below_then_above",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/chart.rs",
+          "symbol": "a_free_row_above_row_3_hides_the_system",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/chart.rs",
+          "symbol": "home_galaxy_local_chart_shows_home_with_a_label",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "galaxy",
+      "title": "Generator states, galaxies and the order of their systems, and the nearest-system search",
+      "summary": "The 11 tests in src/capabilities/universe/galaxy.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/universe/.dev/capability.json",
+          "entityId": "universe"
+        }
+      ],
+      "criteria": [
+        "Bytes are low then high of each word",
+        "Advance step shifts and sums with carry between bytes",
+        "Next system is four advance steps",
+        "Seeds iterate 256 systems matching seed of",
+        "Rotation keeps bits inside each byte",
+        "Every reach start state matches the gdd vectors",
+        "First reach is the pilots start galaxy",
+        "Nearest finds a system exactly and by the cheap metric",
+        "Nearest ties go to the lower number",
+        "Nearest falls back to system 0 when nothing is under the bound",
+        "Gdd generator properties hold in every reach"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "bytes_are_low_then_high_of_each_word",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "advance_step_shifts_and_sums_with_carry_between_bytes",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "next_system_is_four_advance_steps",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "seeds_iterate_256_systems_matching_seed_of",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "rotation_keeps_bits_inside_each_byte",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "every_reach_start_state_matches_the_gdd_vectors",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "first_reach_is_the_pilots_start_galaxy",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "nearest_finds_a_system_exactly_and_by_the_cheap_metric",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "nearest_ties_go_to_the_lower_number",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "nearest_falls_back_to_system_0_when_nothing_is_under_the_bound",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "gdd_generator_properties_hold_in_every_reach",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "names",
+      "title": "Names, inhabitants and display labels",
+      "summary": "The 9 tests in src/capabilities/universe/names.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/universe/.dev/capability.json",
+          "entityId": "universe"
+        }
+      ],
+      "criteria": [
+        "Three syllables when bit 6 of b0 is clear",
+        "Four syllables when bit 6 of b0 is set",
+        "Entry 0 prints nothing but still advances",
+        "System names near home follow from the table",
+        "Default settlers when bit 7 of b4 is clear",
+        "Inhabitant words by hand",
+        "All four words and the creature index wraps",
+        "Longest inhabitant phrase fits the gdd budget",
+        "Labels come from the gdd"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/names.rs",
+          "symbol": "three_syllables_when_bit_6_of_b0_is_clear",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/names.rs",
+          "symbol": "four_syllables_when_bit_6_of_b0_is_set",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/names.rs",
+          "symbol": "entry_0_prints_nothing_but_still_advances",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/names.rs",
+          "symbol": "system_names_near_home_follow_from_the_table",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/names.rs",
+          "symbol": "default_settlers_when_bit_7_of_b4_is_clear",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/names.rs",
+          "symbol": "inhabitant_words_by_hand",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/names.rs",
+          "symbol": "all_four_words_and_the_creature_index_wraps",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/names.rs",
+          "symbol": "longest_inhabitant_phrase_fits_the_gdd_budget",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/names.rs",
+          "symbol": "labels_come_from_the_gdd",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "navigation",
+      "title": "Distance, fuel range and the pure parts of choosing and reaching a destination",
+      "summary": "The 8 tests in src/capabilities/universe/navigation.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/universe/.dev/capability.json",
+          "entityId": "universe"
+        }
+      ],
+      "criteria": [
+        "Distance halves the vertical axis and steps by 4",
+        "Distance wraps the sum of squares at 16 bits",
+        "Range needs a positive distance within the fuel",
+        "Jumps use the distance and never go below zero",
+        "Ten systems lie within a full tank of home",
+        "Selecting snaps to the nearest system and measures from the pilot",
+        "Reach jump lands nearest 96 96 in the next galaxy",
+        "Misjumps take 253 and above and flip the low 5 bits of y"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "distance_halves_the_vertical_axis_and_steps_by_4",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "distance_wraps_the_sum_of_squares_at_16_bits",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "range_needs_a_positive_distance_within_the_fuel",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "jumps_use_the_distance_and_never_go_below_zero",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "ten_systems_lie_within_a_full_tank_of_home",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "selecting_snaps_to_the_nearest_system_and_measures_from_the_pilot",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "reach_jump_lands_nearest_96_96_in_the_next_galaxy",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "misjumps_take_253_and_above_and_flip_the_low_5_bits_of_y",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "system",
+      "title": "One system's properties, worked out from its six bytes",
+      "summary": "The 7 tests in src/capabilities/universe/system.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/universe/.dev/capability.json",
+          "entityId": "universe"
+        }
+      ],
+      "criteria": [
+        "Starting system matches the gdd",
+        "Properties of systems 1 and 2 by hand",
+        "Governments 0 and 1 force bit 1 of the economy",
+        "Property ranges hold over every input",
+        "Chart marks follow b4 and b5",
+        "Planet style follows bit 1 of the tech level",
+        "Arrival places planet and sun from the bytes"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/system.rs",
+          "symbol": "starting_system_matches_the_gdd",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/system.rs",
+          "symbol": "properties_of_systems_1_and_2_by_hand",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/system.rs",
+          "symbol": "governments_0_and_1_force_bit_1_of_the_economy",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/system.rs",
+          "symbol": "property_ranges_hold_over_every_input",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/system.rs",
+          "symbol": "chart_marks_follow_b4_and_b5",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/system.rs",
+          "symbol": "planet_style_follows_bit_1_of_the_tech_level",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/universe/system.rs",
+          "symbol": "arrival_places_planet_and_sun_from_the_bytes",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

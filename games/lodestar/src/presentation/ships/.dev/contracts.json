@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Ship rig contracts",
+  "folder": "games/lodestar/src/presentation/ships",
+  "entities": [
+    {
+      "id": "rig-contract",
+      "title": "The rig contract",
+      "summary": "What every ship GLB must hold for the import script and the ship script.",
+      "contractType": "data-format",
+      "consumers": [
+        "ship_import.gd and ship.gd",
+        "The scripted Blender pipeline that makes the models, outside this repository"
+      ],
+      "guarantees": [
+        "Moving parts are separate nodes with glTF extras: kind (turret, door, missile, brake …) and their axis, amount and sign",
+        "The import copies each extra to node metadata rig_<key>; ship.gd groups parts by rig_kind",
+        "Forward is +X in the GLB; the import turns it to Godot's −Z",
+        "Textures on the second UV set are moved to the first unless the root's textures_on_uv2 extra is false"
+      ],
+      "compatibility": "DESIGN § Rig contract adds marker empties (muzzle, exhaust, beacon, launch, mount) that the scripts do not read yet.",
+      "definition": "games/lodestar/docs/DESIGN.md",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/ships/ship_import.gd",
+          "symbol": "_post_import"
+        },
+        {
+          "path": "games/lodestar/src/presentation/ships/ship.gd",
+          "symbol": "rig_kind"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Features",
+  "folder": "games/lodestar/src/features",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Features",
+      "summary": "Behaviours built from capabilities, each with its feature document beside the code.",
+      "purpose": "Groups lodestar-core's middle layer: death, docking, the escape pod, hyperspace, the in-system jump, the planet and sun, saving, spawning, the station and trading. The fly-in-a-system use case calls them in RULES' order.",
+      "boundaries": [
+        "A feature never uses a use case (tests/layers.rs); features may use one another and the capabilities."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/mod.rs",
+          "symbol": "hyperspace"
+        },
+        {
+          "path": "games/lodestar/src/features/mod.rs",
+          "symbol": "trading"
+        }
+      ]
+    }
+  ]
+}

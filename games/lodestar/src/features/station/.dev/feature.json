@@ -1,0 +1,103 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Station",
+  "folder": "games/lodestar/src/features/station",
+  "description": "The station and its safe zone. The feature document, station.md, is the primary record.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/station/mod.rs",
+      "symbol": "station_appearance"
+    },
+    {
+      "path": "games/lodestar/src/features/station/mod.rs",
+      "symbol": "launch"
+    }
+  ],
+  "entities": [
+    {
+      "id": "launch",
+      "name": "Launch into the safe zone",
+      "description": "The pilot leaves the station with the planet ahead and the station behind.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/station/mod.rs",
+          "symbol": "launch"
+        }
+      ],
+      "behavior": "After the 16-step launch tunnel the flight state is reset, the planet is placed ahead and the station just behind the player, the speed is 12, the front mount is active and the contraband score is ORed into the legal status (RULES A.14 item 20).",
+      "outcome": "Every run starts in the station's protection.",
+      "constraints": [
+        "LAUNCH_PLANET and LAUNCH_STATION fix the scene."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/station/mod.rs",
+          "symbol": "launch"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/kills.rs",
+          "symbol": "on_launch"
+        }
+      ]
+    },
+    {
+      "id": "safe-zone",
+      "name": "The station and its safe zone",
+      "description": "Near the planet the station turns in orbit, and pirates calm down, rocks stop coming and the hop is refused.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/station/mod.rs",
+          "symbol": "station_appearance"
+        },
+        {
+          "path": "games/lodestar/src/features/station/mod.rs",
+          "symbol": "station_leaves"
+        },
+        {
+          "path": "games/lodestar/src/features/station/mod.rs",
+          "symbol": "too_far"
+        }
+      ],
+      "behavior": "On approach, checked every 32 ticks, the station appears STATION_ORBIT sim units out along the planet's nose, replacing the sun in slot 1, and the safe zone starts; flying far enough away removes it and the sun takes its slot back. Any other object too far away leaves the bubble.",
+      "outcome": "A refuge to dock at, found by flying towards the planet.",
+      "constraints": [
+        "The station is always in slot 1 (STATION_SLOT).",
+        "TOO_FAR_COARSE is the removal distance.",
+        "The station can never be destroyed."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/station/mod.rs",
+          "symbol": "station_appearance"
+        },
+        {
+          "path": "games/lodestar/src/features/station/mod.rs",
+          "symbol": "station_leaves"
+        },
+        {
+          "path": "games/lodestar/src/features/station/mod.rs",
+          "symbol": "too_far"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::process"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The pilot's goals that exercise it."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/docking",
+      "path": "games/lodestar/src/features/docking/.dev/feature.json",
+      "relationship": "Docking with the station."
+    }
+  ]
+}

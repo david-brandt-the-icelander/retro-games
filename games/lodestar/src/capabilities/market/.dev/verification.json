@@ -1,0 +1,149 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How market is checked",
+  "folder": "games/lodestar/src/capabilities/market",
+  "entities": [
+    {
+      "id": "market",
+      "title": "The market and the hold",
+      "summary": "The 18 tests in src/capabilities/market/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/market/.dev/capability.json",
+          "entityId": "market"
+        }
+      ],
+      "criteria": [
+        "Starting market matches the gdd list",
+        "Price worked examples",
+        "Price wraps both ways",
+        "Gradient magnitude is taken mod 32 and keeps its sign",
+        "Availability rules",
+        "The special item is never on sale",
+        "Gdd price and availability ranges",
+        "Units and names follow the gdd",
+        "Arrival stores the byte and rebuilds availability",
+        "Arrival draws exactly one byte",
+        "Hold space counts items 0 to 12 only",
+        "Room never goes negative",
+        "Hold free items have no ceiling",
+        "Gaining in flight honours hold space",
+        "A canister draws before the room check",
+        "A canister gives items 0 to 7",
+        "Losing a stack and emptying the hold",
+        "Contraband items match the pilot rule"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "starting_market_matches_the_gdd_list",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "price_worked_examples",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "price_wraps_both_ways",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "gradient_magnitude_is_taken_mod_32_and_keeps_its_sign",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "availability_rules",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "the_special_item_is_never_on_sale",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "gdd_price_and_availability_ranges",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "units_and_names_follow_the_gdd",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "arrival_stores_the_byte_and_rebuilds_availability",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "arrival_draws_exactly_one_byte",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "hold_space_counts_items_0_to_12_only",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "room_never_goes_negative",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "hold_free_items_have_no_ceiling",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "gaining_in_flight_honours_hold_space",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "a_canister_draws_before_the_room_check",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "a_canister_gives_items_0_to_7",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "losing_a_stack_and_emptying_the_hold",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "contraband_items_match_the_pilot_rule",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

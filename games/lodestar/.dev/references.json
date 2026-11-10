@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "LodeStar references",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "godot-rust",
+      "title": "godot-rust (gdext)",
+      "summary": "Rust bindings for Godot 4 through GDExtension.",
+      "relevance": "lodestar-bridge and lodestar-godot are built with the godot crate pinned in Cargo.toml; it is upgraded together with Godot.",
+      "url": "https://godot-rust.github.io/",
+      "sources": [
+        {
+          "path": "games/lodestar/Cargo.toml",
+          "symbol": "godot"
+        }
+      ]
+    },
+    {
+      "id": "godot",
+      "title": "Godot 4",
+      "summary": "The engine that runs the scenes and loads the library.",
+      "relevance": "project.godot, lodestar.gdextension (compatibility_minimum) and export_presets.cfg target it.",
+      "url": "https://godotengine.org/",
+      "sources": [
+        {
+          "path": "games/lodestar/lodestar.gdextension",
+          "symbol": "compatibility_minimum"
+        }
+      ]
+    },
+    {
+      "id": "knowledge-driven-development",
+      "title": "Knowledge-driven development",
+      "summary": "The status marks and rules for the documents beside the code.",
+      "relevance": "LodeStar's feature, use-case and component documents follow it, and tests/deferred_work.rs is its gate.",
+      "url": "https://github.com/david-brandt-the-icelander/knowledge-driven-development",
+      "sources": [
+        {
+          "path": "games/lodestar/tests/deferred_work.rs",
+          "symbol": "no_deferred_work_markers_or_folders"
+        }
+      ]
+    },
+    {
+      "id": "diagrams-essay",
+      "title": "A hundred and fifty diagrams before breakfast",
+      "summary": "The essay the layered layout follows.",
+      "relevance": "DESIGN § Project layout adapts its layers (use cases, features, capabilities, infrastructure, presentation, hosting).",
+      "url": "https://icelander.net/v1/processes/a-hundred-and-fifty-diagrams-before-breakfast",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Project layout"
+        }
+      ]
+    }
+  ]
+}

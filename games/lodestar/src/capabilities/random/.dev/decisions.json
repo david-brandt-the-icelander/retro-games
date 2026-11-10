@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Random decisions",
+  "folder": "games/lodestar/src/capabilities/random",
+  "entities": [
+    {
+      "id": "cosmetic-generator",
+      "title": "A separate cosmetic generator",
+      "summary": "The picture draws from its own generator; the main generator keeps the view-independent stardust draws as discarded draws.",
+      "status": "accepted",
+      "context": "The baseline drew some cosmetic numbers from the main generator, so the picture could change the rules' stream.",
+      "decision": "CosmeticGenerator serves the picture; MainGenerator keeps the 54 and 9 stardust draws, discarded (RULES 1, deliberate difference 3).",
+      "rationale": "Parity stays provable, and the picture can change without changing the game.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "CosmeticGenerator"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "RESET_DUST_DRAWS"
+        }
+      ]
+    }
+  ]
+}

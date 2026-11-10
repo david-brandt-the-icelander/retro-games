@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How space is checked",
+  "folder": "games/lodestar/src/capabilities/space",
+  "entities": [
+    {
+      "id": "space",
+      "title": "Space",
+      "summary": "The 3 tests in src/capabilities/space/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/space/.dev/class-diagram.json"
+        }
+      ],
+      "criteria": [
+        "Coarse fine and far",
+        "Sign magnitude decay",
+        "Cross is right handed and zero stays zero"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/space/mod.rs",
+          "symbol": "coarse_fine_and_far",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/space/mod.rs",
+          "symbol": "sign_magnitude_decay",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/space/mod.rs",
+          "symbol": "cross_is_right_handed_and_zero_stays_zero",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

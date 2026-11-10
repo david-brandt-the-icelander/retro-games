@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "lodestar-core component diagram",
+  "folder": "games/lodestar/src",
+  "description": "lodestar-core, the rules crate: three layers whose dependencies point inward (use cases → features → capabilities). The outer layers that use it (infrastructure, the bridge) are drawn in the game's component diagram.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/lib.rs",
+      "symbol": "use_cases"
+    },
+    {
+      "path": "games/lodestar/src/lib.rs",
+      "symbol": "features"
+    },
+    {
+      "path": "games/lodestar/src/lib.rs",
+      "symbol": "capabilities"
+    },
+    {
+      "path": "games/lodestar/tests/layers.rs",
+      "symbol": "violations"
+    }
+  ],
+  "components": [
+    {
+      "id": "core",
+      "name": "lodestar-core",
+      "responsibility": "The deterministic rules, with no engine dependency.",
+      "folder": "games/lodestar/src"
+    },
+    {
+      "id": "use-cases",
+      "name": "Use cases",
+      "responsibility": "Fly in a system: the 12 Hz tick and the modes.",
+      "folder": "games/lodestar/src/use_cases",
+      "diagram": "games/lodestar/src/use_cases/.dev/component-diagram.json"
+    },
+    {
+      "id": "features",
+      "name": "Features",
+      "responsibility": "Docking, the station, hyperspace, spawning, death, the escape pod, the planet and sun, the in-system jump, saving and trading.",
+      "folder": "games/lodestar/src/features",
+      "diagram": "games/lodestar/src/features/.dev/component-diagram.json"
+    },
+    {
+      "id": "capabilities",
+      "name": "Capabilities",
+      "responsibility": "Random generators, space, ships, the bubble, the pilot, the cockpit, the universe, the market, equipment, flight, combat and the ship AI.",
+      "folder": "games/lodestar/src/capabilities",
+      "diagram": "games/lodestar/src/capabilities/.dev/component-diagram.json"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "core",
+      "to": "use-cases",
+      "kind": "contains",
+      "description": "pub mod use_cases."
+    },
+    {
+      "from": "core",
+      "to": "features",
+      "kind": "contains",
+      "description": "pub mod features."
+    },
+    {
+      "from": "core",
+      "to": "capabilities",
+      "kind": "contains",
+      "description": "pub mod capabilities."
+    },
+    {
+      "from": "use-cases",
+      "to": "features",
+      "kind": "depends-on",
+      "description": "FlyInSystem calls every feature."
+    },
+    {
+      "from": "use-cases",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "FlyInSystem keeps the cockpit, the bubble and the main generator, and calls combat and flight."
+    },
+    {
+      "from": "features",
+      "to": "capabilities",
+      "kind": "depends-on",
+      "description": "Every feature is built from capabilities; tests/layers.rs forbids the reverse."
+    }
+  ]
+}

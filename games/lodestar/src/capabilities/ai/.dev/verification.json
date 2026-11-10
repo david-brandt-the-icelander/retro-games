@@ -1,0 +1,469 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How ai is checked",
+  "folder": "games/lodestar/src/capabilities/ai",
+  "entities": [
+    {
+      "id": "anger",
+      "title": "Becoming angry",
+      "summary": "The 5 tests in src/capabilities/ai/anger.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/ai/.dev/capability.json",
+          "entityId": "ship-ai"
+        }
+      ],
+      "criteria": [
+        "The station turns hostile and nothing more",
+        "A trader angers the station and itself",
+        "A passive ship stays passive but its trader role still counts",
+        "Light objects ignore it",
+        "A pirate wakes up without touching the station"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/anger.rs",
+          "symbol": "the_station_turns_hostile_and_nothing_more",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/anger.rs",
+          "symbol": "a_trader_angers_the_station_and_itself",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/anger.rs",
+          "symbol": "a_passive_ship_stays_passive_but_its_trader_role_still_counts",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/anger.rs",
+          "symbol": "light_objects_ignore_it",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/anger.rs",
+          "symbol": "a_pirate_wakes_up_without_touching_the_station",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "launch",
+      "title": "Launching a child ship",
+      "summary": "The 4 tests in src/capabilities/ai/launch.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/ai/.dev/capability.json",
+          "entityId": "ship-ai"
+        }
+      ],
+      "criteria": [
+        "A child copies its parent and takes its own type",
+        "A station child starts ahead of the station at speed 32",
+        "A canister draws its spin and speed",
+        "A full bubble refuses but the draw stays drawn"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/launch.rs",
+          "symbol": "a_child_copies_its_parent_and_takes_its_own_type",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/launch.rs",
+          "symbol": "a_station_child_starts_ahead_of_the_station_at_speed_32",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/launch.rs",
+          "symbol": "a_canister_draws_its_spin_and_speed",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/launch.rs",
+          "symbol": "a_full_bubble_refuses_but_the_draw_stays_drawn",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "missile",
+      "title": "The missile AI, and how missiles follow their targets when the bubble shifts",
+      "summary": "The 12 tests in src/capabilities/ai/missile.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/ai/.dev/capability.json",
+          "entityId": "ship-ai"
+        }
+      ],
+      "criteria": [
+        "An ecm pulse destroys any guided missile and counts a kill",
+        "A missile destroyed within one unit hurts the player",
+        "A hostile missile homes then hits for 250",
+        "Coarse wraps so a far hostile missile can look near",
+        "A missile whose target slot is empty goes unguided",
+        "Far from its target it draws every tick and steers",
+        "A target with ecm may fire it",
+        "Close to its target it kills it outright",
+        "An exploding target is not marked again",
+        "The station in slot one destroys the missile harmlessly",
+        "Removals retarget the players missiles only",
+        "The seed search reaches a branch"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "an_ecm_pulse_destroys_any_guided_missile_and_counts_a_kill",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "a_missile_destroyed_within_one_unit_hurts_the_player",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "a_hostile_missile_homes_then_hits_for_250",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "coarse_wraps_so_a_far_hostile_missile_can_look_near",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "a_missile_whose_target_slot_is_empty_goes_unguided",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "far_from_its_target_it_draws_every_tick_and_steers",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "a_target_with_ecm_may_fire_it",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "close_to_its_target_it_kills_it_outright",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "an_exploding_target_is_not_marked_again",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "the_station_in_slot_one_destroys_the_missile_harmlessly",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "removals_retarget_the_players_missiles_only",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "the_seed_search_reaches_a_branch",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "title": "The ship AI",
+      "summary": "The 4 tests in src/capabilities/ai/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/ai/.dev/capability.json",
+          "entityId": "ship-ai"
+        }
+      ],
+      "criteria": [
+        "Ai byte fields",
+        "Missiles think every tick and ships every eighth",
+        "An empty slot thinks nothing",
+        "The test seed helper gives the draw asked for"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/mod.rs",
+          "symbol": "ai_byte_fields",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/mod.rs",
+          "symbol": "missiles_think_every_tick_and_ships_every_eighth",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/mod.rs",
+          "symbol": "an_empty_slot_thinks_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/mod.rs",
+          "symbol": "the_test_seed_helper_gives_the_draw_asked_for",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "ship",
+      "title": "The AI of every thinking object that is not a missile",
+      "summary": "The 23 tests in src/capabilities/ai/ship.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/ai/.dev/capability.json",
+          "entityId": "ship-ai"
+        }
+      ],
+      "criteria": [
+        "An escape pod heads for the planet without changing speed",
+        "With no planet a pod heads along plus z",
+        "A hostile station launches police on a high byte",
+        "A hostile station stops at four police",
+        "A drone without a mothership drifts",
+        "A drone with a mothership fights like a ship",
+        "A healthy far ship draws roll then heading",
+        "A high roll byte draws a new roll",
+        "Pacification is permanent and spares police and traders",
+        "Regeneration stops at the types energy",
+        "A dying ship ejects a pod on a high byte",
+        "The mothership draws the escape byte but never ejects",
+        "A hurt ship launches a missile and warns the player",
+        "No launch while an ecm pulse runs",
+        "A full bubble still costs the enemy a missile",
+        "The mothership launches a drone with its own ai byte",
+        "A ship pointing at the player fires and hits",
+        "Enemy damage uses the records missiles not those left",
+        "Beyond 8192 a ship never fires",
+        "Halves round toward plus infinity",
+        "The laser fires and hits by rounded pointing",
+        "A close ship always turns away without a draw",
+        "Aggression decides turning towards"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "an_escape_pod_heads_for_the_planet_without_changing_speed",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "with_no_planet_a_pod_heads_along_plus_z",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "a_hostile_station_launches_police_on_a_high_byte",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "a_hostile_station_stops_at_four_police",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "a_drone_without_a_mothership_drifts",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "a_drone_with_a_mothership_fights_like_a_ship",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "a_healthy_far_ship_draws_roll_then_heading",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "a_high_roll_byte_draws_a_new_roll",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "pacification_is_permanent_and_spares_police_and_traders",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "regeneration_stops_at_the_types_energy",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "a_dying_ship_ejects_a_pod_on_a_high_byte",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "the_mothership_draws_the_escape_byte_but_never_ejects",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "a_hurt_ship_launches_a_missile_and_warns_the_player",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "no_launch_while_an_ecm_pulse_runs",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "a_full_bubble_still_costs_the_enemy_a_missile",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "the_mothership_launches_a_drone_with_its_own_ai_byte",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "a_ship_pointing_at_the_player_fires_and_hits",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "enemy_damage_uses_the_records_missiles_not_those_left",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "beyond_8192_a_ship_never_fires",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "halves_round_toward_plus_infinity",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "the_laser_fires_and_hits_by_rounded_pointing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "a_close_ship_always_turns_away_without_a_draw",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/ship.rs",
+          "symbol": "aggression_decides_turning_towards",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    },
+    {
+      "id": "steering",
+      "title": "The pointing value and the steering rule every thinking object turns by",
+      "summary": "The 5 tests in src/capabilities/ai/steering.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/ai/.dev/capability.json",
+          "entityId": "ship-ai"
+        }
+      ],
+      "criteria": [
+        "A new ship points straight at the player",
+        "Pitch sign follows the roof",
+        "Roll sign is the baselines",
+        "A busy roll is left alone",
+        "Speed from the unrounded pointing value"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/steering.rs",
+          "symbol": "a_new_ship_points_straight_at_the_player",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/steering.rs",
+          "symbol": "pitch_sign_follows_the_roof",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/steering.rs",
+          "symbol": "roll_sign_is_the_baselines",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/steering.rs",
+          "symbol": "a_busy_roll_is_left_alone",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/ai/steering.rs",
+          "symbol": "speed_from_the_unrounded_pointing_value",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

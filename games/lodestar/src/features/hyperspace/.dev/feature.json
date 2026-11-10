@@ -1,0 +1,158 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Hyperspace",
+  "folder": "games/lodestar/src/features/hyperspace",
+  "description": "Jumping between systems and Reaches. The feature document, hyperspace.md, is the primary record.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/hyperspace/jump.rs",
+      "symbol": "press_hyperspace"
+    },
+    {
+      "path": "games/lodestar/src/features/hyperspace/jump.rs",
+      "symbol": "jump"
+    },
+    {
+      "path": "games/lodestar/src/features/hyperspace/jump.rs",
+      "symbol": "arrive"
+    }
+  ],
+  "entities": [
+    {
+      "id": "hyperspace-jump",
+      "name": "Hyperspace jump",
+      "description": "The pilot picks a system on a chart, starts the countdown, survives it and arrives somewhere new.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "press_hyperspace"
+        },
+        {
+          "path": "games/lodestar/src/features/hyperspace/countdown.rs",
+          "symbol": "Countdown"
+        },
+        {
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "jump"
+        },
+        {
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "arrive"
+        }
+      ],
+      "behavior": "The hyperspace key checks, in order: docked, a countdown running, then selects the system nearest the chart cursor and refuses it when it is here or beyond the fuel; otherwise the 85-tick countdown starts. When it ends the destination's distance is taken from the fuel, the mis-jump byte is drawn and the 16-tick tunnel plays; on arrival the market byte is drawn, the flight state is reset, legal status is halved and the planet and sun are placed.",
+      "outcome": "A new system, a new market and new dangers.",
+      "constraints": [
+        "COUNTDOWN_TICKS is 85; the tunnel is 16 steps.",
+        "Fuel never goes below 0, and retargeting a running countdown is range-checked (deliberate difference 6).",
+        "Not while docked."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "press_hyperspace"
+        },
+        {
+          "path": "games/lodestar/src/features/hyperspace/navigation.rs",
+          "symbol": "Navigation::select"
+        },
+        {
+          "path": "games/lodestar/src/features/hyperspace/countdown.rs",
+          "symbol": "Countdown::tick"
+        },
+        {
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "jump"
+        },
+        {
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "arrive"
+        }
+      ]
+    },
+    {
+      "id": "reach-jump",
+      "name": "Reach jump",
+      "description": "A galaxy drive, used once, carries the pilot to the next Reach.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "press_galaxy_drive"
+        }
+      ],
+      "behavior": "With a galaxy drive fitted and no countdown running, the key uses the drive up and clears legal status at once and starts the countdown in galactic mode; the jump moves the pilot to the next Reach.",
+      "outcome": "Eight Reaches to explore.",
+      "constraints": [
+        "Needs Fitted::galaxy_drive; it is used up at the press.",
+        "Not while docked."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "press_galaxy_drive"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "reach_jump"
+        }
+      ]
+    },
+    {
+      "id": "mis-jump",
+      "name": "Mis-jump into the Deep",
+      "description": "Three times in 256 a normal jump drops the pilot into the Deep among the aliens.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "Arrived"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "is_misjump"
+        }
+      ],
+      "behavior": "When the drawn mis-jump byte says so, the arrival is the ambush: no planet, no station, alien motherships and their drones around the pilot, and the current system's name blank.",
+      "outcome": "Danger the pilot cannot rule out.",
+      "constraints": [
+        "The mis-jump test is the universe capability's is_misjump."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/hyperspace/jump.rs",
+          "symbol": "arrive"
+        },
+        {
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "alien_group"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The pilot's goals that exercise it."
+    },
+    {
+      "kind": "state",
+      "folder": "games/lodestar/src/features/hyperspace",
+      "path": "games/lodestar/src/features/hyperspace/.dev/Countdown.state-diagram.json",
+      "relationship": "The countdown's states."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/lodestar/src/capabilities/universe",
+      "path": "games/lodestar/src/capabilities/universe/.dev/capability.json",
+      "relationship": "Distance, range, selection, the Reach jump and the mis-jump test."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/lodestar/src/capabilities/market",
+      "path": "games/lodestar/src/capabilities/market/.dev/capability.json",
+      "relationship": "The market byte drawn on arrival."
+    }
+  ]
+}

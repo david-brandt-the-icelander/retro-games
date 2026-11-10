@@ -1,0 +1,109 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Spawning",
+  "folder": "games/lodestar/src/features/spawning",
+  "description": "Ships and objects that arrive by themselves, and where new objects are placed. The feature document, spawning.md, is the primary record.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/spawning/periodic.rs",
+      "symbol": "periodic_spawn"
+    },
+    {
+      "path": "games/lodestar/src/features/spawning/template.rs",
+      "symbol": "hostile_template"
+    }
+  ],
+  "entities": [
+    {
+      "id": "periodic-spawn",
+      "name": "Space fills up by itself",
+      "description": "Every time the main counter reaches 0, something may arrive.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "periodic_spawn"
+        },
+        {
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "SpawnDelay"
+        }
+      ],
+      "behavior": "When the main counter reaches 0 and the player is not dying, one byte chooses between a benign spawn (a trader, an asteroid or a canister) and a hostile one: police for contraband or a record, then pirates, a pack, a lone hunter or the aliens, as the system's government and the spawn delay allow. Nothing spawns in the Deep, and no rocks or hostiles in the safe zone.",
+      "outcome": "The space around the pilot is alive, and more dangerous under weak governments.",
+      "constraints": [
+        "GOVERNMENT_STOP_FROM and PACK_FROM bound the hostile rolls.",
+        "A full bubble takes nothing; the draws are still spent.",
+        "Draws come from the main generator in RULES' order."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/spawning/periodic.rs",
+          "symbol": "periodic_spawn"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::flight_logic"
+        }
+      ]
+    },
+    {
+      "id": "placements",
+      "name": "Placements",
+      "description": "Where new objects appear: the hostile template, the alien group, a launch straight ahead and a ship's children.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "Template"
+        },
+        {
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "alien_group"
+        },
+        {
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "launch_straight_ahead"
+        },
+        {
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "child_of"
+        }
+      ],
+      "behavior": "The template places a hostile arrival from drawn bytes; the alien group is a mothership and a drone at one place; a launch straight ahead puts an object in front of the player; children copy their parent and leave a station along its nose.",
+      "outcome": "Arrivals appear where the rules say, so the game replays exactly.",
+      "constraints": [],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "hostile_template"
+        },
+        {
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "alien_group"
+        },
+        {
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "launch_straight_ahead"
+        },
+        {
+          "path": "games/lodestar/src/features/spawning/template.rs",
+          "symbol": "child_of"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The pilot's goals that exercise it."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/lodestar/src/capabilities/ai",
+      "path": "games/lodestar/src/capabilities/ai/.dev/capability.json",
+      "relationship": "Runs the arrivals' AI and launches their children."
+    }
+  ]
+}

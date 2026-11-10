@@ -1,0 +1,141 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Combat capability",
+  "folder": "games/lodestar/src/capabilities/combat",
+  "description": "What combat can do for the flight tick and the features.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/combat/mod.rs",
+      "symbol": "combat"
+    },
+    {
+      "path": "games/lodestar/src/capabilities/combat/steps.rs",
+      "symbol": "ai_step"
+    }
+  ],
+  "entities": [
+    {
+      "id": "combat",
+      "name": "Combat",
+      "description": "The player's weapons and defences, damage, contact, explosions, kills and the law.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "fire_lasers"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "fire_missile"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/damage.rs",
+          "symbol": "take_damage"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "removal_step"
+        }
+      ],
+      "responsibility": "Fires the lasers from the active mount, arms, locks and fires missiles, runs the E.C.M. and the area blast, applies damage to shields and energy with equipment and cargo loss, resolves contact, runs explosions, pays bounties, counts kills and keeps the legal status; and gives the slot loop its combat steps in order.",
+      "operations": [
+        {
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "start_key_handling"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/lasers.rs",
+          "symbol": "fire_lasers"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "arm_missile"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "unarm_missile"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/missiles.rs",
+          "symbol": "fire_missile"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/countermeasures.rs",
+          "symbol": "fire_ecm"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/countermeasures.rs",
+          "symbol": "trigger_area_blast"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "contact"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/contact.rs",
+          "symbol": "failed_docking"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "area_blast_step"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "explosion_start_step"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "ai_step"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "explosion_progress_step"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "sights_step"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "removal_step"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/kills.rs",
+          "symbol": "on_launch"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/kills.rs",
+          "symbol": "on_hyperspace_arrival"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/kills.rs",
+          "symbol": "on_galaxy_jump"
+        }
+      ],
+      "access": [
+        "Nothing checks: an in-process library inside lodestar-core.",
+        "The flight tick calls the steps and the queued actions; the hyperspace and station features call the legal-status hooks."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "class",
+      "folder": "games/lodestar/src/capabilities/combat",
+      "path": "games/lodestar/src/capabilities/combat/.dev/class-diagram.json",
+      "relationship": "Its types."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/lodestar/src/capabilities/ai",
+      "path": "games/lodestar/src/capabilities/ai/.dev/capability.json",
+      "relationship": "The think whose result it applies."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The pilot's goals that exercise it."
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Equipment decisions",
+  "folder": "games/lodestar/src/capabilities/equipment",
+  "entities": [
+    {
+      "id": "equipment-list",
+      "title": "Buying equipment from a list",
+      "summary": "The equipment panel lists the offered items instead of number entry; same purchases, refusals and effects.",
+      "status": "accepted",
+      "context": "UI-DESIGN's equipment panel differs from RULES' shop prompt.",
+      "decision": "buy takes the item, and the mount for a laser, as arguments; the panel stays open after a refusal (deliberate difference 12).",
+      "rationale": "The same outcomes as the baseline's shop, in LodeStar's own interface.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/GDD.md",
+        "description": "GDD § 15, the decision log.",
+        "by": "Owner",
+        "date": "2026-11-08"
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "buy"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "buy_offered"
+        }
+      ]
+    }
+  ]
+}

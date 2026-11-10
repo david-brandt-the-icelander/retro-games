@@ -1,0 +1,55 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "In-system jump",
+  "folder": "games/lodestar/src/features/in_system_jump",
+  "description": "The hop. The feature document, in_system_jump.md, is the primary record.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/features/in_system_jump/mod.rs",
+      "symbol": "in_system_jump"
+    }
+  ],
+  "entities": [
+    {
+      "id": "hop",
+      "name": "Hop towards the planet",
+      "description": "With nothing else about, the pilot leaps one far unit at a time towards the planet.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/in_system_jump/mod.rs",
+          "symbol": "in_system_jump"
+        },
+        {
+          "path": "games/lodestar/src/features/in_system_jump/mod.rs",
+          "symbol": "InSystemJump"
+        }
+      ],
+      "behavior": "The planet and the sun come one far unit nearer and the main counter becomes 1 and the spawn delay 0; other objects keep their places relative to the player. It is refused, with the long beep, when another ship, missile or drone is present, in the safe zone, in the Deep, or when the planet or sun is ahead and within two far units on every axis.",
+      "outcome": "Crossing a system takes seconds, not minutes, when it is quiet.",
+      "constraints": [
+        "BLOCKING_RANGE is two far units.",
+        "No fuel or energy cost and no limit on repeats.",
+        "It draws no random number."
+      ],
+      "implementation": [
+        {
+          "path": "games/lodestar/src/features/in_system_jump/mod.rs",
+          "symbol": "in_system_jump"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tick.rs",
+          "symbol": "FlyInSystem::queued_actions"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lodestar/src/use_cases/fly_in_system",
+      "path": "games/lodestar/src/use_cases/fly_in_system/.dev/use-case.json",
+      "relationship": "The pilot's goals that exercise it."
+    }
+  ]
+}

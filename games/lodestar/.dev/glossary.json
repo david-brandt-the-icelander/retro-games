@@ -1,0 +1,314 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/glossary.schema.json",
+  "kind": "glossary",
+  "title": "LodeStar glossary",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "bubble",
+      "title": "Bubble",
+      "summary": "The ordered list of at most 13 objects near the player: the planet in slot 0, the sun or station in slot 1, ships after.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "CAPACITY"
+        }
+      ]
+    },
+    {
+      "id": "slot",
+      "title": "Slot",
+      "summary": "An object's place in the bubble; removing an object shifts the later ones down one slot.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/bubble/mod.rs",
+          "symbol": "Bubble::remove"
+        }
+      ]
+    },
+    {
+      "id": "tick",
+      "title": "Tick",
+      "summary": "One step of the sim's logic, 12 a second, made of two substeps.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "TICKS_PER_SECOND"
+        }
+      ],
+      "notToBeConfusedWith": [
+        "A frame: the picture draws at display rate, interpolating between ticks."
+      ]
+    },
+    {
+      "id": "substep",
+      "title": "Substep",
+      "summary": "Half a tick: every object moves by half a step; the even substep runs the tick logic.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "FlyInSystem::substep"
+        }
+      ]
+    },
+    {
+      "id": "main-counter",
+      "title": "Main counter (C)",
+      "summary": "The cockpit's counter that every flight tick counts down; its phases time the planet and sun checks, recharge and tidying, and its reaching 0 the periodic spawn.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "Cockpit::count_down_counter"
+        }
+      ]
+    },
+    {
+      "id": "market-byte",
+      "title": "Market byte",
+      "summary": "The per-visit number drawn on arrival that shifts every price and availability until the next jump.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/market/mod.rs",
+          "symbol": "draw_and_arrive"
+        }
+      ]
+    },
+    {
+      "id": "safe-zone",
+      "title": "Safe zone",
+      "summary": "Where the station is present: pirates calm down, rocks stop coming and the hop is refused.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "Cockpit"
+        }
+      ]
+    },
+    {
+      "id": "deep",
+      "title": "The Deep",
+      "summary": "Mis-jump space, where a mis-jump (3 in 256) drops the pilot among the Hush with no planet or station.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "current_name"
+        }
+      ]
+    },
+    {
+      "id": "reach",
+      "title": "Reach",
+      "summary": "A galaxy of 256 systems; there are eight, numbered 1–8.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/universe/names.rs",
+          "symbol": "reach_name"
+        }
+      ]
+    },
+    {
+      "id": "spindle",
+      "title": "Spindle",
+      "summary": "The station in every system.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/text/words.gd",
+          "symbol": "SHIPS"
+        }
+      ]
+    },
+    {
+      "id": "dart",
+      "title": "Dart",
+      "summary": "The missile.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/text/words.gd",
+          "symbol": "SHIPS"
+        }
+      ]
+    },
+    {
+      "id": "hush",
+      "title": "Hush",
+      "summary": "The alien faction: the Hush carrier (mothership) and its motes (drones).",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/text/words.gd",
+          "symbol": "SHIPS"
+        }
+      ]
+    },
+    {
+      "id": "scrambler",
+      "title": "Scrambler",
+      "summary": "The E.C.M. unit: its 32-tick pulse destroys every guided missile in flight.",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/GDD.md",
+          "symbol": "4.8 Equipment"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/ai/missile.rs",
+          "symbol": "ecm_active"
+        }
+      ],
+      "notToBeConfusedWith": [
+        "Jammer kits, a mildly illegal goods item."
+      ]
+    },
+    {
+      "id": "nova-charge",
+      "title": "Nova charge",
+      "summary": "The area blast: while it is active, every ship in the bubble but the station is killed.",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/GDD.md",
+          "symbol": "4.8 Equipment"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/combat/steps.rs",
+          "symbol": "area_blast_step"
+        }
+      ]
+    },
+    {
+      "id": "lifeboat",
+      "title": "Lifeboat",
+      "summary": "The escape pod, and an escape pod another ship launches.",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/GDD.md",
+          "symbol": "4.8 Equipment"
+        }
+      ]
+    },
+    {
+      "id": "auto-berth",
+      "title": "Auto-berth",
+      "summary": "The docking computer: docks at once from anywhere in the safe zone.",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/GDD.md",
+          "symbol": "4.8 Equipment"
+        }
+      ]
+    },
+    {
+      "id": "reach-drive",
+      "title": "Reach drive",
+      "summary": "The galaxy drive: used up by one jump to the next Reach.",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/GDD.md",
+          "symbol": "4.8 Equipment"
+        }
+      ]
+    },
+    {
+      "id": "hop",
+      "title": "Hop",
+      "summary": "The in-system jump of one far unit towards the planet.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/text/words.gd",
+          "symbol": "NOTE_HOP"
+        }
+      ]
+    },
+    {
+      "id": "scrip",
+      "title": "Scrip (SC)",
+      "summary": "The currency, shown with one decimal; the sim counts it in tenths.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/text/words.gd",
+          "symbol": "cash"
+        }
+      ]
+    },
+    {
+      "id": "mount",
+      "title": "Mount",
+      "summary": "One of four laser positions: fore, aft, port, starboard; the active mount is the one that fires.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/pilot/mod.rs",
+          "symbol": "Mount"
+        }
+      ]
+    },
+    {
+      "id": "cockpit",
+      "title": "Cockpit",
+      "summary": "The player's in-flight state that is not saved; a flight-state reset sets it again.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/cockpit/mod.rs",
+          "symbol": "Cockpit"
+        }
+      ],
+      "notToBeConfusedWith": [
+        "The pilot: what is saved."
+      ]
+    },
+    {
+      "id": "pilot",
+      "title": "Pilot",
+      "summary": "Both the person playing (Actors/pilot.md) and the saved record of their ship, cash, cargo and record (Pilot).",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/pilot/mod.rs",
+          "symbol": "Pilot"
+        }
+      ]
+    },
+    {
+      "id": "main-generator",
+      "title": "Main generator",
+      "summary": "The one random generator whose draws, and their order, are part of the rules.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "MainGenerator"
+        }
+      ],
+      "notToBeConfusedWith": [
+        "The cosmetic generator, which only the picture uses."
+      ]
+    },
+    {
+      "id": "baseline",
+      "title": "Baseline",
+      "summary": "The private faithful recreation RULES was written from; only the spec-and-verify role reads it.",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Starting point: a clean room from the private recreation"
+        }
+      ]
+    },
+    {
+      "id": "deliberate-difference",
+      "title": "Deliberate difference",
+      "summary": "A numbered place where LodeStar knowingly differs from the baseline, listed in RULES.",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/RULES.md",
+          "symbol": "Deliberate differences from the baseline"
+        }
+      ]
+    },
+    {
+      "id": "status-marks",
+      "title": "Status marks",
+      "summary": "Knowledge-driven development's marks in the documents beside the code: ✅ built and tested, ⚠️ promised but not yet true, ❌ a known defect.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/fly_in_system.md",
+          "symbol": "Status marks"
+        }
+      ]
+    }
+  ]
+}

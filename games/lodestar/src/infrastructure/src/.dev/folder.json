@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "lodestar-infrastructure source",
+  "folder": "games/lodestar/src/infrastructure/src",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "lodestar-infrastructure source",
+      "summary": "The crate's Rust source: lib.rs and pilot_files.rs.",
+      "purpose": "Holds the crate root and PilotFiles with its tests. The crate's views and documents are one folder up, at src/infrastructure.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/infrastructure/src/lib.rs",
+          "symbol": "PilotFiles"
+        },
+        {
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "PilotFiles"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "GDExtension configuration",
+  "folder": "games/lodestar/src/hosting/godot",
+  "entities": [
+    {
+      "id": "gdextension-libraries",
+      "title": "Library paths",
+      "summary": "Where Godot finds liblodestar_godot for each platform and build.",
+      "key": "lodestar.gdextension [libraries]",
+      "type": "res:// path per platform and build (debug, release)",
+      "sensitive": false,
+      "scope": "per project",
+      "takesEffect": "at-startup",
+      "details": "The paths point into target/debug and target/release, so cargo build (or --release for an export) must have run; reloadable is on for the editor.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/lodestar.gdextension",
+          "symbol": "libraries"
+        },
+        {
+          "path": "games/lodestar/lodestar.gdextension",
+          "symbol": "reloadable"
+        }
+      ]
+    },
+    {
+      "id": "export-presets",
+      "title": "Export presets",
+      "summary": "The Linux, Windows and macOS export presets and where each writes its build.",
+      "key": "export_presets.cfg",
+      "type": "Godot export presets",
+      "sensitive": false,
+      "scope": "per project",
+      "takesEffect": "per-export",
+      "details": "Builds go under build/, which git ignores.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/export_presets.cfg",
+          "symbol": "export_path"
+        },
+        {
+          "path": "games/lodestar/.gitignore",
+          "symbol": "/build/"
+        }
+      ]
+    }
+  ]
+}

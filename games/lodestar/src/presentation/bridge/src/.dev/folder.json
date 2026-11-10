@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "lodestar-bridge source",
+  "folder": "games/lodestar/src/presentation/bridge/src",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "lodestar-bridge source",
+      "summary": "The crate's Rust source: lib.rs, sim_host.rs and views.rs.",
+      "purpose": "Holds SimHost, the readouts and their tests. The crate's views and document are one folder up, at src/presentation/bridge.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/lib.rs",
+          "symbol": "SimHost"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/views.rs",
+          "symbol": "mode_name"
+        }
+      ]
+    }
+  ]
+}

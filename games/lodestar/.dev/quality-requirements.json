@@ -1,0 +1,145 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/quality-requirements.schema.json",
+  "kind": "quality-requirements",
+  "title": "LodeStar quality requirements",
+  "folder": "games/lodestar",
+  "entities": [
+    {
+      "id": "determinism",
+      "title": "The same inputs give the same game",
+      "summary": "The sim is deterministic on every platform.",
+      "area": "correctness",
+      "requirement": "Rule code uses f64 with only + − × ÷ and sqrt, plus the functions RULES names, and draws random numbers only from its own seeded generators, so a replay gives the same state everywhere and a later server can run the same sim.",
+      "measuredBy": "The use case's test that two runs with the same input end in identical states, and the parity replays.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/DESIGN.md",
+        "description": "DESIGN § Architecture, Determinism; AGENTS.md § LodeStar."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "the_same_input_gives_the_same_game"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/random/mod.rs",
+          "symbol": "MainGenerator"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/lodestar/src/use_cases/fly_in_system/.dev/verification.json",
+          "entityId": "fly-in-system"
+        }
+      ]
+    },
+    {
+      "id": "inward-layers",
+      "title": "Dependencies point inward",
+      "summary": "Presentation → use cases → features → capabilities; capabilities depend on nothing further out.",
+      "area": "maintainability",
+      "requirement": "Within lodestar-core no capability uses a feature or use case and no feature uses a use case; the crate graph keeps Godot, infrastructure and the bridge out of lodestar-core.",
+      "measuredBy": "tests/layers.rs, run by cargo test.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/DESIGN.md",
+        "description": "DESIGN § Project layout."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/tests/layers.rs",
+          "symbol": "violations"
+        },
+        {
+          "path": "games/lodestar/Cargo.toml",
+          "symbol": "dependencies"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/lodestar/tests/.dev/verification.json",
+          "entityId": "layers"
+        }
+      ]
+    },
+    {
+      "id": "no-deferred-work-markers",
+      "title": "No deferred-work markers",
+      "summary": "Wanted work is a ⚠️ or ❌ in the owning document, never a comment marker.",
+      "area": "maintainability",
+      "requirement": "No tracked source file holds a comment that opens with one of knowledge-driven development's four deferred-work words, and there is no deferred-work folder.",
+      "measuredBy": "tests/deferred_work.rs, run by cargo test.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/DESIGN.md",
+        "description": "DESIGN § Testing, the deferred-work gate; AGENTS.md § LodeStar."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/tests/deferred_work.rs",
+          "symbol": "no_deferred_work_markers_or_folders"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/lodestar/tests/.dev/verification.json",
+          "entityId": "deferred-work"
+        }
+      ]
+    },
+    {
+      "id": "no-catch-up-burst",
+      "title": "A stall never runs a burst of ticks",
+      "summary": "The sim runs at 12 ticks a second whatever the frame rate, and a long frame is cut to a quarter of a second.",
+      "area": "performance",
+      "requirement": "TickClock turns frame time into whole 12 Hz ticks and cuts any frame longer than MAX_FRAME_SECONDS, so a stall runs at most three catch-up ticks.",
+      "measuredBy": "The use case's tests of the tick clock.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/src/use_cases/fly_in_system/fly_in_system.md",
+        "description": "Fly in a system § Time."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/mod.rs",
+          "symbol": "TickClock::advance"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "a_stall_is_cut_to_the_longest_frame"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/tests.rs",
+          "symbol": "twelve_ticks_a_second_whatever_the_frame_rate"
+        }
+      ]
+    },
+    {
+      "id": "busy-bubble-frame-rate",
+      "title": "60 fps in the busiest bubble",
+      "summary": "The worst case, twelve ships fighting near the sun with every effect, holds 60 fps.",
+      "area": "performance",
+      "requirement": "A release build holds 60 fps at 1920×1080 on the High preset on an M1 MacBook Air in the busy-bubble scene.",
+      "measuredBy": "The busy-bubble benchmark of DESIGN § Testing, a scripted scene not yet built.",
+      "origin": {
+        "kind": "document",
+        "reference": "games/lodestar/docs/DESIGN.md",
+        "description": "DESIGN § Testing, busy-bubble benchmark."
+      },
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "games/lodestar/docs/DESIGN.md",
+          "symbol": "Testing"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Saving backlog",
+  "folder": "games/lodestar/src/features/saving",
+  "entities": [
+    {
+      "id": "store-write-failures",
+      "title": "Let a save report that its record was not written",
+      "summary": "PilotStore::write returns nothing, so a failed write is silent and the pilot is told the save worked.",
+      "type": "debt",
+      "compromise": "PilotFiles::write drops the io::Error from try_write because the trait cannot carry it; FlyInSystem::save answers Saved either way.",
+      "cost": "A pilot whose disk is full or folder is unwritable believes they saved, and loses the run on death or on quitting.",
+      "acceptanceCriteria": [
+        "A failed write reaches the save's outcome",
+        "SimHost::save_pilot answers not_written and the pilot page says so"
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+        "description": "PilotFiles::write's comment, and the ⚠️ in bridge.md (Saving)."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/saving/pilots.rs",
+          "symbol": "PilotStore"
+        },
+        {
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "PilotFiles::write"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/src/sim_host.rs",
+          "symbol": "SimHost::save_pilot"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/presentation/bridge/bridge.md",
+          "label": "bridge.md § Saving"
+        }
+      ]
+    }
+  ]
+}

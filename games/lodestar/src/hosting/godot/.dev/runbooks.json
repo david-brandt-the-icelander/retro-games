@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/runbooks.schema.json",
+  "kind": "runbooks",
+  "title": "Desktop build runbooks",
+  "folder": "games/lodestar/src/hosting/godot",
+  "entities": [
+    {
+      "id": "export-linux",
+      "title": "Export the Linux build",
+      "summary": "Build the release library and export the game for Linux.",
+      "purpose": "operate",
+      "when": "To make a runnable build for testing; builds are not distributed until release.",
+      "steps": [
+        "cd games/lodestar",
+        "cargo test",
+        "cargo build --release",
+        "godot --headless --path . --export-release \"Linux\" build/linux/lodestar.x86_64"
+      ],
+      "verify": "build/linux/lodestar.x86_64 starts and shows the title, with the game pack and the library beside it.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/src/hosting/godot/desktop-build.md",
+          "symbol": "Operating it"
+        }
+      ]
+    },
+    {
+      "id": "missing-simhost",
+      "title": "Godot reports an unknown SimHost",
+      "summary": "The scene fails to load because the library has not been built.",
+      "purpose": "diagnose",
+      "when": "Godot shows an empty window and reports a missing class or method.",
+      "steps": [
+        "cargo build (or cargo build --release for an export) in games/lodestar",
+        "Reopen the project or run it again"
+      ],
+      "verify": "The title shows.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lodestar/src/hosting/godot/desktop-build.md",
+          "symbol": "How it fails"
+        },
+        {
+          "path": "games/lodestar/src/presentation/bridge/bridge.md",
+          "symbol": "How it fails"
+        }
+      ]
+    }
+  ]
+}

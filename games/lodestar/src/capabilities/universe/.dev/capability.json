@@ -1,0 +1,91 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Universe capability",
+  "folder": "games/lodestar/src/capabilities/universe",
+  "description": "What the universe can work out.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+      "symbol": "Galaxy"
+    }
+  ],
+  "entities": [
+    {
+      "id": "universe",
+      "name": "The universe",
+      "description": "Eight Reaches of generated systems, navigation and the charts.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "Galaxy"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/system.rs",
+          "symbol": "System"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "select"
+        }
+      ],
+      "responsibility": "Generates every system and its properties, names and inhabitants; measures distance and fuel range; finds the nearest system; does the pure parts of selecting, the Reach jump and the mis-jump; and lays out the charts.",
+      "operations": [
+        {
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "Galaxy::system"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/galaxy.rs",
+          "symbol": "Galaxy::nearest"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "distance"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "in_range"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "select"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "reach_jump"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/navigation.rs",
+          "symbol": "is_misjump"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/chart.rs",
+          "symbol": "local_chart"
+        },
+        {
+          "path": "games/lodestar/src/capabilities/universe/names.rs",
+          "symbol": "name"
+        }
+      ],
+      "access": [
+        "Nothing checks: an in-process library inside lodestar-core.",
+        "The hyperspace feature holds the state between its computations; the bridge reads systems and charts from it."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "class",
+      "folder": "games/lodestar/src/capabilities/universe",
+      "path": "games/lodestar/src/capabilities/universe/.dev/class-diagram.json",
+      "relationship": "Its types."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/hyperspace",
+      "path": "games/lodestar/src/features/hyperspace/.dev/feature.json",
+      "relationship": "Hyperspace is built on it."
+    }
+  ]
+}

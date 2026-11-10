@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Escape pod",
+  "folder": "games/lodestar/src/features/escape_pod",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Escape pod",
+      "summary": "The launch, the 97 ticks watching the hull drift, and the rescue or death in the Deep.",
+      "purpose": "Launches the pod (RULES B.17, C.10.5, D.3.9), drifts the abandoned hull, and afterwards docks the rescued pilot at the station or, in the Deep, starts the death sequence.",
+      "boundaries": [
+        "A feature: it uses capabilities and other features, never a use case (tests/layers.rs).",
+        "The hull never collides with the player (deliberate difference 7)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "launch_pod"
+        },
+        {
+          "path": "games/lodestar/src/features/escape_pod/mod.rs",
+          "symbol": "aftermath"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/features/escape_pod/escape_pod.md",
+          "label": "Escape pod (feature document)"
+        }
+      ]
+    }
+  ]
+}

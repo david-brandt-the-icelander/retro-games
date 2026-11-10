@@ -1,0 +1,95 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "Pilot files operations",
+  "folder": "games/lodestar/src/infrastructure",
+  "description": "How the saving feature's records reach the disk.",
+  "sources": [
+    {
+      "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+      "symbol": "PilotFiles"
+    }
+  ],
+  "entities": [
+    {
+      "id": "read",
+      "name": "Read a record",
+      "description": "The text stored under a pilot name.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "PilotFiles::read"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+        "symbol": "PilotFiles::read"
+      },
+      "action": "query",
+      "transport": "PilotStore::read",
+      "authorization": "None: an in-process call; SimHost (through FlyInSystem's save and load) and the tests call it.",
+      "result": "Some(text) from <NAME>.pilot.",
+      "failures": [
+        "None for a name no record may hold, a missing file or folder, or an unreadable file."
+      ]
+    },
+    {
+      "id": "write",
+      "name": "Write a record",
+      "description": "Stores a record under a pilot name, replacing any record there.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "PilotFiles::write"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+        "symbol": "PilotFiles::write"
+      },
+      "action": "command",
+      "transport": "PilotStore::write",
+      "authorization": "None: an in-process call; SimHost (through FlyInSystem's save and load) and the tests call it.",
+      "result": "The file is written through a .partial file renamed into place; the folder is made first.",
+      "failures": [
+        "A failed write is dropped: the trait cannot report it, and the file is left as it was."
+      ]
+    },
+    {
+      "id": "names",
+      "name": "List the records",
+      "description": "The pilot names that have a record file.",
+      "sources": [
+        {
+          "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+          "symbol": "PilotFiles::names"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lodestar/src/infrastructure/src/pilot_files.rs",
+        "symbol": "PilotFiles::names"
+      },
+      "action": "query",
+      "transport": "Rust method",
+      "authorization": "None: an in-process call; SimHost (through FlyInSystem's save and load) and the tests call it.",
+      "result": "The names, sorted; other files are ignored.",
+      "failures": [
+        "A missing folder has no names."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/lodestar/src/infrastructure",
+      "path": "games/lodestar/src/infrastructure/.dev/capability.json",
+      "relationship": "The capability they expose."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lodestar/src/features/saving",
+      "path": "games/lodestar/src/features/saving/.dev/feature.json",
+      "relationship": "The saving feature whose store this is."
+    }
+  ]
+}

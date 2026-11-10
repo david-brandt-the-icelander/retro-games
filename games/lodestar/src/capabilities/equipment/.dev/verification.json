@@ -1,0 +1,149 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "How equipment is checked",
+  "folder": "games/lodestar/src/capabilities/equipment",
+  "entities": [
+    {
+      "id": "equipment",
+      "title": "The equipment shop",
+      "summary": "The 18 tests in src/capabilities/equipment/mod.rs.",
+      "subject": [
+        {
+          "path": "games/lodestar/src/capabilities/equipment/.dev/capability.json",
+          "entityId": "equipment-shop"
+        }
+      ],
+      "criteria": [
+        "The list is in fixed order with gdd names",
+        "Availability by tech level",
+        "Prices follow the gdd",
+        "Fuel price is recomputed from the tank",
+        "Fuel on a full tank costs nothing and is bought",
+        "Not enough cash changes nothing",
+        "Missiles stop at four",
+        "Hold extension once",
+        "Fitted flags once each",
+        "Pulse laser needs an empty mount",
+        "Beam laser refunds a pulse and refuses a beam",
+        "The beam cash check uses the full price",
+        "A laser needs one of the four mounts",
+        "The panel refuses items not offered and stays usable",
+        "Laser names and mounts",
+        "Escape pod rescue keeps cash kills and other equipment",
+        "Sun scooping needs the scoop and caps at full",
+        "Booster doubles the recharge"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "the_list_is_in_fixed_order_with_gdd_names",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "availability_by_tech_level",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "prices_follow_the_gdd",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "fuel_price_is_recomputed_from_the_tank",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "fuel_on_a_full_tank_costs_nothing_and_is_bought",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "not_enough_cash_changes_nothing",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "missiles_stop_at_four",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "hold_extension_once",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "fitted_flags_once_each",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "pulse_laser_needs_an_empty_mount",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "beam_laser_refunds_a_pulse_and_refuses_a_beam",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "the_beam_cash_check_uses_the_full_price",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "a_laser_needs_one_of_the_four_mounts",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "the_panel_refuses_items_not_offered_and_stays_usable",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "laser_names_and_mounts",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "escape_pod_rescue_keeps_cash_kills_and_other_equipment",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "sun_scooping_needs_the_scoop_and_caps_at_full",
+          "command": "cargo test (in games/lodestar)"
+        },
+        {
+          "type": "automated",
+          "path": "games/lodestar/src/capabilities/equipment/mod.rs",
+          "symbol": "booster_doubles_the_recharge",
+          "command": "cargo test (in games/lodestar)"
+        }
+      ]
+    }
+  ]
+}

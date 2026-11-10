@@ -139,6 +139,22 @@
       ]
     },
     {
+      "id": "mode-kind",
+      "name": "ModeKind",
+      "kind": "enum",
+      "sources": [
+        "games/lodestar/src/use_cases/fly_in_system/mod.rs"
+      ],
+      "members": [
+        "Title",
+        "Docked",
+        "Tunnel(TunnelKind)",
+        "Flight",
+        "Dying(Cause)",
+        "Escape"
+      ]
+    },
+    {
       "id": "tunnel-kind",
       "name": "TunnelKind",
       "kind": "enum",
@@ -300,6 +316,18 @@
       "to": "main-generator",
       "kind": "depends-on",
       "description": "Every rule that draws, draws from it."
+    },
+    {
+      "from": "mode",
+      "to": "mode-kind",
+      "kind": "depends-on",
+      "description": "kind() names the mode without its state."
+    },
+    {
+      "from": "event",
+      "to": "mode-kind",
+      "kind": "depends-on",
+      "description": "ModeChanged reports the new mode's kind."
     }
   ]
 }

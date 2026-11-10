@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Death",
+  "folder": "games/lodestar/src/features/death",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Death",
+      "summary": "What dying does: the reset, four wreck canisters, 61 dying ticks and the return to the title.",
+      "purpose": "Carries out the player's death (RULES B.18, C.10.4, D.3.10) for whichever rule caused it, cancels a running countdown (deliberate difference 5), and returns to the title with the last saved pilot.",
+      "boundaries": [
+        "A feature: it uses capabilities and other features, never a use case (tests/layers.rs).",
+        "It does not decide when the player dies; the callers pass a Cause."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "die"
+        },
+        {
+          "path": "games/lodestar/src/features/death/mod.rs",
+          "symbol": "return_to_title"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lodestar/src/features/death/death.md",
+          "label": "Death (feature document)"
+        }
+      ]
+    }
+  ]
+}
