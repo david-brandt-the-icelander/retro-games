@@ -1,0 +1,86 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/runbooks.schema.json",
+  "kind": "runbooks",
+  "title": "Shatterbelt runbooks",
+  "folder": "games/shatterbelt",
+  "entities": [
+    {
+      "id": "setup",
+      "title": "Work on Shatterbelt",
+      "summary": "Install, test and build the game in its folder.",
+      "purpose": "setup",
+      "when": "Before changing anything in games/shatterbelt.",
+      "steps": [
+        "cd games/shatterbelt",
+        "npm install",
+        "npm test (typecheck, then the engine rules, whole-game simulations, replays, lockstep and sign-in suites)",
+        "npm run build (into dist/games/retro/shatterbelt/; BASE_PATH=\"\" builds at the root)",
+        "npm run dev rebuilds on change"
+      ],
+      "verify": "npm test passes.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/shatterbelt/README.md",
+          "symbol": "Develop"
+        },
+        {
+          "path": "games/shatterbelt/package.json",
+          "symbol": "scripts"
+        }
+      ]
+    },
+    {
+      "id": "run-locally",
+      "title": "Run the Worker locally",
+      "summary": "The game, its API and a local copy of the database on localhost.",
+      "purpose": "setup",
+      "steps": [
+        "npx wrangler d1 execute shatterbelt-scores --local --file worker/schema.sql",
+        "npm run build && npx wrangler dev",
+        "Open http://localhost:8787/games/retro/shatterbelt/"
+      ],
+      "verify": "The title screen appears and a game alone can be launched, once signed in.",
+      "details": "The page needs a sign-in. This Worker does not answer /auth/… itself (on icelander.net the site's Worker does), so locally a signed-out visit is redirected to an /auth/sign-in that nothing answers; the library accepts a stand-in session cookie only with DEV_SIGN_IN set to \"true\" on a local host. See the backlog item local-sign-in. An online game also needs the games hub on the same origin, from its own repository.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/shatterbelt/README.md",
+          "symbol": "Deploy"
+        },
+        {
+          "path": "vendor/icelander-auth/index.js",
+          "symbol": "devOn"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/.dev/backlog.json",
+          "entityId": "local-sign-in"
+        }
+      ]
+    },
+    {
+      "id": "change-database",
+      "title": "Change the database",
+      "summary": "A schema change is a migration applied by hand before merging.",
+      "purpose": "operate",
+      "when": "worker/schema.sql has to change.",
+      "steps": [
+        "Add games/shatterbelt/worker/migrations/NNNN-what-it-does.sql, numbered from 0002 (schema.sql is the first), with a comment saying why; Shatterbelt has no migrations yet",
+        "Make the same change in worker/schema.sql",
+        "Try it locally: npx wrangler d1 execute shatterbelt-scores --local --file worker/migrations/<file>",
+        "Apply it to production before merging, and say so in the pull request's description"
+      ],
+      "verify": "The Database migration check passes.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "docs/database-migrations.md",
+          "symbol": "Writing a migration"
+        }
+      ]
+    }
+  ]
+}

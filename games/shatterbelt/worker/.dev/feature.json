@@ -1,0 +1,134 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "High-score Worker features",
+  "folder": "games/shatterbelt/worker",
+  "description": "What the Worker offers players.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/worker/index.ts",
+      "symbol": "submitScore"
+    }
+  ],
+  "entities": [
+    {
+      "id": "unfakeable-scores",
+      "name": "High scores that can't be faked",
+      "description": "A score is listed only as the server's replay of the game computes it.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "replay"
+        }
+      ],
+      "behavior": "The server issues the seed, and the browser sends every change of every player's controls with one name, or none, per player. The Worker replays the whole game from the seed it issued, with the same engine, and stores each named player's score and wave as the replay produced them. Each seed enters once. A solo game and an online game of up to nine pilots, co-op or versus, are entered the same way.",
+      "outcome": "Players can trust the table: a score cannot be typed in, edited or submitted twice.",
+      "constraints": [
+        "Seeds expire after 24 hours unused.",
+        "Games of up to 90 minutes, with up to 250,000 changes of controls, in a body of up to 4,000,000 bytes.",
+        "Names of up to 12 characters, cleaned the same way as in the browser; a player without a name, or with no points, is not listed.",
+        "Every player's score counts on its own, in co-op as in versus."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "issueGame"
+        },
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "validSubmission"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "score"
+        }
+      ]
+    },
+    {
+      "id": "public-scores-page",
+      "name": "Public scores page",
+      "description": "The table as a web page anyone can open or share.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        }
+      ],
+      "behavior": "/games/retro/shatterbelt/scores/ lists the best scores with each pilot's wave and the kind of game they played, in icelander.net's look, with a link to play.",
+      "outcome": "A player can show the table to anyone, signed in or not.",
+      "constraints": [
+        "25 rows.",
+        "Names are escaped.",
+        "Inline styles only, under a strict content security policy."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/worker/scores-page.ts",
+          "symbol": "scoresPage"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores-page.ts",
+          "symbol": "modeLabel"
+        },
+        {
+          "path": "games/shatterbelt/worker/look.ts",
+          "symbol": "sitePage"
+        }
+      ]
+    },
+    {
+      "id": "old-address",
+      "name": "The old address still works",
+      "description": "Links to the game's first address land on the game.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "default.fetch"
+        }
+      ],
+      "behavior": "Any request to icelander.net/retro-games/shatterbelt, or a path under it, is redirected with a 308 to the same path and query under icelander.net/games/retro/shatterbelt.",
+      "outcome": "Old bookmarks and links keep working, and a redirected POST stays a POST.",
+      "constraints": [
+        "Only the /retro-games/shatterbelt address, the second of the Worker's routes."
+      ],
+      "implementation": [
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "OLD_PATH"
+        },
+        {
+          "path": "games/shatterbelt/wrangler.jsonc",
+          "symbol": "routes"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/shatterbelt/worker",
+      "path": "games/shatterbelt/worker/.dev/capability.json",
+      "relationship": "The capability these features belong to."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/shatterbelt/worker",
+      "path": "games/shatterbelt/worker/.dev/operation.json",
+      "relationship": "The operations they call."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/shatterbelt/src/engine",
+      "path": "games/shatterbelt/src/engine/.dev/feature.json",
+      "relationship": "The engine's exact replays, which the table relies on."
+    }
+  ]
+}

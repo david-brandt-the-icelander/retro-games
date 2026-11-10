@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Browser game contracts",
+  "folder": "games/shatterbelt/src",
+  "entities": [
+    {
+      "id": "online-messages",
+      "title": "Online game messages",
+      "summary": "What a Shatterbelt page sends the other pages of a match through the games hub's relay.",
+      "contractType": "message",
+      "consumers": [
+        "The other Shatterbelt pages in the same match",
+        "The games hub's relay, which passes messages on in order"
+      ],
+      "guarantees": [
+        "start: { slots, seed, delay, mode, ticket }, sent by the host; ticket is the server's { id, seed } or null",
+        "in: { f, b }, the sender's controls (the engine's control bits) from step f on",
+        "sum: { f, h }, a fingerprint of step f: the generator's state, time, wave, counts of rocks, shots and drones, and every ship's position, angle, score and lives",
+        "rtt: { ms }, the sender's round trip, when it changes by 5 ms or more",
+        "name: { player, name }, after the game, the sender's own pilot's name or null",
+        "results: { results }, from the host after submitting: the server's results, or null when nothing was submitted"
+      ],
+      "compatibility": "start, in, sum and rtt come from src/online.ts, the same file in Rally and Hivestorm, and change with its copies there. start's mode and ticket, name and results are Shatterbelt's own; every page of a match runs the same deployed version.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "startOnline"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "gamePrint"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "afterOnline"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Lockstep.flush"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Lockstep.check"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/contracts.json",
+          "entityId": "online-messages"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/rally/src/.dev/backlog.json",
+          "entityId": "online-copies"
+        }
+      ]
+    },
+    {
+      "id": "match-address",
+      "title": "The address the multiplayer page opens",
+      "summary": "/games/retro/shatterbelt/?match=ID&mode=coop or versus, for every pilot of a match.",
+      "contractType": "url",
+      "consumers": [
+        "The games hub's multiplayer page, which offers Shatterbelt co-op and Shatterbelt versus"
+      ],
+      "guarantees": [
+        "match is the relay's match ID; the page joins it on load",
+        "mode=versus plays versus; anything else plays co-op",
+        "BACK TO MULTIPLAYER links to /games/multiplayer/"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "matchInAddress"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "MULTIPLAYER_PAGE"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "onlineMode"
+        }
+      ]
+    },
+    {
+      "id": "device-table",
+      "title": "This device's table",
+      "summary": "localStorage shatterbelt.scores.v1: the best ten scores kept in this browser.",
+      "contractType": "browser-storage",
+      "consumers": [
+        "This page, on later visits"
+      ],
+      "guarantees": [
+        "A JSON array of { name, score, wave, mode, players }, best first, at most 10",
+        "Names are cleaned again when read; entries without a name or a finite score are dropped"
+      ],
+      "compatibility": "The key carries a version, v1, for a change of shape.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/scores.ts",
+          "symbol": "KEY"
+        },
+        {
+          "path": "games/shatterbelt/src/scores.ts",
+          "symbol": "loadScores"
+        }
+      ]
+    }
+  ]
+}

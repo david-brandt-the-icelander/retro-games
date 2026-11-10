@@ -1,0 +1,351 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Engine verification",
+  "folder": "games/shatterbelt/src/engine",
+  "entities": [
+    {
+      "id": "setup-and-waves",
+      "title": "Players and waves",
+      "summary": "Games hold the right ships in the right places, and waves come as the rules say.",
+      "subject": [
+        {
+          "path": "games/shatterbelt/src/engine/.dev/feature.json",
+          "entityId": "rock-belt"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/.dev/feature.json",
+          "entityId": "modes"
+        }
+      ],
+      "criteria": [
+        "A game holds 1 to 9 players; attract mode holds none",
+        "Every player starts apart from the others, on the field",
+        "Wave 1 arrives after the opening pause, with rocks away from every ship",
+        "More players and later waves bring more rocks, up to the cap",
+        "Clearing the field brings the next wave after a pause"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "a game holds 1 to 9 players; attract mode holds none",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "every player starts apart from the others, on the field",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "wave 1 arrives after the opening pause, with rocks away from every ship",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "more players and later waves bring more rocks, up to the cap",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "clearing the field brings the next wave after a pause",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "flying-and-shooting",
+      "title": "Flying, shooting and blink",
+      "summary": "Ships move and wrap, shots are limited and expire, and blink jumps and recharges.",
+      "subject": [
+        {
+          "path": "games/shatterbelt/src/engine/.dev/feature.json",
+          "entityId": "ships-and-guns"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/.dev/feature.json",
+          "entityId": "blink"
+        }
+      ],
+      "criteria": [
+        "A ship turns, thrusts, coasts to a stop and wraps around the edges",
+        "Shots are limited in flight, and holding fire is slower than tapping",
+        "Shots expire after their range",
+        "Blink jumps ahead, guards briefly, and has a cooldown"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "a ship turns, thrusts, coasts to a stop and wraps around the edges",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "shots are limited in flight, and holding fire is slower than tapping",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "shots expire after their range",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "blink jumps ahead, guards briefly, and has a cooldown",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "rocks-and-scoring",
+      "title": "Rocks, pods and scoring",
+      "summary": "Rocks split and score by size and kind, iron takes two hits, pods give their power, and streaks multiply.",
+      "subject": [
+        {
+          "path": "games/shatterbelt/src/engine/.dev/feature.json",
+          "entityId": "rock-belt"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/.dev/feature.json",
+          "entityId": "pods"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/.dev/feature.json",
+          "entityId": "streaks"
+        }
+      ],
+      "criteria": [
+        "Rocks split by kind and score by size and kind",
+        "Iron takes two hits",
+        "Pods give their power",
+        "Hits in quick succession raise the multiplier; a pause resets it"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "rocks split by kind and score by size and kind",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "iron takes two hits",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "pods give their power",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "hits in quick succession raise the multiplier; a pause resets it",
+          "command": "npm test"
+        }
+      ],
+      "details": "Nothing checks the drones on their own; they play in the long simulations of sim.test.ts."
+    },
+    {
+      "id": "ships-and-modes",
+      "title": "Losing ships, and the two modes",
+      "summary": "Ships are lost and come back as the rules say, co-op and versus treat shots differently, and the game ends only when everyone is out.",
+      "subject": [
+        {
+          "path": "games/shatterbelt/src/engine/.dev/feature.json",
+          "entityId": "lives"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/.dev/feature.json",
+          "entityId": "modes"
+        }
+      ],
+      "criteria": [
+        "Touching a rock costs a ship, and the ship comes back guarded",
+        "A shield takes one hit",
+        "Two ships that touch are both lost, in co-op and in versus",
+        "A ship still guarded after appearing doesn't collide with another",
+        "Co-op shots pass through other ships; versus shots take them down for points",
+        "A ship's own shots never hit it",
+        "An extra ship every 10,000 points",
+        "The game ends only when every player is out of ships"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "touching a rock costs a ship, and the ship comes back guarded",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "a shield takes one hit",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "two ships that touch are both lost, in co-op and in versus",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "a ship still guarded after appearing doesn't collide with another",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "co-op shots pass through other ships; versus shots take them down for points",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "a ship's own shots never hit it",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "an extra ship every 10,000 points",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "the game ends only when every player is out of ships",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "whole-games",
+      "title": "Whole games",
+      "summary": "Long random games stay sane, bots clear waves, and nine players reach the end.",
+      "subject": [
+        {
+          "path": "games/shatterbelt/src/engine/.dev/capability.json",
+          "entityId": "deterministic-game"
+        }
+      ],
+      "criteria": [
+        "Long random games with 1 to 9 players stay sane, in both modes",
+        "The attract backdrop runs for minutes without ships",
+        "A simple bot clears waves and scores",
+        "Nine bots in co-op play a full game and it ends"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/sim.test.ts",
+          "symbol": "long random games with 1 to 9 players stay sane, in both modes",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/sim.test.ts",
+          "symbol": "the attract backdrop runs for minutes without ships",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/sim.test.ts",
+          "symbol": "a simple bot clears waves and scores",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/sim.test.ts",
+          "symbol": "nine bots in co-op play a full game and it ends",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "id": "replay",
+      "title": "Determinism and replays",
+      "summary": "The same seed and controls give the same game, and a recording replays to exactly the same scores.",
+      "subject": [
+        {
+          "path": "games/shatterbelt/src/engine/.dev/feature.json",
+          "entityId": "replay"
+        }
+      ],
+      "criteria": [
+        "The generator is deterministic and uniform enough",
+        "The deterministic sin, cos and atan2 agree with Math to 1e-12 over many turns",
+        "The same seed and inputs replay the same game",
+        "Controls round-trip through their bits",
+        "A recorded game replays to exactly the same scores, for 1 to 9 players in both modes",
+        "A replay rejects recordings that don't play exactly one whole game",
+        "A recording made with another seed doesn't replay as this one",
+        "Replaying a long game takes under 200 ms per minute of play"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/engine.test.ts",
+          "symbol": "the generator is deterministic and uniform enough",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/replay.test.ts",
+          "symbol": "the deterministic sin, cos and atan2 agree with Math to 1e-12 over many turns",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/sim.test.ts",
+          "symbol": "the same seed and inputs replay the same game",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/replay.test.ts",
+          "symbol": "controls round-trip through their bits",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/replay.test.ts",
+          "symbol": "a recorded game replays to exactly the same scores, for 1 to 9 players in both modes",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/replay.test.ts",
+          "symbol": "a replay rejects recordings that don't play exactly one whole game",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/replay.test.ts",
+          "symbol": "a recording made with another seed doesn't replay as this one",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/replay.test.ts",
+          "symbol": "replaying a long game is quick enough for the server",
+          "command": "npm test"
+        }
+      ],
+      "details": "The tests run in Node only. That every browser computes the same bits is argued from IEEE 754 (dmath.ts), not checked across browsers."
+    }
+  ]
+}

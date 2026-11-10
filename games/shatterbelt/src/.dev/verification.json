@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Browser game verification",
+  "folder": "games/shatterbelt/src",
+  "entities": [
+    {
+      "id": "lockstep",
+      "title": "Lockstep",
+      "summary": "Browsers play the same steps, notice drift, and agree on who left.",
+      "subject": [
+        {
+          "path": "games/shatterbelt/src/.dev/capability.json",
+          "entityId": "online-lockstep"
+        }
+      ],
+      "criteria": [
+        "Browsers play the same steps whatever the delays",
+        "A player who leaves plays on as null from the same step for everyone",
+        "Browsers notice when their games drift apart",
+        "The delay covers the slowest two players' connections"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/online.test.ts",
+          "symbol": "browsers in lockstep play the same steps, whatever the delays",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/online.test.ts",
+          "symbol": "a player who leaves plays on as null from the same step for everyone",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/online.test.ts",
+          "symbol": "browsers notice when their games drift apart",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/online.test.ts",
+          "symbol": "the delay covers the slowest two players' connections",
+          "command": "npm test"
+        }
+      ],
+      "details": "The tests drive Lockstep over a stand-in room; the WebSocket, the games hub's relay and Shatterbelt's own messages (start, name, results) are not tested."
+    },
+    {
+      "id": "names",
+      "title": "Name rules",
+      "summary": "Names are cleaned to what the tables can show.",
+      "subject": [
+        {
+          "path": "games/shatterbelt/src/.dev/feature.json",
+          "entityId": "name-for-tables"
+        }
+      ],
+      "criteria": [
+        "Accents are dropped and a few letters spelled out",
+        "Spaces are collapsed and the name cut to 12 characters",
+        "A name with no letter or digit, or not a string, is empty"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/shatterbelt/test/replay.test.ts",
+          "symbol": "the server's helpers: names, submissions, and scores from the issued seed",
+          "command": "npm test"
+        }
+      ],
+      "details": "The scenes, the name form, the device's table, input, drawing and sound have no automated checks; they are tried by playing the built game in a browser."
+    }
+  ]
+}

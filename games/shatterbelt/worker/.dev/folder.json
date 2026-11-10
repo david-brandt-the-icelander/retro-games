@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "High-score Worker",
+  "folder": "games/shatterbelt/worker",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "High-score Worker",
+      "summary": "The Cloudflare Worker: the sign-in in front of the game's page, the high-score API, the public scores page, the redirect from the old address, and the D1 schema.",
+      "purpose": "Serves the static game, checks icelander.net's sign-in before the page and the score API, issues each game's seed, replays every submitted game with the browser's own engine before listing its scores, and shows the table as JSON and as a page in icelander.net's look.",
+      "boundaries": [
+        "The engine and the name rules are imported from src/, never copied.",
+        "The sign-in library is vendor/icelander-auth, a copy of icelander.net's; it is not edited here.",
+        "Online games are relayed by the games hub, not by this Worker."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "score"
+        },
+        {
+          "path": "games/shatterbelt/worker/schema.sql",
+          "symbol": "games"
+        }
+      ]
+    }
+  ]
+}

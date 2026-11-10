@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Engine references",
+  "folder": "games/shatterbelt/src/engine",
+  "entities": [
+    {
+      "id": "ieee-754",
+      "title": "IEEE 754 floating-point arithmetic",
+      "summary": "The standard that makes + − × ÷ and square root give the same bits everywhere.",
+      "relevance": "dmath.ts relies on it: the basic operations and Math.sqrt are correctly rounded, so every JavaScript engine computes the same series.",
+      "citation": "IEEE Std 754, Standard for Floating-Point Arithmetic",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/dmath.ts",
+          "symbol": "sin"
+        }
+      ]
+    },
+    {
+      "id": "mulberry32",
+      "title": "mulberry32",
+      "summary": "The seeded generator in rng.ts.",
+      "relevance": "A small 32-bit generator built from Math.imul and shifts, whose state is kept in the game, so a seed replays a game exactly in every engine.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/rng.ts",
+          "symbol": "rand"
+        }
+      ]
+    }
+  ]
+}

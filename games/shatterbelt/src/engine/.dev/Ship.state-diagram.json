@@ -3,7 +3,7 @@
   "kind": "state",
   "title": "Shatterbelt ship state diagram",
   "folder": "games/shatterbelt/src/engine",
-  "description": "One player's ship. newGame() places every ship, so a ship starts alive. Hits come from rocks, drones and drone shots, and in versus from other ships and their shots. Extra ships come from award() every SHIP.extraEvery points.",
+  "description": "One player's ship. newGame() places every ship, so a ship starts alive. Hits come from rocks, drones, drone shots and touching another ship in every mode, and in versus from other ships' shots. Extra ships come from award() every SHIP.extraEvery points.",
   "sources": [
     {
       "path": "games/shatterbelt/src/engine/game.ts",
@@ -59,7 +59,7 @@
       "to": "out",
       "trigger": "hurtShip() then killShip()",
       "guard": "not guarded, no shield, the last ship",
-      "action": "lives−−; out = true; emit die."
+      "action": "lives−−; lose the combo and power-ups; out = true; emit die. Another player's hit scores TAKEDOWN."
     },
     {
       "from": "respawning",

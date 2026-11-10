@@ -1,0 +1,73 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "High-score Worker decisions",
+  "folder": "games/shatterbelt/worker",
+  "entities": [
+    {
+      "id": "replay-not-trust",
+      "title": "Replay every score",
+      "summary": "The server never takes a score from the browser; it replays the game.",
+      "status": "accepted",
+      "context": "A browser can send anything; a public table is worthless if scores can be typed in.",
+      "options": [
+        {
+          "title": "Accept the browser's score",
+          "consequences": "Trivially faked."
+        },
+        {
+          "title": "Issue the seed and replay the recorded controls",
+          "consequences": "A replay per submission, and an engine that computes the same bits in every JavaScript engine."
+        }
+      ],
+      "decision": "The server issues each game's seed and stores it unused. A submission carries the recorded controls without a seed; the server replays them from the seed it issued, marks the seed used, and stores the scores the replay produced.",
+      "rationale": "Only what the game really scored can be listed, and each seed only once.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "issueGame"
+        },
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores.ts",
+          "symbol": "score"
+        },
+        {
+          "path": "games/shatterbelt/src/net.ts",
+          "symbol": "submitGame"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/shatterbelt/src/engine/.dev/decisions.json",
+          "entityId": "own-trigonometry"
+        }
+      ]
+    },
+    {
+      "id": "every-player-one-row",
+      "title": "One row per pilot",
+      "summary": "A game with several players enters each named player's own score, in co-op as in versus.",
+      "status": "accepted",
+      "context": "Up to nine pilots play one game, and each keeps their own score.",
+      "decision": "A submission names each player or leaves them out; each named player with points gets a row of their own, keyed by the seed and their index, with the game's mode and number of players beside it.",
+      "rationale": "Each pilot is ranked on what they scored, and the table shows what kind of game it was.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "submitScore"
+        },
+        {
+          "path": "games/shatterbelt/worker/scores-page.ts",
+          "symbol": "modeLabel"
+        }
+      ]
+    }
+  ]
+}

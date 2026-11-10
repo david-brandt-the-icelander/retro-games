@@ -1,0 +1,74 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Browser game capability",
+  "folder": "games/shatterbelt/src",
+  "description": "What the browser side offers beyond the engine.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/src/online.ts",
+      "symbol": "Lockstep"
+    }
+  ],
+  "entities": [
+    {
+      "id": "online-lockstep",
+      "name": "Online lockstep play",
+      "description": "Keeps two to nine browsers playing exactly the same game.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Room"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Lockstep"
+        }
+      ],
+      "responsibility": "Connects to a match's relay, measures each connection, and hands the page every player's controls for each step only when all of them are known, checking every 120 steps that the browsers agree.",
+      "operations": [
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Room.open"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "everyoneIn"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "delaySteps"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Lockstep.local"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Lockstep.next"
+        },
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Lockstep.check"
+        }
+      ],
+      "access": [
+        "Only the signed-in players the lobby put in the match may connect; the games hub's relay checks this, not this code."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "feature",
+      "folder": "games/shatterbelt/src",
+      "path": "games/shatterbelt/src/.dev/feature.json",
+      "relationship": "The online game it carries."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/shatterbelt/src",
+      "path": "games/shatterbelt/src/.dev/use-case.json",
+      "relationship": "The online use case that uses it."
+    }
+  ]
+}

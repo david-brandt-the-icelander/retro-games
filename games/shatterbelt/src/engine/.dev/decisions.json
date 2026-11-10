@@ -1,0 +1,53 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Engine decisions",
+  "folder": "games/shatterbelt/src/engine",
+  "entities": [
+    {
+      "id": "own-trigonometry",
+      "title": "The engine's own sine, cosine and arctangent",
+      "summary": "Angles stay, but the engine computes their functions itself from basic arithmetic.",
+      "status": "accepted",
+      "context": "The server replays every submitted game and online browsers play in lockstep, so every JavaScript engine must compute the same game to the bit. Math.sin, Math.cos, Math.atan2, Math.exp and Math.hypot may differ in the last bit between engines; a rock shooter turns ships by angles throughout.",
+      "options": [
+        {
+          "title": "Math's functions",
+          "consequences": "Simple, but a replay or an online game may drift apart on another engine."
+        },
+        {
+          "title": "Avoid angles",
+          "consequences": "Turning and aiming by angle would have to be rewritten as vectors and slopes."
+        },
+        {
+          "title": "Compute them from + − × ÷ and √",
+          "consequences": "A few short series, which IEEE 754 fixes to the bit."
+        }
+      ],
+      "decision": "dmath.ts gives sin and cos by range reduction and Taylor series, atan2 by halving the angle twice and a short series, and hypot by Math.sqrt. The drag factor e^(−0.6/60) is written out as SHIP.dragStep rather than computed.",
+      "rationale": "Every JavaScript engine then computes the same numbers, so a game replays exactly on the server and in every browser.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/dmath.ts",
+          "symbol": "sin"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/dmath.ts",
+          "symbol": "atan2"
+        },
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "SHIP"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "verified-by",
+          "path": "games/shatterbelt/src/engine/.dev/verification.json",
+          "entityId": "replay"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Browser game references",
+  "folder": "games/shatterbelt/src",
+  "entities": [
+    {
+      "id": "fnv-1a",
+      "title": "FNV-1a hash",
+      "summary": "The hash behind the online fingerprint.",
+      "relevance": "fingerprint() hashes each number's 64 bits with FNV-1a's offset basis and prime; gamePrint() feeds it the game's state.",
+      "url": "http://www.isthe.com/chongo/tech/comp/fnv/",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "fingerprint"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "gamePrint"
+        }
+      ]
+    }
+  ]
+}

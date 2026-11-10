@@ -1,0 +1,606 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-use-case/schema.json",
+  "kind": "use-case",
+  "title": "Browser game use cases",
+  "folder": "games/shatterbelt/src",
+  "description": "What a player does with the page, step by step.",
+  "sources": [
+    {
+      "path": "games/shatterbelt/src/main.ts",
+      "symbol": "launch"
+    },
+    {
+      "path": "games/shatterbelt/src/main.ts",
+      "symbol": "joinMatch"
+    }
+  ],
+  "entities": [
+    {
+      "id": "fly-solo-and-enter-table",
+      "name": "Fly alone and enter the table",
+      "description": "A player flies a game alone and puts the score on the high-score table.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "launch"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "afterGame"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Fly as long as the ships last and see the score ranked on the table.",
+      "preconditions": [
+        "The player is signed in to icelander.net with the games:play role.",
+        "The title screen is showing, and the page is not waiting to join an online game."
+      ],
+      "postconditions": [
+        "The score, as the server's replay computed it, is on the public table under the player's name.",
+        "If it makes this browser's top ten, it is kept there too."
+      ],
+      "flow": [
+        {
+          "id": "launch",
+          "actor": "Player",
+          "action": "Presses Space, Enter or fire, or taps LAUNCH.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "handle"
+            },
+            {
+              "path": "games/shatterbelt/src/render.ts",
+              "symbol": "launchRect"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "seed",
+          "actor": "Page",
+          "action": "Asks the server for the game's seed, starts a co-op game for one from it, and records every change of the controls.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "launch"
+            },
+            {
+              "path": "games/shatterbelt/src/net.ts",
+              "symbol": "startGame"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "play",
+          "actor": "Player",
+          "action": "Flies until every ship is lost, with the keyboard, a gamepad or the touch buttons.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "tick"
+            },
+            {
+              "path": "games/shatterbelt/src/input.ts",
+              "symbol": "Input.controls"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "over",
+          "actor": "Page",
+          "action": "Shows the game over, then waits for a key or a tap.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "tick"
+            },
+            {
+              "path": "games/shatterbelt/src/render.ts",
+              "symbol": "Renderer.gameOver"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "ask",
+          "actor": "Page",
+          "action": "Opens a form over the screen for a name, when the score would make the public top ten or this browser's.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "afterGame"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "onPublicTable"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "askName"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "name",
+          "actor": "Player",
+          "action": "Types a name and presses SAVE or Enter.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "askName"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "keep",
+          "actor": "Page",
+          "action": "Cleans the name, and keeps the score in this browser's top ten if it makes it.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/name.ts",
+              "symbol": "cleanName"
+            },
+            {
+              "path": "games/shatterbelt/src/scores.ts",
+              "symbol": "addScore"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "submit",
+          "actor": "Page",
+          "action": "Sends the seed's id, the recording and the name; the server replays the game.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "submit"
+            },
+            {
+              "path": "games/shatterbelt/src/net.ts",
+              "symbol": "submitGame"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "table",
+          "actor": "Page",
+          "action": "Shows the score with its rank among all pilots, and reloads the public table for the title screen.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "submit"
+            },
+            {
+              "path": "games/shatterbelt/src/render.ts",
+              "symbol": "Renderer.saved"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "seed",
+          "condition": "The server gives no seed within 2.5 s (unreachable, or refusing).",
+          "outcome": "The game plays from a seed of the browser's own, with OFFLINE: SCORES STAY ON THIS DEVICE under the field; its score can only go on this browser's table.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "launch"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "afterGame"
+            }
+          ]
+        },
+        {
+          "atStep": "play",
+          "condition": "The player presses P, START or PAUSE, presses Escape, or leaves the tab or window.",
+          "outcome": "The game pauses; Escape (or a gamepad's Back) while paused quits to the title.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "setPaused"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "handle"
+            }
+          ]
+        },
+        {
+          "atStep": "ask",
+          "condition": "The score makes neither table.",
+          "outcome": "No form: back to the title.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "afterGame"
+            }
+          ]
+        },
+        {
+          "atStep": "name",
+          "condition": "The name has no letter or digit.",
+          "outcome": "The form says so and stays open.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "askName"
+            }
+          ]
+        },
+        {
+          "atStep": "name",
+          "condition": "The player presses SKIP or Escape.",
+          "outcome": "The score stays off both tables and the page returns to the title.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "askName"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "afterGame"
+            }
+          ]
+        },
+        {
+          "atStep": "submit",
+          "condition": "The server can't be reached, or refuses the game.",
+          "outcome": "The page says the score server couldn't be reached or couldn't confirm the game, and that scores that made this device's table are kept there.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "submit"
+            },
+            {
+              "path": "games/shatterbelt/src/net.ts",
+              "symbol": "call"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    },
+    {
+      "id": "fly-online",
+      "name": "Fly with friends online",
+      "description": "Two to nine players, each on their own device, play one game started from the multiplayer page, and enter it on the table.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "joinMatch"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "afterOnline"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Play one game with friends who are somewhere else, together or against each other, and see everyone's scores on the table.",
+      "preconditions": [
+        "Every player is signed in.",
+        "The multiplayer page has started a match and opened this page for each of them with ?match=ID and the mode."
+      ],
+      "postconditions": [
+        "Every browser has played the same game.",
+        "Each named player's score, as the server's replay computed it, is on the public table."
+      ],
+      "flow": [
+        {
+          "id": "connect",
+          "actor": "Page",
+          "action": "Connects to the match's relay and waits up to 15 s for everyone the match was made for.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "joinMatch"
+            },
+            {
+              "path": "games/shatterbelt/src/online.ts",
+              "symbol": "Room.open"
+            },
+            {
+              "path": "games/shatterbelt/src/online.ts",
+              "symbol": "everyoneIn"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "start",
+          "actor": "Page",
+          "action": "The host's page (the lowest slot in the room) asks the server for a seed, chooses a delay from everyone's round trips, and sends the slots, seed, delay, mode and seed's ticket; every page begins the same game.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "startOnline"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "roomMessage"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "beginOnline"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "play",
+          "actor": "Player",
+          "action": "Each flies their own ship; the line under the field shows which pilot they are, in their colour.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "stepOnline"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "showNet"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "lockstep",
+          "actor": "Page",
+          "action": "Sends this pilot's controls a few steps ahead, steps the game only with every pilot's controls, and compares fingerprints every 120 steps.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "stepOnline"
+            },
+            {
+              "path": "games/shatterbelt/src/online.ts",
+              "symbol": "Lockstep"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "name",
+          "actor": "Player",
+          "action": "After the game over, each pilot who made a table types a name on their own screen.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "afterGame"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "share-names",
+          "actor": "Page",
+          "action": "Every page sends its pilot's name, or none, to the others.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "afterOnline"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "submit",
+          "actor": "Page",
+          "action": "The lowest slot still in the room waits for every name (or for those who left), sends the game with every name, and passes the results to the others.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "afterOnline"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "submit"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "results",
+          "actor": "Page",
+          "action": "Every page shows the results with each named pilot's rank, and a link back to the multiplayer page.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "afterOnline"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "showNet"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "connect",
+          "condition": "The relay refuses the match (ended, someone else's) or can't be reached.",
+          "outcome": "The line under the field says why, with a link back to the multiplayer page.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "joinMatch"
+            },
+            {
+              "path": "games/shatterbelt/src/online.ts",
+              "symbol": "REFUSALS"
+            }
+          ]
+        },
+        {
+          "atStep": "start",
+          "condition": "Nobody else is in the room when the host starts.",
+          "outcome": "No game: NOBODY ELSE ARRIVED.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "startOnline"
+            }
+          ]
+        },
+        {
+          "atStep": "start",
+          "condition": "The host's start never comes.",
+          "outcome": "After 5 s, whoever is host by then starts the game.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "joinMatch"
+            }
+          ]
+        },
+        {
+          "atStep": "start",
+          "condition": "The host's page gets no seed from the server.",
+          "outcome": "The game plays from the host's own seed and can't go on the public table; after it, each page keeps its own pilot's score on its own table at most.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "startOnline"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "afterOnline"
+            }
+          ]
+        },
+        {
+          "atStep": "lockstep",
+          "condition": "Some pilot's controls haven't arrived.",
+          "outcome": "Every page waits, and after 0.4 s says whom it is waiting for.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "showNet"
+            },
+            {
+              "path": "games/shatterbelt/src/online.ts",
+              "symbol": "Lockstep.waiting"
+            }
+          ]
+        },
+        {
+          "atStep": "lockstep",
+          "condition": "A pilot leaves the room.",
+          "outcome": "From the same step for everyone, their ship flies on with no controls, and the others are told.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "beginOnline"
+            },
+            {
+              "path": "games/shatterbelt/src/online.ts",
+              "symbol": "Lockstep.next"
+            }
+          ]
+        },
+        {
+          "atStep": "lockstep",
+          "condition": "The fingerprints differ.",
+          "outcome": "The game ends on that page, which says the games fell out of step, and returns to the title.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "beginOnline"
+            }
+          ]
+        },
+        {
+          "atStep": "play",
+          "condition": "The player presses Escape twice within 2 s, or the connection is lost.",
+          "outcome": "This page leaves the game and returns to the title; the others play on with this pilot's ship idle.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "handle"
+            },
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "roomMessage"
+            }
+          ]
+        },
+        {
+          "atStep": "submit",
+          "condition": "Nobody gave a name.",
+          "outcome": "The host sends no game, and every page returns to the title.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "afterOnline"
+            }
+          ]
+        },
+        {
+          "atStep": "results",
+          "condition": "No results arrive within 120 s.",
+          "outcome": "The page shows the same answer as when the score server can't be reached.",
+          "sources": [
+            {
+              "path": "games/shatterbelt/src/main.ts",
+              "symbol": "afterOnline"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md",
+      "supportingActors": [
+        {
+          "name": "The other players",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "feature",
+      "folder": "games/shatterbelt/src",
+      "path": "games/shatterbelt/src/.dev/feature.json",
+      "relationship": "The features these use cases exercise."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/shatterbelt/src",
+      "path": "games/shatterbelt/src/.dev/capability.json",
+      "relationship": "Online lockstep play, which the online use case relies on."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/shatterbelt/worker",
+      "path": "games/shatterbelt/worker/.dev/operation.json",
+      "relationship": "The server operations the steps call: a seed, a submission, the table."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/shatterbelt/src/engine",
+      "path": "games/shatterbelt/src/engine/.dev/operation.json",
+      "relationship": "The engine operations that play and record the game."
+    },
+    {
+      "kind": "user-journey",
+      "folder": "games/shatterbelt",
+      "path": "games/shatterbelt/.dev/user-journey.json",
+      "relationship": "The journeys these use cases are part of."
+    }
+  ]
+}

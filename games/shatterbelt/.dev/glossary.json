@@ -1,0 +1,248 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/glossary.schema.json",
+  "kind": "glossary",
+  "title": "Shatterbelt glossary",
+  "folder": "games/shatterbelt",
+  "entities": [
+    {
+      "id": "pilot",
+      "title": "Pilot",
+      "summary": "A player, and their ship. Pilots are numbered P1 to P9 by their place in the game.",
+      "aliases": [
+        "player",
+        "ship"
+      ],
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "Ship"
+        }
+      ]
+    },
+    {
+      "id": "wave",
+      "title": "Wave",
+      "summary": "One field of large rocks to clear. The next wave comes 2.5 s after the field is clear; the table records the wave a game reached.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "startWave"
+        }
+      ]
+    },
+    {
+      "id": "rock-kinds",
+      "title": "Stone, crystal, iron",
+      "summary": "The kinds of rock: stone takes a hit; crystal (blue) splits in three, is worth double and may leave a pod; iron (rust) takes two hits and is worth triple.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "RockKind"
+        }
+      ]
+    },
+    {
+      "id": "drone",
+      "title": "Drone",
+      "summary": "An enemy that crosses the field and shoots: the large drone fires anywhere, the small hunter aims at the nearest ship.",
+      "aliases": [
+        "hunter"
+      ],
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "Drone"
+        }
+      ]
+    },
+    {
+      "id": "pod",
+      "title": "Pod",
+      "summary": "A power-up left by crystal or a drone: rapid fire, spread shot, or a shield that takes one hit.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "PodKind"
+        }
+      ]
+    },
+    {
+      "id": "blink",
+      "title": "Blink",
+      "summary": "A jump of 230 px ahead, with half a second in which the ship can't be hurt; it recharges in 3 s.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "BLINK"
+        }
+      ]
+    },
+    {
+      "id": "guard",
+      "title": "Guard",
+      "summary": "Time in which a ship can't be hurt and doesn't collide with other ships: 3 s after it appears (it blinks on screen), 0.5 s after a blink, 1 s after its shield takes a hit.",
+      "notToBeConfusedWith": [
+        "Blink, the jump that gives a short guard."
+      ],
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "Ship"
+        }
+      ]
+    },
+    {
+      "id": "streak",
+      "title": "Streak",
+      "summary": "Hits each within 1.6 s of the last; every 5 raise the multiplier on every score, up to ×4.",
+      "aliases": [
+        "combo",
+        "multiplier"
+      ],
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "multiplier"
+        }
+      ]
+    },
+    {
+      "id": "takedown",
+      "title": "Takedown",
+      "summary": "In versus, destroying another pilot's ship with a shot: 500 points, times the streak.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "TAKEDOWN"
+        }
+      ]
+    },
+    {
+      "id": "mode",
+      "title": "Co-op, versus, attract",
+      "summary": "Co-op: shots pass through other ships. Versus: they don't, and a takedown scores. Attract: no ships, the backdrop behind the title. A game alone is co-op for one.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/game.ts",
+          "symbol": "Mode"
+        }
+      ]
+    },
+    {
+      "id": "step",
+      "title": "Step",
+      "summary": "One fixed advance of the game, 1/60 s. Recordings, replays and online lockstep count in steps.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/config.ts",
+          "symbol": "DT"
+        }
+      ]
+    },
+    {
+      "id": "seed",
+      "title": "Seed",
+      "summary": "A 32-bit number that fixes every random choice in a game. The server issues it for a game that may enter the table.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/worker/index.ts",
+          "symbol": "issueGame"
+        }
+      ]
+    },
+    {
+      "id": "ticket",
+      "title": "Ticket",
+      "summary": "The server's answer to a new game: the seed's id and the seed. A game without one is offline and can't enter the public table.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/net.ts",
+          "symbol": "Ticket"
+        }
+      ]
+    },
+    {
+      "id": "recording",
+      "title": "Recording",
+      "summary": "A game's mode, players, seed and step count, and every change of every player's controls as [steps since the last change, player, bits].",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/engine/replay.ts",
+          "symbol": "Recording"
+        }
+      ]
+    },
+    {
+      "id": "host",
+      "title": "Host",
+      "summary": "In an online game, the browser in the lowest slot still in the room. It starts the game and submits it with every name.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Room.host"
+        }
+      ]
+    },
+    {
+      "id": "slot",
+      "title": "Slot",
+      "summary": "A player's place in the lobby's match; pilots are numbered in slot order.",
+      "notToBeConfusedWith": [
+        "The pilot's number in the game (P1…), which is its index among the slots playing."
+      ],
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Start"
+        }
+      ]
+    },
+    {
+      "id": "lockstep",
+      "title": "Lockstep",
+      "summary": "Online play in which every browser runs the whole game and steps only once it has every pilot's controls for that step.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "Lockstep"
+        }
+      ]
+    },
+    {
+      "id": "delay",
+      "title": "Delay",
+      "summary": "How many steps ahead a browser schedules its own pilot's controls online, chosen at the start from everyone's measured connections.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/online.ts",
+          "symbol": "delaySteps"
+        }
+      ]
+    },
+    {
+      "id": "fingerprint",
+      "title": "Fingerprint",
+      "summary": "A hash of the game's numbers that the browsers compare every 120 steps online, to notice if their games differ.",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "gamePrint"
+        }
+      ]
+    },
+    {
+      "id": "games-hub",
+      "title": "Games hub",
+      "summary": "The site's games Worker in another repository: the multiplayer lobby, the match relay and /games/play.js.",
+      "aliases": [
+        "recreations"
+      ],
+      "sources": [
+        {
+          "path": "games/shatterbelt/README.md",
+          "symbol": "Playing online: each pilot on their own computer"
+        }
+      ]
+    }
+  ]
+}
