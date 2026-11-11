@@ -48,6 +48,29 @@
           "symbol": "4. Dictator through the skill"
         }
       ]
+    },
+    {
+      "id": "purge-old-history",
+      "title": "Purge the old repository's history",
+      "summary": "The owner decided to purge it; which repository it is is not recorded here, and the purge rewrites and force-pushes every branch.",
+      "type": "task",
+      "acceptanceCriteria": [
+        "The owner names the repository and confirms the force-push.",
+        "No commit in it holds the faithful version."
+      ],
+      "origin": {
+        "kind": "decision",
+        "reference": "games/dictator/.dev/decisions.json#purge-old-history",
+        "description": "The owner's answer, 2026-11-11."
+      },
+      "status": "open",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/dictator/PLAN.md",
+          "symbol": "Purge the old repository's history"
+        }
+      ]
     }
   ]
 }

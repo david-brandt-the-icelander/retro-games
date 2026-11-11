@@ -132,7 +132,7 @@
       "id": "purge-old-history",
       "title": "Purge the old repository's history?",
       "summary": "Whether the private repository that first held the faithful version should have its history rewritten.",
-      "status": "open",
+      "status": "accepted",
       "context": "Milestone 1 of PLAN.md moved the faithful version out of an older repository. Purging that repository's history rewrites main and every branch and force-pushes them, which is destructive and breaks existing clones. The repository turned out to be private, so the faithful version was never publicly visible there. PLAN.md records the purge as \"to re-confirm\", and nothing in this repository records an answer. Whether it is still open could not be checked from here: it concerns another repository.",
       "options": [
         {
@@ -144,7 +144,6 @@
           "consequences": "The faithful version stays in that private repository's history."
         }
       ],
-      "waitingOn": "Owner",
       "origin": {
         "kind": "document",
         "reference": "games/dictator/PLAN.md",
@@ -156,7 +155,11 @@
           "path": "games/dictator/PLAN.md",
           "symbol": "2. Milestone 1: the faithful version, private"
         }
-      ]
+      ],
+      "decision": "Purge the old repository's history.",
+      "rationale": "The faithful version should not survive in that repository's history, even privately.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-11"
     }
   ]
 }

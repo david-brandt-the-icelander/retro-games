@@ -41,6 +41,24 @@
           "entityId": "render-oauth-ids"
         }
       ]
+    },
+    {
+      "id": "rename-gambit-chess",
+      "title": "Rename the slug and path from chess to gambit-chess",
+      "summary": "The folder, the Worker, BASE and the address /games/retro/chess become gambit-chess.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "Gambit is served at /games/retro/gambit-chess/, and the old address redirects there.",
+        "Invitation links already sent (?challenge=ID at the old address) still open their invitation.",
+        "The database keeps its data; any rename of it goes through docs/database-migrations.md."
+      ],
+      "origin": {
+        "kind": "decision",
+        "reference": "games/chess/.dev/decisions.json#title-and-slug",
+        "description": "The owner's answer, 2026-11-11."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed"
     }
   ]
 }
