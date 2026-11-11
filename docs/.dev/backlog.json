@@ -1,0 +1,37 @@
+{
+  "$schema": "../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Documentation backlog",
+  "folder": "docs",
+  "entities": [
+    {
+      "id": "migration-use-case",
+      "title": "Migrate a game's database, as a use case",
+      "summary": "docs/database-migrations.md describes a procedure the migration gate enforces, and no view shows it.",
+      "type": "chore",
+      "acceptanceCriteria": [
+        "A use case in docs/.dev, Migrate a game's database: the owner as actor, GitHub supporting, the steps of database-migrations.md and the gate's refusals as alternatives.",
+        "A runbooks record for it, linked from each game's runbooks rather than copied into them."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "docs/database-migrations.md"
+        },
+        {
+          "path": ".github/scripts/migration-gate.sh"
+        },
+        {
+          "path": ".github/workflows/migrations.yml"
+        }
+      ]
+    }
+  ]
+}

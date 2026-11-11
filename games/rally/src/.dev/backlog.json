@@ -26,6 +26,14 @@
           "path": "games/rally/src/online.ts",
           "symbol": "Room"
         }
+      ],
+      "relationships": [
+        {
+          "relation": "resolved-by",
+          "path": "games/.dev/backlog.json",
+          "entityId": "shared-game-kit",
+          "description": "If the owner chooses to share the code (games/.dev/decisions.json, shared-game-kit)."
+        }
       ]
     },
     {
@@ -49,6 +57,49 @@
         {
           "path": "games/rally/src/name.ts",
           "symbol": "cleanName"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "resolved-by",
+          "path": "games/.dev/backlog.json",
+          "entityId": "shared-game-kit",
+          "description": "If the owner chooses to share the code (games/.dev/decisions.json, shared-game-kit)."
+        }
+      ]
+    },
+    {
+      "id": "screens-out-of-main",
+      "title": "Move the screen machine out of main.ts",
+      "summary": "main.ts both wires the page and runs the screen machine the Screen state diagram draws.",
+      "type": "improvement",
+      "acceptanceCriteria": [
+        "The Screen machine lives in src/ui/ and its state diagram moves with it; main.ts only wires the engine, the screens, the network and the table together.",
+        "npm test passes, and play is unchanged."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "show"
+        },
+        {
+          "path": "games/rally/src/.dev/Screen.state-diagram.json"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/.dev/decisions.json",
+          "entityId": "split-long-files",
+          "description": "Waits on this decision."
         }
       ]
     }

@@ -10,7 +10,7 @@
       "summary": "The samosa Worker at icelander.net/games/retro/samosa* (and the old /retro-games/samosa*), with its static game and the D1 database samosa-scores.",
       "environment": "production",
       "purpose": "The game players reach at icelander.net/games/retro/samosa/ and its public scores page.",
-      "deployedBy": "The Deploy workflow on every push to main that changes games/dictator (or anything under .github/); by hand with Run workflow, choosing dictator or all; or `npm run deploy` with a Cloudflare token.",
+      "deployedBy": "The Deploy workflow on every push to main that changes games/dictator outside its .dev folders (or anything under .github/ outside .github/.dev); by hand with Run workflow, choosing dictator or all; or `npm run deploy` with a Cloudflare token.",
       "approvals": [
         "A pull request: main accepts nothing else.",
         "A reviewer on the repository's production environment, if one is set."

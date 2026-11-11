@@ -40,6 +40,51 @@
           "relation": "relates-to",
           "path": "games/rally/src/.dev/backlog.json",
           "entityId": "name-copies"
+        },
+        {
+          "relation": "resolved-by",
+          "path": "games/.dev/backlog.json",
+          "entityId": "shared-game-kit",
+          "description": "If the owner chooses to share the code (games/.dev/decisions.json, shared-game-kit)."
+        }
+      ]
+    },
+    {
+      "id": "ui-folder",
+      "title": "Give Shatterbelt a src/ui folder like Rally's and Hivestorm's",
+      "summary": "render.ts, input.ts and sound.ts sit beside main.ts in src/, where the other web games keep them in src/ui/, and the Scene machine is run by main.ts.",
+      "type": "improvement",
+      "acceptanceCriteria": [
+        "render.ts, input.ts and sound.ts are in src/ui/, with that folder's component and class diagrams; render.ts is split where it holds separate concerns.",
+        "The Scene machine is in src/ui/ with its state diagram, named Screen like Rally's; main.ts only wires things together.",
+        "npm test passes, and play is unchanged."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "games/shatterbelt/src/render.ts"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "Scene"
+        },
+        {
+          "path": "games/shatterbelt/src/.dev/Scene.state-diagram.json"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/.dev/decisions.json",
+          "entityId": "split-long-files",
+          "description": "Waits on this decision."
         }
       ]
     }

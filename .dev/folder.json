@@ -46,6 +46,10 @@
         {
           "path": "games/.dev/component-diagram.json",
           "label": "The games"
+        },
+        {
+          "path": ".dev/plan.json",
+          "label": "Plan: a full showcase for the cyberspace explorer"
         }
       ]
     }

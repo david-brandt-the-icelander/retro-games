@@ -1,0 +1,67 @@
+{
+  "$schema": "../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Workflow backlog",
+  "folder": ".github",
+  "entities": [
+    {
+      "id": "describe-delivery",
+      "title": "Describe the workflows as a capability with operations and a use case",
+      "summary": "The workflows test, gate and deploy every game, but .github/.dev holds only a folder record.",
+      "type": "chore",
+      "acceptanceCriteria": [
+        "A component diagram of the workflows and their scripts.",
+        "pipeline and delivery records for the repository as a whole, linking each game's own.",
+        "A capability, Continuous delivery, with operations for changed-games.sh, last-deployed.sh, migration-gate.sh and the Run workflow dispatch.",
+        "A use case, Ship a change to a game, with the owner or a coding agent as actor and GitHub supporting, through ci.yml, migrations.yml and deploy.yml."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/scripts/changed-games.sh"
+        },
+        {
+          "path": ".github/scripts/migration-gate.sh"
+        }
+      ]
+    },
+    {
+      "id": "related-views-check",
+      "title": "A check that the behaviour views link up",
+      "summary": "Nothing checks that each feature reaches a capability or a use case, or that each operation belongs to a capability.",
+      "type": "improvement",
+      "acceptanceCriteria": [
+        "A script in .github/scripts/ lists every feature with no capability or use case among its related views, and every operation with no capability.",
+        "ci.yml runs it, once the behaviour-chain item in games/ has left it nothing to report."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "Meta/Agents/Skills/validate_diagrams.py"
+        }
+      ]
+    }
+  ]
+}

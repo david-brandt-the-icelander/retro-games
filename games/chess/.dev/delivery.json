@@ -10,7 +10,7 @@
       "summary": "The chess Worker at icelander.net/games/retro/chess*, with the static game, the GameRoom Durable Objects and the D1 database chess.",
       "environment": "production",
       "purpose": "The game players reach at icelander.net/games/retro/chess/.",
-      "deployedBy": "The Deploy workflow on every push to main that changes games/chess (or anything under .github/); by hand with Run workflow; or npm run deploy (npm test, npm run test:godot, npm run build, wrangler deploy) with Godot 4.7.2 and a Cloudflare token.",
+      "deployedBy": "The Deploy workflow on every push to main that changes games/chess outside its .dev folders (or anything under .github/ outside .github/.dev); by hand with Run workflow; or npm run deploy (npm test, npm run test:godot, npm run build, wrangler deploy) with Godot 4.7.2 and a Cloudflare token.",
       "approvals": [
         "A pull request: main accepts nothing else.",
         "A reviewer on the repository's production environment, if one is set."

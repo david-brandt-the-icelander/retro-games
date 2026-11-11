@@ -7,16 +7,16 @@
     {
       "id": "pull-request",
       "title": "On a pull request",
-      "summary": "Only the repository-wide diagram check runs; LodeStar itself is not built or tested in CI.",
+      "summary": "Only the repository-wide checks of the .dev files run; LodeStar itself is not built or tested in CI.",
       "trigger": "A pull request (ci.yml).",
       "checks": [
-        "python3 Meta/Agents/Skills/validate_diagrams.py, for the whole repository"
+        "python3 Meta/Agents/Skills/validate_diagrams.py, for the whole repository",
+        "python3 Meta/Agents/Knowledge/validate_knowledge.py, for the whole repository"
       ],
       "blocks": "merge, when the check fails",
       "notChecked": [
         "cargo test: changed-games.sh lists only games with a package.json, so the game job never runs for LodeStar",
-        "The Godot import, the smoke test and the exports",
-        "The knowledge files: Meta/Agents/Knowledge/validate_knowledge.py is not run in CI"
+        "The Godot import, the smoke test and the exports"
       ],
       "evidenceStatus": "source-verified",
       "sources": [

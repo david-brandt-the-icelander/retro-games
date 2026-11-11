@@ -1,6 +1,6 @@
 name: CI
 
-# On every pull request: the architecture diagrams, and each game the pull request changes,
+# On every pull request: the .dev diagrams and knowledge files, and each game the pull request changes,
 # tested and built as its deploy would (game.yml), without deploying.
 
 on:
@@ -16,6 +16,7 @@ jobs:
           python-version: "3.13"
       - run: pip install jsonschema
       - run: python3 Meta/Agents/Skills/validate_diagrams.py
+      - run: python3 Meta/Agents/Knowledge/validate_knowledge.py
 
   changes:
     runs-on: ubuntu-latest

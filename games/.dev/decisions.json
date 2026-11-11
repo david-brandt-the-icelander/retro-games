@@ -55,6 +55,109 @@
       "rationale": ".dev files document the code for its maintainers and are not part of the game. The CI check also catches a game that copies a folder some other way.",
       "decidedBy": "Owner",
       "decidedOn": "2026-11-10"
+    },
+    {
+      "id": "shared-game-kit",
+      "title": "Share code between the web games?",
+      "summary": "Moving the copied online play, high-score table, page look and name rules into one packages/game-kit/ ends the rule that the games share no code at build time.",
+      "status": "open",
+      "context": "online.ts is identical in Rally, Hivestorm and Shatterbelt; look.ts differs by two lines across four Workers; Samosa's name rules are copied into three games; the score Workers repeat one capability and one Seed state machine. Two open backlog items in games/rally/src ask for a check that the copies agree. Each game is deployed on its own, and changed-games.sh picks the games to deploy by the files changed.",
+      "options": [
+        {
+          "title": "Share them in packages/game-kit/",
+          "consequences": "One copy of the code and of its views; a change to the kit deploys every game that uses it, at once."
+        },
+        {
+          "title": "Keep the copies and check they agree",
+          "consequences": "Each game stays independent; a CI check catches drift; the explorer keeps showing the shared behaviour once per game."
+        }
+      ],
+      "recommendation": "Share them.",
+      "waitingOn": "The owner",
+      "blocks": [
+        {
+          "path": "games/.dev/backlog.json",
+          "entityId": "shared-game-kit"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/.dev/folder.json",
+          "symbol": "folder"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Room"
+        },
+        {
+          "path": ".github/scripts/changed-games.sh"
+        }
+      ]
+    },
+    {
+      "id": "split-long-files",
+      "title": "Split the long main files?",
+      "summary": "Moving each game's screen machine out of its main file, and Gambit's screens into their own scripts, is the riskiest step of the plan for the least gain in the explorer.",
+      "status": "open",
+      "context": "Rally's main.ts and Shatterbelt's run the screen machines their Screen and Scene state diagrams draw, alongside the wiring; Shatterbelt keeps render, input and sound in src/ rather than src/ui/; Gambit's main.gd builds every screen. Hivestorm's screens follow the engine's own phase, already drawn as Game, so it needs no split.",
+      "options": [
+        {
+          "title": "Split them",
+          "consequences": "Each folder holds one concern and its views; every game's play must be checked unchanged."
+        },
+        {
+          "title": "Only move Shatterbelt's files into src/ui/",
+          "consequences": "The layouts match; the main files stay as they are."
+        },
+        {
+          "title": "Leave them",
+          "consequences": "No code moves; the views stay where they are."
+        }
+      ],
+      "recommendation": "Split them, one game per pull request.",
+      "waitingOn": "The owner",
+      "blocks": [
+        {
+          "path": "games/rally/src/.dev/backlog.json",
+          "entityId": "screens-out-of-main"
+        },
+        {
+          "path": "games/shatterbelt/src/.dev/backlog.json",
+          "entityId": "ui-folder"
+        },
+        {
+          "path": "games/chess/godot/scripts/.dev/backlog.json",
+          "entityId": "screens-folder"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/rally/src/main.ts",
+          "symbol": "show"
+        },
+        {
+          "path": "games/shatterbelt/src/main.ts",
+          "symbol": "Scene"
+        },
+        {
+          "path": "games/chess/godot/scripts/main.gd",
+          "symbol": "Main.go"
+        }
+      ]
     }
   ]
 }

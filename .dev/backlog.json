@@ -1,0 +1,151 @@
+{
+  "$schema": "../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Repository backlog",
+  "folder": ".",
+  "entities": [
+    {
+      "id": "actors",
+      "title": "Actor files for the owner, a coding agent and the outside systems",
+      "summary": "Only the Player and the Pilot have actor files, but the owner, a coding agent, icelander.net accounts, the games hub, GitHub and Resend take part in what the code and the documents describe.",
+      "type": "chore",
+      "acceptanceCriteria": [
+        "Actors/ has a file, written with describe-actor, for each of: Owner, Coding agent, icelander.net accounts, Games hub, GitHub, Resend.",
+        "Each is linked from every use case, journey or diagram that names it, and links back to them; an actor nothing names is not written.",
+        "Both validators pass."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "symbol": "Agent instructions"
+        },
+        {
+          "path": "games/rally/wrangler.jsonc",
+          "symbol": "services"
+        },
+        {
+          "path": "games/rally/src/online.ts",
+          "symbol": "Room"
+        },
+        {
+          "path": "games/chess/worker/mail.ts",
+          "symbol": "canMail"
+        },
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "jobs"
+        }
+      ]
+    },
+    {
+      "id": "root-views",
+      "title": "The repository's own diagrams and knowledge",
+      "summary": "The root .dev holds only folder.json, so the explorer opens on a folder card with nothing to drill into.",
+      "type": "chore",
+      "acceptanceCriteria": [
+        "A component diagram of the repository: games/, .github/, docs/, vendor/icelander-auth/, .claude/skills/ and Meta/, with the games hub, icelander.net accounts, GitHub and Resend outside it; each part with a .dev folder opens it.",
+        "A deployment diagram of the site: the icelander.net zone, one Worker per game, each game's D1 database, Gambit's GameRoom Durable Object, the accounts service and the hub, and LodeStar as a desktop export.",
+        "A glossary of the terms the games share (seed, replay check, room, match, lockstep, games:play) and references to the explorer, human-assisted-software-development and knowledge-driven-development.",
+        "vision.json, stakeholders.json and roadmap.json only as the owner states them (decision vision-and-roadmap)."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": ".dev/folder.json",
+          "symbol": "folder"
+        },
+        {
+          "path": "games/.dev/component-diagram.json",
+          "symbol": "hub"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": ".dev/decisions.json",
+          "entityId": "vision-and-roadmap",
+          "description": "Waits on this decision."
+        }
+      ]
+    },
+    {
+      "id": "describe-skills",
+      "title": "Describe the clean-room skills in .dev",
+      "summary": ".claude/skills/ holds the owner's process for making a game and the repository's only clean-room tooling, and has no .dev folder.",
+      "type": "chore",
+      "acceptanceCriteria": [
+        "A component diagram of the three skills and the web template.",
+        "A user journey, Make a new retro game: research, GDD, wireframes, art bible, UI design, build and test, each followed by the owner's approval, from create-retro-game's SKILL.md.",
+        "A use case, Clean-room an existing clone, from clean-room-rebuild's SKILL.md.",
+        "A capability, Clean-room checks, with an operation per script: overlap.py, wireframe_check.py, make_guard_hashes.py, zx_basic_list.py, zx_assets.py."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": ".claude/skills/create-retro-game/SKILL.md"
+        },
+        {
+          "path": ".claude/skills/clean-room-rebuild/scripts/overlap.py"
+        },
+        {
+          "path": ".claude/skills/zx-spectrum-clean-room/scripts/zx_basic_list.py"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": ".dev/decisions.json",
+          "entityId": "document-skills",
+          "description": "Waits on this decision."
+        }
+      ]
+    },
+    {
+      "id": "walk-the-explorer",
+      "title": "Walk the repository in the cyberspace explorer",
+      "summary": "Check, page by page, that the explorer shows what the plan set out to show, and record what it cannot.",
+      "type": "chore",
+      "acceptanceCriteria": [
+        "Opened at cyberspace-explorer.com/?url=…/tree/<branch>, the root opens on a component diagram that drills down to games, a game, its src and its engine, and from each web game to the shared kit.",
+        "Each of the nine view kinds and each of the eight knowledge groups appears somewhere in the tree, and the Waiting panel lists the open decisions.",
+        "What the explorer cannot show (Markdown such as the actor files and LodeStar's knowledge-driven-development documents) is a limitations record in the root's .dev."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": ".dev/plan.json",
+          "symbol": "explorer-showcase"
+        }
+      ]
+    }
+  ]
+}

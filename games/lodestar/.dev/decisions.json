@@ -161,6 +161,47 @@
           "symbol": "Starting point: a clean room from the private recreation"
         }
       ]
+    },
+    {
+      "id": "kdd-documents",
+      "title": "LodeStar's knowledge-driven-development documents and the explorer",
+      "summary": "LodeStar keeps its feature, use-case and journey documents as Markdown beside the code, with ✅ ⚠️ ❌ marks, and the explorer shows only .dev JSON.",
+      "status": "open",
+      "context": "AGENTS.md makes these Markdown documents LodeStar's primary guidance and keeps Meta/Agents/Skills/knowledge-driven-development for it. LodeStar also has .dev features, use cases and journeys, so the same behaviour is described twice, and the marks, which say what is done, are invisible in the explorer.",
+      "options": [
+        {
+          "title": "Keep both",
+          "consequences": "Nothing moves; the gap is recorded as a limitation."
+        },
+        {
+          "title": "Move the marks into .dev",
+          "consequences": "The features and use cases carry a status the explorer shows; the Markdown documents shrink to prose, and AGENTS.md's LodeStar rules change."
+        }
+      ],
+      "recommendation": "Keep both for now, and record the gap as a limitation.",
+      "waitingOn": "The owner",
+      "blocks": [
+        {
+          "path": ".dev/backlog.json",
+          "entityId": "walk-the-explorer"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-10",
+        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "symbol": "LodeStar"
+        },
+        {
+          "path": "games/lodestar/src/use_cases/fly_in_system/fly_in_system.md"
+        }
+      ]
     }
   ]
 }
