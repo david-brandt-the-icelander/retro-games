@@ -1,0 +1,29 @@
+{
+  "$schema": "../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "References for the repository",
+  "folder": ".",
+  "entities": [
+    {
+      "id": "cyberspace-explorer",
+      "title": "Cyberspace explorer",
+      "summary": "The web page that draws a repository's .dev folders.",
+      "url": "https://cyberspace-explorer.com/?url=https://github.com/david-brandt-the-icelander/retro-games",
+      "relevance": "How the .dev files are read; .dev/plan.json is the plan to make this repository show everything it can."
+    },
+    {
+      "id": "human-assisted-software-development",
+      "title": "human-assisted-software-development",
+      "summary": "Where the skills and the knowledge catalogue in Meta/Agents come from.",
+      "url": "https://github.com/david-brandt-the-icelander/human-assisted-software-development",
+      "relevance": "Change the skills and catalogue there, and copy them here (AGENTS.md)."
+    },
+    {
+      "id": "knowledge-driven-development",
+      "title": "knowledge-driven-development",
+      "summary": "The approach LodeStar's feature, use-case and journey documents follow.",
+      "url": "https://github.com/david-brandt-the-icelander/knowledge-driven-development",
+      "relevance": "LodeStar's documents beside its code, and Meta/Agents/Skills/knowledge-driven-development."
+    }
+  ]
+}

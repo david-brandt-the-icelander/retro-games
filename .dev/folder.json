@@ -44,6 +44,14 @@
           "label": "Agent instructions"
         },
         {
+          "path": ".dev/component-diagram.json",
+          "label": "The repository's parts"
+        },
+        {
+          "path": ".dev/deployment-diagram.json",
+          "label": "Where every game runs"
+        },
+        {
           "path": "games/.dev/component-diagram.json",
           "label": "The games"
         },

@@ -5,56 +5,12 @@
   "folder": ".",
   "entities": [
     {
-      "id": "actors",
-      "title": "Actor files for the owner, a coding agent and the outside systems",
-      "summary": "Only the Player and the Pilot have actor files, but the owner, a coding agent, icelander.net accounts, the games hub, GitHub and Resend take part in what the code and the documents describe.",
-      "type": "chore",
-      "acceptanceCriteria": [
-        "Actors/ has a file, written with describe-actor, for each of: Owner, Coding agent, icelander.net accounts, Games hub, GitHub, Resend.",
-        "Each is linked from every use case, journey or diagram that names it, and links back to them; an actor nothing names is not written.",
-        "Both validators pass."
-      ],
-      "origin": {
-        "kind": "conversation",
-        "by": "Owner",
-        "date": "2026-11-10",
-        "description": "The owner asked for a plan to refactor retro-games so that it shows everything the cyberspace explorer can show, and approved its Phase 0."
-      },
-      "status": "open",
-      "evidenceStatus": "proposed",
-      "sources": [
-        {
-          "path": "AGENTS.md",
-          "symbol": "Agent instructions"
-        },
-        {
-          "path": "games/rally/wrangler.jsonc",
-          "symbol": "services"
-        },
-        {
-          "path": "games/rally/src/online.ts",
-          "symbol": "Room"
-        },
-        {
-          "path": "games/chess/worker/mail.ts",
-          "symbol": "canMail"
-        },
-        {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "jobs"
-        }
-      ]
-    },
-    {
       "id": "root-views",
-      "title": "The repository's own diagrams and knowledge",
-      "summary": "The root .dev holds only folder.json, so the explorer opens on a folder card with nothing to drill into.",
+      "title": "The repository's vision, stakeholders and roadmap",
+      "summary": "The root's .dev has its diagrams, glossary and references, but the explorer's Direction group stays empty until the owner states what the repository is for.",
       "type": "chore",
       "acceptanceCriteria": [
-        "A component diagram of the repository: games/, .github/, docs/, vendor/icelander-auth/, .claude/skills/ and Meta/, with the games hub, icelander.net accounts, GitHub and Resend outside it; each part with a .dev folder opens it.",
-        "A deployment diagram of the site: the icelander.net zone, one Worker per game, each game's D1 database, Gambit's GameRoom Durable Object, the accounts service and the hub, and LodeStar as a desktop export.",
-        "A glossary of the terms the games share (seed, replay check, room, match, lockstep, games:play) and references to the explorer, human-assisted-software-development and knowledge-driven-development.",
-        "vision.json, stakeholders.json and roadmap.json only as the owner states them (decision vision-and-roadmap)."
+        "vision.json, stakeholders.json and roadmap.json in the root's .dev, written from what the owner states, with the owner as origin."
       ],
       "origin": {
         "kind": "conversation",
@@ -70,8 +26,8 @@
           "symbol": "folder"
         },
         {
-          "path": "games/.dev/component-diagram.json",
-          "symbol": "hub"
+          "path": "README.md",
+          "symbol": "Games"
         }
       ],
       "relationships": [

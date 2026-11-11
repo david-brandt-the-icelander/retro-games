@@ -91,7 +91,7 @@
       "title": "Where vendor/icelander-auth is described",
       "summary": "The vendored sign-in library must stay identical to its icelander.net copy, so a .dev folder cannot simply be added here.",
       "status": "open",
-      "context": "vendor/icelander-auth/STAMP.json records each file's hash, and AGENTS.md says to change the library in the icelander.net repository and copy it with packages/icelander-auth/sync.sh, never here.",
+      "context": "vendor/icelander-auth/STAMP.json records each file's hash, and AGENTS.md says to change the library in the icelander.net repository and copy it with packages/icelander-auth/sync.sh, never here. Until it is decided, the root's component diagram describes the library.",
       "options": [
         {
           "title": "Describe it upstream",
@@ -104,12 +104,6 @@
       ],
       "recommendation": "Describe it upstream; until then, from the root only.",
       "waitingOn": "The owner",
-      "blocks": [
-        {
-          "path": ".dev/backlog.json",
-          "entityId": "root-views"
-        }
-      ],
       "origin": {
         "kind": "conversation",
         "by": "Owner",
