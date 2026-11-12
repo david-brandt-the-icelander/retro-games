@@ -75,7 +75,7 @@
       "id": "api-role",
       "title": "Should the API require the games:play role?",
       "summary": "The page needs a sign-in with games:play; the API needs only a sign-in.",
-      "status": "open",
+      "status": "accepted",
       "context": "index.ts serves the page through requirePlayer (AUTH.requireRole with games:play), but handleApi uses currentUser, which accepts anyone the login service knows, with or without the role. Rally's Worker checks the role on its API too.",
       "options": [
         {
@@ -87,7 +87,6 @@
           "consequences": "Someone signed in to icelander.net without games:play can invite, play and keep history by calling the API directly."
         }
       ],
-      "waitingOn": "The owner",
       "blocks": [
         {
           "path": "games/chess/worker/.dev/capability.json",
@@ -112,7 +111,11 @@
           "path": "games/rally/worker/index.ts",
           "symbol": "AUTH"
         }
-      ]
+      ],
+      "decision": "Require games:play on the API as on the page.",
+      "rationale": "Rally's Worker already checks the role on its API; a role-less account should not reach the game by calling the API directly.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-11"
     }
   ]
 }

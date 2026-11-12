@@ -32,7 +32,7 @@
       "id": "computer-without-sign-in",
       "title": "Playing the computer without signing in",
       "summary": "The GDD keeps playing the computer without an account; the Worker now needs a sign-in for the page.",
-      "status": "open",
+      "status": "accepted",
       "context": "GDD pillar 2 says the computer needs no account, and the decision log kept playing the computer without signing in (\"Claude, open for the owner\"). Since Gambit moved to icelander.net's one sign-in, the Worker serves the page only to players signed in with games:play, so a signed-out visitor never reaches the computer; the client still has its signed-out paths: the sign-in card, and a history kept on the device.",
       "options": [
         {
@@ -44,7 +44,6 @@
           "consequences": "index.ts lets the page through without a sign-in; the API already answers /me signed out, and everything else stays behind the sign-in."
         }
       ],
-      "waitingOn": "The owner",
       "blocks": [
         {
           "path": "games/chess/godot/scripts/.dev/feature.json",
@@ -73,7 +72,11 @@
           "path": "games/chess/godot/scripts/main.gd",
           "symbol": "Main._history"
         }
-      ]
+      ],
+      "decision": "Serve the page signed out, for the computer only.",
+      "rationale": "Playing the computer needs no account, as GDD pillar 2 says.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-11"
     },
     {
       "id": "first-version-carryover",
@@ -94,11 +97,10 @@
     {
       "id": "title-and-slug",
       "title": "The name Gambit, the path chess",
-      "summary": "Working title Gambit; the slug and path stay chess.",
-      "status": "open",
+      "summary": "The game is Gambit; its slug and path become gambit-chess.",
+      "status": "accepted",
       "context": "The decision log names the game Gambit and keeps the slug and path chess (/games/retro/chess), marked \"Claude, open for the owner\". Everything technical (the folder, the Worker, the database, BASE) is chess.",
-      "decision": "Proposed: Gambit, at /games/retro/chess.",
-      "waitingOn": "The owner",
+      "decision": "The game is Gambit, and its slug and path change from chess to gambit-chess.",
       "evidenceStatus": "documented",
       "sources": [
         {
@@ -113,16 +115,17 @@
           "path": "games/chess/wrangler.jsonc",
           "symbol": "name"
         }
-      ]
+      ],
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-11"
     },
     {
       "id": "correspondence",
       "title": "No clocks; email only for new invitations",
       "summary": "Games are correspondence-style, without clocks, and only new invitations are emailed.",
-      "status": "open",
+      "status": "accepted",
       "context": "The decision log says no clocks (correspondence-style games) and email only for new invitations, not for each move, marked \"Claude, open for the owner\". The non-goals list clocks, ratings, spectators, puzzles, engine analysis, move notifications and phone-sized layouts \"for now\".",
-      "decision": "Proposed: as the log says.",
-      "waitingOn": "The owner",
+      "decision": "Confirmed: no clocks, and email only for new invitations.",
       "relationships": [
         {
           "relation": "relates-to",
@@ -149,7 +152,9 @@
           "path": "games/chess/worker/mail.ts",
           "symbol": "challengeMail"
         }
-      ]
+      ],
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-11"
     }
   ]
 }

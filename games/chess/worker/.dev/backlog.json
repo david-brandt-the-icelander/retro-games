@@ -58,6 +58,56 @@
           "symbol": "AUTH"
         }
       ]
+    },
+    {
+      "id": "computer-signed-out",
+      "title": "Let a signed-out visitor play the computer",
+      "summary": "index.ts serves the page only through requirePlayer; the owner decided the computer needs no sign-in.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "A signed-out visitor gets the page and can play the computer.",
+        "Invitations, online games, contacts and history still need a sign-in with games:play."
+      ],
+      "origin": {
+        "kind": "decision",
+        "reference": "games/chess/.dev/decisions.json#computer-without-sign-in",
+        "description": "The owner's answer, 2026-11-11."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/index.ts",
+          "symbol": "requirePlayer"
+        }
+      ]
+    },
+    {
+      "id": "api-requires-role",
+      "title": "Require games:play on the API",
+      "summary": "handleApi accepts anyone signed in through currentUser; the owner decided it needs games:play, as the page does.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "Every API route except /api/me refuses a caller without games:play.",
+        "/api/me still answers signed-out and role-less callers in a way the client understands."
+      ],
+      "origin": {
+        "kind": "decision",
+        "reference": "games/chess/worker/.dev/decisions.json#api-role",
+        "description": "The owner's answer, 2026-11-11."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/chess/worker/api.ts",
+          "symbol": "handleApi"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "currentUser"
+        }
+      ]
     }
   ]
 }

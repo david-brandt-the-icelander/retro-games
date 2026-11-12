@@ -48,6 +48,34 @@
           "symbol": "4. Dictator through the skill"
         }
       ]
+    },
+    {
+      "id": "purge-old-history",
+      "title": "Purge the old repository's history",
+      "summary": "The owner decided to purge it. It is padresmurfa/y (private): recreations imported dictator/ from it with its history (recreations commit 1aaf731), and 12 commits there still hold dictator/, though its current tree no longer does.",
+      "type": "task",
+      "acceptanceCriteria": [
+        "The owner confirms rewriting every branch of padresmurfa/y without dictator/ and force-pushing them.",
+        "No commit reachable in padresmurfa/y holds dictator/."
+      ],
+      "origin": {
+        "kind": "decision",
+        "reference": "games/dictator/.dev/decisions.json#purge-old-history",
+        "description": "The owner's answer, 2026-11-11."
+      },
+      "status": "done",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dictator/PLAN.md",
+          "symbol": "Purge the old repository's history"
+        },
+        {
+          "path": "games/dictator/PLAN.md",
+          "symbol": "The faithful recreation lives in the private repo"
+        }
+      ],
+      "details": "Done 2026-11-11: every branch of padresmurfa/y was rewritten without dictator/ (git filter-repo) and force-pushed; GitHub shows no commit touching dictator/ on any branch. GitHub keeps pull request refs read-only, so pull requests 44 (its merge ref) and 58 to 64 still reach the old commits until GitHub Support removes them."
     }
   ]
 }
