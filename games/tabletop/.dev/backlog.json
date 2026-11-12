@@ -1,0 +1,446 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Board-game table backlog",
+  "folder": "games/tabletop",
+  "entities": [
+    {
+      "id": "scaffold",
+      "title": "Set up the project",
+      "summary": "An npm project in games/tabletop laid out like Gambit, with its Worker, database and deploy.",
+      "type": "chore",
+      "acceptanceCriteria": [
+        "package.json with typecheck, build (esbuild), test and deploy scripts; npm test passes on an empty suite.",
+        "Layout: shared/ (protocol types and turn logic, used by page and Worker), worker/ (index.ts, api.ts, auth.ts, db.ts, mail.ts, table.ts, schema.sql), src/ (the page), cartridges/ (AssemblyScript sources), test/.",
+        "wrangler.jsonc: the route on icelander.net, the ACCOUNTS service binding and ACCOUNTS_JWKS, the TableRoom Durable Object, the D1 database tabletop, static assets.",
+        "tabletop added to the Deploy workflow's choice list and to docs/database-migrations.md's table.",
+        "README.md says what each file does, how to develop with DEV_LOGIN and two browsers, and the owner's one-time set-up (D1, Resend, TURN key).",
+        "AGENTS.md and the root README list the app."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "path-and-name",
+          "description": "Waits on this decision."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/.dev/backlog.json",
+          "entityId": "shared-game-kit",
+          "description": "Users, invitations, mail and the room are copied from Gambit; the shared kit would let both use one copy."
+        }
+      ],
+      "sources": [
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "RoomCore"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "currentUser"
+        },
+        {
+          "path": "games/chess/worker/mail.ts",
+          "symbol": "sendMail"
+        },
+        {
+          "path": "games/chess/worker/schema.sql",
+          "symbol": "challenges"
+        },
+        {
+          "path": "games/chess/wrangler.jsonc"
+        }
+      ]
+    },
+    {
+      "id": "lobby-and-invitations",
+      "title": "Sign-in, tables and invitations",
+      "summary": "Sign in through icelander.net, create a table for a cartridge, invite friends by email, accept or decline, and keep contacts.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "worker/auth.ts uses vendor/icelander-auth exactly as Gambit's does; users are keyed by address in tabletop's users table.",
+        "POST api/tables creates a table (cartridge id and SHA-256 pinned) with its creator as host in seat 0.",
+        "POST api/tables/:id/invitations takes addresses, stores them, emails each through Resend with a link (?invite=ID), and returns the link when mail is off.",
+        "The invited address sees open invitations on the home screen and from the link, and accepts (takes the next free seat) or declines.",
+        "The host can reorder seats or shuffle them, and starts the game once the cartridge's minimum is seated.",
+        "Contacts: everyone a player has sat at a table with is offered when inviting.",
+        "API tests on the in-memory SQLite stand-in (as Gambit's test/fake-d1.ts) for every route, including someone else's address taking a seat (refused)."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "scaffold"
+        },
+        {
+          "relation": "implements",
+          "path": "games/tabletop/.dev/requirements.json",
+          "entityId": "invite-by-email"
+        },
+        {
+          "relation": "implements",
+          "path": "games/tabletop/.dev/requirements.json",
+          "entityId": "google-sign-in"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "sign-in-providers",
+          "description": "Waits on this decision."
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "invitation-address",
+          "description": "Waits on this decision."
+        }
+      ]
+    },
+    {
+      "id": "cartridge-format",
+      "title": "The cartridge format, its loader and its build",
+      "summary": "Version 1 of the cartridge contract, a build that packs a board, pieces and rules into an AssemblyScript module, and a loader that runs it sandboxed.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "cartridges/build.mjs turns cartridges/<id>/ (manifest.json, assets/, rules.md) into an AssemblyScript module with the blobs as static data, compiles it with asc, and writes dist/cartridges/<id>/<sha256>.wasm plus an index of the published cartridges.",
+        "src/cartridge/ loads a cartridge in a Web Worker: checks the hash, refuses any import other than env.abort, checks tt_abi, validates the manifest, and returns the blobs as object URLs.",
+        "The page's Content-Security-Policy allows wasm-unsafe-eval and nothing remote.",
+        "Tests: a malformed manifest, a wrong hash, an extra import and an unknown ABI version are each refused with a clear message."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "scaffold"
+        },
+        {
+          "relation": "implements",
+          "path": "games/tabletop/.dev/requirements.json",
+          "entityId": "board-game-cartridge"
+        },
+        {
+          "relation": "implements",
+          "path": "games/tabletop/.dev/requirements.json",
+          "entityId": "rules-later"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "cartridge-language",
+          "description": "Waits on this decision."
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "cartridge-source",
+          "description": "Waits on this decision."
+        },
+        {
+          "relation": "implements",
+          "path": "games/tabletop/.dev/contracts.json",
+          "entityId": "cartridge-abi"
+        }
+      ]
+    },
+    {
+      "id": "first-cartridge",
+      "title": "The first board game",
+      "summary": "One real cartridge, with original artwork and its rules text, to prove the format end to end.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "cartridges/<id>/ holds the manifest, the board and piece art (SVG) and rules.md; provenance of every asset is written down.",
+        "It builds to one .wasm under 1 MiB and loads in the page, showing the board, the pieces at their start and the rules."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "cartridge-format"
+        },
+        {
+          "relation": "implements",
+          "path": "games/tabletop/.dev/requirements.json",
+          "entityId": "board-game-cartridge"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "first-cartridge",
+          "description": "Waits on this decision."
+        }
+      ]
+    },
+    {
+      "id": "live-table",
+      "title": "The live table: board, turns and the end-turn button",
+      "summary": "One Durable Object per table that holds its state, accepts actions one at a time, and sends every change to every player over a WebSocket.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "worker/table.ts: a TableRoom Durable Object built like Gambit's GameRoom (RoomCore without the object, for tests; hibernating WebSockets; actions queued one at a time).",
+        "State: seats in order, the current seat, a turn number, and each piece's position; saved to D1 after every action, with a version number so a stale write is refused.",
+        "Actions: move-piece (only the current player; within the board), undo-last (proposed and accepted by the player who moved), end-turn {turn} (only the current player, only if turn matches, so a double press passes once), pass-for {seat} (host only, only for a disconnected player).",
+        "The page draws the board and pieces on a canvas scaled to the window and to touch, shows the seats with the current player highlighted, a \"Your turn\" banner and tab title, and the \"I'm done with this turn\" button, enabled only on your turn.",
+        "Presence: who is connected, shown by each seat; reconnecting gets the whole state.",
+        "Every action goes in the table's transcript (table_events) with its time and who did it.",
+        "Tests: turn order wraps and skips no one; end-turn from the wrong player, with an old turn number, or twice, changes nothing; a move off-turn is refused."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "lobby-and-invitations"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "first-cartridge"
+        },
+        {
+          "relation": "implements",
+          "path": "games/tabletop/.dev/requirements.json",
+          "entityId": "turn-indicator"
+        },
+        {
+          "relation": "implements",
+          "path": "games/tabletop/.dev/requirements.json",
+          "entityId": "end-turn"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "free-table",
+          "description": "Waits on this decision."
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "stuck-turn",
+          "description": "Waits on this decision."
+        }
+      ]
+    },
+    {
+      "id": "text-chat",
+      "title": "Chat",
+      "summary": "Messages at the table, delivered live and kept in the transcript.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "A chat action (1–500 characters, trimmed) goes through the TableRoom like any other action and is broadcast to everyone.",
+        "The chat panel shows names, pictures and times, and the turn changes inline, as Gambit's transcript does.",
+        "History on (re)connect: the last 200 messages; older ones on scroll.",
+        "A simple rate limit (10 messages in 10 seconds per player)."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "live-table"
+        },
+        {
+          "relation": "implements",
+          "path": "games/tabletop/.dev/requirements.json",
+          "entityId": "text-chat"
+        }
+      ]
+    },
+    {
+      "id": "voice-chat",
+      "title": "Voice chat",
+      "summary": "WebRTC audio between the players at a table, signalled over the table's WebSocket, relayed through Cloudflare TURN when needed.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "GET api/ice returns short-lived ICE servers (STUN, and TURN credentials minted by the Worker with the TURN_KEY_ID and TURN_KEY_API_TOKEN secrets), only to signed-in players at a table.",
+        "The TableRoom relays signal messages (offer, answer, ICE candidate) from one connected player to another at the same table, never storing them.",
+        "src/voice.ts keeps one RTCPeerConnection per other player in the voice chat (perfect-negotiation pattern, so two players joining at once settle), audio only, echo cancellation and noise suppression on.",
+        "Controls: join, leave, mute; each seat shows in-voice, muted and speaking (from an AnalyserNode), and each other player's volume can be turned down.",
+        "Leaving the page or losing the socket closes the connections; rejoining reconnects.",
+        "Tested in two Chromium instances with fake audio devices (--use-fake-device-for-media-stream)."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "live-table"
+        },
+        {
+          "relation": "implements",
+          "path": "games/tabletop/.dev/requirements.json",
+          "entityId": "voice-chat"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "max-players",
+          "description": "Waits on this decision."
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "voice-topology",
+          "description": "Waits on this decision."
+        }
+      ]
+    },
+    {
+      "id": "wins",
+      "title": "Results, acknowledgements and the win record",
+      "summary": "Players propose who won; the others acknowledge or dispute, then or later; acknowledged results make the win record.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "Any seated player can mark the game finished and propose a result: one or more winners, or no winner.",
+        "Each other player is asked to acknowledge or dispute it, on the table and on their home screen, for as long as it is pending; a dispute rejects it and anyone may propose again.",
+        "When every other player has acknowledged, the result is confirmed, stored, and written in the transcript; until then nothing counts.",
+        "A stats page: each player's games, wins and pending results per cartridge, and head to head with each friend.",
+        "Tests: a result counts only after the last acknowledgement; a dispute rejects it; a player not at the table cannot acknowledge; a proposal for a table that already has a confirmed result is refused."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "live-table"
+        },
+        {
+          "relation": "implements",
+          "path": "games/tabletop/.dev/requirements.json",
+          "entityId": "acknowledged-wins"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "result-consensus",
+          "description": "Waits on this decision."
+        }
+      ]
+    },
+    {
+      "id": "ship",
+      "title": "Test end to end, document and deploy",
+      "summary": "A two-browser end-to-end test, the .dev views, and the first deploy.",
+      "type": "chore",
+      "acceptanceCriteria": [
+        "A Playwright test with DEV_LOGIN: two players, an invitation, a seat each, three turns with moves, a chat message, voice with fake devices, a proposed and acknowledged result.",
+        "The .dev folders describe what was built (component, deployment and state diagrams for the TableRoom and the result; use cases and journeys), with actors in Actors/; this plan's records are moved to done or deleted.",
+        "The owner's set-up done: D1 database created and its schema applied, Resend sender, TURN key; then a merge deploys it."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "text-chat"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "voice-chat"
+        },
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "wins"
+        }
+      ]
+    },
+    {
+      "id": "rules-v2",
+      "title": "Rules inside the cartridge",
+      "summary": "Version 2 of the cartridge contract: the cartridge decides which moves are legal, whose turn it is and who won, in the browser and in the Durable Object.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "Written as its own plan when the owner starts on rules; see contracts.json cartridge-abi, Version 2."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "status": "later",
+      "evidenceStatus": "proposed",
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "ship"
+        },
+        {
+          "relation": "implements",
+          "path": "games/tabletop/.dev/requirements.json",
+          "entityId": "rules-later"
+        }
+      ]
+    }
+  ]
+}
