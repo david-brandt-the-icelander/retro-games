@@ -1,0 +1,31 @@
+<title>Backseat Driver</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  :root { --bg: #14141c; --panel: #23232d; --ink: #f2f0ea; --muted: #a9a9bb; --accent: #ffd21f; --good: #4ac26b; --edge: #e8e8f0; color-scheme: dark; }
+  body { background: var(--bg); color: var(--ink); font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding-block: 16px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 12px; }
+  canvas { display: block; width: min(100%, max(320px, calc((100vh - 200px) * 16 / 9))); margin: 0 auto; height: auto; aspect-ratio: 16 / 9; border-radius: 10px; background: #000; touch-action: manipulation; }
+  #bar { width: min(100%, 1100px); margin: 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; transition: opacity .15s; }
+  #bar.off { opacity: .35; }
+  #bar button { display: flex; gap: 10px; align-items: flex-start; text-align: left; min-height: 72px; padding: 12px; font: inherit; font-size: 1rem; line-height: 1.3;
+    color: var(--ink); background: #2e3a52; border: 3px solid var(--edge); border-radius: 10px; cursor: pointer; }
+  #bar button:hover:not(:disabled) { background: #42578a; }
+  #bar button:active:not(:disabled) { background: #4f9a5f; }
+  #bar button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  #bar button:disabled { cursor: default; }
+  kbd { flex: none; font: inherit; font-weight: 700; color: var(--accent); }
+  .hint { color: var(--muted); font-size: .85rem; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+  #snd { font: inherit; font-size: .85rem; color: var(--ink); background: var(--panel); border: 1px solid #55556a; border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+  #snd:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  @media (max-width: 640px) { #bar { grid-template-columns: 1fr; } #bar button { min-height: 56px; } }
+</style>
+<div class="wrap">
+  <canvas id="c" width="1280" height="720" aria-label="Backseat Driver game view"></canvas>
+  <div id="bar" role="group" aria-label="What to scream at the driver"><button type="button"></button><button type="button"></button><button type="button"></button></div>
+  <p class="hint">Keys 1, 2, 3 to scream. Space or click the road to start. M mutes. <button type="button" id="snd">Sound: on</button></p>
+</div>
+<script>
+/*EVENTS*/
+/*SRC*/
+</script>
