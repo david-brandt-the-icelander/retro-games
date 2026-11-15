@@ -36,4 +36,8 @@ Three strikes and the car is totaled.
 
 ### How it plays (web build)
 
-The view is out of the windshield. A sign or situation appears and you get three things to scream at the driver; tap a message or press 1, 2 or 3. The speedometer is on the dash and the driver obeys: scream "slow down" and the needle drops, "floor it" and it climbs. Too fast, too slow or the wrong scream triggers that sign's disaster. Engine, road noise, passing traffic, horns and event cues are synthesised with WebAudio (M mutes). The Godot project is the earlier version and does not yet have the speedometer or sound.
+The view is out of the windshield. A road sign comes into view and you get about 14 seconds (shrinking to 8 as you improve) to decide what to scream at the driver: tap a message or press 1, 2 or 3. One scream is correct, one is a related but wrong insult, and one is irrelevant small talk, in random order. The speedometer is on the driver's side of the dash and the driver obeys your scream, so "slow down" drops the needle and "floor it" sends it up. If you get it wrong, the sign you missed is shown large with its name and rule.
+
+The signs follow Icelandic road-sign conventions, drawn in code. [SIGNS.md](SIGNS.md) lists every sign, where it is used, the sources, and what is **not** covered. Engine, road noise, passing traffic, horns and event cues are synthesised with WebAudio (M mutes).
+
+`events.gd` and the Godot project are the earlier prototype: they have no speedometer, sound or Icelandic signs.

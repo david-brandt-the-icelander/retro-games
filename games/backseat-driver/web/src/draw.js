@@ -28,17 +28,15 @@ function drawWorld() {
 }
 function drawEvent() {
   const ev = G.ev, sH = scaleOf(clamp(G.dep, 0, 1)), bad = G.state === "result" && !G.good;
-  HAZ[ev.id](sH, G.hc, G.et, bad, G.swerve);
+  (HAZ[ev.hz || ev.id] || HAZ.none)(sH, G.hc, G.et, bad, G.swerve);
   if (G.signT < 1.2) {
     const ss = scaleOf(G.signT), gp = P(640, ss), top = o(gp, 0, -330, ss);
     line(gp, top, "#9a9aa2", Math.max(2, 10 * ss));
-    signPlate(ev.shape, top, 150 * ss, hexc(ev.c), hexc(ev.ink), ev.glyph);
+    drawSignCode(ev.sign, top, 150 * ss);
   }
 }
 function drawDriver() {
-  // No driver figure in the view: just the steering wheel rim, and what the driver says.
-  arc([255, 612], 94, Math.PI, TAU, "#1d1d22", 14);
-  arc([255, 612], 94, Math.PI * 1.12, Math.PI * 1.3, "#2e2e38", 5);
+  // No driver and no wheel in the view: only what the driver says.
   if (G.line && G.state !== "over" && G.state !== "title") {
     const w = 232, h = bubble(24, 150, G.line, w, "#fff8e0", "#222", 18);
     txt("DRIVER", 36, 144, 13, "#ffe9a8");
@@ -72,7 +70,7 @@ function drawMirrorTruck() {
   ctx.restore();
 }
 function drawSpeedo() {
-  const c = [1010, 640], r = 74, a0 = Math.PI * 0.75, a1 = Math.PI * 2.25, pt = (a, d) => [c[0] + Math.cos(a) * d, c[1] + Math.sin(a) * d];
+  const c = [250, 640], r = 74, a0 = Math.PI * 0.75, a1 = Math.PI * 2.25, pt = (a, d) => [c[0] + Math.cos(a) * d, c[1] + Math.sin(a) * d];
   circ(c, r + 6, "#0c0c10"); circ(c, r, "#1b1d26");
   arc(c, r - 4, lerp(a0, a1, 90 / 120), a1, "#d62828", 4);
   for (let v = 0; v <= 120; v += 10) {
@@ -98,18 +96,31 @@ function drawHud() {
   }
   const ev = G.ev;
   if (!ev) return;
-  panel(290, 10, 700, 114, "rgba(13,13,26,0.86)", "#e8e8f0");
-  signPlate(ev.shape, [352, 64], 62, hexc(ev.c), hexc(ev.ink), ev.glyph);
-  txt(ev.name, 412, 44, 26, "#ffd21f");
-  mtxt(ev.scene, 412, 72, 560, 17, "#fff", "left", false);
+  panel(290, 10, 700, 126, "rgba(13,13,26,0.86)", "#e8e8f0");
+  const big = !SIGN[ev.sign].plate; drawSignCode(ev.sign, [350, big ? 72 : 60], big ? 84 : 62);
+  txt(SIGN[ev.sign].n, 412, 46, 26, "#ffd21f");
+  mtxt(ev.scene, 412, 76, 560, 17, "#fff", "left", false);
   if (G.state === "sign") {
-    rect(300, 108, 680, 8, "rgba(0,0,0,0.6)");
-    const c = G.t; rect(300, 108, 680 * (1 - G.t), 8, `rgb(${Math.round(lerp(74, 232, c))},${Math.round(lerp(194, 69, c))},${Math.round(lerp(107, 60, c))})`);
+    rect(300, 116, 680, 8, "rgba(0,0,0,0.6)");
+    const c = G.t; rect(300, 116, 680 * (1 - G.t), 8, `rgb(${Math.round(lerp(74, 232, c))},${Math.round(lerp(194, 69, c))},${Math.round(lerp(107, 60, c))})`);
   } else if (G.state === "result") {
-    const hgt = wrap(G.text, 660, 21, false).length * 21 * 1.28;
-    panel(290, 134, 700, hgt + 76, G.good ? "rgba(20,107,51,0.95)" : "rgba(140,18,18,0.95)", "#fff");
-    txt(G.head, 312, 174, 32, "#fff");
-    mtxt(G.text, 312, 206, 660, 21, "#fff", "left", false);
+    const d = SIGN[ev.sign];
+    if (G.good) {
+      const hgt = wrap(G.text, 660, 21, false).length * 21 * 1.28;
+      panel(290, 148, 700, hgt + 76, "rgba(20,107,51,0.95)", "#fff");
+      txt(G.head, 312, 188, 32, "#fff");
+      mtxt(G.text, 312, 220, 660, 21, "#fff", "left", false);
+    } else {
+      const w = 450, rule = "The rule: " + d.m, tl = wrap(G.text, w, 21, false).length, rl = wrap(rule, w, 17, false).length;
+      const h = Math.max(250, 86 + tl * 21 * 1.28 + 18 + rl * 17 * 1.28 + 18);
+      panel(290, 148, 700, h, "rgba(140,18,18,0.96)", "#fff");
+      drawSignCode(ev.sign, [395, 148 + 100], 150);
+      txt("THE SIGN YOU MISSED", 395, 148 + h - 52, 14, "#ffd0d0", "center");
+      mtxt(d.n + (d.is ? " / " + d.is : ""), 395, 148 + h - 32, 190, 15, "#fff", "center", true);
+      txt(G.head, 500, 188, 30, "#fff");
+      mtxt(G.text, 500, 220, w, 21, "#fff", "left", false);
+      mtxt(rule, 500, 220 + tl * 21 * 1.28 + 24, w, 17, "#ffe0a8", "left", false);
+    }
   }
 }
 function drawScream() {

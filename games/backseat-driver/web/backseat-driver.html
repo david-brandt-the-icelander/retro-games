@@ -26,335 +26,6 @@
   <p class="hint">Keys 1, 2, 3 to scream. Space or click the road to start. M mutes. <button type="button" id="snd">Sound: on</button></p>
 </div>
 <script>
-// Every road event. In "o" the FIRST option is always the correct one;
-// main.gd shuffles them. Each option is [button text, what happens if chosen].
-
-const LIST = [
-	{
-		"id": "ducks", "shape": "diamond", "glyph": "DUCKS", "c": "ffd21f", "ink": "111111",
-		"name": "DUCK CROSSING",
-		"scene": "A flock of ducks waddles across the road. They are in no hurry.",
-		"d": "Ooh, this song! Let me crank it up.",
-		"spd": 50,
-		"o": [
-			["SLOW DOWN, MORON! DUCKS!", "", 5],
-			["AWW, LOOK AT THE DUCKS, YOU GOOSE!", "The driver looks. The ducks look back. Briefly. Then there are feathers. So many feathers. The wipers do what they can.", 45],
-			["NICE WEATHER WE'RE HAVING!", "", 50],
-		],
-		"good": "The driver brakes. The ducks cross in a tiny, smug parade. The last one gives you a nod. You will carry that nod forever.",
-		"late": "Nobody said anything useful. The ducks said 'quack' and then nothing at all. The wipers are now on pate setting.",
-		"fx": "f4f0dc",
-	},
-	{
-		"id": "gator", "shape": "diamond", "glyph": "GATORS", "c": "ffd21f", "ink": "111111",
-		"name": "GATOR CROSSING - NEXT 2 MILES",
-		"scene": "Something long, green and unbothered is sunbathing across both lanes.",
-		"d": "Does that look like a log to you? I think that is a log.",
-		"spd": 45,
-		"sky": ["8fbf8f", "d8e7b0"], "gr": "3d6b3a",
-		"o": [
-			["BRAKE, YOU MORON! THAT'S A GATOR!", "", 8],
-			["IT'S A LOG, YOU COWARD! RUN IT OVER!", "It was not a log. The log now has your whole arm and a strong opinion about your elbow.", 45],
-			["DID YOU FEED THE CAT BEFORE WE LEFT?", "", 45],
-		],
-		"good": "The driver slows. The gator ambles across and gives you a long, assessing stare. You were not the snack. This time.",
-		"late": "The gator takes your silence as an order for takeout. Compliments to the chef. The chef is you.",
-		"fx": "4a8f3a",
-	},
-	{
-		"id": "walker", "shape": "diamond", "glyph": "WALK", "c": "b7e03a", "ink": "111111",
-		"name": "PEDESTRIAN CROSSING",
-		"scene": "A very elderly man with a walker has started crossing. He has all day. You do not.",
-		"d": "Wow, he is slow. I'm just gonna go around.",
-		"spd": 35,
-		"o": [
-			["STOP, YOU MANIAC! LET HIM CROSS!", "", 0],
-			["HE'LL MAKE IT, GRANDMA! KEEP GOING!", "He did not make it. The walker made it. It is now a hood ornament and, honestly, a fairly nice one.", 35],
-			["THIS SEAT IS SO COMFY. THANKS!", "", 35],
-		],
-		"good": "The driver stops. Eleven minutes later, the man reaches the far side, tips his hat and calls you 'sweetheart'. You will take it.",
-		"late": "A walker flies past the passenger window. Silently. Like a very sad bird.",
-		"fx": "c0c4cc",
-	},
-	{
-		"id": "kids", "shape": "diamond", "glyph": "KIDS", "c": "ffd21f", "ink": "111111",
-		"name": "CAUTION: CHILDREN AT PLAY",
-		"scene": "A ball bounces into the road. A small child is already running after it.",
-		"d": "Don't they teach kids to look both ways anymore?",
-		"spd": 40,
-		"o": [
-			["BRAKE, YOU IDIOT! A KID!", "", 0],
-			["IT'S JUST A BALL, YOU WIMP!", "It was a ball. Then it was not just a ball. The driver does not say a word for the next forty miles. Neither do you. Nobody ever speaks of it.", 40],
-			["I'M HUNGRY. DO YOU WANT FRIES?", "", 40],
-		],
-		"good": "Tires scream. The kid grabs the ball, waves, and calls the driver a word you did not know a six-year-old knew. Worth it.",
-		"late": "Thud. Silence. 'That was a ball, right?' the driver asks, in a very small voice. You both decide to believe it was a ball.",
-		"fx": "e8453c",
-	},
-	{
-		"id": "stop", "shape": "octagon", "glyph": "STOP", "c": "d62828", "ink": "ffffff",
-		"name": "STOP SIGN",
-		"scene": "Cross traffic ahead. Something very big is thundering toward the junction: a loaded logging truck.",
-		"d": "Stop signs are more of a vibe, honestly.",
-		"spd": 45,
-		"o": [
-			["STOP, YOU MORON! STOP SIGN!", "", 0],
-			["IT'S A SUGGESTION, COWARD! GO!", "The logging truck disagrees. Violently. Your car is now flatter than a flat white, and that includes the foam.", 50],
-			["THIS SONG IS TERRIBLE, BY THE WAY.", "", 45],
-		],
-		"good": "The driver stands on the brake. The truck thunders through a foot ahead. 'Rolling stops count,' the driver mumbles. They do not.",
-		"late": "The last thing you hear is a truck horn. The last thing you see is logs. So many logs.",
-		"fx": "8a5a2b",
-	},
-	{
-		"id": "train", "shape": "circle", "glyph": "RR", "c": "ffd21f", "ink": "111111",
-		"name": "RAILROAD CROSSING",
-		"scene": "The lights are flashing. The bell is ringing. The driver is ringing a bell of their own: singing.",
-		"d": "I love this part of the song!",
-		"spd": 50,
-		"o": [
-			["TRAIN, YOU LUNATIC! STOP!", "", 0],
-			["BEAT IT, YOU TURTLE! FASTER!", "You cannot beat it. Nobody has ever beaten it. Final score: Train 1, Car 0, Dignity -4.", 85],
-			["WHAT'S YOUR FAVOURITE DINOSAUR?", "", 50],
-		],
-		"good": "The driver stops. A mile-long freight train rumbles past, and the driver counts every car out loud. All 142. Time moves differently now.",
-		"late": "The train does not honk. It has never needed to.",
-		"fx": "4a4a52",
-	},
-	{
-		"id": "kayak", "shape": "rect", "glyph": "LOW\n8'6\"", "c": "ffd21f", "ink": "111111",
-		"name": "LOW CLEARANCE: 8 FT 6 IN",
-		"scene": "A low stone bridge ahead. There's a kayak strapped to the roof. The driver forgot.",
-		"d": "Best. Kayak. Weekend. Ever.",
-		"spd": 40,
-		"o": [
-			["THE KAYAK, YOU MORON! BRAKE!", "", 0],
-			["DUCK YOUR HEAD, GENIUS! DUCK!", "You duck. The kayak does not. It is now two kayaks, which is technically a pair.", 40],
-			["NICE BRIDGE. VERY STONY.", "", 40],
-		],
-		"good": "The driver stops with a screech and unstraps the kayak. 'I knew that,' they say, sweating. Strapping it back on takes forty minutes.",
-		"late": "CRUNCH. The kayak becomes confetti. The car is now a convertible.",
-		"fx": "ffb000",
-	},
-	{
-		"id": "deer", "shape": "diamond", "glyph": "DEER", "c": "ffd21f", "ink": "111111",
-		"name": "DEER CROSSING",
-		"scene": "Two glowing eyes in the dark at the roadside. Then four. Then they step out.",
-		"d": "I could totally take a deer in a fight.",
-		"spd": 60,
-		"sky": ["070a1e", "262b55"], "gr": "17301c",
-		"o": [
-			["SLOW DOWN, YOU MORON! DEER!", "", 10],
-			["FLASH THE LIGHTS, YOU GENIUS!", "Deer freeze when you flash lights. It is the entire thing deer do. The car and the deer are now one.", 60],
-			["MY LEFT ELBOW ITCHES A BIT.", "", 60],
-		],
-		"good": "The driver brakes. A buck pauses, locks eyes with you, then wanders off with deep disdain. It knows you got lucky.",
-		"late": "BANG. Your hood has an antler now. The deer is on the roof, looking at you like you owe it money.",
-		"fx": "8a5a2b",
-	},
-	{
-		"id": "police", "shape": "rect", "glyph": "25", "c": "f4f4f4", "ink": "111111",
-		"name": "SPEED LIMIT 25",
-		"scene": "The speedometer says 70. A police car is tucked behind a billboard, pretending not to be there.",
-		"d": "I'm fine. I'm only going, uh... fine.",
-		"spd": 70,
-		"o": [
-			["TOO FAST, YOU MANIAC! COP!", "", 25],
-			["FLOOR IT, TURTLE! HE'S NOT LOOKING!", "He was looking. He has been looking since the last county. The chase ends at a donut shop, with handcuffs and one glazed.", 95],
-			["I LOVE A GOOD BILLBOARD, DON'T YOU?", "", 70],
-		],
-		"good": "The driver slows to 25 just as the cop pulls out. He sees a law-abiding citizen. He is sad. He will eat his donut alone.",
-		"late": "Sirens. Lights. A very calm voice: 'Do you know why I pulled you over?' The driver looks at you.",
-		"fx": "3a6cf0",
-	},
-	{
-		"id": "bridgeout", "shape": "rect", "glyph": "BRIDGE\nOUT", "c": "ff8a1f", "ink": "111111",
-		"name": "BRIDGE OUT AHEAD",
-		"scene": "The road just... ends. There's a river. There is no bridge. There is a suggestion of a bridge.",
-		"d": "GPS says go straight. GPS is never wrong.",
-		"spd": 60,
-		"o": [
-			["STOP, YOU MORON! BRIDGE OUT!", "", 0],
-			["FASTER, COWARD! WE CAN JUMP IT!", "We cannot jump it. Physics has reviewed this proposal and rejected it with a loud splash.", 90],
-			["NICE VIEW OF THE RIVER, HUH?", "", 60],
-		],
-		"good": "The driver brakes at the very edge. The front wheels hang over empty air. A fish looks up at you. 'Nice,' says the fish.",
-		"late": "Splash. The GPS announces 'Recalculating' as the car sinks. It never will.",
-		"fx": "3a8fd9",
-	},
-	{
-		"id": "rocks", "shape": "diamond", "glyph": "ROCKS", "c": "ffd21f", "ink": "111111",
-		"name": "FALLING ROCK ZONE",
-		"scene": "Pebbles rattle down the cliff beside you. Larger pebbles follow. Then not-pebbles.",
-		"d": "Cool, tunnel-of-rocks vibe. So metal.",
-		"spd": 40,
-		"sky": ["9ab0c4", "dde6ee"], "gr": "8a7f72",
-		"o": [
-			["FLOOR IT, YOU SNAIL! ROCKS!", "", 85],
-			["STOP, YOU WIMP! TAKE A PHOTO!", "Great photo. You can't see it, because the rock has smashed the phone, the roof, and some of the seat.", 0],
-			["THE SKY IS VERY BLUE TODAY.", "", 40],
-		],
-		"good": "The driver floors it. A boulder lands exactly where you were, then rolls over to look at you. Rocks can be dramatic.",
-		"late": "A boulder meets the roof. The roof loses. The boulder is now your best friend. Its name is Gary.",
-		"fx": "7d7f86",
-	},
-	{
-		"id": "gas", "shape": "rect", "glyph": "GAS\n90 MI", "c": "1f6fd1", "ink": "ffffff",
-		"name": "LAST GAS FOR 90 MILES",
-		"scene": "The fuel needle is on E. It has been on E for a while. The desert stretches out forever.",
-		"d": "The light's been on for like twenty miles. It's fine.",
-		"spd": 55,
-		"sky": ["ffb36b", "ffe3a0"], "gr": "c99a5b",
-		"o": [
-			["STOP FOR GAS, YOU MORON!", "", 0],
-			["COAST, GENIUS! SAVE THE FUMES!", "The car coasts, bravely, for another mile. Then it coasts, bravely, to a stop. A vulture lands and waits.", 30],
-			["DO YOU LIKE COWBOYS?", "", 55],
-		],
-		"good": "The driver pulls into a gas station that smells like regret and hot dogs. You buy both. It is the best meal of your life.",
-		"late": "The engine coughs. The engine dies. The vultures arrive right on time.",
-		"fx": "c99a5b",
-	},
-	{
-		"id": "curve", "shape": "diamond", "glyph": "15", "c": "ffd21f", "ink": "111111",
-		"name": "SHARP CURVE - 15 MPH",
-		"scene": "A hairpin turn. On one side, a wall. On the other, a nice view of the valley, from above, and then from below.",
-		"d": "Watch this drift!",
-		"spd": 65,
-		"o": [
-			["SLOW DOWN, YOU MANIAC! CURVE!", "", 15],
-			["DRIFT IT, TURTLE! FASTER!", "The drift is magnificent. The landing is not. You get excellent views of the valley for four whole seconds.", 85],
-			["NICE WEATHER WE'RE HAVING!", "", 65],
-		],
-		"good": "The driver slows. The car hugs the curve like an old friend. Far below, a wrecked car whispers: 'tell my story.'",
-		"late": "The tires scream. The car sails off the cliff in slow motion. The driver says, 'Huh.' It is the last thing anyone says.",
-		"fx": "ffb000",
-	},
-	{
-		"id": "wrongway", "shape": "rect", "glyph": "WRONG\nWAY", "c": "d62828", "ink": "ffffff",
-		"name": "WRONG WAY - DO NOT ENTER",
-		"scene": "You've entered the highway from the exit ramp. A truck is coming. Its headlights are very big and very close.",
-		"d": "Everyone else is going the wrong way, you know.",
-		"spd": 55,
-		"sky": ["0b1030", "2a2f5a"], "gr": "1c2a1f",
-		"o": [
-			["WRONG WAY, MORON! TURN AROUND!", "", 20],
-			["FLASH YOUR LIGHTS, GENIUS!", "The truck flashes back. Its lights are bigger. It also has a horn that sounds like the end of the world.", 55],
-			["ARE WE THERE YET?", "", 55],
-		],
-		"good": "The driver cranks a U-turn on the shoulder to a chorus of horns. 'That was on purpose,' they say. It was not.",
-		"late": "A truck horn the size of a cathedral. The last thing you see is a very large grille. It looks, somehow, disappointed.",
-		"fx": "ffe9a0",
-	},
-	{
-		"id": "ice", "shape": "diamond", "glyph": "ICE", "c": "ffd21f", "ink": "111111",
-		"name": "SLIPPERY WHEN WET",
-		"scene": "The road shines like glass. The driver is going pretty fast. The car feels pretty light.",
-		"d": "I've never once braked in this weather. Why start now?",
-		"spd": 55,
-		"sky": ["cfd8e3", "f0f3f7"], "gr": "e6edf2",
-		"o": [
-			["EASE OFF, YOU MANIAC! ICE!", "", 25],
-			["SLAM THE BRAKES, YOU GENIUS!", "The car goes into a beautiful figure-skating routine. 9.8 from the French judge. 0 from the guardrail.", 0],
-			["WHO PUT THE SKY UP THERE?", "", 55],
-		],
-		"good": "The driver eases off. The car glides, wobbles and holds. The driver looks at you with sudden, sincere respect. Savor it.",
-		"late": "Wheeee! Whoops. Wheeee! Whoops. The spinning only stops at the ditch.",
-		"fx": "bfe6ff",
-	},
-	{
-		"id": "bus", "shape": "rect", "glyph": "BUS", "c": "ffd21f", "ink": "111111",
-		"name": "SCHOOL BUS: STOP ARM OUT",
-		"scene": "A school bus flashes red lights. Its stop arm is out. Children are filing across the road.",
-		"d": "I never stop for buses. They never stop for me.",
-		"spd": 45,
-		"o": [
-			["STOP, YOU MORON! SCHOOL BUS!", "", 0],
-			["GO AROUND IT, YOU SNAIL!", "Passing a school bus with its stop arm out is called a felony. It is also called a lot of other things by thirty-one parents.", 60],
-			["I LIKE YOUR HAIRCUT.", "", 45],
-		],
-		"good": "The driver stops. Twenty-two children wave at the car. One gives it a thumbs-up. The driver cries a little behind their sunglasses.",
-		"late": "Sirens, parents, and a very large sign that says SHAME. You will be spending the summer in a very small room.",
-		"fx": "ffd21f",
-	},
-	{
-		"id": "minspeed", "shape": "rect", "glyph": "MIN\n45", "c": "f4f4f4", "ink": "111111",
-		"name": "MINIMUM SPEED 45",
-		"scene": "The speedometer says 18. A convoy of very large trucks fills the mirror, and they are not smiling.",
-		"d": "Why does everyone drive so fast? I like the scenery.",
-		"spd": 18,
-		"o": [
-			["FASTER, YOU SNAIL! TRUCKS!", "", 60],
-			["SLOW DOWN, GRANDMA! SAFETY FIRST!", "Slower is safer, nobody on a highway ever said. The trucks learn your license plate. Then your bumper. Then your toes.", 8],
-			["THIS IS A VERY NICE ROAD.", "", 18],
-		],
-		"good": "The driver finally floors it. The trucks flash their lights in thanks and, you think, a little in disappointment.",
-		"late": "A truck horn so deep your fillings rattle. A grille fills the mirror. Then the mirror is all grille.",
-		"fx": "4a4a52",
-	},
-	{
-		"id": "bump", "shape": "diamond", "glyph": "BUMP", "c": "ffd21f", "ink": "111111",
-		"name": "SPEED HUMP",
-		"scene": "A painted yellow hump crosses the road. The driver's coffee is not ready for this.",
-		"d": "I can take bumps at any speed. Watch.",
-		"spd": 45,
-		"o": [
-			["SLOW DOWN, YOU MORON! HUMP!", "", 10],
-			["NO BRAKES, WIMP! GET SOME AIR!", "The car takes off. For one beautiful second you are a bird. Then the suspension files a formal complaint, and so does the coffee, on your lap.", 75],
-			["LOVELY SMELL OF COFFEE IN HERE.", "", 45],
-		],
-		"good": "The driver slows to a crawl and rolls over the hump. The coffee survives. The driver is unbearable about it for a mile.",
-		"late": "THUMP. THUMP-THUMP. The coffee lands on the driver, who screams something your mother would not like.",
-		"fx": "6b4a2b",
-	},
-];
-
-// Lines the driver says to nobody in particular while the road is empty.
-const IDLE = [
-	"I'm not tired. I'm just resting my eyes.",
-	"Let me check my phone real quick.",
-	"I know a shortcut. It's not a shortcut.",
-	"Do you think birds get lost?",
-	"I've done this drive a hundred times.",
-	"Eyes on the road? Eyes on the road.",
-	"Is that a nice cloud, or what?",
-	"Hold my coffee. No, the other hand.",
-];
-
-// What the driver says when the passenger makes small talk instead of helping.
-const CHAT = [
-	"Yeah, nice. Wait, why are you screaming?",
-	"Mm-hm. Great. Is that important?",
-	"Sure, sure. Hang on, what's that?",
-	"Not now, I'm concentrating. Sort of.",
-	"You're right! Wait, what were we doing?",
-];
-
-const THANKS = [
-	"Fine. I was about to do that.",
-	"I saw it. I SAW it.",
-	"Thanks, co-pilot.",
-	"You're surprisingly useful.",
-	"Okay okay, relax, I got it.",
-	"Honestly? Good call.",
-];
-
-const BLAME = [
-	"WHY DIDN'T YOU SAY SOMETHING?!",
-	"...You had one job.",
-	"That's on you. That's all on you.",
-	"We don't speak of this.",
-	"I'm telling my insurance it was you.",
-	"Next time use your words. The RIGHT ones.",
-];
-
-const EPITAPHS = [
-	"Insurance has cancelled you both. In writing. With emojis.",
-	"The car is totaled. The driver is fine. The driver says it was your fault.",
-	"The tow truck driver took one look and asked if you wanted a hug.",
-	"You will be remembered as the worst co-pilot in the county.",
-	"On the bright side: you'll get to walk from now on.",
-];
-
 // Synthesised sound: engine, road noise, passing traffic, horns, and event cues. No audio files.
 const AU = {
   ctx: null, on: true, master: null, eng1: null, eng2: null, engGain: null, engLp: null, roadGain: null, roadBp: null, noise: null,
@@ -552,6 +223,417 @@ function signPlate(shape, c, size, col, ink, glyph) {
   const lines = glyph.split("\n"), fs = Math.floor(size * (glyph.length <= 4 ? 0.3 : 0.2));
   lines.forEach((l, i) => txt(l, c[0], c[1] + (i - (lines.length - 1) / 2) * fs * 1.1 + fs * 0.35, fs, ink, "center", false));
 }
+
+// Icelandic-style road signs, redrawn in code (simplified; not the official artwork).
+// Warning: red-bordered triangle on yellow. Prohibition: red-ringed circle on yellow.
+// Mandatory: blue circle, white border. Information: blue rectangle. Stop: red octagon.
+const YEL = "#f6c600", RED = "#d3262b", BLU = "#0d4fa6", INK = "#111", WHT = "#fff";
+let K = INK; // current pictogram ink
+const pl = (pts, w) => { ctx.strokeStyle = K; ctx.lineWidth = w || 0.12; ctx.lineJoin = "round"; ctx.lineCap = "round"; ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]))); ctx.stroke(); };
+const pg = (pts, col) => { ctx.fillStyle = col || K; ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]))); ctx.closePath(); ctx.fill(); };
+const ci = (x, y, r, col) => { ctx.fillStyle = col || K; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); };
+const oval = (x, y, rx, ry, col) => { ctx.fillStyle = col || K; ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, TAU); ctx.fill(); };
+const stk = (x, y, r, w, col) => { ctx.strokeStyle = col || K; ctx.lineWidth = w; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.stroke(); };
+const head = (x, y, a, s) => pg([[x + Math.cos(a) * s, y + Math.sin(a) * s], [x + Math.cos(a + 2.5) * s, y + Math.sin(a + 2.5) * s], [x + Math.cos(a - 2.5) * s, y + Math.sin(a - 2.5) * s]]);
+const arrow = (pts, w) => { pl(pts, w || 0.16); const a = pts[pts.length - 2], b = pts[pts.length - 1]; head(b[0], b[1], Math.atan2(b[1] - a[1], b[0] - a[0]), 0.3); };
+const utxt = (s, x, y, fs) => { ctx.fillStyle = K; ctx.font = `bold ${fs}px ${FONT}`; ctx.textAlign = "center"; ctx.fillText(s, x, y + fs * 0.35); };
+
+// vehicles (side view)
+function car(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); pg([[-0.6, 0.15], [-0.55, -0.05], [-0.25, -0.3], [0.25, -0.3], [0.45, -0.05], [0.6, 0.15]]); ci(-0.33, 0.18, 0.14, K); ci(0.33, 0.18, 0.14, K); ctx.restore(); }
+function truck(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); pg([[-0.7, -0.35], [0.2, -0.35], [0.2, 0.15], [-0.7, 0.15]]); pg([[0.25, -0.15], [0.5, -0.15], [0.65, 0.0], [0.65, 0.15], [0.25, 0.15]]); ci(-0.45, 0.2, 0.13, K); ci(0.0, 0.2, 0.13, K); ci(0.45, 0.2, 0.13, K); ctx.restore(); }
+function bus(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); pg([[-0.7, -0.35], [0.65, -0.35], [0.7, 0.15], [-0.7, 0.15]]); ci(-0.4, 0.2, 0.13, K); ci(0.4, 0.2, 0.13, K); ctx.restore(); }
+function moto(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); stk(-0.4, 0.1, 0.22, 0.09); stk(0.4, 0.1, 0.22, 0.09); pl([[-0.4, 0.1], [-0.1, -0.15], [0.3, -0.15], [0.4, 0.1]], 0.09); pg([[-0.15, -0.2], [0.2, -0.2], [0.15, -0.35], [-0.1, -0.35]]); ctx.restore(); }
+function bike(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); stk(-0.4, 0.15, 0.25, 0.07); stk(0.4, 0.15, 0.25, 0.07); pl([[-0.4, 0.15], [-0.1, -0.2], [0.25, -0.2], [0.4, 0.15], [0.05, 0.15], [-0.1, -0.2]], 0.07); pl([[0.25, -0.2], [0.3, -0.4], [0.45, -0.4]], 0.07); pl([[-0.2, -0.25], [-0.05, -0.25]], 0.09); ctx.restore(); }
+function sPerson(x, y, s, walk) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ci(0, -0.6, 0.16); pg([[-0.18, -0.4], [0.18, -0.4], [0.14, 0.1], [-0.14, 0.1]]); const w = walk ? 0.16 : 0.08; pl([[-0.07, 0.1], [-w, 0.5]], 0.14); pl([[0.07, 0.1], [w, 0.5]], 0.14); pl([[-0.18, -0.35], [-0.3, 0.0]], 0.1); pl([[0.18, -0.35], [0.3, 0.0]], 0.1); ctx.restore(); }
+function sheep(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); [[-0.4, 0], [-0.15, -0.12], [0.1, -0.08], [-0.25, 0.1], [0.0, 0.12], [0.2, 0.06], [-0.5, 0.1]].forEach((c) => ci(c[0], c[1], 0.2)); ci(0.42, -0.05, 0.14); [[-0.4, 0.2], [-0.1, 0.24], [0.15, 0.2]].forEach((c) => pl([[c[0], c[1]], [c[0], 0.55]], 0.08)); ctx.restore(); }
+function cow(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); pg([[-0.55, -0.25], [0.3, -0.25], [0.3, 0.2], [-0.55, 0.2]]); pg([[0.3, -0.3], [0.65, -0.15], [0.62, 0.05], [0.3, 0.0]]); pl([[0.4, -0.3], [0.35, -0.5]], 0.07); pl([[0.55, -0.25], [0.62, -0.45]], 0.07); [-0.45, -0.3, 0.1, 0.25].forEach((px) => pl([[px, 0.2], [px, 0.6]], 0.1)); pl([[-0.55, -0.15], [-0.7, 0.1]], 0.05); ctx.restore(); }
+function horse(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); oval(-0.05, -0.05, 0.5, 0.22); pg([[0.3, -0.15], [0.55, -0.6], [0.72, -0.5], [0.5, -0.05]]); pg([[0.55, -0.6], [0.85, -0.45], [0.8, -0.35], [0.55, -0.48]]); [-0.35, -0.2, 0.2, 0.35].forEach((px) => pl([[px, 0.1], [px, 0.6]], 0.09)); pl([[-0.5, -0.12], [-0.72, 0.2]], 0.07); ctx.restore(); }
+function reindeer(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); oval(-0.1, 0.0, 0.45, 0.22); pg([[0.2, -0.1], [0.4, -0.4], [0.55, -0.35], [0.4, 0.0]]); oval(0.52, -0.4, 0.15, 0.1); [-0.35, -0.2, 0.1, 0.25].forEach((px) => pl([[px, 0.1], [px, 0.58]], 0.08)); pl([[0.45, -0.5], [0.35, -0.8], [0.2, -0.9]], 0.06); pl([[0.38, -0.68], [0.55, -0.75]], 0.06); pl([[0.55, -0.5], [0.62, -0.8], [0.78, -0.85]], 0.06); ctx.restore(); }
+function arch(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.fillStyle = K; ctx.beginPath(); ctx.moveTo(-0.7, 0.55); ctx.lineTo(-0.7, -0.05); ctx.arc(0, -0.05, 0.7, Math.PI, 0); ctx.lineTo(0.7, 0.55); ctx.closePath(); ctx.fill(); pg([[-0.3, 0.55], [-0.12, -0.05], [0.12, -0.05], [0.3, 0.55]], YEL); ctx.restore(); }
+
+// ---- pictograms: PIC[name](args) draws in unit space (about -1..1) with ink K ----
+const PIC = {
+  curve: (a) => { ctx.save(); if (a.flip) ctx.scale(-1, 1); arrow([[-0.25, 0.85], [-0.25, 0.1], [0.0, -0.2], [0.55, -0.45]]); ctx.restore(); },
+  hill: (a) => { ctx.save(); if (a.up) ctx.scale(-1, 1); pg([[-0.8, -0.35], [0.8, 0.5], [-0.8, 0.5]]); car(-0.15, -0.25, 0.4); ctx.restore(); utxt(a.t || "10%", 0, -0.62, 0.4); },
+  narrow: (a) => { const L = a.side !== "r", R = a.side !== "l"; if (L) pl([[-0.55, 0.85], [-0.55, 0.0], [-0.3, -0.85]], 0.14); if (R) pl([[0.55, 0.85], [0.55, 0.0], [0.3, -0.85]], 0.14); if (!L) pl([[-0.5, 0.85], [-0.5, -0.85]], 0.14); if (!R) pl([[0.5, 0.85], [0.5, -0.85]], 0.14); },
+  bumpy: () => { pl([[-0.9, 0.35], [-0.5, 0.2], [-0.2, 0.45], [0.1, 0.2], [0.4, 0.45], [0.9, 0.3]], 0.1); car(0, -0.1, 0.65); },
+  bump: () => { ctx.fillStyle = K; ctx.beginPath(); ctx.arc(0, 0.5, 0.5, Math.PI, 0); ctx.fill(); pl([[-0.9, 0.5], [0.9, 0.5]], 0.1); car(0, -0.2, 0.5); },
+  works: () => { sPerson(-0.25, 0.0, 0.75, false); pl([[0.05, 0.35], [0.4, 0.0]], 0.1); pg([[0.15, 0.5], [0.75, 0.5], [0.45, 0.15]]); },
+  gravel: () => { car(-0.1, -0.1, 0.7); [[0.55, 0.0], [0.7, -0.15], [0.7, 0.15], [0.85, 0.0], [0.55, -0.3]].forEach((c) => ci(c[0], c[1], 0.07)); },
+  rocks: () => { pg([[-0.8, -0.6], [-0.1, 0.5], [-0.8, 0.5]]); ci(0.1, -0.5, 0.17); ci(0.4, -0.15, 0.15); ci(0.2, 0.3, 0.14); pl([[0.55, 0.5], [0.85, 0.5]], 0.1); },
+  slippery: () => { car(0, -0.2, 0.75); pl([[-0.55, 0.3], [-0.35, 0.45], [-0.15, 0.3], [0.05, 0.45]], 0.09); pl([[0.05, 0.55], [0.25, 0.7], [0.45, 0.55], [0.6, 0.7]], 0.09); },
+  ice: () => { car(0, -0.25, 0.65); pl([[-0.6, 0.35], [-0.35, 0.55], [-0.1, 0.35], [0.15, 0.55], [0.4, 0.35]], 0.09); [[-0.1, 0.8], [0.4, 0.8]].forEach((c) => { pl([[c[0] - 0.12, c[1]], [c[0] + 0.12, c[1]]], 0.06); pl([[c[0], c[1] - 0.12], [c[0], c[1] + 0.12]], 0.06); }); },
+  shoulder: (a) => { pl([[-0.9, 0.2], [0.2, 0.2], [0.7, 0.75]], 0.1); ctx.save(); ctx.translate(0.45, -0.1); ctx.rotate(0.35); car(0, 0, 0.6); ctx.restore(); if (a && a.soft) [[-0.5, 0.45], [-0.2, 0.55], [0.1, 0.5]].forEach((c) => ci(c[0], c[1], 0.07)); },
+  quay: () => { pg([[-0.9, 0.15], [0.1, 0.15], [0.1, 0.8], [-0.9, 0.8]]); pl([[0.15, 0.4], [0.35, 0.3], [0.55, 0.4], [0.75, 0.3], [0.9, 0.4]], 0.08); pl([[0.2, 0.6], [0.4, 0.5], [0.6, 0.6], [0.8, 0.5]], 0.08); car(-0.45, -0.1, 0.6); },
+  tunnel: () => arch(0, 0.05, 0.95),
+  cross: (a) => { pl([[0, -0.85], [0, 0.85]], a.main ? 0.22 : 0.16); pl([[-0.85, 0], [0.85, 0]], a.main ? 0.08 : 0.16); },
+  roundabout: () => { for (let i = 0; i < 3; i++) { const a0 = i * TAU / 3 + 0.5; ctx.strokeStyle = K; ctx.lineWidth = 0.13; ctx.beginPath(); ctx.arc(0, 0, 0.55, a0, a0 + 1.5); ctx.stroke(); head(Math.cos(a0 + 1.5) * 0.55, Math.sin(a0 + 1.5) * 0.55, a0 + 1.5 + Math.PI / 2, 0.28); } },
+  lights: () => { rc0(0, 0, 0.62, 1.4); ci(0, -0.42, 0.18, "#d3262b"); ci(0, 0, 0.18, "#f6c600"); ci(0, 0.42, 0.18, "#2aa84a"); },
+  pedx: () => { for (let i = 0; i < 4; i++) pg([[-0.85 + i * 0.45, 0.85], [-0.55 + i * 0.45, 0.85], [-0.35 + i * 0.45, 0.45], [-0.65 + i * 0.45, 0.45]]); sPerson(0, -0.1, 0.7, true); },
+  peds: () => { sPerson(-0.2, 0.0, 0.8, true); sPerson(0.4, 0.1, 0.55, true); },
+  children: () => { sPerson(-0.35, 0.1, 0.65, true); sPerson(0.25, 0.1, 0.5, true); pl([[-0.2, -0.05], [0.12, -0.05]], 0.07); },
+  bikex: () => { bike(0, 0, 1.0); },
+  sheep: () => sheep(0, 0, 0.9),
+  cow: () => cow(0, 0, 0.85),
+  horse: () => horse(-0.05, 0.05, 0.9),
+  rider: () => { horse(-0.05, 0.2, 0.8); ci(0.05, -0.45, 0.12); pl([[0.05, -0.35], [0.05, -0.1]], 0.14); },
+  reindeer: () => reindeer(-0.1, 0.1, 0.85),
+  animal: () => reindeer(-0.1, 0.1, 0.85),
+  twoway: () => { arrow([[-0.35, 0.8], [-0.35, -0.7]], 0.14); arrow([[0.35, -0.8], [0.35, 0.7]], 0.14); },
+  plane: () => { pg([[0, -0.9], [0.12, -0.2], [0.85, 0.2], [0.85, 0.35], [0.12, 0.15], [0.1, 0.6], [0.35, 0.75], [0.35, 0.85], [0, 0.8], [-0.35, 0.85], [-0.35, 0.75], [-0.1, 0.6], [-0.12, 0.15], [-0.85, 0.35], [-0.85, 0.2], [-0.12, -0.2]]); },
+  wind: () => { pl([[-0.5, 0.8], [-0.5, -0.6]], 0.1); pg([[-0.5, -0.6], [0.7, -0.4], [0.6, -0.1], [-0.5, -0.2]]); pl([[0.2, 0.3], [0.8, 0.3]], 0.07); pl([[0.0, 0.55], [0.7, 0.55]], 0.07); },
+  other: () => { pg([[-0.1, -0.7], [0.1, -0.7], [0.07, 0.15], [-0.07, 0.15]]); ci(0, 0.45, 0.11); },
+};
+function rc0(x, y, w, h) { ctx.fillStyle = K; ctx.fillRect(x - w / 2, y - h / 2, w, h); }
+
+const red = (fn) => { K = RED; fn(); K = INK; };
+const slash = () => { ctx.strokeStyle = RED; ctx.lineWidth = 0.16; ctx.beginPath(); ctx.moveTo(-0.62, -0.62); ctx.lineTo(0.62, 0.62); ctx.stroke(); };
+const diag = () => { K = "#888"; [-0.35, 0, 0.35].forEach((q) => pl([[-0.55 + q, 0.6], [0.45 + q, -0.6]], 0.08)); K = INK; };
+const vslash = (fn) => { ctx.save(); ctx.scale(0.8, 0.8); fn(); ctx.restore(); slash(); };
+const num = (t) => utxt(t, 0, 0, t.length > 2 ? 0.7 : 0.95);
+Object.assign(PIC, {
+  giveOnc: () => { arrow([[0.3, 0.75], [0.3, -0.1]], 0.1); red(() => arrow([[-0.25, -0.75], [-0.25, 0.8]], 0.2)); },
+  noEntryBar: () => {},
+  veh_car: () => vslash(() => car(0, 0, 1.1)), veh_truck: () => vslash(() => truck(0, 0, 1.0)), veh_bus: () => vslash(() => bus(0, 0, 1.0)),
+  veh_moto: () => vslash(() => moto(0, 0, 1.0)), veh_motor: () => vslash(() => { car(-0.35, 0.0, 0.7); moto(0.45, 0.05, 0.7); }), veh_bike: () => vslash(() => bike(0, 0, 1.0)),
+  veh_horse: () => vslash(() => horse(0, 0.1, 1.0)), veh_ped: () => vslash(() => sPerson(0, 0, 1.2, true)),
+  veh_snow: () => vslash(() => { pg([[-0.7, 0.15], [-0.6, -0.15], [0.1, -0.2], [0.5, -0.4], [0.7, -0.1], [0.4, 0.15]]); pl([[-0.7, 0.3], [0.5, 0.3]], 0.12); }),
+  veh_tractor: () => vslash(() => { pg([[-0.5, -0.2], [0.1, -0.2], [0.1, 0.15], [-0.5, 0.15]]); pg([[0.1, -0.5], [0.35, -0.5], [0.35, 0.15], [0.1, 0.15]]); ci(-0.35, 0.25, 0.28); ci(0.3, 0.3, 0.15); }),
+  lim: (a) => { if (a.k === "w") { arrow([[-0.1, -0.35], [-0.75, -0.35]], 0.09); arrow([[0.1, -0.35], [0.75, -0.35]], 0.09); pl([[-0.8, -0.55], [-0.8, -0.15]], 0.09); pl([[0.8, -0.55], [0.8, -0.15]], 0.09); utxt(a.t, 0, 0.35, 0.42); } else if (a.k === "h") { arrow([[-0.5, -0.1], [-0.5, -0.75]], 0.09); arrow([[-0.5, 0.1], [-0.5, 0.75]], 0.09); pl([[-0.7, -0.78], [-0.3, -0.78]], 0.09); pl([[-0.7, 0.78], [-0.3, 0.78]], 0.09); utxt(a.t, 0.25, 0, 0.42); } else utxt(a.t, 0, 0, 0.55); },
+  noturn: (a) => { ctx.save(); if (a.flip) ctx.scale(-1, 1); arrow([[-0.3, 0.6], [-0.3, -0.1], [0.45, -0.1]], 0.15); ctx.restore(); slash(); },
+  uturn: (a) => { ctx.strokeStyle = K; ctx.lineWidth = 0.15; ctx.beginPath(); ctx.moveTo(-0.3, 0.6); ctx.lineTo(-0.3, -0.1); ctx.arc(0, -0.1, 0.3, Math.PI, 0); ctx.lineTo(0.3, 0.2); ctx.stroke(); head(0.3, 0.3, Math.PI / 2, 0.3); if (a.slash) slash(); },
+  overtake: (a) => { car(-0.3, 0.0, 0.8); red(() => car(0.4, 0.05, 0.8)); if (a.end) diag(); },
+  speed: (a) => { num(a.t); if (a.end) diag(); },
+  nostop: () => { red(() => { pl([[-0.55, -0.55], [0.55, 0.55]], 0.2); pl([[0.55, -0.55], [-0.55, 0.55]], 0.2); }); },
+  noparking: () => { utxt("P", 0, 0, 1.0); slash(); },
+  allclear: () => { pl([[-0.6, 0.6], [0.6, -0.6]], 0.14); },
+  zone: (a) => { num(a.t); utxt("ZONE", 0, 0.62, 0.28); if (a.end) diag(); },
+  mandArrow: (a) => { K = WHT; ctx.save(); ctx.rotate(a.r || 0); arrow([[0, 0.7], [0, -0.45]], 0.2); ctx.restore(); K = INK; },
+  mandTurn: (a) => { K = WHT; ctx.save(); if (a.flip) ctx.scale(-1, 1); arrow([[-0.3, 0.6], [-0.3, -0.1], [0.45, -0.1]], 0.2); ctx.restore(); K = INK; },
+  mandKeep: (a) => { K = WHT; ctx.save(); if (a.flip) ctx.scale(-1, 1); arrow([[0.5, -0.6], [-0.4, 0.55]], 0.22); ctx.restore(); K = INK; },
+  mandRound: () => { K = WHT; PIC.roundabout(); K = INK; },
+  mandBike: () => { K = WHT; bike(0, 0, 1.15); K = INK; },
+  mandPed: () => { K = WHT; sPerson(0, 0, 1.2, true); K = INK; },
+  mandHorse: () => { K = WHT; horse(0, 0.1, 1.15); K = INK; },
+  mandPass: () => { K = WHT; ctx.save(); ctx.scale(0.8, 0.8); arrow([[-0.3, 0.6], [-0.3, -0.5]], 0.2); arrow([[0.4, -0.6], [0.4, 0.5]], 0.2); ctx.restore(); K = INK; },
+  infoText: (a) => { K = WHT; utxt(a.t, 0, a.y || 0, a.fs || 1.0); K = INK; },
+  infoPic: (a) => { K = WHT; PIC[a.p](a.a || {}); K = INK; },
+  camera: () => { pg([[-0.8, -0.25], [0.35, -0.25], [0.35, 0.3], [-0.8, 0.3]]); pg([[0.4, -0.15], [0.85, -0.35], [0.85, 0.4], [0.4, 0.2]]); pl([[-0.3, 0.3], [-0.3, 0.75]], 0.1); },
+  house: () => { pg([[-0.8, 0.0], [0, -0.7], [0.8, 0.0]]); rc0(0, 0.35, 1.2, 0.7); },
+  passing: () => { pl([[-0.5, 0.8], [-0.5, -0.8]], 0.14); pl([[0.5, 0.8], [0.5, -0.8]], 0.14); pl([[-0.5, 0.2], [-0.9, 0.2]], 0.14); pl([[0.5, -0.4], [0.9, -0.4]], 0.0); },
+  deadend: () => { utxt("T", 0, 0, 1.3); },
+  star: () => {},
+});
+// ---- plates ----
+function drawSignCode(code, c, size) {
+  const d = SIGN[code]; if (!d) return;
+  const r = size / 2, f = d.f || {};
+  const picAt = (x, y, sc, ink) => { ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); K = ink || INK; PIC[d.pic](d.a || {}); K = INK; ctx.restore(); };
+  const tri = (cx, cy, s, up, col) => { const h = s * 0.95, pts = up ? [[cx, cy - h], [cx + s * 1.1, cy + h * 0.9], [cx - s * 1.1, cy + h * 0.9]] : [[cx, cy + h], [cx + s * 1.1, cy - h * 0.9], [cx - s * 1.1, cy - h * 0.9]]; poly(pts, col); return pts; };
+  ctx.save(); ctx.lineJoin = "round";
+  if (d.cat === "warn") {
+    const oy = d.plate ? -r * 0.35 : 0;
+    tri(c[0], c[1] + oy + r * 0.05, r * 1.02, true, RED); tri(c[0], c[1] + oy + r * 0.2, r * 0.72, true, YEL);
+    picAt(c[0], c[1] + oy + r * 0.22, r * 0.5);
+    if (d.plate) {
+      const py = c[1] + r * 1.12, pw = r * 2.4, ph = r * 0.5;
+      rc([c[0], py], pw, ph, INK); rc([c[0], py], pw - r * 0.06, ph - r * 0.06, YEL);
+      if (size >= 40) txt(d.plate, c[0], py + ph * 0.18, Math.max(8, Math.floor(r * (d.plate.length > 12 ? 0.2 : 0.26))), INK, "center", false);
+    }
+  } else if (d.cat === "yield") {
+    tri(c[0], c[1] - r * 0.05, r * 1.02, false, RED); tri(c[0], c[1] - r * 0.2, r * 0.72, false, YEL);
+  } else if (d.cat === "stop") {
+    const pts = []; for (let i = 0; i < 8; i++) { const a = Math.PI / 8 + i * Math.PI / 4; pts.push([c[0] + Math.cos(a) * r * 1.12, c[1] + Math.sin(a) * r * 1.12]); }
+    poly(pts, WHT); const p2 = pts.map((p) => [c[0] + (p[0] - c[0]) * 0.92, c[1] + (p[1] - c[1]) * 0.92]); poly(p2, RED);
+    if (size >= 30) txt("STOP", c[0], c[1] + size * 0.11, Math.floor(size * 0.3), WHT, "center", false);
+  } else if (d.cat === "prohib") {
+    circ(c, r * 1.05, RED); circ(c, r * 0.78, YEL);
+    if (d.pic === "noEntry") rc(c, r * 1.5, r * 0.35, WHT);
+    else if (d.pic === "closed") {} else picAt(c[0], c[1], r * 0.62);
+    if (d.pic === "noEntry") { circ(c, r * 1.05, RED); rc(c, r * 1.55, r * 0.34, WHT); }
+  } else if (d.cat === "mand") {
+    circ(c, r * 1.05, WHT); circ(c, r * 0.98, BLU); picAt(c[0], c[1], r * 0.62);
+  } else if (d.cat === "prio") {
+    const dm = (s, col) => poly([[c[0], c[1] - s], [c[0] + s, c[1]], [c[0], c[1] + s], [c[0] - s, c[1]]], col);
+    dm(r * 1.3, INK); dm(r * 1.2, WHT); dm(r * 0.98, YEL);
+    if (d.pic === "end") { ctx.save(); ctx.beginPath(); ctx.moveTo(c[0], c[1] - r * 0.98); ctx.lineTo(c[0] + r * 0.98, c[1]); ctx.lineTo(c[0], c[1] + r * 0.98); ctx.lineTo(c[0] - r * 0.98, c[1]); ctx.closePath(); ctx.clip(); ctx.strokeStyle = INK; ctx.lineWidth = Math.max(1, r * 0.07); [-0.45, 0, 0.45].forEach((o) => { ctx.beginPath(); ctx.moveTo(c[0] - r * 0.8 + o * r, c[1] + r * 0.8); ctx.lineTo(c[0] + r * 0.8 + o * r - r * 0.9, c[1] - r * 0.8); ctx.stroke(); }); ctx.restore(); }
+  } else if (d.cat === "prioOnc") {
+    rc(c, r * 2.1, r * 2.1, WHT); rc(c, r * 1.95, r * 1.95, BLU);
+    ctx.save(); ctx.translate(c[0], c[1]); ctx.scale(r * 0.62, r * 0.62); K = WHT; arrow([[-0.3, 0.75], [-0.3, -0.7]], 0.2); red(() => arrow([[0.35, -0.55], [0.35, 0.55]], 0.12)); ctx.restore();
+  } else {
+    rc(c, r * 2.2, r * 1.8, WHT); rc(c, r * 2.1, r * 1.7, BLU); picAt(c[0], c[1], r * 0.62, WHT);
+  }
+  ctx.restore();
+}
+
+// Sign registry. Codes follow the Wikipedia "Road signs in Iceland" file codes (pre-2024 letter scheme).
+// `is` = Icelandic name, only where Samgöngustofa's page gave it. `plate` = text plate under the triangle.
+const SIGN = {};
+const S = (cat, code, pic, a, n, m, extra) => { SIGN[code] = Object.assign({ cat, pic, a: a || {}, n, m }, extra || {}); };
+// warning
+S("warn", "A01.11", "curve", {}, "Dangerous curve to the right", "A dangerous curve to the right lies ahead. Slow down before it.");
+S("warn", "A01.12", "curve", { flip: 1 }, "Dangerous curve to the left", "A dangerous curve to the left lies ahead. Slow down before it.");
+S("warn", "A18", "hill", { t: "12%" }, "Steep descent", "A steep downhill follows. Use a low gear and brake gently.");
+S("warn", "A19", "hill", { up: 1, t: "12%" }, "Steep ascent", "A steep uphill follows. Keep your speed up and drop a gear.");
+S("warn", "A14.11", "narrow", {}, "Road narrows", "The road narrows on both sides.");
+S("warn", "A20.11", "bumpy", {}, "Bumpy road", "The surface is uneven for some distance. Slow down.");
+S("warn", "A20.21", "bump", {}, "Speed bump", "A raised bump crosses the road. Slow right down.");
+S("warn", "A17.11", "works", {}, "Roadworks", "Workers and machines are on the road. Slow down and follow the signs.");
+S("warn", "A22.11", "gravel", {}, "Loose gravel", "Loose stones on the surface. Slow down and keep your distance.");
+S("warn", "A21.11", "rocks", {}, "Falling rocks", "Rocks may fall onto the road. Do not stop here.");
+S("warn", "A27.11", "slippery", {}, "Slippery when wet", "The surface is slippery when wet. Slow down.");
+S("warn", "A27.21", "ice", {}, "Risk of ice on the road", "Ice may be on the road. Slow down and avoid hard braking.");
+S("warn", "A28.11", "shoulder", {}, "Dangerous shoulder", "The edge of the road is dangerous. Stay away from it.");
+S("warn", "A29.11", "shoulder", { soft: 1 }, "Unstable shoulder", "The road edge is soft. Keep to your lane.");
+S("warn", "A33.11", "quay", {}, "Quay or river bank without barrier", "The road ends at the water with no barrier.");
+S("warn", "A26.11", "tunnel", {}, "Tunnel ahead", "A tunnel follows. Lights on, keep your distance.");
+S("warn", "A05.11", "cross", {}, "Dangerous intersection", "An intersection ahead is dangerous. Slow down and look.");
+S("warn", "A07.11", "cross", { main: 1 }, "Intersection with priority road", "A side road joins ahead. Watch for traffic.");
+S("warn", "A10.11", "roundabout", {}, "Roundabout ahead", "A roundabout follows. Slow down and give way.");
+S("warn", "A23.11", "lights", {}, "Traffic lights ahead", "Traffic lights follow. Be ready to stop.");
+S("warn", "A11.22", "pedx", {}, "Pedestrian crossing ahead", "A pedestrian crossing follows. Be ready to stop.");
+S("warn", "A11.21", "peds", {}, "Pedestrians", "Pedestrians may be on the road.");
+S("warn", "A11.11", "children", {}, "Children", "Children may run onto the road. Slow down.");
+S("warn", "A11.41", "bikex", {}, "Cyclist crossing", "Cyclists cross the road ahead.");
+S("warn", "A11.31", "rider", {}, "Horse riders", "Horse riders may be on or crossing the road. Slow down and give them room.");
+S("warn", "A11.32", "horse", {}, "Horses", "Horses may be on the road.");
+S("warn", "A11.36", "cow", {}, "Cattle", "Cattle may be on the road.");
+S("warn", "A11.37", "sheep", {}, "Sheep", "Sheep roam free and may be on the road. Slow down.");
+S("warn", "A11.38", "reindeer", {}, "Reindeer", "Reindeer may cross the road.");
+S("warn", "146", "animal", {}, "Animals", "Animals may be on the road. Slow down.", { is: "Dýr" });
+S("warn", "A25.11", "twoway", {}, "Two-way traffic", "Traffic comes the other way ahead.");
+S("warn", "A24.11", "plane", {}, "Low-flying aircraft", "Aircraft fly low over the road here.");
+S("warn", "A32.11", "wind", {}, "Strong crosswinds", "Strong gusts may push your car sideways. Slow down and hold the wheel.");
+S("warn", "A99.11", "other", {}, "Other danger", "Something dangerous lies ahead. Be careful.");
+S("warn", "J41.11", "narrow", {}, "Single-lane bridge", "Only one vehicle can cross at a time. Give way to those already on it.", { plate: "EINBREIÐ BRÚ", is: "Einbreið brú" });
+S("warn", "J41.51", "tunnel", {}, "Single-lane tunnel", "Only one vehicle fits. Use the passing places and give way.", { plate: "EINBREIÐ JARÐGÖNG", is: "Einbreið jarðgöng" });
+S("warn", "J33.11", "hill", { up: 1, t: "" }, "Blind hill", "You cannot see what is over the crest. Stay in your lane and slow down.", { plate: "BLINDHÆÐ" });
+S("warn", "J31.11", "quay", {}, "Unbridged river crossing", "The road crosses a river with no bridge.", { plate: "ÓBRÚAÐAR ÁR", is: "Óbrúaðar ár" });
+S("warn", "J32.21", "bumpy", {}, "Difficult mountain road", "A rough road for 4x4 vehicles only.", { plate: "TORLEIÐI", is: "Torleiði" });
+// priority
+S("stop", "B19.11", "stop", {}, "Stop", "Come to a full stop and give way to all traffic.", { is: "Stöðvunarskylda" });
+S("yield", "A06.11", "yield", {}, "Give way", "Give way to traffic on the road you are joining.", { is: "Biðskylda" });
+S("prio", "D03.11", "main", {}, "Priority road", "You have priority over side roads.", { is: "Aðalbraut" });
+S("prio", "D03.21", "end", {}, "End of priority road", "Your priority ends. Give way as usual.", { is: "Aðalbraut endar" });
+S("prohib", "B25.11", "giveOnc", {}, "Give way to oncoming traffic", "Let oncoming vehicles through the narrow part first.");
+S("prioOnc", "D05.11", "x", {}, "Priority over oncoming traffic", "You may go first through the narrow part.");
+// prohibitory
+S("prohib", "B01.21", "noEntry", {}, "No entry", "Do not enter from this direction.");
+S("prohib", "B01.11", "closed", {}, "Closed to all vehicles", "No vehicle may pass.");
+S("prohib", "B03.21", "veh_car", {}, "No cars", "Cars are not allowed.");
+S("prohib", "B03.31", "veh_truck", {}, "No trucks", "Trucks are not allowed.");
+S("prohib", "B03.32", "veh_bus", {}, "No buses", "Buses are not allowed.");
+S("prohib", "B03.41", "veh_tractor", {}, "No tractors", "Tractors are not allowed.");
+S("prohib", "B03.51", "veh_moto", {}, "No motorcycles", "Motorcycles are not allowed.");
+S("prohib", "B03.61", "veh_snow", {}, "No snowmobiles", "Snowmobiles are not allowed.");
+S("prohib", "B05.11", "veh_bike", {}, "No bicycles", "Bicycles are not allowed.");
+S("prohib", "B05.21", "veh_horse", {}, "No horse riders", "Horse riders are not allowed.");
+S("prohib", "B05.31", "veh_ped", {}, "No pedestrians", "Pedestrians are not allowed.");
+S("prohib", "B13.11", "lim", { k: "w", t: "2.5 m" }, "Width limit", "Vehicles wider than the limit may not pass.");
+S("prohib", "B15.11", "lim", { k: "h", t: "3 m" }, "Height limit", "Vehicles taller than the limit may not pass.");
+S("prohib", "B16.11", "lim", { k: "t", t: "10 t" }, "Weight limit", "Vehicles heavier than the limit may not pass.");
+S("prohib", "B30.11", "noturn", {}, "No right turn", "Do not turn right.");
+S("prohib", "B30.12", "noturn", { flip: 1 }, "No left turn", "Do not turn left.");
+S("prohib", "B30.21", "uturn", { slash: 1 }, "No U-turn", "Do not turn around here.");
+S("prohib", "B33.11", "overtake", {}, "No overtaking", "Do not overtake other vehicles.");
+S("prohib", "B33.31", "overtake", { end: 1 }, "End of no overtaking", "Overtaking is allowed again.");
+S("prohib", "B26.60", "speed", { t: "30" }, "Maximum speed 30", "Do not drive faster than 30 km/h.");
+S("prohib", "B26.50", "speed", { t: "50" }, "Maximum speed 50", "Do not drive faster than 50 km/h.");
+S("prohib", "B27.60", "speed", { t: "30", end: 1 }, "End of speed limit", "The special speed limit ends.");
+S("prohib", "B24.11", "nostop", {}, "No stopping", "Do not stop here, even briefly.");
+S("prohib", "B21.11", "noparking", {}, "No parking", "Do not park here.");
+S("prohib", "B34.11", "allclear", {}, "National speed limit applies", "The general limit applies again (90 km/h on paved rural roads).");
+S("prohib", "B28.30", "zone", { t: "30" }, "30 zone", "A 30 km/h zone begins. It covers every street inside it.");
+S("prohib", "B12.11", "lim", { k: "d", t: "50 m" }, "Minimum distance between vehicles", "Keep at least the shown distance to the vehicle ahead.");
+// mandatory
+S("mand", "C01.13", "mandArrow", {}, "Go straight", "Vehicles must go straight ahead.");
+S("mand", "C01.21", "mandTurn", {}, "Turn right", "Vehicles must turn right.");
+S("mand", "C01.22", "mandTurn", { flip: 1 }, "Turn left", "Vehicles must turn left.");
+S("mand", "C09.11", "mandKeep", {}, "Keep right", "Pass the obstacle on its right.");
+S("mand", "C12.11", "mandRound", {}, "Roundabout", "Go round the roundabout the way the arrows show.");
+S("mand", "C13.11", "mandBike", {}, "Bicycles only", "This path is for bicycles only.");
+S("mand", "C14.11", "mandPed", {}, "Pedestrian path", "This path is for pedestrians only.");
+S("mand", "C16.11", "mandHorse", {}, "Riding path", "This path is for horse riders.", { is: "Reiðstígur" });
+// special rule and information
+S("info", "D02.11", "pedx", {}, "Pedestrian crossing", "Give way to pedestrians on the crossing.", { is: "Gangbraut" });
+S("info", "D07.11", "mandArrow", {}, "One-way street", "Traffic goes in one direction only.", { is: "Einstefna" });
+S("info", "D14.11", "house", {}, "Living street", "Walking pace. Pedestrians have priority. Maximum 15 km/h.", { is: "Vistgata" });
+S("info", "D12.11", "infoText", { t: "50" }, "Urban area", "Built-up area. The 50 km/h limit applies.", { is: "Þéttbýli" });
+S("info", "D09.21", "infoPic", { p: "mandPass" }, "Bus stop", "Buses stop here.");
+S("info", "D06.11", "passing", {}, "Passing place", "A bay where you can pull in to let traffic pass on a narrow road.");
+S("info", "D08.11", "deadend", {}, "Dead end", "This road does not go through.");
+S("info", "D28.11", "camera", {}, "Traffic enforcement cameras", "Speed and traffic are monitored here.", { is: "Eftirlitsmyndavél" });
+
+// Each event: sign = registry code, hz = hazard drawing, spd = start speed (mph),
+// c = [correct scream, target mph], w = [wrong scream, target mph, what happens], good, late, fx.
+// The third option is always irrelevant small talk drawn from SMALL.
+const EV = [];
+const E = (o) => EV.push(o);
+E({ id: "sheep", sign: "A11.37", hz: "sheep", spd: 60, scene: "A flock of sheep has strolled onto the road. In Iceland they have right of way, and they know it.",
+  c: ["BRAKE, YOU MORON! SHEEP!", 5], w: ["THEY'RE JUST CLOUDS, YOU GOOSE! DRIVE!", 60, "Clouds do not go baa. The ram has opinions about your bumper, and so does your insurance."],
+  good: "The driver stops. A hundred sheep cross with the confidence of animals who own the road. Which, in Iceland, they do.", late: "BAAAA-THUMP. The sheep wins. Your bumper does not, and neither does the farmer's mood.", fx: "f4f1ea" });
+E({ id: "horse", sign: "A11.32", hz: "horse", spd: 55, scene: "Three horses ride the shoulder like they pay the road tax. One of them looks at your car and sighs.",
+  c: ["SLOW DOWN, YOU IDIOT! HORSES!", 10], w: ["HONK AT THEM, YOU GENIUS!", 55, "Horses hate honking. One leaves through your windscreen. A horse is five hundred kilos of regret."],
+  good: "The driver crawls past. A horse looks you up and down and decides you are not worth biting.", late: "The horse leaves by the windscreen and enters by the back seat. It makes itself comfortable.", fx: "8a5a2b" });
+E({ id: "cow", sign: "A11.36", hz: "cow", spd: 50, scene: "A cow stands in the road chewing. The cow has been there since the 1990s.",
+  c: ["BRAKE, MORON! COWS!", 5], w: ["MOO AT THEM! THEY'LL MOVE!", 50, "The cows moo back. Louder. They have been practising. They are not moving."],
+  good: "The cows cross. One stops to stare at you. Nobody argues with a cow.", late: "The cow has right of way, a ribcage like a bus and no insurance.", fx: "e8e4dc" });
+E({ id: "reindeer", sign: "A11.38", hz: "deer", spd: 60, scene: "Two glowing eyes in the dusk at the roadside. Then four. Then they step out, antlers first.",
+  c: ["SLOW DOWN, YOU MORON! REINDEER!", 10], w: ["FLASH THE HIGH BEAMS, GENIUS!", 60, "Reindeer freeze when you flash lights. It is the entire thing they do. The car and the reindeer are now one."],
+  good: "The driver brakes. A stag pauses, locks eyes with you, then wanders off with deep disdain.", late: "BANG. Your bonnet has an antler now. The reindeer is on the roof, looking at you like you owe it money.", fx: "8a5a2b" });
+E({ id: "ducks", sign: "146", hz: "ducks", spd: 50, scene: "The sign says animals. A flock of ducks waddles across, in no hurry whatsoever.",
+  c: ["BRAKE, YOU MORON! DUCKS!", 5], w: ["AWW, LOOK AT THE DUCKS, YOU GOOSE!", 45, "The driver looks. The ducks look back. Briefly. Then there are feathers. So many feathers."],
+  good: "The driver brakes. The ducks cross in a tiny, smug parade. The last one nods at you. You will carry that nod forever.", late: "Nobody said anything useful. The ducks said quack, and then nothing at all. The wipers are on paté setting.", fx: "f4f0dc" });
+E({ id: "gator", sign: "146", hz: "gator", spd: 45, scene: "The sign says animals. Nobody explains why a gator is sunbathing across both lanes in Iceland.",
+  c: ["BRAKE, YOU MORON! THAT'S A GATOR!", 8], w: ["IT'S A LOG, YOU COWARD! RUN IT OVER!", 45, "It was not a log. The log now has your whole arm and a strong opinion about your elbow."],
+  good: "The driver slows. The gator ambles across and gives you a long, assessing stare. You were not the snack. This time.", late: "The gator takes your silence as an order for takeout. Compliments to the chef. The chef is you.", fx: "4a8f3a" });
+E({ id: "pedx", sign: "A11.22", hz: "walker", spd: 35, scene: "A very elderly man with a walker has started crossing. He has all day. You do not.",
+  c: ["STOP, YOU MANIAC! LET HIM CROSS!", 0], w: ["HE'LL MAKE IT, GRANDMA! KEEP GOING!", 35, "He did not make it. The walker made it. It is now a bonnet ornament and, honestly, a fairly nice one."],
+  good: "The driver stops. Eleven minutes later, the man reaches the far side, tips his hat and calls you sweetheart.", late: "A walker flies past the passenger window. Silently. Like a very sad bird.", fx: "c0c4cc" });
+E({ id: "children", sign: "A11.11", hz: "kids", spd: 40, scene: "A ball bounces into the road. A small child is already running after it.",
+  c: ["BRAKE, YOU IDIOT! A KID!", 0], w: ["IT'S JUST A BALL, YOU WIMP!", 40, "It was a ball. Then it was not just a ball. The driver says nothing for forty miles. Neither do you."],
+  good: "Tires scream. The kid grabs the ball, waves, and calls the driver a word you did not know a six-year-old knew. Worth it.", late: "Thud. Silence. 'That was a ball, right?' the driver asks, very small. You both decide to believe it was a ball.", fx: "e8453c" });
+E({ id: "cyclist", sign: "A11.41", hz: "cyclist", spd: 45, scene: "A cyclist in neon lycra is crossing the road, fast, with the calm of someone who has right of way and a helmet.",
+  c: ["BRAKE, MORON! CYCLIST CROSSING!", 5], w: ["RACE HIM, YOU TURTLE! FASTER!", 60, "You race him. You lose. By the time the driver stops, he has uploaded the whole thing to the internet."],
+  good: "The driver brakes. The cyclist crosses, clips out of one pedal, salutes with two fingers, and pedals off like a rocket.", late: "A bicycle bell. A shriek. A neon blur over the bonnet. He lands in a bush with the dignity of a cat.", fx: "3cd0a0" });
+E({ id: "curve", sign: "A01.11", hz: "curve", spd: 65, scene: "A hairpin to the right. A wall on one side. A nice view of the valley, from above and then from below, on the other.",
+  c: ["TOO FAST, YOU MANIAC! CURVE!", 15], w: ["DRIFT IT, TURTLE! FASTER!", 85, "The drift is magnificent. The landing is not. You get excellent views of the valley for four whole seconds."],
+  good: "The driver slows. The car hugs the curve like an old friend. Far below, a wrecked car whispers: tell my story.", late: "The tires scream. The car sails off the cliff in slow motion. The driver says, 'Huh.' It is the last thing anyone says.", fx: "ffb000" });
+E({ id: "descent", sign: "A18", hz: "steep", spd: 70, scene: "A twelve percent descent. The driver is in neutral 'to save petrol'. The brakes are already smelling.",
+  c: ["SHIFT DOWN, YOU MORON! BRAKE GENTLY!", 30], w: ["COAST, GENIUS! SAVE THE FUEL!", 105, "Downhill in neutral is a roller coaster with a wallet attached. The brakes smell like a barbecue. It is not a good barbecue."],
+  good: "The driver drops a gear and the engine growls like a happy dog. The descent ends with brakes that are merely warm.", late: "The needle climbs and so does the driver's voice. The runaway lane does not exist. The ditch does.", fx: "9a9aa2" });
+E({ id: "ascent", sign: "A19", hz: "steep", spd: 30, scene: "A steep climb. The driver is doing 30 in fifth gear and the engine is crying quietly.",
+  c: ["SHIFT DOWN, YOU MORON! GO GO GO!", 55], w: ["STOP AND ADMIRE THE VIEW, SNAIL!", 0, "The car stops. The car rolls backwards. Slowly. Then not slowly. The handbrake files a complaint."],
+  good: "The driver drops a gear and the little engine finds courage. At the top, the whole country spreads out below.", late: "The engine coughs, the car stalls, and a long line of locals behind you remembers every word of Icelandic profanity.", fx: "9a9aa2" });
+
+E({ id: "narrow", sign: "A14.11", hz: "narrow", spd: 70, scene: "The road squeezes in from both sides. A bus coming the other way takes up most of it.",
+  c: ["SLOW DOWN, MORON! IT NARROWS!", 25], w: ["SUCK IN YOUR STOMACH, GENIUS! GO!", 70, "The wing mirror bids farewell. The bus does not. The car now has a very thin side."],
+  good: "The driver slows. The bus slides past with the width of a credit card to spare. Both drivers wave. Both pretend not to be sweating.", late: "SCRRRRAPE. Two mirrors, one bus, no manners. The bus keeps going. The bus has places to be.", fx: "9a9aa2" });
+E({ id: "bumpy", sign: "A20.11", hz: "bump", spd: 60, scene: "The road turns into a washboard for half a mile. The driver's coffee notices first.",
+  c: ["SLOW DOWN, YOU MORON! BUMPY ROAD!", 25], w: ["GO FASTER! IT SMOOTHS OUT!", 70, "It does not smooth out. Your teeth become a percussion section and the coffee has a short, violent career."],
+  good: "The driver eases down. The car rumbles over the ripples like a tractor on a trampoline. The coffee survives.", late: "Everything rattles. Every filling. Every thought. Your dentist will send a thank-you card.", fx: "6b4a2b" });
+E({ id: "bump", sign: "A20.21", hz: "bump", spd: 45, scene: "A painted hump crosses the road. The driver's coffee is not ready for this.",
+  c: ["SLOW DOWN, YOU MORON! HUMP!", 10], w: ["DON'T BRAKE! GET SOME AIR!", 75, "The car takes off. For one beautiful second you are a bird. Then the suspension files a formal complaint, and so does the coffee, on your lap."],
+  good: "The driver slows to a crawl and rolls over the hump. The coffee survives. The driver is unbearable about it for a mile.", late: "THUMP. THUMP-THUMP. The coffee lands on the driver, who screams something your mother would not like.", fx: "6b4a2b" });
+E({ id: "works", sign: "A17.11", hz: "work", spd: 60, scene: "Orange cones, a digger and a man with a shovel leaning on it. He has been leaning for some time.",
+  c: ["SLOW DOWN, MORON! ROADWORKS!", 20], w: ["CONES ARE JUST DECORATION! DRIVE!", 60, "You slalom through. The cones go flying. The man with the shovel goes flying. The shovel stays leaning."],
+  good: "The driver slows to a crawl. The worker waves. He has been waiting all week for someone to wave back.", late: "CLANG. A cone in the windscreen. A digger in the mirror. A very polite man writing down your plate.", fx: "ff8a1f" });
+E({ id: "gravel", sign: "A22.11", hz: "gravel", spd: 80, scene: "The tarmac gives way to loose gravel. The driver is doing 80 and humming.",
+  c: ["SLOW DOWN, YOU MANIAC! GRAVEL!", 40], w: ["FASTER! STONES ARE JUST TINY HILLS!", 90, "The stones ping off the paint like a drum solo. Your windscreen gets a new constellation. So does the car behind you."],
+  good: "The driver slows, the gravel hisses beneath the tyres, and the windscreen stays in one piece. Barely.", late: "PING. PING-PING-CRACK. A star bursts across the windscreen. The driver says nothing because the driver cannot see.", fx: "b8a48a" });
+E({ id: "rocks", sign: "A21.11", hz: "rocks", spd: 40, scene: "Pebbles rattle down the cliff beside you. Larger pebbles follow. Then not-pebbles.",
+  c: ["FLOOR IT, YOU SNAIL! ROCKS!", 85], w: ["STOP, YOU WIMP! TAKE A PHOTO!", 0, "Great photo. You can't see it, because the rock has smashed the phone, the roof and some of the seat."],
+  good: "The driver floors it. A boulder lands exactly where you were, then rolls over to look at you. Rocks can be dramatic.", late: "A boulder meets the roof. The roof loses. The boulder is now your best friend. Its name is Gary.", fx: "7d7f86" });
+E({ id: "wet", sign: "A27.11", hz: "ice", spd: 70, scene: "A heavy shower has turned the road to a mirror. The driver is still in a hurry.",
+  c: ["SLOW DOWN, YOU MORON! IT'S SLIPPERY!", 35], w: ["SLAM THE BRAKES, YOU GENIUS!", 0, "The car goes into a beautiful figure-skating routine. 9.8 from the French judge. 0 from the guardrail."],
+  good: "The driver eases off. The tyres find their grip and the water sprays harmlessly aside.", late: "Aquaplaning. The car glides like a very expensive duck and parks, in its own time, in a hedge.", fx: "3a8fd9" });
+E({ id: "ice", sign: "A27.21", hz: "ice", spd: 55, scene: "The road shines like glass. The driver is going pretty fast. The car feels pretty light.",
+  c: ["EASE OFF, YOU MANIAC! ICE!", 25], w: ["SLAM THE BRAKES, YOU GENIUS!", 0, "The car goes into a beautiful figure-skating routine. 9.8 from the French judge. 0 from the guardrail."],
+  good: "The driver eases off. The car glides, wobbles and holds. The driver looks at you with sudden, sincere respect. Savor it.", late: "Wheeee! Whoops. Wheeee! Whoops. The spinning only stops at the ditch.", fx: "bfe6ff" });
+E({ id: "shoulder", sign: "A28.11", hz: "edge", spd: 70, scene: "The road edge drops straight into a ravine. The driver is checking his hair in the mirror.",
+  c: ["KEEP AWAY FROM THE EDGE, MORON! SLOW!", 30], w: ["HUG THE EDGE, YOU TURTLE! IT'S SCENIC!", 60, "The edge crumbles. The car and a metre of Iceland leave together. The view, as promised, is great."],
+  good: "The driver steers back to the middle. A chunk of the edge crumbles behind you where you would have been.", late: "The wheels drop off the edge. For a moment everything is very quiet and very pretty.", fx: "8a7f72" });
+E({ id: "quay", sign: "A33.11", hz: "bridgeout", spd: 40, scene: "The road runs straight into a harbour with no barrier. The driver is watching a seagull.",
+  c: ["STOP, YOU MORON! THE HARBOUR!", 0], w: ["THE SEAGULL KNOWS THE WAY! FOLLOW IT!", 40, "The seagull flies. The car does not. The harbour master is not even surprised."],
+  good: "The driver stops with the front wheels on the very last plank. The seagull looks disappointed.", late: "SPLASH. The seagull lands on the roof of the sinking car. It is the only one who looks happy.", fx: "3a8fd9" });
+E({ id: "tunnel", sign: "A26.11", hz: "tunnel", spd: 80, scene: "A long tunnel mouth yawns ahead. The driver is wearing sunglasses and forgot to turn the lights on.",
+  c: ["LIGHTS ON, YOU MORON! SLOW DOWN!", 55], w: ["SUNGLASSES ARE FINE, YOU GENIUS! GO!", 80, "Total darkness. The driver finds the wall by touch. A tunnel wall is not a good place to find by touch."],
+  good: "The driver switches the lights on. The tunnel ahead turns out to be longer, wetter and stranger than expected.", late: "The tunnel swallows the car. The sunglasses swallow the driver. Something goes bump, then nothing does.", fx: "1a1a22" });
+E({ id: "cross", sign: "A05.11", hz: "cross", spd: 60, scene: "A crossroads with no signal. A red car is coming from the left, and the driver has not seen it.",
+  c: ["SLOW DOWN, YOU MORON! INTERSECTION!", 20], w: ["GO GO GO! IT'S EMPTY!", 70, "It was not empty. It was red. It had a driver. They both looked very surprised."],
+  good: "The driver slows. The red car sails through the junction, honks once, and gives you a look.", late: "Crunch. The red car adds your door to its collection. Everybody climbs out and shouts politely.", fx: "d62828" });
+E({ id: "roundabout", sign: "A10.11", hz: "roundabout", spd: 55, scene: "A roundabout appears. The driver is looking for the straight-on option.",
+  c: ["SLOW DOWN, YOU MORON! ROUNDABOUT!", 20], w: ["STRAIGHT ON, GENIUS! THROUGH THE MIDDLE!", 55, "The middle is a hill, a tree and a sculpture of a puffin. The car wins none of those fights."],
+  good: "The driver circles gracefully, indicates correctly, and exits. You are almost proud.", late: "The car goes over the island, takes off from the sculpture, and gets a strong rating from nobody.", fx: "2fb36b" });
+E({ id: "lights", sign: "A23.11", hz: "lights", spd: 55, scene: "Traffic lights ahead. The light has been green for ages. It is about to be very much not green.",
+  c: ["SLOW DOWN, MORON! LIGHTS!", 20], w: ["BEAT THE LIGHT, YOU TURTLE! FASTER!", 80, "You beat the light. Barely. The camera beat you. A little flash, a little fine, a big sigh."],
+  good: "The driver slows. The light turns amber, then red. Everyone stops. The universe is orderly for one more minute.", late: "The light is red. The driver is not. A cross-traffic bus lets out a horn like a foghorn on a cruise ship.", fx: "d62828" });
+E({ id: "twoway", sign: "A25.11", hz: "wrongway", spd: 65, scene: "The road ahead becomes two-way. The driver is in the middle of it, humming, overtaking a caravan.",
+  c: ["GET BACK IN YOUR LANE, MORON!", 40], w: ["STAY IN THE MIDDLE, GENIUS! IT'S SHORTER!", 65, "Shorter, yes. Also the quickest way to meet a truck. Face to face. Very close."],
+  good: "The driver tucks back into the lane. The truck blasts past, close enough to read its oil stains.", late: "A truck horn the size of a cathedral. The last thing you see is a very large grille. It looks, somehow, disappointed.", fx: "ffe9a0" });
+E({ id: "plane", sign: "A24.11", hz: "plane", spd: 55, scene: "The airport runway ends right next to the road. A small plane is about to land. Very low.",
+  c: ["DUCK, YOU MORON! A PLANE!", 20], w: ["WAVE AT THE PILOT, YOU GOOSE!", 55, "The driver waves. The pilot waves. The landing gear waves at the car roof. Everyone waves for a while."],
+  good: "The driver slows. The plane roars over the roof, close enough to count the rivets. A man in the cockpit gives a thumbs-up.", late: "The plane buzzes the car. The car buzzes back, off the road and into a flowerbed.", fx: "c0c4cc" });
+E({ id: "wind", sign: "A32.11", hz: "wind", spd: 80, scene: "A gust hits the car like a hand. A garden trampoline tumbles across the road, in no hurry.",
+  c: ["HOLD THE WHEEL, MORON! SLOW DOWN!", 35], w: ["OPEN THE WINDOW, GENIUS! GET FRESH AIR!", 80, "The window opens. The gust takes the sunglasses, a sandwich and, briefly, the driver's whole opinion of you."],
+  good: "The driver grips the wheel and slows down. The trampoline passes in front, boing by boing, and lands on a sheep.", late: "The gust lifts the car onto two wheels. It sets it back on four. The driver now speaks only in capital letters.", fx: "bfe6ff" });
+E({ id: "other", sign: "A99.11", hz: "none", spd: 60, scene: "The sign says there is danger. It does not say what. A man in a hi-viz vest shrugs at you from the verge.",
+  c: ["SLOW DOWN, YOU MORON! SOMETHING!", 25], w: ["DON'T WORRY, THE SIGN IS BROKEN!", 60, "The sign was not broken. A very large hole has been waiting for you all week."],
+  good: "The driver slows. Around the next bend a lorry has lost its load of rubber ducks. Duck after duck, as far as the eye can see.", late: "WHAM. The danger turns out to be an unmarked pothole, perhaps nine metres deep, with a boat in it.", fx: "ffd21f" });
+
+E({ id: "onebridge", sign: "J41.11", hz: "wrongway", spd: 70, scene: "A single-lane bridge. A car is already halfway across, coming towards you, headlights flashing.",
+  c: ["GIVE WAY, YOU MORON! ONE LANE!", 5], w: ["FLASH BACK, YOU TURTLE! BLUFF HIM!", 70, "Bluffing a bridge: bold. The other driver has been bluffing since 1994. You both lose. So does the bridge rail."],
+  good: "The driver stops and waits. The other car crosses and gives a two-fingered salute of thanks. It is the national greeting.", late: "Crunch, clang, splash. Two cars, one lane, one very large embarrassment. A farmer arrives with a tractor and no sympathy.", fx: "3a8fd9" });
+E({ id: "blindhill", sign: "J33.11", hz: "wrongway", spd: 80, scene: "A blind hill. You cannot see over the crest. Of course the driver is in the middle of the road.",
+  c: ["GET OVER, YOU MORON! BLIND HILL!", 40], w: ["OVERTAKE THIS TRACTOR, YOU COWARD! GO!", 90, "You overtake at the crest. The oncoming car does not read the sign. The sign did try."],
+  good: "The driver keeps right and slows. Over the crest comes a camper van in the middle of the road. It squeaks past.", late: "The crest, the camper van and the driver's face all meet at exactly the same moment. Nobody gets a deposit back.", fx: "ffe9a0" });
+E({ id: "river", sign: "J31.11", hz: "bridgeout", spd: 50, scene: "The road dives into a glacial river. There is no bridge. The driver is in a hire-car Yaris with a sticker saying SMALL.",
+  c: ["STOP, YOU MORON! NO BRIDGE!", 0], w: ["THE YARIS IS A BOAT! GO!", 50, "The Yaris is not a boat. It is a very small, very sad, very wet fish."],
+  good: "The driver stops at the water's edge. A huge 4x4 wades through. The driver gets out, takes one look at the river, and gets back in.", late: "Glug. The Yaris is now a reef. A very curious char inspects the glove box.", fx: "3a8fd9" });
+E({ id: "froad", sign: "J32.21", hz: "rocks", spd: 70, scene: "A mountain track begins. The sign says 4x4 vehicles only. The driver is in a Yaris with a sticker saying SMALL.",
+  c: ["TURN BACK, YOU MORON! 4X4 ONLY!", 15], w: ["ROCKS ARE JUST BIG GRAVEL! DRIVE!", 70, "The Yaris climbs two rocks, loses its exhaust and decides to live there now."],
+  good: "The driver turns back. A 4x4 roars past in the other direction and the driver admires it as one admires a distant mountain.", late: "The Yaris reaches a rock the size of a sofa. The rock wins. The sofa, too, was not impressed.", fx: "7d7f86" });
+E({ id: "stop", sign: "B19.11", hz: "stop", spd: 45, scene: "Cross traffic ahead. Something very big is thundering toward the junction: a loaded timber truck.",
+  c: ["STOP, YOU MORON! STOP SIGN!", 0], w: ["IT'S ONLY A SUGGESTION! GO!", 50, "The timber truck disagrees. Violently. Your car is now flatter than a flat white, and that includes the foam."],
+  good: "The driver stands on the brake. The truck thunders through a foot ahead. 'Rolling stops count,' the driver mumbles. They do not.", late: "The last thing you hear is a truck horn. The last thing you see is logs. So many logs.", fx: "8a5a2b" });
+E({ id: "yield", sign: "A06.11", hz: "cross", spd: 50, scene: "You are joining a busy road. The driver has not seen the give-way sign or the three cars coming.",
+  c: ["GIVE WAY, YOU MORON! LET THEM PASS!", 5], w: ["SQUEEZE IN, YOU COWARD! GO!", 55, "You squeeze in. A van meets your door. A van meets your door very personally."],
+  good: "The driver waits. Three cars pass. The fourth waves you through. The driver is moved.", late: "The first car brakes. The second car brakes. The third car meets your door. The fourth car films it.", fx: "d62828" });
+E({ id: "giveonc", sign: "B25.11", hz: "wrongway", spd: 40, scene: "A narrow street with parked cars on your side. A delivery van is already coming through the gap.",
+  c: ["LET HIM THROUGH, MORON! HE'S FIRST!", 5], w: ["PUSH THROUGH, GENIUS! WE'RE FIRST!", 40, "You push. The van pushes. A parked car pushes back. A mirror pops off and rolls away, free at last."],
+  good: "The driver backs into a gap. The van squeezes by. The van driver blows a kiss. It is the nicest thing anyone has done all week.", late: "A very long, very loud tooting match. The van wins by a nose. The nose is yours.", fx: "c0c4cc" });
+E({ id: "noentry", sign: "B01.21", hz: "wrongway", spd: 55, scene: "A one-way street, and the driver is entering from the wrong end. A truck is coming. Its headlights are very big and very close.",
+  c: ["WRONG WAY, MORON! TURN AROUND!", 20], w: ["EVERYONE ELSE IS WRONG, GENIUS!", 55, "Everyone else is right. All of them. In the same direction. Toward you. At 40 mph."],
+  good: "The driver cranks a U-turn to a chorus of horns. 'That was on purpose,' they say. It was not.", late: "A truck horn the size of a cathedral. The last thing you see is a very large grille. It looks, somehow, disappointed.", fx: "ffe9a0" });
+E({ id: "height", sign: "B15.11", hz: "kayak", spd: 40, scene: "A low stone bridge with a three metre limit. There's a kayak strapped to the roof. The driver forgot.",
+  c: ["THE KAYAK, YOU MORON! BRAKE!", 0], w: ["DUCK YOUR HEAD, GENIUS! DUCK!", 40, "You duck. The kayak does not. It is now two kayaks, which is technically a pair."],
+  good: "The driver stops with a screech and unstraps the kayak. 'I knew that,' they say, sweating. Strapping it back on takes forty minutes.", late: "CRUNCH. The kayak becomes confetti. The car is now a convertible.", fx: "ffb000" });
+E({ id: "speed30", sign: "B26.60", hz: "police", spd: 70, scene: "Maximum 30. The speedometer says 70. A police car is tucked behind a billboard, pretending not to be there.",
+  c: ["TOO FAST, YOU MANIAC! THIRTY!", 25], w: ["FLOOR IT, TURTLE! HE'S NOT LOOKING!", 95, "He was looking. He has been looking since the last fjord. The chase ends at a hot-dog stand, with handcuffs and one mustard."],
+  good: "The driver slows to 25 just as the cop pulls out. He sees a law-abiding citizen. He is sad. He will eat his hot dog alone.", late: "Sirens. Lights. A very calm voice: 'Do you know why I pulled you over?' The driver looks at you.", fx: "3a6cf0" });
+E({ id: "overtake", sign: "B33.11", hz: "wrongway", spd: 75, scene: "No overtaking. A tractor crawls along at 20. The driver has been sighing for four minutes.",
+  c: ["STAY BEHIND, YOU MORON! NO OVERTAKING!", 25], w: ["OVERTAKE, YOU COWARD! NOW!", 90, "The tractor, the camper van behind it and a lorry in the other lane all join in. Four vehicles, one lane, no tea."],
+  good: "The driver stays put. The tractor turns into a field two minutes later. Nobody could ever have known.", late: "The driver swings out. A lorry fills the windscreen. The tractor driver, from his cab, writes something in a notebook.", fx: "8a5a2b" });
+E({ id: "nostop", sign: "B24.11", hz: "none", spd: 40, scene: "No stopping. The driver spots a waterfall and slows to a halt in the middle of the road for a photo.",
+  c: ["KEEP MOVING, YOU MORON! NO STOPPING!", 30], w: ["STOP, YOU TURTLE! TAKE THE PHOTO!", 0, "You stop. The coach behind you stops too, then its twenty-one coaches' worth of tourists get out to photograph you."],
+  good: "The driver keeps rolling and waves at the waterfall as it passes. The waterfall, to be fair, has seen better.", late: "Beep. Beep. BEEEEEP. Twelve vehicles pile up behind the driver, who is still lining up the shot.", fx: "bfe6ff" });
+E({ id: "zone30", sign: "B28.30", hz: "kids", spd: 60, scene: "A 30 zone begins. It is the street outside a school. It is also break time.",
+  c: ["SLOW DOWN, YOU MANIAC! THIRTY ZONE!", 20], w: ["IT'S ONLY A STREET, GENIUS! KEEP GOING!", 60, "It is a street. It is also a swarm of eight-year-olds. The school dinner lady glares at you with a ladle."],
+  good: "The driver slows to a stately 20. The children cheer. One does a little bow. The driver does a little bow back.", late: "Thump. A football goes under the bumper. It deflates with a very small, very sad pfft.", fx: "e8453c" });
+E({ id: "turnright", sign: "C01.21", hz: "cross", spd: 50, scene: "A blue sign says turn right. The driver wants to go straight, because that is where the shop is.",
+  c: ["TURN RIGHT, YOU MORON! THE SIGN!", 20], w: ["GO STRAIGHT, YOU GENIUS! THE SHOP IS THERE!", 50, "The shop is behind a barrier. The barrier is behind a ditch. The ditch is the shop's only customer."],
+  good: "The driver turns right. The shop is further than the driver hoped, and the drive is lovely.", late: "The car ignores the sign and goes through the hedge, the flowerbed and a garden gnome convention.", fx: "2fb36b" });
+E({ id: "livingstreet", sign: "D14.11", hz: "kids", spd: 50, scene: "A living street: toys, benches, a chess table on the tarmac and a very old dog asleep in the middle.",
+  c: ["WALKING PACE, MORON! LIVING STREET!", 8], w: ["IT'S A STREET, YOU TURTLE! DRIVE!", 50, "It is also a playground. The dog wakes up and mourns your bumper in a long, dramatic howl."],
+  good: "The driver crawls along at walking pace. A toddler drives a plastic car past you. You are overtaken. It is fine.", late: "The chess table, the dog and a very old man all leap sideways. The chess game is a draw. The car is not.", fx: "e8453c" });
+E({ id: "oneway", sign: "D07.11", hz: "wrongway", spd: 30, scene: "A one-way street. The driver takes the wrong end. A bicycle courier comes the other way, delighted.",
+  c: ["ONE WAY, YOU MORON! REVERSE OUT!", 5], w: ["IT'S A SUGGESTION, GENIUS! KEEP GOING!", 30, "The bicycle courier is not a suggestion. He is a heavy metal courier on a heavy metal bike. He leaves a dent."],
+  good: "The driver reverses out. The courier waves in a very sarcastic way, the way only a courier can.", late: "The courier brakes. The courier drops his pizza. The pizza and the driver look at each other.", fx: "c0c4cc" });
+E({ id: "cameras", sign: "D28.11", hz: "police", spd: 75, scene: "A grey box on a pole. Another grey box on another pole. The driver says they are bird feeders.",
+  c: ["SLOW DOWN, YOU MORON! CAMERAS!", 40], w: ["BIRD FEEDERS, GENIUS! SMILE FOR THEM!", 75, "The bird feeders flash. The bird feeders issue a ticket. The bird feeders are, in fact, the police."],
+  good: "The driver slows to the limit. Two grey boxes watch you go by with something like respect.", late: "Flash. Flash. A letter arrives at the car rental firm. It has more digits than the driver's phone number.", fx: "3a6cf0" });
+
+// Third option for every event: irrelevant small talk. [text, driver's reply]
+const SMALL = [
+  "NICE WEATHER WE'RE HAVING!", "DID YOU FEED THE CAT BEFORE WE LEFT?", "THIS SEAT IS SO COMFY. THANKS!", "I'M HUNGRY. DO YOU WANT FRIES?",
+  "THIS SONG IS TERRIBLE, BY THE WAY.", "WHAT'S YOUR FAVOURITE DINOSAUR?", "MY LEFT ELBOW ITCHES A BIT.", "I LOVE A GOOD BILLBOARD, DON'T YOU?",
+  "ARE WE THERE YET?", "WHO PUT THE SKY UP THERE?", "I LIKE YOUR HAIRCUT.", "LOVELY SMELL OF COFFEE IN HERE.", "DO YOU LIKE COWBOYS?",
+  "WHAT'S YOUR SECRET TALENT?", "I THINK I LEFT THE OVEN ON.", "ISN'T THE ICELANDIC LANGUAGE LOVELY?", "I'VE ALWAYS WANTED A PET GOAT.",
+  "CAN YOU SING THE ALPHABET BACKWARDS?", "I BET PUFFINS GOSSIP.", "DO CARS DREAM?",
+];
+const IDLE = [
+  "I'm not tired. I'm just resting my eyes.", "Let me check my phone real quick.", "I know a shortcut. It's not a shortcut.",
+  "Do you think birds get lost?", "I've done this drive a hundred times.", "Eyes on the road? Eyes on the road.",
+  "Is that a nice cloud, or what?", "Hold my coffee. No, the other hand.", "Signs are for people who don't know where they're going.",
+];
+const THANKS = ["Fine. I was about to do that.", "I saw it. I SAW it.", "Thanks, co-pilot.", "You're surprisingly useful.", "Okay okay, relax, I got it.", "Honestly? Good call."];
+const BLAME = ["WHY DIDN'T YOU SAY SOMETHING?!", "...You had one job.", "That's on you. That's all on you.", "We don't speak of this.", "I'm telling my insurance it was you.", "Next time scream the RIGHT thing."];
+const CHAT = ["Yeah, nice. Wait, why are you screaming?", "Mm-hm. Great. Is that important?", "Sure, sure. Hang on, what's that?", "Not now, I'm concentrating. Sort of.", "You're right! Wait, what were we doing?"];
+const EPITAPHS = [
+  "Insurance has cancelled you both. In writing. With emojis.", "The car is totaled. The driver is fine. The driver says it was your fault.",
+  "The tow truck driver took one look and asked if you wanted a hug.", "You will be remembered as the worst co-pilot in the county.", "On the bright side: you'll get to walk from now on.",
+];
+const LIST = EV;
 
 const HAZ = {};
 function zebra(s) {
@@ -781,6 +863,61 @@ HAZ.bump = (s) => {
   poly([[a[0], a[1]], [a[0] + 60 * s, a[1] - h], [b[0] - 60 * s, b[1] - h], [b[0], b[1]]], "rgba(255,210,31,0.35)");
 };
 
+// Animals reuse the sign silhouettes, in colour: they draw in unit scale at a point.
+function herd(kind, s, hc, et, col, n, spread) {
+  for (let k = 0; k < n; k++) {
+    const sk = s * (1 - 0.05 * (k % 3)), x = -spread + k * (2 * spread / (n - 1 || 1)) + (hc - 1) * 700, p = P(x, sk);
+    const bob = Math.abs(Math.sin(et * 4 + k * 1.3)) * 6 * sk, u = sk * 170;
+    K = col; ctx.save(); ctx.translate(0, -bob);
+    if (kind === "sheep") { sheep(p[0], p[1] - u * 0.6, u); circ([p[0] + u * 0.42, p[1] - u * 0.65], u * 0.1, "#2a2a2a"); }
+    else if (kind === "horse") horse(p[0], p[1] - u * 0.65, u);
+    else cow(p[0], p[1] - u * 0.6, u);
+    ctx.restore(); K = INK;
+  }
+}
+HAZ.sheep = (s, hc, et) => herd("sheep", s, hc, et, "#f4f1ea", 7, 430);
+HAZ.horse = (s, hc, et) => herd("horse", s, hc, et, "#8a5a2b", 3, 220);
+HAZ.cow = (s, hc, et) => herd("cow", s, hc, et, "#e8e4dc", 2, 170);
+HAZ.cyclist = (s, hc, et) => {
+  const p = P((hc - 1) * 650, s), u = s * 200;
+  K = "#222"; bike(p[0], p[1] - u * 0.3, u); K = INK;
+  rc(o(p, 0, -u * 0.78, 1), u * 0.28, u * 0.4, "#3cd0a0"); circ(o(p, 0, -u * 1.08, 1), u * 0.12, "#f1c9a5"); el(o(p, 0, -u * 1.15, 1), u * 0.14, u * 0.08, "#d62828");
+};
+HAZ.steep = (s, hc, et, bad) => {
+  if (bad) for (let k = 0; k < 8; k++) { const t = fpos(et * 0.7 + k * 0.13, 1); circ([W / 2 - 180 + k * 50 + Math.sin(et + k) * 12, 560 - t * 260], 18 + t * 30, `rgba(180,180,190,${0.5 - t * 0.4})`); }
+  const y = P(0, s * 0.4)[1]; line([W / 2 - 560 * s * 0.4, y], [W / 2 + 560 * s * 0.4, y], "rgba(255,255,255,0.35)", 3);
+};
+HAZ.narrow = (s, hc) => {
+  const k = clamp(hc, 0, 1), off = 560 - 290 * k;
+  [-1, 1].forEach((sd) => { poly([P(sd * off, s), P(sd * (off + 340), s), P(sd * (off + 340), s * 0.4), P(sd * off, s * 0.4)], "#9a9aa2"); for (let i = 0; i < 6; i++) poly([P(sd * off, s * (0.4 + i * 0.1)), P(sd * (off - 30), s * (0.4 + i * 0.1)), P(sd * (off - 30), s * (0.44 + i * 0.1)), P(sd * off, s * (0.44 + i * 0.1))], i % 2 ? "#d3262b" : "#fff"); });
+};
+HAZ.work = (s, hc, et) => {
+  for (let k = 0; k < 7; k++) { const p = P(-420 + k * 140, s * (1 - 0.02 * k)), u = s; poly([o(p, 0, -90, u), o(p, 40, 0, u), o(p, -40, 0, u)], "#ff8a1f"); rc(o(p, 0, -50, u), 50 * u, 14 * u, "#fff"); }
+  const p = P(250, s); sPerson(p[0], p[1] - 160 * s, 180 * s, 0); rc(o(p, 130, -60, s), 220 * s, 120 * s, "#f2b81f"); rc(o(p, 130, -150, s), 90 * s, 70 * s, "#a8d8f0");
+};
+HAZ.gravel = (s, hc, et) => { for (let k = 0; k < 40; k++) { const t = fpos(et * 1.2 + k * 0.071, 1), x = ((k * 97) % 700) - 350; circ(P(x, s * (0.5 + t * 0.7)), 4 + t * 8, "#b8a48a"); } };
+HAZ.edge = (s, hc, et, bad) => { poly([P(300, s), P(1400, s), P(1400, s * 0.3), P(300, s * 0.3)], "#4a3d30"); for (let k = 0; k < 6; k++) rc(o(P(300, s * (0.4 + k * 0.1)), 0, -30, s), 10 * s, 60 * s, "#d8d8d8"); if (bad) el(P(420, s * 0.8), 120 * s, 30 * s, "#1a1a22"); };
+HAZ.tunnel = (s, hc) => { const gp = P(0, s * 0.8); ctx.fillStyle = "#6b6e75"; ctx.fillRect(0, gp[1] - 440 * s, W, 440 * s + 8); ctx.fillStyle = "#07070a"; ctx.beginPath(); ctx.moveTo(gp[0] - 340 * s, gp[1]); ctx.lineTo(gp[0] - 340 * s, gp[1] - 220 * s); ctx.arc(gp[0], gp[1] - 220 * s, 340 * s, Math.PI, 0); ctx.lineTo(gp[0] + 340 * s, gp[1]); ctx.fill(); for (let k = 0; k < 4; k++) circ([gp[0], gp[1] - 80 * s - k * 40 * s], 6 * s, "#ffd21f"); };
+HAZ.cross = (s, hc, et) => {
+  const ya = P(0, s * 0.9)[1], yb = P(0, s * 1.1)[1]; poly([[0, ya], [W, ya], [W, yb], [0, yb]], "#55555c");
+  const p = P(-(1 - hc) * 1500, s), u = s; rc(o(p, 0, -60, u), 360 * u, 80 * u, "#d62828"); rc(o(p, 20, -125, u), 190 * u, 60 * u, "#a8d8f0"); [-110, 110].forEach((wx) => circ(o(p, wx, -22, u), 32 * u, "#0e0e12"));
+};
+HAZ.roundabout = (s, hc, et) => {
+  const c = P(0, s * 0.85); el(c, 420 * s, 90 * s, "#55555c"); el(o(c, 0, -6, s), 230 * s, 46 * s, "#4c9a3c"); circ(o(c, 0, -70, s), 40 * s, "#2f7a34"); rc(o(c, 0, -20, s), 14 * s, 60 * s, "#5a3d24");
+  const a = et * 0.9, q = [c[0] + Math.cos(a) * 330 * s, c[1] + Math.sin(a) * 62 * s]; rc(q, 120 * s, 40 * s, "#3c8de8");
+};
+HAZ.lights = (s, hc, et) => {
+  const b = P(560, s), u = s; line(b, o(b, 0, -430, u), "#555", 16 * u); rc(o(b, 0, -480, u), 90 * u, 230 * u, "#111");
+  const ph = hc < 0.35 ? 2 : hc < 0.6 ? 1 : 0; [0, 1, 2].forEach((i) => circ(o(b, 0, -540 + i * 60, u), 24 * u, ["#d62828", "#f6c600", "#2aa84a"][i] + (ph === i ? "" : "55")));
+  poly([P(-520, s * 1.12), P(520, s * 1.12), P(520, s * 1.16), P(-520, s * 1.16)], "#fff");
+};
+HAZ.plane = (s, hc, et) => { const t = clamp(hc, 0, 1), x = lerp(W + 200, -200, fpos(t * 1.0, 1)), y = 90 + 60 * t, sz = 60 + 220 * t; K = "#e8ecff"; ctx.save(); ctx.translate(x, y); ctx.scale(sz, sz); ctx.rotate(-Math.PI / 2); PIC.plane(); ctx.restore(); K = INK; };
+HAZ.wind = (s, hc, et) => {
+  for (let k = 0; k < 14; k++) { const t = fpos(et * 1.5 + k * 0.17, 1), y = 140 + (k * 53) % 400; line([W - t * (W + 300), y], [W - t * (W + 300) + 120, y - 6], "rgba(255,255,255,0.55)", 3); }
+  const x = W - fpos(et * 0.25 + 0.1, 1) * (W + 300), y = 430 + Math.abs(Math.sin(et * 5)) * -80; stk(x, y, 70, 8, "#222"); ctx.save(); ctx.beginPath(); ctx.arc(x, y, 62, 0, TAU); ctx.fillStyle = "#1c3a6b"; ctx.fill(); ctx.restore();
+};
+HAZ.none = () => {};
+
 const MAX_STRIKES = 3;
 const G = {
   state: "title", score: 0, best: 0, strikes: 0, streak: 0, handled: 0, newBest: false,
@@ -808,10 +945,11 @@ function start() {
 function nextSign() {
   if (!G.bag.length) { G.bag = LIST.map((_, i) => i); for (let i = G.bag.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [G.bag[i], G.bag[j]] = [G.bag[j], G.bag[i]]; } }
   G.ev = LIST[G.bag.pop()];
-  G.opts = G.ev.o.map((x, i) => ({ t: x[0], r: x[1], ok: i === 0, v: x[2] }));
+  const e = G.ev;
+  G.opts = [{ t: e.c[0], v: e.c[1], r: "", ok: true }, { t: e.w[0], v: e.w[1], r: e.w[2], ok: false }, { t: pick(SMALL), v: e.spd, r: "", ok: false }];
   for (let i = G.opts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [G.opts[i], G.opts[j]] = [G.opts[j], G.opts[i]]; }
   btns.forEach((b, i) => (b.innerHTML = `<kbd>${i + 1}</kbd><span></span>`, b.lastChild.textContent = G.opts[i].t));
-  Object.assign(G, { t: 0, signT: 0, et: 0, hc: 0, dep: 0, swerve: 0, mood: "calm", line: G.ev.d, state: "sign", mph: G.ev.spd, tgt: G.ev.spd, vPick: G.ev.spd, scream: "", reactTime: Math.max(3.6, 6.8 - 0.2 * G.handled) });
+  Object.assign(G, { t: 0, signT: 0, et: 0, hc: 0, dep: 0, swerve: 0, mood: "calm", line: pick(IDLE), state: "sign", mph: G.ev.spd, tgt: G.ev.spd, vPick: G.ev.spd, scream: "", reactTime: Math.max(8, 14 - 0.25 * G.handled) });
   setBar(true);
   AU.ding(); AU.cue(G.ev.id);
 }
@@ -863,7 +1001,7 @@ function update(dt) {
     G.tgt = 45;
     if (st === "drive") { G.gap -= dt; if (G.gap <= 0) nextSign(); }
   } else if (st === "sign") {
-    G.et += dt; G.t = Math.min(1, G.t + dt / G.reactTime); G.signT = G.t; G.hc = G.t; G.dep = G.t * 0.98;
+    G.et += dt; G.t = Math.min(1, G.t + dt / G.reactTime); G.signT = G.t / 0.45; G.hc = G.t; G.dep = G.t * 0.98;
     if (G.t >= 1) resolve(-1);
   } else if (st === "result") {
     G.et += dt; G.timer -= dt; G.rt += dt;
@@ -885,10 +1023,10 @@ function update(dt) {
   G.mph = moveToward(G.mph, G.tgt, acc * dt);
   G.speed = G.mph * 0.00667;
   AU.update(G.mph, dt, st === "drive" || st === "sign" || st === "result");
-  if (st === "sign" && G.t > 0.7 && Math.floor(G.t * 20) !== G.tickN) { G.tickN = Math.floor(G.t * 20); if (G.tickN % 2) AU.tick(); }
+  if (st === "sign" && G.t > 0.8 && Math.floor(G.t * 20) !== G.tickN) { G.tickN = Math.floor(G.t * 20); if (G.tickN % 2) AU.tick(); }
   G.scroll = fpos(G.scroll + G.speed * dt, 1);
-  const tg = G.ev && G.ev.sky ? { top: hex3(G.ev.sky[0]), bot: hex3(G.ev.sky[1]) } : DEF;
-  const gr = G.ev && G.ev.gr ? hex3(G.ev.gr) : DEF.ground, k = clamp(dt * 2, 0, 1);
+  const tg = DEF;
+  const gr = DEF.ground, k = clamp(dt * 2, 0, 1);
   for (let i = 0; i < 3; i++) { G.top[i] = lerp(G.top[i], tg.top[i], k); G.bot[i] = lerp(G.bot[i], tg.bot[i], k); G.ground[i] = lerp(G.ground[i], gr[i], k); }
   G.parts = G.parts.filter((p) => (p.l -= dt) > 0);
   G.parts.forEach((p) => { p.vy += p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt; });
@@ -944,17 +1082,15 @@ function drawWorld() {
 }
 function drawEvent() {
   const ev = G.ev, sH = scaleOf(clamp(G.dep, 0, 1)), bad = G.state === "result" && !G.good;
-  HAZ[ev.id](sH, G.hc, G.et, bad, G.swerve);
+  (HAZ[ev.hz || ev.id] || HAZ.none)(sH, G.hc, G.et, bad, G.swerve);
   if (G.signT < 1.2) {
     const ss = scaleOf(G.signT), gp = P(640, ss), top = o(gp, 0, -330, ss);
     line(gp, top, "#9a9aa2", Math.max(2, 10 * ss));
-    signPlate(ev.shape, top, 150 * ss, hexc(ev.c), hexc(ev.ink), ev.glyph);
+    drawSignCode(ev.sign, top, 150 * ss);
   }
 }
 function drawDriver() {
-  // No driver figure in the view: just the steering wheel rim, and what the driver says.
-  arc([255, 612], 94, Math.PI, TAU, "#1d1d22", 14);
-  arc([255, 612], 94, Math.PI * 1.12, Math.PI * 1.3, "#2e2e38", 5);
+  // No driver and no wheel in the view: only what the driver says.
   if (G.line && G.state !== "over" && G.state !== "title") {
     const w = 232, h = bubble(24, 150, G.line, w, "#fff8e0", "#222", 18);
     txt("DRIVER", 36, 144, 13, "#ffe9a8");
@@ -988,7 +1124,7 @@ function drawMirrorTruck() {
   ctx.restore();
 }
 function drawSpeedo() {
-  const c = [1010, 640], r = 74, a0 = Math.PI * 0.75, a1 = Math.PI * 2.25, pt = (a, d) => [c[0] + Math.cos(a) * d, c[1] + Math.sin(a) * d];
+  const c = [250, 640], r = 74, a0 = Math.PI * 0.75, a1 = Math.PI * 2.25, pt = (a, d) => [c[0] + Math.cos(a) * d, c[1] + Math.sin(a) * d];
   circ(c, r + 6, "#0c0c10"); circ(c, r, "#1b1d26");
   arc(c, r - 4, lerp(a0, a1, 90 / 120), a1, "#d62828", 4);
   for (let v = 0; v <= 120; v += 10) {
@@ -1014,18 +1150,31 @@ function drawHud() {
   }
   const ev = G.ev;
   if (!ev) return;
-  panel(290, 10, 700, 114, "rgba(13,13,26,0.86)", "#e8e8f0");
-  signPlate(ev.shape, [352, 64], 62, hexc(ev.c), hexc(ev.ink), ev.glyph);
-  txt(ev.name, 412, 44, 26, "#ffd21f");
-  mtxt(ev.scene, 412, 72, 560, 17, "#fff", "left", false);
+  panel(290, 10, 700, 126, "rgba(13,13,26,0.86)", "#e8e8f0");
+  const big = !SIGN[ev.sign].plate; drawSignCode(ev.sign, [350, big ? 72 : 60], big ? 84 : 62);
+  txt(SIGN[ev.sign].n, 412, 46, 26, "#ffd21f");
+  mtxt(ev.scene, 412, 76, 560, 17, "#fff", "left", false);
   if (G.state === "sign") {
-    rect(300, 108, 680, 8, "rgba(0,0,0,0.6)");
-    const c = G.t; rect(300, 108, 680 * (1 - G.t), 8, `rgb(${Math.round(lerp(74, 232, c))},${Math.round(lerp(194, 69, c))},${Math.round(lerp(107, 60, c))})`);
+    rect(300, 116, 680, 8, "rgba(0,0,0,0.6)");
+    const c = G.t; rect(300, 116, 680 * (1 - G.t), 8, `rgb(${Math.round(lerp(74, 232, c))},${Math.round(lerp(194, 69, c))},${Math.round(lerp(107, 60, c))})`);
   } else if (G.state === "result") {
-    const hgt = wrap(G.text, 660, 21, false).length * 21 * 1.28;
-    panel(290, 134, 700, hgt + 76, G.good ? "rgba(20,107,51,0.95)" : "rgba(140,18,18,0.95)", "#fff");
-    txt(G.head, 312, 174, 32, "#fff");
-    mtxt(G.text, 312, 206, 660, 21, "#fff", "left", false);
+    const d = SIGN[ev.sign];
+    if (G.good) {
+      const hgt = wrap(G.text, 660, 21, false).length * 21 * 1.28;
+      panel(290, 148, 700, hgt + 76, "rgba(20,107,51,0.95)", "#fff");
+      txt(G.head, 312, 188, 32, "#fff");
+      mtxt(G.text, 312, 220, 660, 21, "#fff", "left", false);
+    } else {
+      const w = 450, rule = "The rule: " + d.m, tl = wrap(G.text, w, 21, false).length, rl = wrap(rule, w, 17, false).length;
+      const h = Math.max(250, 86 + tl * 21 * 1.28 + 18 + rl * 17 * 1.28 + 18);
+      panel(290, 148, 700, h, "rgba(140,18,18,0.96)", "#fff");
+      drawSignCode(ev.sign, [395, 148 + 100], 150);
+      txt("THE SIGN YOU MISSED", 395, 148 + h - 52, 14, "#ffd0d0", "center");
+      mtxt(d.n + (d.is ? " / " + d.is : ""), 395, 148 + h - 32, 190, 15, "#fff", "center", true);
+      txt(G.head, 500, 188, 30, "#fff");
+      mtxt(G.text, 500, 220, w, 21, "#fff", "left", false);
+      mtxt(rule, 500, 220 + tl * 21 * 1.28 + 24, w, 17, "#ffe0a8", "left", false);
+    }
   }
 }
 function drawScream() {

@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
-"""Builds web/backseat-driver.html from ../events.gd (data) and src/*.js (engine)."""
-import re, pathlib
+"""Builds web/backseat-driver.html from web/src/*.js and the template."""
+import pathlib
 here = pathlib.Path(__file__).parent
-ev = (here.parent / "events.gd").read_text()
-ev = re.sub(r"^extends .*\n", "", ev, flags=re.M)
-ev = re.sub(r"^##", "//", ev, flags=re.M)
-ev = re.sub(r"^const (\w+) := ", r"const \1 = ", ev, flags=re.M)
-ev = ev.replace("\n]\n", "\n];\n")
-src = "\n".join((here / "src" / f).read_text() for f in ["audio.js", "gfx.js", "hazards_a.js", "hazards_b.js", "game.js", "draw.js"])
-html = (here / "src" / "template.html").read_text().replace("/*EVENTS*/", ev).replace("/*SRC*/", src)
+files = ["audio.js", "gfx.js", "signs_a.js", "signs_b.js", "signs_c.js", "events_a.js", "events_b.js", "events_c.js", "events_d.js",
+         "hazards_a.js", "hazards_b.js", "hazards_c.js", "game.js", "draw.js"]
+src = "\n".join((here / "src" / f).read_text() for f in files)
+html = (here / "src" / "template.html").read_text().replace("/*EVENTS*/\n", "").replace("/*SRC*/", src)
 (here / "backseat-driver.html").write_text(html)
 print("wrote", here / "backseat-driver.html", len(html), "bytes")

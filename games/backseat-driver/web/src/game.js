@@ -25,10 +25,11 @@ function start() {
 function nextSign() {
   if (!G.bag.length) { G.bag = LIST.map((_, i) => i); for (let i = G.bag.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [G.bag[i], G.bag[j]] = [G.bag[j], G.bag[i]]; } }
   G.ev = LIST[G.bag.pop()];
-  G.opts = G.ev.o.map((x, i) => ({ t: x[0], r: x[1], ok: i === 0, v: x[2] }));
+  const e = G.ev;
+  G.opts = [{ t: e.c[0], v: e.c[1], r: "", ok: true }, { t: e.w[0], v: e.w[1], r: e.w[2], ok: false }, { t: pick(SMALL), v: e.spd, r: "", ok: false }];
   for (let i = G.opts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [G.opts[i], G.opts[j]] = [G.opts[j], G.opts[i]]; }
   btns.forEach((b, i) => (b.innerHTML = `<kbd>${i + 1}</kbd><span></span>`, b.lastChild.textContent = G.opts[i].t));
-  Object.assign(G, { t: 0, signT: 0, et: 0, hc: 0, dep: 0, swerve: 0, mood: "calm", line: G.ev.d, state: "sign", mph: G.ev.spd, tgt: G.ev.spd, vPick: G.ev.spd, scream: "", reactTime: Math.max(3.6, 6.8 - 0.2 * G.handled) });
+  Object.assign(G, { t: 0, signT: 0, et: 0, hc: 0, dep: 0, swerve: 0, mood: "calm", line: pick(IDLE), state: "sign", mph: G.ev.spd, tgt: G.ev.spd, vPick: G.ev.spd, scream: "", reactTime: Math.max(8, 14 - 0.25 * G.handled) });
   setBar(true);
   AU.ding(); AU.cue(G.ev.id);
 }
@@ -80,7 +81,7 @@ function update(dt) {
     G.tgt = 45;
     if (st === "drive") { G.gap -= dt; if (G.gap <= 0) nextSign(); }
   } else if (st === "sign") {
-    G.et += dt; G.t = Math.min(1, G.t + dt / G.reactTime); G.signT = G.t; G.hc = G.t; G.dep = G.t * 0.98;
+    G.et += dt; G.t = Math.min(1, G.t + dt / G.reactTime); G.signT = G.t / 0.45; G.hc = G.t; G.dep = G.t * 0.98;
     if (G.t >= 1) resolve(-1);
   } else if (st === "result") {
     G.et += dt; G.timer -= dt; G.rt += dt;
@@ -102,10 +103,10 @@ function update(dt) {
   G.mph = moveToward(G.mph, G.tgt, acc * dt);
   G.speed = G.mph * 0.00667;
   AU.update(G.mph, dt, st === "drive" || st === "sign" || st === "result");
-  if (st === "sign" && G.t > 0.7 && Math.floor(G.t * 20) !== G.tickN) { G.tickN = Math.floor(G.t * 20); if (G.tickN % 2) AU.tick(); }
+  if (st === "sign" && G.t > 0.8 && Math.floor(G.t * 20) !== G.tickN) { G.tickN = Math.floor(G.t * 20); if (G.tickN % 2) AU.tick(); }
   G.scroll = fpos(G.scroll + G.speed * dt, 1);
-  const tg = G.ev && G.ev.sky ? { top: hex3(G.ev.sky[0]), bot: hex3(G.ev.sky[1]) } : DEF;
-  const gr = G.ev && G.ev.gr ? hex3(G.ev.gr) : DEF.ground, k = clamp(dt * 2, 0, 1);
+  const tg = DEF;
+  const gr = DEF.ground, k = clamp(dt * 2, 0, 1);
   for (let i = 0; i < 3; i++) { G.top[i] = lerp(G.top[i], tg.top[i], k); G.bot[i] = lerp(G.bot[i], tg.bot[i], k); G.ground[i] = lerp(G.ground[i], gr[i], k); }
   G.parts = G.parts.filter((p) => (p.l -= dt) > 0);
   G.parts.forEach((p) => { p.vy += p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt; });
