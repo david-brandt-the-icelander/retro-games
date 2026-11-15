@@ -52,7 +52,7 @@ func message(lines: Array, on_done: Callable = Callable(), title: String = "", v
 	_open("msg")
 
 func menu(title: String, builder: Callable, on_pick: Callable, on_close: Callable = Callable(),
-		footer: String = "Up/Down choose   E/Enter pick   Esc leave") -> void:
+		footer: String = "W / S choose   Space / Enter pick") -> void:
 	_title = title
 	_builder = builder
 	_on_pick = on_pick
@@ -135,7 +135,7 @@ func _draw() -> void:
 			left -= l.length()
 			y += LH
 		if _shown >= _total:
-			Art.text(self, Vector2(r.end.x - 150, r.end.y - 8), "[E / Space / Enter]", Pal.DGRAY, 10)
+			Art.text(self, Vector2(r.end.x - 120, r.end.y - 8), "[Space / Enter]", Pal.DGRAY, 10)
 
 	elif _mode == "menu":
 		var rows := mini(_opts.size(), 16)
@@ -156,10 +156,10 @@ func _draw() -> void:
 				Art.text(self, Vector2(r.position.x + 12, y), s, col, SIZE)
 		Art.text(self, Vector2(r.position.x + 12, r.end.y - 8), _footer, Pal.DGRAY, 10)
 
-## One syllable every three letters, in the voice of whoever is speaking on that line.
+## One mumbled syllable every seven letters (about eight a second), in the voice of whoever is speaking on that line.
 func _babble() -> void:
 	var n := int(_shown)
-	if n - _last_blip < 3:
+	if n - _last_blip < 7:
 		return
 	_last_blip = n
 	var left := n

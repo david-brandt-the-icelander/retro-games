@@ -12,11 +12,11 @@ Open `project.godot` and press F5.
 
 | Key | Does |
 |---|---|
-| Arrows / WASD | Drive the van (Up = gas, Down = brake/reverse); walk left/right indoors |
-| E / Space | Go in, talk, buy, fix, continue. While driving with nowhere to go in, honk |
-| Enter / M / Tab | Map and job board on one screen: streets by name, every shop, the job's parts checklist, where to buy each part and today's sales. The whole game is frozen while it's open. Enter also continues a dialog |
-| H | Horn |
-| Esc | Leave a menu or the map |
+| W A S D | Drive the van (W = gas, S = brake/reverse, A/D = steer); walk left/right indoors |
+| Space | Go in, talk, buy, fix, continue. While driving with nowhere to go in, honk the horn |
+| Enter | Open or close the map and job board: streets by name, every shop, the job's parts checklist, where to buy each part and today's sales. The whole game is frozen while it's open. Enter also continues a dialog or picks in a menu |
+
+Those three are the only controls. Every menu ends with a Leave (or Done) row instead of an escape key.
 
 ## How a day goes
 
@@ -26,9 +26,10 @@ Open `project.godot` and press F5.
 - **Shopping.** Six stores stock different things at different prices, and four random sales run
   every day. The job board shows them, and so does the bartender at the Rusty Muskie for $5.
   Leftovers sell back for half price.
-- **Sound.** The phone rings (answer it with E, Space or Enter), and people "bla-bla-bla" as their
-  words type out, each speaker in their own pitch; Jim's voice is the low one. Every sound is
-  generated in code by `scripts/sfx.gd`, so there are no audio files.
+- **Sound.** The phone rings (answer it with Space or Enter), and people mumble as their words type
+  out, like talk heard through a wall, each speaker at their own pitch; Jim's voice is the lowest.
+  The mumble is random slices of a muffled public-domain LibriVox recording (`audio/voice.wav`,
+  provenance in `audio/CREDITS.md`); the ring and the horn are synthesised in `scripts/sfx.gd`.
 - **Driving.** Rolling into a driveway or parking lot stops the van. The camera is zoomed out so you can see the road ahead, and the corner minimap
   flashes the shops that sell what the job still needs. The van still takes a while to stop.
   Here is what can go wrong:
@@ -62,7 +63,8 @@ scripts/room_view.gd building fronts and rooms, stores/bank/bar menus, fixing
 scripts/cutscene.gd  title, Zzzz, jail, weekend scenes
 scripts/hud.gd       status bar, job list, minimap, arrows, job board
 scripts/dialog.gd    message boxes (typed out, with speech babble) and menus
-scripts/sfx.gd       autoload "Sfx": phone ring, horn and per-speaker speech, synthesised at start-up
+scripts/sfx.gd       autoload "Sfx": synthesised phone ring and horn, per-speaker mumble from audio/voice.wav
+audio/               voice.wav (muffled public-domain speech) and CREDITS.md (its source and licence)
 scripts/art.gd, pal.gd  cartoon drawing helpers and the 16-colour palette
 tests/               smoke.tscn (screenshots of every screen), flow.tscn (headless logic test)
 ```

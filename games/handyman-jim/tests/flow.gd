@@ -155,8 +155,16 @@ func _ready() -> void:
 	check(Game.minute == t0 and m.drive.cars[0].pos == cars0, "the game is frozen while the planner is open")
 	m.hud.planner = false
 	# sounds are generated, and speakers sound different
-	check(Sfx._ring.data.size() > 100000 and Sfx._syllables.size() == 5, "ring and speech sounds generated")
+	check(Sfx._ring.data.size() > 100000 and Sfx.VOICE.get_length() > 10.0 and Sfx.GRAINS.size() > 20, "ring generated and the mumble recording loaded")
 	check(Sfx.speaker_of("Gus: \"Ope.\"") == "Gus" and Sfx.speaker_of("*BRRRING*") == "", "speaker detection")
-	check(absf(Sfx.voice_pitch("Gus") - Sfx.voice_pitch("Brenda Kowalski")) > 0.01 and Sfx.voice_pitch("JIM") < 0.8, "each speaker has their own pitch")
+	check(absf(Sfx.voice_pitch("Gus") - Sfx.voice_pitch("Brenda Kowalski")) > 0.01 and Sfx.voice_pitch("JIM") < Sfx.voice_pitch("Gus") and Sfx.voice_pitch("JIM") < 0.85, "each speaker has their own pitch, Jim lowest")
+	# the only controls are WASD, Space and Enter
+	var allowed := [KEY_W, KEY_A, KEY_S, KEY_D, KEY_SPACE, KEY_ENTER, KEY_KP_ENTER]
+	var stray := []
+	for action in ["up", "down", "left", "right", "act", "map", "jobs", "cancel", "horn"]:
+		for ev in InputMap.action_get_events(action):
+			if ev is InputEventKey and not allowed.has(ev.physical_keycode):
+				stray.append(OS.get_keycode_string(ev.physical_keycode))
+	check(stray.is_empty(), "only WASD, Space and Enter are bound %s" % str(stray))
 	print("FLOW DONE, failures: ", fails)
 	get_tree().quit(1 if fails > 0 else 0)

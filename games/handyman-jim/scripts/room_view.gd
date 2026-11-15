@@ -376,7 +376,7 @@ func _draw() -> void:
 			Art.text_shadow(self, Vector2(jim_x - 30, 150 + sin(t * 12) * 6), words[int(t * 3) % words.size()], Pal.YELLOW, 16)
 	var h := current_hotspot()
 	if not h.is_empty() and not Game.modal and fixing <= 0:
-		Art.text_shadow(self, Vector2(0, 360), "[E] " + h[2], Pal.YELLOW, 12, HORIZONTAL_ALIGNMENT_CENTER, 640)
+		Art.text_shadow(self, Vector2(0, 360), "[SPACE] " + h[2], Pal.YELLOW, 12, HORIZONTAL_ALIGNMENT_CENTER, 640)
 
 func _draw_outside() -> void:
 	# sky + clouds + trees, in the manner of the old Sierra exteriors

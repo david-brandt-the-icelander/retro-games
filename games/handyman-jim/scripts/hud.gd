@@ -56,7 +56,7 @@ func _draw() -> void:
 			if pp.kind == "house":
 				var j := Game.job_for_house(pp.id)
 				what = ("the %s place (job #%d)" % [Game.last_name(j), j.num]) if not j.is_empty() else "%d %s" % [pp.number, pp.street]
-			Art.text_shadow(self, Vector2(0, 300), "[E] Go to " + what, Pal.YELLOW, 14, HORIZONTAL_ALIGNMENT_CENTER, 640)
+			Art.text_shadow(self, Vector2(0, 300), "[SPACE] Go to " + what, Pal.YELLOW, 14, HORIZONTAL_ALIGNMENT_CENTER, 640)
 		var spd := int(main.drive.van_vel.length() / 5.0)
 		Art.text_shadow(self, Vector2(6, 392), "%d MPH" % spd, Pal.LRED if spd > 45 else Pal.WHITE, 12)
 	_draw_toasts()
@@ -184,11 +184,11 @@ func _draw_arrows() -> void:
 
 
 
-## The planner (Enter / M / Tab): town map on the left, the job and where to buy each part on
+## The planner (Enter): town map on the left, the job and where to buy each part on
 ## the right, today's sales underneath. The whole game is frozen while it is open.
 func _draw_planner() -> void:
 	Art.box(self, Rect2(6, 18, 628, 378), Pal.WHITE, Pal.BLUE)
-	Art.text(self, Vector2(18, 38), "MAP & JOBS - %s %s   (Enter/Esc closes, game paused)" % [Game.day_name(), Game.clock_text()], Pal.BLUE, 12)
+	Art.text(self, Vector2(18, 38), "MAP & JOBS - %s %s   (Enter closes, game paused)" % [Game.day_name(), Game.clock_text()], Pal.BLUE, 12)
 	var mr := Rect2(18, 48, 300, 238)
 	_draw_map(mr, true)
 	# today's sales under the map

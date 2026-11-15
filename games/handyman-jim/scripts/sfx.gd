@@ -1,11 +1,17 @@
 extends Node
-## Every sound in the game, synthesised in code at start-up (no audio files):
-## a two-tone phone ring, a car horn, and "bla-bla" speech syllables pitched per speaker.
+## Every sound in the game. The phone ring and the horn are synthesised at start-up; the
+## "bla-bla" speech is random 150 ms slices of a muffled public-domain recording
+## (audio/voice.wav, see audio/CREDITS.md), pitch-shifted per speaker so it sounds like
+## real people mumbling behind a wall.
 
 const RATE := 22050
-const VOWELS := [[730.0, 1090.0], [530.0, 1840.0], [270.0, 2290.0], [570.0, 840.0], [300.0, 870.0]]  # a e i o u
+const VOICE := preload("res://audio/voice.wav")
+## Start times (seconds) in voice.wav where a syllable begins, picked from the clip's loudness.
+const GRAINS := [0.09,0.349,0.998,1.207,2.514,2.903,3.821,4.091,4.42,4.55,4.699,4.949,6.745,6.884,7.034,7.383,7.693,7.912,8.331,9.119,9.389,9.838,10.187,11.324,11.554,11.863,12.651,12.781,13.15,13.659,14.507,15.505,15.834]
+const GRAIN_LEN := 0.15
+const VOICE_DB := -3.0
 
-var _syllables: Array = []
+var _fades := {}   # player -> its running fade tween
 var _ring: AudioStreamWAV
 var _horn: AudioStreamWAV
 var _voices: Array = []
@@ -15,8 +21,6 @@ var rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
 	rng.randomize()
-	for v in VOWELS:
-		_syllables.append(_make_syllable(v[0], v[1]))
 	_ring = _make_ring()
 	_horn = _make_horn()
 	for i in 6:
@@ -39,25 +43,6 @@ func _wav(samples: PackedFloat32Array) -> AudioStreamWAV:
 	w.stereo = false
 	w.data = bytes
 	return w
-
-## One 75 ms vowel: a buzzy voice at 180 Hz shaped by two formant peaks.
-func _make_syllable(f1: float, f2: float) -> AudioStreamWAV:
-	var n := int(RATE * 0.075)
-	var out := PackedFloat32Array()
-	out.resize(n)
-	var f0 := 180.0
-	var gains := []
-	for h in range(1, 16):
-		var f := f0 * h
-		gains.append((exp(-pow((f - f1) / 160.0, 2)) + 0.7 * exp(-pow((f - f2) / 260.0, 2)) + 0.08) / sqrt(h))
-	for i in n:
-		var t := float(i) / RATE
-		var s := 0.0
-		for h in range(1, 16):
-			s += sin(TAU * f0 * h * t) * gains[h - 1]
-		var env := minf(1.0, t / 0.006) * clampf((0.075 - t) / 0.03, 0.0, 1.0)
-		out[i] = s * env * 0.35
-	return _wav(out)
 
 ## Old desk-phone ring: 440+480 Hz bell trilled at 20 Hz, two rings.
 func _make_ring() -> AudioStreamWAV:
@@ -90,24 +75,33 @@ func _make_horn() -> AudioStreamWAV:
 func voice_pitch(speaker: String) -> float:
 	var k := speaker.to_upper()
 	if k == "JIM" or k.begins_with("JIM "):
-		return 0.78
+		return 0.8                                         # Jim: the lowest voice in town
 	var h := absi(k.hash())
-	return 0.72 + float(h % 1000) / 1000.0 * 0.9
+	return 0.88 + float(h % 1000) / 1000.0 * 0.5     # everyone else: 0.88 - 1.38
 
+## One mumbled syllable in this speaker's voice: a random slice of the recording, faded out.
 func blip(speaker: String) -> void:
 	if speaker == "":
 		return
 	var p: AudioStreamPlayer = _voices[_next]
 	_next = (_next + 1) % _voices.size()
-	p.stream = _syllables[rng.randi_range(0, _syllables.size() - 1)]
-	p.pitch_scale = voice_pitch(speaker) * rng.randf_range(0.9, 1.12)
-	p.play()
+	if _fades.has(p) and _fades[p].is_valid():
+		_fades[p].kill()
+	p.stream = VOICE
+	p.pitch_scale = voice_pitch(speaker) * rng.randf_range(0.94, 1.08)
+	p.volume_db = VOICE_DB
+	p.play(GRAINS[rng.randi_range(0, GRAINS.size() - 1)])
+	var tw := create_tween()
+	tw.tween_interval(GRAIN_LEN * 0.7)
+	tw.tween_property(p, "volume_db", -40.0, GRAIN_LEN * 0.3)
+	tw.tween_callback(p.stop)
+	_fades[p] = tw
 
 ## A short burst of babble, for one-line speech that pops up as a toast.
 func babble(speaker: String, syllables: int) -> void:
 	for i in syllables:
 		blip(speaker)
-		await get_tree().create_timer(0.085).timeout
+		await get_tree().create_timer(0.13).timeout
 
 func ring() -> void:
 	_ring_player.stream = _ring

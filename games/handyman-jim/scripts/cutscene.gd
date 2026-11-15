@@ -50,7 +50,7 @@ func _draw() -> void:
 		Art.text(self, Vector2(0, y), l, Pal.WHITE, 12, HORIZONTAL_ALIGNMENT_CENTER, 640)
 		y += 15
 	if t > 1.2 and int(t * 2) % 2 == 0:
-		Art.text(self, Vector2(0, 394), "press E / Enter", Pal.DGRAY, 10, HORIZONTAL_ALIGNMENT_CENTER, 640)
+		Art.text(self, Vector2(0, 394), "press Space / Enter", Pal.DGRAY, 10, HORIZONTAL_ALIGNMENT_CENTER, 640)
 
 func _sky(c: Color = Pal.LCYAN) -> void:
 	Art.shape(self, Rect2(0, 0, 640, 300), c)

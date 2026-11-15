@@ -44,8 +44,8 @@ func _ready() -> void:
 
 func _title() -> void:
 	mode = "cut"
-	cut.play("title", ["Arrows/WASD drive & walk   E/Space act   Enter/M/Tab map & jobs   H horn",
-		"Press E to start your week."], func():
+	cut.play("title", ["WASD drive & walk     Space act / honk     Enter map & jobs",
+		"Press Space or Enter to start your week."], func():
 			Game.new_game()
 			dialog.message([
 				"Name's Jim. Handyman Jim. I fix things in Marshfield, Wisconsin.",
@@ -82,7 +82,7 @@ func _incoming_call() -> void:
 	var j := Game.make_job()
 	var tpl: Dictionary = j.tpl
 	Sfx.ring()
-	# First the phone rings; answering (E / Space / Enter) stops it and the caller talks.
+	# First the phone rings; answering (Space / Enter) stops it and the caller talks.
 	dialog.message(["*BRRRING BRRRING*", "*BRRRING BRRRING*", "", "The shop phone. Somebody's broken something again."],
 		func(): _answer_call(j), "THE PHONE IS RINGING - %s" % Game.clock_text())
 
@@ -98,7 +98,7 @@ func _answer_call(j: Dictionary) -> void:
 			"Pays: $%d   Due in: %d minutes   (late = half pay)" % [tpl.pay, int(j.deadline - Game.minute)], "Need:"]
 		for item in tpl.mats:
 			order.append("   %d x %s" % [tpl.mats[item], Data.ITEMS[item][0]])
-		order.append("Enter, M or Tab opens the map and job board: who sells what, and today's sales.")
+		order.append("Enter opens the map and job board: who sells what, and today's sales.")
 		dialog.message(order, Callable(), "WORK ORDER #%d" % j.num)
 	dialog.message(call, order_cb, "%s ON THE LINE" % tpl.customer.to_upper(), tpl.customer)
 

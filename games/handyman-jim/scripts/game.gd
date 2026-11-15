@@ -33,11 +33,12 @@ func _ready() -> void:
 
 func _setup_input() -> void:
 	var map := {
-		"up": [KEY_UP, KEY_W], "down": [KEY_DOWN, KEY_S],
-		"left": [KEY_LEFT, KEY_A], "right": [KEY_RIGHT, KEY_D],
-		"act": [KEY_E, KEY_SPACE],
-		"jobs": [KEY_TAB, KEY_J], "cancel": [KEY_ESCAPE, KEY_BACKSPACE],
-		"horn": [KEY_H], "map": [KEY_M, KEY_ENTER, KEY_KP_ENTER],
+		# The whole game plays on WASD, Space and Enter. "jobs", "cancel" and "horn" have no keys:
+		# Enter does the job board, menus end with a Leave row, and Space honks while driving.
+		"up": [KEY_W], "down": [KEY_S], "left": [KEY_A], "right": [KEY_D],
+		"act": [KEY_SPACE],
+		"map": [KEY_ENTER, KEY_KP_ENTER],
+		"jobs": [], "cancel": [], "horn": [],
 	}
 	for action in map:
 		if not InputMap.has_action(action):
