@@ -69,9 +69,35 @@ function drawCabin() {
     ctx.strokeStyle = "rgba(255,255,255,0.75)"; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(sg[0][0], sg[0][1]); ctx.lineTo(sg[1][0], sg[1][1]); ctx.lineTo(sg[2][0], sg[2][1]); ctx.stroke();
   }));
+  if (G.ev && G.ev.id === "minspeed") drawMirrorTruck();
   drawDriver();
   rc([W / 2, 660], W + 40, 130, "#23232b");
   line([0, ROAD_B], [W, ROAD_B], "#3d3d4a", 4);
+  drawSpeedo();
+}
+function drawMirrorTruck() {
+  const k = clamp(G.hc, 0, 1) * 0.85 + 0.15, cx = W / 2, cy = 68;
+  ctx.save(); ctx.beginPath(); ctx.rect(cx - 103, cy - 23, 206, 46); ctx.clip();
+  rect(cx - 103, cy - 23, 206, 46, "#3a3a44");
+  rc([cx, cy + 4], 30 + 170 * k, 16 + 40 * k, "#4a5568");
+  rc([cx, cy + 10 * k], 18 + 110 * k, 6 + 14 * k, "#16161c");
+  const fl = Math.sin(G.anim * 12) > 0;
+  [-1, 1].forEach((sx) => circ([cx + sx * (10 + 62 * k), cy + 2], 3 + 9 * k, fl ? "#fffbd0" : "#c9b36b"));
+  ctx.restore();
+}
+function drawSpeedo() {
+  const c = [1010, 640], r = 74, a0 = Math.PI * 0.75, a1 = Math.PI * 2.25, pt = (a, d) => [c[0] + Math.cos(a) * d, c[1] + Math.sin(a) * d];
+  circ(c, r + 6, "#0c0c10"); circ(c, r, "#1b1d26");
+  arc(c, r - 4, lerp(a0, a1, 90 / 120), a1, "#d62828", 4);
+  for (let v = 0; v <= 120; v += 10) {
+    const a = lerp(a0, a1, v / 120), major = v % 20 === 0;
+    line(pt(a, r - (major ? 16 : 10)), pt(a, r - 5), major ? "#fff" : "#99a", major ? 3 : 2);
+    if (major) { const q = pt(a, r - 27); txt(String(v), q[0], q[1] + 4, 11, "#cfd8ff", "center", false); }
+  }
+  const a = lerp(a0, a1, clamp(G.mph, 0, 120) / 120);
+  line(c, pt(a, r - 12), "#ff5a3a", 4); circ(c, 7, "#ff5a3a");
+  txt(String(Math.round(G.mph)), c[0], c[1] + 36, 26, "#fff", "center", false);
+  txt("MPH", c[0], c[1] + 52, 11, "#9aa4c4", "center", false);
 }
 function drawHud() {
   if (G.state === "title") return;
@@ -100,14 +126,23 @@ function drawHud() {
     mtxt(G.text, 312, 206, 660, 21, "#fff", "left", false);
   }
 }
+function drawScream() {
+  if (G.state !== "result" || !G.scream) return;
+  const x = 1000, w = 220, y = 150, lines = wrap(G.scream, w, 20, true).length, h = lines * 20 * 1.28 + 22;
+  panel(x, y, w + 24, h, "#d8ecff", "#16324f");
+  txt("YOU SCREAM:", x + 12, y - 8, 14, "#9ad0ff");
+  mtxt(G.scream, x + 12, y + 12 + 20, w, 20, "#16324f", "left", true);
+  poly([[x + 150, y + h - 3], [x + 200, y + h - 3], [x + 230, y + h + 70]], "#d8ecff");
+  line([x + 150, y + h - 3], [x + 230, y + h + 70], "#16324f", 3); line([x + 200, y + h - 3], [x + 230, y + h + 70], "#16324f", 3);
+}
 function drawOverlays() {
   const blink = G.anim % 1.2 < 0.8;
   if (G.state === "title") {
     rect(0, 0, W, H, "rgba(0,0,0,0.62)");
     txt("BACKSEAT DRIVER", W / 2, 190, 84, "#ffd21f", "center");
     txt("You are the front-seat passenger. The driver is... confident.", W / 2, 244, 26, "#fff", "center");
-    ["Signs and hazards are coming. Read them. Say the right thing. Fast.", "Press 1 / 2 / 3, or tap a button, to speak to the driver.",
-      "Say nothing, or the wrong thing, and the sign takes its revenge.", "Three strikes and the car is totaled. (Dark humor. You were warned.)"]
+    ["Signs and hazards are coming. Read them. Scream the right thing. Fast.", "Press 1 / 2 / 3, or tap a message, to SCREAM it at the driver. Watch the speedometer.",
+      "Too fast, too slow, or the wrong thing: the sign takes its revenge.", "Three strikes and the car is totaled. (Dark humor. You were warned.)"]
       .forEach((l, i) => txt(l, W / 2, 330 + i * 36, 22, "#cfd8ff", "center"));
     if (blink) txt("PRESS SPACE OR CLICK TO START", W / 2, 560, 34, "#4ac26b", "center");
   } else if (G.state === "over") {
@@ -131,6 +166,7 @@ function draw() {
   G.parts.forEach((p) => { ctx.globalAlpha = clamp(p.l, 0, 1); rect(p.x - p.s / 2, p.y - p.s / 2, p.s, p.s, p.c); });
   ctx.globalAlpha = 1;
   drawHud();
+  drawScream();
   if (G.flash > 0) rect(0, 0, W, H, `rgba(${G.flashCol},${G.flash * 0.5})`);
   drawOverlays();
 }

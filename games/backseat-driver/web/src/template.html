@@ -15,13 +15,15 @@
   #bar button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   #bar button:disabled { cursor: default; }
   kbd { flex: none; font: inherit; font-weight: 700; color: var(--accent); }
-  .hint { color: var(--muted); font-size: .85rem; margin: 0; }
+  .hint { color: var(--muted); font-size: .85rem; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+  #snd { font: inherit; font-size: .85rem; color: var(--ink); background: var(--panel); border: 1px solid #55556a; border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+  #snd:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   @media (max-width: 640px) { #bar { grid-template-columns: 1fr; } #bar button { min-height: 56px; } }
 </style>
 <div class="wrap">
   <canvas id="c" width="1280" height="720" aria-label="Backseat Driver game view"></canvas>
-  <div id="bar" role="group" aria-label="What to say to the driver"><button type="button"></button><button type="button"></button><button type="button"></button></div>
-  <p class="hint">Keys 1, 2, 3 to speak. Space or click the road to start. Dark humor ahead.</p>
+  <div id="bar" role="group" aria-label="What to scream at the driver"><button type="button"></button><button type="button"></button><button type="button"></button></div>
+  <p class="hint">Keys 1, 2, 3 to scream. Space or click the road to start. M mutes. <button type="button" id="snd">Sound: on</button></p>
 </div>
 <script>
 /*EVENTS*/

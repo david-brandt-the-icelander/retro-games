@@ -15,13 +15,15 @@
   #bar button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   #bar button:disabled { cursor: default; }
   kbd { flex: none; font: inherit; font-weight: 700; color: var(--accent); }
-  .hint { color: var(--muted); font-size: .85rem; margin: 0; }
+  .hint { color: var(--muted); font-size: .85rem; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+  #snd { font: inherit; font-size: .85rem; color: var(--ink); background: var(--panel); border: 1px solid #55556a; border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+  #snd:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   @media (max-width: 640px) { #bar { grid-template-columns: 1fr; } #bar button { min-height: 56px; } }
 </style>
 <div class="wrap">
   <canvas id="c" width="1280" height="720" aria-label="Backseat Driver game view"></canvas>
-  <div id="bar" role="group" aria-label="What to say to the driver"><button type="button"></button><button type="button"></button><button type="button"></button></div>
-  <p class="hint">Keys 1, 2, 3 to speak. Space or click the road to start. Dark humor ahead.</p>
+  <div id="bar" role="group" aria-label="What to scream at the driver"><button type="button"></button><button type="button"></button><button type="button"></button></div>
+  <p class="hint">Keys 1, 2, 3 to scream. Space or click the road to start. M mutes. <button type="button" id="snd">Sound: on</button></p>
 </div>
 <script>
 // Every road event. In "o" the FIRST option is always the correct one;
@@ -33,10 +35,11 @@ const LIST = [
 		"name": "DUCK CROSSING",
 		"scene": "A flock of ducks waddles across the road. They are in no hurry.",
 		"d": "Ooh, this song! Let me crank it up.",
+		"spd": 50,
 		"o": [
-			["Brake! Ducks in the road!", ""],
-			["Aww, look at the little ducks!", "The driver looks. The ducks look back. Briefly. Then there are feathers. So many feathers. The wipers do what they can."],
-			["Honk at them!", "The honk launches forty panicked ducks straight at the windshield. You are now wearing a duck as a hat. It is not alive."],
+			["BRAKE! DUCKS! DUCKS!", "", 5],
+			["AWW! LOOK AT THE LITTLE DUCKS!", "The driver looks. The ducks look back. Briefly. Then there are feathers. So many feathers. The wipers do what they can.", 45],
+			["HONK AT THEM! HONK!", "The honk launches forty panicked ducks straight at the windshield. You are now wearing a duck as a hat. It is not alive.", 50],
 		],
 		"good": "The driver brakes. The ducks cross in a tiny, smug parade. The last one gives you a nod. You will carry that nod forever.",
 		"late": "You said nothing. The ducks said 'quack' and then nothing at all. The wipers are now on pate setting.",
@@ -47,11 +50,12 @@ const LIST = [
 		"name": "GATOR CROSSING - NEXT 2 MILES",
 		"scene": "Something long, green and unbothered is sunbathing across both lanes.",
 		"d": "Does that look like a log to you? I think that is a log.",
+		"spd": 45,
 		"sky": ["8fbf8f", "d8e7b0"], "gr": "3d6b3a",
 		"o": [
-			["Slow down! Gator on the road!", ""],
-			["It's a log. Run it over.", "It was not a log. The log now has your whole arm and a strong opinion about your elbow."],
-			["Floor it, we can outrun it!", "Gators sprint at 20 mph. You were doing 18. It was a respectful chase. It ended when the gator came in through the sunroof."],
+			["SLOW DOWN! THAT'S A GATOR!", "", 8],
+			["IT'S JUST A LOG! KEEP GOING!", "It was not a log. The log now has your whole arm and a strong opinion about your elbow.", 45],
+			["FLOOR IT! OUTRUN HIM!", "Gators sprint at 20 mph. You were doing 18. It was a respectful chase. It ended when the gator came in through the sunroof.", 85],
 		],
 		"good": "The driver slows. The gator ambles across and gives you a long, assessing stare. You were not the snack. This time.",
 		"late": "The gator takes your silence as an order for takeout. Compliments to the chef. The chef is you.",
@@ -62,10 +66,11 @@ const LIST = [
 		"name": "PEDESTRIAN CROSSING",
 		"scene": "A very elderly man with a walker has started crossing. He has all day. You do not.",
 		"d": "Wow, he is slow. I'm just gonna go around.",
+		"spd": 35,
 		"o": [
-			["Stop! Let him cross!", ""],
-			["He'll make it. Keep going.", "He did not make it. The walker made it. It is now a hood ornament and, honestly, a fairly nice one."],
-			["Honk to hurry him up!", "He sprints. A 79-year-old sets a personal best. The walker does not. The walker had a family."],
+			["STOP! LET THE MAN CROSS!", "", 0],
+			["HE'LL MAKE IT! DON'T SLOW DOWN!", "He did not make it. The walker made it. It is now a hood ornament and, honestly, a fairly nice one.", 35],
+			["HONK! HURRY HIM UP!", "He sprints. A 79-year-old sets a personal best. The walker does not. The walker had a family.", 35],
 		],
 		"good": "The driver stops. Eleven minutes later, the man reaches the far side, tips his hat and calls you 'sweetheart'. You will take it.",
 		"late": "A walker flies past the passenger window. Silently. Like a very sad bird.",
@@ -76,10 +81,11 @@ const LIST = [
 		"name": "CAUTION: CHILDREN AT PLAY",
 		"scene": "A ball bounces into the road. A small child is already running after it.",
 		"d": "Don't they teach kids to look both ways anymore?",
+		"spd": 40,
 		"o": [
-			["BRAKE! A kid!", ""],
-			["Ignore it, it's just a ball.", "It was a ball. Then it was not just a ball. The driver does not say a word for the next forty miles. Neither do you. Nobody ever speaks of it."],
-			["Honk at them to move!", "The honk makes the kid freeze. Right in the road. Everyone survives, but a very large father is running at your window with pepper spray and a lot to say."],
+			["BRAKE! A KID! BRAKE!", "", 0],
+			["IT'S JUST A BALL! KEEP GOING!", "It was a ball. Then it was not just a ball. The driver does not say a word for the next forty miles. Neither do you. Nobody ever speaks of it.", 40],
+			["HONK AT THEM! MAKE THEM MOVE!", "The honk makes the kid freeze. Right in the road. Everyone survives, but a very large father is running at your window with pepper spray and a lot to say.", 40],
 		],
 		"good": "Tires scream. The kid grabs the ball, waves, and calls the driver a word you did not know a six-year-old knew. Worth it.",
 		"late": "Thud. Silence. 'That was a ball, right?' the driver asks, in a very small voice. You both decide to believe it was a ball.",
@@ -90,10 +96,11 @@ const LIST = [
 		"name": "STOP SIGN",
 		"scene": "Cross traffic ahead. Something very big is thundering toward the junction: a loaded logging truck.",
 		"d": "Stop signs are more of a vibe, honestly.",
+		"spd": 45,
 		"o": [
-			["STOP! Stop sign!", ""],
-			["It's only a suggestion.", "The logging truck disagrees. Violently. Your car is now flatter than a flat white, and that includes the foam."],
-			["Yield and wave the truck on.", "The truck cannot see your friendly wave through the forty tons of logs it is carrying. Your wave was very polite and very, very late."],
+			["STOP! STOP SIGN! STOP!", "", 0],
+			["IT'S ONLY A SUGGESTION! GO!", "The logging truck disagrees. Violently. Your car is now flatter than a flat white, and that includes the foam.", 50],
+			["YIELD! WAVE THE TRUCK ON!", "The truck cannot see your friendly wave through the forty tons of logs it is carrying. Your wave was very polite and very, very late.", 25],
 		],
 		"good": "The driver stands on the brake. The truck thunders through a foot ahead. 'Rolling stops count,' the driver mumbles. They do not.",
 		"late": "The last thing you hear is a truck horn. The last thing you see is logs. So many logs.",
@@ -104,10 +111,11 @@ const LIST = [
 		"name": "RAILROAD CROSSING",
 		"scene": "The lights are flashing. The bell is ringing. The driver is ringing a bell of their own: singing.",
 		"d": "I love this part of the song!",
+		"spd": 50,
 		"o": [
-			["TRAIN! Stop the car!", ""],
-			["We can beat it.", "You cannot beat it. Nobody has ever beaten it. Final score: Train 1, Car 0, Dignity -4."],
-			["Trains only run on Tuesdays.", "It is, in fact, Tuesday. The train checked its calendar."],
+			["TRAIN! STOP THE CAR!", "", 0],
+			["WE CAN BEAT IT! FASTER!", "You cannot beat it. Nobody has ever beaten it. Final score: Train 1, Car 0, Dignity -4.", 85],
+			["TRAINS ONLY RUN ON TUESDAYS!", "It is, in fact, Tuesday. The train checked its calendar.", 50],
 		],
 		"good": "The driver stops. A mile-long freight train rumbles past, and the driver counts every car out loud. All 142. Time moves differently now.",
 		"late": "The train does not honk. It has never needed to.",
@@ -118,10 +126,11 @@ const LIST = [
 		"name": "LOW CLEARANCE: 8 FT 6 IN",
 		"scene": "A low stone bridge ahead. There's a kayak strapped to the roof. The driver forgot.",
 		"d": "Best. Kayak. Weekend. Ever.",
+		"spd": 40,
 		"o": [
-			["The kayak! It won't fit under!", ""],
-			["Duck your head!", "You duck. The kayak does not. It is now two kayaks, which is technically a pair."],
-			["It'll fit. Probably.", "It fit like a toddler in a Halloween costume: not at all. The kayak is now a very long hat on the bridge."],
+			["THE KAYAK! IT WON'T FIT!", "", 0],
+			["DUCK YOUR HEAD! DUCK!", "You duck. The kayak does not. It is now two kayaks, which is technically a pair.", 40],
+			["IT'LL FIT! KEEP GOING!", "It fit like a toddler in a Halloween costume: not at all. The kayak is now a very long hat on the bridge.", 40],
 		],
 		"good": "The driver stops with a screech and unstraps the kayak. 'I knew that,' they say, sweating. Strapping it back on takes forty minutes.",
 		"late": "CRUNCH. The kayak becomes confetti. The car is now a convertible.",
@@ -132,11 +141,12 @@ const LIST = [
 		"name": "DEER CROSSING",
 		"scene": "Two glowing eyes in the dark at the roadside. Then four. Then they step out.",
 		"d": "I could totally take a deer in a fight.",
+		"spd": 60,
 		"sky": ["070a1e", "262b55"], "gr": "17301c",
 		"o": [
-			["Slow down! Deer!", ""],
-			["Flash the high beams.", "Deer freeze when you flash lights. It is the entire thing deer do. The car and the deer are now one."],
-			["Hit it, I love venison.", "You love venison. The deer loves its life. The deer weighs 200 pounds, and your hood now has an antler."],
+			["SLOW DOWN! DEER! DEER!", "", 10],
+			["FLASH THE HIGH BEAMS!", "Deer freeze when you flash lights. It is the entire thing deer do. The car and the deer are now one.", 60],
+			["HIT IT! I LOVE VENISON!", "You love venison. The deer loves its life. The deer weighs 200 pounds, and your hood now has an antler.", 70],
 		],
 		"good": "The driver brakes. A buck pauses, locks eyes with you, then wanders off with deep disdain. It knows you got lucky.",
 		"late": "BANG. Your hood has an antler now. The deer is on the roof, looking at you like you owe it money.",
@@ -147,10 +157,11 @@ const LIST = [
 		"name": "SPEED LIMIT 25",
 		"scene": "The speedometer says 70. A police car is tucked behind a billboard, pretending not to be there.",
 		"d": "I'm fine. I'm only going, uh... fine.",
+		"spd": 70,
 		"o": [
-			["Slow down! Limit is 25!", ""],
-			["It's more of a recommendation.", "The cop thinks it's more of a $400 recommendation. He also wants to talk about your tail light. And your life."],
-			["Floor it, he's not looking!", "He was looking. He has been looking since the last county. The chase ends at a donut shop, with handcuffs and one glazed."],
+			["TOO FAST! SLOW DOWN! COP!", "", 25],
+			["IT'S A RECOMMENDATION! KEEP GOING!", "The cop thinks it's more of a $400 recommendation. He also wants to talk about your tail light. And your life.", 70],
+			["FLOOR IT! HE'S NOT LOOKING!", "He was looking. He has been looking since the last county. The chase ends at a donut shop, with handcuffs and one glazed.", 95],
 		],
 		"good": "The driver slows to 25 just as the cop pulls out. He sees a law-abiding citizen. He is sad. He will eat his donut alone.",
 		"late": "Sirens. Lights. A very calm voice: 'Do you know why I pulled you over?' The driver looks at you.",
@@ -161,10 +172,11 @@ const LIST = [
 		"name": "BRIDGE OUT AHEAD",
 		"scene": "The road just... ends. There's a river. There is no bridge. There is a suggestion of a bridge.",
 		"d": "GPS says go straight. GPS is never wrong.",
+		"spd": 60,
 		"o": [
-			["Bridge out! Stop and turn around!", ""],
-			["GPS says it's fine.", "The GPS says 'You have arrived' as you arrive in the river. It was technically correct."],
-			["Go faster, we can jump it!", "We cannot jump it. Physics has reviewed this proposal and rejected it with a loud splash."],
+			["BRIDGE OUT! STOP! TURN AROUND!", "", 0],
+			["THE GPS SAYS IT'S FINE!", "The GPS says 'You have arrived' as you arrive in the river. It was technically correct.", 60],
+			["FASTER! WE CAN JUMP IT!", "We cannot jump it. Physics has reviewed this proposal and rejected it with a loud splash.", 90],
 		],
 		"good": "The driver brakes at the very edge. The front wheels hang over empty air. A fish looks up at you. 'Nice,' says the fish.",
 		"late": "Splash. The GPS announces 'Recalculating' as the car sinks. It never will.",
@@ -175,11 +187,12 @@ const LIST = [
 		"name": "FALLING ROCK ZONE",
 		"scene": "Pebbles rattle down the cliff beside you. Larger pebbles follow. Then not-pebbles.",
 		"d": "Cool, tunnel-of-rocks vibe. So metal.",
+		"spd": 40,
 		"sky": ["9ab0c4", "dde6ee"], "gr": "8a7f72",
 		"o": [
-			["Floor it! Get out of here!", ""],
-			["Stop and take a photo.", "Great photo. You can't see it, because the rock has smashed the phone, the roof, and some of the seat."],
-			["Honk to scare the rocks.", "The rocks were not scared. The rocks have never been scared of anything. You are now the proud owner of a free rock."],
+			["TOO SLOW! FLOOR IT! GO GO GO!", "", 85],
+			["STOP! TAKE A PHOTO!", "Great photo. You can't see it, because the rock has smashed the phone, the roof, and some of the seat.", 0],
+			["HONK AT THE ROCKS!", "The rocks were not scared. The rocks have never been scared of anything. You are now the proud owner of a free rock.", 40],
 		],
 		"good": "The driver floors it. A boulder lands exactly where you were, then rolls over to look at you. Rocks can be dramatic.",
 		"late": "A boulder meets the roof. The roof loses. The boulder is now your best friend. Its name is Gary.",
@@ -190,11 +203,12 @@ const LIST = [
 		"name": "LAST GAS FOR 90 MILES",
 		"scene": "The fuel needle is on E. It has been on E for a while. The desert stretches out forever.",
 		"d": "The light's been on for like twenty miles. It's fine.",
+		"spd": 55,
 		"sky": ["ffb36b", "ffe3a0"], "gr": "c99a5b",
 		"o": [
-			["Stop and get gas now!", ""],
-			["We'll make it.", "You did not make it. You are in the desert with one sandwich and a very long conversation with the driver."],
-			["Coast on fumes!", "The car coasts, bravely, for another mile. Then it coasts, bravely, to a stop. A vulture lands and waits."],
+			["STOP! GAS! NOW!", "", 0],
+			["WE'LL MAKE IT! KEEP GOING!", "You did not make it. You are in the desert with one sandwich and a very long conversation with the driver.", 55],
+			["COAST! SAVE THE FUMES!", "The car coasts, bravely, for another mile. Then it coasts, bravely, to a stop. A vulture lands and waits.", 30],
 		],
 		"good": "The driver pulls into a gas station that smells like regret and hot dogs. You buy both. It is the best meal of your life.",
 		"late": "The engine coughs. The engine dies. The vultures arrive right on time.",
@@ -205,10 +219,11 @@ const LIST = [
 		"name": "SHARP CURVE - 15 MPH",
 		"scene": "A hairpin turn. On one side, a wall. On the other, a nice view of the valley, from above, and then from below.",
 		"d": "Watch this drift!",
+		"spd": 65,
 		"o": [
-			["Slow down! Hairpin curve!", ""],
-			["Admire the view!", "The driver admires the view. The car admires the view. The car keeps admiring the view, straight off the cliff."],
-			["Take it fast! Drift it!", "The drift is magnificent. The landing is not. You get excellent views of the valley for four whole seconds."],
+			["TOO FAST! SLOW DOWN! CURVE!", "", 15],
+			["LOOK AT THE VIEW!", "The driver admires the view. The car admires the view. The car keeps admiring the view, straight off the cliff.", 65],
+			["DRIFT IT! FASTER!", "The drift is magnificent. The landing is not. You get excellent views of the valley for four whole seconds.", 85],
 		],
 		"good": "The driver slows. The car hugs the curve like an old friend. Far below, a wrecked car whispers: 'tell my story.'",
 		"late": "The tires scream. The car sails off the cliff in slow motion. The driver says, 'Huh.' It is the last thing anyone says.",
@@ -219,11 +234,12 @@ const LIST = [
 		"name": "WRONG WAY - DO NOT ENTER",
 		"scene": "You've entered the highway from the exit ramp. A truck is coming. Its headlights are very big and very close.",
 		"d": "Everyone else is going the wrong way, you know.",
+		"spd": 55,
 		"sky": ["0b1030", "2a2f5a"], "gr": "1c2a1f",
 		"o": [
-			["Wrong way! Turn around now!", ""],
-			["Everyone else is wrong.", "Everyone else is right. All of them. In the same direction. Toward you. At 70 mph."],
-			["Flash your lights at them!", "The truck flashes back. Its lights are bigger. It also has a horn that sounds like the end of the world."],
+			["WRONG WAY! TURN AROUND NOW!", "", 20],
+			["EVERYONE ELSE IS WRONG!", "Everyone else is right. All of them. In the same direction. Toward you. At 70 mph.", 55],
+			["FLASH YOUR LIGHTS!", "The truck flashes back. Its lights are bigger. It also has a horn that sounds like the end of the world.", 55],
 		],
 		"good": "The driver cranks a U-turn on the shoulder to a chorus of horns. 'That was on purpose,' they say. It was not.",
 		"late": "A truck horn the size of a cathedral. The last thing you see is a very large grille. It looks, somehow, disappointed.",
@@ -234,11 +250,12 @@ const LIST = [
 		"name": "SLIPPERY WHEN WET",
 		"scene": "The road shines like glass. The driver is going pretty fast. The car feels pretty light.",
 		"d": "I've never once braked in this weather. Why start now?",
+		"spd": 55,
 		"sky": ["cfd8e3", "f0f3f7"], "gr": "e6edf2",
 		"o": [
-			["Ease off. Brake gently!", ""],
-			["Slam the brakes!", "The car goes into a beautiful figure-skating routine. 9.8 from the French judge. 0 from the guardrail."],
-			["Turn the wheel hard!", "The car spins. And spins. You get to see the whole horizon, forty times. You are fairly sure you saw a cow. Twice."],
+			["TOO FAST! EASE OFF! GENTLY!", "", 25],
+			["SLAM THE BRAKES!", "The car goes into a beautiful figure-skating routine. 9.8 from the French judge. 0 from the guardrail.", 0],
+			["TURN THE WHEEL! TURN IT!", "The car spins. And spins. You get to see the whole horizon, forty times. You are fairly sure you saw a cow. Twice.", 55],
 		],
 		"good": "The driver eases off. The car glides, wobbles and holds. The driver looks at you with sudden, sincere respect. Savor it.",
 		"late": "Wheeee! Whoops. Wheeee! Whoops. The spinning only stops at the ditch.",
@@ -249,14 +266,45 @@ const LIST = [
 		"name": "SCHOOL BUS: STOP ARM OUT",
 		"scene": "A school bus flashes red lights. Its stop arm is out. Children are filing across the road.",
 		"d": "I never stop for buses. They never stop for me.",
+		"spd": 45,
 		"o": [
-			["Stop! School bus!", ""],
-			["Go around it. Quickly.", "Passing a school bus with its stop arm out is called a felony. It is also called a lot of other things by thirty-one parents."],
-			["Wave at the kids.", "The kids wave back. The bus driver does not. The bus driver writes down your license plate and your future."],
+			["STOP! SCHOOL BUS! STOP!", "", 0],
+			["GO AROUND IT! QUICKLY!", "Passing a school bus with its stop arm out is called a felony. It is also called a lot of other things by thirty-one parents.", 60],
+			["WAVE AT THE KIDS!", "The kids wave back. The bus driver does not. The bus driver writes down your license plate and your future.", 45],
 		],
 		"good": "The driver stops. Twenty-two children wave at the car. One gives it a thumbs-up. The driver cries a little behind their sunglasses.",
 		"late": "Sirens, parents, and a very large sign that says SHAME. You will be spending the summer in a very small room.",
 		"fx": "ffd21f",
+	},
+	{
+		"id": "minspeed", "shape": "rect", "glyph": "MIN\n45", "c": "f4f4f4", "ink": "111111",
+		"name": "MINIMUM SPEED 45",
+		"scene": "The speedometer says 18. A convoy of very large trucks fills the mirror, and they are not smiling.",
+		"d": "Why does everyone drive so fast? I like the scenery.",
+		"spd": 18,
+		"o": [
+			["TOO SLOW! SPEED UP! FASTER!", "", 60],
+			["SLOW DOWN! SAFETY FIRST!", "Slower is safer, nobody on a highway ever said. The trucks learn your license plate. Then your bumper. Then your toes.", 8],
+			["PULL OVER! NAP TIME!", "The driver pulls over. Four trucks do not. The hard shoulder has never been so crowded.", 0],
+		],
+		"good": "The driver finally floors it. The trucks flash their lights in thanks and, you think, a little in disappointment.",
+		"late": "A truck horn so deep your fillings rattle. A grille fills the mirror. Then the mirror is all grille.",
+		"fx": "4a4a52",
+	},
+	{
+		"id": "bump", "shape": "diamond", "glyph": "BUMP", "c": "ffd21f", "ink": "111111",
+		"name": "SPEED HUMP",
+		"scene": "A painted yellow hump crosses the road. The driver's coffee is not ready for this.",
+		"d": "I can take bumps at any speed. Watch.",
+		"spd": 45,
+		"o": [
+			["SLOW DOWN! HUMP! HUMP!", "", 10],
+			["DON'T BRAKE! GET SOME AIR!", "The car takes off. For one beautiful second you are a bird. Then the suspension files a formal complaint, and so does the coffee, on your lap.", 75],
+			["FASTER! HIT IT HARD!", "The hump launches you into the roof. Your head now has a very small, very personal dent.", 85],
+		],
+		"good": "The driver slows to a crawl and rolls over the hump. The coffee survives. The driver is unbearable about it for a mile.",
+		"late": "THUMP. THUMP-THUMP. The coffee lands on the driver, who screams something your mother would not like.",
+		"fx": "6b4a2b",
 	},
 ];
 
@@ -297,6 +345,88 @@ const EPITAPHS = [
 	"You will be remembered as the worst co-pilot in the county.",
 	"On the bright side: you'll get to walk from now on.",
 ];
+
+// Synthesised sound: engine, road noise, passing traffic, horns, and event cues. No audio files.
+const AU = {
+  ctx: null, on: true, master: null, eng1: null, eng2: null, engGain: null, engLp: null, roadGain: null, roadBp: null, noise: null,
+  next: 3, init() {
+    if (this.ctx) { if (this.ctx.state === "suspended") this.ctx.resume(); return; }
+    try {
+      const C = window.AudioContext || window.webkitAudioContext; if (!C) return;
+      const c = (this.ctx = new C());
+      this.master = c.createGain(); this.master.gain.value = this.on ? 0.8 : 0; this.master.connect(c.destination);
+      const len = c.sampleRate * 2, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      this.noise = buf;
+      this.engLp = c.createBiquadFilter(); this.engLp.type = "lowpass"; this.engLp.frequency.value = 300;
+      this.engGain = c.createGain(); this.engGain.gain.value = 0.0;
+      this.eng1 = c.createOscillator(); this.eng1.type = "sawtooth";
+      this.eng2 = c.createOscillator(); this.eng2.type = "square";
+      this.eng1.connect(this.engLp); this.eng2.connect(this.engLp); this.engLp.connect(this.engGain); this.engGain.connect(this.master);
+      this.eng1.start(); this.eng2.start();
+      const rs = c.createBufferSource(); rs.buffer = buf; rs.loop = true;
+      this.roadBp = c.createBiquadFilter(); this.roadBp.type = "bandpass"; this.roadBp.frequency.value = 700; this.roadBp.Q.value = 0.6;
+      this.roadGain = c.createGain(); this.roadGain.gain.value = 0;
+      rs.connect(this.roadBp); this.roadBp.connect(this.roadGain); this.roadGain.connect(this.master); rs.start();
+    } catch (e) { this.ctx = null; }
+  },
+  toggle() {
+    this.on = !this.on;
+    if (this.master) this.master.gain.setTargetAtTime(this.on ? 0.8 : 0, this.ctx.currentTime, 0.05);
+    return this.on;
+  },
+  // called every frame
+  update(mph, dt, driving) {
+    const c = this.ctx; if (!c) return;
+    const t = c.currentTime, v = Math.max(0, mph);
+    this.eng1.frequency.setTargetAtTime(34 + v * 1.3, t, 0.08);
+    this.eng2.frequency.setTargetAtTime(17 + v * 0.65, t, 0.08);
+    this.engLp.frequency.setTargetAtTime(160 + v * 7, t, 0.1);
+    this.engGain.gain.setTargetAtTime(driving ? 0.05 : 0.0, t, 0.2);
+    this.roadGain.gain.setTargetAtTime(Math.min(0.14, v / 80 * 0.14), t, 0.1);
+    this.roadBp.frequency.setTargetAtTime(400 + v * 10, t, 0.1);
+    if (driving) { this.next -= dt; if (this.next <= 0) { this.next = 2 + Math.random() * 5; Math.random() < 0.6 ? this.pass() : this.honk(true); } }
+  },
+  _env(g, t0, a, d, peak) { g.gain.setValueAtTime(0.0001, t0); g.gain.linearRampToValueAtTime(peak, t0 + a); g.gain.exponentialRampToValueAtTime(0.0001, t0 + a + d); },
+  noiseBurst(dur, type, f0, f1, peak, att, pan) {
+    const c = this.ctx; if (!c || !this.on) return; const t = c.currentTime;
+    const s = c.createBufferSource(); s.buffer = this.noise;
+    const f = c.createBiquadFilter(); f.type = type; f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t + dur);
+    const g = c.createGain(); this._env(g, t, att === undefined ? 0.02 : att, dur, peak);
+    s.connect(f); f.connect(g);
+    if (c.createStereoPanner && pan !== undefined) { const p = c.createStereoPanner(); p.pan.setValueAtTime(pan, t); p.pan.linearRampToValueAtTime(-pan, t + dur); g.connect(p); p.connect(this.master); } else g.connect(this.master);
+    s.start(t); s.stop(t + dur + 0.2);
+  },
+  tone(freq, dur, type, peak, f1, delay) {
+    const c = this.ctx; if (!c || !this.on) return; const t = c.currentTime + (delay || 0);
+    const o = c.createOscillator(); o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (f1) o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    const g = c.createGain(); this._env(g, t, 0.01, dur, peak);
+    o.connect(g); g.connect(this.master); o.start(t); o.stop(t + dur + 0.1);
+  },
+  pass() { const d = 0.9 + Math.random() * 0.8, side = Math.random() < 0.5 ? -1 : 1; this.noiseBurst(d, "bandpass", 250, 900 + Math.random() * 500, 0.22, d * 0.45, side * 0.9); },
+  honk(far) { const k = far ? 0.05 : 0.16, f = 330 + Math.random() * 120; this.tone(f, 0.35, "square", k, f * 0.99); this.tone(f * 1.26, 0.35, "square", k, f * 1.25); },
+  screech() { this.noiseBurst(1.0, "bandpass", 3200, 1700, 0.3, 0.03); this.tone(1900, 0.9, "sawtooth", 0.05, 1200); },
+  crash() { this.noiseBurst(0.8, "lowpass", 2600, 120, 0.7, 0.005); this.tone(90, 0.6, "sine", 0.6, 28); this.tone(230, 0.25, "square", 0.12, 90); this.noiseBurst(1.4, "highpass", 5000, 3000, 0.08, 0.1); },
+  good() { this.tone(660, 0.18, "triangle", 0.2); this.tone(880, 0.25, "triangle", 0.2, null, 0.12); this.tone(1320, 0.3, "triangle", 0.15, null, 0.26); },
+  ding() { this.tone(1046, 0.25, "sine", 0.18); },
+  tick() { this.tone(700, 0.05, "square", 0.05); },
+  scream() { this.tone(520, 0.5, "sawtooth", 0.09, 880); this.tone(780, 0.5, "square", 0.04, 1250); },
+  cue(id) {
+    switch (id) {
+      case "ducks": for (let i = 0; i < 4; i++) { this.tone(430, 0.12, "sawtooth", 0.1, 250, i * 0.22); this.tone(380, 0.1, "sawtooth", 0.08, 230, i * 0.22 + 0.11); } break;
+      case "police": for (let i = 0; i < 4; i++) this.tone(i % 2 ? 960 : 720, 0.3, "sine", 0.1, null, i * 0.3); break;
+      case "train": this.tone(311, 1.4, "sawtooth", 0.1); this.tone(392, 1.4, "sawtooth", 0.1); this.tone(311, 0.8, "sawtooth", 0.1, null, 1.5); this.tone(392, 0.8, "sawtooth", 0.1, null, 1.5); break;
+      case "wrongway": this.honk(false); this.tone(330, 0.5, "square", 0.12, null, 0.5); this.tone(415, 0.5, "square", 0.12, null, 0.5); break;
+      case "bus": for (let i = 0; i < 3; i++) this.tone(900, 0.12, "square", 0.07, null, i * 0.28); break;
+      case "gator": this.noiseBurst(1.2, "lowpass", 220, 70, 0.3, 0.2); break;
+      case "deer": this.tone(600, 0.2, "triangle", 0.06, 420); this.tone(520, 0.25, "triangle", 0.06, 360, 0.3); break;
+      case "rocks": for (let i = 0; i < 6; i++) this.noiseBurst(0.18, "lowpass", 900, 200, 0.18, 0.005); break;
+      case "minspeed": this.honk(false); break;
+      default: this.honk(true);
+    }
+  },
+};
 
 const W = 1280, H = 720, HORIZON = 285, ROAD_B = 600, TAU = Math.PI * 2;
 const cv = document.getElementById("c");
@@ -632,13 +762,22 @@ HAZ.bus = (s, hc, et) => {
   const shirts = ["#e8453c", "#3c8de8", "#2fb36b", "#c06ae0"];
   for (let k = 0; k < 4; k++) person(P(-330 + k * 120 + (hc - 1) * 500, s * 1.02), 120 * s, shirts[k], "#f1c9a5", et * 6 + k, "#3a2a1a");
 };
+HAZ.minspeed = () => {};
+HAZ.bump = (s) => {
+  for (let k = 0; k < 12; k++) {
+    const x0 = -540 + k * 90;
+    poly([P(x0, s * 0.95), P(x0 + 90, s * 0.95), P(x0 + 90, s * 1.05), P(x0, s * 1.05)], k % 2 ? "#1a1a1a" : "#ffd21f");
+  }
+  const a = P(-540, s * 0.95), b = P(540, s * 0.95), h = 26 * s;
+  poly([[a[0], a[1]], [a[0] + 60 * s, a[1] - h], [b[0] - 60 * s, b[1] - h], [b[0], b[1]]], "rgba(255,210,31,0.35)");
+};
 
 const MAX_STRIKES = 3;
 const G = {
   state: "title", score: 0, best: 0, strikes: 0, streak: 0, handled: 0, newBest: false,
   ev: null, opts: [], bag: [], t: 0, signT: 0, reactTime: 6.5, gap: 2, et: 0, hc: 0, dep: 0, swerve: 0,
   good: false, head: "", text: "", timer: 0, line: "Buckle up. I drive great. Ask anyone.", idle: 3,
-  mood: "calm", epitaph: "", scroll: 0, speed: 0.3, anim: 0, lock: 0, shake: 0, flash: 0, flashCol: "200,20,20",
+  mood: "calm", epitaph: "", mph: 45, tgt: 45, vPick: 45, scream: "", rt: 0, speedWarn: 0, scroll: 0, speed: 0.3, anim: 0, lock: 0, shake: 0, flash: 0, flashCol: "200,20,20",
   parts: [], cracks: [], top: [0x5d, 0xb3, 0xf2], bot: [0xcf, 0xea, 0xff], ground: [0x4c, 0x9a, 0x3c],
 };
 const DEF = { top: [0x5d, 0xb3, 0xf2], bot: [0xcf, 0xea, 0xff], ground: [0x4c, 0x9a, 0x3c] };
@@ -654,16 +793,18 @@ function setBar(on) { bar.classList.toggle("off", !on); btns.forEach((b) => (b.d
 setBar(false);
 
 function start() {
-  Object.assign(G, { score: 0, strikes: 0, streak: 0, handled: 0, newBest: false, cracks: [], parts: [], bag: [], ev: null, mood: "calm", gap: 2.5, speed: 0.3, line: pick(IDLE), idle: 4, state: "drive" });
+  Object.assign(G, { score: 0, strikes: 0, streak: 0, handled: 0, newBest: false, cracks: [], parts: [], bag: [], ev: null, mood: "calm", gap: 2.5, speed: 0.3, line: pick(IDLE), idle: 4, state: "drive", mph: 45, tgt: 45, scream: "" });
+  AU.init();
 }
 function nextSign() {
   if (!G.bag.length) { G.bag = LIST.map((_, i) => i); for (let i = G.bag.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [G.bag[i], G.bag[j]] = [G.bag[j], G.bag[i]]; } }
   G.ev = LIST[G.bag.pop()];
-  G.opts = G.ev.o.map((x, i) => ({ t: x[0], r: x[1], ok: i === 0 }));
+  G.opts = G.ev.o.map((x, i) => ({ t: x[0], r: x[1], ok: i === 0, v: x[2] }));
   for (let i = G.opts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [G.opts[i], G.opts[j]] = [G.opts[j], G.opts[i]]; }
   btns.forEach((b, i) => (b.innerHTML = `<kbd>${i + 1}</kbd><span></span>`, b.lastChild.textContent = G.opts[i].t));
-  Object.assign(G, { t: 0, signT: 0, et: 0, hc: 0, dep: 0, swerve: 0, mood: "calm", line: G.ev.d, state: "sign", reactTime: Math.max(3.6, 6.8 - 0.2 * G.handled) });
+  Object.assign(G, { t: 0, signT: 0, et: 0, hc: 0, dep: 0, swerve: 0, mood: "calm", line: G.ev.d, state: "sign", mph: G.ev.spd, tgt: G.ev.spd, vPick: G.ev.spd, scream: "", reactTime: Math.max(3.6, 6.8 - 0.2 * G.handled) });
   setBar(true);
+  AU.ding(); AU.cue(G.ev.id);
 }
 function choose(i) { if (G.state === "sign" && i < G.opts.length) resolve(i); }
 function burst(x, y, color, n, spd, grav) {
@@ -675,12 +816,15 @@ function burst(x, y, color, n, spd, grav) {
 function resolve(i) {
   setBar(false);
   const ok = i >= 0 && G.opts[i].ok;
-  G.good = ok;
+  G.good = ok; G.rt = 0;
+  G.scream = i >= 0 ? G.opts[i].t : "";
+  G.vPick = i >= 0 ? G.opts[i].v : G.ev.spd; G.tgt = G.vPick;
+  if (i >= 0) AU.scream();
   if (ok) {
     G.streak++; G.handled++;
     const gain = 100 + Math.floor((1 - G.t) * 100) + G.streak * 10;
     G.score += gain; G.head = "NICE SAVE!   +" + gain; G.text = G.ev.good; G.line = pick(THANKS); G.mood = "happy";
-    burst(W / 2, 380, "#ffd21f", 45, 380, 240);
+    burst(W / 2, 380, "#ffd21f", 45, 380, 240); AU.good();
   } else {
     G.streak = 0; G.strikes++;
     G.head = i < 0 ? "TOO SLOW!" : "WRONG THING TO SAY!"; G.text = i < 0 ? G.ev.late : G.opts[i].r;
@@ -692,6 +836,7 @@ function resolve(i) {
       segs.push([[ox, oy], [ox + dx * ln * 0.5 + (Math.random() - 0.5) * 28, oy + dy * ln * 0.5 + (Math.random() - 0.5) * 28], [ox + dx * ln, oy + dy * ln]]);
     }
     G.cracks.push(segs);
+    AU.screech(); setTimeout(() => AU.crash(), 800);
   }
   G.timer = 3.6 + G.text.length * 0.03;
   G.state = "result";
@@ -702,22 +847,22 @@ function gameOver() {
 }
 function update(dt) {
   G.anim += dt; G.lock = Math.max(0, G.lock - dt); G.shake = Math.max(0, G.shake - 40 * dt); G.flash = Math.max(0, G.flash - 1.4 * dt);
-  let target = 0.3;
   const st = G.state;
   if (st === "title" || st === "drive") {
     G.idle -= dt; if (G.idle <= 0) { G.line = pick(IDLE); G.idle = 4.5; }
+    G.tgt = 45;
     if (st === "drive") { G.gap -= dt; if (G.gap <= 0) nextSign(); }
   } else if (st === "sign") {
     G.et += dt; G.t = Math.min(1, G.t + dt / G.reactTime); G.signT = G.t; G.hc = G.t; G.dep = G.t * 0.98;
     if (G.t >= 1) resolve(-1);
   } else if (st === "result") {
-    G.et += dt; G.timer -= dt;
+    G.et += dt; G.timer -= dt; G.rt += dt;
     if (G.good) {
-      target = G.timer > 0.9 ? 0.04 : 0.3;
+      G.tgt = G.timer > 0.9 ? G.vPick : 45;
       G.hc = Math.min(3, G.hc + dt * 0.55); G.signT += dt * 0.35; G.swerve = moveToward(G.swerve, 1, dt * 1.5);
       if (G.dep < 0.78) G.dep = Math.min(0.78, G.dep + dt * 0.25);
     } else {
-      target = 0;
+      G.tgt = G.rt > 0.9 ? 0 : G.vPick;
       if (G.hc < 1) G.hc = moveToward(G.hc, 1, dt * 2);
       G.dep = moveToward(G.dep, 0.98, dt * 1.6);
     }
@@ -725,8 +870,12 @@ function update(dt) {
       if (G.strikes >= MAX_STRIKES) gameOver();
       else Object.assign(G, { ev: null, mood: "calm", gap: 1.4 + Math.random(), line: pick(IDLE), idle: 4, state: "drive" });
     }
-  } else target = 0;
-  G.speed = moveToward(G.speed, target, dt * 0.8);
+  } else G.tgt = 0;
+  const acc = st === "result" && !G.good && G.rt > 0.9 ? 160 : G.tgt < G.mph ? 40 : 22;
+  G.mph = moveToward(G.mph, G.tgt, acc * dt);
+  G.speed = G.mph * 0.00667;
+  AU.update(G.mph, dt, st === "drive" || st === "sign" || st === "result");
+  if (st === "sign" && G.t > 0.7 && Math.floor(G.t * 20) !== G.tickN) { G.tickN = Math.floor(G.t * 20); if (G.tickN % 2) AU.tick(); }
   G.scroll = fpos(G.scroll + G.speed * dt, 1);
   const tg = G.ev && G.ev.sky ? { top: hex3(G.ev.sky[0]), bot: hex3(G.ev.sky[1]) } : DEF;
   const gr = G.ev && G.ev.gr ? hex3(G.ev.gr) : DEF.ground, k = clamp(dt * 2, 0, 1);
@@ -738,6 +887,7 @@ function key(code) {
   if (code === "Digit1" || code === "Numpad1") choose(0);
   else if (code === "Digit2" || code === "Numpad2") choose(1);
   else if (code === "Digit3" || code === "Numpad3") choose(2);
+  else if (code === "KeyM") toggleSound();
   else if (code === "Space" || code === "Enter" || code === "KeyR") go();
 }
 function go() { if (G.state === "title" || (G.state === "over" && G.lock <= 0)) start(); }
@@ -748,6 +898,11 @@ function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   update(dt); draw(); requestAnimationFrame(frame);
 }
+
+const sndBtn = document.getElementById("snd");
+function toggleSound() { AU.init(); sndBtn.textContent = AU.toggle() ? "Sound: on" : "Sound: off"; }
+sndBtn.addEventListener("click", toggleSound);
+document.addEventListener("pointerdown", () => AU.init(), { once: true });
 
 function drawWorld() {
   const g = ctx.createLinearGradient(0, 0, 0, HORIZON);
@@ -820,9 +975,35 @@ function drawCabin() {
     ctx.strokeStyle = "rgba(255,255,255,0.75)"; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(sg[0][0], sg[0][1]); ctx.lineTo(sg[1][0], sg[1][1]); ctx.lineTo(sg[2][0], sg[2][1]); ctx.stroke();
   }));
+  if (G.ev && G.ev.id === "minspeed") drawMirrorTruck();
   drawDriver();
   rc([W / 2, 660], W + 40, 130, "#23232b");
   line([0, ROAD_B], [W, ROAD_B], "#3d3d4a", 4);
+  drawSpeedo();
+}
+function drawMirrorTruck() {
+  const k = clamp(G.hc, 0, 1) * 0.85 + 0.15, cx = W / 2, cy = 68;
+  ctx.save(); ctx.beginPath(); ctx.rect(cx - 103, cy - 23, 206, 46); ctx.clip();
+  rect(cx - 103, cy - 23, 206, 46, "#3a3a44");
+  rc([cx, cy + 4], 30 + 170 * k, 16 + 40 * k, "#4a5568");
+  rc([cx, cy + 10 * k], 18 + 110 * k, 6 + 14 * k, "#16161c");
+  const fl = Math.sin(G.anim * 12) > 0;
+  [-1, 1].forEach((sx) => circ([cx + sx * (10 + 62 * k), cy + 2], 3 + 9 * k, fl ? "#fffbd0" : "#c9b36b"));
+  ctx.restore();
+}
+function drawSpeedo() {
+  const c = [1010, 640], r = 74, a0 = Math.PI * 0.75, a1 = Math.PI * 2.25, pt = (a, d) => [c[0] + Math.cos(a) * d, c[1] + Math.sin(a) * d];
+  circ(c, r + 6, "#0c0c10"); circ(c, r, "#1b1d26");
+  arc(c, r - 4, lerp(a0, a1, 90 / 120), a1, "#d62828", 4);
+  for (let v = 0; v <= 120; v += 10) {
+    const a = lerp(a0, a1, v / 120), major = v % 20 === 0;
+    line(pt(a, r - (major ? 16 : 10)), pt(a, r - 5), major ? "#fff" : "#99a", major ? 3 : 2);
+    if (major) { const q = pt(a, r - 27); txt(String(v), q[0], q[1] + 4, 11, "#cfd8ff", "center", false); }
+  }
+  const a = lerp(a0, a1, clamp(G.mph, 0, 120) / 120);
+  line(c, pt(a, r - 12), "#ff5a3a", 4); circ(c, 7, "#ff5a3a");
+  txt(String(Math.round(G.mph)), c[0], c[1] + 36, 26, "#fff", "center", false);
+  txt("MPH", c[0], c[1] + 52, 11, "#9aa4c4", "center", false);
 }
 function drawHud() {
   if (G.state === "title") return;
@@ -851,14 +1032,23 @@ function drawHud() {
     mtxt(G.text, 312, 206, 660, 21, "#fff", "left", false);
   }
 }
+function drawScream() {
+  if (G.state !== "result" || !G.scream) return;
+  const x = 1000, w = 220, y = 150, lines = wrap(G.scream, w, 20, true).length, h = lines * 20 * 1.28 + 22;
+  panel(x, y, w + 24, h, "#d8ecff", "#16324f");
+  txt("YOU SCREAM:", x + 12, y - 8, 14, "#9ad0ff");
+  mtxt(G.scream, x + 12, y + 12 + 20, w, 20, "#16324f", "left", true);
+  poly([[x + 150, y + h - 3], [x + 200, y + h - 3], [x + 230, y + h + 70]], "#d8ecff");
+  line([x + 150, y + h - 3], [x + 230, y + h + 70], "#16324f", 3); line([x + 200, y + h - 3], [x + 230, y + h + 70], "#16324f", 3);
+}
 function drawOverlays() {
   const blink = G.anim % 1.2 < 0.8;
   if (G.state === "title") {
     rect(0, 0, W, H, "rgba(0,0,0,0.62)");
     txt("BACKSEAT DRIVER", W / 2, 190, 84, "#ffd21f", "center");
     txt("You are the front-seat passenger. The driver is... confident.", W / 2, 244, 26, "#fff", "center");
-    ["Signs and hazards are coming. Read them. Say the right thing. Fast.", "Press 1 / 2 / 3, or tap a button, to speak to the driver.",
-      "Say nothing, or the wrong thing, and the sign takes its revenge.", "Three strikes and the car is totaled. (Dark humor. You were warned.)"]
+    ["Signs and hazards are coming. Read them. Scream the right thing. Fast.", "Press 1 / 2 / 3, or tap a message, to SCREAM it at the driver. Watch the speedometer.",
+      "Too fast, too slow, or the wrong thing: the sign takes its revenge.", "Three strikes and the car is totaled. (Dark humor. You were warned.)"]
       .forEach((l, i) => txt(l, W / 2, 330 + i * 36, 22, "#cfd8ff", "center"));
     if (blink) txt("PRESS SPACE OR CLICK TO START", W / 2, 560, 34, "#4ac26b", "center");
   } else if (G.state === "over") {
@@ -882,6 +1072,7 @@ function draw() {
   G.parts.forEach((p) => { ctx.globalAlpha = clamp(p.l, 0, 1); rect(p.x - p.s / 2, p.y - p.s / 2, p.s, p.s, p.c); });
   ctx.globalAlpha = 1;
   drawHud();
+  drawScream();
   if (G.flash > 0) rect(0, 0, W, H, `rgba(${G.flashCol},${G.flash * 0.5})`);
   drawOverlays();
 }

@@ -101,3 +101,12 @@ HAZ.bus = (s, hc, et) => {
   const shirts = ["#e8453c", "#3c8de8", "#2fb36b", "#c06ae0"];
   for (let k = 0; k < 4; k++) person(P(-330 + k * 120 + (hc - 1) * 500, s * 1.02), 120 * s, shirts[k], "#f1c9a5", et * 6 + k, "#3a2a1a");
 };
+HAZ.minspeed = () => {};
+HAZ.bump = (s) => {
+  for (let k = 0; k < 12; k++) {
+    const x0 = -540 + k * 90;
+    poly([P(x0, s * 0.95), P(x0 + 90, s * 0.95), P(x0 + 90, s * 1.05), P(x0, s * 1.05)], k % 2 ? "#1a1a1a" : "#ffd21f");
+  }
+  const a = P(-540, s * 0.95), b = P(540, s * 0.95), h = 26 * s;
+  poly([[a[0], a[1]], [a[0] + 60 * s, a[1] - h], [b[0] - 60 * s, b[1] - h], [b[0], b[1]]], "rgba(255,210,31,0.35)");
+};
