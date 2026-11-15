@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dawn Chorus</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap">
+<style>
+/* Layout: one column field notebook. Region choice re-tints the whole page (lake blue / desert sunset). */
+:root{
+  --bg:#E6EDEB; --surface:#F5F8F6; --ink:#13262B; --muted:#4B6166; --line:#C3D1CE;
+  --r:#2B6B78; --on-r:#FFFFFF; --r-soft:#D3E4E6;
+  --plate-a:#CFE3E6; --plate-b:#E6EFEA; --scene:#2B5560;
+  --gold:#B8860B; --good:#1D7A4A; --bad:#B2382A;
+  --sono-on:#1B5E6B; --sono-off:#A3B6B6; --sil:brightness(0);
+  --f-d:"Bricolage Grotesque",system-ui,sans-serif;
+  --f-t:"Newsreader",Georgia,serif;
+  --f-m:"IBM Plex Mono",ui-monospace,monospace;
+}
+:root[data-region="az"]{ --r:#B6521E; --on-r:#FFFFFF; --r-soft:#F3DCC8; --plate-a:#F6D8B4; --plate-b:#F1E6D2; --scene:#8A4A25; --sono-on:#A5471A; --sono-off:#CDB8A6; }
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D191C; --surface:#152327; --ink:#E5EEEB; --muted:#93A8AA; --line:#2A3C40;
+    --r:#72BBC8; --on-r:#08181B; --r-soft:#1C353B; --plate-a:#1D3B43; --plate-b:#142A30; --scene:#7FB4BE;
+    --gold:#E3B341; --good:#4CC58A; --bad:#FF8A78; --sono-on:#72BBC8; --sono-off:#3B5358; --sil:brightness(0) invert(.82);
+    color-scheme:dark;
+  }
+  :root:not([data-theme="light"])[data-region="az"]{ --r:#F19462; --on-r:#25100A; --r-soft:#3A2218; --plate-a:#4B2E22; --plate-b:#2D1E19; --scene:#E9A074; --sono-on:#F19462; --sono-off:#5C4034; }
+}
+:root[data-theme="dark"]{
+  --bg:#0D191C; --surface:#152327; --ink:#E5EEEB; --muted:#93A8AA; --line:#2A3C40;
+  --r:#72BBC8; --on-r:#08181B; --r-soft:#1C353B; --plate-a:#1D3B43; --plate-b:#142A30; --scene:#7FB4BE;
+  --gold:#E3B341; --good:#4CC58A; --bad:#FF8A78; --sono-on:#72BBC8; --sono-off:#3B5358; --sil:brightness(0) invert(.82);
+  color-scheme:dark;
+}
+:root[data-theme="dark"][data-region="az"]{ --r:#F19462; --on-r:#25100A; --r-soft:#3A2218; --plate-a:#4B2E22; --plate-b:#2D1E19; --scene:#E9A074; --sono-on:#F19462; --sono-off:#5C4034; }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-d);font-size:16px;line-height:1.45;
+  padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  transition:background .3s}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--r);outline-offset:2px}
+.mono{font-family:var(--f-m);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.sci{font-family:var(--f-t);font-style:italic;color:var(--muted)}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;gap:16px 24px;justify-content:space-between;align-items:flex-end}
+.brand{min-width:0}
+h1{font-size:clamp(2.4rem,9vw,3.8rem);line-height:.92;margin:6px 0 0;font-weight:800;letter-spacing:-.035em;font-variation-settings:"opsz" 96}
+h1 em{font-style:normal;color:var(--r)}
+.regions{display:flex;gap:8px;flex:1 1 320px;max-width:460px}
+.regions button{flex:1;text-align:left;padding:10px 14px;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.regions button b{font-size:1.05rem;font-weight:700}
+.regions button span{font-size:.78rem;color:var(--muted)}
+.regions button[aria-pressed="true"]{background:var(--r);border-color:var(--r);color:var(--on-r)}
+.regions button[aria-pressed="true"] span{color:inherit;opacity:.85}
+
+.tabs{display:flex;gap:4px;border-bottom:1.5px solid var(--line)}
+.tabs button{background:none;border:0;padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1.5px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--r)}
+
+/* buttons */
+.btn{border:0;background:var(--r);color:var(--on-r);padding:12px 20px;border-radius:10px;font-weight:700;display:inline-flex;gap:8px;align-items:center;justify-content:center}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.sm{padding:7px 12px;font-size:.88rem}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* mode picker */
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.mode{text-align:left;padding:16px;border:1.5px solid var(--line);background:var(--surface);border-radius:14px;display:flex;flex-direction:column;gap:4px}
+.mode[aria-pressed="true"]{border-color:var(--r);box-shadow:inset 0 0 0 1.5px var(--r)}
+.mode b{font-size:1.15rem}
+.mode span{color:var(--muted);font-size:.9rem}
+.opts-row{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center}
+.check{display:flex;gap:8px;align-items:center;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--r)}
+.intro{font-family:var(--f-t);font-size:1.15rem;max-width:62ch;color:var(--ink)}
+
+/* plate (photo) */
+.plate{position:relative;isolation:isolate;display:flex;justify-content:center;align-items:center;border-radius:14px;overflow:hidden;background:var(--r-soft);border:1.5px solid var(--line)}
+.plate img.fg{position:relative;display:block;width:100%;height:auto;max-height:min(66vh,520px);object-fit:contain}
+.tile .plate,.grid .bcard .plate{aspect-ratio:4/3}
+.tile .plate img.fg,.grid .bcard .plate img.fg{height:100%;max-height:none}
+.plate img.bgimg{position:absolute;left:-12%;top:-12%;width:124%!important;height:124%!important;max-height:none!important;object-fit:cover;filter:blur(20px) brightness(.85) saturate(1.15);z-index:-1}
+main{display:block;overflow-x:clip}
+@keyframes outL{to{transform:translateX(-105%);opacity:0}}
+@keyframes inR{from{transform:translateX(105%);opacity:0}to{transform:none;opacity:1}}
+.slide-out{animation:outL .28s cubic-bezier(.5,0,.75,0) forwards}
+.slide-in{animation:inR .34s cubic-bezier(.2,.7,.2,1)}
+.plate.locked img.fg{filter:brightness(.25) blur(7px) saturate(.4);transform:scale(1.1)}
+.plate.locked img.bgimg{filter:blur(20px) brightness(.25) saturate(.4)}
+.plate-btn{position:relative;cursor:pointer;border-radius:14px}
+.plate-btn .badge{position:absolute;right:8px;bottom:8px;background:color-mix(in srgb,var(--bg) 82%,transparent);color:var(--ink);font-family:var(--f-m);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:99px;pointer-events:none}
+.plate-btn:hover .badge{background:var(--r);color:var(--on-r)}
+.credits-box{display:flex;flex-direction:column;gap:2px;padding-top:8px;border-top:1px solid var(--line)}
+.credit{font-size:.72rem;color:var(--muted);margin-top:6px;line-height:1.35}
+.credit a{color:var(--muted)}
+details.credits{font-size:.82rem;color:var(--muted)}
+details.credits summary{cursor:pointer;font-weight:600}
+details.credits ul{padding-left:1.1em;margin:8px 0 0}
+details.credits a{color:var(--r)}
+
+/* HUD */
+.hud{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bar{flex:1 1 120px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--r);transition:width .3s}
+.stat{font-variant-numeric:tabular-nums;font-weight:700}
+.streak{color:var(--gold)}
+
+/* question */
+.q{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.clue{max-width:520px;width:100%;justify-self:center;display:flex;flex-direction:column;gap:10px}
+.clue-hear{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.hint{font-family:var(--f-t);font-size:1.05rem;color:var(--muted);min-height:1.5em}
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:480px){.options{grid-template-columns:minmax(0,1fr)}}
+.opt{display:flex;gap:10px;align-items:center;text-align:left;padding:14px;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;font-weight:600;min-width:0}
+.opt kbd{font-family:var(--f-m);font-size:.72rem;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+.opt:hover:not(:disabled){border-color:var(--r)}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 16%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--surface))}
+.opt:disabled{cursor:default}
+
+/* canvases */
+canvas.sono{width:100%;height:120px;display:block;border-radius:8px;background:color-mix(in srgb,var(--r) 7%,var(--surface))}
+.playbtn.on{background:var(--ink);color:var(--bg)}
+
+/* bird card */
+.bcard{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:14px}
+.bcard.wide{grid-template-columns:minmax(0,260px) minmax(0,1fr)}
+@media (max-width:640px){.bcard.wide{grid-template-columns:minmax(0,1fr)}}
+.bcard h3{margin:0;font-size:1.35rem;line-height:1.15;letter-spacing:-.01em}
+.bcard .body{display:flex;flex-direction:column;gap:10px;min-width:0}
+.mn{font-family:var(--f-t);font-size:1.12rem;line-height:1.3}
+.mn q{quotes:"\201C" "\201D";font-style:italic}
+.cues{margin:0;padding-left:1.1em;color:var(--ink);font-size:.93rem;display:flex;flex-direction:column;gap:3px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px}
+.links{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.88rem}
+.links a{color:var(--r);font-weight:600}
+.reveal{border-color:var(--r)}
+.verdict{font-weight:800;font-size:1.05rem}
+.verdict.ok{color:var(--good)} .verdict.no{color:var(--bad)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
+
+/* life list */
+.life{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr));gap:12px}
+.tile{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.tile b{font-size:.95rem;line-height:1.2}
+.tile.locked .plate{filter:brightness(.9)}
+.tile .lock{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-m);font-size:2.4rem;color:var(--muted)}
+.prog{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.prog b{font-size:2.2rem;letter-spacing:-.03em}
+
+/* results */
+.score{font-size:clamp(3rem,14vw,5rem);font-weight:800;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:5px 12px;border-radius:99px;background:var(--r-soft);font-weight:600;font-size:.9rem}
+.missed{display:flex;flex-direction:column;gap:8px}
+.missed .row{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:space-between;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px}
+.row .nm{min-width:0}
+.note{font-size:.85rem;color:var(--muted);max-width:70ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<style>html{color-scheme:light}body{margin:0}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){color-scheme:dark}}:root[data-theme="dark"]{color-scheme:dark}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <header class="top">
+    <div class="brand">
+      <div class="mono" id="kicker"></div>
+      <h1>Dawn <em>Chorus</em></h1>
+    </div>
+    <div class="regions" id="regions" role="group" aria-label="Region"></div>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="main"></main>
+  <details class="credits" id="credits"></details>
+  <p class="note">Photos come from Wikimedia Commons and recordings from xeno-canto, all openly licensed and credited on each card. Each recording is a trimmed clip of a longer field recording.</p>
+</div>
+
+<script>
+/* ---------- bird data ---------- */
+const BIRDS=[
+/* ===== WISCONSIN ===== */
+{id:'norcar',region:'wi',name:'Northern Cardinal',sci:'Cardinalis cardinalis',size:'8–9 in',habitat:'Thickets, backyards and forest edges, all year',
+ mn:'cheer-cheer-cheer, birdie-birdie-birdie',
+ cues:['Male is red all over with a black face mask','Tall pointed crest and a thick orange bill','Sings from high exposed perches, even in winter'],
+},
+{id:'bkcchi',region:'wi',name:'Black-capped Chickadee',sci:'Poecile atricapillus',size:'5–6 in',habitat:'Mixed woods, feeders, thickets',
+ mn:'fee-bee (the call is chick-a-dee-dee-dee)',
+ cues:['Black cap and bib with a bright white cheek','Tiny, round, gray back and buff flanks','Acrobatic, often hangs upside down on twigs'],
+},
+{id:'amerob',region:'wi',name:'American Robin',sci:'Turdus migratorius',size:'9–11 in',habitat:'Lawns, parks, woodland edges',
+ mn:'cheerily, cheer-up, cheerio',
+ cues:['Brick-orange breast on a dark gray-brown back','Yellow bill and a broken white eye-ring','Hops across lawns, head tilted, listening for worms'],
+},
+{id:'blujay',region:'wi',name:'Blue Jay',sci:'Cyanocitta cristata',size:'11–12 in',habitat:'Oak woods, suburbs, feeders',
+ mn:'JAY! JAY! (a harsh scream, plus bell-like notes)',
+ cues:['Blue crest, back and tail with white-and-black barring','Black necklace on a pale gray chest','Loud and bold; can mimic hawk calls'],
+},
+{id:'amegfi',region:'wi',name:'American Goldfinch',sci:'Spinus tristis',size:'4–5 in',habitat:'Weedy fields, thistle, feeders',
+ mn:'per-chic-o-ree, and in flight po-ta-to-chip',
+ cues:['Breeding male is lemon yellow with a black forehead','Black wings with white bars','Rolling, bounding flight with a call on each dip'],
+},
+{id:'rewbla',region:'wi',name:'Red-winged Blackbird',sci:'Agelaius phoeniceus',size:'7–9 in',habitat:'Cattail marshes and wet ditches',
+ mn:'conk-la-REEEE',
+ cues:['Male is glossy black with red-and-yellow shoulder patches','Clings to cattail stalks above the water','Males fiercely defend their territory'],
+},
+{id:'comloo',region:'wi',name:'Common Loon',sci:'Gavia immer',size:'28–36 in',habitat:'Clear northern lakes, summer',
+ mn:'a haunting wail and a wavering, laughing tremolo',
+ cues:['Black head with a white necklace and checkered back','Red eye and dagger bill; sits low in the water','Dives deep and long to catch fish'],
+},
+{id:'ovenbi',region:'wi',name:'Ovenbird',sci:'Seiurus aurocapilla',size:'5–6 in',habitat:'Mature hardwood forest floor',
+ mn:'TEA-cher, TEA-cher, TEA-cher (growing louder)',
+ cues:['Orange crown bordered by black stripes','Streaked breast and pink legs','Walks the forest floor; builds a domed, oven-like nest'],
+},
+{id:'sancra',region:'wi',name:'Sandhill Crane',sci:'Antigone canadensis',size:'34–48 in tall',habitat:'Marshes, wet meadows, farm fields',
+ mn:'garoo-oo-oo, a rolling, rattling bugle',
+ cues:['Tall gray bird with a red forehead patch','Long straight bill; neck stretched out in flight','Pairs dance, bow and leap'],
+},
+{id:'brdowl',region:'wi',name:'Barred Owl',sci:'Strix varia',size:'17–20 in',habitat:'Wooded swamps and big woods',
+ mn:'who cooks for you, who cooks for you-all',
+ cues:['Round head with no ear tufts and dark brown eyes','Brown and white barring across the chest','Calls by day as well as at night'],
+},
+{id:'balori',region:'wi',name:'Baltimore Oriole',sci:'Icterus galbula',size:'7–8 in',habitat:'Tall deciduous trees, river edges',
+ mn:'rich, flute-like whistled phrases',
+ cues:['Male is flame orange below with a black hood and back','White bar on a black wing','Weaves a hanging, sock-shaped nest'],
+},
+{id:'moudov',region:'wi',name:'Mourning Dove',sci:'Zenaida macroura',size:'9–13 in',habitat:'Fields, wires, backyards',
+ mn:'coo-OO-oo-oo-oo',
+ cues:['Plain buff-gray with black spots on the wings','Long, pointed tail with white edges','Wings whistle when it takes off'],
+},
+
+/* ===== PHOENIX, ARIZONA ===== */
+{id:'gamqua',region:'az',name:"Gambel's Quail",sci:'Callipepla gambelii',size:'10–11 in',habitat:'Desert washes and mesquite thickets',
+ mn:'chi-CA-go (the Phoenix quail!)',
+ cues:['Curled black teardrop plume on the forehead','Black face outlined in white, rusty flanks','Runs in groups called coveys'],
+},
+{id:'cacwre',region:'az',name:'Cactus Wren',sci:'Campylorhynchus brunneicapillus',size:'7–9 in',habitat:'Saguaro, cholla and thorny scrub',
+ mn:'chug-chug-chug, like a car that will not start',
+ cues:['Largest US wren, with a bold white eyebrow','Brown back flecked with white; spotted breast','Arizona state bird'],
+},
+{id:'greroa',region:'az',name:'Greater Roadrunner',sci:'Geococcyx californianus',size:'20–24 in',habitat:'Open desert and scrub',
+ mn:'a slow series of descending coos (it also clatters its bill)',
+ cues:['Long tail, shaggy crest and long legs','Streaked brown-and-white body','Runs fast and eats lizards and snakes'],
+},
+{id:'gilwoo',region:'az',name:'Gila Woodpecker',sci:'Melanerpes uropygialis',size:'9–10 in',habitat:'Saguaros and desert washes',
+ mn:'pik-pik-pik, then a rolling churr',
+ cues:['Zebra-barred black-and-white back','Tan head and belly; male wears a small red cap','Carves nest holes in saguaros'],
+},
+{id:'cubthr',region:'az',name:'Curve-billed Thrasher',sci:'Toxostoma curvirostre',size:'9–11 in',habitat:'Cholla, prickly pear, desert yards',
+ mn:'whit-WHEET! (a sharp, rising two-note call)',
+ cues:['Long, downcurved black bill','Gray-brown with a faintly spotted breast','Orange eye; sings from the tops of cholla'],
+},
+{id:'verdin',region:'az',name:'Verdin',sci:'Auriparus flaviceps',size:'4–4.5 in',habitat:'Mesquite and desert scrub',
+ mn:'tsee-tsee-tsee, thin and plaintive',
+ cues:['Tiny gray bird with a bright yellow face','Chestnut patch on the shoulder','Builds ball-shaped nests from thorny twigs'],
+},
+{id:'verfly',region:'az',name:'Vermilion Flycatcher',sci:'Pyrocephalus obscurus',size:'5–6 in',habitat:'Streamsides, ponds, golf courses',
+ mn:'pit-pit-pit-a-ZEEEEE, a rising display song',
+ cues:['Male is blazing red with a dark brown mask and back','Darts out from a perch to catch insects','Fluffs its crest during display flights'],
+},
+{id:'coshum',region:'az',name:"Costa's Hummingbird",sci:'Calypte costae',size:'3–3.5 in',habitat:'Desert washes, ocotillo, feeders',
+ mn:'a thin, high whistle that rises then plunges',
+ cues:['Male has a violet crown and gorget that flares to the sides','Tiny with a short tail and a long, thin bill','Visits ocotillo and chuparosa flowers'],
+},
+{id:'phaino',region:'az',name:'Phainopepla',sci:'Phainopepla nitens',size:'7–8 in',habitat:'Mesquite and mistletoe thickets',
+ mn:'a soft, liquid wurp? that rises at the end',
+ cues:['Slender, glossy black bird with a shaggy crest','Red eye','Lives on mistletoe berries'],
+},
+{id:'grhowl',region:'az',name:'Great Horned Owl',sci:'Bubo virginianus',size:'18–25 in',habitat:'Saguaros, cliffs, cottonwoods',
+ mn:'hoo, hu-HOOO, hoo, hoo',
+ cues:['Big owl with prominent ear tufts','Yellow eyes set in a rusty face; white throat patch','Hoots at dusk from saguaros and ledges'],
+},
+{id:'whwdov',region:'az',name:'White-winged Dove',sci:'Zenaida asiatica',size:'11–12 in',habitat:'Saguaro, palo verde, backyards',
+ mn:'who-cooks-for-YOU (the same words as the Barred Owl!)',
+ cues:['White band along the folded wing','Blue eye-ring around an orange-red eye','Feeds on saguaro fruit and nectar'],
+},
+{id:'bktspa',region:'az',name:'Black-throated Sparrow',sci:'Amphispiza bilineata',size:'5–5.5 in',habitat:'Dry desert scrub and rocky slopes',
+ mn:'two or three clear notes, then a tinkling trill',
+ cues:['Black bib with a bold white eyebrow and cheek stripe','Plain gray-brown back, white belly','Thrives in dry scrub, often far from water'],
+}
+];
+const REGIONS={
+  wi:{name:'Wisconsin',sub:'Northwoods, lakes, prairie'},
+  az:{name:'Phoenix, AZ',sub:'Sonoran Desert'}
+};
+const birdsIn=reg=>BIRDS.filter(b=>b.region===reg);
+const byId=id=>BIRDS.find(b=>b.id===id);
+
+/* ---------- photos (Wikimedia Commons, credited) ---------- */
+const PHOTO={"norcar": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Male_northern_cardinal_in_Central_Park_%2852612%29.jpg"}, "bkcchi": {"a": "No machine-readable author provided. Mdf assumed (based on copyright claims).", "l": "CC BY-SA 3.0", "u": "http://creativecommons.org/licenses/by-sa/3.0/", "p": "https://commons.wikimedia.org/wiki/File:Poecile-atricapilla-001.jpg"}, "amerob": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:American_robin_%2871307%29.jpg"}, "blujay": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Blue_jay_in_PP_%2830960%29.jpg"}, "amegfi": {"a": "Rodney Campbell", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Carduelis_tristis_-Michigan%2C_USA_-male-8.jpg"}, "rewbla": {"a": "Chuck Homler, Focus On Wildlife", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Red-Winged_Blackbird.png"}, "comloo": {"a": "John Picken from Chicago, USA", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Gavia_immer_-Minocqua%2C_Wisconsin%2C_USA_-swimming-8.jpg"}, "ovenbi": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Ovenbird_%2890497%29.jpg"}, "sancra": {"a": "JeffreyGammon", "l": "CC BY 4.0", "u": "https://creativecommons.org/licenses/by/4.0", "p": "https://commons.wikimedia.org/wiki/File:Sandhill_Crane_JG.jpg"}, "brdowl": {"a": "Andy Reago & Chrissy McClarren", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Barred_Owl_%2833795815188%29.jpg"}, "balori": {"a": "TonyCastro", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Baltimore_Oriole-_dorsum.jpg"}, "moudov": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Mourning_dove_perched_%2861179%29.jpg"}, "gamqua": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Gambel%27s_Quail_Rockhound_State_Park.jpg"}, "cacwre": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Cactus_Wren_Sandia_Mountains.jpg"}, "greroa": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Greater_Roadrunner_Tingley_Beach.jpg"}, "gilwoo": {"a": "lwolfartist", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Gila_woodpecker_Paton_Center_for_Hummingbirds_4.11.22_DSC_7716.jpg"}, "cubthr": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Curve-billed_thrasher_Sandia_Mountains.jpg"}, "verdin": {"a": "Vickie J Anderson", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Verdin_5029_m.jpg"}, "verfly": {"a": "Henry", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Karmintyrann_%28Pyrocephalus_obscurus%29%2C_M%C3%A4nnchen_1.jpg"}, "coshum": {"a": "San Diego Zoo", "l": "Public domain", "u": "", "p": "https://commons.wikimedia.org/wiki/File:Hummingbird.jpg"}, "phaino": {"a": "Lip Kee Yap from Singapore, Republic of Singapore", "l": "CC BY-SA 2.0", "u": "https://creativecommons.org/licenses/by-sa/2.0", "p": "https://commons.wikimedia.org/wiki/File:Phainopepla_nitens_M_2.jpg"}, "grhowl": {"a": "Greg Hume", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:Bubo_virginianus_06.jpg"}, "whwdov": {"a": "SearchNet Media", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Zenaida_asiatica_-Tuscon_-Arizona_-USA_-8a.jpg"}, "bktspa": {"a": "Elaine R. Wilson", "l": "CC BY-SA 2.5", "u": "https://creativecommons.org/licenses/by-sa/2.5", "p": "https://commons.wikimedia.org/wiki/File:Amphispiza_bilineata.jpg"}};
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function plate(b,_x,locked,quiz){const alt=quiz?'Bird to identify':locked?'Unidentified bird':'Photo of a '+esc(b.name);return `<div class="plate${locked?' locked':''}"><img class="bgimg" src="photos/${b.id}.jpg" alt="" aria-hidden="true"><img class="fg" src="photos/${b.id}.jpg" alt="${alt}"></div>`}
+function recCredit(b){const r=REC[b.id];if(!r)return '';return `<div class="credit">Recording: ${esc(r.w)}${r.o?', '+esc(r.o):''} · <a href="https://xeno-canto.org/${esc(r.x)}" target="_blank" rel="noopener">XC${esc(r.x)}</a> · <a href="${esc(r.u)}" target="_blank" rel="noopener">${esc(r.l)}</a> via xeno-canto</div>`}
+function credit(b){const p=PHOTO[b.id];if(!p)return '';return `<div class="credit">Photo: ${esc(p.a||'Unknown photographer')} · <a href="${esc(p.p)}" target="_blank" rel="noopener">${esc(p.l)}</a> via Wikimedia Commons</div>`}
+
+/* ---------- recordings (xeno-canto, credited) ---------- */
+const REC={"norcar": {"x": "962371", "w": "A Richardson", "o": "Marathon County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "bkcchi": {"x": "727094", "w": "David A. Brinkman", "o": "Milwaukee County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "amerob": {"x": "825254", "w": "Richard E. Webster", "o": "Iosco County, Michigan", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "blujay": {"x": "549775", "w": "Kimberly Wood", "o": "Dane County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "amegfi": {"x": "169085", "w": "Paul Marvin", "o": "Sauk County, Wisconsin", "l": "CC BY-NC-SA 3.0", "u": "https://creativecommons.org/licenses/by-nc-sa/3.0/"}, "rewbla": {"x": "860970", "w": "Sue Riffe", "o": "Marathon County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "comloo": {"x": "1036225", "w": "Greg Irving", "o": "Barron County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "ovenbi": {"x": "1018252", "w": "David Liebl", "o": "Dane County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "sancra": {"x": "860971", "w": "Sue Riffe", "o": "Marathon County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "brdowl": {"x": "698851", "w": "wisconagus", "o": "Crawford County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "balori": {"x": "692074", "w": "wisconagus", "o": "Trempealeau County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "moudov": {"x": "860758", "w": "Sue Riffe", "o": "Juneau County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "gamqua": {"x": "1148854", "w": "Pat Goltz", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "cacwre": {"x": "999614", "w": "David Tattersley", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "greroa": {"x": "254901", "w": "Richard E. Webster", "o": "Portal, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "gilwoo": {"x": "1000173", "w": "David Tattersley", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "cubthr": {"x": "857002", "w": "Scott Crabtree", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "verdin": {"x": "644220", "w": "Pat Goltz", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "verfly": {"x": "622251", "w": "Richard E. Webster", "o": "Greenlee County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "coshum": {"x": "1083961", "w": "Scott Olmstead", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "phaino": {"x": "1078194", "w": "Richard E. Webster", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "grhowl": {"x": "1140509", "w": "Scott Olmstead", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "whwdov": {"x": "1085857", "w": "Scott Crabtree", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "bktspa": {"x": "1190558", "w": "Richard E. Webster", "o": "near Portal, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}};
+const LOW=new Set(['moudov','brdowl','grhowl','comloo','sancra','whwdov','greroa']);
+let AC=null,cur=null,playTok=0;
+function getAC(){
+ if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AC=new C()}
+ if(AC.state==='suspended')AC.resume();return AC;
+}
+function fft(re,im){
+ const n=re.length;
+ for(let i=1,j=0;i<n;i++){let bit=n>>1;for(;j&bit;bit>>=1)j^=bit;j^=bit;if(i<j){let t=re[i];re[i]=re[j];re[j]=t;t=im[i];im[i]=im[j];im[j]=t}}
+ for(let len=2;len<=n;len<<=1){
+  const ang=-2*Math.PI/len,wr=Math.cos(ang),wi=Math.sin(ang),h=len>>1;
+  for(let i=0;i<n;i+=len){let cr=1,ci=0;for(let j=0;j<h;j++){const a=i+j,b=a+h,tr=re[b]*cr-im[b]*ci,ti=re[b]*ci+im[b]*cr;re[b]=re[a]-tr;im[b]=im[a]-ti;re[a]+=tr;im[a]+=ti;const t=cr*wr-ci*wi;ci=cr*wi+ci*wr;cr=t}}
+ }
+}
+function spectro(b,buf){
+ const y=buf.getChannelData(0),sr=buf.sampleRate,N=1024,H=256;
+ const cols=Math.max(1,Math.floor((y.length-N)/H)),fmax=LOW.has(b.id)?3000:8000,rows=Math.floor(fmax/(sr/N));
+ const win=new Float32Array(N);for(let i=0;i<N;i++)win[i]=.5-.5*Math.cos(2*Math.PI*i/(N-1));
+ const db=new Float32Array(cols*rows),re=new Float32Array(N),im=new Float32Array(N);
+ for(let c=0;c<cols;c++){
+  for(let i=0;i<N;i++){re[i]=y[c*H+i]*win[i];im[i]=0}
+  fft(re,im);
+  for(let r=0;r<rows;r++)db[c*rows+r]=10*Math.log10(re[r]*re[r]+im[r]*im[r]+1e-9);
+ }
+ const col=new Float32Array(cols);
+ for(let r=0;r<rows;r++){
+  for(let c=0;c<cols;c++)col[c]=db[c*rows+r];
+  const med=Float32Array.from(col).sort()[cols>>1];
+  for(let c=0;c<cols;c++)db[c*rows+r]-=med;
+ }
+ const sorted=Float32Array.from(db).sort(),p99=Math.max(14,sorted[Math.floor(sorted.length*.995)]);
+ const v=new Uint8Array(cols*rows);
+ for(let i=0;i<v.length;i++)v[i]=Math.round(255*Math.pow(Math.min(1,Math.max(0,db[i]/p99)),1.35));
+ return {cols,rows,v,fmax,dur:buf.duration,cache:{}};
+}
+function load(b){
+ if(b._p)return b._p;
+ b._p=(async()=>{
+  const ac=getAC();if(!ac)throw new Error('no audio');
+  const ab=await (await fetch(`audio/${b.id}.mp3`)).arrayBuffer();
+  const buf=await new Promise((res,rej)=>ac.decodeAudioData(ab,res,rej));
+  b._buf=buf;b._sp=spectro(b,buf);return buf;
+ })();
+ b._p.catch(()=>{b._p=null});
+ return b._p;
+}
+function stopSong(){
+ playTok++;
+ if(cur){try{cur.src.onended=null;cur.src.stop()}catch(_){}cur=null}
+ refreshPlay();
+}
+async function playSong(b,force){
+ const ac=getAC();if(!ac)return;
+ const same=cur&&cur.id===b.id;stopSong();if(same&&!force)return;
+ const tok=playTok;
+ setLoading(b.id,true);
+ let buf;try{buf=await load(b)}catch(_){setLoading(b.id,false);return}
+ setLoading(b.id,false);
+ if(tok!==playTok)return;
+ const src=ac.createBufferSource();src.buffer=buf;
+ const g=ac.createGain();g.gain.value=.9;src.connect(g);g.connect(ac.destination);
+ const c={id:b.id,src,t0:ac.currentTime+.05,dur:buf.duration};cur=c;
+ src.onended=()=>{if(cur===c){cur=null;refreshPlay()}};
+ src.start(c.t0);refreshPlay();requestAnimationFrame(tick);
+}
+function setLoading(id,on){document.querySelectorAll(`[data-play="${id}"] span`).forEach(sp=>{if(on)sp.textContent='Loading…'})}
+function tick(){
+ if(!cur)return;
+ const p=Math.min(1,Math.max(0,(AC.currentTime-cur.t0)/cur.dur));
+ document.querySelectorAll(`canvas.sono[data-id="${cur.id}"]`).forEach(cv=>drawSono(cv,p));
+ requestAnimationFrame(tick);
+}
+function refreshPlay(){
+ document.querySelectorAll('[data-play]').forEach(btn=>{
+  const on=!!cur&&cur.id===btn.dataset.play;btn.classList.toggle('on',on);
+  const sp=btn.querySelector('span');if(sp)sp.textContent=on?'Stop':(btn.dataset.label||'Play song');
+ });
+ document.querySelectorAll('canvas.sono').forEach(cv=>{if(!cur||cur.id!==cv.dataset.id)drawSono(cv,-1)});
+}
+
+/* ---------- spectrogram of the real recording ---------- */
+function drawSono(cv,p){
+ const b=byId(cv.dataset.id),dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;
+ if(!W)return;
+ if(cv.width!==Math.round(W*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr)}
+ const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,W,H);
+ const cs=getComputedStyle(document.documentElement),on=cs.getPropertyValue('--sono-on').trim(),mut=cs.getPropertyValue('--muted').trim(),ink=cs.getPropertyValue('--ink').trim(),surf=cs.getPropertyValue('--surface').trim();
+ const padL=34,padR=6,padT=6,padB=6,pw=W-padL-padR,ph=H-padT-padB,sp=b._sp;
+ x.font='10px "IBM Plex Mono",monospace';x.textBaseline='middle';x.textAlign='left';x.fillStyle=mut;
+ if(!sp){x.fillText('Loading recording…',padL+6,H/2);return}
+ let off=sp.cache[on];
+ if(!off){
+  off=document.createElement('canvas');off.width=sp.cols;off.height=sp.rows;
+  const t=document.createElement('canvas');t.width=1;t.height=1;const tc=t.getContext('2d');tc.fillStyle=on;tc.fillRect(0,0,1,1);
+  const [R,G,B]=tc.getImageData(0,0,1,1).data,oc=off.getContext('2d'),im=oc.createImageData(sp.cols,sp.rows);
+  for(let c=0;c<sp.cols;c++)for(let r=0;r<sp.rows;r++){const i=((sp.rows-1-r)*sp.cols+c)*4;im.data[i]=R;im.data[i+1]=G;im.data[i+2]=B;im.data[i+3]=sp.v[c*sp.rows+r]}
+  oc.putImageData(im,0,0);sp.cache[on]=off;
+ }
+ const step=sp.fmax>4000?2000:1000;
+ for(let f=step;f<=sp.fmax;f+=step){const y=padT+ph*(1-f/sp.fmax);x.strokeStyle=mut;x.globalAlpha=.2;x.lineWidth=1;x.beginPath();x.moveTo(padL,y);x.lineTo(W-padR,y);x.stroke();x.globalAlpha=.85;x.fillStyle=mut;x.fillText((f/1000)+'k',3,Math.max(y,10))}
+ x.globalAlpha=1;x.imageSmoothingEnabled=true;x.drawImage(off,padL,padT,pw,ph);
+ if(p>=0&&p<1){
+  const px=padL+p*pw;
+  x.globalAlpha=.55;x.fillStyle=surf;x.fillRect(px,padT,W-padR-px,ph);x.globalAlpha=1;
+  x.strokeStyle=ink;x.lineWidth=1.5;x.beginPath();x.moveTo(px,padT);x.lineTo(px,padT+ph);x.stroke();
+ }
+}
+function paintSonos(){
+ document.querySelectorAll('canvas.sono').forEach(cv=>{
+  const b=byId(cv.dataset.id);
+  const draw=()=>drawSono(cv,cur&&cur.id===cv.dataset.id?Math.min(1,Math.max(0,(AC.currentTime-cur.t0)/cur.dur)):-1);
+  draw();if(!b._sp)load(b).then(()=>{if(document.body.contains(cv))draw()}).catch(()=>{});
+ });
+}
+
+/* ---------- state ---------- */
+const KEY='dawnchorus.v1';
+const P={life:{},best:{}};
+try{Object.assign(P,JSON.parse(localStorage.getItem(KEY))||{})}catch(_){}
+const S={region:P.region||'wi',tab:'play',round:null};
+function save(){try{localStorage.setItem(KEY,JSON.stringify({...P,region:S.region,}))}catch(_){}}
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const ROUND=10;
+
+/* ---------- views ---------- */
+const $main=document.getElementById('main');
+const ICON_PLAY='<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg>';
+const links=b=>{
+ const slug=b.name.replace(/['’]/g,'').replace(/ /g,'_');
+ return `<div class="links"><a href="https://www.allaboutbirds.org/guide/${encodeURIComponent(slug)}/sounds" target="_blank" rel="noopener">More recordings (All About Birds)</a><a href="https://xeno-canto.org/explore?query=${encodeURIComponent(b.name)}" target="_blank" rel="noopener">Xeno-canto</a></div>`;
+};
+const playBtn=(b,label='Play recording',cls='')=>`<button class="btn sm ${cls||'ghost'} playbtn" data-play="${b.id}" data-label="${label}" data-act="play">${ICON_PLAY}<span>${label}</span></button>`;
+function birdCard(b,opt={}){
+ const media=opt.info?'':`<div><div class="plate-btn" role="button" tabindex="0" data-act="replay" data-v="${b.id}" aria-label="Play the ${esc(b.name)} recording again">${plate(b,false)}<span class="badge">&#9654; Tap to play</span></div>${credit(b)}</div>`;
+ const player=opt.info?'':`<div style="display:flex;gap:8px;align-items:center">${playBtn(b)}</div>
+   <canvas class="sono" data-id="${b.id}" aria-label="Spectrogram of the ${esc(b.name)} recording"></canvas>
+   ${recCredit(b)}`;
+ const credits=opt.info?`<div class="credits-box">${credit(b)}${recCredit(b)}</div>`:'';
+ return `<article class="bcard ${opt.wide&&!opt.info?'wide':''} ${opt.cls||''}">
+  ${media}
+  <div class="body">
+   ${opt.head||''}
+   <div><h3>${esc(b.name)}</h3><div class="sci">${esc(b.sci)}</div></div>
+   <div class="mn"><q>${esc(b.mn)}</q></div>
+   ${player}
+   <ul class="cues">${b.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
+   <div class="meta mono"><span>${esc(b.size)}</span><span>${esc(b.habitat)}</span></div>
+   ${links(b)}
+   ${credits}
+  </div></article>`;
+}
+
+function renderHeader(){
+ document.documentElement.dataset.region=S.region;
+ document.getElementById('kicker').textContent=`Field trainer · ${birdsIn(S.region).length} species in ${REGIONS[S.region].name}`;
+ document.getElementById('regions').innerHTML=Object.entries(REGIONS).map(([k,v])=>`<button data-act="region" data-v="${k}" aria-pressed="${k===S.region}"><b>${v.name}</b><span>${v.sub}</span></button>`).join('');
+ const lifeCount=birdsIn(S.region).filter(b=>P.life[b.id]&&P.life[b.id].seen).length;
+ document.getElementById('tabs').innerHTML=[['play','Play'],['guide','Field guide'],['life',`Life list (${lifeCount})`]].map(([k,v])=>`<button role="tab" data-act="tab" data-v="${k}" aria-selected="${S.tab===k}">${v}</button>`).join('');
+}
+function render(){
+ renderHeader();
+ if(S.tab==='play')S.round?(S.round.done?renderResults():S.round.answered?renderInfo():renderQuestion()):renderMenu();
+ if(S.tab==='guide')renderGuide();
+ if(S.tab==='life')renderLife();
+ requestAnimationFrame(()=>{paintSonos();refreshPlay()});
+}
+function renderMenu(){
+ const reg=REGIONS[S.region],best=P.best[S.region+':mix'];
+ $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:18px">
+  <p class="intro">Ten birds from ${esc(reg.name)}, some by sight and some by sound. Name each one, then read its field notes before the next. Every bird you get right goes on your life list.</p>
+  ${best?`<span class="mono">Best here: ${best} pts</span>`:''}
+  <div><button class="btn" data-act="start">Start ${ROUND} birds</button></div>
+ </section>`;
+}
+const REDUCE=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+let busy=false;
+function slideTo(fn){
+ const old=$main.firstElementChild;
+ if(!old||REDUCE){fn(false);return}
+ busy=true;old.classList.add('slide-out');
+ setTimeout(()=>{busy=false;fn(true)},280);
+}
+function afterPaint(top){requestAnimationFrame(()=>{paintSonos();refreshPlay();if(top)window.scrollTo({top:0})})}
+function startRound(){
+ const pool=birdsIn(S.region),qs=shuffle(pool).slice(0,ROUND).map(b=>{
+  const type=Math.random()<.5?'see':'hear';
+  const opts=shuffle([b,...shuffle(pool.filter(x=>x!==b)).slice(0,3)]);
+  return {b,type,opts}});
+ qs.forEach(q=>{getAC();load(q.b).catch(()=>{})});
+ S.round={qs,i:0,score:0,streak:0,bestStreak:0,right:0,answered:null,hint:false,lifers:[],missed:[],done:false};
+ slideTo(anim=>{renderHeader();renderQuestion(anim,true);afterPaint(true)});
+}
+const hudHTML=(R,done)=>`<div class="hud"><span class="mono">Bird ${R.i+1} of ${ROUND}</span><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${ROUND}" aria-valuenow="${R.i+(done?1:0)}"><i style="width:${(R.i+(done?1:0))/ROUND*100}%"></i></div><span class="stat">${R.score} pts</span><span class="stat streak">${R.streak>1?'x'+R.streak+' streak':''}</span></div>`;
+function renderQuestion(anim=false,auto=true){
+ const R=S.round,q=R.qs[R.i],b=q.b,hear=q.type==='hear';
+ const clue=hear
+  ?`<div class="clue-hear"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${playBtn(b,'Play',' ')}<span class="mono">Which bird is singing?</span></div><canvas class="sono" data-id="${b.id}" aria-label="Spectrogram of the mystery recording"></canvas></div>`
+  :`<div class="plate-btn" role="button" tabindex="0" data-act="replay" data-v="${b.id}" aria-label="Play the recording again">${plate(b,false,false,true)}<span class="badge">&#9654; Tap to replay</span></div>`;
+ const hint=R.hint?`<div class="hint">${esc(b.habitat)} · ${esc(b.size)}</div>`:`<div class="hint"></div>`;
+ $main.innerHTML=`<section class="q${anim?' slide-in':''}">
+  ${hudHTML(R,false)}
+  <div class="clue">${clue}${hear?'':`<div class="mono" style="text-align:center">Study the field marks and listen</div>`}${hint}
+  ${!R.hint?`<div style="text-align:center"><button class="btn sm ghost" data-act="hint">Hint: habitat and size (-40)</button></div>`:''}</div>
+  <div class="options" role="group" aria-label="Choose the species">${q.opts.map((o,k)=>`<button class="opt" data-act="answer" data-v="${o.id}"><kbd>${k+1}</kbd>${esc(o.name)}</button>`).join('')}</div>
+ </section>`;
+ if(auto)setTimeout(()=>{if(S.round===R&&R.qs[R.i]===q&&!R.answered&&S.tab==='play')playSong(b,true)},anim?340:150);
+}
+function renderInfo(anim=false){
+ const R=S.round,q=R.qs[R.i],b=q.b,ans=R.answered,ok=ans===b.id;
+ const verdict=ok?`Correct, +${R.last}${R.lifer?' · New for your life list!':''}`:`Not this time. You chose ${esc(byId(ans).name)}.`;
+ $main.innerHTML=`<section class="q${anim?' slide-in':''}">
+  ${hudHTML(R,true)}
+  ${birdCard(b,{info:true,cls:'reveal',head:`<div class="verdict ${ok?'ok':'no'}">${verdict}</div>`})}
+  <div><button class="btn" data-act="next" id="nextbtn">${R.i+1<ROUND?'Next bird':'See results'}</button></div>
+ </section>`;
+}
+function answer(id){
+ const R=S.round,q=R.qs[R.i];if(busy||R.answered)return;
+ R.answered=id;const ok=id===q.b.id;
+ const rec=P.life[q.b.id]||(P.life[q.b.id]={r:0,w:0,seen:false});
+ if(ok){
+  const pts=Math.max(20,100+20*Math.min(R.streak,5)-(R.hint?40:0));
+  R.last=pts;R.score+=pts;R.streak++;R.bestStreak=Math.max(R.bestStreak,R.streak);R.right++;rec.r++;
+  R.lifer=!rec.seen;if(!rec.seen){rec.seen=true;R.lifers.push(q.b.id)}
+ }else{R.streak=0;rec.w++;R.missed.push(q.b.id);R.lifer=false}
+ save();
+ slideTo(anim=>{renderHeader();renderInfo(anim);afterPaint(true);const el=document.getElementById('nextbtn');if(el)el.focus({preventScroll:true})});
+}
+function next(){
+ if(busy)return;
+ const R=S.round;R.i++;R.answered=null;R.hint=false;R.lifer=false;
+ if(R.i>=ROUND){R.done=true;const k=S.region+':mix';if(R.score>(P.best[k]||0))P.best[k]=R.score;save()}
+ stopSong();
+ slideTo(anim=>{renderHeader();R.done?renderResults(anim):renderQuestion(anim,true);afterPaint(true)});
+}
+function renderResults(anim=false){
+ const R=S.round,miss=[...new Set(R.missed)].map(byId);
+ $main.innerHTML=`<section class="${anim?'slide-in':''}" style="display:flex;flex-direction:column;gap:18px">
+  <div class="mono">Round complete · ${esc(REGIONS[S.region].name)}</div>
+  <div class="score">${R.score}</div>
+  <div class="prog"><b>${R.right}/${ROUND}</b><span>identified · best streak ${R.bestStreak}</span></div>
+  ${R.lifers.length?`<div><div class="mono" style="margin-bottom:8px">New on your life list</div><div class="chips">${R.lifers.map(i=>`<span class="chip">${esc(byId(i).name)}</span>`).join('')}</div></div>`:''}
+  ${miss.length?`<div><div class="mono" style="margin-bottom:8px">Review these</div><div class="missed">${miss.map(b=>`<div class="row"><div class="nm"><b>${esc(b.name)}</b><div class="sci">${esc(b.mn)}</div></div>${playBtn(b)}</div>`).join('')}</div></div>`:'<p class="intro">A clean sweep. Time to try the full field day.</p>'}
+  <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-act="again">Play again</button><button class="btn ghost" data-act="tab" data-v="guide">Open field guide</button></div>
+ </section>`;
+}
+function renderGuide(){
+ $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:16px"><p class="intro">Every species in ${esc(REGIONS[S.region].name)}. Play each song and watch the spectrogram: pitch runs up, time runs across.</p><div class="grid">${birdsIn(S.region).map(b=>birdCard(b)).join('')}</div></section>`;
+}
+function renderLife(){
+ const list=birdsIn(S.region),seen=list.filter(b=>P.life[b.id]&&P.life[b.id].seen).length;
+ $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:16px">
+  <div class="prog"><b>${seen}/${list.length}</b><span>species on your ${esc(REGIONS[S.region].name)} life list</span></div>
+  <div class="life">${list.map(b=>{const rec=P.life[b.id]||{},ok=rec.seen;
+   return `<div class="tile ${ok?'':'locked'}"><div style="position:relative">${plate(b,false,!ok)}${ok?'':'<div class="lock" aria-hidden="true">?</div>'}</div>${ok?`<b>${esc(b.name)}</b><span class="mono">${rec.r||0} right · ${rec.w||0} missed</span>`:`<b>Not yet identified</b><span class="mono">Get it right in a round</span>`}</div>`}).join('')}</div>
+  <div id="reset"><button class="btn sm ghost" data-act="reset">Reset life list</button></div>
+ </section>`;
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act,v=t.dataset.v;
+ if(a==='play'){playSong(byId(t.dataset.play))}
+ else if(a==='replay'){playSong(byId(v),true)}
+ else if(a==='region'){if(v!==S.region){stopSong();S.region=v;S.round=null;save();render()}}
+ else if(a==='tab'){S.tab=v;stopSong();render()}
+ else if(a==='start'||a==='again'){getAC();startRound()}
+ else if(a==='hint'){S.round.hint=true;renderQuestion(false,false);afterPaint(false)}
+ else if(a==='answer'){answer(v)}
+ else if(a==='next'){next()}
+ else if(a==='reset'){
+  const box=document.getElementById('reset');
+  box.innerHTML=`<span style="margin-right:10px">Erase every record for both regions?</span><button class="btn sm" data-act="reset-yes">Erase</button> <button class="btn sm ghost" data-act="reset-no">Keep</button>`;
+ }
+ else if(a==='reset-yes'){P.life={};P.best={};save();render()}
+ else if(a==='reset-no'){render()}
+});
+document.addEventListener('keydown',e=>{
+ if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('plate-btn')){e.preventDefault();e.target.click();return}
+ if(e.target.matches('input,textarea')||e.metaKey||e.ctrlKey||e.altKey)return;
+ if(S.tab!=='play'||!S.round||S.round.done)return;
+ const R=S.round,q=R.qs[R.i];
+ if(!R.answered&&/^[1-4]$/.test(e.key)){answer(q.opts[+e.key-1].id)}
+ else if(R.answered&&e.key==='Enter'&&e.target.tagName!=='BUTTON'){next()}
+ else if(e.key==='p'||e.key==='P'){playSong(q.b,true)}
+});
+window.addEventListener('resize',()=>paintSonos());
+function renderCredits(){
+ document.getElementById('credits').innerHTML='<summary>Photo and recording credits</summary><ul>'+BIRDS.map(b=>{const p=PHOTO[b.id];const r=REC[b.id];return p?`<li>${esc(b.name)}: photo by ${esc(p.a)} (<a href="${esc(p.p)}" target="_blank" rel="noopener">${esc(p.l)}</a>)${r?`; recording by ${esc(r.w)} (<a href="https://xeno-canto.org/${esc(r.x)}" target="_blank" rel="noopener">XC${esc(r.x)}, ${esc(r.l)}</a>)`:''}</li>`:''}).join('')+'</ul>';
+}
+renderCredits();
+render();
+</script>
+</body>
+</html>

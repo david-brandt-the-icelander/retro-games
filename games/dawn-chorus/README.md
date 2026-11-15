@@ -1,0 +1,20 @@
+# Dawn Chorus
+
+A bird-identification game. Each round shows ten birds from the chosen region, some by photo and some by recording with its spectrogram. Name each bird, then read its field notes. Birds you get right go on a life list saved in the browser. Regions so far: Wisconsin and Phoenix, Arizona (24 species).
+
+It is a static page: `index.html` plus `photos/` and `audio/`, with no build step and no server. Open it through any static web server (browsers will not load the audio from `file://`), for example `python3 -m http.server` in this folder. It has no `package.json`, so the repository's test and deploy workflows skip it.
+
+## How it works
+
+- Each species is one entry in the `BIRDS` array in `index.html`: name, region, song description, field marks, size and habitat. Its photo is `photos/<id>.jpg` and its recording is `audio/<id>.mp3`, and `PHOTO` and `REC` hold their credits.
+- The recording is decoded with the Web Audio API and its spectrogram is computed in the page from the real audio.
+- To add a region, add entries to `BIRDS`, an entry to `REGIONS`, and the matching photo and audio files.
+
+## Licenses of the photos and recordings
+
+The files in `photos/` and `audio/` are not covered by the repository's licence. Each keeps its own:
+
+- Photos are from Wikimedia Commons under Creative Commons licences (about two thirds CC BY-SA, the rest CC BY, plus one public domain).
+- Recordings are from xeno-canto under CC BY-NC-SA 3.0 or 4.0. Non-commercial use only, and any copy of a recording must carry the same licence.
+
+[`CREDITS.md`](CREDITS.md) lists the author, source and licence of every file. Keep it in step when a photo or recording changes.
