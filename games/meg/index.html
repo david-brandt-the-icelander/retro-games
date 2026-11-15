@@ -747,7 +747,7 @@ function spawnAmbient(dt,counts){ const no=L.noAmb||[];
 
 
 // ---------- the eight incident files ----------
-const SIZES=[3.4,3.4,3.6,3.6,3.9,3.9,4.2,4.2];
+const SIZES=[2.55,2.55,2.7,2.7,2.93,2.93,3.15,3.15];
 const LEVELS=[
 {n:'The Trawler at Night',swimmers:3,w:1400,minFish:30,obj:'Eat 12 fish and shred the trawler\'s net.',
  doc:'TRAWLER "HALDIS" · NORTH SHELF · 02:40\n\nDeck crew report a fin taller than the wheelhouse beside the net. Net torn. Catch missing. Skipper\'s statement ██████████ before filing.\n\nRECOMMENDATION: ████. Reissue as storm damage.',
@@ -1037,7 +1037,7 @@ function ending(){ const fin=score, hs=endRun(); screen(`<div class="panel">
 function pause(){ if(state!=='play')return; state='paused'; screen(`<div class="panel"><p class="kicker">FILE ${pad2(lv)} · ON HOLD</p><h1 class="h2">Paused</h1>
   <div class="row"><button class="cta" data-act="resume">Resume</button><button class="cta alt" data-act="restart">Restart file</button><button class="cta alt" data-act="quit">End run</button></div></div>`) }
 function resume(){ if(state!=='paused')return; state='play'; screen(null); last=performance.now(); acc=0 }
-function startDemo(){ world={w:1400,h:360}; L={vents:[],prog:()=>''}; storm=false; ents=[]; parts=[]; hunt=0; stats=freshStats(); S=newShark(3.8);
+function startDemo(){ world={w:1400,h:360}; L={vents:[],prog:()=>''}; storm=false; ents=[]; parts=[]; hunt=0; stats=freshStats(); S=newShark(2.85);
  school(400,190,12); school(800,230,12); boat(600,{light:true,speed:10}); swimmer(300); swimmer(900); follow(0,true) }
 let wl=null;
 async function wake(){ try{ if(navigator.wakeLock&&!wl){ wl=await navigator.wakeLock.request('screen'); wl.addEventListener('release',()=>{wl=null}) } }catch(e){} }
