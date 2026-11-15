@@ -24,7 +24,7 @@
     {
       "id": "fonts",
       "name": "Google Fonts",
-      "responsibility": "Serves Press Start 2P, Special Elite and VT323 for the menus, the incident files and the HUD.",
+      "responsibility": "Serves Lilita One, Nunito and Special Elite for the titles and buttons, the HUD and menus, and the incident files.",
       "external": true
     },
     {

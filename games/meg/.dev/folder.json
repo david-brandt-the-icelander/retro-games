@@ -7,8 +7,8 @@
     {
       "id": "folder",
       "title": "MEG: The Current Remembers",
-      "summary": "An original retro shark game for the browser, desktop and phone: the player is the last megalodon, hiding in a warm current from the Directorate across eight levels.",
-      "purpose": "Holds the whole game as one self-contained page, index.html, with its styles, HUD, touch controls, synthesized sound, pixel drawing, levels and menus inline.",
+      "summary": "An original cartoon shark game for the browser, desktop and phone: the player is the last megalodon, eating fish and swimmers and hiding in a warm current from the Directorate across eight levels.",
+      "purpose": "Holds the whole game as one self-contained page, index.html, with its styles, HUD, touch controls, synthesized sound, vector cartoon drawing, levels and menus inline.",
       "boundaries": [
         "It has no package.json, Worker, sign-in or high-score table, so it is not built, tested or deployed by the repository's workflows.",
         "It loads three Google Fonts and keeps its progress in the browser's localStorage; nothing else leaves the page."

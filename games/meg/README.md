@@ -1,12 +1,12 @@
 # MEG: The Current Remembers
 
-An original retro shark game for the browser, on desktop and phone. You are the last megalodon. A warm current has hidden your kind for millions of years, and a shadowy agency, the Directorate, is closing in. Stay fed, stay hidden and protect the current across eight incident files.
+An original cartoon shark game for the browser, on desktop and phone. You are the last megalodon. A warm current has hidden your kind for millions of years, and a shadowy agency, the Directorate, is closing in. Stay fed, stay hidden and protect the current across eight incident files.
 
 MEG is not a remake: its story, characters and look are its own.
 
 ## Play
 
-Open `index.html` in a browser. It is one self-contained page: the game, its pixel art and its synthesized sound are all inline. The only things it loads from outside are three Google Fonts (Press Start 2P, Special Elite and VT323), and it falls back to system fonts without them.
+Open `index.html` in a browser. It is one self-contained page: the game, its cartoon art (drawn as vector shapes on a canvas at the screen's full pixel density) and its synthesized sound are all inline. The only things it loads from outside are three Google Fonts (Lilita One, Nunito and Special Elite), and it falls back to system fonts without them.
 
 ## Controls
 
@@ -19,13 +19,13 @@ Open `index.html` in a browser. It is one self-contained page: the game, its pix
 
 Everything else is automatic:
 
-- **Biting:** the jaws snap shut on anything edible the mouth touches.
+- **Biting:** the jaws snap shut on anything edible the mouth touches, including the swimmers bobbing at the surface, who panic and draw attention when they spot the shark.
 - **Breaching:** hit the surface heading upward at full speed (the speed bar turns yellow) and the shark leaps clear of the water. Landing on a deck damages the ship. At full speed the shark also rams hulls from below.
 - **Hiding:** inside the glowing warm current, nothing can see the shark.
 
 ## How it plays
 
-Hunger drains all the time, and faster at speed; fish, squid and whales refill it. Exposure rises when lights, sonar, cameras or spotlights catch the shark, and falls when it hides deep or in the current. When exposure fills, a hunter fleet drops depth charges for a while. Each file opens with a typed, redacted Directorate document and closes with a cover-story memo.
+Hunger drains all the time, and faster at speed; schools of fish, squid, whales and swimmers refill it. Exposure rises when lights, sonar, cameras or spotlights catch the shark, and falls when it hides deep or in the current. When exposure fills, a hunter fleet drops depth charges for a while. Each file opens with a typed, redacted Directorate document and closes with a cover-story memo.
 
 | File | Goal |
 |---|---|

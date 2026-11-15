@@ -82,7 +82,7 @@
     {
       "id": "meg",
       "name": "MEG",
-      "responsibility": "An original shark game in one static page: the player is the last megalodon, hiding in a warm current from the Directorate.",
+      "responsibility": "An original cartoon shark game in one static page: the player is the last megalodon, hiding in a warm current from the Directorate.",
       "folder": "games/meg",
       "diagram": "games/meg/.dev/component-diagram.json"
     },
