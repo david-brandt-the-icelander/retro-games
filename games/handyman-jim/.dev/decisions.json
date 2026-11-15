@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Handyman Jim decisions",
+  "folder": "games/handyman-jim",
+  "entities": [
+    {
+      "id": "publish-on-icelander",
+      "title": "Whether and how to publish Handyman Jim on icelander.net",
+      "summary": "The game runs in a browser from its Web export, but nothing in this repository serves it yet.",
+      "status": "open",
+      "context": "Every published game here is an npm project with a Cloudflare Worker that checks icelander.net's sign-in, and a merge to main deploys any game with a package.json. Handyman Jim is a plain Godot project with a Web export preset (threads off, so it needs no special headers) and no Worker.",
+      "options": [
+        {
+          "title": "Leave it as source only",
+          "consequences": "Nothing to deploy or maintain; players need Godot or a separately hosted build."
+        },
+        {
+          "title": "Publish it like Gambit",
+          "consequences": "Needs a package.json, a Worker that serves the web export behind the site's sign-in, a wrangler.jsonc, deployment and delivery files, and Godot export templates in the deploy workflow."
+        },
+        {
+          "title": "Host the web export elsewhere (itch.io, GitHub Pages)",
+          "consequences": "No sign-in or high scores; the README's web section already describes the export."
+        }
+      ],
+      "waitingOn": "Actors/owner.md",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/handyman-jim/export_presets.cfg",
+          "symbol": "variant/thread_support"
+        },
+        {
+          "path": ".github/scripts/changed-games.sh",
+          "symbol": "all"
+        }
+      ]
+    }
+  ]
+}

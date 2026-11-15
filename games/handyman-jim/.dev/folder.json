@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Handyman Jim",
+  "folder": "games/handyman-jim",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Handyman Jim",
+      "summary": "An original comedy game in Godot 4: a handyman in Marshfield, Wisconsin takes ridiculous repair jobs by phone, buys the parts, drives a too-fast van across town and fixes the mess before the customer gives up.",
+      "purpose": "Holds the whole Godot project: one scene (main.tscn) whose scripts in scripts/ build every screen in code, the content tables in scripts/data.gd, the web export preset, and the smoke and flow tests in tests/. It has no package.json, so the repository's workflows neither build nor deploy it.",
+      "boundaries": [
+        "It does not use icelander.net's sign-in and has no Worker or high-score table; publishing it on the site is an open decision (decisions.json).",
+        "All art is drawn by code; optional replacement images go in art/rooms/ following ART_STYLE.md."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/handyman-jim/README.md",
+          "symbol": "Project layout"
+        },
+        {
+          "path": "games/handyman-jim/project.godot",
+          "symbol": "run/main_scene"
+        }
+      ]
+    }
+  ]
+}

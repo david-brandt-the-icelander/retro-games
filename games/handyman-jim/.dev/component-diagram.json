@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Handyman Jim component diagram",
+  "folder": "games/handyman-jim",
+  "description": "A Godot 4 game built in code from one scene: the flow controller, the global state autoload, the content tables, and the views for driving, rooms, cutscenes, HUD and dialogs, and the sounds.",
+  "sources": [
+    {
+      "path": "games/handyman-jim/scripts/main.gd",
+      "symbol": "_ready"
+    },
+    {
+      "path": "games/handyman-jim/project.godot",
+      "symbol": "autoload"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Handyman Jim",
+      "responsibility": "The Godot project: one main scene, its scripts, the web export preset and the tests.",
+      "folder": "games/handyman-jim"
+    },
+    {
+      "id": "scripts",
+      "name": "Game scripts",
+      "responsibility": "Game flow (main.gd), clock, money, jobs and sales (game.gd), content (data.gd), town layout (town.gd), and the driving, room, cutscene, HUD and dialog views drawn with the shared cartoon helpers (art.gd, pal.gd), the synthesised phone ring and horn, and voiced dialog: a reversed, muffled public-domain recording in audio/ played per speaker, slowed and deepened (sfx.gd).",
+      "folder": "games/handyman-jim/scripts"
+    },
+    {
+      "id": "tests",
+      "name": "Tests",
+      "responsibility": "flow.tscn checks the day and week logic headless; smoke.tscn visits every screen and saves screenshots.",
+      "folder": "games/handyman-jim/tests"
+    },
+    {
+      "id": "godot",
+      "name": "Godot 4 engine",
+      "responsibility": "Runs the project on the desktop or, from its Web export, in a browser.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "scripts",
+      "kind": "contains",
+      "description": "The main scene and the Game autoload are these scripts."
+    },
+    {
+      "from": "game",
+      "to": "tests",
+      "kind": "contains",
+      "description": "Test scenes that instance the main scene."
+    },
+    {
+      "from": "tests",
+      "to": "scripts",
+      "kind": "depends-on",
+      "description": "Drive the game through main.gd and read the Game autoload."
+    },
+    {
+      "from": "scripts",
+      "to": "godot",
+      "kind": "depends-on",
+      "description": "Draw with CanvasItem, play generated AudioStreamWAV sounds, read input actions and run on the engine's main loop."
+    }
+  ]
+}
