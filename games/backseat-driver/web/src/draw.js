@@ -36,26 +36,12 @@ function drawEvent() {
   }
 }
 function drawDriver() {
-  const skin = "#e0b090", ink = "#2a1a1a", hp = [255, 425 + Math.sin(G.anim * 2) * 2];
-  poly([[120, 600], [140, 520], [200, 478], [310, 478], [370, 520], [390, 600]], "#5a4a8a");
-  rc([255, 468], 30, 26, skin);
-  circ(hp, 46, skin); circ(o(hp, -46, 6, 1), 9, skin); circ(o(hp, 46, 6, 1), 9, skin);
-  el(o(hp, 0, -26, 1), 50, 28, "#3a2a1a");
-  if (G.mood === "scared") {
-    [-18, 18].forEach((sx) => { circ(o(hp, sx, -5, 1), 11, "#fff"); circ(o(hp, sx + Math.sin(G.anim * 30) * 2, -5, 1), 3.5, "#000"); });
-    line(o(hp, -30, -22, 1), o(hp, -8, -28, 1), ink, 3); line(o(hp, 30, -22, 1), o(hp, 8, -28, 1), ink, 3);
-    el(o(hp, 0, 26, 1), 11, 15, "#3a1010");
-  } else {
-    rc(o(hp, 0, -4, 1), 80, 15, "#0c0c10");
-    if (G.mood === "happy") arc(o(hp, 0, 18, 1), 15, 0.2, Math.PI - 0.2, ink, 3);
-    else line(o(hp, -12, 26, 1), o(hp, 12, 26, 1), ink, 3);
-  }
+  // No driver figure in the view: just the steering wheel rim, and what the driver says.
   arc([255, 612], 94, Math.PI, TAU, "#1d1d22", 14);
-  circ([165, 585], 15, skin); circ([345, 585], 15, skin);
-  if (G.line && G.state !== "over") {
-    const h = bubble(24, 150, G.line, 232, "#fff8e0", "#222", 18), by = 150 + h;
-    poly([[80, by - 3], [140, by - 3], [205, 372]], "#fff8e0");
-    line([80, by - 3], [205, 372], "#222", 3); line([140, by - 3], [205, 372], "#222", 3);
+  arc([255, 612], 94, Math.PI * 1.12, Math.PI * 1.3, "#2e2e38", 5);
+  if (G.line && G.state !== "over" && G.state !== "title") {
+    const w = 232, h = bubble(24, 150, G.line, w, "#fff8e0", "#222", 18);
+    txt("DRIVER", 36, 144, 13, "#ffe9a8");
   }
 }
 function drawCabin() {

@@ -5,8 +5,8 @@
   body { background: var(--bg); color: var(--ink); font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding-block: 16px;
     padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   .wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 12px; }
-  canvas { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 10px; background: #000; touch-action: manipulation; }
-  #bar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; transition: opacity .15s; }
+  canvas { display: block; width: min(100%, max(320px, calc((100vh - 200px) * 16 / 9))); margin: 0 auto; height: auto; aspect-ratio: 16 / 9; border-radius: 10px; background: #000; touch-action: manipulation; }
+  #bar { width: min(100%, 1100px); margin: 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; transition: opacity .15s; }
   #bar.off { opacity: .35; }
   #bar button { display: flex; gap: 10px; align-items: flex-start; text-align: left; min-height: 72px; padding: 12px; font: inherit; font-size: 1rem; line-height: 1.3;
     color: var(--ink); background: #2e3a52; border: 3px solid var(--edge); border-radius: 10px; cursor: pointer; }
@@ -37,12 +37,12 @@ const LIST = [
 		"d": "Ooh, this song! Let me crank it up.",
 		"spd": 50,
 		"o": [
-			["BRAKE! DUCKS! DUCKS!", "", 5],
-			["AWW! LOOK AT THE LITTLE DUCKS!", "The driver looks. The ducks look back. Briefly. Then there are feathers. So many feathers. The wipers do what they can.", 45],
-			["HONK AT THEM! HONK!", "The honk launches forty panicked ducks straight at the windshield. You are now wearing a duck as a hat. It is not alive.", 50],
+			["SLOW DOWN, MORON! DUCKS!", "", 5],
+			["AWW, LOOK AT THE DUCKS, YOU GOOSE!", "The driver looks. The ducks look back. Briefly. Then there are feathers. So many feathers. The wipers do what they can.", 45],
+			["NICE WEATHER WE'RE HAVING!", "", 50],
 		],
 		"good": "The driver brakes. The ducks cross in a tiny, smug parade. The last one gives you a nod. You will carry that nod forever.",
-		"late": "You said nothing. The ducks said 'quack' and then nothing at all. The wipers are now on pate setting.",
+		"late": "Nobody said anything useful. The ducks said 'quack' and then nothing at all. The wipers are now on pate setting.",
 		"fx": "f4f0dc",
 	},
 	{
@@ -53,9 +53,9 @@ const LIST = [
 		"spd": 45,
 		"sky": ["8fbf8f", "d8e7b0"], "gr": "3d6b3a",
 		"o": [
-			["SLOW DOWN! THAT'S A GATOR!", "", 8],
-			["IT'S JUST A LOG! KEEP GOING!", "It was not a log. The log now has your whole arm and a strong opinion about your elbow.", 45],
-			["FLOOR IT! OUTRUN HIM!", "Gators sprint at 20 mph. You were doing 18. It was a respectful chase. It ended when the gator came in through the sunroof.", 85],
+			["BRAKE, YOU MORON! THAT'S A GATOR!", "", 8],
+			["IT'S A LOG, YOU COWARD! RUN IT OVER!", "It was not a log. The log now has your whole arm and a strong opinion about your elbow.", 45],
+			["DID YOU FEED THE CAT BEFORE WE LEFT?", "", 45],
 		],
 		"good": "The driver slows. The gator ambles across and gives you a long, assessing stare. You were not the snack. This time.",
 		"late": "The gator takes your silence as an order for takeout. Compliments to the chef. The chef is you.",
@@ -68,9 +68,9 @@ const LIST = [
 		"d": "Wow, he is slow. I'm just gonna go around.",
 		"spd": 35,
 		"o": [
-			["STOP! LET THE MAN CROSS!", "", 0],
-			["HE'LL MAKE IT! DON'T SLOW DOWN!", "He did not make it. The walker made it. It is now a hood ornament and, honestly, a fairly nice one.", 35],
-			["HONK! HURRY HIM UP!", "He sprints. A 79-year-old sets a personal best. The walker does not. The walker had a family.", 35],
+			["STOP, YOU MANIAC! LET HIM CROSS!", "", 0],
+			["HE'LL MAKE IT, GRANDMA! KEEP GOING!", "He did not make it. The walker made it. It is now a hood ornament and, honestly, a fairly nice one.", 35],
+			["THIS SEAT IS SO COMFY. THANKS!", "", 35],
 		],
 		"good": "The driver stops. Eleven minutes later, the man reaches the far side, tips his hat and calls you 'sweetheart'. You will take it.",
 		"late": "A walker flies past the passenger window. Silently. Like a very sad bird.",
@@ -83,9 +83,9 @@ const LIST = [
 		"d": "Don't they teach kids to look both ways anymore?",
 		"spd": 40,
 		"o": [
-			["BRAKE! A KID! BRAKE!", "", 0],
-			["IT'S JUST A BALL! KEEP GOING!", "It was a ball. Then it was not just a ball. The driver does not say a word for the next forty miles. Neither do you. Nobody ever speaks of it.", 40],
-			["HONK AT THEM! MAKE THEM MOVE!", "The honk makes the kid freeze. Right in the road. Everyone survives, but a very large father is running at your window with pepper spray and a lot to say.", 40],
+			["BRAKE, YOU IDIOT! A KID!", "", 0],
+			["IT'S JUST A BALL, YOU WIMP!", "It was a ball. Then it was not just a ball. The driver does not say a word for the next forty miles. Neither do you. Nobody ever speaks of it.", 40],
+			["I'M HUNGRY. DO YOU WANT FRIES?", "", 40],
 		],
 		"good": "Tires scream. The kid grabs the ball, waves, and calls the driver a word you did not know a six-year-old knew. Worth it.",
 		"late": "Thud. Silence. 'That was a ball, right?' the driver asks, in a very small voice. You both decide to believe it was a ball.",
@@ -98,9 +98,9 @@ const LIST = [
 		"d": "Stop signs are more of a vibe, honestly.",
 		"spd": 45,
 		"o": [
-			["STOP! STOP SIGN! STOP!", "", 0],
-			["IT'S ONLY A SUGGESTION! GO!", "The logging truck disagrees. Violently. Your car is now flatter than a flat white, and that includes the foam.", 50],
-			["YIELD! WAVE THE TRUCK ON!", "The truck cannot see your friendly wave through the forty tons of logs it is carrying. Your wave was very polite and very, very late.", 25],
+			["STOP, YOU MORON! STOP SIGN!", "", 0],
+			["IT'S A SUGGESTION, COWARD! GO!", "The logging truck disagrees. Violently. Your car is now flatter than a flat white, and that includes the foam.", 50],
+			["THIS SONG IS TERRIBLE, BY THE WAY.", "", 45],
 		],
 		"good": "The driver stands on the brake. The truck thunders through a foot ahead. 'Rolling stops count,' the driver mumbles. They do not.",
 		"late": "The last thing you hear is a truck horn. The last thing you see is logs. So many logs.",
@@ -113,9 +113,9 @@ const LIST = [
 		"d": "I love this part of the song!",
 		"spd": 50,
 		"o": [
-			["TRAIN! STOP THE CAR!", "", 0],
-			["WE CAN BEAT IT! FASTER!", "You cannot beat it. Nobody has ever beaten it. Final score: Train 1, Car 0, Dignity -4.", 85],
-			["TRAINS ONLY RUN ON TUESDAYS!", "It is, in fact, Tuesday. The train checked its calendar.", 50],
+			["TRAIN, YOU LUNATIC! STOP!", "", 0],
+			["BEAT IT, YOU TURTLE! FASTER!", "You cannot beat it. Nobody has ever beaten it. Final score: Train 1, Car 0, Dignity -4.", 85],
+			["WHAT'S YOUR FAVOURITE DINOSAUR?", "", 50],
 		],
 		"good": "The driver stops. A mile-long freight train rumbles past, and the driver counts every car out loud. All 142. Time moves differently now.",
 		"late": "The train does not honk. It has never needed to.",
@@ -128,9 +128,9 @@ const LIST = [
 		"d": "Best. Kayak. Weekend. Ever.",
 		"spd": 40,
 		"o": [
-			["THE KAYAK! IT WON'T FIT!", "", 0],
-			["DUCK YOUR HEAD! DUCK!", "You duck. The kayak does not. It is now two kayaks, which is technically a pair.", 40],
-			["IT'LL FIT! KEEP GOING!", "It fit like a toddler in a Halloween costume: not at all. The kayak is now a very long hat on the bridge.", 40],
+			["THE KAYAK, YOU MORON! BRAKE!", "", 0],
+			["DUCK YOUR HEAD, GENIUS! DUCK!", "You duck. The kayak does not. It is now two kayaks, which is technically a pair.", 40],
+			["NICE BRIDGE. VERY STONY.", "", 40],
 		],
 		"good": "The driver stops with a screech and unstraps the kayak. 'I knew that,' they say, sweating. Strapping it back on takes forty minutes.",
 		"late": "CRUNCH. The kayak becomes confetti. The car is now a convertible.",
@@ -144,9 +144,9 @@ const LIST = [
 		"spd": 60,
 		"sky": ["070a1e", "262b55"], "gr": "17301c",
 		"o": [
-			["SLOW DOWN! DEER! DEER!", "", 10],
-			["FLASH THE HIGH BEAMS!", "Deer freeze when you flash lights. It is the entire thing deer do. The car and the deer are now one.", 60],
-			["HIT IT! I LOVE VENISON!", "You love venison. The deer loves its life. The deer weighs 200 pounds, and your hood now has an antler.", 70],
+			["SLOW DOWN, YOU MORON! DEER!", "", 10],
+			["FLASH THE LIGHTS, YOU GENIUS!", "Deer freeze when you flash lights. It is the entire thing deer do. The car and the deer are now one.", 60],
+			["MY LEFT ELBOW ITCHES A BIT.", "", 60],
 		],
 		"good": "The driver brakes. A buck pauses, locks eyes with you, then wanders off with deep disdain. It knows you got lucky.",
 		"late": "BANG. Your hood has an antler now. The deer is on the roof, looking at you like you owe it money.",
@@ -159,9 +159,9 @@ const LIST = [
 		"d": "I'm fine. I'm only going, uh... fine.",
 		"spd": 70,
 		"o": [
-			["TOO FAST! SLOW DOWN! COP!", "", 25],
-			["IT'S A RECOMMENDATION! KEEP GOING!", "The cop thinks it's more of a $400 recommendation. He also wants to talk about your tail light. And your life.", 70],
-			["FLOOR IT! HE'S NOT LOOKING!", "He was looking. He has been looking since the last county. The chase ends at a donut shop, with handcuffs and one glazed.", 95],
+			["TOO FAST, YOU MANIAC! COP!", "", 25],
+			["FLOOR IT, TURTLE! HE'S NOT LOOKING!", "He was looking. He has been looking since the last county. The chase ends at a donut shop, with handcuffs and one glazed.", 95],
+			["I LOVE A GOOD BILLBOARD, DON'T YOU?", "", 70],
 		],
 		"good": "The driver slows to 25 just as the cop pulls out. He sees a law-abiding citizen. He is sad. He will eat his donut alone.",
 		"late": "Sirens. Lights. A very calm voice: 'Do you know why I pulled you over?' The driver looks at you.",
@@ -174,9 +174,9 @@ const LIST = [
 		"d": "GPS says go straight. GPS is never wrong.",
 		"spd": 60,
 		"o": [
-			["BRIDGE OUT! STOP! TURN AROUND!", "", 0],
-			["THE GPS SAYS IT'S FINE!", "The GPS says 'You have arrived' as you arrive in the river. It was technically correct.", 60],
-			["FASTER! WE CAN JUMP IT!", "We cannot jump it. Physics has reviewed this proposal and rejected it with a loud splash.", 90],
+			["STOP, YOU MORON! BRIDGE OUT!", "", 0],
+			["FASTER, COWARD! WE CAN JUMP IT!", "We cannot jump it. Physics has reviewed this proposal and rejected it with a loud splash.", 90],
+			["NICE VIEW OF THE RIVER, HUH?", "", 60],
 		],
 		"good": "The driver brakes at the very edge. The front wheels hang over empty air. A fish looks up at you. 'Nice,' says the fish.",
 		"late": "Splash. The GPS announces 'Recalculating' as the car sinks. It never will.",
@@ -190,9 +190,9 @@ const LIST = [
 		"spd": 40,
 		"sky": ["9ab0c4", "dde6ee"], "gr": "8a7f72",
 		"o": [
-			["TOO SLOW! FLOOR IT! GO GO GO!", "", 85],
-			["STOP! TAKE A PHOTO!", "Great photo. You can't see it, because the rock has smashed the phone, the roof, and some of the seat.", 0],
-			["HONK AT THE ROCKS!", "The rocks were not scared. The rocks have never been scared of anything. You are now the proud owner of a free rock.", 40],
+			["FLOOR IT, YOU SNAIL! ROCKS!", "", 85],
+			["STOP, YOU WIMP! TAKE A PHOTO!", "Great photo. You can't see it, because the rock has smashed the phone, the roof, and some of the seat.", 0],
+			["THE SKY IS VERY BLUE TODAY.", "", 40],
 		],
 		"good": "The driver floors it. A boulder lands exactly where you were, then rolls over to look at you. Rocks can be dramatic.",
 		"late": "A boulder meets the roof. The roof loses. The boulder is now your best friend. Its name is Gary.",
@@ -206,9 +206,9 @@ const LIST = [
 		"spd": 55,
 		"sky": ["ffb36b", "ffe3a0"], "gr": "c99a5b",
 		"o": [
-			["STOP! GAS! NOW!", "", 0],
-			["WE'LL MAKE IT! KEEP GOING!", "You did not make it. You are in the desert with one sandwich and a very long conversation with the driver.", 55],
-			["COAST! SAVE THE FUMES!", "The car coasts, bravely, for another mile. Then it coasts, bravely, to a stop. A vulture lands and waits.", 30],
+			["STOP FOR GAS, YOU MORON!", "", 0],
+			["COAST, GENIUS! SAVE THE FUMES!", "The car coasts, bravely, for another mile. Then it coasts, bravely, to a stop. A vulture lands and waits.", 30],
+			["DO YOU LIKE COWBOYS?", "", 55],
 		],
 		"good": "The driver pulls into a gas station that smells like regret and hot dogs. You buy both. It is the best meal of your life.",
 		"late": "The engine coughs. The engine dies. The vultures arrive right on time.",
@@ -221,9 +221,9 @@ const LIST = [
 		"d": "Watch this drift!",
 		"spd": 65,
 		"o": [
-			["TOO FAST! SLOW DOWN! CURVE!", "", 15],
-			["LOOK AT THE VIEW!", "The driver admires the view. The car admires the view. The car keeps admiring the view, straight off the cliff.", 65],
-			["DRIFT IT! FASTER!", "The drift is magnificent. The landing is not. You get excellent views of the valley for four whole seconds.", 85],
+			["SLOW DOWN, YOU MANIAC! CURVE!", "", 15],
+			["DRIFT IT, TURTLE! FASTER!", "The drift is magnificent. The landing is not. You get excellent views of the valley for four whole seconds.", 85],
+			["NICE WEATHER WE'RE HAVING!", "", 65],
 		],
 		"good": "The driver slows. The car hugs the curve like an old friend. Far below, a wrecked car whispers: 'tell my story.'",
 		"late": "The tires scream. The car sails off the cliff in slow motion. The driver says, 'Huh.' It is the last thing anyone says.",
@@ -237,9 +237,9 @@ const LIST = [
 		"spd": 55,
 		"sky": ["0b1030", "2a2f5a"], "gr": "1c2a1f",
 		"o": [
-			["WRONG WAY! TURN AROUND NOW!", "", 20],
-			["EVERYONE ELSE IS WRONG!", "Everyone else is right. All of them. In the same direction. Toward you. At 70 mph.", 55],
-			["FLASH YOUR LIGHTS!", "The truck flashes back. Its lights are bigger. It also has a horn that sounds like the end of the world.", 55],
+			["WRONG WAY, MORON! TURN AROUND!", "", 20],
+			["FLASH YOUR LIGHTS, GENIUS!", "The truck flashes back. Its lights are bigger. It also has a horn that sounds like the end of the world.", 55],
+			["ARE WE THERE YET?", "", 55],
 		],
 		"good": "The driver cranks a U-turn on the shoulder to a chorus of horns. 'That was on purpose,' they say. It was not.",
 		"late": "A truck horn the size of a cathedral. The last thing you see is a very large grille. It looks, somehow, disappointed.",
@@ -253,9 +253,9 @@ const LIST = [
 		"spd": 55,
 		"sky": ["cfd8e3", "f0f3f7"], "gr": "e6edf2",
 		"o": [
-			["TOO FAST! EASE OFF! GENTLY!", "", 25],
-			["SLAM THE BRAKES!", "The car goes into a beautiful figure-skating routine. 9.8 from the French judge. 0 from the guardrail.", 0],
-			["TURN THE WHEEL! TURN IT!", "The car spins. And spins. You get to see the whole horizon, forty times. You are fairly sure you saw a cow. Twice.", 55],
+			["EASE OFF, YOU MANIAC! ICE!", "", 25],
+			["SLAM THE BRAKES, YOU GENIUS!", "The car goes into a beautiful figure-skating routine. 9.8 from the French judge. 0 from the guardrail.", 0],
+			["WHO PUT THE SKY UP THERE?", "", 55],
 		],
 		"good": "The driver eases off. The car glides, wobbles and holds. The driver looks at you with sudden, sincere respect. Savor it.",
 		"late": "Wheeee! Whoops. Wheeee! Whoops. The spinning only stops at the ditch.",
@@ -268,9 +268,9 @@ const LIST = [
 		"d": "I never stop for buses. They never stop for me.",
 		"spd": 45,
 		"o": [
-			["STOP! SCHOOL BUS! STOP!", "", 0],
-			["GO AROUND IT! QUICKLY!", "Passing a school bus with its stop arm out is called a felony. It is also called a lot of other things by thirty-one parents.", 60],
-			["WAVE AT THE KIDS!", "The kids wave back. The bus driver does not. The bus driver writes down your license plate and your future.", 45],
+			["STOP, YOU MORON! SCHOOL BUS!", "", 0],
+			["GO AROUND IT, YOU SNAIL!", "Passing a school bus with its stop arm out is called a felony. It is also called a lot of other things by thirty-one parents.", 60],
+			["I LIKE YOUR HAIRCUT.", "", 45],
 		],
 		"good": "The driver stops. Twenty-two children wave at the car. One gives it a thumbs-up. The driver cries a little behind their sunglasses.",
 		"late": "Sirens, parents, and a very large sign that says SHAME. You will be spending the summer in a very small room.",
@@ -283,9 +283,9 @@ const LIST = [
 		"d": "Why does everyone drive so fast? I like the scenery.",
 		"spd": 18,
 		"o": [
-			["TOO SLOW! SPEED UP! FASTER!", "", 60],
-			["SLOW DOWN! SAFETY FIRST!", "Slower is safer, nobody on a highway ever said. The trucks learn your license plate. Then your bumper. Then your toes.", 8],
-			["PULL OVER! NAP TIME!", "The driver pulls over. Four trucks do not. The hard shoulder has never been so crowded.", 0],
+			["FASTER, YOU SNAIL! TRUCKS!", "", 60],
+			["SLOW DOWN, GRANDMA! SAFETY FIRST!", "Slower is safer, nobody on a highway ever said. The trucks learn your license plate. Then your bumper. Then your toes.", 8],
+			["THIS IS A VERY NICE ROAD.", "", 18],
 		],
 		"good": "The driver finally floors it. The trucks flash their lights in thanks and, you think, a little in disappointment.",
 		"late": "A truck horn so deep your fillings rattle. A grille fills the mirror. Then the mirror is all grille.",
@@ -298,9 +298,9 @@ const LIST = [
 		"d": "I can take bumps at any speed. Watch.",
 		"spd": 45,
 		"o": [
-			["SLOW DOWN! HUMP! HUMP!", "", 10],
-			["DON'T BRAKE! GET SOME AIR!", "The car takes off. For one beautiful second you are a bird. Then the suspension files a formal complaint, and so does the coffee, on your lap.", 75],
-			["FASTER! HIT IT HARD!", "The hump launches you into the roof. Your head now has a very small, very personal dent.", 85],
+			["SLOW DOWN, YOU MORON! HUMP!", "", 10],
+			["NO BRAKES, WIMP! GET SOME AIR!", "The car takes off. For one beautiful second you are a bird. Then the suspension files a formal complaint, and so does the coffee, on your lap.", 75],
+			["LOVELY SMELL OF COFFEE IN HERE.", "", 45],
 		],
 		"good": "The driver slows to a crawl and rolls over the hump. The coffee survives. The driver is unbearable about it for a mile.",
 		"late": "THUMP. THUMP-THUMP. The coffee lands on the driver, who screams something your mother would not like.",
@@ -318,6 +318,15 @@ const IDLE = [
 	"Eyes on the road? Eyes on the road.",
 	"Is that a nice cloud, or what?",
 	"Hold my coffee. No, the other hand.",
+];
+
+// What the driver says when the passenger makes small talk instead of helping.
+const CHAT = [
+	"Yeah, nice. Wait, why are you screaming?",
+	"Mm-hm. Great. Is that important?",
+	"Sure, sure. Hang on, what's that?",
+	"Not now, I'm concentrating. Sort of.",
+	"You're right! Wait, what were we doing?",
 ];
 
 const THANKS = [
@@ -827,8 +836,9 @@ function resolve(i) {
     burst(W / 2, 380, "#ffd21f", 45, 380, 240); AU.good();
   } else {
     G.streak = 0; G.strikes++;
-    G.head = i < 0 ? "TOO SLOW!" : "WRONG THING TO SAY!"; G.text = i < 0 ? G.ev.late : G.opts[i].r;
-    G.line = pick(BLAME); G.mood = "scared"; G.shake = 28; G.flash = 0.85;
+    const chat = i >= 0 && !G.opts[i].r;
+    G.head = i < 0 ? "TOO SLOW!" : chat ? "SMALL TALK? REALLY?" : "WRONG THING TO SCREAM!"; G.text = i < 0 || chat ? G.ev.late : G.opts[i].r;
+    G.line = chat ? pick(CHAT) : pick(BLAME); G.mood = "scared"; G.shake = 28; G.flash = 0.85;
     burst(W / 2, 420, hexc(G.ev.fx), 110, 650, 520);
     const ox = 320 + Math.random() * 660, oy = 150 + Math.random() * 310, segs = [];
     for (let k = 0; k < 7; k++) {
@@ -942,26 +952,12 @@ function drawEvent() {
   }
 }
 function drawDriver() {
-  const skin = "#e0b090", ink = "#2a1a1a", hp = [255, 425 + Math.sin(G.anim * 2) * 2];
-  poly([[120, 600], [140, 520], [200, 478], [310, 478], [370, 520], [390, 600]], "#5a4a8a");
-  rc([255, 468], 30, 26, skin);
-  circ(hp, 46, skin); circ(o(hp, -46, 6, 1), 9, skin); circ(o(hp, 46, 6, 1), 9, skin);
-  el(o(hp, 0, -26, 1), 50, 28, "#3a2a1a");
-  if (G.mood === "scared") {
-    [-18, 18].forEach((sx) => { circ(o(hp, sx, -5, 1), 11, "#fff"); circ(o(hp, sx + Math.sin(G.anim * 30) * 2, -5, 1), 3.5, "#000"); });
-    line(o(hp, -30, -22, 1), o(hp, -8, -28, 1), ink, 3); line(o(hp, 30, -22, 1), o(hp, 8, -28, 1), ink, 3);
-    el(o(hp, 0, 26, 1), 11, 15, "#3a1010");
-  } else {
-    rc(o(hp, 0, -4, 1), 80, 15, "#0c0c10");
-    if (G.mood === "happy") arc(o(hp, 0, 18, 1), 15, 0.2, Math.PI - 0.2, ink, 3);
-    else line(o(hp, -12, 26, 1), o(hp, 12, 26, 1), ink, 3);
-  }
+  // No driver figure in the view: just the steering wheel rim, and what the driver says.
   arc([255, 612], 94, Math.PI, TAU, "#1d1d22", 14);
-  circ([165, 585], 15, skin); circ([345, 585], 15, skin);
-  if (G.line && G.state !== "over") {
-    const h = bubble(24, 150, G.line, 232, "#fff8e0", "#222", 18), by = 150 + h;
-    poly([[80, by - 3], [140, by - 3], [205, 372]], "#fff8e0");
-    line([80, by - 3], [205, 372], "#222", 3); line([140, by - 3], [205, 372], "#222", 3);
+  arc([255, 612], 94, Math.PI * 1.12, Math.PI * 1.3, "#2e2e38", 5);
+  if (G.line && G.state !== "over" && G.state !== "title") {
+    const w = 232, h = bubble(24, 150, G.line, w, "#fff8e0", "#222", 18);
+    txt("DRIVER", 36, 144, 13, "#ffe9a8");
   }
 }
 function drawCabin() {

@@ -53,8 +53,9 @@ function resolve(i) {
     burst(W / 2, 380, "#ffd21f", 45, 380, 240); AU.good();
   } else {
     G.streak = 0; G.strikes++;
-    G.head = i < 0 ? "TOO SLOW!" : "WRONG THING TO SAY!"; G.text = i < 0 ? G.ev.late : G.opts[i].r;
-    G.line = pick(BLAME); G.mood = "scared"; G.shake = 28; G.flash = 0.85;
+    const chat = i >= 0 && !G.opts[i].r;
+    G.head = i < 0 ? "TOO SLOW!" : chat ? "SMALL TALK? REALLY?" : "WRONG THING TO SCREAM!"; G.text = i < 0 || chat ? G.ev.late : G.opts[i].r;
+    G.line = chat ? pick(CHAT) : pick(BLAME); G.mood = "scared"; G.shake = 28; G.flash = 0.85;
     burst(W / 2, 420, hexc(G.ev.fx), 110, 650, 520);
     const ox = 320 + Math.random() * 660, oy = 150 + Math.random() * 310, segs = [];
     for (let k = 0; k < 7; k++) {
