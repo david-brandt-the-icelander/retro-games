@@ -95,6 +95,14 @@ main{display:block;overflow-x:clip}
 .plate.locked img.fg{filter:brightness(.25) blur(7px) saturate(.4);transform:scale(1.1)}
 .plate.locked img.bgimg{filter:blur(20px) brightness(.25) saturate(.4)}
 .plate-btn{position:relative;cursor:pointer;border-radius:14px}
+.levels{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.level{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:14px;border:1.5px solid var(--line);background:var(--surface);border-radius:14px}
+.level b{font-size:1.1rem}
+.level span{font-size:.88rem;color:var(--muted)}
+.level .bar{align-self:stretch;margin-top:6px;height:5px;flex:none}
+.level.current{border-color:var(--r);box-shadow:inset 0 0 0 1.5px var(--r)}
+.level.locked{opacity:.55;cursor:default}
+.level:hover:not(:disabled){border-color:var(--r)}
 .timer{display:flex;align-items:center;gap:12px}
 .timer .bar{height:8px}
 .timer .bar i{transition:none}
@@ -534,6 +542,15 @@ const REGIONS={
 };
 const birdsIn=reg=>BIRDS.filter(b=>b.region===reg);
 const byId=id=>BIRDS.find(b=>b.id===id);
+/* Most common first, as I judged how widespread and abundant each bird is in the region. Ten levels follow this order. */
+const RANK={wi:["amerob", "bkcchi", "norcar", "amecro", "blujay", "rewbla", "amegfi", "moudov", "sonspa", "cangoo", "dowwoo", "wbnuth", "comyel", "gracat", "yelwar", "reevir", "balori", "easpho", "chisp", "cedwax", "houwre", "killde", "sancra", "grbher", "rethaw", "norfli", "rthumm", "browth", "easmea", "indbun", "tuftit", "belkin", "ovenbi", "comloo", "robgro", "easblu", "wiltur", "brdowl", "pilwoo", "whtspa", "chswar", "woothr", "scatan"],
+ az:["houfin", "whwdov", "gamqua", "normoc", "cubthr", "gilwoo", "annhum", "cacwre", "eucdov", "incdov", "abetow", "comrav", "blkpho", "saypho", "verdin", "lesgol", "coshum", "btgnat", "wesking", "ladwoo", "greroa", "phaino", "bewwre", "hoodor", "coohaw", "astfly", "gilfli", "bulori", "grhowl", "bktspa", "lucwar", "verfly", "harhaw", "bkchum", "wesmea", "canwre", "rocwre", "burowl", "brcfly", "pyrrhu", "lesnig", "elfowl"]};
+const LEVEL_SIZES={wi:[5,4,4,4,4,4,4,4,5,5],az:[5,4,4,4,4,4,4,4,4,5]};
+const LEVELS={};
+for(const reg of Object.keys(RANK)){let i=0;LEVELS[reg]=LEVEL_SIZES[reg].map(n=>{const ids=RANK[reg].slice(i,i+n);i+=n;return ids.map(byId)})}
+const ranked=reg=>RANK[reg].map(byId);
+const levelOf=b=>LEVELS[b.region].findIndex(l=>l.includes(b))+1;
+const CLEAR_SHARE=.8;
 
 /* ---------- photos (Wikimedia Commons, credited) ---------- */
 const PHOTO={"norcar": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Male_northern_cardinal_in_Central_Park_%2852612%29.jpg"}, "bkcchi": {"a": "No machine-readable author provided. Mdf assumed (based on copyright claims).", "l": "CC BY-SA 3.0", "u": "http://creativecommons.org/licenses/by-sa/3.0/", "p": "https://commons.wikimedia.org/wiki/File:Poecile-atricapilla-001.jpg"}, "amerob": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:American_robin_%2871307%29.jpg"}, "blujay": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Blue_jay_in_PP_%2830960%29.jpg"}, "amegfi": {"a": "Rodney Campbell", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Carduelis_tristis_-Michigan%2C_USA_-male-8.jpg"}, "rewbla": {"a": "Chuck Homler, Focus On Wildlife", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Red-Winged_Blackbird.png"}, "comloo": {"a": "John Picken from Chicago, USA", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Gavia_immer_-Minocqua%2C_Wisconsin%2C_USA_-swimming-8.jpg"}, "ovenbi": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Ovenbird_%2890497%29.jpg"}, "sancra": {"a": "JeffreyGammon", "l": "CC BY 4.0", "u": "https://creativecommons.org/licenses/by/4.0", "p": "https://commons.wikimedia.org/wiki/File:Sandhill_Crane_JG.jpg"}, "brdowl": {"a": "Andy Reago & Chrissy McClarren", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Barred_Owl_%2833795815188%29.jpg"}, "balori": {"a": "TonyCastro", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Baltimore_Oriole-_dorsum.jpg"}, "moudov": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Mourning_dove_perched_%2861179%29.jpg"}, "gamqua": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Gambel%27s_Quail_Rockhound_State_Park.jpg"}, "cacwre": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Cactus_Wren_Sandia_Mountains.jpg"}, "greroa": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Greater_Roadrunner_Tingley_Beach.jpg"}, "gilwoo": {"a": "lwolfartist", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Gila_woodpecker_Paton_Center_for_Hummingbirds_4.11.22_DSC_7716.jpg"}, "cubthr": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Curve-billed_thrasher_Sandia_Mountains.jpg"}, "verdin": {"a": "Vickie J Anderson", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Verdin_5029_m.jpg"}, "verfly": {"a": "Henry", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Karmintyrann_%28Pyrocephalus_obscurus%29%2C_M%C3%A4nnchen_1.jpg"}, "coshum": {"a": "San Diego Zoo", "l": "Public domain", "u": "", "p": "https://commons.wikimedia.org/wiki/File:Hummingbird.jpg"}, "phaino": {"a": "Lip Kee Yap from Singapore, Republic of Singapore", "l": "CC BY-SA 2.0", "u": "https://creativecommons.org/licenses/by-sa/2.0", "p": "https://commons.wikimedia.org/wiki/File:Phainopepla_nitens_M_2.jpg"}, "grhowl": {"a": "Greg Hume", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:Bubo_virginianus_06.jpg"}, "whwdov": {"a": "SearchNet Media", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Zenaida_asiatica_-Tuscon_-Arizona_-USA_-8a.jpg"}, "bktspa": {"a": "Elaine R. Wilson", "l": "CC BY-SA 2.5", "u": "https://creativecommons.org/licenses/by-sa/2.5", "p": "https://commons.wikimedia.org/wiki/File:Amphispiza_bilineata.jpg"}, "easblu": {"a": "Sandysphotos2009", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Sialia_sialis_-Michigan%2C_USA_-pair-8c.jpg"}, "indbun": {"a": "Dan Pancamo", "l": "CC BY-SA 2.0", "u": "https://creativecommons.org/licenses/by-sa/2.0", "p": "https://commons.wikimedia.org/wiki/File:Indigo_Bunting_by_Dan_Pancamo_4.jpg"}, "scatan": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Scarlet_tanager_in_GWC_%2850867%29.jpg"}, "robgro": {"a": "John Harrison at https://www.flickr.com/photos/15512543@N04/", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:RosebreastedGrosbeak08.jpg"}, "easmea": {"a": "Charles J. Sharp", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Eastern_meadowlark_%28Sturnella_magna_mexicana%29_Orange_Walk.jpg"}, "sonspa": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Song_sparrow_in_Prospect_Park_%2893031%29.jpg"}, "comyel": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Common_yellowthroat_in_PP_%2814155%29.jpg"}, "yelwar": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Yellow_warbler_%2882905%29.jpg"}, "chswar": {"a": "Mdf", "l": "CC BY-SA 3.0", "u": "http://creativecommons.org/licenses/by-sa/3.0/", "p": "https://commons.wikimedia.org/wiki/File:Dendroica-pensylvanica-003.jpg"}, "reevir": {"a": "John Benson from Madison WI", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Vireo_olivaceus_-Madison_-Wisconsin_-USA-8.jpg"}, "woothr": {"a": "Charles J. Sharp", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Wood_thrush_%28Hylocichla_mustelina%29_Peten.jpg"}, "tuftit": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Tufted_titmouse_%2884917%29.jpg"}, "wbnuth": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:White-breasted_nuthatch_%2826471%29.jpg"}, "dowwoo": {"a": "Cephas", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Dryobates_pubescens_UL_03.jpg"}, "pilwoo": {"a": "Joshlaymon", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:PileatedWoodpeckerFeedingonTree%2C_crop.jpg"}, "norfli": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Northern_yellow-shafted_flicker_male_%2833737%29_%28cropped%29.jpg"}, "gracat": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Gray_catbird_%2885315%29.jpg"}, "houwre": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:House_wren_singing_in_PP_%2813873%29.jpg"}, "easpho": {"a": "John Benson", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Sayornis_phoebe_-Owen_Conservation_Park%2C_Madison%2C_Wisconsin%2C_USA-8.jpg"}, "cedwax": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Cedar_waxwing_in_pokeweed_%2810132%29.jpg"}, "amecro": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:American_crow_in_Marine_Park_%2802333%29.jpg"}, "cangoo": {"a": "USFWS Mountain-Prairie", "l": "Public domain", "u": "", "p": "https://commons.wikimedia.org/wiki/File:Canada_goose_on_Seedskadee_NWR_%2827826185489%29.jpg"}, "grbher": {"a": "DallasPenner", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:GreatBlueHeronInARiver.jpg"}, "rethaw": {"a": "Becky Matsubara from El Sobrante, California", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Red-tailed_Hawk_%2845812546121%29.jpg"}, "belkin": {"a": "JeffreyGammon", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:BeltedKingfisherJG_Male.jpg"}, "rthumm": {"a": "jeffreyw", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Archilochus_colubris_-flying_-male-8.jpg"}, "chisp": {"a": "Mdf, Edited by Fir0002", "l": "CC BY-SA 3.0", "u": "http://creativecommons.org/licenses/by-sa/3.0/", "p": "https://commons.wikimedia.org/wiki/File:Spizella-passerina-015_edit.jpg"}, "whtspa": {"a": "Cephas", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:Zonotrichia_albicollis_CT1.jpg"}, "killde": {"a": "Charles Homler d/b/a FocusOnWildlife", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Killdeer_Heislerville.png"}, "wiltur": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Wild_turkey_crossing_the_road_by_Trustom_Pond_%2812584%29.jpg"}, "browth": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Brown_thrasher_in_CP_%2802147%29.jpg"}, "normoc": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Mockingbird_in_Bay_Ridge_%2885082%29.jpg"}, "annhum": {"a": "Charles J. Sharp", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Anna%27s_hummingbird_%28Calypte_anna%29_male_in_flight_Campbell_River.jpg"}, "houfin": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:House_finch_%2833688%292.jpg"}, "abetow": {"a": "Alan D. Wilson", "l": "CC BY-SA 2.5", "u": "https://creativecommons.org/licenses/by-sa/2.5", "p": "https://commons.wikimedia.org/wiki/File:Pipilo_aberti.jpg"}, "lesgol": {"a": "Bettina Arrigoni", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Lesser_Goldfinch_%28_Eastern_race%29_Kerr_WMA_Kerrville_TX_2018-05-06_12-11-15-2_%2842881554344%29.jpg"}, "btgnat": {"a": "Dominic Sherony", "l": "CC BY-SA 2.0", "u": "https://creativecommons.org/licenses/by-sa/2.0", "p": "https://commons.wikimedia.org/wiki/File:Black-tailed_Gnatcatcher_%28Polioptila_melanura%29_%2816875128691%29.jpg"}, "lucwar": {"a": "Chuck Homler d/b/a Focus On Wildlife", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Lucys_Warbler.jpg"}, "ladwoo": {"a": "Alan D. Wilson, www.naturespicsonline.com", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:Ladder-back_Woodpecker_on_Cactus.jpg"}, "gilfli": {"a": "Glenn Seplak from Tucson, Arizona", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Gilded_Flicker_%28Colaptes_chrysoides%29_on_top_of_cactus.jpg"}, "wesking": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Western_kingbird_%2871748%29.jpg"}, "saypho": {"a": "Cephas", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Sayornis_saya_GNP_01.jpg"}, "astfly": {"a": "docentjoyce on Flickr", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Myiarchus_cinerascens.jpg"}, "blkpho": {"a": "Charles J. Sharp", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Black_phoebe_%28Sayornis_nigricans_aquaticus%29_Palopo.jpg"}, "harhaw": {"a": "Alan Vernon", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Harris%27s_Hawk_%28Parabuteo_unicinctus%29_3_of_4_in_set.jpg"}, "comrav": {"a": "Frank Schulenburg", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Corvus_corax_clarionensis%2C_Point_Reyes_National_Seashore.jpg"}, "eucdov": {"a": "stevem4560", "l": "CC BY 4.0", "u": "https://creativecommons.org/licenses/by/4.0", "p": "https://commons.wikimedia.org/wiki/File:2022-04-06_Streptopelia_decaocto%2C_Plovdiv%2C_Bulgaria_1.jpg"}, "incdov": {"a": "Elaine R. Wilson", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:IncaDove.jpg"}, "bewwre": {"a": "Minette Layne", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Bewicks_Wren.jpg"}, "canwre": {"a": "Gary L. Clark", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Canyon_Wren.jpg"}, "rocwre": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:RockWren.jpg"}, "hoodor": {"a": "Linda Tanner from Los Osos, California, U.S.A.", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Icterus_cucullatus_Male_2.jpg"}, "bulori": {"a": "Kevin Cole from Pacific Coast, USA (en:User:Kevinlcole)", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Bullock%27s_Oriole.jpg"}, "burowl": {"a": "Charles J. Sharp", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Southern_burrowing_owl_%28Athene_cunicularia_cunicularia%29_Colonia.jpg"}, "elfowl": {"a": "BBODO", "l": "CC BY 3.0", "u": "https://creativecommons.org/licenses/by/3.0", "p": "https://commons.wikimedia.org/wiki/File:Micrathene_whitneyi_29APR12_Madera_Canyon_AZ.jpg"}, "coohaw": {"a": "Mykola Swarnyk", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:Accipiter_cooperii_m_Sam_Smith_Toronto3.jpg"}, "lesnig": {"a": "Chuck Homler, Focus On Wildlife", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Lesser_Nighthawk_Sleeping_SPI.jpg"}, "pyrrhu": {"a": "Andy Morffew from Itchen Abbas, Hampshire, UK", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Pyrrhuloxia_%2834152495333%29_%28cropped%29.jpg"}, "brcfly": {"a": "Myiarchus_tyrannulus_-8.jpg: Dario Sanches\nderivative work: Berichard (talk)", "l": "CC BY-SA 2.0", "u": "https://creativecommons.org/licenses/by-sa/2.0", "p": "https://commons.wikimedia.org/wiki/File:Myiarchus_tyrannulus_1.jpg"}, "bkchum": {"a": "lwolfartist", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Black-chinned_hummingbird.jpg"}, "wesmea": {"a": "Cephas", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Sturnella_neglecta_GNP_02.jpg"}};
@@ -591,10 +608,12 @@ function refreshPlay(){
 const KEY='dawnchorus.v1';
 const P={life:{}};
 try{Object.assign(P,JSON.parse(localStorage.getItem(KEY))||{})}catch(_){}
+P.unlocked=P.unlocked||{wi:1,az:1};
+const isCleared=b=>{const r=P.life[b.id];return !!(r&&r.last===true)};
+const levelCleared=(reg,n)=>LEVELS[reg][n-1].filter(isCleared).length;
 const S={region:P.region||'wi',tab:'play',round:null};
 function save(){try{localStorage.setItem(KEY,JSON.stringify({...P,region:S.region,}))}catch(_){}}
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-const ROUND=10;
 
 /* ---------- views ---------- */
 const $main=document.getElementById('main');
@@ -617,7 +636,7 @@ function birdCard(b,opt={}){
    <div class="mn"><q>${esc(b.mn)}</q></div>
    ${player}
    <ul class="cues">${b.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
-   <div class="meta mono"><span>${esc(b.size)}</span><span>${esc(b.habitat)}</span></div>
+   <div class="meta mono"><span>Level ${levelOf(b)}</span><span>${esc(b.size)}</span><span>${esc(b.habitat)}</span></div>
    ${links(b)}
    ${credits}
   </div></article>`;
@@ -627,7 +646,7 @@ function renderHeader(){
  document.documentElement.dataset.region=S.region;
  document.getElementById('kicker').textContent=`Field trainer · ${birdsIn(S.region).length} species in ${REGIONS[S.region].name}`;
  document.getElementById('regions').innerHTML=Object.entries(REGIONS).map(([k,v])=>`<button data-act="region" data-v="${k}" aria-pressed="${k===S.region}"><b>${v.name}</b><span>${v.sub}</span></button>`).join('');
- document.getElementById('tabs').innerHTML=[['play','Play'],['guide','Field guide'],['life','Score']].map(([k,v])=>`<button role="tab" data-act="tab" data-v="${k}" aria-selected="${S.tab===k}">${v}</button>`).join('');
+ document.getElementById('tabs').innerHTML=[['play','Play'],['guide','Field guide'],['life','Album']].map(([k,v])=>`<button role="tab" data-act="tab" data-v="${k}" aria-selected="${S.tab===k}">${v}</button>`).join('');
 }
 function render(){
  renderHeader();
@@ -637,10 +656,11 @@ function render(){
  requestAnimationFrame(refreshPlay);
 }
 function renderMenu(){
- const reg=REGIONS[S.region];
+ const reg=S.region,un=P.unlocked[reg]||1;
  $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:18px">
-  <p class="intro">Ten birds from ${esc(reg.name)}. Each one comes as a photo with its song. Name the bird, then read its field notes before the next. Every bird you identify is added to your Score.</p>
-  <div><button class="btn" data-act="start">Start ${ROUND} birds</button></div>
+  <p class="intro">Ten levels of ${esc(REGIONS[reg].name)} birds, from the most common to the hardest to find. Clear 80% of a level's birds to unlock the next one.</p>
+  <div class="levels">${LEVELS[reg].map((birds,i)=>{const n=i+1,cl=levelCleared(reg,n),lock=n>un;
+   return `<button class="level${lock?' locked':''}${n===un?' current':''}" data-act="level" data-v="${n}" ${lock?'disabled':''}><b>Level ${n}</b><span>${birds.length} birds</span><span class="mono">${lock?'Locked':cl+' of '+birds.length+' cleared'}</span><div class="bar"><i style="width:${lock?0:cl/birds.length*100}%"></i></div></button>`}).join('')}</div>
  </section>`;
 }
 const REDUCE=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -652,15 +672,14 @@ function slideTo(fn){
  setTimeout(()=>{busy=false;fn(true)},280);
 }
 function afterPaint(top){requestAnimationFrame(()=>{refreshPlay();if(top)window.scrollTo({top:0})})}
-function startRound(){
- const pool=birdsIn(S.region),qs=shuffle(pool).slice(0,ROUND).map(b=>{
-  const opts=shuffle([b,...shuffle(pool.filter(x=>x!==b)).slice(0,3)]);
-  return {b,opts}});
+function startRound(level){
+ const birds=LEVELS[S.region][level-1],pool=LEVELS[S.region].slice(0,level).flat();
+ const qs=shuffle(birds).map(b=>({b,opts:shuffle([b,...shuffle(pool.filter(x=>x!==b)).slice(0,3)])}));
  qs.forEach(q=>{getAC();load(q.b).catch(()=>{})});
- S.round={qs,i:0,streak:0,bestStreak:0,right:0,answered:null,lifers:[],missed:[],times:[],t0:null,done:false};
+ S.round={level,qs,i:0,streak:0,bestStreak:0,right:0,answered:null,lifers:[],missed:[],times:[],t0:null,done:false};
  slideTo(anim=>{renderHeader();renderQuestion(anim,true);afterPaint(true)});
 }
-const hudHTML=(R,done)=>`<div class="hud"><span class="mono">Bird ${R.i+1} of ${ROUND}</span><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${ROUND}" aria-valuenow="${R.i+(done?1:0)}"><i style="width:${(R.i+(done?1:0))/ROUND*100}%"></i></div><span class="stat">${R.i+(done?1:0)?Math.round(R.right/(R.i+(done?1:0))*100):0}% correct</span><span class="stat streak">${R.streak>1?'x'+R.streak+' streak':''}</span></div>`;
+const hudHTML=(R,done)=>{const n=R.qs.length,k=R.i+(done?1:0);return `<div class="hud"><span class="mono">Level ${R.level} · Bird ${R.i+1} of ${n}</span><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${k}"><i style="width:${k/n*100}%"></i></div><span class="stat">${k?Math.round(R.right/k*100):0}% correct</span><span class="stat streak">${R.streak>1?'x'+R.streak+' streak':''}</span></div>`};
 let timerRaf=0;
 function runTimer(R){
  cancelAnimationFrame(timerRaf);
@@ -694,7 +713,7 @@ function renderInfo(anim=false){
  $main.innerHTML=`<section class="q${anim?' slide-in':''}">
   ${hudHTML(R,true)}
   ${birdCard(b,{info:true,cls:'reveal',head:`<div class="verdict ${ok?'ok':'no'}">${verdict}</div>`})}
-  <div><button class="btn" data-act="next" id="nextbtn">${R.i+1<ROUND?'Next bird':'See results'}</button></div>
+  <div><button class="btn" data-act="next" id="nextbtn">${R.i+1<R.qs.length?'Next bird':'See results'}</button></div>
  </section>`;
 }
 function answer(id){
@@ -702,7 +721,7 @@ function answer(id){
  cancelAnimationFrame(timerRaf);
  R.answered=id;R.t=Math.min(60,(performance.now()-R.t0)/1000);R.times.push(R.t);
  const ok=id===q.b.id;
- const rec=P.life[q.b.id]||(P.life[q.b.id]={r:0,w:0,seen:false});
+ const rec=P.life[q.b.id]||(P.life[q.b.id]={r:0,w:0,seen:false});rec.last=ok;
  if(ok){
   R.streak++;R.bestStreak=Math.max(R.bestStreak,R.streak);R.right++;rec.r++;
   if(!rec.best||R.t<rec.best)rec.best=R.t;
@@ -714,30 +733,39 @@ function answer(id){
 function next(){
  if(busy)return;
  const R=S.round;R.i++;R.answered=null;R.lifer=false;R.t0=null;
- if(R.i>=ROUND){R.done=true}
+ if(R.i>=R.qs.length){
+  R.done=true;const reg=S.region;
+  R.cleared=levelCleared(reg,R.level);R.total=LEVELS[reg][R.level-1].length;R.passed=R.cleared/R.total>=CLEAR_SHARE;
+  if(R.passed&&R.level<10&&(P.unlocked[reg]||1)<R.level+1){P.unlocked[reg]=R.level+1;R.unlockedNew=true}
+  save();
+ }
  stopSong();
  slideTo(anim=>{renderHeader();R.done?renderResults(anim):renderQuestion(anim,true);afterPaint(true)});
 }
 function renderResults(anim=false){
- const R=S.round,miss=[...new Set(R.missed)].map(byId);
+ const R=S.round,n=R.qs.length,miss=[...new Set(R.missed)].map(byId),need=Math.ceil(R.total*CLEAR_SHARE-1e-9);
+ const status=R.passed?(R.level<10?(R.unlockedNew?`Level ${R.level} cleared. Level ${R.level+1} is unlocked.`:`Level ${R.level} cleared.`):'Level 10 cleared. You have cleared every level.'):`Level ${R.level}: ${R.cleared} of ${R.total} birds cleared. You need ${need} to unlock Level ${R.level+1}.`;
  $main.innerHTML=`<section class="${anim?'slide-in':''}" style="display:flex;flex-direction:column;gap:18px">
-  <div class="mono">Round complete · ${esc(REGIONS[S.region].name)}</div>
-  <div class="score">${Math.round(R.right/ROUND*100)}%</div>
-  <div class="prog"><b>${R.right}/${ROUND}</b><span>correct · average time ${(R.times.reduce((a,b)=>a+b,0)/R.times.length).toFixed(1)} seconds · best streak ${R.bestStreak}</span></div>
+  <div class="mono">Level ${R.level} complete · ${esc(REGIONS[S.region].name)}</div>
+  <div class="score">${Math.round(R.right/n*100)}%</div>
+  <div class="prog"><b>${R.right}/${n}</b><span>correct · average time ${(R.times.reduce((a,b)=>a+b,0)/R.times.length).toFixed(1)} seconds · best streak ${R.bestStreak}</span></div>
+  <div class="verdict ${R.passed?'ok':'no'}">${status}</div>
   ${R.lifers.length?`<div><div class="mono" style="margin-bottom:8px">First time identified</div><div class="chips">${R.lifers.map(i=>`<span class="chip">${esc(byId(i).name)}</span>`).join('')}</div></div>`:''}
   ${miss.length?`<div><div class="mono" style="margin-bottom:8px">Missed</div><div class="chips">${miss.map(b=>`<span class="chip">${esc(b.name)}</span>`).join('')}</div></div>`:'<p class="intro">A clean sweep.</p>'}
-  <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-act="again">Play again</button><button class="btn ghost" data-act="tab" data-v="guide">Open field guide</button></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">${R.passed&&R.level<10?`<button class="btn" data-act="level" data-v="${R.level+1}">Play Level ${R.level+1}</button>`:''}<button class="btn${R.passed&&R.level<10?' ghost':''}" data-act="level" data-v="${R.level}">Play Level ${R.level} again</button><button class="btn ghost" data-act="menu">All levels</button></div>
  </section>`;
 }
 function renderGuide(){
- $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:16px"><p class="intro">Every species in ${esc(REGIONS[S.region].name)}. Tap a photo or press play to hear each bird.</p><div class="grid">${birdsIn(S.region).map(b=>birdCard(b)).join('')}</div></section>`;
+ const list=ranked(S.region);
+ $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:16px"><p class="intro">${list.length} species found in ${esc(REGIONS[S.region].name)}, most common first. Tap a photo or press play to hear each bird.</p><div class="grid">${list.map(b=>birdCard(b)).join('')}</div></section>`;
 }
 function renderLife(){
- const list=birdsIn(S.region),seen=list.filter(b=>P.life[b.id]&&P.life[b.id].seen).length;
+ const list=ranked(S.region),seen=list.filter(b=>P.life[b.id]&&P.life[b.id].seen).length;
+ const acc=rec=>{const t=(rec.r||0)+(rec.w||0);return t?Math.round((rec.r||0)/t*100):null};
  $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:16px">
   <div class="prog"><b>${seen}/${list.length}</b><span>species identified in ${esc(REGIONS[S.region].name)}</span></div>
-  <div class="life">${list.map(b=>{const rec=P.life[b.id]||{},ok=rec.seen;
-   return `<div class="tile ${ok?'':'locked'}"><div style="position:relative">${plate(b,false,!ok)}${ok?'':'<div class="lock" aria-hidden="true">?</div>'}</div>${ok?`<b>${esc(b.name)}</b><span class="mono">${rec.best!=null?'Your best: '+rec.best.toFixed(1)+' seconds':'Identified'}</span><span class="mono">${rec.r||0} right · ${rec.w||0} missed</span>`:`<b>Not identified yet</b><span class="mono">${rec.w?rec.w+' missed':'Not seen in a round yet'}</span>`}</div>`}).join('')}</div>
+  <div class="life">${list.map(b=>{const rec=P.life[b.id]||{},ok=rec.seen,a=acc(rec);
+   return `<div class="tile ${ok?'':'locked'}"><div style="position:relative">${plate(b,false,!ok)}${ok?'':'<div class="lock" aria-hidden="true">?</div>'}</div>${ok?`<b>${esc(b.name)}</b><span class="mono">Your record: ${rec.best!=null?rec.best.toFixed(1)+'s':'–'}</span><span class="mono">Your accuracy: ${a}%</span>`:`<b>Not identified yet</b><span class="mono">${a!==null?'Your accuracy: '+a+'%':'Not seen in a round yet'}</span>`}</div>`}).join('')}</div>
  </section>`;
 }
 
@@ -748,7 +776,8 @@ document.addEventListener('click',e=>{
  else if(a==='replay'){playSong(byId(v),true)}
  else if(a==='region'){if(v!==S.region){stopSong();S.region=v;S.round=null;save();render()}}
  else if(a==='tab'){S.tab=v;stopSong();render()}
- else if(a==='start'||a==='again'){getAC();startRound()}
+ else if(a==='level'){if(busy)return;getAC();startRound(+v)}
+ else if(a==='menu'){S.round=null;stopSong();render()}
  else if(a==='answer'){answer(v)}
  else if(a==='next'){next()}
 });
