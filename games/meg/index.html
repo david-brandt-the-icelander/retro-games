@@ -387,7 +387,7 @@ function boat(x,o={}){ return add(Object.assign({k:'boat',x,dir:1,speed:9,hp:3,i
 function buoy(x,delay){ return add({k:'buoy',x,t:delay,r:-1,hit:false,
  u(dt){ this.t-=dt; if(this.t<=0){this.t=3.4;this.r=0;this.hit=false; if(Math.abs(this.x-S.x)<260)sfx.ping()}
   if(this.r>=0){ this.r+=90*dt; if(this.r>140)this.r=-1;
-   else if(!this.hit&&!S.cloak&&Math.abs(dist(this.x,SURF+4,S.x,S.y)-this.r)<9){this.hit=true;bump(16);S.seen=true;flashA=.12;banner('SONAR CONTACT',1,true)} } },
+   else if(!this.hit&&!S.cloak&&!S.air&&Math.abs(dist(this.x,SURF+4,S.x,S.y)-this.r)<9){this.hit=true;bump(16);S.seen=true;flashA=.12;banner('SONAR CONTACT',1,true)} } },
  d(){ const X=sx(this.x),Y=sy(SURF)+Math.sin(T*2+this.x); if(X<-150||X>W+150)return;
   g.strokeStyle='rgba(255,255,255,.18)'; g.lineWidth=.6; g.setLineDash([2,2]); g.beginPath(); g.moveTo(X,Y+6); g.lineTo(X+3,sy(floorY(this.x))); g.stroke(); g.setLineDash([]);
   if(this.r>=0){ g.strokeStyle=`rgba(90,230,180,${.9*(1-this.r/140)})`; g.lineWidth=1.4; g.beginPath(); g.arc(X,Y+4,this.r,0,Math.PI); g.stroke() }
