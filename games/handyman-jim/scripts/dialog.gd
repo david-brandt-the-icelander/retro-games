@@ -82,6 +82,9 @@ func _process(_dt: float) -> void:
 		return
 	var go := Input.is_action_just_pressed("act") or Input.is_action_just_pressed("map")
 	if _mode == "msg":
+		if Input.is_action_just_pressed("cancel"):
+			_shown = _total          # Escape closes the window at once, whatever is still typing
+			go = true
 		if _shown < _total:
 			_shown = minf(_total, _shown + _dt * CPS)
 			Sfx.talk(_voice_at(int(_shown)))   # whoever's line is typing speaks; "*sound*" lines are silent

@@ -333,7 +333,7 @@ func _out_of_gas() -> void:
 	main.dialog.message(["Sputter... cough... the van is out of gas.",
 		"Earl's Towing hauls you to the Gas-N-Grub. $120 and 45 minutes of Earl's opinions."],
 		func():
-			Game.charge(120, "tow")
+			Game.fine(120, "tow")
 			Game.advance(45)
 			Game.gas = 3.0
 			activate("gas"))
@@ -343,7 +343,7 @@ func _fine(kind: String) -> void:
 	if h[1]:
 		main.arrest(h[2], h[0])
 	else:
-		Game.charge(h[0], h[2].split(".")[0])
+		Game.fine(h[0], h[2].split(".")[0])
 
 func _check_hits() -> void:
 	var spd := van_vel.length()
@@ -370,7 +370,7 @@ func _check_hits() -> void:
 				_fine("cop")
 				return
 			elif c.kind == "cop":
-				Game.charge(100, "Officer Brekke: 'Careless driving, Jim.'")
+				Game.fine(100, "Officer Brekke: 'Careless driving, Jim.'")
 			elif spd > 50:
 				_fine("car")
 			else:
@@ -396,7 +396,7 @@ func _check_lights() -> void:
 				if Game.tickets_today >= 3:
 					main.arrest("Third red light today. Officer Brekke has had ENOUGH of you.", 350)
 				else:
-					Game.charge(90, "Red light ticket #%d (3 and you're jailed)" % Game.tickets_today)
+					Game.fine(90, "Red light ticket #%d (3 and you're jailed)" % Game.tickets_today)
 			else:
 				Game.say("You ran a red! Nobody saw... this time.")
 	in_box = box

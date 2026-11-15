@@ -89,11 +89,11 @@ func _sleep() -> void:
 	Art.shape(self, Rect2(110, 170, 16, 70), Pal.BROWN)
 	Art.shape(self, Rect2(128, 184, 40, 16), Pal.WHITE)
 	Art.ellipse(self, Vector2(142, 182), 4, 7, Art.BLOND)                  # blond fringe
-	Art.circ(self, Vector2(152, 180), 10, Art.SKIN)                       # Jim's bald head on the pillow
+	Art.circ(self, Vector2(152, 180), 10, Art.JIM_SKIN)                       # Jim's bald head on the pillow
 	Art.ellipse(self, Vector2(152, 175), 4, 2, Color(1, 1, 1, 0.45), false)
 	draw_arc(Vector2(150, 180), 3, 0.2, 2.9, 8, Pal.BLACK, 1.2, true)       # closed eyes
 	draw_arc(Vector2(158, 180), 3, 0.2, 2.9, 8, Pal.BLACK, 1.2, true)
-	Art.ellipse(self, Vector2(155, 186), 5, 2, Art.BLOND)                 # moustache
+	draw_arc(Vector2(155, 186), 3, 0.3, 2.8, 8, Pal.BLACK, 1.2, true)       # sleepy smile
 	Art.dog(self, Vector2(430, 250), 1.6, 0.0)
 	for k in 4:
 		var ph := fmod(t * 0.7 + k * 0.25, 1.0)

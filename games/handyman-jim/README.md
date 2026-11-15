@@ -1,7 +1,7 @@
 # Handyman Jim
 
 A small Godot 4 comedy game. Jim is a blond, balding, beer-bellied fix-it-all guy in Marshfield,
-Wisconsin, and he's always smiling. The phone rings,
+Wisconsin, in a white T-shirt, shorts and white sneakers, and he's always smiling. The phone rings,
 somebody has done something unbelievably dumb, and Jim has to buy the parts, drive over and fix it
 before the customer gives up on him.
 
@@ -16,7 +16,8 @@ Open `project.godot` and press F5.
 | Space | Go in, talk, buy, fix, continue. While driving with nowhere to go in, honk the horn |
 | Enter | Open or close the map and job board: streets by name, every shop, the job's parts checklist, where to buy each part and today's sales. The whole game is frozen while it's open. Enter also continues a dialog or picks in a menu |
 
-Those three are the only controls. Every menu ends with a Leave (or Done) row instead of an escape key.
+Those three play the whole game. **Escape** closes any dialog window, menu or the map; a closed dialog
+still moves the story on. Every menu also ends with a Leave (or Done) row.
 
 ## How a day goes
 
@@ -32,22 +33,25 @@ Those three are the only controls. Every menu ends with a Leave (or Done) row in
   made out: the voice is a public-domain LibriVox recording stored backwards and heavily muffled
   (`audio/voice.wav`, provenance in `audio/CREDITS.md`). The ring and the horn are synthesised in
   `scripts/sfx.gd`.
+- **Cash and debt.** Jim pays for parts, gas, brats and curds in cash, and customers always pay
+  cash. Fines, tickets, damages, bail and tows never take his cash: they go on his **debt**, which he
+  pays down at First Dairyland Bank (open 9 AM to 5 PM) or at the police desk. Monday's $250 rent
+  comes out of cash, and whatever the cash can't cover goes on the debt too.
 - **Driving.** Rolling into a driveway or parking lot stops the van. The camera is zoomed out so you can see the road ahead, and the corner minimap
   flashes the shops that sell what the job still needs. The van still takes a while to stop.
   Here is what can go wrong:
-  - Trash cans $40, mailboxes $75, hydrants $150, cones $15, buildings $60, fender benders $300.
+  - Added to debt: trash cans $40, mailboxes $75, hydrants $150, cones $15, buildings $60, fender
+    benders $300.
   - Red lights: a ticket if a cop or bystander sees you. The third ticket in a day means jail.
-  - Hitting a pedestrian or a Packers fan, or ramming the squad car, means jail on the spot. You pay
-    bail and lose the rest of the day.
+  - Hitting a pedestrian or a Packers fan, or ramming the squad car, means jail on the spot. The bail goes
+    on your debt and you lose the rest of the day.
   - Random road events: a loose cow, geese, a guy on a riding mower, a spilled cheese-curd truck
     (slippery), cones, a fan parade, and a deer staring you down.
-  - Gas runs out. Fill up at the Gas-N-Grub, or Earl tows you there for $120.
+  - Gas runs out. Fill up at the Gas-N-Grub, or Earl tows you there for $120 (on your debt).
 - **Houses.** Each customer house has three rooms joined by doors on the left and right. The mess is in
-  one of them, so find it and press E. A fix takes 30 game minutes. A late fix pays half.
-- **Getting paid.** Customers pay in cash or by cheque. You cash cheques at First Dairyland Bank, which
-  is open 9 AM to 5 PM. Some cheques bounce, and each bounce costs a $25 fee.
+  one of them, so find it and press Space. A fix takes 30 game minutes. A late fix pays half.
 - **7:00 PM** is quitting time. Unfinished jobs go to cousin Lyle. Then the Zzzz screen.
-- **Friday night** brings a weekend scene that depends on your cash: beans in the dark, TV with a
+- **Friday night** brings a weekend scene that depends on your cash minus your debt: beans in the dark, TV with a
   beer and the dog, fish fry, the bar, fishing, or a hunting trip Up North. Monday morning, $250 rent is due.
 
 One game minute is one real second, so a day lasts 12 real minutes.
@@ -57,7 +61,7 @@ One game minute is one real second, so a day lasts 12 real minutes.
 ```
 main.tscn            the only scene; everything else is built in code
 scripts/main.gd      game flow: title, calls, day end, jail, weekend
-scripts/game.gd      autoload "Game": clock, money, cheques, inventory, jobs, sales
+scripts/game.gd      autoload "Game": clock, cash and debt, inventory, jobs, sales
 scripts/data.gd      ALL content: items, stores, the 15 jobs, road events, fines, weekends
 scripts/town.gd      street grid and building placement
 scripts/drive.gd     top-down driving, traffic, lights, pedestrians, road events

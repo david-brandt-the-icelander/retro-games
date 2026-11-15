@@ -163,62 +163,68 @@ static func person(ci: CanvasItem, feet: Vector2, s: float, shirt: Color, pants:
 
 const BLOND := Color("f2d16b")
 
-## Handyman Jim: blond and balding, beer belly in blue overalls over a red flannel,
-## blue eyes, blond moustache, big grin.
+const JIM_SKIN := Color("ffdcc4")     # fair, a little sunburnt
+const SHORTS := Color("4f7fc4")       # faded denim
+
+## Handyman Jim: blond and balding, fair-skinned, beer belly in a white T-shirt, denim shorts,
+## white sneakers, blue eyes and a big grin. Clean-shaven.
 static func jim(ci: CanvasItem, feet: Vector2, s: float, facing: int, phase: float) -> void:
 	var x := feet.x
 	var y := feet.y
 	var f := float(facing)
 	var swing := sin(phase) * 4.0 * s
 	ci.draw_colored_polygon(ellipse_points(Vector2(x, y), 13 * s, 2.8 * s), Color(0, 0, 0, 0.25))
-	# legs and work boots
-	limb(ci, Vector2(x - 3.5 * s, y - 17 * s), Vector2(x - 3.5 * s + swing, y - 3 * s), 5 * s, Pal.BLUE)
-	limb(ci, Vector2(x + 3.5 * s, y - 17 * s), Vector2(x + 3.5 * s - swing, y - 3 * s), 5 * s, Pal.BLUE)
-	ellipse(ci, Vector2(x - 3.5 * s + swing + f * 1.5 * s, y - 2 * s), 4.2 * s, 2.4 * s, Pal.BROWN)
-	ellipse(ci, Vector2(x + 3.5 * s - swing + f * 1.5 * s, y - 2 * s), 4.2 * s, 2.4 * s, Pal.BROWN)
-	# back arm, flannel torso, then the beer belly (in overalls) pushing out the front
-	limb(ci, Vector2(x - f * 5 * s, y - 32 * s), Vector2(x - f * 6 * s - swing * 0.6, y - 21 * s), 3.8 * s, Pal.RED.darkened(0.15))
-	rrect(ci, Rect2(x - 8 * s, y - 37 * s, 16 * s, 20 * s), Pal.RED, 6 * s)
-	for k in 3:   # flannel checks
-		ci.draw_line(Vector2(x - 7 * s, y - 34.5 * s + k * 2.6 * s), Vector2(x + 7 * s, y - 34.5 * s + k * 2.6 * s), Color(0, 0, 0, 0.16), 0.8 * s)
-	ellipse(ci, Vector2(x + f * 2.5 * s, y - 22 * s), 11 * s, 9.5 * s, Pal.BLUE)
-	ci.draw_colored_polygon(ellipse_points(Vector2(x + f * 5 * s, y - 25 * s), 4 * s, 3 * s), Color(1, 1, 1, 0.18))  # belly shine
-	rrect(ci, Rect2(x - 2 * s + f * 2.5 * s, y - 26 * s, 5 * s, 4 * s), Pal.BLUE.darkened(0.2), 1.2 * s)              # bib pocket
-	limb(ci, Vector2(x - 5 * s, y - 37 * s), Vector2(x - 5 * s + f * 1 * s, y - 29 * s), 1.6 * s, Pal.BLUE)
-	limb(ci, Vector2(x + 5 * s, y - 37 * s), Vector2(x + 5 * s + f * 2 * s, y - 29 * s), 1.6 * s, Pal.BLUE)
-	ci.draw_circle(Vector2(x - 5 * s + f * 1 * s, y - 29 * s), 1.1 * s, Pal.YELLOW)
-	ci.draw_circle(Vector2(x + 5 * s + f * 2 * s, y - 29 * s), 1.1 * s, Pal.YELLOW)
-	# front arm resting on the belly
-	var hand := Vector2(x + f * 9 * s + swing * 0.5, y - 22 * s)
-	limb(ci, Vector2(x + f * 5 * s, y - 33 * s), hand, 3.8 * s, Pal.RED)
-	circ(ci, hand + Vector2(0, 1 * s), 2.5 * s, SKIN)
+	# bare legs, white sneakers, then denim shorts from the hips to mid-thigh
+	for side in [-1.0, 1.0]:
+		var hip := Vector2(x + side * 3.5 * s, y - 14 * s)
+		var foot := Vector2(x + side * 3.5 * s - side * swing, y - 3 * s)
+		limb(ci, hip, foot, 4.2 * s, JIM_SKIN)
+		ellipse(ci, foot + Vector2(f * 1.6 * s, 1.2 * s), 4.4 * s, 2.5 * s, Pal.WHITE)          # sneaker
+	var shorts := PackedVector2Array([Vector2(x - 8.5 * s, y - 19 * s), Vector2(x + 8.5 * s, y - 19 * s),
+		Vector2(x + 8 * s, y - 9.5 * s), Vector2(x + 0.8 * s, y - 9.5 * s), Vector2(x, y - 12 * s),
+		Vector2(x - 0.8 * s, y - 9.5 * s), Vector2(x - 8 * s, y - 9.5 * s)])
+	ci.draw_colored_polygon(shorts, SHORTS)
+	outline(ci, shorts, OUT)
+	# back arm, T-shirt torso, the beer belly pushing the shirt out the front
+	var back_hand := Vector2(x - f * 6 * s - swing * 0.6, y - 21 * s)
+	limb(ci, Vector2(x - f * 5 * s, y - 32 * s), back_hand, 3.6 * s, JIM_SKIN.darkened(0.08))
+	limb(ci, Vector2(x - f * 5 * s, y - 33 * s), Vector2(x - f * 5.4 * s, y - 28 * s), 4.4 * s, Pal.WHITE.darkened(0.06))
+	rrect(ci, Rect2(x - 8 * s, y - 37 * s, 16 * s, 19 * s), Pal.WHITE, 6 * s)
+	ellipse(ci, Vector2(x + f * 2.5 * s, y - 24 * s), 11 * s, 8.5 * s, Pal.WHITE)   # hangs over the waistband
+	ci.draw_colored_polygon(ellipse_points(Vector2(x + f * 5.5 * s, y - 26 * s), 3.5 * s, 2.6 * s), Color(1, 1, 1, 0.6))  # belly shine
+	ci.draw_arc(Vector2(x + f * 6 * s, y - 20 * s), 1.4 * s, 0, TAU, 10, Pal.LGRAY, 0.8 * s, true)                      # belly button through the shirt
+	# front arm: short sleeve, then bare forearm resting on the belly
+	var hand := Vector2(x + f * 9.5 * s + swing * 0.5, y - 22 * s)
+	limb(ci, Vector2(x + f * 5 * s, y - 33 * s), hand, 3.6 * s, JIM_SKIN)
+	limb(ci, Vector2(x + f * 5 * s, y - 33 * s), Vector2(x + f * 6.5 * s, y - 28.5 * s), 4.4 * s, Pal.WHITE)
+	circ(ci, hand + Vector2(0, 1 * s), 2.5 * s, JIM_SKIN)
 	# head: big, round and bald on top
 	var hc := Vector2(x + f * 1 * s, y - 45.5 * s)
-	circ(ci, hc, 8 * s, SKIN)
-	ci.draw_colored_polygon(ellipse_points(hc + Vector2(-f * 1.5 * s, -5.2 * s), 3.2 * s, 1.5 * s), Color(1, 1, 1, 0.45))  # shiny scalp
+	circ(ci, hc, 8 * s, JIM_SKIN)
+	ci.draw_colored_polygon(ellipse_points(hc + Vector2(-f * 1.5 * s, -5.2 * s), 3.2 * s, 1.5 * s), Color(1, 1, 1, 0.55))  # shiny scalp
 	# blond fringe round the back and sides, plus a hopeful three-hair comb-over
 	ellipse(ci, hc + Vector2(-f * 5.4 * s, 1.5 * s), 3 * s, 4.6 * s, BLOND)
-	for k in 3:   # three brave hairs combed across the top
+	for k in 3:
 		var a := hc + Vector2(-f * (5.5 - k) * s, (-3.5 - k * 1.2) * s)
 		var b := hc + Vector2(f * (1.5 + k) * s, (-6.6 - k * 0.3) * s)
 		ci.draw_line(a, b, BLOND.darkened(0.1), 0.6 * s, true)
-	ellipse(ci, hc + Vector2(-f * 4.6 * s, 0.8 * s), 1.8 * s, 2.5 * s, SKIN)   # ear
+	ellipse(ci, hc + Vector2(-f * 4.6 * s, 0.8 * s), 1.8 * s, 2.5 * s, JIM_SKIN)   # ear
 	# blue eye with a highlight, blond eyebrow
 	ellipse(ci, hc + Vector2(f * 3.4 * s, -1.6 * s), 2.4 * s, 2.8 * s, Pal.WHITE)
 	ci.draw_circle(hc + Vector2(f * 4.0 * s, -1.3 * s), 1.4 * s, Color("3b8fe0"))
 	ci.draw_circle(hc + Vector2(f * 4.2 * s, -1.2 * s), 0.7 * s, Pal.BLACK)
 	ci.draw_circle(hc + Vector2(f * 3.6 * s, -1.9 * s), 0.4 * s, Pal.WHITE)
 	ci.draw_line(hc + Vector2(f * 1.6 * s, -5.2 * s), hc + Vector2(f * 5.2 * s, -5.6 * s), BLOND.darkened(0.15), 1.1 * s, true)
-	# rosy cheek, round nose, blond moustache and a big toothy grin
-	ci.draw_circle(hc + Vector2(f * 1.5 * s, 2.5 * s), 1.8 * s, Color(1, 0.4, 0.4, 0.3))
-	circ(ci, hc + Vector2(f * 7.6 * s, 1.2 * s), 2.3 * s, SKIN.darkened(0.05))
+	# rosy cheek, round nose and a big clean-shaven toothy grin
+	ci.draw_circle(hc + Vector2(f * 1.5 * s, 2.5 * s), 1.9 * s, Color(1, 0.45, 0.45, 0.35))
+	circ(ci, hc + Vector2(f * 7.6 * s, 1.2 * s), 2.3 * s, JIM_SKIN.darkened(0.05))
 	var grin := PackedVector2Array()
 	for k in 9:
-		var a := 0.15 + (PI - 0.3) * k / 8.0
-		grin.append(hc + Vector2(f * 3.8 * s, 3.2 * s) + Vector2(cos(a) * 3.6 * s, sin(a) * 2.6 * s))
+		var ang := 0.15 + (PI - 0.3) * k / 8.0
+		grin.append(hc + Vector2(f * 3.8 * s, 3.4 * s) + Vector2(cos(ang) * 3.6 * s, sin(ang) * 2.6 * s))
 	ci.draw_colored_polygon(grin, Pal.WHITE)
 	outline(ci, grin, 0.8 * s)
-	ellipse(ci, hc + Vector2(f * 4.6 * s, 3.4 * s), 3.4 * s, 1.3 * s, BLOND)
+	ci.draw_line(grin[0], grin[8], Pal.BLACK, 0.8 * s, true)
 
 ## Top-down vehicle centred on pos, pointing along angle (0 = +x).
 static func vehicle_top(ci: CanvasItem, pos: Vector2, angle: float, body: Color,

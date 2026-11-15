@@ -36,11 +36,8 @@ func _draw() -> void:
 	var late := Game.minute > Data.DAY_END - 60
 	var clock := "%s  %s  WEEK %d" % [Game.day_name().substr(0, 3).to_upper(), Game.clock_text(), Game.week]
 	Art.text(self, Vector2(4, 12), clock, Pal.LRED if late and int(t * 2) % 2 == 0 else Pal.WHITE, 12)
-	var chq := 0
-	for c in Game.cheques:
-		chq += c.amount
-	Art.text(self, Vector2(190, 12), "CASH $%d" % Game.cash, Pal.LGREEN if Game.cash >= 0 else Pal.LRED, 12)
-	Art.text(self, Vector2(290, 12), "CHEQUES %d ($%d)" % [Game.cheques.size(), chq], Pal.YELLOW, 12)
+	Art.text(self, Vector2(190, 12), "CASH $%d" % Game.cash, Pal.LGREEN, 12)
+	Art.text(self, Vector2(300, 12), "DEBT $%d" % Game.debt, Pal.LRED if Game.debt > 0 else Pal.WHITE, 12)
 	Art.text(self, Vector2(440, 12), "GAS", Pal.WHITE, 12)
 	var frac := clampf(Game.gas / Data.TANK_SIZE, 0, 1)
 	draw_rect(Rect2(470, 4, 60, 8), Pal.BLACK)

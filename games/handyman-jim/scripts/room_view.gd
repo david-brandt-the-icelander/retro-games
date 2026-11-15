@@ -170,7 +170,7 @@ func _needed(item: String) -> int:
 func open_store(store: String) -> void:
 	var s: Dictionary = Data.STORES[store]
 	var greet := ["%s: \"Jim! What'd they break this time?\"" % s.keeper,
-		"%s: \"Ope, there he is.\"" % s.keeper, "%s: \"Cash only. Your cheques scare me.\"" % s.keeper]
+		"%s: \"Ope, there he is.\"" % s.keeper, "%s: \"Cash only, Jim. Always has been.\"" % s.keeper]
 	Game.say(greet[Game.rng.randi_range(0, 2)])
 	var _b := func() -> Array:
 		_store_actions = []
@@ -231,47 +231,75 @@ func _gas_menu() -> void:
 				open_store("gas")
 				return false
 			2:
-				Game.cash -= 3
-				Game.say("The brat has been rolling since 1998. It is perfect.")
+				if Game.cash < 3:
+					Game.say("Tiffany: \"Three bucks, Jim. You don't have three bucks?\"")
+				else:
+					Game.cash -= 3
+					Game.say("The brat has been rolling since 1998. It is perfect.")
 				return true
 		return false
 	main.dialog.menu("GAS-N-GRUB   -   cash $%d" % Game.cash, _b, _p)
 
+## Paying down debt: everything the cash covers goes to the debt.
+func _pay_debt(who: String) -> void:
+	if Game.debt <= 0:
+		main.dialog.message(["%s: \"You don't owe a dime, Jim. Don't get used to it.\"" % who])
+		return
+	if Game.cash <= 0:
+		main.dialog.message(["%s: \"You owe $%d and you've got no cash. Come back when you do.\"" % [who, Game.debt]])
+		return
+	var paid := Game.pay_debt()
+	Game.advance(5)
+	var lines := ["You pay $%d toward your debt." % paid]
+	lines.append("%s: \"Paid in full. Try to keep it that way.\"" % who if Game.debt == 0
+		else "%s: \"Still $%d to go, Jim.\"" % [who, Game.debt])
+	main.dialog.message(lines)
+
 func _bank_menu() -> void:
-	var total := 0
-	for c in Game.cheques:
-		total += c.amount
 	var _b := func() -> Array:
-		return ["Cash my cheques (%d, $%d)" % [Game.cheques.size(), total], "Ask about a loan", "Leave"]
+		return ["Pay off debt (you owe $%d, cash $%d)" % [Game.debt, Game.cash], "Ask about a loan", "Leave"]
 	var _p := func(i: int) -> bool:
 		if i == 0:
-			Game.advance(10)
-			main.dialog.message(Game.cash_cheques(), Callable(), "TELLER WINDOW")
+			_pay_debt("Teller Marge")
 		elif i == 1:
 			main.dialog.message(["Loan officer Gail: \"Jim, you listed 'a van' and 'Duke' as collateral.\"",
-				"\"Duke is a dog.\" She stamps DENIED with real enthusiasm."])
+				"Loan officer Gail: \"Duke is a dog.\" She stamps DENIED with real enthusiasm."])
 		return false
 	main.dialog.menu("FIRST DAIRYLAND BANK", _b, _p)
 
 func _police_talk() -> void:
-	var lines := [
-		"Sgt. Brekke: \"Jim. Drive slower. Please. For all of us.\"",
-		"Sgt. Brekke: \"Somebody stole the lawn flamingos off the Mayor's yard again.\"",
-		"Sgt. Brekke: \"Your van was clocked at 60 in front of the school. In REVERSE.\"",
-	]
-	main.dialog.message([lines[Game.rng.randi_range(0, lines.size() - 1)],
-		"Red light tickets today: %d of 3 before you're jailed." % Game.tickets_today])
+	var _b := func() -> Array:
+		return ["Talk to Sgt. Brekke", "Pay off debt (you owe $%d, cash $%d)" % [Game.debt, Game.cash], "Leave"]
+	var _p := func(i: int) -> bool:
+		if i == 0:
+			var lines := [
+				"Sgt. Brekke: \"Jim. Drive slower. Please. For all of us.\"",
+				"Sgt. Brekke: \"Somebody stole the lawn flamingos off the Mayor's yard again.\"",
+				"Sgt. Brekke: \"Your van was clocked at 60 in front of the school. In REVERSE.\"",
+			]
+			main.dialog.message([lines[Game.rng.randi_range(0, lines.size() - 1)],
+				"Red light tickets today: %d of 3 before you're jailed." % Game.tickets_today])
+		elif i == 1:
+			_pay_debt("Sgt. Brekke")
+		return false
+	main.dialog.menu("MARSHFIELD POLICE", _b, _p)
 
 func _tavern_menu() -> void:
 	var _b := func() -> Array:
 		return ["Basket of cheese curds ($7)", "Buy the bartender a beer for gossip ($5)", "Leave"]
 	var _p := func(i: int) -> bool:
 		if i == 0:
+			if Game.cash < 7:
+				Game.say("Bartender Lou: \"Curds are cash, Jim. No tab.\"")
+				return true
 			Game.cash -= 7
 			Game.advance(10)
 			Game.say("SQUEAK. SQUEAK. Perfection.")
 			return true
 		if i == 1:
+			if Game.cash < 5:
+				Game.say("Bartender Lou: \"Gossip costs a beer, and you can't buy one.\"")
+				return false
 			Game.cash -= 5
 			var lines := ["Bartender Lou leans in: \"Here's what I'm hearin' about sales today...\""]
 			for k in Game.sales:

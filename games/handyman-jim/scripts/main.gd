@@ -63,8 +63,11 @@ func _morning() -> void:
 	drive.deactivate()
 	mode = "room"
 	if Game.day == 0 and Game.week > 1:
-		Game.cash -= Data.SHOP_RENT
-		dialog.message(["Monday. Shop rent is due: $%d. The landlord, Mrs. Dombrowski, counts it twice." % Data.SHOP_RENT])
+		var short := Game.pay_rent()
+		var lines := ["Monday. Shop rent is due: $%d. The landlord, Mrs. Dombrowski, counts it twice." % Data.SHOP_RENT]
+		if short > 0:
+			lines.append("You were $%d short. Mrs. Dombrowski adds it to your debt, with a look." % short)
+		dialog.message(lines)
 
 func _process(dt: float) -> void:
 	if mode != "drive" and mode != "room":
@@ -119,9 +122,9 @@ func arrest(why: String, bail: int) -> void:
 	mode = "cut"
 	drive.deactivate()
 	room.deactivate()
-	Game.cash -= bail
+	Game.debt += bail
 	var lost := Game.end_day_cancel()
-	var lines: Array = [why, "Bail: $%d. You spend the night in the lockup. The bologna sandwich is a crime too." % bail]
+	var lines: Array = [why, "Bail: $%d, added to your debt. You spend the night in the lockup. The bologna sandwich is a crime too." % bail]
 	if not lost.is_empty():
 		lines.append("Your open jobs went to cousin Lyle.")
 	cut.play("arrest", lines, _night)
@@ -132,8 +135,8 @@ func end_day() -> void:
 	ending_day = true
 	var lines: Array = ["%s, %s. Jim's done for the day." % [Game.day_name(), Game.clock_text()]]
 	lines.append_array(Game.end_day_cancel())
-	if not Game.cheques.is_empty():
-		lines.append("You've still got %d uncashed cheque(s). The bank opens at 9." % Game.cheques.size())
+	if Game.debt > 0:
+		lines.append("You owe $%d. Pay it down at the bank or the police desk." % Game.debt)
 	dialog.message(lines, func():
 		mode = "cut"
 		drive.deactivate()
@@ -144,8 +147,8 @@ func _night() -> void:
 	mode = "cut"
 	if Game.day >= 4:
 		var w := Game.weekend_scene()
-		var lines: Array = [w[2], "Week %d: earned $%d, fixed %d messes. Cash on hand: $%d." % [Game.week,
-			Game.week_income, Game.jobs_done_week, Game.cash]]
+		var lines: Array = [w[2], "Week %d: earned $%d, fixed %d messes. Cash $%d, debt $%d." % [Game.week,
+			Game.week_income, Game.jobs_done_week, Game.cash, Game.debt]]
 		cut.play(w[1], lines, func():
 			Game.week += 1
 			Game.day = 0

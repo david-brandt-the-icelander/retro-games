@@ -1,5 +1,5 @@
 extends Node
-## Global game state: clock, money, cheques, inventory, jobs, sales.
+## Global game state: clock, cash and debt, inventory, jobs, sales.
 
 signal toast(text: String)
 
@@ -14,7 +14,7 @@ var minute := float(Data.DAY_START)
 var clock_running := false
 
 var cash := 300
-var cheques: Array = []    # {amount, from, bounce}
+var debt := 0             # fines, tickets, bail, damages and unpaid rent; never taken from cash
 var inventory := {}        # item id -> qty
 var gas := Data.TANK_SIZE
 var jobs: Array = []       # active jobs
@@ -33,12 +33,13 @@ func _ready() -> void:
 
 func _setup_input() -> void:
 	var map := {
-		# The whole game plays on WASD, Space and Enter. "jobs", "cancel" and "horn" have no keys:
-		# Enter does the job board, menus end with a Leave row, and Space honks while driving.
+		# The game plays on WASD, Space and Enter; Escape closes dialogs, menus and the map.
+		# "jobs" and "horn" have no keys: Enter does the job board and Space honks while driving.
 		"up": [KEY_W], "down": [KEY_S], "left": [KEY_A], "right": [KEY_D],
 		"act": [KEY_SPACE],
 		"map": [KEY_ENTER, KEY_KP_ENTER],
-		"jobs": [], "cancel": [], "horn": [],
+		"cancel": [KEY_ESCAPE],
+		"jobs": [], "horn": [],
 	}
 	for action in map:
 		if not InputMap.has_action(action):
@@ -52,7 +53,7 @@ func new_game() -> void:
 	week = 1
 	day = 0
 	cash = 300
-	cheques.clear()
+	debt = 0
 	inventory.clear()
 	gas = Data.TANK_SIZE
 	week_income = 0
@@ -111,9 +112,24 @@ func say(t: String) -> void:
 	if who != "":
 		Sfx.remark(who, t)
 
-func charge(amount: int, why: String) -> void:
-	cash -= amount
-	say("-$%d  %s" % [amount, why])
+## Fines, tickets, damages, bail and tows are added to Jim's debt; they never take his cash.
+func fine(amount: int, why: String) -> void:
+	debt += amount
+	say("DEBT +$%d  %s" % [amount, why])
+
+## Pay off as much debt as the cash covers. Returns what was paid.
+func pay_debt() -> int:
+	var paid := mini(cash, debt)
+	cash -= paid
+	debt -= paid
+	return paid
+
+## Rent comes out of cash; whatever the cash can't cover becomes debt.
+func pay_rent() -> int:
+	var short := maxi(0, Data.SHOP_RENT - cash)
+	cash = maxi(0, cash - Data.SHOP_RENT)
+	debt += short
+	return short
 
 func earn(amount: int, why: String) -> void:
 	cash += amount
@@ -209,29 +225,9 @@ func finish_job(j: Dictionary) -> Array:
 	if minute > j.deadline:
 		pay = pay / 2
 		lines.append("You were LATE. %s only pays half: $%d." % [j.tpl.customer, pay])
-	if rng.randf() < j.tpl.cheque:
-		cheques.append({"amount": pay, "from": j.tpl.customer, "bounce": j.tpl.bounce})
-		lines.append("%s writes you a CHEQUE for $%d." % [j.tpl.customer, pay])
-		lines.append("Cash it at First Dairyland Bank (open 9-5). Fingers crossed.")
-	else:
-		lines.append("%s pays CASH: $%d. Crumpled, but cash." % [j.tpl.customer, pay])
-		cash += pay
-		week_income += pay
-	return lines
-
-func cash_cheques() -> Array:
-	var lines := []
-	if cheques.is_empty():
-		return ["Teller: 'You don't have any cheques, Jim.'"]
-	for c in cheques:
-		if rng.randf() < c.bounce:
-			cash -= 25
-			lines.append("$%d from %s... BOUNCED! Bank fee $25." % [c.amount, c.from])
-		else:
-			cash += c.amount
-			week_income += c.amount
-			lines.append("$%d from %s... cleared. Cash in hand." % [c.amount, c.from])
-	cheques.clear()
+	lines.append("%s pays CASH: $%d. Crumpled, but cash." % [j.tpl.customer, pay])
+	cash += pay
+	week_income += pay
 	return lines
 
 func check_deadlines() -> void:
@@ -249,7 +245,7 @@ func end_day_cancel() -> Array:
 
 func weekend_scene() -> Array:
 	for w in Data.WEEKENDS:
-		if cash >= w[0]:
+		if cash - debt >= w[0]:
 			return w
 	return Data.WEEKENDS[-1]
 

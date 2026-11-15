@@ -52,21 +52,26 @@ func _ready() -> void:
 		Game.add_item(item, j.tpl.mats[item])
 	check(Game.missing(j).is_empty(), "materials satisfied")
 	Game.cash = 100
-	j.tpl = j.tpl.duplicate()
-	j.tpl.cheque = 1.0
-	j.tpl.bounce = 0.0
+	Game.debt = 0
 	var lines := Game.finish_job(j)
 	check(Game.jobs.is_empty() and Game.next_call > Game.minute, "finishing a job schedules the next call")
-	check(Game.cheques.size() == 1 and Game.jobs.is_empty(), "job paid by cheque: " + str(lines[2]))
-	Game.cash_cheques()
-	check(Game.cash == 100 + j.tpl.pay and Game.cheques.is_empty(), "cheque cashed")
-	Game.cheques.append({"amount": 50, "from": "Test", "bounce": 1.0})
-	Game.cash_cheques()
-	check(Game.cash == 100 + j.tpl.pay - 25, "bounced cheque costs $25")
+	check(Game.cash == 100 + j.tpl.pay and not "CHEQUE" in " ".join(lines), "jobs pay cash, never cheques: " + str(lines[2]))
+	# fines go to debt, never take cash; debt is paid off from cash
+	Game.fine(60, "test fine")
+	check(Game.debt == 60 and Game.cash == 100 + j.tpl.pay, "a fine adds to debt and leaves cash alone")
+	Game.cash = 40
+	check(Game.pay_debt() == 40 and Game.cash == 0 and Game.debt == 20, "paying debt uses what cash there is")
+	Game.cash = 100
+	check(Game.pay_debt() == 20 and Game.cash == 80 and Game.debt == 0, "paying debt clears it")
+	Game.cash = 100
+	check(Game.pay_rent() == Data.SHOP_RENT - 100 and Game.cash == 0 and Game.debt == Data.SHOP_RENT - 100, "rent the cash can't cover becomes debt")
+	Game.cash = 500
+	Game.debt = 0
 	# drive: red light / pedestrian / trash can
 	m.to_drive("shop")
 	await wait(3)
 	var before := Game.cash
+	Game.debt = 0
 	var tc: Dictionary = {}
 	for o in m.drive.objs:
 		if o.kind == "trash":
@@ -75,7 +80,7 @@ func _ready() -> void:
 	m.drive.van_pos = tc.pos
 	m.drive.van_vel = Vector2(100, 0)
 	m.drive._check_hits()
-	check(Game.cash == before - 40, "trash can costs $40")
+	check(Game.cash == before and Game.debt == 40, "a trash can adds $40 to debt, cash untouched")
 	# running out of gas tows you
 	Game.gas = 0.0
 	await wait(3)
@@ -83,11 +88,13 @@ func _ready() -> void:
 	await settle()
 	check(Game.gas == 3.0 and m.mode == "drive", "towed to the gas station")
 	var day0 := Game.day
+	var cash_at_arrest := Game.cash
 	m.drive.peds[0].pos = m.drive.van_pos
 	m.drive.van_vel = Vector2(200, 0)
 	m.drive._check_hits()
 	await wait(3)
 	check(m.mode == "cut", "hitting a pedestrian gets you arrested")
+	check(Game.cash == cash_at_arrest and Game.debt >= 500, "bail goes to debt (debt $%d)" % Game.debt)
 	await settle()
 	check(Game.day == day0 + 1 and m.mode == "room", "arrest ends the day; next morning in the shop")
 	# red-light tickets
@@ -111,6 +118,7 @@ func _ready() -> void:
 	# Friday night -> weekend -> Monday rent
 	Game.day = 4
 	Game.cash = 900
+	Game.debt = 0
 	m.end_day()
 	await wait(3)
 	for i in 5:   # the message types out, so it can take two presses to close
@@ -179,13 +187,27 @@ func _ready() -> void:
 			for mt in banned.search_all(text):
 				hits.append("%s: %s" % [f, mt.get_string()])
 	check(hits.is_empty(), "no Jan, no Dale, no parents %s" % str(hits))
-	# the only controls are WASD, Space and Enter
-	var allowed := [KEY_W, KEY_A, KEY_S, KEY_D, KEY_SPACE, KEY_ENTER, KEY_KP_ENTER]
+	# Escape closes a dialog window at once, and the story carries on
+	var closed := [false]
+	m.dialog.message(["A long message that is still typing out when Escape is pressed, so it should close at once anyway."], func(): closed[0] = true)
+	await wait(2)
+	var esc := InputEventAction.new()
+	esc.action = "cancel"
+	esc.pressed = true
+	Input.parse_input_event(esc)
+	await wait(2)
+	var esc_up := InputEventAction.new()
+	esc_up.action = "cancel"
+	Input.parse_input_event(esc_up)
+	await wait(2)
+	check(not m.dialog.is_open() and closed[0], "Escape closes a dialog and runs what comes next")
+	# the only controls are WASD, Space and Enter (plus Escape to close windows)
+	var allowed := [KEY_W, KEY_A, KEY_S, KEY_D, KEY_SPACE, KEY_ENTER, KEY_KP_ENTER, KEY_ESCAPE]
 	var stray := []
 	for action in ["up", "down", "left", "right", "act", "map", "jobs", "cancel", "horn"]:
 		for ev in InputMap.action_get_events(action):
 			if ev is InputEventKey and not allowed.has(ev.physical_keycode):
 				stray.append(OS.get_keycode_string(ev.physical_keycode))
-	check(stray.is_empty(), "only WASD, Space and Enter are bound %s" % str(stray))
+	check(stray.is_empty(), "only WASD, Space, Enter and Escape are bound %s" % str(stray))
 	print("FLOW DONE, failures: ", fails)
 	get_tree().quit(1 if fails > 0 else 0)
