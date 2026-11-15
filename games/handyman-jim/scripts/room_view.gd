@@ -302,7 +302,7 @@ func _sell_menu() -> void:
 	main.dialog.menu("WALK-IN CUSTOMERS (they pay half)", _b, _p)
 
 func _machine() -> void:
-	var msgs := ["BEEP. \"Jim, it's your mother. Call your mother.\"",
+	var msgs := ["BEEP. \"Jim, it's the bait shop. Your minnows are in. All four hundred of 'em.\"",
 		"BEEP. \"This is Lyle. Can I borrow the van? ...Jim? I already took the ladder.\"",
 		"BEEP. \"Hi, this is about your van's extended warranty—\" *you smash the button*"]
 	main.dialog.message([msgs[Game.rng.randi_range(0, msgs.size() - 1)]])

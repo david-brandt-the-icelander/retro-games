@@ -170,6 +170,15 @@ func _ready() -> void:
 	m.dialog.message(["You knock on the door.", "Gus: \"Ope.\"", "*SLAM*"])
 	check(m.dialog._voices == [Sfx.NARRATOR, "Gus", ""], "narration and speech are voiced, sound effects are not (%s)" % str(m.dialog._voices))
 	m.dialog._close()
+	# the names Jan and Dale are not used, and Jim's parents are never mentioned
+	var banned := RegEx.create_from_string("(?i)\\b(jan|dale|mother|father|mom|dad|parents?)\\b")
+	var hits := []
+	for f in DirAccess.get_files_at("res://scripts"):
+		if f.ends_with(".gd"):
+			var text := FileAccess.get_file_as_string("res://scripts/" + f)
+			for mt in banned.search_all(text):
+				hits.append("%s: %s" % [f, mt.get_string()])
+	check(hits.is_empty(), "no Jan, no Dale, no parents %s" % str(hits))
 	# the only controls are WASD, Space and Enter
 	var allowed := [KEY_W, KEY_A, KEY_S, KEY_D, KEY_SPACE, KEY_ENTER, KEY_KP_ENTER]
 	var stray := []
