@@ -144,7 +144,10 @@ const sfx={
  hit(){tone(90,.25,'sawtooth',.1,40);noise(.15,.08,200)}, boom(){noise(.6,.18,80);tone(70,.5,'sawtooth',.1,30)},
  alarm(){tone(880,.15,'square',.05);tone(660,.15,'square',.05,0,.16)},
  win(){[523,659,784,1046].forEach((f,i)=>tone(f,.18,'square',.06,0,i*.12))},
- thunder(){noise(1.6,.2,40)}, gulp(){tone(320,.12,'square',.07,90);tone(140,.22,'sine',.09,60,.08);noise(.25,.1,300)}
+ thunder(){noise(1.6,.2,40)}, clack(heavy){ if(heavy){ noise(.05,.11,500); tone(95+Math.random()*20,.05,'square',.04,60) } else { noise(.022,.06,2400+Math.random()*1800); tone(230+Math.random()*120,.025,'square',.018,140) } },
+ carriage(){ tone(2093,.7,'sine',.05); tone(4186,.25,'sine',.012); tone(300,.22,'sawtooth',.018,900,.05); noise(.22,.03,1800) },
+ endMsg(){ tone(2093,.5,'sine',.05); tone(2093,.7,'sine',.05,0,.22); tone(4186,.3,'sine',.012,0,.22) },
+ gulp(){tone(320,.12,'square',.07,90);tone(140,.22,'sine',.09,60,.08);noise(.25,.1,300)}
 };
 // Original predator theme: a low bowed-string pulse in a lurching 3+3+2 rhythm, with brass swells.
 // It speeds up with the shark's speed and with exposure.
@@ -868,7 +871,7 @@ function hudShow(on){ $('hud').hidden=!on; $('bPause').hidden=!on; padVis(); if(
 
 // ---------- screens ----------
 const scr=$('screen'); let typeTimer=null;
-function screen(html){ clearInterval(typeTimer); if(html==null){scr.hidden=true;scr.innerHTML='';return} scr.hidden=false; scr.innerHTML=html; scr.scrollTop=0;
+function screen(html){ clearTimeout(typeTimer); if(html==null){scr.hidden=true;scr.innerHTML='';return} scr.hidden=false; scr.innerHTML=html; scr.scrollTop=0;
  const f=scr.querySelector('.cta'); if(f&&!touchMode)f.focus({preventScroll:true}) }
 scr.addEventListener('click',e=>{ const b=e.target.closest('[data-act]'); if(!b)return; audio(); act(b.dataset.act,b.dataset.n) });
 function act(a,n){ if(a==='new'){run=null;brief(1)} else if(a==='cont'){run=null;brief(unlocked)} else if(a==='file'){run=null;brief(+n)} else if(a==='dive')startLevel(lv);
@@ -908,9 +911,15 @@ function brief(n){ lv=clamp(n,1,8); state='brief'; hudShow(false); const d=LEVEL
   <div class="brief"><div><b>OBJECTIVE</b>${d.obj}</div><div><b>FIELD NOTE</b>${d.learn}</div></div>
   <div class="row"><button class="cta" data-act="dive">Dive</button><button class="cta alt" data-act="title">All files</button></div>
  </div>`);
- const el=$('typed'),full=d.doc; if(RM){el.textContent=full;return} let i=0;
- typeTimer=setInterval(()=>{ i+=2; el.textContent=full.slice(0,i); if(i%6===0)tone(1800+Math.random()*400,.015,'square',.015); if(i>=full.length)clearInterval(typeTimer) },18);
- el.closest('.doc').addEventListener('click',()=>{clearInterval(typeTimer);el.textContent=full},{once:true}) }
+ const el=$('typed'),full=d.doc; if(RM){el.textContent=full;sfx.endMsg();return} let i=0;
+ // a teleprinter at work: a clack per character, a heavier strike for redaction blocks, the bell and carriage return at each line
+ const step=()=>{ if(!el.isConnected)return; let delay=34, cr=false;
+  for(let n=0;n<2&&i<full.length;n++){ if(full[i++]==='\n'){ cr=true; break } }
+  el.textContent=full.slice(0,i); const c=full[i-1];
+  if(cr){ sfx.carriage(); delay=320 } else if(c==='█')sfx.clack(true); else if(c!==' ')sfx.clack(false);
+  if(i<full.length)typeTimer=setTimeout(step,delay); else sfx.endMsg() };
+ typeTimer=setTimeout(step,250);
+ el.closest('.doc').addEventListener('click',()=>{ if(i>=full.length)return; clearTimeout(typeTimer); i=full.length; el.textContent=full; sfx.endMsg() },{once:true}) }
 function clear(){ state='clear'; hudShow(false); sfx.win(); const bonus=500*lv+Math.round(S.hunger)*10; score+=bonus; stats.points+=bonus;
  if(lv>=8){ unlocked=8; store.set('meg.unlocked',8); return ending() }
  unlocked=Math.max(unlocked,lv+1); store.set('meg.unlocked',unlocked);
