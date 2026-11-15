@@ -160,9 +160,6 @@ details.credits a{color:var(--r)}
 .score{font-size:clamp(3rem,14vw,5rem);font-weight:800;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{padding:5px 12px;border-radius:99px;background:var(--r-soft);font-weight:600;font-size:.9rem}
-.missed{display:flex;flex-direction:column;gap:8px}
-.missed .row{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:space-between;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px}
-.row .nm{min-width:0}
 .note{font-size:.85rem;color:var(--muted);max-width:70ch}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -484,7 +481,7 @@ function renderResults(anim=false){
   <div class="score">${Math.round(R.right/ROUND*100)}%</div>
   <div class="prog"><b>${R.right}/${ROUND}</b><span>correct · average time ${(R.times.reduce((a,b)=>a+b,0)/R.times.length).toFixed(1)} seconds · best streak ${R.bestStreak}</span></div>
   ${R.lifers.length?`<div><div class="mono" style="margin-bottom:8px">First time identified</div><div class="chips">${R.lifers.map(i=>`<span class="chip">${esc(byId(i).name)}</span>`).join('')}</div></div>`:''}
-  ${miss.length?`<div><div class="mono" style="margin-bottom:8px">Review these</div><div class="missed">${miss.map(b=>`<div class="row"><div class="nm"><b>${esc(b.name)}</b><div class="sci">${esc(b.mn)}</div></div>${playBtn(b)}</div>`).join('')}</div></div>`:'<p class="intro">A clean sweep. Time to try the full field day.</p>'}
+  ${miss.length?`<div><div class="mono" style="margin-bottom:8px">Missed</div><div class="chips">${miss.map(b=>`<span class="chip">${esc(b.name)}</span>`).join('')}</div></div>`:'<p class="intro">A clean sweep.</p>'}
   <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-act="again">Play again</button><button class="btn ghost" data-act="tab" data-v="guide">Open field guide</button></div>
  </section>`;
 }
