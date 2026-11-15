@@ -135,13 +135,13 @@
     {
       "from": "play",
       "to": "clear",
-      "trigger": "the level's check() succeeds and the shark then survives a 10-second countdown",
+      "trigger": "the level's check() succeeds, the shark survives a 10-second countdown, and no hunters are on its trail",
       "action": "adds the clear bonus and unlocks the next file in localStorage"
     },
     {
       "from": "play",
       "to": "fail",
-      "trigger": "strength reaches zero, the level sets failNow, or the current's temperature reaches zero",
+      "trigger": "strength reaches zero, the level sets failNow (the photo reaches the dive boat, or the trawler is sunk in file 1), or the current's temperature reaches zero",
       "action": "ends the run"
     },
     {

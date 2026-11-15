@@ -54,11 +54,11 @@ The high-score table keeps the ten best runs on this device, with a name entered
 
 ## Files to clear
 
-Meeting a file's goal starts a 10-second countdown, shown on screen. The game carries on, and dying before it runs out loses the file.
+Meeting a file's goal starts a 10-second countdown, shown on screen. The game carries on, and dying before it runs out loses the file. A file never ends while you are being hunted: if the countdown runs out with the hunter fleet still on your trail (or the file 7 hunter still enraged), the timer reads LOSE THE HUNTERS and the file closes only once they lose you.
 
 | File | Goal |
 |---|---|
-| 1 The Trawler at Night | Eat 12 fish and shred the trawler's net (six bites tear it apart and free the fish inside) |
+| 1 The Trawler at Night | Eat 12 fish and shred the trawler's net (six bites tear it apart and free the fish inside). Sinking the trawler loses the file |
 | 2 Buoy Line | Destroy 5 sonar buoys |
 | 3 The Photographer | A dive boat races about above and drops a diver in behind you, closer and more accurately the more exposed you are. He photographs scenery, and you if you come within half a screen of him outside the current. With a photo he races back at 70% of your top speed; if he climbs aboard with it you lose. Catch him first |
 | 4 Whale Migration | Take 8 bites of whale |

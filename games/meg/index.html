@@ -371,7 +371,7 @@ function boat(x,o={}){ return add(Object.assign({k:'boat',x,dir:1,speed:9,hp:3,i
   if(e.inv<=0&&!e.armored){ const mo=mouth(), near=Math.abs(S.x-e.x)<e.len*.6||Math.abs(mo.x-e.x)<e.len*.6;
    const ram=S.lunge>0&&near&&mo.y<SURF+16&&S.vy<-10, slam=S.air&&near&&S.vy>0&&S.y>SURF-20;
    if(ram||slam){ e.hp--;e.inv=.9;shake=6;sfx.boom();splash(e.x);puff(e.x,SURF-4,12,'#f4efe1',45,.8,120);bump(6);stats.hits++;award(50,e.x,SURF-14,'CRUNCH!'); if(slam)S.vy=-80;
-    if(e.hp<=0){e.sink=.01;stats.sunk++;award(300,e.x,SURF-30);banner(e.dumper?'DUMPING SHIP SUNK':e.big?'HUNTER SHIP DOWN':'VESSEL CAPSIZED',1.6)} } }
+    if(e.hp<=0){e.sink=.01;stats.sunk++; if(e.trawler)L.failNow='You sank the trawler. Every boat on the coast is out looking for what did it.';award(300,e.x,SURF-30);banner(e.dumper?'DUMPING SHIP SUNK':e.big?'HUNTER SHIP DOWN':'VESSEL CAPSIZED',1.6)} } }
   if(e.dumper){e.dropT-=dt; if(e.dropT<=0){e.dropT=rnd(3.2,4.6);drum(e.x-e.dir*16)}}
   if(e.hs&&hunt>0){e.dropT-=dt; if(e.dropT<=0&&Math.abs(S.x-e.x)<50){e.dropT=2.2;charge(e.x)}}
   if(e.big){e.fireT-=dt; if(e.fireT<=0&&dist(e.x,SURF,S.x,S.y)<200&&!S.cloak){e.fireT=L.rage>0?.9:2;tone(400,.15,'sawtooth',.04,200);shot(e.x+e.dir*30,SURF+4,140,'#d8d2c0',12)}}
@@ -879,7 +879,8 @@ function update(dt){
  if(L.failNow)return fail(L.failNow);
  if(L.temp!==undefined&&L.temp<=0)return fail('The current went cold.');
  if(L.endT===undefined){ if(L.check()){ L.endT=10; sfx.win(); banner('OBJECTIVE MET. SURVIVE 10 SECONDS',2.2) } }
- else { const before=Math.ceil(L.endT); L.endT-=dt; if(Math.ceil(L.endT)<before&&L.endT>0)tone(before<=4?1320:880,.08,'square',.05); if(L.endT<=0)return clear() }
+ else { const before=Math.ceil(L.endT); L.endT=Math.max(0,L.endT-dt); if(Math.ceil(L.endT)<before&&L.endT>0)tone(before<=4?1320:880,.08,'square',.05);
+  if(L.endT<=0){ if(hunt>0||L.rage>0){ if(!L.holdMsg){ L.holdMsg=true; banner('LOSE THE HUNTERS FIRST',1.8,true) } } else return clear() } }
 }
 function demo(dt){
  const px=500+Math.sin(T*.22)*260, py=200+Math.sin(T*.45)*50;
@@ -953,7 +954,8 @@ function setW(id,v){ v=Math.round(v); if(hc[id]!==v){hc[id]=v;$(id).style.width=
 function hudUpdate(){ if(state!=='play'&&state!=='paused')return;
  setW('hHun',S.hunger); setW('hExp',S.exp);
  setW('hSpd',S.spd/MAXV*100); $('hSpd').classList.toggle('fast',S.spd>=FASTV); $('mHun').classList.toggle('low',S.hunger<25);
- const tm=$('hTimer'); if(L.endT!==undefined){ const n=Math.max(1,Math.ceil(L.endT)); tm.hidden=false; if(hc.tm!==n){ hc.tm=n; tm.innerHTML=`${n}<small>SURVIVE</small>`; tm.classList.toggle('last',n<=3) } } else tm.hidden=true;
+ const tm=$('hTimer'); if(L.endT!==undefined){ const held=L.endT<=0, n=held?Math.max(1,Math.ceil(Math.max(hunt,L.rage||0))):Math.max(1,Math.ceil(L.endT)), key=(held?'h':'s')+n; tm.hidden=false;
+  if(hc.tm!==key){ hc.tm=key; tm.innerHTML=`${n}<small>${held?'LOSE THE HUNTERS':'SURVIVE'}</small>`; tm.classList.toggle('last',held||n<=3) } } else tm.hidden=true;
  if(L.temp!==undefined){ $('mX').hidden=false; setW('hX',Math.max(0,L.temp)) } else $('mX').hidden=true;
  let sub='',cls=''; if(hunt>0){sub=`HUNTED · ${Math.ceil(hunt)}s`;cls='alarm'} else if(S.cloak)sub='HIDDEN IN THE CURRENT';
  const html=`<b class="score">${score.toLocaleString('en-US')}</b>${L.prog()}${sub?`<small class="${cls}">${sub}</small>`:''}`; if(hc.obj!==html){hc.obj=html;$('hObj').innerHTML=html} }
