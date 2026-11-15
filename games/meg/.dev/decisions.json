@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "MEG decisions",
+  "folder": "games/meg",
+  "entities": [
+    {
+      "id": "publish-meg",
+      "title": "Whether and how to publish MEG",
+      "summary": "MEG sits in the repository as a static page; the owner has not said whether it should go on icelander.net, and with what.",
+      "status": "open",
+      "context": "Every other game is deployed by the workflow behind icelander.net's sign-in, and most have a replay-checked high-score table. MEG's simulation uses Math.random and Math.sin, so a replay-checked table would first need a deterministic engine with a seeded generator, as AGENTS.md requires.",
+      "waitingOn": "Owner",
+      "options": [
+        {
+          "title": "Keep it as a static page in the repository",
+          "consequences": "Nothing more to do; it is played by opening index.html."
+        },
+        {
+          "title": "Publish it on icelander.net behind the sign-in, without scores",
+          "consequences": "Needs an npm project and a Worker that serves the page; the game itself is unchanged."
+        },
+        {
+          "title": "Publish it with a replay-checked high-score table",
+          "consequences": "Also needs the engine split out and made deterministic, a score definition, and a D1 database with a migration."
+        }
+      ],
+      "blocks": [
+        {
+          "path": "games/meg/.dev/backlog.json",
+          "entityId": "publish-on-icelander"
+        }
+      ],
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "games/meg/README.md",
+          "symbol": "Status"
+        }
+      ]
+    }
+  ]
+}

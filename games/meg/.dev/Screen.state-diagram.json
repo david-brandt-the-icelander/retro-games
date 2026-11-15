@@ -1,0 +1,136 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "MEG screen state diagram",
+  "folder": "games/meg",
+  "description": "Which screen the game is on. The page runs one animation loop; the state decides whether the world is simulated, shown behind a menu, or frozen.",
+  "sources": [
+    {
+      "path": "games/meg/index.html",
+      "symbol": "showTitle"
+    },
+    {
+      "path": "games/meg/index.html",
+      "symbol": "brief"
+    },
+    {
+      "path": "games/meg/index.html",
+      "symbol": "startLevel"
+    },
+    {
+      "path": "games/meg/index.html",
+      "symbol": "clear"
+    },
+    {
+      "path": "games/meg/index.html",
+      "symbol": "fail"
+    },
+    {
+      "path": "games/meg/index.html",
+      "symbol": "pause"
+    },
+    {
+      "path": "games/meg/index.html",
+      "symbol": "resume"
+    }
+  ],
+  "machine": "the state variable in index.html",
+  "initialState": "title",
+  "states": [
+    {
+      "id": "title",
+      "description": "Title screen over an attract-mode ocean with a shark swimming a fixed path; file buttons for every unlocked level."
+    },
+    {
+      "id": "brief",
+      "description": "The level's incident file types itself out, with the objective and a field note."
+    },
+    {
+      "id": "play",
+      "description": "The level is simulated: shark, entities, exposure, hunger, the hunter fleet and the win and fail checks."
+    },
+    {
+      "id": "paused",
+      "description": "The simulation is stopped behind the pause menu."
+    },
+    {
+      "id": "clear",
+      "description": "The level is sealed: statistics and the Directorate's cover-story memo; after the last level, the ending."
+    },
+    {
+      "id": "fail",
+      "description": "The level is lost: hunger ran out, the photos reached the dive boat, or the current went cold."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "title",
+      "to": "brief",
+      "trigger": "Begin, Continue or a file button"
+    },
+    {
+      "from": "brief",
+      "to": "play",
+      "trigger": "Dive",
+      "action": "startLevel() builds the level and the shark"
+    },
+    {
+      "from": "brief",
+      "to": "title",
+      "trigger": "All files"
+    },
+    {
+      "from": "play",
+      "to": "paused",
+      "trigger": "P, Esc, the PAUSE button, or the page being hidden"
+    },
+    {
+      "from": "paused",
+      "to": "play",
+      "trigger": "Resume"
+    },
+    {
+      "from": "paused",
+      "to": "play",
+      "trigger": "Restart file",
+      "action": "startLevel() rebuilds the level"
+    },
+    {
+      "from": "paused",
+      "to": "title",
+      "trigger": "All files"
+    },
+    {
+      "from": "play",
+      "to": "clear",
+      "trigger": "the level's check() succeeds",
+      "action": "unlocks the next file in localStorage"
+    },
+    {
+      "from": "play",
+      "to": "fail",
+      "trigger": "hunger reaches zero, the level sets failNow, or the current's temperature reaches zero"
+    },
+    {
+      "from": "clear",
+      "to": "brief",
+      "trigger": "Next file, or Play again after the last level"
+    },
+    {
+      "from": "clear",
+      "to": "title",
+      "trigger": "All files"
+    },
+    {
+      "from": "fail",
+      "to": "play",
+      "trigger": "Try again",
+      "action": "startLevel() rebuilds the level"
+    },
+    {
+      "from": "fail",
+      "to": "title",
+      "trigger": "All files"
+    }
+  ]
+}

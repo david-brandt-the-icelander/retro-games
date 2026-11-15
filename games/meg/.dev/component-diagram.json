@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "MEG component diagram",
+  "folder": "games/meg",
+  "description": "MEG is one static page; the only things outside it are the fonts it loads and the browser storage it keeps progress in.",
+  "sources": [
+    {
+      "path": "games/meg/index.html",
+      "symbol": "showTitle"
+    },
+    {
+      "path": "games/meg/index.html",
+      "symbol": "store"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "MEG page",
+      "responsibility": "The whole game in index.html: input, simulation of the shark and the eight levels, canvas drawing, synthesized audio, HUD and menu screens.",
+      "folder": "games/meg"
+    },
+    {
+      "id": "fonts",
+      "name": "Google Fonts",
+      "responsibility": "Serves Press Start 2P, Special Elite and VT323 for the menus, the incident files and the HUD.",
+      "external": true
+    },
+    {
+      "id": "storage",
+      "name": "Browser localStorage",
+      "responsibility": "Keeps the highest incident file reached and the sound setting on this device.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "fonts",
+      "kind": "depends-on",
+      "description": "Loads the three fonts with a stylesheet link; falls back to system fonts without them."
+    },
+    {
+      "from": "game",
+      "to": "storage",
+      "kind": "depends-on",
+      "description": "Reads and writes meg.unlocked and meg.muted, and plays on without them if storage is blocked."
+    }
+  ]
+}

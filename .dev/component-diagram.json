@@ -34,13 +34,13 @@
     {
       "id": "retro-games",
       "name": "retro-games",
-      "responsibility": "Six games made with the help of AI, and everything needed to test, ship and document them.",
+      "responsibility": "Seven games made with the help of AI, and everything needed to test, ship and document them.",
       "folder": "."
     },
     {
       "id": "games",
       "name": "Games",
-      "responsibility": "Rally, Shatterbelt, Hivestorm, Samosa and Gambit, played in the browser, and LodeStar, a desktop game.",
+      "responsibility": "Rally, Shatterbelt, Hivestorm, Samosa, Gambit and MEG, played in the browser, and LodeStar, a desktop game.",
       "folder": "games",
       "diagram": "games/.dev/component-diagram.json"
     },

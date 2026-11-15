@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "MEG backlog",
+  "folder": "games/meg",
+  "entities": [
+    {
+      "id": "publish-on-icelander",
+      "title": "Make MEG a game on icelander.net",
+      "summary": "Turn the static page into a game like the others: an npm project with a Worker that serves it under icelander.net/games/retro/meg behind the shared sign-in.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "games/meg has a package.json, build, tests and wrangler.jsonc, so the deploy workflow builds and deploys it.",
+        "The Worker checks icelander.net's sign-in with vendor/icelander-auth/, as the other games' Workers do.",
+        "The root README lists MEG with its play link."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-15",
+        "description": "The owner had MEG built in a Claude session and asked for it to be put in a folder in this repository."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "games/meg/README.md",
+          "symbol": "Status"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/meg/.dev/decisions.json",
+          "entityId": "publish-meg",
+          "description": "Waits on this decision."
+        }
+      ]
+    }
+  ]
+}

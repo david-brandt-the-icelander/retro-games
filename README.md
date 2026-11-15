@@ -12,6 +12,7 @@ Each game needs a sign-in with Google or GitHub, icelander.net's one sign-in (th
 | Hivestorm: an arcade shooter for one player, or two online each on their own device, with a high-score table | [icelander.net/games/retro/hivestorm](https://icelander.net/games/retro/hivestorm/) ([high scores](https://icelander.net/games/retro/hivestorm/scores/)) | [games/hivestorm](games/hivestorm) |
 | Samosa: a remake of a 1983 ZX Spectrum strategy game | [icelander.net/games/retro/samosa](https://icelander.net/games/retro/samosa/) ([high scores](https://icelander.net/games/retro/samosa/scores/)) | [games/dictator](games/dictator) |
 | Gambit: 3D chess made in Godot 4. Invite a friend by email and play with chat and a timed transcript, keep contacts and replay past games, or play Stockfish at eight strengths | [icelander.net/games/retro/chess](https://icelander.net/games/retro/chess/) | [games/chess](games/chess) |
+| MEG: an original shark game. You are the last megalodon, hiding in a warm current from the Directorate across eight levels. Turn, and hold Space to swim; biting, leaping and hiding are automatic. Not yet on icelander.net: open its `index.html` to play | Not deployed | [games/meg](games/meg) |
 
 ## Deploying
 
