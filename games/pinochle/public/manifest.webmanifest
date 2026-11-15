@@ -1,0 +1,11 @@
+{
+  "name": "Pinochle",
+  "short_name": "Pinochle",
+  "description": "Partnership auction pinochle — play solo vs bots or online with friends.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f5132",
+  "theme_color": "#0f5132",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

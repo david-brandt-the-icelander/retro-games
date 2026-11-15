@@ -1,0 +1,15 @@
+{
+  "name": "pinochle",
+  "version": "1.0.0",
+  "private": true,
+  "engines": { "node": ">=22.7" },
+  "type": "module",
+  "description": "Partnership auction pinochle for web and mobile (PWA) — solo vs bots and online multiplayer",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node sim.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
