@@ -466,7 +466,7 @@ function diver(bt){ return add({k:'diver',x:bt.x,y:SURF-8,bt,st:'aboard',cd:rnd(
   if(e.aim>0){ g.strokeStyle='#ff4d4d'; g.lineWidth=1.6; g.beginPath(); g.arc(X,Y-14,5,-Math.PI/2,-Math.PI/2+6.283*Math.min(1,e.aim/.9)); g.stroke();
    g.fillStyle='#ff4d4d'; g.font='16px "Lilita One",sans-serif'; g.textAlign='center'; g.fillText('!',X,Y-9) }
   if(e.st==='escape'){ g.fillStyle='#ffd447'; g.font='9px "Lilita One",sans-serif'; g.textAlign='center'; g.lineWidth=2; g.strokeStyle=OL; g.strokeText('PHOTO!',X,Y-12); g.fillText('PHOTO!',X,Y-12) } },
- b(m,r){ if(this.st==='aboard'||this.st==='gone')return false; if(dist(m.x,m.y,this.x,this.y)<r+5){ this.dead=true; stats.camera=true; S.hunger+=50; sfx.gulp(); bloodCloud(this.x,this.y,2); award(500,this.x,this.y,'GOT IT!'); banner('CAMERA TAKEN',1.6); return true } return false } }) }
+ b(m,r){ if(this.st==='aboard'||this.st==='gone')return false; if(dist(m.x,m.y,this.x,this.y)<r+5){ this.dead=true; stats.divers=(stats.divers||0)+1; S.hunger+=50; sfx.gulp(); bloodCloud(this.x,this.y,2); award(500,this.x,this.y,'GOT IT!'); banner('CAMERA TAKEN. THE BOAT SENDS ANOTHER',1.6); return true } return false } }) }
 
 // blood: soft clouds that bloom and fade underwater; droplets in the air
 function bloodCloud(x,y,s=1){
@@ -759,11 +759,12 @@ const LEVELS=[
  learn:'Sonar pings sweep out from each buoy. Wait inside the warm current, where you are hidden, then dash up between pings.',
  setup(){ for(let i=0;i<5;i++)buoy(320+i*290,i*.7); school(250,180,10); school(900,260,10,{squid:true}); school(1400,150,10) },
  prog(){return `BUOYS ${stats.buoys}/5`}, check(){return stats.buoys>=5}},
-{n:'The Photographer',swimmers:4,w:1500,minFish:26,obj:'Catch the diver before he gets a photo of you back aboard.',
+{n:'The Photographer',swimmers:4,w:1500,minFish:26,obj:'Survive 120 seconds without a diver getting a photo of you back aboard.',
  doc:'FREELANCE DIVER · NAME ████████ · DIVE BOAT "SKERRY"\n\nSubject is working the reef edge with a strobe camera. He has sold sighting photos before. One clear frame and it is online by morning.\n\nDIRECTORATE NOTE: we want those photos too.',
- learn:'A dive boat races about above you and drops him in behind you, closer and more accurately the more exposed you are. He can photograph you from half a screen away; break his line of sight before his aim completes. With a photo he swims back nearly as fast as you.',
- setup(){ const b=boat(900,{speed:58,armored:true,diveboat:true}); this.dv=diver(b); school(300,170,10); school(700,220,10) },
- prog(){ const d=this.dv; return stats.camera?'CAMERA TAKEN':!d||d.st==='aboard'?'DIVE BOAT OVERHEAD':d.st==='escape'?'HE HAS A PHOTO!':'DIVER IN THE WATER' }, check(){return stats.camera}},
+ learn:'The dive boat has an endless supply of photographers: eat one and it sends another. It races about above you and drops each in behind you, closer and more accurately the more exposed you are. A diver can photograph you from half a screen away; break his line of sight before his aim completes, or catch him before he swims a photo back aboard.',
+ setup(){ const b=boat(900,{speed:58,armored:true,diveboat:true}); this.boat=b; this.dv=diver(b); this.next=0; school(300,170,10); school(700,220,10) },
+ tick(dt){ if(this.dv&&this.dv.dead){ this.dv=null; this.next=4 } if(!this.dv){ this.next-=dt; if(this.next<=0&&!this.boat.dead){ this.dv=diver(this.boat); this.dv.cd=rnd(2,4) } } },
+ prog(){ const d=this.dv, left=Math.max(0,Math.ceil(120-stats.time)); return `SURVIVE ${left}s · `+(!d?'NEW DIVER COMING':d.st==='aboard'?'DIVE BOAT OVERHEAD':d.st==='escape'?'HE HAS A PHOTO!':'DIVER IN THE WATER') }, check(){return stats.time>=120}},
 {n:'Whale Migration',swimmers:3,w:1900,minFish:20,obj:'Feast. Take 8 bites of whale.',
  doc:'MIGRATION CORRIDOR · OBSERVER VESSELS ON STATION\n\nThree humpbacks expected tonight. Two floodlit boats are logging every carcass. Bite-mark width on last season\'s strandings: ██ cm.\n\nNo known shark leaves marks that wide. File under: ████████.',
  learn:'The first bite kills a whale. It rolls belly-up and floats to the surface, and you can keep biting it on the way. A carcass that reaches the surface is spotted at once, so feed fast and get deep.',

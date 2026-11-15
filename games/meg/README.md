@@ -60,7 +60,7 @@ Meeting a file's goal starts a 10-second countdown, shown on screen. The game ca
 |---|---|
 | 1 The Trawler at Night | Eat 12 fish and shred the trawler's net (six bites tear it apart and free the fish inside). Sinking the trawler loses the file |
 | 2 Buoy Line | Destroy 5 sonar buoys |
-| 3 The Photographer | A dive boat races about above and drops a diver in behind you, closer and more accurately the more exposed you are. He photographs scenery, and you if you come within half a screen of him outside the current. With a photo he races back at 70% of your top speed; if he climbs aboard with it you lose. Catch him first |
+| 3 The Photographer | Survive 120 seconds. A dive boat races about above and drops divers in behind you, closer and more accurately the more exposed you are, and it never runs out: eat one and it sends another. A diver photographs you if you come within half a screen of him outside the current; with a photo he races back at 70% of your top speed, and if he climbs aboard with it you lose |
 | 4 Whale Migration | Take 8 bites of whale |
 | 5 The Research Sub | Cut the sub's tether, or lure it over the hot vents |
 | 6 Cover-Up | Sink 2 dumping ships before the current goes cold |
