@@ -499,7 +499,6 @@ function renderLife(){
   <div class="prog"><b>${seen}/${list.length}</b><span>species identified in ${esc(REGIONS[S.region].name)}</span></div>
   <div class="life">${list.map(b=>{const rec=P.life[b.id]||{},ok=rec.seen;
    return `<div class="tile ${ok?'':'locked'}"><div style="position:relative">${plate(b,false,!ok)}${ok?'':'<div class="lock" aria-hidden="true">?</div>'}</div>${ok?`<b>${esc(b.name)}</b><span class="mono">${rec.best!=null?'Your best: '+rec.best.toFixed(1)+' seconds':'Identified'}</span><span class="mono">${rec.r||0} right · ${rec.w||0} missed</span>`:`<b>Not identified yet</b><span class="mono">${rec.w?rec.w+' missed':'Not seen in a round yet'}</span>`}</div>`}).join('')}</div>
-  <div id="reset"><button class="btn sm ghost" data-act="reset">Reset score</button></div>
  </section>`;
 }
 
@@ -514,12 +513,6 @@ document.addEventListener('click',e=>{
  else if(a==='hint'){S.round.hint=true;renderQuestion(false,false);afterPaint(false)}
  else if(a==='answer'){answer(v)}
  else if(a==='next'){next()}
- else if(a==='reset'){
-  const box=document.getElementById('reset');
-  box.innerHTML=`<span style="margin-right:10px">Erase every record for both regions?</span><button class="btn sm" data-act="reset-yes">Erase</button> <button class="btn sm ghost" data-act="reset-no">Keep</button>`;
- }
- else if(a==='reset-yes'){P.life={};save();render()}
- else if(a==='reset-no'){render()}
 });
 document.addEventListener('keydown',e=>{
  if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('plate-btn')){e.preventDefault();e.target.click();return}
