@@ -25,7 +25,7 @@ Everything else is automatic:
 
 ## How it plays
 
-Hunger drains all the time, and faster at speed; schools of fish, squid, whales and swimmers refill it. Exposure rises when lights, sonar, cameras or spotlights catch the shark, and falls when it hides deep or in the current. When exposure fills, a hunter fleet drops depth charges for a while. Each file opens with a typed, redacted Directorate document and closes with a cover-story memo.
+Hunger drains all the time, and faster at speed; schools of fish, squid, whales and swimmers refill it. Exposure rises when lights, sonar, cameras or spotlights catch the shark, and falls when it hides deep or in the current. When exposure fills, a hunter fleet drops depth charges for a while. A charge tumbles down and bursts in a bubble blast when it touches anything (the shark, fish, a whale, the sub, the seabed) or at a random depth at least a third of the way from the surface to the seabed. Each file opens with a typed, redacted Directorate document and closes with a cover-story memo.
 
 | File | Goal |
 |---|---|

@@ -415,11 +415,33 @@ function drum(x){ return add({k:'drum',x,y:SURF+4,
   g.fillStyle='#ffd447'; g.beginPath(); g.moveTo(X,Y-1.4); g.lineTo(X+1.3,Y+.8); g.lineTo(X-1.3,Y+.8); g.fill() },
  b(m,r){ if(dist(m.x,m.y,this.x,this.y)<r+5){this.dead=true;stats.drums++;sfx.eat();puff(this.x,this.y,8,'#ff9a1f',25,.5);return true} return false } }) }
 
-function charge(x){ return add({k:'charge',x,y:SURF+4,fuse:rnd(1.6,2.8),
- u(dt){ this.y+=34*dt; this.fuse-=dt;
-  if(this.fuse<=0||this.y>floorY(this.x)-5){ this.dead=true;sfx.boom();shake=Math.max(shake,5);puff(this.x,this.y,24,'#ffd447',65,.5);puff(this.x,this.y,12,'#e6f1ee',22,1);pop(this.x,this.y,'BOOM!','#ff9a1f',12); if(dist(this.x,this.y,S.x,S.y)<24*S.size)hurt(14) } },
- d(){ const X=sx(this.x),Y=sy(this.y); circle(X,Y,3.6); blob('#2b333c',OL,.7); g.fillStyle='rgba(255,255,255,.3)'; circle(X-1.2,Y-1.2,1); g.fill();
-  if((this.fuse*8|0)%2){ g.fillStyle='#ff4d4d'; circle(X,Y-4.4,1); g.fill() } } }) }
+// Depth charge: tumbles down from the stern and goes off on contact with anything,
+// on the seabed, or at a random depth at least a third of the way from the surface to the seabed.
+function sharkDist(x,y){ const c=Math.cos(S.a),s=Math.sin(S.a),k=S.size; return segDist(x,y,S.x-c*17*k,S.y-s*17*k,S.x+c*19*k,S.y+s*19*k)-5*k }
+const IMPACT={fish:4,sub:14,diver:10,drum:7,drone:7,turret:12};
+function blast(x,y,R){ sfx.boom(); tone(55,.7,'sine',.14,30); shake=Math.max(shake,6); flashA=Math.max(flashA,.12);
+ parts.push({x,y,vx:0,vy:0,life:.5,max:.5,ring:R,c:'#e6f6ff',g:0});
+ parts.push({x,y,vx:0,vy:0,life:.22,max:.22,core:R*.5,c:'#ffffff',g:0});
+ for(let i=0;i<55;i++){ const a=Math.random()*6.283, v=rnd(25,120); parts.push({x:x+Math.cos(a)*2,y:y+Math.sin(a)*2,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:rnd(1.2,2.6),max:2.6,c:'#d6f2ff',g:-60,dr:3.4,bub:1,r:rnd(.7,3.4)}) }
+ pop(x,y-12,'WHUMP!','#bfe9ff',12);
+ if(sharkDist(x,y)<R*.7)hurt(14);
+ for(const e of ents) if(e.k==='fish'&&!e.dead&&dist(x,y,e.x,e.y)<R*.8){ e.dead=true; bubbles(e.x,e.y,2) } }
+function charge(x){ const fy=floorY(x); return add({k:'charge',x,y:SURF+5,vx:rnd(-10,10),rot:rnd(0,6.3),spin:rnd(-1.6,1.6),arm:.25,det:SURF+(fy-SURF)*rnd(1/3,1),
+ u(dt){ this.arm-=dt; this.y+=30*dt; this.x+=this.vx*dt; this.vx*=1-dt; this.rot+=this.spin*dt; if(Math.random()<dt*7)bubbles(this.x,this.y-4,1);
+  let hit=this.y>=this.det||this.y>floorY(this.x)-6||sharkDist(this.x,this.y)<5;
+  if(!hit&&this.arm<=0) for(const e of ents){ if(e===this||e.dead)continue;
+   if(e.k==='whale'){ if(e.gone<=0){ const dx=(this.x-e.x)/46,dy=(this.y-e.y)/13; if(dx*dx+dy*dy<1){hit=true;break} } continue }
+   const r=IMPACT[e.k]; if(r&&dist(this.x,this.y,e.x,e.y)<r){hit=true;break} }
+  if(hit){ this.dead=true; blast(this.x,this.y,26*S.size) } },
+ d(){ const X=sx(this.x),Y=sy(this.y); if(X<-16||X>W+16||Y<-16||Y>H+16)return;
+  g.save(); g.translate(X,Y); g.rotate(this.rot); g.scale(1.6,1.6); g.lineJoin='round';
+  g.beginPath(); g.moveTo(-5,-4); g.lineTo(5,-4); g.ellipse(5,0,1.6,4,0,-Math.PI/2,Math.PI/2); g.lineTo(-5,4); g.ellipse(-5,0,1.6,4,0,Math.PI/2,Math.PI*1.5); g.closePath(); blob('#3a4652',OL,.8);
+  g.fillStyle='#5d6b78'; g.fillRect(-2.8,-3.9,1.5,7.8); g.fillRect(1.4,-3.9,1.5,7.8);
+  g.fillStyle='rgba(255,255,255,.28)'; g.fillRect(-5,-3,10,.9);
+  g.beginPath(); g.ellipse(5,0,1.6,4,0,0,6.3); blob('#2a333c',OL,.6);
+  g.strokeStyle='#8a96a3'; g.lineWidth=.35; g.beginPath(); g.ellipse(5,0,1,2.6,0,0,6.3); g.stroke();
+  g.fillStyle=(T*6|0)%2?'#ff4d4d':'#7a2020'; circle(5,0,.8); g.fill();
+  g.restore() } }) }
 
 function shot(x,y,speed,col,dmg){ const a=Math.atan2(S.y-y,S.x-x); return add({k:'shot',x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life:3,col,dmg,
  u(dt){ this.x+=this.vx*dt;this.y+=this.vy*dt;this.life-=dt; if(this.life<=0)this.dead=true; if(dist(this.x,this.y,S.x,S.y)<7*S.size){this.dead=true;hurt(this.dmg)} },
@@ -556,7 +578,7 @@ function triggerHunt(){ sfx.alarm(); if(L.onExposed){L.onExposed();return} if(hu
  boat(cam.x-40,{hs:true,dir:1,speed:46,hp:2,len:30,light:true}); boat(cam.x+W+40,{hs:true,dir:-1,speed:46,hp:2,len:30,light:true}) }
 
 // ---------- simulation ----------
-function stepParts(dt){ for(const p of parts){ p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=p.g*dt;p.life-=dt; if(p.bub&&p.y<SURF+2)p.life=0 } parts=parts.filter(p=>p.life>0); if(parts.length>500)parts.splice(0,parts.length-500) }
+function stepParts(dt){ for(const p of parts){ if(p.dr){ const f=Math.max(0,1-p.dr*dt); p.vx*=f; p.vy*=f } p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=p.g*dt;p.life-=dt; if(p.bub&&p.y<SURF+2)p.life=0 } parts=parts.filter(p=>p.life>0); if(parts.length>500)parts.splice(0,parts.length-500) }
 function follow(dt,snap){ const tx=clamp(S.x-W/2+S.face*40,0,world.w-W), ty=clamp(S.y-H*.55,0,world.h-H); const k=snap?1:Math.min(1,dt*4); cam.x+=(tx-cam.x)*k; cam.y+=(ty-cam.y)*k }
 function update(dt){
  S.seen=false; updShark(dt);
@@ -624,7 +646,9 @@ function drawFG(){
  if(storm){ g.strokeStyle='rgba(170,190,220,.5)'; g.lineWidth=.6; g.beginPath(); for(let i=0;i<70;i++){ const x=(i*37+T*90)%W, y=(i*53+T*260)%(H+10); if(y<sY){ g.moveTo(x,y); g.lineTo(x-1.5,y+5) } } g.stroke() }
  for(const p of parts){ const X=sx(p.x),Y=sy(p.y); if(X<-30||X>W+30||Y<-20||Y>H+10)continue; g.globalAlpha=clamp(p.life/p.max,0,1);
   if(p.txt){ g.font=`${p.s}px "Lilita One",Nunito,sans-serif`; g.textAlign='center'; g.lineWidth=2.4; g.strokeStyle=OL; g.strokeText(p.txt,X,Y); g.fillStyle=p.c; g.fillText(p.txt,X,Y) }
-  else if(p.bub){ g.strokeStyle=p.c; g.lineWidth=.5; circle(X,Y,1.1); g.stroke() }
+  else if(p.ring){ const t=1-p.life/p.max; g.globalAlpha=1; g.strokeStyle=`rgba(230,246,255,${.85*(1-t)})`; g.lineWidth=3*(1-t)+.5; circle(X,Y,p.ring*(.15+.85*t)); g.stroke() }
+  else if(p.core){ g.fillStyle='#fff'; circle(X,Y,p.core*(1.2-p.life/p.max*.6)); g.fill() }
+  else if(p.bub){ const r=p.r||1.1; g.strokeStyle=p.c; g.lineWidth=r>1.6?.7:.5; circle(X,Y,r); g.stroke(); if(r>1.6){ g.fillStyle='rgba(255,255,255,.55)'; circle(X-r*.35,Y-r*.35,r*.28); g.fill() } }
   else { g.fillStyle=p.c; circle(X,Y,.9); g.fill() } }
  g.globalAlpha=1;
  if(hunt>0&&state==='play'){ g.strokeStyle=`rgba(232,65,59,${.45+.3*Math.sin(T*8)})`; g.lineWidth=3; g.strokeRect(1.5,1.5,W-3,H-3) }
