@@ -350,7 +350,7 @@ function swimmer(x){ return add({k:'swim',x:clearSurfaceX(x),y:SURF+1,dir:Math.r
   g.fillStyle=OL; circle(-.7,-1.1,.28); g.fill(); circle(.7,-1.1,.28); g.fill();
   if(this.panic>0){ g.beginPath(); g.ellipse(0,.1,.6,.5,0,0,6.3); g.fill(); g.fillStyle='#ffd447'; g.font='800 4px Nunito,sans-serif'; g.textAlign='center'; g.fillText('!',0,-5) }
   g.restore() },
- b(m,r){ if(segDist(m.x,m.y,this.x,SURF-4,this.x,SURF+20)<r+6){ this.dead=true; S.hunger+=20; stats.swimmers++; bump(8); sfx.gulp(); splash(this.x); bloodCloud(this.x,SURF+8,2.2); leftovers(this.x,SURF+10,this.skin,this.suit); award(250,this.x,SURF-4,'GULP!'); return true } return false } }) }
+ b(m,r){ if(segDist(m.x,m.y,this.x,SURF-4,this.x,SURF+20)<r+6){ this.dead=true; S.hunger+=20; stats.swimmers++; bump(8); sfx.gulp(); splash(this.x); bloodCloud(this.x,SURF+8,2.2); award(250,this.x,SURF-4,'GULP!'); return true } return false } }) }
 function boat(x,o={}){ return add(Object.assign({k:'boat',x,dir:1,speed:9,hp:3,inv:0,sink:0,light:false,la:1.57,ph:Math.random()*6,len:64,dropT:rnd(1,3),fireT:2,
  get netX(){return this.x-this.dir*52}, get netY(){return SURF+80}, get lightLen(){return this.big?190:150},
  u(dt){ const e=this;
@@ -422,27 +422,17 @@ function diver(x,y,bt){ return add({k:'diver',x,y,cam:true,photos:0,flee:false,f
 // blood: soft clouds that bloom and fade underwater; droplets in the air
 function bloodCloud(x,y,s=1){
  if(y<SURF){ puff(x,y,Math.round(6*s),'#b3202f',35,.7,220); return }
- for(let i=0;i<2+Math.round(s*3);i++){ const L=rnd(2.5,5)*(.7+s*.3); parts.push({x:x+rnd(-4,4)*s,y:Math.max(SURF+3,y+rnd(-3,3)*s),vx:rnd(-6,6),vy:rnd(-7,-1),life:L,max:L,cloud:1.5*s,grow:rnd(7,12)*s,c:'#8a0f1e',g:0,dr:1.2}) } }
-function drawClouds(){ for(const p of parts){ if(!p.cloud)continue; const X=sx(p.x),Y=sy(p.y); if(X<-60||X>W+60||Y<-60||Y>H+60)continue;
- const t=1-p.life/p.max, r=p.cloud+p.grow*Math.sqrt(t), a=.62*Math.pow(p.life/p.max,.8);
- const gr=g.createRadialGradient(X,Y,0,X,Y,r); gr.addColorStop(0,`rgba(150,14,30,${a})`); gr.addColorStop(.6,`rgba(130,10,26,${a*.6})`); gr.addColorStop(1,'rgba(120,8,24,0)');
- g.fillStyle=gr; circle(X,Y,r); g.fill() } }
-
-// leftovers: limbs that float up and bob at the surface
-function limb(x,y,type,skin='#f2c39b',suit='#ff5d5d'){ return add({k:'limb',x,y,type,skin,suit,vx:rnd(-22,22),vy:rnd(-20,-6),rot:rnd(0,6.3),spin:rnd(-3,3),ph:rnd(0,6),life:16,
- u(dt){ this.life-=dt; if(this.life<=0){this.dead=true;return}
-  if(this.y>SURF+2){ this.vy=Math.max(this.vy-18*dt,-16); this.y+=this.vy*dt } else { this.vy=0; this.y=SURF+2+Math.sin(T*2+this.ph)*.7; this.spin*=1-dt }
-  this.x+=this.vx*dt; this.vx*=1-.8*dt; this.rot+=this.spin*dt; if(this.life>13&&Math.random()<dt*2)bloodCloud(this.x,this.y,.4) },
- d(){ const X=sx(this.x),Y=sy(this.y); if(X<-20||X>W+20||Y<-20||Y>H+20)return; g.save(); g.globalAlpha=Math.min(1,this.life/2);
-  g.translate(X,Y); g.rotate(this.rot); g.scale(2.2,2.2); g.lineCap='round';
-  const leg=this.type==='leg', th=leg?1.9:1.4;
-  g.strokeStyle=OL; g.lineWidth=th+.6; g.beginPath(); g.moveTo(-3,0); g.lineTo(3,0); g.stroke(); g.strokeStyle=this.skin; g.lineWidth=th; g.stroke();
-  if(leg){ g.beginPath(); g.ellipse(3.6,-.6,1.2,.7,-.5,0,6.3); blob(this.skin,OL,.3); g.fillStyle=this.suit; g.fillRect(-3.2,-1.05,1.6,2.1) }
-  else { circle(3.5,0,.9); blob(this.skin,OL,.3); g.fillStyle=this.suit; g.fillRect(-3.2,-.8,1,1.6) }
-  circle(-3.3,0,th*.55); blob('#b3202f',OL,.3); g.fillStyle='#f0e6dc'; circle(-3.3,0,th*.2); g.fill();
-  g.restore() },
- b(m,r){ if(dist(m.x,m.y,this.x,this.y)<r+5){ this.dead=true; S.hunger+=4; sfx.eat(); award(15,this.x,this.y,'LEFTOVERS'); return true } return false } }) }
-function leftovers(x,y,skin,suit){ limb(x,y,'arm',skin,suit); limb(x+4,y+3,'leg',skin,suit); if(Math.random()<.5)limb(x-4,y+2,'arm',skin,suit) }
+ const n=Math.round(5+9*s);
+ for(let i=0;i<n;i++){ const a=Math.random()*6.283, streak=Math.random()<.25, sp=rnd(1.5,13)*Math.sqrt(s)*(streak?1.7:1), L=rnd(1.4,6.5)*(.6+.4*s);
+  parts.push({x:x+rnd(-3,3)*s,y:Math.max(SURF+3,y+rnd(-3,3)*s),vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-rnd(1,5),life:L,max:L,
+   cloud:rnd(.5,1.8)*s,grow:rnd(2.5,9)*s,peak:streak?rnd(.12,.3):rnd(.18,.5),rot:streak?a:rnd(0,3.14),str:streak?rnd(3,5):rnd(1,2.2),seed:rnd(0,99),dark:Math.random()<.4,c:'#8a0f1e',g:0,dr:rnd(.6,1.6)}) } }
+function drawClouds(){ for(const p of parts){ if(!p.cloud)continue; const t=1-p.life/p.max;
+  const X=sx(p.x)+Math.sin(T*.9+p.seed)*t*5, Y=sy(p.y)+Math.cos(T*.7+p.seed*1.3)*t*3; if(X<-60||X>W+60||Y<-60||Y>H+60)continue;
+  const r=p.cloud+p.grow*Math.sqrt(t), a=p.peak*Math.pow(p.life/p.max,1.3)*Math.min(1,t*8+.3);
+  g.save(); g.translate(X,Y); g.rotate(p.rot+t*.6*Math.sin(p.seed)); g.scale(p.str*(1+t*.8),1);
+  const c=p.dark?'110,6,20':'150,16,32', gr=g.createRadialGradient(0,0,0,0,0,r);
+  gr.addColorStop(0,`rgba(${c},${a})`); gr.addColorStop(.5,`rgba(${c},${a*.55})`); gr.addColorStop(1,`rgba(${c},0)`);
+  g.fillStyle=gr; circle(0,0,r); g.fill(); g.restore() } }
 
 // whales: every bite takes a chunk; the first kills, the carcass rolls belly-up and floats up, and a surfaced carcass draws attention
 function whale(x,y,dir){ return add({k:'whale',x,y,dir,bites:[],cd:0,ph:Math.random()*6,corpse:false,flip:0,surfaced:false,surfT:0,
@@ -641,7 +631,7 @@ function scuba(x){ return add({k:'scuba',vis:1,x,y:rnd(130,260),dir:Math.random(
   circle(4,-.6,1.8); blob('#f2c39b',OL,.4); g.beginPath(); g.rect(3.6,-1.6,2.4,1.3); blob('#9fe3f0',OL,.35);
   if(this.panic>0){ g.fillStyle='#ffd447'; g.font='800 4px Nunito,sans-serif'; g.textAlign='center'; g.fillText('!',4,-4) }
   g.restore() },
- b(m,r){ return dist(m.x,m.y,this.x,this.y)<r+8&&(leftovers(this.x,this.y,'#f2c39b','#1f6f8b'),gulpIt(this,20,300,'SCUBA SNACK!',6,2)) } }) }
+ b(m,r){ return dist(m.x,m.y,this.x,this.y)<r+8&&gulpIt(this,20,300,'SCUBA SNACK!',6,2) } }) }
 function kayak(x){ return add({k:'kayak',vis:1,x:clearSurfaceX(x),y:SURF,dir:Math.random()<.5?-1:1,ph:rnd(0,6),panic:0,
  u(dt){ const d=dist(this.x,SURF,S.x,S.y); if(d<100&&!S.cloak){ if(this.panic<=0)tone(820,.2,'triangle',.03,1200); this.panic=2 } this.panic-=dt;
   if(this.panic>0){ this.dir=Math.sign(this.x-S.x)||1; see(4,dt) } else if(Math.random()<dt*.1)this.dir*=-1;
@@ -658,7 +648,7 @@ function kayak(x){ return add({k:'kayak',vis:1,x:clearSurfaceX(x),y:SURF,dir:Mat
   g.strokeStyle='#8a6a3a'; g.lineWidth=.3; g.beginPath(); g.moveTo(-11,-1); g.quadraticCurveTo(0,1.4,11,-1.2); g.stroke();
   if(this.panic>0){ g.fillStyle='#ffd447'; g.font='800 4px Nunito,sans-serif'; g.textAlign='center'; g.fillText('!',0,-11) }
   g.restore() },
- b(m,r){ return dist(m.x,m.y,this.x,SURF-2)<r+11&&(splash(this.x),leftovers(this.x,SURF+8,'#d9a77a','#f1ede2'),gulpIt(this,22,400,'KAYAK!',10,2)) } }) }
+ b(m,r){ return dist(m.x,m.y,this.x,SURF-2)<r+11&&(splash(this.x),gulpIt(this,22,400,'KAYAK!',10,2)) } }) }
 
 function bear(x){ return add({k:'bear',vis:1,x:clearSurfaceX(x),y:SURF+2,dir:Math.random()<.5?-1:1,ph:rnd(0,6),swipe:0,
  u(dt){ this.swipe-=dt; const d=dist(this.x,SURF,S.x,S.y);
@@ -811,7 +801,7 @@ function triggerHunt(){ sfx.alarm(); if(L.onExposed){L.onExposed();return} if(hu
  boat(cam.x-40,{hs:true,dir:1,speed:46,hp:2,len:30,light:true}); boat(cam.x+W+40,{hs:true,dir:-1,speed:46,hp:2,len:30,light:true}) }
 
 // ---------- simulation ----------
-function stepParts(dt){ for(const p of parts){ if(p.dr){ const f=Math.max(0,1-p.dr*dt); p.vx*=f; p.vy*=f } p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=p.g*dt;p.life-=dt; if(p.bub&&p.y<SURF+2)p.life=0 } parts=parts.filter(p=>p.life>0); if(parts.length>500)parts.splice(0,parts.length-500) }
+function stepParts(dt){ for(const p of parts){ if(p.dr){ const f=Math.max(0,1-p.dr*dt); p.vx*=f; p.vy*=f } p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=p.g*dt;p.life-=dt; if(p.bub&&p.y<SURF+2)p.life=0 } parts=parts.filter(p=>p.life>0); if(parts.length>800)parts.splice(0,parts.length-800) }
 function follow(dt,snap){ const tx=clamp(S.x-W/2+S.face*40,0,world.w-W), ty=clamp(S.y-H*.55,0,world.h-H); const k=snap?1:Math.min(1,dt*4); cam.x+=(tx-cam.x)*k; cam.y+=(ty-cam.y)*k }
 function update(dt){
  S.seen=false; updShark(dt);
