@@ -95,8 +95,12 @@ main{display:block;overflow-x:clip}
 .plate.locked img.fg{filter:brightness(.25) blur(7px) saturate(.4);transform:scale(1.1)}
 .plate.locked img.bgimg{filter:blur(20px) brightness(.25) saturate(.4)}
 .plate-btn{position:relative;cursor:pointer;border-radius:14px}
-.start{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
-.levelnum{font-size:clamp(5rem,26vw,8.5rem);font-weight:800;line-height:.88;letter-spacing:-.05em;color:var(--r);font-variant-numeric:tabular-nums;margin-bottom:12px}
+.start{display:flex;flex-direction:column;gap:18px}
+.strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
+.strip-item{flex:none;width:min(190px,46vw)}
+.strip .plate{aspect-ratio:4/3}
+.strip .plate img.fg{height:100%;max-height:none}
+.btn.big{padding:15px 24px;font-size:1.05rem}
 .timer{display:flex;align-items:center;gap:12px}
 .timer .bar{height:8px}
 .timer .bar i{transition:none}
@@ -539,6 +543,7 @@ const byId=id=>BIRDS.find(b=>b.id===id);
 /* Most common first, as I judged how widespread and abundant each bird is in the region. Ten levels follow this order. */
 const RANK={wi:["amerob", "bkcchi", "norcar", "amecro", "blujay", "rewbla", "amegfi", "moudov", "sonspa", "cangoo", "dowwoo", "wbnuth", "comyel", "gracat", "yelwar", "reevir", "balori", "easpho", "chisp", "cedwax", "houwre", "killde", "sancra", "grbher", "rethaw", "norfli", "rthumm", "browth", "easmea", "indbun", "tuftit", "belkin", "ovenbi", "comloo", "robgro", "easblu", "wiltur", "brdowl", "pilwoo", "whtspa", "chswar", "woothr", "scatan"],
  az:["houfin", "whwdov", "gamqua", "normoc", "cubthr", "gilwoo", "annhum", "cacwre", "eucdov", "incdov", "abetow", "comrav", "blkpho", "saypho", "verdin", "lesgol", "coshum", "btgnat", "wesking", "ladwoo", "greroa", "phaino", "bewwre", "hoodor", "coohaw", "astfly", "gilfli", "bulori", "grhowl", "bktspa", "lucwar", "verfly", "harhaw", "bkchum", "wesmea", "canwre", "rocwre", "burowl", "brcfly", "pyrrhu", "lesnig", "elfowl"]};
+const SHORT={wi:'Wisconsin',az:'Phoenix'};
 const LEVEL_SIZES={wi:[5,4,4,4,4,4,4,4,5,5],az:[5,4,4,4,4,4,4,4,4,5]};
 const LEVELS={};
 for(const reg of Object.keys(RANK)){let i=0;LEVELS[reg]=LEVEL_SIZES[reg].map(n=>{const ids=RANK[reg].slice(i,i+n);i+=n;return ids.map(byId)})}
@@ -650,11 +655,10 @@ function render(){
  requestAnimationFrame(refreshPlay);
 }
 function renderMenu(){
- const lv=P.level[S.region]||1;
+ const reg=S.region,lv=P.level[reg]||1,pick=shuffle(birdsIn(reg)).slice(0,10);
  $main.innerHTML=`<section class="start">
-  <div class="mono">Level</div>
-  <div class="levelnum">${lv}</div>
-  <div><button class="btn" data-act="start">Start</button></div>
+  <div class="strip" aria-hidden="true">${pick.map(b=>`<div class="strip-item">${plate(b,false,false,true)}</div>`).join('')}</div>
+  <div><button class="btn big" data-act="start">Start playing: ${SHORT[reg]} birds (level ${lv})</button></div>
  </section>`;
 }
 const REDUCE=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
