@@ -844,7 +844,8 @@ function updShark(dt){
  const sp=Math.hypot(s.vx,s.vy);
  s.face=Math.cos(s.a)>=0?1:-1; s.tail+=dt*(1.5+sp*.12);
  if(fast&&Math.random()<.6)bubbles(s.x-Math.cos(s.a)*16*s.size,s.y-Math.sin(s.a)*16*s.size,1);
- s.hunger-=(1.1+s.spd/MAXV*1.4)*dt;
+ // strength drains all the time, and much faster the faster you swim: 1.5 a second at rest, 5 at full speed
+ s.hunger-=(1.5+3.5*Math.pow(s.spd/MAXV,1.4))*dt;
 }
 function triggerHunt(){ sfx.alarm(); if(L.onExposed){L.onExposed();return} if(hunt>0)return;
  hunt=18; banner('EXPOSED. HUNTER FLEET INBOUND',2.2,true);
