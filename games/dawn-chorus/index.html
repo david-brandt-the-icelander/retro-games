@@ -472,7 +472,7 @@ function render(){
 function renderMenu(){
  const reg=REGIONS[S.region],best=P.best[S.region+':mix'];
  $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:18px">
-  <p class="intro">Ten birds from ${esc(reg.name)}, some by sight and some by sound. Name each one, then read its field notes before the next. Every bird you get right goes on your life list.</p>
+  <p class="intro">Ten birds from ${esc(reg.name)}. Each one comes as a photo with its song. Name the bird, then read its field notes before the next. Every bird you get right goes on your life list.</p>
   ${best?`<span class="mono">Best here: ${best} pts</span>`:''}
   <div><button class="btn" data-act="start">Start ${ROUND} birds</button></div>
  </section>`;
@@ -488,24 +488,23 @@ function slideTo(fn){
 function afterPaint(top){requestAnimationFrame(()=>{paintSonos();refreshPlay();if(top)window.scrollTo({top:0})})}
 function startRound(){
  const pool=birdsIn(S.region),qs=shuffle(pool).slice(0,ROUND).map(b=>{
-  const type=Math.random()<.5?'see':'hear';
   const opts=shuffle([b,...shuffle(pool.filter(x=>x!==b)).slice(0,3)]);
-  return {b,type,opts}});
+  return {b,opts}});
  qs.forEach(q=>{getAC();load(q.b).catch(()=>{})});
  S.round={qs,i:0,score:0,streak:0,bestStreak:0,right:0,answered:null,hint:false,lifers:[],missed:[],done:false};
  slideTo(anim=>{renderHeader();renderQuestion(anim,true);afterPaint(true)});
 }
 const hudHTML=(R,done)=>`<div class="hud"><span class="mono">Bird ${R.i+1} of ${ROUND}</span><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${ROUND}" aria-valuenow="${R.i+(done?1:0)}"><i style="width:${(R.i+(done?1:0))/ROUND*100}%"></i></div><span class="stat">${R.score} pts</span><span class="stat streak">${R.streak>1?'x'+R.streak+' streak':''}</span></div>`;
 function renderQuestion(anim=false,auto=true){
- const R=S.round,q=R.qs[R.i],b=q.b,hear=q.type==='hear';
- const clue=hear
-  ?`<div class="clue-hear"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${playBtn(b,'Play',' ')}<span class="mono">Which bird is singing?</span></div><canvas class="sono" data-id="${b.id}" aria-label="Spectrogram of the mystery recording"></canvas></div>`
-  :`<div class="plate-btn" role="button" tabindex="0" data-act="replay" data-v="${b.id}" aria-label="Play the recording again">${plate(b,false,false,true)}<span class="badge">&#9654; Tap to replay</span></div>`;
+ const R=S.round,q=R.qs[R.i],b=q.b;
  const hint=R.hint?`<div class="hint">${esc(b.habitat)} · ${esc(b.size)}</div>`:`<div class="hint"></div>`;
  $main.innerHTML=`<section class="q${anim?' slide-in':''}">
   ${hudHTML(R,false)}
-  <div class="clue">${clue}${hear?'':`<div class="mono" style="text-align:center">Study the field marks and listen</div>`}${hint}
-  ${!R.hint?`<div style="text-align:center"><button class="btn sm ghost" data-act="hint">Hint: habitat and size (-40)</button></div>`:''}</div>
+  <div class="clue">
+   <div class="plate-btn" role="button" tabindex="0" data-act="replay" data-v="${b.id}" aria-label="Play the recording again">${plate(b,false,false,true)}<span class="badge">&#9654; Tap to replay</span></div>
+   <canvas class="sono" data-id="${b.id}" aria-label="Spectrogram of the recording"></canvas>
+   <div class="mono" style="text-align:center">Study the field marks and listen</div>${hint}
+   ${!R.hint?`<div style="text-align:center"><button class="btn sm ghost" data-act="hint">Hint: habitat and size (-40)</button></div>`:''}</div>
   <div class="options" role="group" aria-label="Choose the species">${q.opts.map((o,k)=>`<button class="opt" data-act="answer" data-v="${o.id}"><kbd>${k+1}</kbd>${esc(o.name)}</button>`).join('')}</div>
  </section>`;
  if(auto)setTimeout(()=>{if(S.round===R&&R.qs[R.i]===q&&!R.answered&&S.tab==='play')playSong(b,true)},anim?340:150);
