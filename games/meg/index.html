@@ -385,6 +385,7 @@ function boat(x,o={}){ return add(Object.assign({k:'boat',x,dir:1,speed:9,hp:3,i
   g.fillStyle='#ffe28a'; for(let i=0;i<3;i++){ g.beginPath(); g.rect(-8.5+i*4,-9.5,2.6,2.6); blob('#ffe28a',OL,.35) }
   g.strokeStyle=OL; g.lineWidth=.8; g.beginPath(); g.moveTo(-4,-11); g.lineTo(-4,-21); g.moveTo(-7,-18); g.lineTo(-1,-18); g.stroke();
   if(e.hs){ g.fillStyle=(T*4|0)%2?'#e8413b':'#2a5bff'; circle(-4,-22,1.6); g.fill() }
+  if(e.diveboat){ g.beginPath(); g.rect(-3.6,-21.5,6.5,4.2); blob('#e8413b',OL,.4); g.strokeStyle='#fff'; g.lineWidth=.9; g.beginPath(); g.moveTo(-3.4,-21.3); g.lineTo(2.7,-17.5); g.stroke() }
   if(e.dumper){ for(let i=0;i<3;i++){ circle(-17+i*3.4,-6.5,1.7); blob('#ff9a1f',OL,.4) } }
   g.beginPath(); g.moveTo(-21,-4); g.lineTo(22,-4); g.quadraticCurveTo(19,5,12,6.5); g.lineTo(-16,6.5); g.quadraticCurveTo(-20,3,-21,-4); g.closePath(); blob(hull,OL,.8);
   g.fillStyle=stripe; g.fillRect(-20,-1.4,40,1.8);
@@ -403,21 +404,57 @@ function buoy(x,delay){ return add({k:'buoy',x,t:delay,r:-1,hit:false,
   g.beginPath(); g.ellipse(X,Y,6,5,0,0,6.3); blob('#ff8c2a',OL,.8); g.fillStyle='#fff'; g.fillRect(X-5.5,Y-1,11,2) },
  b(m,r){ if(dist(m.x,m.y,this.x,SURF+3)<r+9){this.dead=true;stats.buoys++;sfx.boom();puff(this.x,SURF,14,'#ff8c2a',45,.7,80);splash(this.x);award(100,this.x,SURF-8,'SNAP!');banner('BUOY DESTROYED',1);return true} return false } }) }
 
-function diver(x,y,bt){ return add({k:'diver',x,y,cam:true,photos:0,flee:false,fT:0,ph:0,bt,
- u(dt){ const d=dist(this.x,this.y,S.x,S.y); this.fT-=dt;
-  if(this.cam&&d<120&&!S.cloak&&this.fT<=0){ this.fT=1.5;this.photos++;stats.photos=this.photos;bump(10);S.seen=true;flashA=.35;tone(2200,.05,'square',.04);this.flee=true;banner(this.photos===1?'PHOTOGRAPHED. STOP HIM':'ANOTHER PHOTO',1.2,true) }
-  let tx,ty,sp; if(this.flee&&this.cam){tx=this.bt.x;ty=SURF;sp=24} else if(!this.cam){tx=this.x;ty=SURF-10;sp=20} else {tx=this.x+Math.sin(T*.3)*30;ty=this.y+Math.cos(T*.4)*10;sp=8}
-  const a=Math.atan2(ty-this.y,tx-this.x); this.x+=Math.cos(a)*sp*dt; this.y+=Math.sin(a)*sp*dt; this.ph+=dt*6; if(Math.random()<dt*2)bubbles(this.x,this.y-5,1);
-  if(this.y<SURF+5){ if(this.cam&&this.photos>0)L.failNow='The diver reached his boat. The photos are online by morning.'; if(!this.cam)this.dead=true; this.y=SURF+5 } },
- d(){ const X=sx(this.x),Y=sy(this.y); if(X<-20||X>W+20)return; const k=Math.sin(this.ph)*1.5;
-  g.save(); g.translate(X,Y); g.scale(1.8,1.8); g.lineJoin='round';
+// The photographer: rides a dive boat that races about above, is dropped in behind the shark, takes pictures,
+// and swims back up to be collected. A photo of the shark carried back aboard loses the file.
+function diver(bt){ return add({k:'diver',x:bt.x,y:SURF-8,bt,st:'aboard',cd:rnd(3,5),fT:1,aim:0,tx:0,ty:0,stay:0,ph:0,dir:1,vx:0,vy:0,
+ u(dt){ const e=this,b=e.bt,E=clamp(S.exp/100,0,1); e.ph+=dt*6;
+  if(b.dead||b.sink){ e.st=e.st==='aboard'?'gone':e.st }
+  if(e.st==='aboard'){
+   e.x=b.x-b.dir*12; e.y=SURF-8; e.cd-=dt; const behind=(b.x-S.x)*S.face, reach=70+(1-E)*230;
+   // race about: usually toward a spot somewhere behind the shark, now and then off at random
+   e.goT=(e.goT||0)-dt; if(e.goT<=0||Math.abs(b.x-e.gx)<20){ e.goT=rnd(2,5); e.gx=clamp(Math.random()<.7?S.x-S.face*rnd(80,80+reach):rnd(80,world.w-80),70,world.w-70) }
+   b.dir=Math.sign(e.gx-b.x)||b.dir; b.speed=Math.abs(e.gx-b.x)>8?88:0;
+   if(e.cd<=0&&behind<-50&&Math.abs(b.x-S.x)<reach&&Math.random()<dt*1.5){
+    const err=(1-E)*170; e.st='dive'; e.y=SURF+4; e.tx=clamp(S.x+rnd(-err,err),40,world.w-40); e.ty=clamp(S.y+rnd(-err,err)*.6,SURF+95,floorY(e.tx)-24);
+    e.stay=rnd(9,14); e.aim=0; e.goT=0; splash(e.x); sfx.splash(); banner('SPLASH. A DIVER IS IN THE WATER',1.4,true) }
+   return }
+  if(e.st==='gone'){ e.dead=true; return }
+  // the boat: patrols while he works, comes over to collect him, races to meet him when he has a photo
+  if(e.st==='dive'){ const far=Math.abs(b.x-e.x); if(far<320){ const away=Math.sign(b.x-e.x)||1, edge=away>0?b.x>world.w-90:b.x<90; b.dir=edge?-away:away; b.speed=80 } else { b.speed=18; if(Math.random()<dt*.3)b.dir*=-1 } }
+  else { const dx=e.x-b.x; b.dir=Math.sign(dx)||b.dir; b.speed=Math.abs(dx)>10?(e.st==='escape'?38:30):0 }
+  // spotting the shark: half a screen in any direction, about a second to aim
+  if(e.st!=='escape'){
+   const sees=!S.cloak&&e.y>SURF+80&&dist(e.x,e.y,S.x,S.y)<W/2;
+   if(sees){ if(e.aim===0)tone(1400,.08,'square',.03); e.aim+=dt;
+    if(e.aim>=.9){ e.st='escape'; e.aim=0; stats.photos++; bump(10); S.seen=true; flashA=.4; tone(2400,.06,'square',.05); noise(.08,.06,3000); banner('HE HAS A PHOTO OF YOU. STOP HIM',1.8,true) } }
+   else e.aim=Math.max(0,e.aim-dt*2);
+   e.fT-=dt; if(e.fT<=0&&e.st==='dive'){ e.fT=rnd(1.8,3.5); parts.push({x:e.x+e.dir*10,y:e.y,vx:0,vy:0,life:.25,max:.25,core:9,c:'#fff',g:0}); tone(2200,.04,'square',.02) } }
+  // movement
+  let tx,ty,sp;
+  if(e.st==='dive'){ e.tx+=(S.x-e.tx)*E*.6*dt; e.ty+=(S.y-e.ty)*E*.6*dt; tx=e.tx; ty=e.ty; sp=30+30*E;
+   if(dist(e.x,e.y,tx,ty)<12){ e.stay-=dt; tx=e.x+Math.sin(T*.5)*20; ty=e.y } if(e.stay<=0)e.st='return' }
+  else { tx=b.x; ty=SURF+2; sp=e.st==='escape'?MAXV*.7:26 }
+  const a=Math.atan2(ty-e.y,tx-e.x), dd=dist(e.x,e.y,tx,ty), v=Math.min(sp,dd*3);
+  e.vx=Math.cos(a)*v; e.vy=Math.sin(a)*v; e.x+=e.vx*dt; e.y=clamp(e.y+e.vy*dt,SURF+3,floorY(e.x)-8); if(Math.abs(e.vx)>2)e.dir=Math.sign(e.vx);
+  if(Math.random()<dt*(e.st==='escape'?8:2))bubbles(e.x,e.y-5,1);
+  if((e.st==='return'||e.st==='escape')&&Math.abs(e.x-b.x)<16&&e.y<SURF+8){ e.climb=(e.climb||0)+dt; e.x=b.x; e.y=SURF+3; if(e.climb<.8)return; e.climb=0;
+   if(e.st==='escape'){ L.failNow='He climbed aboard with a photo of you. It is online by morning.'; return }
+   e.st='aboard'; e.cd=rnd(4,8); splash(e.x) } },
+ d(){ const e=this,X=sx(e.x),Y=sy(e.y); if(X<-30||X>W+30)return;
+  if(e.st==='aboard'){ const bY=sy(SURF)+Math.sin(T*1.6+e.bt.ph)*(storm?2.5:1); g.save(); g.translate(X,bY-9); g.scale(e.bt.dir*1.6,1.6);
+   g.beginPath(); g.rect(-1.6,-1,3.2,4); blob('#24313a',OL,.4); circle(0,-2.6,1.6); blob('#f2c39b',OL,.35); g.beginPath(); g.rect(-.4,-3.3,2.2,1.1); blob('#ffd447',OL,.3); g.restore(); return }
+  const k=Math.sin(e.ph)*1.5;
+  g.save(); g.translate(X,Y); g.scale(e.dir*2.3,2.3); g.lineJoin='round';
   g.beginPath(); g.moveTo(-4,0); g.lineTo(-8,-1.5+k); g.lineTo(-8.5,1+k); g.closePath(); blob('#2a9d8f',OL,.4);
   g.beginPath(); g.ellipse(-.5,-.2,4.2,1.8,0,0,6.3); blob('#24313a',OL,.5);
   g.beginPath(); g.rect(-3,-3.2,4,1.6); blob('#ff9a1f',OL,.4);
   circle(4,-.6,1.8); blob('#f2c39b',OL,.4); g.beginPath(); g.rect(3.6,-1.6,2.4,1.3); blob('#ffd447',OL,.35);
-  if(this.cam){ g.beginPath(); g.rect(5.3,.2,2.2,1.7); blob('#e6f1ee',OL,.35) }
-  g.restore() },
- b(m,r){ if(this.cam&&dist(m.x,m.y,this.x,this.y)<r+7){this.cam=false;stats.camera=true;sfx.eat();puff(this.x,this.y,10,'#e6f1ee',30,.6);award(500,this.x,this.y,'GOT IT!');banner('CAMERA TAKEN. THE DIVER SWIMS FOR IT',1.6);return true} return false } }) }
+  g.beginPath(); g.rect(5.3,.2,2.2,1.7); blob(e.st==='escape'?'#ffd447':'#e6f1ee',OL,.35);
+  g.restore();
+  if(e.aim>0){ g.strokeStyle='#ff4d4d'; g.lineWidth=1.6; g.beginPath(); g.arc(X,Y-14,5,-Math.PI/2,-Math.PI/2+6.283*Math.min(1,e.aim/.9)); g.stroke();
+   g.fillStyle='#ff4d4d'; g.font='16px "Lilita One",sans-serif'; g.textAlign='center'; g.fillText('!',X,Y-9) }
+  if(e.st==='escape'){ g.fillStyle='#ffd447'; g.font='9px "Lilita One",sans-serif'; g.textAlign='center'; g.lineWidth=2; g.strokeStyle=OL; g.strokeText('PHOTO!',X,Y-12); g.fillText('PHOTO!',X,Y-12) } },
+ b(m,r){ if(this.st==='aboard'||this.st==='gone')return false; if(dist(m.x,m.y,this.x,this.y)<r+10){ this.dead=true; stats.camera=true; S.hunger+=20; sfx.gulp(); bloodCloud(this.x,this.y,2); award(500,this.x,this.y,'GOT IT!'); banner('CAMERA TAKEN',1.6); return true } return false } }) }
 
 // blood: soft clouds that bloom and fade underwater; droplets in the air
 function bloodCloud(x,y,s=1){
@@ -710,11 +747,11 @@ const LEVELS=[
  learn:'Sonar pings sweep out from each buoy. Wait inside the warm current, where you are hidden, then dash up between pings.',
  setup(){ for(let i=0;i<5;i++)buoy(320+i*290,i*.7); school(250,180,10); school(900,260,10,{squid:true}); school(1400,150,10) },
  prog(){return `BUOYS ${stats.buoys}/5`}, check(){return stats.buoys>=5}},
-{n:'The Photographer',swimmers:4,w:1500,minFish:26,obj:'Take the diver\'s camera before he reaches his boat.',
+{n:'The Photographer',swimmers:4,w:1500,minFish:26,obj:'Catch the diver before he gets a photo of you back aboard.',
  doc:'FREELANCE DIVER · NAME ████████ · DIVE BOAT "SKERRY"\n\nSubject is working the reef edge with a strobe camera. He has sold sighting photos before. One clear frame and it is online by morning.\n\nDIRECTORATE NOTE: we want those photos too.',
- learn:'He photographs anything that comes close without cover. Approach through the warm current, where he cannot see you, then strike.',
- setup(){ const b=boat(1300,{speed:0,armored:true}); diver(1050,235,b); school(300,170,10); school(700,220,10) },
- prog(){return stats.camera?'CAMERA TAKEN':`PHOTOS OF YOU: ${stats.photos}`}, check(){return stats.camera}},
+ learn:'A dive boat races about above you and drops him in behind you, closer and more accurately the more exposed you are. He can photograph you from half a screen away; break his line of sight before his aim completes. With a photo he swims back nearly as fast as you.',
+ setup(){ const b=boat(900,{speed:58,armored:true,diveboat:true}); this.dv=diver(b); school(300,170,10); school(700,220,10) },
+ prog(){ const d=this.dv; return stats.camera?'CAMERA TAKEN':!d||d.st==='aboard'?'DIVE BOAT OVERHEAD':d.st==='escape'?'HE HAS A PHOTO!':'DIVER IN THE WATER' }, check(){return stats.camera}},
 {n:'Whale Migration',swimmers:3,w:1900,minFish:20,obj:'Feast. Take 8 bites of whale.',
  doc:'MIGRATION CORRIDOR · OBSERVER VESSELS ON STATION\n\nThree humpbacks expected tonight. Two floodlit boats are logging every carcass. Bite-mark width on last season\'s strandings: ██ cm.\n\nNo known shark leaves marks that wide. File under: ████████.',
  learn:'The first bite kills a whale. It rolls belly-up and floats to the surface, and you can keep biting it on the way. A carcass that reaches the surface is spotted at once, so feed fast and get deep.',
