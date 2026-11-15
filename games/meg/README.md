@@ -54,9 +54,11 @@ The high-score table keeps the ten best runs on this device, with a name entered
 
 ## Files to clear
 
+Meeting a file's goal starts a 10-second countdown, shown on screen. The game carries on, and dying before it runs out loses the file.
+
 | File | Goal |
 |---|---|
-| 1 The Trawler at Night | Eat 12 fish from around the net |
+| 1 The Trawler at Night | Eat 12 fish and shred the trawler's net (six bites tear it apart and free the fish inside) |
 | 2 Buoy Line | Destroy 5 sonar buoys |
 | 3 The Photographer | A dive boat races about above and drops a diver in behind you, closer and more accurately the more exposed you are. He photographs scenery, and you if you come within half a screen of him outside the current. With a photo he races back at 70% of your top speed; if he climbs aboard with it you lose. Catch him first |
 | 4 Whale Migration | Take 8 bites of whale |

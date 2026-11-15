@@ -55,7 +55,7 @@
     },
     {
       "id": "play",
-      "description": "The level is simulated: shark, entities, exposure, strength, the hunter fleet and the win and fail checks."
+      "description": "The level is simulated: shark, entities, exposure, strength, the hunter fleet and the win and fail checks. Once the goal is met, a 10-second countdown runs on screen; the fail checks still apply during it."
     },
     {
       "id": "paused",
@@ -135,7 +135,7 @@
     {
       "from": "play",
       "to": "clear",
-      "trigger": "the level's check() succeeds",
+      "trigger": "the level's check() succeeds and the shark then survives a 10-second countdown",
       "action": "adds the clear bonus and unlocks the next file in localStorage"
     },
     {

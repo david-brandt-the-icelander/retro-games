@@ -35,6 +35,9 @@ body{background:var(--abyss);color:var(--bone);overflow:hidden;padding-block:0;p
 #hObj small.alarm{color:var(--blood)}
 #banner{position:absolute;left:4%;right:4%;top:36%;text-align:center;font-family:var(--f-display);font-size:1.5em;line-height:1.2;letter-spacing:.04em;-webkit-text-stroke:1px #13212c;color:var(--flood);opacity:0;transition:opacity .25s}
 #banner.on{opacity:1}
+#hTimer{position:absolute;left:0;right:0;top:14%;text-align:center;font-family:var(--f-display);font-size:2.6em;line-height:1;color:#fff;-webkit-text-stroke:1.5px #13212c;text-shadow:0 3px 0 #13212c}
+#hTimer small{display:block;font-size:.32em;letter-spacing:.12em;color:var(--flood);-webkit-text-stroke:0;text-shadow:1px 1px 0 #000}
+#hTimer.last{color:var(--blood)}
 #banner.alarm{color:var(--blood)}
 .pad{position:absolute;bottom:max(12px,env(safe-area-inset-bottom,0px));display:grid;gap:10px;align-items:end;justify-items:center;z-index:3}
 #padL{left:0;grid-template-columns:auto auto}
@@ -97,6 +100,7 @@ h1.h2{font-size:clamp(26px,6vw,40px);line-height:1.15;text-shadow:3px 3px 0 #0b3
   </div>
   <div id="hObj"></div>
   <div id="banner"></div>
+  <div id="hTimer" hidden></div>
  </div>
  <div id="padL" class="pad" hidden>
   <button id="bCCW" class="btn turn" aria-label="Turn counterclockwise">↺</button>
@@ -291,7 +295,7 @@ const FK={reef:{pts:10,hp:6,sz:[1.1,1.6],mx:52}, cod:{pts:25,hp:9,sz:[1.7,2.1],m
 function pickKind(){ const r=Math.random(); return r<.38?'reef':r<.56?'cod':r<.72?'haddock':r<.86?'salmon':'squid' }
 function fish(x,y,o={}){ const kind=o.squid?'squid':o.kind||'reef', K=FK[kind]; return add({k:'fish',kind,x,y,vx:rnd(-10,10),vy:0,hx:x,hy:y,leash:o.leash||null,ph:Math.random()*9,
  col:kind==='squid'?'#e58bb7':FISHC[Math.random()*FISHC.length|0], sz:rnd(K.sz[0],K.sz[1]),
- u(dt){ let hx=this.hx,hy=this.hy; if(this.leash&&!this.leash.dead&&!this.leash.sink){hx=this.leash.netX;hy=this.leash.netY} else this.hx+=Math.sin(T*.2+this.ph)*6*dt;
+ u(dt){ let hx=this.hx,hy=this.hy; if(this.leash&&!this.leash.dead&&!this.leash.sink&&!this.leash.netGone){hx=this.leash.netX;hy=this.leash.netY} else this.hx+=Math.sin(T*.2+this.ph)*6*dt;
   let ax=(hx-this.x)*.6+Math.sin(T*2+this.ph)*14, ay=(hy-this.y)*.6+Math.cos(T*1.7+this.ph)*10;
   const d=dist(this.x,this.y,S.x,S.y), fr=26*S.size; if(d<fr&&d>0&&!S.cloak){ax+=(this.x-S.x)/d*170;ay+=(this.y-S.y)/d*170}
   this.vx+=ax*dt;this.vy+=ay*dt; const m=K.mx,sp=Math.hypot(this.vx,this.vy); if(sp>m){this.vx*=m/sp;this.vy*=m/sp}
@@ -362,7 +366,8 @@ function boat(x,o={}){ return add(Object.assign({k:'boat',x,dir:1,speed:9,hp:3,i
   e.inv-=dt; e.la=Math.PI/2+.75*Math.sin(T*.6+e.ph);
   if(e.light&&inCone(e.x,SURF+2,e.la,e.lightLen,.2,S.x,S.y))see(26,dt);
   if(Math.abs(S.x-e.x)<e.len*.7&&S.y<SURF+26)see(18,dt);
-  if(e.trawler&&Math.abs(S.x-e.netX)<24&&Math.abs(S.y-e.netY)<18){S.snag=.3;see(14,dt)}
+  if(e.trawler&&!e.netGone&&Math.abs(S.x-e.netX)<24&&Math.abs(S.y-e.netY)<18){S.snag=.3;see(14,dt)}
+  e.netCd=(e.netCd||0)-dt;
   if(e.inv<=0&&!e.armored){ const near=Math.abs(S.x-e.x)<e.len*.6;
    const ram=S.lunge>0&&near&&S.y<SURF+26&&S.vy<-10, slam=S.air&&near&&S.vy>0&&S.y>SURF-20;
    if(ram||slam){ e.hp--;e.inv=.9;shake=6;sfx.boom();splash(e.x);puff(e.x,SURF-4,12,'#f4efe1',45,.8,120);bump(6);stats.hits++;award(50,e.x,SURF-14,'CRUNCH!'); if(slam)S.vy=-80;
@@ -372,11 +377,18 @@ function boat(x,o={}){ return add(Object.assign({k:'boat',x,dir:1,speed:9,hp:3,i
   if(e.big){e.fireT-=dt; if(e.fireT<=0&&dist(e.x,SURF,S.x,S.y)<200&&!S.cloak){e.fireT=L.rage>0?.9:2;tone(400,.15,'sawtooth',.04,200);shot(e.x+e.dir*30,SURF+4,140,'#d8d2c0',12)}}
  },
  l(){ if(this.light&&this.sink<=0)cone(this.x,SURF+2,this.la,this.lightLen,.2,.4) },
+ b(m,r){ const e=this; if(!e.trawler||e.netGone||e.sink>0||e.netCd>0)return false;
+  if(Math.abs(m.x-e.netX)>24+r||Math.abs(m.y-e.netY)>20+r)return false;
+  e.netCd=.3; e.netHp=(e.netHp===undefined?6:e.netHp)-1; (e.tears=e.tears||[]).push({x:clamp(m.x-e.netX,-16,16),y:clamp(m.y-e.netY,-12,12),r:rnd(4,7)});
+  puff(m.x,m.y,10,'#c8be9e',35,.8,20); tone(240,.12,'sawtooth',.05,90); noise(.1,.08,1500); award(30,m.x,m.y,'RIP!');
+  if(e.netHp<=0){ e.netGone=true; stats.net=true; for(let i=0;i<24;i++)parts.push({x:e.netX+rnd(-20,20),y:e.netY+rnd(-15,15),vx:rnd(-20,20),vy:rnd(5,25),life:rnd(1.5,3),max:3,c:'#c8be9e',g:12}); award(200,e.netX,e.netY-14,'NET SHREDDED!'); banner('NET SHREDDED',1.6) }
+  return true },
  d(){ const e=this,X=sx(e.x),Y=sy(SURF)+Math.sin(T*1.6+e.ph)*(storm?2.5:1)+e.sink*9; if(X<-120||X>W+120)return; const bs=e.len/40;
-  if(e.trawler&&e.sink<=0){ const nx=sx(e.netX),ny=sy(e.netY);
+  if(e.trawler&&e.sink<=0&&!e.netGone){ const nx=sx(e.netX),ny=sy(e.netY);
    g.strokeStyle='rgba(200,190,160,.6)'; g.lineWidth=.8; g.beginPath(); g.moveTo(X-e.dir*20*bs,Y+2); g.lineTo(nx-14,ny-14); g.moveTo(X-e.dir*20*bs,Y+2); g.lineTo(nx+14,ny-14); g.stroke();
    g.beginPath(); g.moveTo(nx-20,ny-14); g.quadraticCurveTo(nx,ny-18,nx+20,ny-14); g.lineTo(nx+15,ny+14); g.quadraticCurveTo(nx,ny+19,nx-15,ny+14); g.closePath();
-   g.fillStyle='rgba(180,170,140,.12)'; g.fill(); g.save(); g.clip(); g.strokeStyle='rgba(200,190,160,.45)'; g.lineWidth=.5;
+   g.fillStyle='rgba(180,170,140,.12)'; g.save(); g.clip(); const tr=e.tears||[]; if(tr.length){ g.beginPath(); g.rect(nx-40,ny-40,80,80); for(const t of tr){ g.moveTo(nx+t.x+t.r,ny+t.y); g.arc(nx+t.x,ny+t.y,t.r,0,6.2832) } g.clip('evenodd') }
+   g.fillRect(nx-30,ny-30,60,60); g.strokeStyle='rgba(200,190,160,.45)'; g.lineWidth=.5;
    for(let i=-20;i<=20;i+=4){ g.beginPath(); g.moveTo(nx+i,ny-20); g.lineTo(nx+i*.75,ny+20); g.stroke() } for(let j=-16;j<=16;j+=4){ g.beginPath(); g.moveTo(nx-22,ny+j); g.lineTo(nx+22,ny+j); g.stroke() } g.restore() }
   const dark=e.dumper||e.hs||e.big, hull=dark?'#3e4a58':e.trawler?'#c8453b':'#f4efe1', stripe=dark?'#ff9a1f':e.trawler?'#f4efe1':'#3f7fb5', cab=dark?'#56626f':'#f9f6ee';
   g.save(); g.translate(X,Y); g.scale(e.dir*bs,bs); g.lineJoin='round';
@@ -737,11 +749,11 @@ function spawnAmbient(dt,counts){ const no=L.noAmb||[];
 // ---------- the eight incident files ----------
 const SIZES=[1.7,1.7,1.8,1.8,1.95,1.95,2.1,2.1];
 const LEVELS=[
-{n:'The Trawler at Night',swimmers:3,w:1400,minFish:30,obj:'Raid the net. Eat 12 fish.',
+{n:'The Trawler at Night',swimmers:3,w:1400,minFish:30,obj:'Eat 12 fish and shred the trawler\'s net.',
  doc:'TRAWLER "HALDIS" · NORTH SHELF · 02:40\n\nDeck crew report a fin taller than the wheelhouse beside the net. Net torn. Catch missing. Skipper\'s statement ██████████ before filing.\n\nRECOMMENDATION: ████. Reissue as storm damage.',
  learn:'Turn left or right to steer. Hold SPACE to speed up and let go to slow down; tap it to cruise. Your jaws snap shut on anything they touch. Hit the surface at full speed and you leap clear of the water. Inside the glowing warm current nothing can see you. Stay out of the deck lights and the net.',
  setup(){ const b=boat(620,{trawler:true,speed:9,light:true}); this.leashTo=b; school(b.netX,b.netY,16,{leash:b,kind:'cod'}); school(300,170,10); school(1100,200,10) },
- prog(){return `FISH ${Math.min(12,stats.fish)}/12`}, check(){return stats.fish>=12}},
+ prog(){ const b=this.leashTo; return `FISH ${Math.min(12,stats.fish)}/12 · NET ${stats.net?'SHREDDED':(b&&b.netHp!==undefined?b.netHp:6)+'/6'}` }, check(){return stats.fish>=12&&stats.net}},
 {n:'Buoy Line',swimmers:2,w:1700,minFish:26,obj:'Destroy all 5 sonar buoys.',
  doc:'SONAR GRID "LATTICE" · DEPLOYMENT LOG\n\nFive buoys placed along the boundary of an unexplained warm channel. Acoustic returns at 300 m suggest a body ██ metres long.\n\nINSTRUCTION: hold the line until the channel is ██████.',
  learn:'Sonar pings sweep out from each buoy. Wait inside the warm current, where you are hidden, then dash up between pings.',
@@ -799,7 +811,8 @@ function doBite(){ const m=mouth(),r=6*S.size; for(const e of ents){ if(!e.dead&
 function hint(t){ if(S.hintT>0)return; S.hintT=4; banner(t,1.6) }
 // jaw: opens as food comes within reach ahead of the snout, snaps shut on a bite, rests slightly open
 function jawAnim(dt){ const s=S; s.snap-=dt; const m=mouth(), reach=26*s.size; let near=false;
- if(s.snap<=0) for(const e of ents){ if(e.dead||!e.b||e.k==='sub'||(e.k==='turret'&&e.hp<=0))continue; const ey=e.y===undefined?SURF:e.y; const dx=e.x-m.x,dy=ey-m.y;
+ if(s.snap<=0) for(const e of ents){ if(e.dead||!e.b||e.k==='sub'||(e.k==='turret'&&e.hp<=0))continue; if(e.k==='boat'&&(!e.trawler||e.netGone||e.sink))continue;
+  const ex=e.k==='boat'?e.netX:e.x, ey=e.k==='boat'?e.netY:e.y===undefined?SURF:e.y; const dx=ex-m.x,dy=ey-m.y;
   if(dx*dx+dy*dy<reach*reach&&dx*Math.cos(s.a)+dy*Math.sin(s.a)>-4*s.size){near=true;break} }
  const target=s.snap>0?-.08:near?1:.1+.06*Math.sin(T*1.8);
  s.jaw+=(target-s.jaw)*Math.min(1,dt*(s.snap>0?38:near?9:4)); if(s.snap<=0&&s.jaw<0)s.jaw*=-.5 }
@@ -851,7 +864,7 @@ function update(dt){
  if(L.rage>0)L.rage-=dt;
  S.hunger=clamp(S.hunger,0,100);
  if(L.minFish&&(T*4|0)!==((T-dt)*4|0)){ let n=0; for(const e of ents)if(e.k==='fish')n++;
-  if(n<L.minFish){ const x=clamp(S.x+(Math.random()<.5?-1:1)*rnd(220,330),20,world.w-20); const lt=L.leashTo; school(x,rnd(SURF+40,world.h-70),10,lt&&!lt.dead&&!lt.sink&&Math.random()<.5?{leash:lt,kind:Math.random()<.5?'cod':'haddock'}:{}) } }
+  if(n<L.minFish){ const x=clamp(S.x+(Math.random()<.5?-1:1)*rnd(220,330),20,world.w-20); const lt=L.leashTo; school(x,rnd(SURF+40,world.h-70),10,lt&&!lt.dead&&!lt.sink&&!lt.netGone&&Math.random()<.5?{leash:lt,kind:Math.random()<.5?'cod':'haddock'}:{}) } }
  if((T*4|0)!==((T-dt)*4|0)){ const c={}; for(const e of ents){ const k=e.k==='bird'?e.type:e.k; c[k]=(c[k]||0)+1 } spawnAmbient(dt,c) }
  for(const e of ents) if(e.vis&&(Math.abs(e.x-S.x)>W*1.7||e.x<-80||e.x>world.w+80))e.dead=true;
  if(L.swimmers&&Math.random()<dt*.5){ let n=0; for(const e of ents)if(e.k==='swim')n++; if(n<L.swimmers){ const x=clamp(S.x+(Math.random()<.5?-1:1)*rnd(220,420),30,world.w-30); swimmer(x) } }
@@ -864,7 +877,8 @@ function update(dt){
  if(S.hunger<=0)return fail('Starving and spent, you sink out of the warm current.');
  if(L.failNow)return fail(L.failNow);
  if(L.temp!==undefined&&L.temp<=0)return fail('The current went cold.');
- if(L.check())clear();
+ if(L.endT===undefined){ if(L.check()){ L.endT=10; sfx.win(); banner('OBJECTIVE MET. SURVIVE 10 SECONDS',2.2) } }
+ else { const before=Math.ceil(L.endT); L.endT-=dt; if(Math.ceil(L.endT)<before&&L.endT>0)tone(before<=4?1320:880,.08,'square',.05); if(L.endT<=0)return clear() }
 }
 function demo(dt){
  const px=500+Math.sin(T*.22)*260, py=200+Math.sin(T*.45)*50;
@@ -938,6 +952,7 @@ function setW(id,v){ v=Math.round(v); if(hc[id]!==v){hc[id]=v;$(id).style.width=
 function hudUpdate(){ if(state!=='play'&&state!=='paused')return;
  setW('hHun',S.hunger); setW('hExp',S.exp);
  setW('hSpd',S.spd/MAXV*100); $('hSpd').classList.toggle('fast',S.spd>=FASTV); $('mHun').classList.toggle('low',S.hunger<25);
+ const tm=$('hTimer'); if(L.endT!==undefined){ const n=Math.max(1,Math.ceil(L.endT)); tm.hidden=false; if(hc.tm!==n){ hc.tm=n; tm.innerHTML=`${n}<small>SURVIVE</small>`; tm.classList.toggle('last',n<=3) } } else tm.hidden=true;
  if(L.temp!==undefined){ $('mX').hidden=false; setW('hX',Math.max(0,L.temp)) } else $('mX').hidden=true;
  let sub='',cls=''; if(hunt>0){sub=`HUNTED · ${Math.ceil(hunt)}s`;cls='alarm'} else if(S.cloak)sub='HIDDEN IN THE CURRENT';
  const html=`<b class="score">${score.toLocaleString('en-US')}</b>${L.prog()}${sub?`<small class="${cls}">${sub}</small>`:''}`; if(hc.obj!==html){hc.obj=html;$('hObj').innerHTML=html} }
