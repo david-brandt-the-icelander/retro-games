@@ -55,7 +55,7 @@
     },
     {
       "id": "play",
-      "description": "The level is simulated: shark, entities, exposure, hunger, the hunter fleet and the win and fail checks."
+      "description": "The level is simulated: shark, entities, exposure, strength, the hunter fleet and the win and fail checks."
     },
     {
       "id": "paused",
@@ -67,7 +67,7 @@
     },
     {
       "id": "fail",
-      "description": "The level is lost: health ran out, the photos reached the dive boat, or the current went cold. The run ends, with a name entry when its score makes the table."
+      "description": "The level is lost: strength ran out, the photos reached the dive boat, or the current went cold. The run ends, with a name entry when its score makes the table."
     },
     {
       "id": "scores",
@@ -141,7 +141,7 @@
     {
       "from": "play",
       "to": "fail",
-      "trigger": "health reaches zero, the level sets failNow, or the current's temperature reaches zero",
+      "trigger": "strength reaches zero, the level sets failNow, or the current's temperature reaches zero",
       "action": "ends the run"
     },
     {

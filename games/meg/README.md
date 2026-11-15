@@ -25,11 +25,11 @@ Everything else is automatic:
 
 ## How it plays
 
-Health drains all the time, and faster at speed; eating restores it. Exposure rises when lights, sonar, cameras or spotlights catch the shark, and falls when it hides deep or in the current. When exposure fills, a hunter fleet drops depth charges for a while. A charge tumbles down and bursts in a bubble blast when it touches anything (the shark, fish, a whale, the sub, the seabed) or at a random depth at least a third of the way from the surface to the seabed. Each file opens with a redacted Directorate document that a teleprinter types out, with key clacks, heavier strikes on the redactions, a bell and carriage return at each line and a double ding at the end; tap it to skip. Each file closes with a cover-story memo.
+Strength drains all the time, and faster at speed; eating restores it. Every live catch leaves a blood cloud that fades. Swimmers, kayakers and scuba divers leave limbs that float up and bob at the surface, and can be eaten as leftovers (15 points). A whale dies at the first bite, which takes a chunk out of it; the carcass rolls belly-up and floats up, can be bitten on the way, and raises exposure sharply when it reaches the surface. Exposure rises when lights, sonar, cameras or spotlights catch the shark, and falls when it hides deep or in the current. When exposure fills, a hunter fleet drops depth charges for a while. A charge tumbles down and bursts in a bubble blast when it touches anything (the shark, fish, a whale, the sub, the seabed) or at a random depth at least a third of the way from the surface to the seabed. Each file opens with a redacted Directorate document that a teleprinter types out, with key clacks, heavier strikes on the redactions, a bell and carriage return at each line and a double ding at the end; tap it to skip. Each file closes with a cover-story memo.
 
 ## Prey and score
 
-Every catch scores points, more for bigger or more darkly funny prey. A cleared file adds a bonus of 500 × the file number plus 10 per point of health left. The score carries through a run of files and ends when the shark fails, after the last file, or with End run.
+Every catch scores points, more for bigger or more darkly funny prey. A cleared file adds a bonus of 500 × the file number plus 10 per point of strength left. The score carries through a run of files and ends when the shark fails, after the last file, or with End run.
 
 | Prey | Points | Where |
 |---|---|---|
@@ -37,7 +37,7 @@ Every catch scores points, more for bigger or more darkly funny prey. A cleared 
 | Squid | 20 | Schools |
 | Cod, haddock | 25 | Schools; the trawler's net is full of them |
 | Salmon | 40 | Schools |
-| Whale | 100 a bite | File 4 |
+| Whale | 100 a bite, up to 6 | File 4 |
 | Seal | 120 | Near the surface |
 | Seagull | 150 | Above the waves; only by breaching |
 | Manta ray | 150 | Mid-water |
