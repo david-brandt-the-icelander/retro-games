@@ -1,0 +1,890 @@
+<title>Backseat Driver</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  :root { --bg: #14141c; --panel: #23232d; --ink: #f2f0ea; --muted: #a9a9bb; --accent: #ffd21f; --good: #4ac26b; --edge: #e8e8f0; color-scheme: dark; }
+  body { background: var(--bg); color: var(--ink); font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding-block: 16px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 12px; }
+  canvas { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 10px; background: #000; touch-action: manipulation; }
+  #bar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; transition: opacity .15s; }
+  #bar.off { opacity: .35; }
+  #bar button { display: flex; gap: 10px; align-items: flex-start; text-align: left; min-height: 72px; padding: 12px; font: inherit; font-size: 1rem; line-height: 1.3;
+    color: var(--ink); background: #2e3a52; border: 3px solid var(--edge); border-radius: 10px; cursor: pointer; }
+  #bar button:hover:not(:disabled) { background: #42578a; }
+  #bar button:active:not(:disabled) { background: #4f9a5f; }
+  #bar button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  #bar button:disabled { cursor: default; }
+  kbd { flex: none; font: inherit; font-weight: 700; color: var(--accent); }
+  .hint { color: var(--muted); font-size: .85rem; margin: 0; }
+  @media (max-width: 640px) { #bar { grid-template-columns: 1fr; } #bar button { min-height: 56px; } }
+</style>
+<div class="wrap">
+  <canvas id="c" width="1280" height="720" aria-label="Backseat Driver game view"></canvas>
+  <div id="bar" role="group" aria-label="What to say to the driver"><button type="button"></button><button type="button"></button><button type="button"></button></div>
+  <p class="hint">Keys 1, 2, 3 to speak. Space or click the road to start. Dark humor ahead.</p>
+</div>
+<script>
+// Every road event. In "o" the FIRST option is always the correct one;
+// main.gd shuffles them. Each option is [button text, what happens if chosen].
+
+const LIST = [
+	{
+		"id": "ducks", "shape": "diamond", "glyph": "DUCKS", "c": "ffd21f", "ink": "111111",
+		"name": "DUCK CROSSING",
+		"scene": "A flock of ducks waddles across the road. They are in no hurry.",
+		"d": "Ooh, this song! Let me crank it up.",
+		"o": [
+			["Brake! Ducks in the road!", ""],
+			["Aww, look at the little ducks!", "The driver looks. The ducks look back. Briefly. Then there are feathers. So many feathers. The wipers do what they can."],
+			["Honk at them!", "The honk launches forty panicked ducks straight at the windshield. You are now wearing a duck as a hat. It is not alive."],
+		],
+		"good": "The driver brakes. The ducks cross in a tiny, smug parade. The last one gives you a nod. You will carry that nod forever.",
+		"late": "You said nothing. The ducks said 'quack' and then nothing at all. The wipers are now on pate setting.",
+		"fx": "f4f0dc",
+	},
+	{
+		"id": "gator", "shape": "diamond", "glyph": "GATORS", "c": "ffd21f", "ink": "111111",
+		"name": "GATOR CROSSING - NEXT 2 MILES",
+		"scene": "Something long, green and unbothered is sunbathing across both lanes.",
+		"d": "Does that look like a log to you? I think that is a log.",
+		"sky": ["8fbf8f", "d8e7b0"], "gr": "3d6b3a",
+		"o": [
+			["Slow down! Gator on the road!", ""],
+			["It's a log. Run it over.", "It was not a log. The log now has your whole arm and a strong opinion about your elbow."],
+			["Floor it, we can outrun it!", "Gators sprint at 20 mph. You were doing 18. It was a respectful chase. It ended when the gator came in through the sunroof."],
+		],
+		"good": "The driver slows. The gator ambles across and gives you a long, assessing stare. You were not the snack. This time.",
+		"late": "The gator takes your silence as an order for takeout. Compliments to the chef. The chef is you.",
+		"fx": "4a8f3a",
+	},
+	{
+		"id": "walker", "shape": "diamond", "glyph": "WALK", "c": "b7e03a", "ink": "111111",
+		"name": "PEDESTRIAN CROSSING",
+		"scene": "A very elderly man with a walker has started crossing. He has all day. You do not.",
+		"d": "Wow, he is slow. I'm just gonna go around.",
+		"o": [
+			["Stop! Let him cross!", ""],
+			["He'll make it. Keep going.", "He did not make it. The walker made it. It is now a hood ornament and, honestly, a fairly nice one."],
+			["Honk to hurry him up!", "He sprints. A 79-year-old sets a personal best. The walker does not. The walker had a family."],
+		],
+		"good": "The driver stops. Eleven minutes later, the man reaches the far side, tips his hat and calls you 'sweetheart'. You will take it.",
+		"late": "A walker flies past the passenger window. Silently. Like a very sad bird.",
+		"fx": "c0c4cc",
+	},
+	{
+		"id": "kids", "shape": "diamond", "glyph": "KIDS", "c": "ffd21f", "ink": "111111",
+		"name": "CAUTION: CHILDREN AT PLAY",
+		"scene": "A ball bounces into the road. A small child is already running after it.",
+		"d": "Don't they teach kids to look both ways anymore?",
+		"o": [
+			["BRAKE! A kid!", ""],
+			["Ignore it, it's just a ball.", "It was a ball. Then it was not just a ball. The driver does not say a word for the next forty miles. Neither do you. Nobody ever speaks of it."],
+			["Honk at them to move!", "The honk makes the kid freeze. Right in the road. Everyone survives, but a very large father is running at your window with pepper spray and a lot to say."],
+		],
+		"good": "Tires scream. The kid grabs the ball, waves, and calls the driver a word you did not know a six-year-old knew. Worth it.",
+		"late": "Thud. Silence. 'That was a ball, right?' the driver asks, in a very small voice. You both decide to believe it was a ball.",
+		"fx": "e8453c",
+	},
+	{
+		"id": "stop", "shape": "octagon", "glyph": "STOP", "c": "d62828", "ink": "ffffff",
+		"name": "STOP SIGN",
+		"scene": "Cross traffic ahead. Something very big is thundering toward the junction: a loaded logging truck.",
+		"d": "Stop signs are more of a vibe, honestly.",
+		"o": [
+			["STOP! Stop sign!", ""],
+			["It's only a suggestion.", "The logging truck disagrees. Violently. Your car is now flatter than a flat white, and that includes the foam."],
+			["Yield and wave the truck on.", "The truck cannot see your friendly wave through the forty tons of logs it is carrying. Your wave was very polite and very, very late."],
+		],
+		"good": "The driver stands on the brake. The truck thunders through a foot ahead. 'Rolling stops count,' the driver mumbles. They do not.",
+		"late": "The last thing you hear is a truck horn. The last thing you see is logs. So many logs.",
+		"fx": "8a5a2b",
+	},
+	{
+		"id": "train", "shape": "circle", "glyph": "RR", "c": "ffd21f", "ink": "111111",
+		"name": "RAILROAD CROSSING",
+		"scene": "The lights are flashing. The bell is ringing. The driver is ringing a bell of their own: singing.",
+		"d": "I love this part of the song!",
+		"o": [
+			["TRAIN! Stop the car!", ""],
+			["We can beat it.", "You cannot beat it. Nobody has ever beaten it. Final score: Train 1, Car 0, Dignity -4."],
+			["Trains only run on Tuesdays.", "It is, in fact, Tuesday. The train checked its calendar."],
+		],
+		"good": "The driver stops. A mile-long freight train rumbles past, and the driver counts every car out loud. All 142. Time moves differently now.",
+		"late": "The train does not honk. It has never needed to.",
+		"fx": "4a4a52",
+	},
+	{
+		"id": "kayak", "shape": "rect", "glyph": "LOW\n8'6\"", "c": "ffd21f", "ink": "111111",
+		"name": "LOW CLEARANCE: 8 FT 6 IN",
+		"scene": "A low stone bridge ahead. There's a kayak strapped to the roof. The driver forgot.",
+		"d": "Best. Kayak. Weekend. Ever.",
+		"o": [
+			["The kayak! It won't fit under!", ""],
+			["Duck your head!", "You duck. The kayak does not. It is now two kayaks, which is technically a pair."],
+			["It'll fit. Probably.", "It fit like a toddler in a Halloween costume: not at all. The kayak is now a very long hat on the bridge."],
+		],
+		"good": "The driver stops with a screech and unstraps the kayak. 'I knew that,' they say, sweating. Strapping it back on takes forty minutes.",
+		"late": "CRUNCH. The kayak becomes confetti. The car is now a convertible.",
+		"fx": "ffb000",
+	},
+	{
+		"id": "deer", "shape": "diamond", "glyph": "DEER", "c": "ffd21f", "ink": "111111",
+		"name": "DEER CROSSING",
+		"scene": "Two glowing eyes in the dark at the roadside. Then four. Then they step out.",
+		"d": "I could totally take a deer in a fight.",
+		"sky": ["070a1e", "262b55"], "gr": "17301c",
+		"o": [
+			["Slow down! Deer!", ""],
+			["Flash the high beams.", "Deer freeze when you flash lights. It is the entire thing deer do. The car and the deer are now one."],
+			["Hit it, I love venison.", "You love venison. The deer loves its life. The deer weighs 200 pounds, and your hood now has an antler."],
+		],
+		"good": "The driver brakes. A buck pauses, locks eyes with you, then wanders off with deep disdain. It knows you got lucky.",
+		"late": "BANG. Your hood has an antler now. The deer is on the roof, looking at you like you owe it money.",
+		"fx": "8a5a2b",
+	},
+	{
+		"id": "police", "shape": "rect", "glyph": "25", "c": "f4f4f4", "ink": "111111",
+		"name": "SPEED LIMIT 25",
+		"scene": "The speedometer says 70. A police car is tucked behind a billboard, pretending not to be there.",
+		"d": "I'm fine. I'm only going, uh... fine.",
+		"o": [
+			["Slow down! Limit is 25!", ""],
+			["It's more of a recommendation.", "The cop thinks it's more of a $400 recommendation. He also wants to talk about your tail light. And your life."],
+			["Floor it, he's not looking!", "He was looking. He has been looking since the last county. The chase ends at a donut shop, with handcuffs and one glazed."],
+		],
+		"good": "The driver slows to 25 just as the cop pulls out. He sees a law-abiding citizen. He is sad. He will eat his donut alone.",
+		"late": "Sirens. Lights. A very calm voice: 'Do you know why I pulled you over?' The driver looks at you.",
+		"fx": "3a6cf0",
+	},
+	{
+		"id": "bridgeout", "shape": "rect", "glyph": "BRIDGE\nOUT", "c": "ff8a1f", "ink": "111111",
+		"name": "BRIDGE OUT AHEAD",
+		"scene": "The road just... ends. There's a river. There is no bridge. There is a suggestion of a bridge.",
+		"d": "GPS says go straight. GPS is never wrong.",
+		"o": [
+			["Bridge out! Stop and turn around!", ""],
+			["GPS says it's fine.", "The GPS says 'You have arrived' as you arrive in the river. It was technically correct."],
+			["Go faster, we can jump it!", "We cannot jump it. Physics has reviewed this proposal and rejected it with a loud splash."],
+		],
+		"good": "The driver brakes at the very edge. The front wheels hang over empty air. A fish looks up at you. 'Nice,' says the fish.",
+		"late": "Splash. The GPS announces 'Recalculating' as the car sinks. It never will.",
+		"fx": "3a8fd9",
+	},
+	{
+		"id": "rocks", "shape": "diamond", "glyph": "ROCKS", "c": "ffd21f", "ink": "111111",
+		"name": "FALLING ROCK ZONE",
+		"scene": "Pebbles rattle down the cliff beside you. Larger pebbles follow. Then not-pebbles.",
+		"d": "Cool, tunnel-of-rocks vibe. So metal.",
+		"sky": ["9ab0c4", "dde6ee"], "gr": "8a7f72",
+		"o": [
+			["Floor it! Get out of here!", ""],
+			["Stop and take a photo.", "Great photo. You can't see it, because the rock has smashed the phone, the roof, and some of the seat."],
+			["Honk to scare the rocks.", "The rocks were not scared. The rocks have never been scared of anything. You are now the proud owner of a free rock."],
+		],
+		"good": "The driver floors it. A boulder lands exactly where you were, then rolls over to look at you. Rocks can be dramatic.",
+		"late": "A boulder meets the roof. The roof loses. The boulder is now your best friend. Its name is Gary.",
+		"fx": "7d7f86",
+	},
+	{
+		"id": "gas", "shape": "rect", "glyph": "GAS\n90 MI", "c": "1f6fd1", "ink": "ffffff",
+		"name": "LAST GAS FOR 90 MILES",
+		"scene": "The fuel needle is on E. It has been on E for a while. The desert stretches out forever.",
+		"d": "The light's been on for like twenty miles. It's fine.",
+		"sky": ["ffb36b", "ffe3a0"], "gr": "c99a5b",
+		"o": [
+			["Stop and get gas now!", ""],
+			["We'll make it.", "You did not make it. You are in the desert with one sandwich and a very long conversation with the driver."],
+			["Coast on fumes!", "The car coasts, bravely, for another mile. Then it coasts, bravely, to a stop. A vulture lands and waits."],
+		],
+		"good": "The driver pulls into a gas station that smells like regret and hot dogs. You buy both. It is the best meal of your life.",
+		"late": "The engine coughs. The engine dies. The vultures arrive right on time.",
+		"fx": "c99a5b",
+	},
+	{
+		"id": "curve", "shape": "diamond", "glyph": "15", "c": "ffd21f", "ink": "111111",
+		"name": "SHARP CURVE - 15 MPH",
+		"scene": "A hairpin turn. On one side, a wall. On the other, a nice view of the valley, from above, and then from below.",
+		"d": "Watch this drift!",
+		"o": [
+			["Slow down! Hairpin curve!", ""],
+			["Admire the view!", "The driver admires the view. The car admires the view. The car keeps admiring the view, straight off the cliff."],
+			["Take it fast! Drift it!", "The drift is magnificent. The landing is not. You get excellent views of the valley for four whole seconds."],
+		],
+		"good": "The driver slows. The car hugs the curve like an old friend. Far below, a wrecked car whispers: 'tell my story.'",
+		"late": "The tires scream. The car sails off the cliff in slow motion. The driver says, 'Huh.' It is the last thing anyone says.",
+		"fx": "ffb000",
+	},
+	{
+		"id": "wrongway", "shape": "rect", "glyph": "WRONG\nWAY", "c": "d62828", "ink": "ffffff",
+		"name": "WRONG WAY - DO NOT ENTER",
+		"scene": "You've entered the highway from the exit ramp. A truck is coming. Its headlights are very big and very close.",
+		"d": "Everyone else is going the wrong way, you know.",
+		"sky": ["0b1030", "2a2f5a"], "gr": "1c2a1f",
+		"o": [
+			["Wrong way! Turn around now!", ""],
+			["Everyone else is wrong.", "Everyone else is right. All of them. In the same direction. Toward you. At 70 mph."],
+			["Flash your lights at them!", "The truck flashes back. Its lights are bigger. It also has a horn that sounds like the end of the world."],
+		],
+		"good": "The driver cranks a U-turn on the shoulder to a chorus of horns. 'That was on purpose,' they say. It was not.",
+		"late": "A truck horn the size of a cathedral. The last thing you see is a very large grille. It looks, somehow, disappointed.",
+		"fx": "ffe9a0",
+	},
+	{
+		"id": "ice", "shape": "diamond", "glyph": "ICE", "c": "ffd21f", "ink": "111111",
+		"name": "SLIPPERY WHEN WET",
+		"scene": "The road shines like glass. The driver is going pretty fast. The car feels pretty light.",
+		"d": "I've never once braked in this weather. Why start now?",
+		"sky": ["cfd8e3", "f0f3f7"], "gr": "e6edf2",
+		"o": [
+			["Ease off. Brake gently!", ""],
+			["Slam the brakes!", "The car goes into a beautiful figure-skating routine. 9.8 from the French judge. 0 from the guardrail."],
+			["Turn the wheel hard!", "The car spins. And spins. You get to see the whole horizon, forty times. You are fairly sure you saw a cow. Twice."],
+		],
+		"good": "The driver eases off. The car glides, wobbles and holds. The driver looks at you with sudden, sincere respect. Savor it.",
+		"late": "Wheeee! Whoops. Wheeee! Whoops. The spinning only stops at the ditch.",
+		"fx": "bfe6ff",
+	},
+	{
+		"id": "bus", "shape": "rect", "glyph": "BUS", "c": "ffd21f", "ink": "111111",
+		"name": "SCHOOL BUS: STOP ARM OUT",
+		"scene": "A school bus flashes red lights. Its stop arm is out. Children are filing across the road.",
+		"d": "I never stop for buses. They never stop for me.",
+		"o": [
+			["Stop! School bus!", ""],
+			["Go around it. Quickly.", "Passing a school bus with its stop arm out is called a felony. It is also called a lot of other things by thirty-one parents."],
+			["Wave at the kids.", "The kids wave back. The bus driver does not. The bus driver writes down your license plate and your future."],
+		],
+		"good": "The driver stops. Twenty-two children wave at the car. One gives it a thumbs-up. The driver cries a little behind their sunglasses.",
+		"late": "Sirens, parents, and a very large sign that says SHAME. You will be spending the summer in a very small room.",
+		"fx": "ffd21f",
+	},
+];
+
+// Lines the driver says to nobody in particular while the road is empty.
+const IDLE = [
+	"I'm not tired. I'm just resting my eyes.",
+	"Let me check my phone real quick.",
+	"I know a shortcut. It's not a shortcut.",
+	"Do you think birds get lost?",
+	"I've done this drive a hundred times.",
+	"Eyes on the road? Eyes on the road.",
+	"Is that a nice cloud, or what?",
+	"Hold my coffee. No, the other hand.",
+];
+
+const THANKS = [
+	"Fine. I was about to do that.",
+	"I saw it. I SAW it.",
+	"Thanks, co-pilot.",
+	"You're surprisingly useful.",
+	"Okay okay, relax, I got it.",
+	"Honestly? Good call.",
+];
+
+const BLAME = [
+	"WHY DIDN'T YOU SAY SOMETHING?!",
+	"...You had one job.",
+	"That's on you. That's all on you.",
+	"We don't speak of this.",
+	"I'm telling my insurance it was you.",
+	"Next time use your words. The RIGHT ones.",
+];
+
+const EPITAPHS = [
+	"Insurance has cancelled you both. In writing. With emojis.",
+	"The car is totaled. The driver is fine. The driver says it was your fault.",
+	"The tow truck driver took one look and asked if you wanted a hug.",
+	"You will be remembered as the worst co-pilot in the county.",
+	"On the bright side: you'll get to walk from now on.",
+];
+
+const W = 1280, H = 720, HORIZON = 285, ROAD_B = 600, TAU = Math.PI * 2;
+const cv = document.getElementById("c");
+const ctx = cv.getContext("2d");
+const FONT = 'system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+
+const P = (x, s) => [W / 2 + x * s, HORIZON + (ROAD_B - HORIZON) * s];
+const scaleOf = (d) => 0.03 + d * d;
+// point offset: p + Vector2(dx, dy) * u
+const o = (p, dx, dy, u) => [p[0] + dx * u, p[1] + dy * u];
+const hexc = (h) => "#" + h;
+const lerp = (a, b, t) => a + (b - a) * t;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const fpos = (a, b) => ((a % b) + b) % b;
+const moveToward = (v, t, d) => (Math.abs(t - v) <= d ? t : v + Math.sign(t - v) * d);
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+function poly(pts, color) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+  ctx.closePath();
+  ctx.fill();
+}
+function el(p, rx, ry, color) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.ellipse(p[0], p[1], Math.max(0.01, rx), Math.max(0.01, ry), 0, 0, TAU);
+  ctx.fill();
+}
+function circ(p, r, color) { el(p, r, r, color); }
+function rc(p, w, h, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(p[0] - w / 2, p[1] - h / 2, w, h);
+}
+function rect(x, y, w, h, color) { ctx.fillStyle = color; ctx.fillRect(x, y, w, h); }
+function line(a, b, color, w) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = Math.max(1, w);
+  ctx.lineCap = "butt";
+  ctx.beginPath();
+  ctx.moveTo(a[0], a[1]);
+  ctx.lineTo(b[0], b[1]);
+  ctx.stroke();
+}
+function arc(p, r, a0, a1, color, w) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = w;
+  ctx.beginPath();
+  ctx.arc(p[0], p[1], r, a0, a1);
+  ctx.stroke();
+}
+function setFont(fs, bold) { ctx.font = (bold === false ? "" : "bold ") + fs + "px " + FONT; }
+function txt(s, x, y, fs, color, align, shadow) {
+  setFont(fs);
+  ctx.textAlign = align || "left";
+  if (shadow !== false) { ctx.fillStyle = "rgba(0,0,0,0.7)"; ctx.fillText(s, x + 2, y + 2); }
+  ctx.fillStyle = color;
+  ctx.fillText(s, x, y);
+}
+function wrap(text, maxW, fs, bold) {
+  setFont(fs, bold);
+  const out = [];
+  for (const para of text.split("\n")) {
+    let cur = "";
+    for (const w of para.split(" ")) {
+      const t = cur ? cur + " " + w : w;
+      if (ctx.measureText(t).width > maxW && cur) { out.push(cur); cur = w; } else cur = t;
+    }
+    out.push(cur);
+  }
+  return out;
+}
+function mtxt(text, x, y, maxW, fs, color, align, bold) {
+  const lines = wrap(text, maxW, fs, bold);
+  setFont(fs, bold);
+  ctx.textAlign = align || "left";
+  ctx.fillStyle = color;
+  lines.forEach((l, i) => ctx.fillText(l, x, y + i * fs * 1.28));
+  return lines.length * fs * 1.28;
+}
+function panel(x, y, w, h, fill, edge) {
+  rect(x, y, w, h, fill);
+  ctx.strokeStyle = edge; ctx.lineWidth = 3; ctx.strokeRect(x, y, w, h);
+}
+function bubble(x, y, text, width, fill, ink, fs) {
+  const lh = fs * 1.28, n = wrap(text, width, fs, false).length, h = n * lh + 20;
+  panel(x, y, width + 24, h, fill, ink);
+  mtxt(text, x + 12, y + 10 + fs, width, fs, ink, "left", false);
+  return h;
+}
+function person(g, h, shirt, skin, walk, hair) {
+  const sw = Math.sin(walk) * h * 0.12, legc = "#2b2b3a", hip = o(g, 0, -h * 0.45, 1);
+  line(hip, o(g, sw, 0, 1), legc, h * 0.09);
+  line(hip, o(g, -sw, 0, 1), legc, h * 0.09);
+  rc(o(g, 0, -h * 0.65, 1), h * 0.28, h * 0.4, shirt);
+  line(o(g, 0, -h * 0.8, 1), o(g, sw * 1.3, -h * 0.55, 1), skin, h * 0.07);
+  line(o(g, 0, -h * 0.8, 1), o(g, -sw * 1.3, -h * 0.55, 1), skin, h * 0.07);
+  circ(o(g, 0, -h * 0.9, 1), h * 0.1, skin);
+  el(o(g, 0, -h * 0.96, 1), h * 0.1, h * 0.055, hair);
+}
+function signPlate(shape, c, size, col, ink, glyph) {
+  const r = size * 0.5;
+  let pts = [];
+  if (shape === "diamond") { const k = r * 1.3; pts = [[c[0], c[1] - k], [c[0] + k, c[1]], [c[0], c[1] + k], [c[0] - k, c[1]]]; }
+  else if (shape === "octagon") for (let i = 0; i < 8; i++) { const a = Math.PI / 8 + i * Math.PI / 4; pts.push([c[0] + Math.cos(a) * r * 1.15, c[1] + Math.sin(a) * r * 1.15]); }
+  else if (shape === "circle") for (let i = 0; i < 24; i++) { const a = TAU * i / 24; pts.push([c[0] + Math.cos(a) * r * 1.1, c[1] + Math.sin(a) * r * 1.1]); }
+  else pts = [[c[0] - r * 1.15, c[1] - r * 0.95], [c[0] + r * 1.15, c[1] - r * 0.95], [c[0] + r * 1.15, c[1] + r * 0.95], [c[0] - r * 1.15, c[1] + r * 0.95]];
+  poly(pts, col);
+  ctx.strokeStyle = "#111"; ctx.lineWidth = Math.max(1, size * 0.04);
+  ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]))); ctx.closePath(); ctx.stroke();
+  if (size < 34) return;
+  const lines = glyph.split("\n"), fs = Math.floor(size * (glyph.length <= 4 ? 0.3 : 0.2));
+  lines.forEach((l, i) => txt(l, c[0], c[1] + (i - (lines.length - 1) / 2) * fs * 1.1 + fs * 0.35, fs, ink, "center", false));
+}
+
+const HAZ = {};
+function zebra(s) {
+  for (let k = 0; k < 9; k++) {
+    const x = -480 + k * 120;
+    poly([P(x - 35, s * 0.94), P(x + 35, s * 0.94), P(x + 35, s * 1.06), P(x - 35, s * 1.06)], "#f2f2f2");
+  }
+}
+HAZ.ducks = (s, hc, et) => {
+  const orange = "#f08a1c";
+  for (let k = 0; k < 7; k++) {
+    const sk = s * (1 - 0.05 * (k % 3)), x = -420 + k * 140 + (hc - 1) * 650;
+    const hop = Math.abs(Math.sin(et * 6 + k * 1.7)) * 16 * sk;
+    const p = o(P(x, sk), 0, -hop, 1), u = sk * 1.5;
+    line(o(p, -8, -20, u), o(p, -8, 0, u), orange, 4 * u);
+    line(o(p, 10, -20, u), o(p, 10, 0, u), orange, 4 * u);
+    el(o(p, 0, -36, u), 38 * u, 26 * u, "#f2eedd");
+    el(o(p, -8, -40, u), 22 * u, 13 * u, "#d8d2bc");
+    poly([o(p, -34, -44, u), o(p, -56, -62, u), o(p, -30, -30, u)], "#f2eedd");
+    circ(o(p, 30, -64, u), 17 * u, "#2d7a3a");
+    el(o(p, 50, -60, u), 14 * u, 6 * u, orange);
+    circ(o(p, 34, -68, u), 3 * u, "#000");
+  }
+};
+HAZ.gator = (s, hc, et) => {
+  const u = s, p = P((hc - 1) * 750, s), gr = "#3f7f3a", dk = "#2c5c2a", wag = Math.sin(et * 3) * 25;
+  poly([o(p, -250, -90, u), o(p, -540, -20 + wag, u), o(p, -250, -20, u)], gr);
+  [-170, -80, 120, 200].forEach((lx, k) => rc(o(p, lx, -16 + Math.sin(et * 4 + k) * 5, u), 44 * u, 40 * u, dk));
+  el(o(p, 0, -52, u), 290 * u, 52 * u, gr);
+  el(o(p, 0, -30, u), 250 * u, 26 * u, "#9bc27a");
+  for (let k = 0; k < 9; k++) { const rx = -230 + k * 55; poly([o(p, rx, -96, u), o(p, rx + 22, -96, u), o(p, rx + 11, -118, u)], dk); }
+  el(o(p, 300, -44, u), 135 * u, 34 * u, gr);
+  line(o(p, 190, -34, u), o(p, 430, -34, u), "#1c3a1b", 5 * u);
+  for (let k = 0; k < 7; k++) { const tx = 220 + k * 30; poly([o(p, tx, -33, u), o(p, tx + 14, -33, u), o(p, tx + 7, -14, u)], "#fff"); }
+  circ(o(p, 270, -86, u), 20 * u, "#f3d23a");
+  rc(o(p, 272, -86, u), 6 * u, 24 * u, "#000");
+};
+HAZ.walker = (s, hc, et) => {
+  zebra(s);
+  const h = 190 * s, p = P((hc - 1) * 520, s);
+  person(p, h, "#7a5a3a", "#e8c4a0", et * 2, "#f0f0f0");
+  const fx = o(p, h * 0.3, 0, 1), steel = "#b9bec8";
+  line(fx, o(fx, 0, -h * 0.5, 1), steel, h * 0.025);
+  line(o(fx, -h * 0.16, 0, 1), o(fx, -h * 0.16, -h * 0.5, 1), steel, h * 0.025);
+  line(o(fx, -h * 0.16, -h * 0.5, 1), o(fx, 0, -h * 0.5, 1), steel, h * 0.03);
+};
+HAZ.kids = (s, hc, et) => {
+  const shirts = ["#e8453c", "#3c8de8", "#f2c230"];
+  for (let k = 0; k < 3; k++) {
+    const x = -330 + k * 150 + (hc - 1) * 600;
+    person(P(x, s * (1 - 0.04 * k)), 120 * s, shirts[k], "#f1c9a5", et * 9 + k, "#5a3a1a");
+  }
+  const bounce = Math.abs(Math.sin(et * 5)) * 90 * s;
+  const bp = o(P(110 + (hc - 1) * 600, s), 0, -22 * s - bounce, 1);
+  circ(bp, 22 * s, "#e8453c");
+  line(o(bp, -22, 0, s), o(bp, 22, 0, s), "#fff", 5 * s);
+};
+HAZ.stop = (s, hc) => {
+  const ya = P(0, s * 0.9)[1], yb = P(0, s * 1.1)[1];
+  poly([[0, ya], [W, ya], [W, yb], [0, yb]], "#55555c");
+  poly([P(-520, s * 1.15), P(520, s * 1.15), P(520, s * 1.19), P(-520, s * 1.19)], "#fff");
+  const u = s, p = P((1 - hc) * 1500, s);
+  rc(o(p, 60, -75, u), 620 * u, 30 * u, "#2b2b33");
+  for (let row = 0; row < 3; row++) for (let k = 0; k < 5; k++) {
+    const lx = -180 + k * 120 + (row % 2 === 1 ? 20 : 0);
+    rc(o(p, lx + 60, -105 - row * 50, u), 118 * u, 48 * u, "#8a5a2b");
+    el(o(p, lx + 118, -105 - row * 50, u), 8 * u, 22 * u, "#d9b27a");
+  }
+  rc(o(p, -290, -120, u), 150 * u, 160 * u, "#c0392b");
+  rc(o(p, -310, -150, u), 70 * u, 60 * u, "#a8d8f0");
+  [-290, -120, 100, 300].forEach((wx) => circ(o(p, wx, -34, u), 36 * u, "#141418"));
+};
+HAZ.train = (s, hc, et) => {
+  const y1 = P(0, s * 0.92)[1], y2 = P(0, s * 1.08)[1];
+  poly([[0, y1], [W, y1], [W, y2], [0, y2]], "#4a3f35");
+  line([0, P(0, s * 0.97)[1]], [W, P(0, s * 0.97)[1]], "#b9bec8", 4 * s);
+  line([0, P(0, s * 1.03)[1]], [W, P(0, s * 1.03)[1]], "#b9bec8", 4 * s);
+  const u = s, p = P((1 - hc) * 2200, s);
+  rc(o(p, -200, -140, u), 480 * u, 230 * u, "#1d1d22");
+  rc(o(p, -200, -80, u), 480 * u, 26 * u, "#f2c230");
+  rc(o(p, -380, -190, u), 90 * u, 70 * u, "#a8d8f0");
+  circ(o(p, -445, -105, u), 22 * u, "#fff2a0");
+  const wag = ["#6b2f2f", "#2f4f6b", "#4f4f4f", "#2f6b45"];
+  for (let k = 0; k < 4; k++) rc(o(p, 80 + k * 460 + 150, -150, u), 440 * u, 250 * u, wag[k]);
+  [-340, -80, 140, 400, 700].forEach((wx) => circ(o(p, wx, -28, u), 28 * u, "#0e0e12"));
+  const on = Math.sin(et * 9) > 0;
+  [-610, 610].forEach((sx) => {
+    const b = P(sx, s);
+    line(b, o(b, 0, -300, u), "#d8d8d8", 12 * u);
+    circ(o(b, sx < 0 ? -26 : 26, -300, u), 20 * u, on ? "#ff2a2a" : "#6a1a1a");
+  });
+};
+HAZ.kayak = (s) => {
+  const gp = P(0, s), top = gp[1] - 235 * s;
+  rect(0, top - 130 * s, W, 130 * s, "#8a8478");
+  rect(0, top, P(-430, s)[0], gp[1] - top + 140 * s, "#77716a");
+  rect(P(430, s)[0], top, W, gp[1] - top + 140 * s, "#77716a");
+  for (let k = 0; k < 5; k++) { const y = top - 130 * s + k * 26 * s; line([0, y], [W, y], "#5f5a54", 3 * s); }
+  signPlate("rect", [W / 2, top + 52 * s], 70 * s, "#ffd21f", "#111", "LOW\n8'6\"");
+};
+HAZ.deer = (s, hc, et) => {
+  for (let k = 0; k < 2; k++) {
+    const u = s * (1 - 0.12 * k), p = P((hc - 1) * 420 - 160 + k * 330, u), brown = "#8a5a2b";
+    [-70, -42, 48, 78].forEach((lx) => line(o(p, lx, -120, u), o(p, lx, 0, u), "#6a4320", 12 * u));
+    el(o(p, 0, -150, u), 105 * u, 52 * u, brown);
+    circ(o(p, -102, -165, u), 12 * u, "#fff");
+    poly([o(p, 60, -170, u), o(p, 100, -170, u), o(p, 135, -270, u), o(p, 105, -272, u)], brown);
+    el(o(p, 136, -276, u), 38 * u, 20 * u, brown);
+    line(o(p, 125, -290, u), o(p, 105, -370, u), "#d8c8a0", 6 * u);
+    line(o(p, 110, -340, u), o(p, 60, -380, u), "#d8c8a0", 5 * u);
+    const glow = 0.55 + 0.25 * Math.sin(et * 4 + k);
+    circ(o(p, 150, -282, u), 20 * u, `rgba(255,242,102,${glow * 0.5})`);
+    circ(o(p, 150, -282, u), 8 * u, "#ffff99");
+  }
+};
+
+HAZ.police = (s, hc, et, bad) => {
+  const u = s, p = P(470, s);
+  rc(o(p, 0, -60, u), 380 * u, 70 * u, "#f2f2f2");
+  rc(o(p, 0, -35, u), 380 * u, 34 * u, "#16161c");
+  rc(o(p, -20, -120, u), 170 * u, 50 * u, "#16161c");
+  rc(o(p, -20, -120, u), 140 * u, 34 * u, "#a8d8f0");
+  [-120, 120].forEach((wx) => circ(o(p, wx, -22, u), 30 * u, "#0e0e12"));
+  const fl = (hc > 0.55 || bad) && Math.sin(et * 14) > 0;
+  circ(o(p, -50, -154, u), 14 * u, fl ? "#ff2a2a" : "#5a1a1a");
+  circ(o(p, 10, -154, u), 14 * u, fl ? "#1a2a5a" : "#2a6aff");
+  const bx = P(330, s);
+  rc(o(bx, 0, -120, u), 10 * u, 120 * u, "#555");
+  rc(o(bx, 230, -120, u), 10 * u, 120 * u, "#555");
+  rc(o(bx, 115, -170, u), 260 * u, 120 * u, "#2f7a3a");
+  if (s > 0.2) txt("JOE'S", bx[0] + 115 * u, bx[1] - 150 * u, Math.floor(34 * u), "#fff", "center");
+};
+HAZ.bridgeout = (s, hc, et, bad) => {
+  const ya = P(0, s * 0.5)[1], yb = P(0, s)[1];
+  poly([[0, ya], [W, ya], [W, yb], [0, yb]], "#2f7fc0");
+  for (let k = 0; k < 6; k++) {
+    const y = ya + (yb - ya) * (k + 0.5) / 6;
+    for (let j = 0; j < 8; j++) { const x = j * 170 + fpos(et * 40 + k * 55, 170); line([x, y], [x + 60 * s, y], "rgba(255,255,255,0.5)", 3 * s); }
+  }
+  for (let k = 0; k < 8; k++) rc(o(P(-490 + k * 140, s * 1.05), 0, -50, s), 100 * s, 36 * s, k % 2 === 0 ? "#ff8a1f" : "#fff");
+  if (!bad && hc > 1) {
+    const fy = yb - 90 * s - Math.abs(Math.sin(et * 3)) * 60 * s, fx = W / 2;
+    el([fx + 120 * s, fy], 36 * s, 16 * s, "#f08a3a");
+    poly([[fx + 150 * s, fy], [fx + 180 * s, fy - 16 * s], [fx + 180 * s, fy + 16 * s]], "#f08a3a");
+  }
+};
+HAZ.rocks = (s, hc, et, bad, swerve) => {
+  for (let k = 0; k < 6; k++) {
+    const f = fpos(et * 0.9 + k * 0.37, 1), x = -520 + k * 210;
+    el([P(x, s * 0.8)[0], lerp(-30, P(0, s * 0.8)[1] - 20, f)], 12 + 18 * s, 10 + 14 * s, "#6b6e75");
+  }
+  const gp = P(lerp(0, 380, swerve), s), t = clamp(hc, 0, 1), r = 130 * s;
+  const bp = [gp[0], lerp(-250, gp[1] - r * 0.9, t * t)];
+  el(bp, r, r * 0.9, "#7d7f86");
+  el(o(bp, -r * 0.2, -r * 0.2, 1), r * 0.65, r * 0.55, "#9a9ca4");
+  if (t > 0.7) [-0.32, 0.32].forEach((sx) => {
+    circ(o(bp, sx * r, -r * 0.1, 1), r * 0.18, "#fff");
+    circ(o(bp, sx * r + r * 0.03, -r * 0.08, 1), r * 0.08, "#000");
+  });
+};
+HAZ.gas = (s, hc, et, bad) => {
+  const u = s, p = P(700, s);
+  rc(o(p, 0, -130, u), 420 * u, 260 * u, "#f2eadb");
+  rc(o(p, 0, -275, u), 460 * u, 40 * u, "#c0392b");
+  rc(o(p, -80, -70, u), 130 * u, 140 * u, "#a8d8f0");
+  rc(o(p, -380, -70, u), 70 * u, 140 * u, "#c0392b");
+  rc(o(p, -480, -70, u), 70 * u, 140 * u, "#c0392b");
+  signPlate("rect", o(P(500, s), 0, -360, u), 120 * u, "#1f6fd1", "#fff", "GAS");
+  if (bad) for (let k = 0; k < 3; k++) {
+    const a = et * 0.7 + k * 2.1, v = [W / 2 + Math.cos(a) * 220, 120 + Math.sin(a * 1.3) * 40 + k * 28];
+    line(v, o(v, -14, -9, 1), "#221a1a", 3); line(v, o(v, 14, -9, 1), "#221a1a", 3);
+  }
+};
+HAZ.curve = (s) => {
+  const p = P(0, s), u = s;
+  rc(o(p, 0, -330, u), 700 * u, 250 * u, "#ffd21f");
+  ctx.strokeStyle = "#111"; ctx.lineWidth = Math.max(1, 6 * u);
+  ctx.strokeRect(p[0] - 350 * u, p[1] - 455 * u, 700 * u, 250 * u);
+  for (let k = 0; k < 3; k++) {
+    const cx = -190 + k * 190;
+    poly([[cx - 70, -420], [cx - 30, -420], [cx + 50, -330], [cx - 30, -240], [cx - 70, -240], [cx + 10, -330]].map((q) => o(p, q[0], q[1], u)), "#111");
+  }
+  rc(o(p, 0, -150, u), 20 * u, 140 * u, "#555");
+};
+HAZ.wrongway = (s) => {
+  const u = s, p = P(-120, s);
+  el(o(p, 0, -200, u), 340 * u, 260 * u, "rgba(255,255,204,0.18)");
+  rc(o(p, 0, -170, u), 380 * u, 300 * u, "#3c4a5c");
+  rc(o(p, 0, -270, u), 300 * u, 80 * u, "#a8d8f0");
+  rc(o(p, 0, -110, u), 260 * u, 60 * u, "#1a1a20");
+  [-140, 140].forEach((sx) => circ(o(p, sx, -170, u), 38 * u, "#fffbd0"));
+  rc(o(p, 0, -20, u), 400 * u, 40 * u, "#141418");
+};
+HAZ.ice = (s, hc, et) => {
+  const p = P(0, s);
+  el(o(p, 0, -8, s), 560 * s, 70 * s, "#b6dff2");
+  el(o(p, -60, -14, s), 380 * s, 40 * s, "#d8f0fb");
+  for (let k = 0; k < 5; k++) {
+    const tw = 0.5 + 0.5 * Math.sin(et * 4 + k * 1.9), sp = o(p, -300 + k * 150, -20 - 8 * (k % 2), s), c = `rgba(255,255,255,${tw})`;
+    line(o(sp, -10, 0, s), o(sp, 10, 0, s), c, 3 * s); line(o(sp, 0, -10, s), o(sp, 0, 10, s), c, 3 * s);
+  }
+  const cp = P(-650, s);
+  el(o(cp, 0, -60, s), 90 * s, 46 * s, "#fff");
+  circ(o(cp, -30, -70, s), 16 * s, "#222"); circ(o(cp, 30, -50, s), 14 * s, "#222");
+  el(o(cp, 96, -88, s), 32 * s, 22 * s, "#fff");
+};
+HAZ.bus = (s, hc, et) => {
+  const u = s, p = P(360, s);
+  rc(o(p, 0, -130, u), 760 * u, 200 * u, "#f2b81f");
+  rc(o(p, 0, -150, u), 760 * u, 18 * u, "#1a1a1a");
+  for (let k = 0; k < 6; k++) rc(o(p, -300 + k * 120, -190, u), 90 * u, 60 * u, "#a8d8f0");
+  [-230, 240].forEach((wx) => circ(o(p, wx, -30, u), 40 * u, "#0e0e12"));
+  const on = Math.sin(et * 8) > 0;
+  circ(o(p, -340, -250, u), 14 * u, on ? "#ff2a2a" : "#5a1a1a");
+  circ(o(p, 340, -250, u), 14 * u, on ? "#5a1a1a" : "#ff2a2a");
+  signPlate("octagon", o(p, -420, -170, u), 90 * u, "#d62828", "#fff", "STOP");
+  const shirts = ["#e8453c", "#3c8de8", "#2fb36b", "#c06ae0"];
+  for (let k = 0; k < 4; k++) person(P(-330 + k * 120 + (hc - 1) * 500, s * 1.02), 120 * s, shirts[k], "#f1c9a5", et * 6 + k, "#3a2a1a");
+};
+
+const MAX_STRIKES = 3;
+const G = {
+  state: "title", score: 0, best: 0, strikes: 0, streak: 0, handled: 0, newBest: false,
+  ev: null, opts: [], bag: [], t: 0, signT: 0, reactTime: 6.5, gap: 2, et: 0, hc: 0, dep: 0, swerve: 0,
+  good: false, head: "", text: "", timer: 0, line: "Buckle up. I drive great. Ask anyone.", idle: 3,
+  mood: "calm", epitaph: "", scroll: 0, speed: 0.3, anim: 0, lock: 0, shake: 0, flash: 0, flashCol: "200,20,20",
+  parts: [], cracks: [], top: [0x5d, 0xb3, 0xf2], bot: [0xcf, 0xea, 0xff], ground: [0x4c, 0x9a, 0x3c],
+};
+const DEF = { top: [0x5d, 0xb3, 0xf2], bot: [0xcf, 0xea, 0xff], ground: [0x4c, 0x9a, 0x3c] };
+const hex3 = (h) => [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+const rgb = (c, k) => { k = k === undefined ? 1 : k; return `rgb(${Math.round(c[0] * k)},${Math.round(c[1] * k)},${Math.round(c[2] * k)})`; };
+const lighten = (c, k) => c.map((v) => v + (255 - v) * k);
+try { G.best = parseInt(localStorage.getItem("bsd-best") || "0", 10) || 0; } catch (e) {}
+
+const bar = document.getElementById("bar");
+const btns = Array.from(bar.querySelectorAll("button"));
+btns.forEach((b, i) => b.addEventListener("click", () => choose(i)));
+function setBar(on) { bar.classList.toggle("off", !on); btns.forEach((b) => (b.disabled = !on)); }
+setBar(false);
+
+function start() {
+  Object.assign(G, { score: 0, strikes: 0, streak: 0, handled: 0, newBest: false, cracks: [], parts: [], bag: [], ev: null, mood: "calm", gap: 2.5, speed: 0.3, line: pick(IDLE), idle: 4, state: "drive" });
+}
+function nextSign() {
+  if (!G.bag.length) { G.bag = LIST.map((_, i) => i); for (let i = G.bag.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [G.bag[i], G.bag[j]] = [G.bag[j], G.bag[i]]; } }
+  G.ev = LIST[G.bag.pop()];
+  G.opts = G.ev.o.map((x, i) => ({ t: x[0], r: x[1], ok: i === 0 }));
+  for (let i = G.opts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [G.opts[i], G.opts[j]] = [G.opts[j], G.opts[i]]; }
+  btns.forEach((b, i) => (b.innerHTML = `<kbd>${i + 1}</kbd><span></span>`, b.lastChild.textContent = G.opts[i].t));
+  Object.assign(G, { t: 0, signT: 0, et: 0, hc: 0, dep: 0, swerve: 0, mood: "calm", line: G.ev.d, state: "sign", reactTime: Math.max(3.6, 6.8 - 0.2 * G.handled) });
+  setBar(true);
+}
+function choose(i) { if (G.state === "sign" && i < G.opts.length) resolve(i); }
+function burst(x, y, color, n, spd, grav) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = (0.2 + Math.random() * 0.8) * spd;
+    G.parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, l: 0.8 + Math.random(), g: grav, c: color, s: 4 + Math.random() * 7 });
+  }
+}
+function resolve(i) {
+  setBar(false);
+  const ok = i >= 0 && G.opts[i].ok;
+  G.good = ok;
+  if (ok) {
+    G.streak++; G.handled++;
+    const gain = 100 + Math.floor((1 - G.t) * 100) + G.streak * 10;
+    G.score += gain; G.head = "NICE SAVE!   +" + gain; G.text = G.ev.good; G.line = pick(THANKS); G.mood = "happy";
+    burst(W / 2, 380, "#ffd21f", 45, 380, 240);
+  } else {
+    G.streak = 0; G.strikes++;
+    G.head = i < 0 ? "TOO SLOW!" : "WRONG THING TO SAY!"; G.text = i < 0 ? G.ev.late : G.opts[i].r;
+    G.line = pick(BLAME); G.mood = "scared"; G.shake = 28; G.flash = 0.85;
+    burst(W / 2, 420, hexc(G.ev.fx), 110, 650, 520);
+    const ox = 320 + Math.random() * 660, oy = 150 + Math.random() * 310, segs = [];
+    for (let k = 0; k < 7; k++) {
+      const a = Math.random() * TAU, ln = 60 + Math.random() * 170, dx = Math.cos(a), dy = Math.sin(a);
+      segs.push([[ox, oy], [ox + dx * ln * 0.5 + (Math.random() - 0.5) * 28, oy + dy * ln * 0.5 + (Math.random() - 0.5) * 28], [ox + dx * ln, oy + dy * ln]]);
+    }
+    G.cracks.push(segs);
+  }
+  G.timer = 3.6 + G.text.length * 0.03;
+  G.state = "result";
+}
+function gameOver() {
+  G.state = "over"; G.lock = 1.3; G.epitaph = pick(EPITAPHS);
+  if (G.score > G.best) { G.best = G.score; G.newBest = true; try { localStorage.setItem("bsd-best", String(G.best)); } catch (e) {} }
+}
+function update(dt) {
+  G.anim += dt; G.lock = Math.max(0, G.lock - dt); G.shake = Math.max(0, G.shake - 40 * dt); G.flash = Math.max(0, G.flash - 1.4 * dt);
+  let target = 0.3;
+  const st = G.state;
+  if (st === "title" || st === "drive") {
+    G.idle -= dt; if (G.idle <= 0) { G.line = pick(IDLE); G.idle = 4.5; }
+    if (st === "drive") { G.gap -= dt; if (G.gap <= 0) nextSign(); }
+  } else if (st === "sign") {
+    G.et += dt; G.t = Math.min(1, G.t + dt / G.reactTime); G.signT = G.t; G.hc = G.t; G.dep = G.t * 0.98;
+    if (G.t >= 1) resolve(-1);
+  } else if (st === "result") {
+    G.et += dt; G.timer -= dt;
+    if (G.good) {
+      target = G.timer > 0.9 ? 0.04 : 0.3;
+      G.hc = Math.min(3, G.hc + dt * 0.55); G.signT += dt * 0.35; G.swerve = moveToward(G.swerve, 1, dt * 1.5);
+      if (G.dep < 0.78) G.dep = Math.min(0.78, G.dep + dt * 0.25);
+    } else {
+      target = 0;
+      if (G.hc < 1) G.hc = moveToward(G.hc, 1, dt * 2);
+      G.dep = moveToward(G.dep, 0.98, dt * 1.6);
+    }
+    if (G.timer <= 0) {
+      if (G.strikes >= MAX_STRIKES) gameOver();
+      else Object.assign(G, { ev: null, mood: "calm", gap: 1.4 + Math.random(), line: pick(IDLE), idle: 4, state: "drive" });
+    }
+  } else target = 0;
+  G.speed = moveToward(G.speed, target, dt * 0.8);
+  G.scroll = fpos(G.scroll + G.speed * dt, 1);
+  const tg = G.ev && G.ev.sky ? { top: hex3(G.ev.sky[0]), bot: hex3(G.ev.sky[1]) } : DEF;
+  const gr = G.ev && G.ev.gr ? hex3(G.ev.gr) : DEF.ground, k = clamp(dt * 2, 0, 1);
+  for (let i = 0; i < 3; i++) { G.top[i] = lerp(G.top[i], tg.top[i], k); G.bot[i] = lerp(G.bot[i], tg.bot[i], k); G.ground[i] = lerp(G.ground[i], gr[i], k); }
+  G.parts = G.parts.filter((p) => (p.l -= dt) > 0);
+  G.parts.forEach((p) => { p.vy += p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt; });
+}
+function key(code) {
+  if (code === "Digit1" || code === "Numpad1") choose(0);
+  else if (code === "Digit2" || code === "Numpad2") choose(1);
+  else if (code === "Digit3" || code === "Numpad3") choose(2);
+  else if (code === "Space" || code === "Enter" || code === "KeyR") go();
+}
+function go() { if (G.state === "title" || (G.state === "over" && G.lock <= 0)) start(); }
+addEventListener("keydown", (e) => { if (e.repeat) return; if (["Space", "Enter"].includes(e.code)) e.preventDefault(); key(e.code); });
+cv.addEventListener("pointerdown", go);
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  update(dt); draw(); requestAnimationFrame(frame);
+}
+
+function drawWorld() {
+  const g = ctx.createLinearGradient(0, 0, 0, HORIZON);
+  g.addColorStop(0, rgb(G.top)); g.addColorStop(1, rgb(G.bot));
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, HORIZON);
+  const night = Math.max(...G.top) / 255 < 0.35;
+  circ([980, 120], 46, night ? "#e8ecff" : "rgba(255,242,179,0.9)");
+  const hill = rgb(G.ground, 0.75);
+  circ([220, HORIZON + 30], 170, hill); circ([760, HORIZON + 60], 220, rgb(lighten(G.ground.map((v) => v * 0.75), 0.05)));
+  circ([1120, HORIZON + 30], 150, hill);
+  rect(0, HORIZON, W, H - HORIZON, rgb(G.ground));
+  const ext = (H - HORIZON) / (ROAD_B - HORIZON);
+  poly([[W / 2 - 2, HORIZON], [W / 2 + 2, HORIZON], [W / 2 + 575 * ext, H], [W / 2 - 575 * ext, H]], "#3b3b42");
+  line([W / 2 - 1, HORIZON], [W / 2 - 520 * ext, H], "#ebebeb", 6);
+  line([W / 2 + 1, HORIZON], [W / 2 + 520 * ext, H], "#ebebeb", 6);
+  for (let i = 0; i < 10; i++) {
+    const d = fpos(G.scroll + i / 10, 1), s0 = scaleOf(d), s1 = scaleOf(Math.min(d + 0.045, 1));
+    poly([P(-14, s0), P(14, s0), P(14, s1), P(-14, s1)], "#e8e8e8");
+  }
+  const items = [];
+  for (const side of [-1, 1]) for (let i = 0; i < 7; i++) items.push([fpos(G.scroll + i / 7 + (side > 0 ? 0.07 : 0), 1), side, i]);
+  items.sort((a, b) => a[0] - b[0]);
+  const fol = rgb(G.ground, 0.6), fol2 = rgb(lighten(G.ground.map((v) => v * 0.6), 0.12));
+  for (const it of items) {
+    const s = scaleOf(it[0]), b = P(it[1] * (720 + (it[2] % 3) * 90), s);
+    rect(b[0] - 14 * s, b[1] - 150 * s, 28 * s, 150 * s, "#5a3d24");
+    circ([b[0], b[1] - 210 * s], 90 * s, fol); circ([b[0] - 30 * s, b[1] - 230 * s], 55 * s, fol2);
+  }
+}
+function drawEvent() {
+  const ev = G.ev, sH = scaleOf(clamp(G.dep, 0, 1)), bad = G.state === "result" && !G.good;
+  HAZ[ev.id](sH, G.hc, G.et, bad, G.swerve);
+  if (G.signT < 1.2) {
+    const ss = scaleOf(G.signT), gp = P(640, ss), top = o(gp, 0, -330, ss);
+    line(gp, top, "#9a9aa2", Math.max(2, 10 * ss));
+    signPlate(ev.shape, top, 150 * ss, hexc(ev.c), hexc(ev.ink), ev.glyph);
+  }
+}
+function drawDriver() {
+  const skin = "#e0b090", ink = "#2a1a1a", hp = [255, 425 + Math.sin(G.anim * 2) * 2];
+  poly([[120, 600], [140, 520], [200, 478], [310, 478], [370, 520], [390, 600]], "#5a4a8a");
+  rc([255, 468], 30, 26, skin);
+  circ(hp, 46, skin); circ(o(hp, -46, 6, 1), 9, skin); circ(o(hp, 46, 6, 1), 9, skin);
+  el(o(hp, 0, -26, 1), 50, 28, "#3a2a1a");
+  if (G.mood === "scared") {
+    [-18, 18].forEach((sx) => { circ(o(hp, sx, -5, 1), 11, "#fff"); circ(o(hp, sx + Math.sin(G.anim * 30) * 2, -5, 1), 3.5, "#000"); });
+    line(o(hp, -30, -22, 1), o(hp, -8, -28, 1), ink, 3); line(o(hp, 30, -22, 1), o(hp, 8, -28, 1), ink, 3);
+    el(o(hp, 0, 26, 1), 11, 15, "#3a1010");
+  } else {
+    rc(o(hp, 0, -4, 1), 80, 15, "#0c0c10");
+    if (G.mood === "happy") arc(o(hp, 0, 18, 1), 15, 0.2, Math.PI - 0.2, ink, 3);
+    else line(o(hp, -12, 26, 1), o(hp, 12, 26, 1), ink, 3);
+  }
+  arc([255, 612], 94, Math.PI, TAU, "#1d1d22", 14);
+  circ([165, 585], 15, skin); circ([345, 585], 15, skin);
+  if (G.line && G.state !== "over") {
+    const h = bubble(24, 150, G.line, 232, "#fff8e0", "#222", 18), by = 150 + h;
+    poly([[80, by - 3], [140, by - 3], [205, 372]], "#fff8e0");
+    line([80, by - 3], [205, 372], "#222", 3); line([140, by - 3], [205, 372], "#222", 3);
+  }
+}
+function drawCabin() {
+  const dark = "#17171c";
+  rect(-20, -23, W + 40, 54, dark);
+  poly([[-20, -20], [110, -20], [40, ROAD_B], [-20, ROAD_B]], dark);
+  poly([[W + 20, -20], [W - 110, -20], [W - 40, ROAD_B], [W + 20, ROAD_B]], dark);
+  rc([W / 2, 66], 220, 58, "#0f0f13"); rc([W / 2, 66], 206, 46, "#2d4054");
+  line([W / 2 - 60, 84], [W / 2 + 60, 54], "rgba(230,230,230,0.5)", 3);
+  G.cracks.forEach((segs) => segs.forEach((sg) => {
+    ctx.strokeStyle = "rgba(255,255,255,0.75)"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(sg[0][0], sg[0][1]); ctx.lineTo(sg[1][0], sg[1][1]); ctx.lineTo(sg[2][0], sg[2][1]); ctx.stroke();
+  }));
+  drawDriver();
+  rc([W / 2, 660], W + 40, 130, "#23232b");
+  line([0, ROAD_B], [W, ROAD_B], "#3d3d4a", 4);
+}
+function drawHud() {
+  if (G.state === "title") return;
+  txt("SCORE", 22, 34, 16, "#cfd8ff"); txt(String(G.score), 22, 66, 30, "#fff");
+  txt("BEST " + G.best, 22, 90, 16, "#cfd8ff");
+  if (G.streak >= 2) txt("STREAK x" + G.streak, 22, 114, 18, "#ffd21f");
+  txt("STRIKES", W - 20, 30, 16, "#ffd0d0", "right");
+  for (let i = 0; i < MAX_STRIKES; i++) {
+    const cx = W - 36 - i * 44, used = MAX_STRIKES - 1 - i < G.strikes;
+    circ([cx, 62], 17, used ? "#d62828" : "rgba(0,0,0,0.5)"); arc([cx, 62], 17, 0, TAU, "#fff", 2);
+    if (used) { line([cx - 8, 54], [cx + 8, 70], "#fff", 4); line([cx + 8, 54], [cx - 8, 70], "#fff", 4); }
+  }
+  const ev = G.ev;
+  if (!ev) return;
+  panel(290, 10, 700, 114, "rgba(13,13,26,0.86)", "#e8e8f0");
+  signPlate(ev.shape, [352, 64], 62, hexc(ev.c), hexc(ev.ink), ev.glyph);
+  txt(ev.name, 412, 44, 26, "#ffd21f");
+  mtxt(ev.scene, 412, 72, 560, 17, "#fff", "left", false);
+  if (G.state === "sign") {
+    rect(300, 108, 680, 8, "rgba(0,0,0,0.6)");
+    const c = G.t; rect(300, 108, 680 * (1 - G.t), 8, `rgb(${Math.round(lerp(74, 232, c))},${Math.round(lerp(194, 69, c))},${Math.round(lerp(107, 60, c))})`);
+  } else if (G.state === "result") {
+    const hgt = wrap(G.text, 660, 21, false).length * 21 * 1.28;
+    panel(290, 134, 700, hgt + 76, G.good ? "rgba(20,107,51,0.95)" : "rgba(140,18,18,0.95)", "#fff");
+    txt(G.head, 312, 174, 32, "#fff");
+    mtxt(G.text, 312, 206, 660, 21, "#fff", "left", false);
+  }
+}
+function drawOverlays() {
+  const blink = G.anim % 1.2 < 0.8;
+  if (G.state === "title") {
+    rect(0, 0, W, H, "rgba(0,0,0,0.62)");
+    txt("BACKSEAT DRIVER", W / 2, 190, 84, "#ffd21f", "center");
+    txt("You are the front-seat passenger. The driver is... confident.", W / 2, 244, 26, "#fff", "center");
+    ["Signs and hazards are coming. Read them. Say the right thing. Fast.", "Press 1 / 2 / 3, or tap a button, to speak to the driver.",
+      "Say nothing, or the wrong thing, and the sign takes its revenge.", "Three strikes and the car is totaled. (Dark humor. You were warned.)"]
+      .forEach((l, i) => txt(l, W / 2, 330 + i * 36, 22, "#cfd8ff", "center"));
+    if (blink) txt("PRESS SPACE OR CLICK TO START", W / 2, 560, 34, "#4ac26b", "center");
+  } else if (G.state === "over") {
+    rect(0, 0, W, H, "rgba(64,0,0,0.78)");
+    txt("TOTALED", W / 2, 180, 110, "#ff4a3a", "center");
+    txt("Score: " + G.score, W / 2, 250, 38, "#fff", "center");
+    txt(G.newBest ? "NEW BEST!" : "Best: " + G.best, W / 2, 295, 26, "#ffd21f", "center");
+    mtxt(G.epitaph, W / 2, 380, 800, 26, "#ffe0d8", "center");
+    if (G.lock <= 0 && blink) txt("PRESS SPACE OR CLICK TO RIDE AGAIN", W / 2, 560, 32, "#4ac26b", "center");
+  }
+}
+function draw() {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  const s = G.shake > 0.5 ? [(Math.random() * 2 - 1) * G.shake, (Math.random() * 2 - 1) * G.shake] : [0, 0];
+  ctx.save(); ctx.translate(s[0], s[1]);
+  drawWorld();
+  if (G.ev) drawEvent();
+  drawCabin();
+  ctx.restore();
+  G.parts.forEach((p) => { ctx.globalAlpha = clamp(p.l, 0, 1); rect(p.x - p.s / 2, p.y - p.s / 2, p.s, p.s, p.c); });
+  ctx.globalAlpha = 1;
+  drawHud();
+  if (G.flash > 0) rect(0, 0, W, H, `rgba(${G.flashCol},${G.flash * 0.5})`);
+  drawOverlays();
+}
+requestAnimationFrame(frame);
+
+</script>
