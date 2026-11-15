@@ -209,7 +209,7 @@ const OL='#13212c';
 function blob(fill,stroke=OL,lw=.8){ g.fillStyle=fill; g.fill(); if(stroke){ g.lineWidth=lw; g.strokeStyle=stroke; g.stroke() } }
 function circle(x,y,r){ g.beginPath(); g.arc(x,y,r,0,6.2832) }
 function pop(x,y,txt,c='#fff6c8',s=10){ parts.push({x,y,vx:0,vy:-16,life:1.2,max:1.2,c,g:0,txt,s}) }
-function drawShark(X,Y,a,size,alpha,tp,bite,tint){
+function drawShark(X,Y,a,size,alpha,tp,jaw,tint){
  g.save(); g.globalAlpha=alpha; g.translate(X,Y); g.rotate(a); if(Math.cos(a)<0)g.scale(1,-1); const k=size*.88; g.scale(k,k);
  g.lineJoin='round'; g.lineCap='round';
  const ol=tint?null:OL, lw=1.25/k, fin=tint||'#56738a', wag=Math.sin(tp)*.16;
@@ -246,16 +246,27 @@ function drawShark(X,Y,a,size,alpha,tp,bite,tint){
   g.fillStyle='#fff'; g.beginPath(); g.ellipse(15.6,-2.5,1.9,1.6,0,0,6.3); g.fill(); g.lineWidth=lw*.7; g.strokeStyle=OL; g.stroke();
   g.fillStyle='#16242e'; circle(16.2,-2.4,1.15); g.fill(); g.fillStyle='#fff'; circle(16.6,-2.9,.42); g.fill();
   g.strokeStyle=OL; g.lineWidth=lw*1.1; g.beginPath(); g.moveTo(13.4,-4.7); g.quadraticCurveTo(15.6,-4.9,17.8,-3.9); g.stroke();
-  if(bite){
-   g.beginPath(); g.moveTo(21.6,2.4); g.quadraticCurveTo(16,3.4,11.5,3.6); g.quadraticCurveTo(15,9.5,20.5,9.2); g.quadraticCurveTo(21.5,6,21.6,2.4); g.closePath();
-   g.fillStyle='#5a1420'; g.fill(); g.lineWidth=lw; g.strokeStyle=OL; g.stroke();
-   g.fillStyle='#d24a5a'; g.beginPath(); g.ellipse(16.4,6.6,3,1.2,.3,0,6.3); g.fill();
-   g.fillStyle='#fff'; for(let i=0;i<5;i++){ const x=12.6+i*1.75; g.beginPath(); g.moveTo(x,3.5); g.lineTo(x+1.3,3.3); g.lineTo(x+.7,5.2); g.closePath(); g.fill() }
-   for(let i=0;i<4;i++){ const x=14+i*1.7; g.beginPath(); g.moveTo(x,8.8+i*.1); g.lineTo(x+1.2,8.9); g.lineTo(x+.6,7.2); g.closePath(); g.fill() }
-  } else {
-   g.strokeStyle=OL; g.lineWidth=lw; g.beginPath(); g.moveTo(21.4,2.6); g.quadraticCurveTo(16.5,4.6,11.8,3.9); g.stroke();
-   g.fillStyle='#fff'; for(let i=0;i<5;i++){ const x=12.8+i*1.65, y=4.1+Math.sin(i*.9)*.1+(i<2?.1:0)-(i>3?.4:0); g.beginPath(); g.moveTo(x,y); g.lineTo(x+1.2,y-.1); g.lineTo(x+.6,y+1.4); g.closePath(); g.fill() }
+  // mouth: the lower jaw swings down from a hinge at the back of the gape; jaw is 0 (shut) to 1 (wide open)
+  const j=clamp(jaw,0,1), ang=j*.8, hx=11.6, hy=4;
+  const up=t=>{ const u=1-t; return [u*u*hx+2*u*t*16.5+t*t*21.4, u*u*hy+2*u*t*4.6+t*t*2.6] };
+  const rot=(x,y)=>{ const c=Math.cos(ang),sn=Math.sin(ang),dx=x-hx,dy=y-hy; return [hx+dx*c-dy*sn, hy+dx*sn+dy*c] };
+  if(j>.03){
+   const [tx,ty]=rot(21.4,2.6);
+   g.beginPath(); g.moveTo(hx-.4,hy); g.quadraticCurveTo(16.5,4.6,21.4,2.6); g.lineTo(tx,ty); for(let t=1;t>=0;t-=.1){ const [px,py]=up(t); g.lineTo(...rot(px,py+.6)) } g.closePath(); g.fillStyle='#4a0f1a'; g.fill();
+   g.save(); g.clip(); g.fillStyle='#c8405a'; g.beginPath(); g.ellipse(...rot(15.2,5.4),3.6,1.5,ang*.8,0,6.3); g.fill(); g.restore();
   }
+  g.lineWidth=lw; g.strokeStyle=OL;
+  // lower jaw
+  g.save(); g.translate(hx,hy); g.rotate(ang); g.translate(-hx,-hy);
+  g.beginPath(); g.moveTo(hx-.4,hy); g.quadraticCurveTo(16.5,4.6,21.4,2.6); g.quadraticCurveTo(20.8,3.9,18,4.3); g.quadraticCurveTo(14.5,5.4,hx-1.2,5.8); g.closePath();
+  g.fillStyle='#eef4f1'; g.fill(); if(j>.03)g.stroke();
+  if(j>.12){ g.fillStyle='#fff'; for(let i=0;i<5;i++){ const t=.18+i*.15, [x,y]=up(t), [x2,y2]=up(t+.07); g.beginPath(); g.moveTo(x,y+.15); g.lineTo(x2,y2+.15); g.lineTo((x+x2)/2,(y+y2)/2-1.2-j*.4); g.closePath(); g.fill() } }
+  g.restore();
+  // upper teeth along the lip
+  g.fillStyle='#fff'; const tl=1.3+j*.5;
+  for(let i=0;i<6;i++){ const t=.12+i*.15, [x,y]=up(t), [x2,y2]=up(t+.07); g.beginPath(); g.moveTo(x,y); g.lineTo(x2,y2); g.lineTo((x+x2)/2+.1,(y+y2)/2+tl); g.closePath(); g.fill() }
+  if(j<=.03){ g.beginPath(); g.moveTo(21.4,2.6); g.quadraticCurveTo(16.5,4.6,hx,hy-.1); g.stroke() }
+  else { g.beginPath(); g.moveTo(hx,hy); g.quadraticCurveTo(16.5,4.6,21.4,2.6); g.stroke() }
  }
  g.restore() }
 
@@ -475,7 +486,7 @@ function cage(x,y){ return add({k:'cage',x,y,open:false,
  u(){ if(!this.open&&ents.every(e=>e.k!=='turret'||e.hp<=0)){this.open=true;banner('THE CAGE IS OPEN. GO TO THE YOUNG ONE',2.2);sfx.win()}
   if(this.open&&dist(this.x,this.y-18,S.x,S.y)<40)L.winNow=true },
  d(){ const X=sx(this.x),Y=sy(this.y); if(X<-60||X>W+60)return;
-  drawShark(X,Y-18,Math.PI+Math.sin(T*1.3)*.15,.95,1,T*3,false);
+  drawShark(X,Y-18,Math.PI+Math.sin(T*1.3)*.15,.95,1,T*3,.12+.12*Math.sin(T*2.2));
   g.fillStyle='#56626f'; g.strokeStyle=OL; g.lineWidth=.6;
   g.beginPath(); g.rect(-30+X,Y-38,60,3); blob('#56626f',OL,.6); g.beginPath(); g.rect(X-30,Y,60,3); blob('#56626f',OL,.6);
   if(!this.open){ for(let i=-28;i<=28;i+=5){ g.fillStyle='#8a95a3'; g.fillRect(X+i,Y-35,1.5,35) } } else { g.fillStyle='#8a95a3'; g.fillRect(X-30,Y-35,1.5,35); g.fillRect(X+28.5,Y-35,1.5,35) } } }) }
@@ -539,11 +550,17 @@ const CLEAR_LINES=[
 ];
 function freshStats(){ return {time:0,fish:0,swimmers:0,buoys:0,photos:0,camera:false,whale:0,subDown:false,sunk:0,drums:0,hits:0,turrets:0,drones:0,breaches:0,peak:0} }
 const MAXV=125, FASTV=100; // FASTV: speed needed to ram a hull or leap out of the water
-function newShark(size){ return {x:110,y:190,vx:0,vy:0,a:0,face:1,size,spd:30,hunger:85,exp:0,air:false,lunge:0,lungeCd:0,holdT:0,biteT:0,cloak:false,inv:0,tail:0,snag:0,seen:false,maxed:false,hintT:0} }
+function newShark(size){ return {x:110,y:190,vx:0,vy:0,a:0,face:1,size,jaw:.1,snap:0,spd:30,hunger:85,exp:0,air:false,lunge:0,lungeCd:0,holdT:0,biteT:0,cloak:false,inv:0,tail:0,snag:0,seen:false,maxed:false,hintT:0} }
 // ---------- the shark ----------
 function mouth(){ return {x:S.x+Math.cos(S.a)*17.5*S.size, y:S.y+Math.sin(S.a)*17.5*S.size} }
 function doBite(){ const m=mouth(),r=6*S.size; for(const e of ents){ if(!e.dead&&e.b&&e.b(m,r))return true } return false }
 function hint(t){ if(S.hintT>0)return; S.hintT=4; banner(t,1.6) }
+// jaw: opens as food comes within reach ahead of the snout, snaps shut on a bite, rests slightly open
+function jawAnim(dt){ const s=S; s.snap-=dt; const m=mouth(), reach=26*s.size; let near=false;
+ if(s.snap<=0) for(const e of ents){ if(e.dead||!e.b||e.k==='sub'||(e.k==='turret'&&e.hp<=0))continue; const ey=e.y===undefined?SURF:e.y; const dx=e.x-m.x,dy=ey-m.y;
+  if(dx*dx+dy*dy<reach*reach&&dx*Math.cos(s.a)+dy*Math.sin(s.a)>-4*s.size){near=true;break} }
+ const target=s.snap>0?-.08:near?1:.1+.06*Math.sin(T*1.8);
+ s.jaw+=(target-s.jaw)*Math.min(1,dt*(s.snap>0?38:near?9:4)); if(s.snap<=0&&s.jaw<0)s.jaw*=-.5 }
 function updShark(dt){
  const s=S, inC=inCur(s.x,s.y);
  s.cloak=inC&&!s.air; // hidden automatically whenever inside the warm current
@@ -552,7 +569,8 @@ function updShark(dt){
  s.spd=I.thrust?Math.min(MAXV,s.spd+85*dt):Math.max(0,s.spd-55*dt);
  const fast=s.spd>=FASTV; s.lunge=fast?1:0;
  // biting is automatic: the jaws close on anything edible that touches the mouth
- if(s.biteT<=0&&doBite()){ s.biteT=.28; sfx.bite() }
+ if(s.biteT<=0&&doBite()){ s.biteT=.28; s.snap=.14; sfx.bite() }
+ jawAnim(dt);
  if(!s.air){
   s.a+=I.turn*(2.8-s.spd/MAXV*1.05)*dt;
   const want=s.spd*(s.snag>0?.45:1), k=Math.min(1,dt*4);
@@ -606,7 +624,7 @@ function update(dt){
 }
 function demo(dt){
  const px=500+Math.sin(T*.22)*260, py=200+Math.sin(T*.45)*50;
- S.vx=260*.22*Math.cos(T*.22); S.vy=50*.45*Math.cos(T*.45); S.x=px; S.y=py; S.a=Math.atan2(S.vy,S.vx); S.face=Math.cos(S.a)>=0?1:-1; S.tail+=dt*6;
+ S.vx=260*.22*Math.cos(T*.22); S.vy=50*.45*Math.cos(T*.45); S.x=px; S.y=py; S.a=Math.atan2(S.vy,S.vx); S.face=Math.cos(S.a)>=0?1:-1; S.tail+=dt*6; jawAnim(dt);
  for(const e of ents)if(!e.dead)e.u(dt); ents=ents.filter(e=>!e.dead); stepParts(dt); follow(dt);
 }
 function tick(dt){ T+=dt; if(state==='play')update(dt); else if(state==='title'){ demo(dt); music(dt,.15) } }
@@ -659,7 +677,7 @@ function render(){
  const sh=shake>0&&!RM?shake*.5:0; g.setTransform(SC,0,0,SC,rnd(-sh,sh)*SC,rnd(-sh,sh)*SC);
  drawBG();
  for(const e of ents)e.d();
- if(S){ const blink=S.inv>0&&(T*20|0)%2; drawShark(sx(S.x),sy(S.y),S.a,S.size,S.cloak?.45:blink?.5:1,S.tail,S.biteT>0,S.cloak?'#5ae6b4':null) }
+ if(S){ const blink=S.inv>0&&(T*20|0)%2; drawShark(sx(S.x),sy(S.y),S.a,S.size,S.cloak?.45:blink?.5:1,S.tail,S.jaw,S.cloak?'#5ae6b4':null) }
  for(const e of ents)e.l&&e.l();
  drawFG();
  g.setTransform(1,0,0,1,0,0);
