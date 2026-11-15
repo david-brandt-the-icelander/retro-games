@@ -26,11 +26,12 @@ Those three are the only controls. Every menu ends with a Leave (or Done) row in
 - **Shopping.** Six stores stock different things at different prices, and four random sales run
   every day. The job board shows them, and so does the bartender at the Rusty Muskie for $5.
   Leftovers sell back for half price.
-- **Sound.** The phone rings (answer it with Space or Enter), and people mumble as their words type
-  out, like talk heard through a wall, each speaker at their own pitch; Jim's voice is the lowest.
-  The mumble is whole phrases of real words from a muffled public-domain LibriVox recording
-  (`audio/voice.wav`, provenance in `audio/CREDITS.md`), slowed and deepened per speaker; the ring
-  and the horn are synthesised in `scripts/sfx.gd`.
+- **Sound.** The phone rings (answer it with Space or Enter). Every line of dialog is voiced as it
+  types out: each person at their own pitch (Jim's the lowest), a narrator for everything else, and
+  a radio voice for the traffic reports. It sounds like real talk through a wall, but no word can be
+  made out: the voice is a public-domain LibriVox recording stored backwards and heavily muffled
+  (`audio/voice.wav`, provenance in `audio/CREDITS.md`). The ring and the horn are synthesised in
+  `scripts/sfx.gd`.
 - **Driving.** Rolling into a driveway or parking lot stops the van. The camera is zoomed out so you can see the road ahead, and the corner minimap
   flashes the shops that sell what the job still needs. The van still takes a while to stop.
   Here is what can go wrong:

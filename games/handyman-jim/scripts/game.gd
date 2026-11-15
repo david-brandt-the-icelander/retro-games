@@ -106,6 +106,8 @@ func advance(mins: float) -> void:
 func say(t: String) -> void:
 	toast.emit(t)
 	var who: String = Sfx.speaker_of(t)
+	if who == "" and t.begins_with("RADIO:"):
+		who = "Radio"
 	if who != "":
 		Sfx.remark(who, t)
 

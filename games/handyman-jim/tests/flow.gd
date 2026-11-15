@@ -166,6 +166,10 @@ func _ready() -> void:
 		"a speaker talks at their own pitch (%s, %.4f vs %.4f)" % [first_talker, Sfx._talk.pitch_scale, Sfx.voice_pitch("Gus")])
 	Sfx.hush()
 	check(Sfx._talker == "", "talking stops when the line is done")
+	# every line of dialog is voiced: narration by the narrator, people in their own voices
+	m.dialog.message(["You knock on the door.", "Gus: \"Ope.\"", "*SLAM*"])
+	check(m.dialog._voices == [Sfx.NARRATOR, "Gus", ""], "narration and speech are voiced, sound effects are not (%s)" % str(m.dialog._voices))
+	m.dialog._close()
 	# the only controls are WASD, Space and Enter
 	var allowed := [KEY_W, KEY_A, KEY_S, KEY_D, KEY_SPACE, KEY_ENTER, KEY_KP_ENTER]
 	var stray := []

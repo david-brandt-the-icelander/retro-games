@@ -35,8 +35,8 @@ func message(lines: Array, on_done: Callable = Callable(), title: String = "", v
 	_voices = []
 	for l in lines:
 		var who: String = Sfx.speaker_of(str(l))
-		if who == "":
-			who = voice if str(l) != "" and not str(l).begins_with("*") else ""
+		if who == "" and str(l) != "" and not str(l).begins_with("*"):
+			who = voice if voice != "" else Sfx.NARRATOR   # everything that is said gets a voice
 		var wrapped := Game.wrap(str(l), 540, SIZE)
 		_lines.append_array(wrapped)
 		for w in wrapped:
@@ -84,7 +84,7 @@ func _process(_dt: float) -> void:
 	if _mode == "msg":
 		if _shown < _total:
 			_shown = minf(_total, _shown + _dt * CPS)
-			Sfx.talk(_voice_at(int(_shown)))   # whoever's line is typing speaks; narration is silent
+			Sfx.talk(_voice_at(int(_shown)))   # whoever's line is typing speaks; "*sound*" lines are silent
 			if go:
 				_shown = _total          # first press shows the whole page
 			if _shown >= _total:

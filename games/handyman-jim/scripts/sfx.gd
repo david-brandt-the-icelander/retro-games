@@ -1,13 +1,13 @@
 extends Node
 ## Every sound in the game. The phone ring and the horn are synthesised at start-up. Speech is
-## a muffled public-domain recording (audio/voice.wav, see audio/CREDITS.md) played as whole
-## phrases of real words while a person's line types out, slowed and deepened per speaker, so it
-## sounds like people mumbling behind a wall.
+## a public-domain recording (audio/voice.wav, see audio/CREDITS.md) stored backwards and heavily
+## muffled: it keeps a real voice's tone and rhythm, but no word can be made out. It plays as
+## continuous phrases while a line of dialog types out, slowed and deepened per speaker.
 
 const RATE := 22050
 const VOICE := preload("res://audio/voice.wav")
 ## Start times (seconds) in voice.wav where a spoken phrase begins, right after a pause.
-const PHRASES := [2.48, 3.79, 4.39, 6.08, 6.71, 8.3, 9.09, 11.29, 11.83, 13.12, 15.22, 18.04, 19.19, 19.64, 22.14, 23.1, 26.09, 28.58, 30.59, 31.94, 34.1, 35.73, 36.05, 37.27, 40.51, 42.81, 43.81]
+const PHRASES := [1.28, 2.89, 3.27, 5.54, 5.78, 9.61, 12.2, 12.61, 13.25, 14.95, 15.22, 15.4, 16.89, 17.55, 19.35, 19.7, 21.02, 22.14, 23.77, 24.65, 25.67, 25.93, 26.44, 27.69, 28.12, 30.74, 31.12, 31.99, 32.47, 34.63, 35.38, 36.02, 36.79, 39.85, 41.02, 41.42]
 const VOICE_DB := -3.0
 
 var _talk: AudioStreamPlayer      # the one voice that speaks the current line
@@ -75,9 +75,14 @@ func _make_horn() -> AudioStreamWAV:
 		out[i] = s * 0.18 * minf(1.0, t / 0.01) * minf(1.0, (0.45 - t) / 0.04)
 	return _wav(out)
 
+## The voice for lines nobody in particular says: narration, work orders, results.
+const NARRATOR := "Narrator"
+
 ## Each speaker gets a fixed pitch from their name; Jim is low and cheerful.
 func voice_pitch(speaker: String) -> float:
 	var k := speaker.to_upper()
+	if k == "NARRATOR":
+		return 0.74
 	if k == "JIM" or k.begins_with("JIM "):
 		return 0.62                                        # Jim: the lowest voice in town
 	var h := absi(k.hash())
