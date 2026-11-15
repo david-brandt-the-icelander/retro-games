@@ -107,7 +107,7 @@ func say(t: String) -> void:
 	toast.emit(t)
 	var who: String = Sfx.speaker_of(t)
 	if who != "":
-		Sfx.babble(who, clampi(t.length() / 9, 2, 6))
+		Sfx.remark(who, t)
 
 func charge(amount: int, why: String) -> void:
 	cash -= amount

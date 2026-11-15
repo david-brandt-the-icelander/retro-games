@@ -1,17 +1,18 @@
 extends Node
-## Every sound in the game. The phone ring and the horn are synthesised at start-up; the
-## "bla-bla" speech is random 150 ms slices of a muffled public-domain recording
-## (audio/voice.wav, see audio/CREDITS.md), pitch-shifted per speaker so it sounds like
-## real people mumbling behind a wall.
+## Every sound in the game. The phone ring and the horn are synthesised at start-up. Speech is
+## a muffled public-domain recording (audio/voice.wav, see audio/CREDITS.md) played as whole
+## phrases of real words while a person's line types out, slowed and deepened per speaker, so it
+## sounds like people mumbling behind a wall.
 
 const RATE := 22050
 const VOICE := preload("res://audio/voice.wav")
-## Start times (seconds) in voice.wav where a syllable begins, picked from the clip's loudness.
-const GRAINS := [0.09,0.349,0.998,1.207,2.514,2.903,3.821,4.091,4.42,4.55,4.699,4.949,6.745,6.884,7.034,7.383,7.693,7.912,8.331,9.119,9.389,9.838,10.187,11.324,11.554,11.863,12.651,12.781,13.15,13.659,14.507,15.505,15.834]
-const GRAIN_LEN := 0.15
+## Start times (seconds) in voice.wav where a spoken phrase begins, right after a pause.
+const PHRASES := [2.48, 3.79, 4.39, 6.08, 6.71, 8.3, 9.09, 11.29, 11.83, 13.12, 15.22, 18.04, 19.19, 19.64, 22.14, 23.1, 26.09, 28.58, 30.59, 31.94, 34.1, 35.73, 36.05, 37.27, 40.51, 42.81, 43.81]
 const VOICE_DB := -3.0
 
-var _fades := {}   # player -> its running fade tween
+var _talk: AudioStreamPlayer      # the one voice that speaks the current line
+var _talk_fade: Tween
+var _talker := ""                  # who is speaking now ("" = nobody)
 var _ring: AudioStreamWAV
 var _horn: AudioStreamWAV
 var _voices: Array = []
@@ -28,6 +29,9 @@ func _ready() -> void:
 		p.volume_db = -6.0
 		add_child(p)
 		_voices.append(p)
+	_talk = AudioStreamPlayer.new()
+	_talk.stream = VOICE
+	add_child(_talk)
 	_ring_player = AudioStreamPlayer.new()
 	_ring_player.volume_db = -4.0
 	add_child(_ring_player)
@@ -75,33 +79,49 @@ func _make_horn() -> AudioStreamWAV:
 func voice_pitch(speaker: String) -> float:
 	var k := speaker.to_upper()
 	if k == "JIM" or k.begins_with("JIM "):
-		return 0.8                                         # Jim: the lowest voice in town
+		return 0.62                                        # Jim: the lowest voice in town
 	var h := absi(k.hash())
-	return 0.88 + float(h % 1000) / 1000.0 * 0.5     # everyone else: 0.88 - 1.38
+	return 0.7 + float(h % 1000) / 1000.0 * 0.32     # everyone else: 0.70 - 1.02
 
-## One mumbled syllable in this speaker's voice: a random slice of the recording, faded out.
-func blip(speaker: String) -> void:
+## Start (or keep) speaking as this person: real words from the recording, from the start of a
+## random phrase, at the speaker's own pitch. Calling it again for the same speaker changes nothing.
+func talk(speaker: String) -> void:
 	if speaker == "":
+		hush()
 		return
-	var p: AudioStreamPlayer = _voices[_next]
-	_next = (_next + 1) % _voices.size()
-	if _fades.has(p) and _fades[p].is_valid():
-		_fades[p].kill()
-	p.stream = VOICE
-	p.pitch_scale = voice_pitch(speaker) * rng.randf_range(0.94, 1.08)
-	p.volume_db = VOICE_DB
-	p.play(GRAINS[rng.randi_range(0, GRAINS.size() - 1)])
-	var tw := create_tween()
-	tw.tween_interval(GRAIN_LEN * 0.7)
-	tw.tween_property(p, "volume_db", -40.0, GRAIN_LEN * 0.3)
-	tw.tween_callback(p.stop)
-	_fades[p] = tw
+	if speaker == _talker and _talk.playing:
+		return
+	_talker = speaker
+	if _talk_fade and _talk_fade.is_valid():
+		_talk_fade.kill()
+	_talk.pitch_scale = voice_pitch(speaker)
+	_talk.volume_db = VOICE_DB
+	_talk.play(PHRASES[rng.randi_range(0, PHRASES.size() - 1)])
 
-## A short burst of babble, for one-line speech that pops up as a toast.
-func babble(speaker: String, syllables: int) -> void:
-	for i in syllables:
-		blip(speaker)
-		await get_tree().create_timer(0.13).timeout
+## Stop talking with a short fade, so words trail off rather than click off.
+func hush() -> void:
+	if _talker == "" and not _talk.playing:
+		return
+	_talker = ""
+	if _talk_fade and _talk_fade.is_valid():
+		_talk_fade.kill()
+	_talk_fade = create_tween()
+	_talk_fade.tween_property(_talk, "volume_db", -40.0, 0.25)
+	_talk_fade.tween_callback(_talk.stop)
+
+## A pop-up remark: the speaker talks for about as long as the line takes to read aloud.
+func remark(speaker: String, text: String) -> void:
+	talk(speaker)
+	await get_tree().create_timer(clampf(text.length() * 0.06, 0.8, 2.5)).timeout
+	if _talker == speaker:
+		hush()
+
+func _process(_dt: float) -> void:
+	# at the end of the recording, carry on from another phrase rather than falling silent
+	if _talker != "" and not _talk.playing:
+		var who := _talker
+		_talker = ""
+		talk(who)
 
 func ring() -> void:
 	_ring_player.stream = _ring

@@ -20,9 +20,8 @@ var _gen := 0
 var _voices: Array = []   # speaker per wrapped line ("" = silent narration)
 var _shown := 0.0         # characters revealed so far (typewriter)
 var _total := 0
-var _last_blip := 0
 
-const CPS := 55.0         # typewriter speed, characters per second
+const CPS := 40.0         # typewriter speed, characters per second
 
 func is_open() -> bool:
 	return _mode != ""
@@ -46,7 +45,6 @@ func message(lines: Array, on_done: Callable = Callable(), title: String = "", v
 	for l in _lines:
 		_total += l.length()
 	_shown = 0.0
-	_last_blip = 0
 	_title = title
 	_on_done = on_done
 	_open("msg")
@@ -86,12 +84,15 @@ func _process(_dt: float) -> void:
 	if _mode == "msg":
 		if _shown < _total:
 			_shown = minf(_total, _shown + _dt * CPS)
-			_babble()
+			Sfx.talk(_voice_at(int(_shown)))   # whoever's line is typing speaks; narration is silent
 			if go:
 				_shown = _total          # first press shows the whole page
+			if _shown >= _total:
+				Sfx.hush()
 			queue_redraw()
 		elif go or Input.is_action_just_pressed("cancel"):
 			Sfx.stop_ring()
+			Sfx.hush()
 			var cb := _on_done
 			_close()
 			if cb.is_valid():
@@ -156,18 +157,12 @@ func _draw() -> void:
 				Art.text(self, Vector2(r.position.x + 12, y), s, col, SIZE)
 		Art.text(self, Vector2(r.position.x + 12, r.end.y - 8), _footer, Pal.DGRAY, 10)
 
-## One mumbled syllable every seven letters (about eight a second), in the voice of whoever is speaking on that line.
-func _babble() -> void:
-	var n := int(_shown)
-	if n - _last_blip < 7:
-		return
-	_last_blip = n
+## The speaker of the line that character n falls on ("" for narration).
+func _voice_at(n: int) -> String:
 	var left := n
 	for i in _lines.size():
 		var len: int = _lines[i].length()
 		if left <= len:
-			var ch: String = _lines[i].substr(maxi(0, left - 1), 1) if left > 0 else " "
-			if ch != " ":
-				Sfx.blip(_voices[i])
-			return
+			return _voices[i]
 		left -= len
+	return ""

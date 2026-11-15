@@ -155,9 +155,17 @@ func _ready() -> void:
 	check(Game.minute == t0 and m.drive.cars[0].pos == cars0, "the game is frozen while the planner is open")
 	m.hud.planner = false
 	# sounds are generated, and speakers sound different
-	check(Sfx._ring.data.size() > 100000 and Sfx.VOICE.get_length() > 10.0 and Sfx.GRAINS.size() > 20, "ring generated and the mumble recording loaded")
+	check(Sfx._ring.data.size() > 100000 and Sfx.VOICE.get_length() > 40.0 and Sfx.PHRASES.size() > 20, "ring generated and the mumble recording loaded")
 	check(Sfx.speaker_of("Gus: \"Ope.\"") == "Gus" and Sfx.speaker_of("*BRRRING*") == "", "speaker detection")
 	check(absf(Sfx.voice_pitch("Gus") - Sfx.voice_pitch("Brenda Kowalski")) > 0.01 and Sfx.voice_pitch("JIM") < Sfx.voice_pitch("Gus") and Sfx.voice_pitch("JIM") < 0.85, "each speaker has their own pitch, Jim lowest")
+	# a speaker talks in continuous phrases and stops when told to
+	Sfx.talk("Gus")
+	var first_talker: String = Sfx._talker
+	Sfx.talk("Gus")
+	check(first_talker == "Gus" and Sfx._talker == "Gus" and absf(Sfx._talk.pitch_scale - Sfx.voice_pitch("Gus")) < 0.001,
+		"a speaker talks at their own pitch (%s, %.4f vs %.4f)" % [first_talker, Sfx._talk.pitch_scale, Sfx.voice_pitch("Gus")])
+	Sfx.hush()
+	check(Sfx._talker == "", "talking stops when the line is done")
 	# the only controls are WASD, Space and Enter
 	var allowed := [KEY_W, KEY_A, KEY_S, KEY_D, KEY_SPACE, KEY_ENTER, KEY_KP_ENTER]
 	var stray := []
