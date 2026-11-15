@@ -1,6 +1,6 @@
 # Dawn Chorus
 
-A bird-identification game. Each region has ten levels, ordered from the most common birds to the hardest to find, and your level for the region is a number on the Play tab. A game is 10 random birds: your level's birds, plus any bird from your level or below you have not identified yet, plus 4 random birds from lower levels, topped up from the next level if that is fewer than 10. Every bird comes as a photo with its recording playing: name the bird against a 60-second timer, then read its field notes and see your time. When 80% of your level's birds are cleared, you move up a level. A bird counts as cleared when your latest answer for it was right. Regions so far: Wisconsin and Phoenix, Arizona (85 species: 43 for Wisconsin and 42 for Phoenix).
+A bird-identification game. Each region has ten levels, ordered from the most common birds to the hardest to find, and your level for the region is a number on the Play tab. A game is 10 random birds: your level's birds, plus any bird from your level or below you have not identified yet, plus 4 random birds from lower levels, topped up from the next level if that is fewer than 10. Every bird comes as a photo with its recording playing: name the bird against a 60-second timer, then read its field notes and see your time. When 80% of your level's birds are cleared, you move up a level. A bird counts as cleared when your latest answer for it was right. The region selector lists all 50 states alphabetically. Only Wisconsin (43 species) and Arizona (42 species, from the Phoenix area) have birds so far; the other states show a message until birds are added.
 
 The Album tab keeps each bird you have identified, with your fastest time (record) and your accuracy, saved in the browser.
 
@@ -11,7 +11,7 @@ It is a static page: `index.html` plus `photos/` and `audio/`, with no build ste
 - The commonness order is `RANK` and the level sizes are `LEVEL_SIZES` in `index.html`. It is a judgement of how widespread and abundant each bird is in the region, not a count from eBird data, so adjust it if you know better.
 - Each species is one entry in the `BIRDS` array in `index.html`: name, region, song description, field marks, size and habitat. Its photo is `photos/<id>.jpg` and its recording is `audio/<id>.mp3`, and `PHOTO` and `REC` hold their credits.
 - The recording is decoded and played with the Web Audio API.
-- To add a region, add entries to `BIRDS`, an entry to `REGIONS`, and the matching photo and audio files.
+- To add a state, add its birds to `BIRDS` with that state's two-letter lowercase code as `region`, its commonness order to `RANK` and its level sizes to `LEVEL_SIZES`, and the matching photo, thumbnail and audio files.
 
 ## Licenses of the photos and recordings
 

@@ -53,8 +53,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .brand{min-width:0}
 h1{font-size:clamp(2.4rem,9vw,3.8rem);line-height:.92;margin:6px 0 0;font-weight:800;letter-spacing:-.035em;font-variation-settings:"opsz" 96}
 h1 em{font-style:normal;color:var(--r)}
-.regions{display:flex;gap:8px;flex:1 1 320px;max-width:460px}
-.regions button{flex:1;text-align:left;padding:10px 14px;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.regions{display:flex;gap:8px;flex:1 1 100%;min-width:0;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin;cursor:grab;-webkit-user-select:none;user-select:none;overscroll-behavior-x:contain}
+.regions.dragging{cursor:grabbing}
+.regions.dragging button{pointer-events:none}
+.regions button{flex:none;width:min(230px,64vw);text-align:left;padding:10px 14px;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .regions button b{font-size:1.05rem;font-weight:700}
 .regions button span{font-size:.78rem;color:var(--muted)}
 .regions button[aria-pressed="true"]{background:var(--r);border-color:var(--r);color:var(--on-r)}
@@ -538,20 +540,20 @@ const BIRDS=[
  cues:["Yellow chest with a bold black V","Streaked brown back and white outer tail","Sings from fence posts"],
 },
 ];
-const REGIONS={
-  wi:{name:'Wisconsin',sub:'Northwoods, lakes, prairie'},
-  az:{name:'Phoenix, AZ',sub:'Sonoran Desert'}
-};
+const STATES=[['al','Alabama'],['ak','Alaska'],['az','Arizona'],['ar','Arkansas'],['ca','California'],['co','Colorado'],['ct','Connecticut'],['de','Delaware'],['fl','Florida'],['ga','Georgia'],['hi','Hawaii'],['id','Idaho'],['il','Illinois'],['in','Indiana'],['ia','Iowa'],['ks','Kansas'],['ky','Kentucky'],['la','Louisiana'],['me','Maine'],['md','Maryland'],['ma','Massachusetts'],['mi','Michigan'],['mn','Minnesota'],['ms','Mississippi'],['mo','Missouri'],['mt','Montana'],['ne','Nebraska'],['nv','Nevada'],['nh','New Hampshire'],['nj','New Jersey'],['nm','New Mexico'],['ny','New York'],['nc','North Carolina'],['nd','North Dakota'],['oh','Ohio'],['ok','Oklahoma'],['or','Oregon'],['pa','Pennsylvania'],['ri','Rhode Island'],['sc','South Carolina'],['sd','South Dakota'],['tn','Tennessee'],['tx','Texas'],['ut','Utah'],['vt','Vermont'],['va','Virginia'],['wa','Washington'],['wv','West Virginia'],['wi','Wisconsin'],['wy','Wyoming']];
+const REGIONS={};
+STATES.slice().sort((x,y)=>x[1].localeCompare(y[1])).forEach(([k,n])=>{REGIONS[k]={name:n,sub:'No birds yet'}});
+REGIONS.wi.sub='Northwoods, lakes, prairie';
+REGIONS.az.sub='Phoenix area, Sonoran Desert';
 const birdsIn=reg=>BIRDS.filter(b=>b.region===reg);
 const byId=id=>BIRDS.find(b=>b.id===id);
 /* Most common first, as I judged how widespread and abundant each bird is in the region. Ten levels follow this order. */
 const RANK={wi:["amerob", "bkcchi", "norcar", "amecro", "blujay", "rewbla", "amegfi", "moudov", "sonspa", "cangoo", "dowwoo", "wbnuth", "comyel", "gracat", "yelwar", "reevir", "balori", "easpho", "chisp", "cedwax", "houwre", "killde", "sancra", "grbher", "rethaw", "norfli", "rthumm", "browth", "easmea", "indbun", "tuftit", "belkin", "ovenbi", "comloo", "robgro", "easblu", "wiltur", "brdowl", "pilwoo", "whtspa", "chswar", "woothr", "scatan"],
  az:["houfin", "whwdov", "gamqua", "normoc", "cubthr", "gilwoo", "annhum", "cacwre", "eucdov", "incdov", "abetow", "comrav", "blkpho", "saypho", "verdin", "lesgol", "coshum", "btgnat", "wesking", "ladwoo", "greroa", "phaino", "bewwre", "hoodor", "coohaw", "astfly", "gilfli", "bulori", "grhowl", "bktspa", "lucwar", "verfly", "harhaw", "bkchum", "wesmea", "canwre", "rocwre", "burowl", "brcfly", "pyrrhu", "lesnig", "elfowl"]};
-const SHORT={wi:'Wisconsin',az:'Phoenix'};
 const LEVEL_SIZES={wi:[5,4,4,4,4,4,4,4,5,5],az:[5,4,4,4,4,4,4,4,4,5]};
 const LEVELS={};
 for(const reg of Object.keys(RANK)){let i=0;LEVELS[reg]=LEVEL_SIZES[reg].map(n=>{const ids=RANK[reg].slice(i,i+n);i+=n;return ids.map(byId)})}
-const ranked=reg=>RANK[reg].map(byId);
+const ranked=reg=>(RANK[reg]||[]).map(byId);
 const levelOf=b=>LEVELS[b.region].findIndex(l=>l.includes(b))+1;
 const CLEAR_SHARE=.8;
 
@@ -647,8 +649,11 @@ function birdCard(b,opt={}){
 
 function renderHeader(){
  document.documentElement.dataset.region=S.region;
- document.getElementById('kicker').textContent=`Field trainer · ${birdsIn(S.region).length} species in ${REGIONS[S.region].name}`;
- document.getElementById('regions').innerHTML=Object.entries(REGIONS).map(([k,v])=>`<button data-act="region" data-v="${k}" aria-pressed="${k===S.region}"><b>${v.name}</b><span>${v.sub}</span></button>`).join('');
+ const n=birdsIn(S.region).length;
+ document.getElementById('kicker').textContent=n?`Field trainer · ${n} species in ${REGIONS[S.region].name}`:`Field trainer · no birds yet for ${REGIONS[S.region].name}`;
+ const rg=document.getElementById('regions'),sl=rg.scrollLeft;
+ rg.innerHTML=Object.entries(REGIONS).map(([k,v])=>`<button data-act="region" data-v="${k}" aria-pressed="${k===S.region}"><b>${v.name}</b><span>${v.sub}</span></button>`).join('');
+ rg.scrollLeft=sl;
  document.getElementById('tabs').innerHTML=[['play','Play'],['guide','Field guide'],['life','Album']].map(([k,v])=>`<button role="tab" data-act="tab" data-v="${k}" aria-selected="${S.tab===k}">${v}</button>`).join('');
 }
 function render(){
@@ -660,11 +665,12 @@ function render(){
 }
 function renderMenu(){
  const reg=S.region,lv=P.level[reg]||1,all=shuffle(birdsIn(reg));
+ if(!all.length){$main.innerHTML=`<p class="intro">No birds have been added for ${esc(REGIONS[reg].name)} yet.</p>`;return}
  const item=b=>`<div class="strip-item"><div class="plate"><img class="bgimg" src="photos/thumb/${b.id}.jpg" alt="" draggable="false"><img class="fg" src="photos/thumb/${b.id}.jpg" alt="" draggable="false"></div></div>`;
  const run=all.map(item).join('');
  $main.innerHTML=`<section class="start">
   <div class="strip" aria-hidden="true"><div class="strip-track" style="--dur:${all.length*6}s">${run}${run}</div></div>
-  <div><button class="btn big" data-act="start">Start playing: ${SHORT[reg]} birds (level ${lv})</button></div>
+  <div><button class="btn big" data-act="start">Start playing: ${REGIONS[reg].name} birds (level ${lv})</button></div>
  </section>`;
 }
 const REDUCE=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -772,10 +778,13 @@ function renderResults(anim=false){
 }
 function renderGuide(){
  const list=ranked(S.region);
+ if(!list.length){$main.innerHTML=`<p class="intro">No birds have been added for ${esc(REGIONS[S.region].name)} yet.</p>`;return}
  $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:16px"><p class="intro">${list.length} species found in ${esc(REGIONS[S.region].name)}, most common first. Tap a photo or press play to hear each bird.</p><div class="grid">${list.map(b=>birdCard(b)).join('')}</div></section>`;
 }
 function renderLife(){
- const list=ranked(S.region),seen=list.filter(b=>P.life[b.id]&&P.life[b.id].seen).length;
+ const list=ranked(S.region);
+ if(!list.length){$main.innerHTML=`<p class="intro">No birds have been added for ${esc(REGIONS[S.region].name)} yet.</p>`;return}
+ const seen=list.filter(b=>P.life[b.id]&&P.life[b.id].seen).length;
  const acc=rec=>{const t=(rec.r||0)+(rec.w||0);return t?Math.round((rec.r||0)/t*100):null};
  $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:16px">
   <div class="prog"><b>${seen}/${list.length}</b><span>species identified in ${esc(REGIONS[S.region].name)}</span></div>
@@ -808,7 +817,16 @@ function renderCredits(){
  document.getElementById('credits').innerHTML='<summary>Photo and recording credits</summary><ul>'+BIRDS.map(b=>{const p=PHOTO[b.id];const r=REC[b.id];return p?`<li>${esc(b.name)}: photo by ${esc(p.a)} (<a href="${esc(p.p)}" target="_blank" rel="noopener">${esc(p.l)}</a>)${r?`; recording by ${esc(r.w)} (<a href="https://xeno-canto.org/${esc(r.x)}" target="_blank" rel="noopener">XC${esc(r.x)}, ${esc(r.l)}</a>)`:''}</li>`:''}).join('')+'</ul>';
 }
 renderCredits();
+(function(){
+ const el=document.getElementById('regions');let down=false,sx=0,sl=0,moved=false;
+ el.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;down=true;moved=false;sx=e.clientX;sl=el.scrollLeft});
+ window.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;if(Math.abs(dx)>4){moved=true;el.classList.add('dragging')}if(moved)el.scrollLeft=sl-dx});
+ window.addEventListener('pointerup',()=>{down=false;setTimeout(()=>el.classList.remove('dragging'),0)});
+ el.addEventListener('click',e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false}},true);
+ el.addEventListener('dragstart',e=>e.preventDefault());
+})();
 render();
+{const rg=document.getElementById('regions'),b=rg.querySelector('[aria-pressed="true"]');if(b)rg.scrollLeft=Math.max(0,b.offsetLeft-(rg.clientWidth-b.offsetWidth)/2)}
 </script>
 </body>
 </html>
