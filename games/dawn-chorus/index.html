@@ -95,14 +95,8 @@ main{display:block;overflow-x:clip}
 .plate.locked img.fg{filter:brightness(.25) blur(7px) saturate(.4);transform:scale(1.1)}
 .plate.locked img.bgimg{filter:blur(20px) brightness(.25) saturate(.4)}
 .plate-btn{position:relative;cursor:pointer;border-radius:14px}
-.levels{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.level{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:14px;border:1.5px solid var(--line);background:var(--surface);border-radius:14px}
-.level b{font-size:1.1rem}
-.level span{font-size:.88rem;color:var(--muted)}
-.level .bar{align-self:stretch;margin-top:6px;height:5px;flex:none}
-.level.current{border-color:var(--r);box-shadow:inset 0 0 0 1.5px var(--r)}
-.level.locked{opacity:.55;cursor:default}
-.level:hover:not(:disabled){border-color:var(--r)}
+.start{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.levelnum{font-size:clamp(5rem,26vw,8.5rem);font-weight:800;line-height:.88;letter-spacing:-.05em;color:var(--r);font-variant-numeric:tabular-nums;margin-bottom:12px}
 .timer{display:flex;align-items:center;gap:12px}
 .timer .bar{height:8px}
 .timer .bar i{transition:none}
@@ -608,7 +602,7 @@ function refreshPlay(){
 const KEY='dawnchorus.v1';
 const P={life:{}};
 try{Object.assign(P,JSON.parse(localStorage.getItem(KEY))||{})}catch(_){}
-P.unlocked=P.unlocked||{wi:1,az:1};
+P.level=P.level||P.unlocked||{wi:1,az:1};delete P.unlocked;
 const isCleared=b=>{const r=P.life[b.id];return !!(r&&r.last===true)};
 const levelCleared=(reg,n)=>LEVELS[reg][n-1].filter(isCleared).length;
 const S={region:P.region||'wi',tab:'play',round:null};
@@ -656,11 +650,11 @@ function render(){
  requestAnimationFrame(refreshPlay);
 }
 function renderMenu(){
- const reg=S.region,un=P.unlocked[reg]||1;
- $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:18px">
-  <p class="intro">Ten levels of ${esc(REGIONS[reg].name)} birds, from the most common to the hardest to find. Clear 80% of a level's birds to unlock the next one.</p>
-  <div class="levels">${LEVELS[reg].map((birds,i)=>{const n=i+1,cl=levelCleared(reg,n),lock=n>un;
-   return `<button class="level${lock?' locked':''}${n===un?' current':''}" data-act="level" data-v="${n}" ${lock?'disabled':''}><b>Level ${n}</b><span>${birds.length} birds</span><span class="mono">${lock?'Locked':cl+' of '+birds.length+' cleared'}</span><div class="bar"><i style="width:${lock?0:cl/birds.length*100}%"></i></div></button>`}).join('')}</div>
+ const lv=P.level[S.region]||1;
+ $main.innerHTML=`<section class="start">
+  <div class="mono">Level</div>
+  <div class="levelnum">${lv}</div>
+  <div><button class="btn" data-act="start">Start</button></div>
  </section>`;
 }
 const REDUCE=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -672,9 +666,22 @@ function slideTo(fn){
  setTimeout(()=>{busy=false;fn(true)},280);
 }
 function afterPaint(top){requestAnimationFrame(()=>{refreshPlay();if(top)window.scrollTo({top:0})})}
-function startRound(level){
- const birds=LEVELS[S.region][level-1],pool=LEVELS[S.region].slice(0,level).flat();
- const qs=shuffle(birds).map(b=>({b,opts:shuffle([b,...shuffle(pool.filter(x=>x!==b)).slice(0,3)])}));
+const GAME_SIZE=10;
+function pickBirds(reg,level){
+ const lv=LEVELS[reg],cur=lv[level-1],lower=lv.slice(0,level-1).flat();
+ const seen=b=>!!(P.life[b.id]&&P.life[b.id].seen);
+ const pool=new Set(cur);
+ lv.slice(0,level).flat().filter(b=>!seen(b)).forEach(b=>pool.add(b));
+ shuffle(lower.filter(b=>!pool.has(b))).slice(0,4).forEach(b=>pool.add(b));
+ let birds=shuffle([...pool]).slice(0,GAME_SIZE);
+ for(let n=level;birds.length<GAME_SIZE&&n<lv.length;n++)for(const b of lv[n]){if(birds.length<GAME_SIZE&&!birds.includes(b))birds.push(b)}
+ for(const b of shuffle(lv.flat())){if(birds.length<GAME_SIZE&&!birds.includes(b))birds.push(b)}
+ return shuffle(birds);
+}
+function startRound(){
+ const reg=S.region,level=P.level[reg]||1,birds=pickBirds(reg,level);
+ const top=Math.max(level,...birds.map(levelOf)),pool=LEVELS[reg].slice(0,top).flat();
+ const qs=birds.map(b=>({b,opts:shuffle([b,...shuffle(pool.filter(x=>x!==b)).slice(0,3)])}));
  qs.forEach(q=>{getAC();load(q.b).catch(()=>{})});
  S.round={level,qs,i:0,streak:0,bestStreak:0,right:0,answered:null,lifers:[],missed:[],times:[],t0:null,done:false};
  slideTo(anim=>{renderHeader();renderQuestion(anim,true);afterPaint(true)});
@@ -735,24 +742,22 @@ function next(){
  const R=S.round;R.i++;R.answered=null;R.lifer=false;R.t0=null;
  if(R.i>=R.qs.length){
   R.done=true;const reg=S.region;
-  R.cleared=levelCleared(reg,R.level);R.total=LEVELS[reg][R.level-1].length;R.passed=R.cleared/R.total>=CLEAR_SHARE;
-  if(R.passed&&R.level<10&&(P.unlocked[reg]||1)<R.level+1){P.unlocked[reg]=R.level+1;R.unlockedNew=true}
+  const cur=P.level[reg]||1;
+  if(cur<10&&levelCleared(reg,cur)/LEVELS[reg][cur-1].length>=CLEAR_SHARE){P.level[reg]=cur+1;R.advanced=true}
   save();
  }
  stopSong();
  slideTo(anim=>{renderHeader();R.done?renderResults(anim):renderQuestion(anim,true);afterPaint(true)});
 }
 function renderResults(anim=false){
- const R=S.round,n=R.qs.length,miss=[...new Set(R.missed)].map(byId),need=Math.ceil(R.total*CLEAR_SHARE-1e-9);
- const status=R.passed?(R.level<10?(R.unlockedNew?`Level ${R.level} cleared. Level ${R.level+1} is unlocked.`:`Level ${R.level} cleared.`):'Level 10 cleared. You have cleared every level.'):`Level ${R.level}: ${R.cleared} of ${R.total} birds cleared. You need ${need} to unlock Level ${R.level+1}.`;
+ const R=S.round,n=R.qs.length,miss=[...new Set(R.missed)].map(byId);
  $main.innerHTML=`<section class="${anim?'slide-in':''}" style="display:flex;flex-direction:column;gap:18px">
-  <div class="mono">Level ${R.level} complete · ${esc(REGIONS[S.region].name)}</div>
+  <div class="mono">Level ${R.level}${R.advanced?' → '+(R.level+1):''} · ${esc(REGIONS[S.region].name)}</div>
   <div class="score">${Math.round(R.right/n*100)}%</div>
   <div class="prog"><b>${R.right}/${n}</b><span>correct · average time ${(R.times.reduce((a,b)=>a+b,0)/R.times.length).toFixed(1)} seconds · best streak ${R.bestStreak}</span></div>
-  <div class="verdict ${R.passed?'ok':'no'}">${status}</div>
   ${R.lifers.length?`<div><div class="mono" style="margin-bottom:8px">First time identified</div><div class="chips">${R.lifers.map(i=>`<span class="chip">${esc(byId(i).name)}</span>`).join('')}</div></div>`:''}
   ${miss.length?`<div><div class="mono" style="margin-bottom:8px">Missed</div><div class="chips">${miss.map(b=>`<span class="chip">${esc(b.name)}</span>`).join('')}</div></div>`:'<p class="intro">A clean sweep.</p>'}
-  <div style="display:flex;gap:10px;flex-wrap:wrap">${R.passed&&R.level<10?`<button class="btn" data-act="level" data-v="${R.level+1}">Play Level ${R.level+1}</button>`:''}<button class="btn${R.passed&&R.level<10?' ghost':''}" data-act="level" data-v="${R.level}">Play Level ${R.level} again</button><button class="btn ghost" data-act="menu">All levels</button></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-act="start">Play again</button><button class="btn ghost" data-act="tab" data-v="guide">Open field guide</button></div>
  </section>`;
 }
 function renderGuide(){
@@ -776,8 +781,7 @@ document.addEventListener('click',e=>{
  else if(a==='replay'){playSong(byId(v),true)}
  else if(a==='region'){if(v!==S.region){stopSong();S.region=v;S.round=null;save();render()}}
  else if(a==='tab'){S.tab=v;stopSong();render()}
- else if(a==='level'){if(busy)return;getAC();startRound(+v)}
- else if(a==='menu'){S.round=null;stopSong();render()}
+ else if(a==='start'){if(busy)return;getAC();startRound()}
  else if(a==='answer'){answer(v)}
  else if(a==='next'){next()}
 });
