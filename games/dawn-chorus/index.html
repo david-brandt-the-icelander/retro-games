@@ -118,7 +118,6 @@ details.credits a{color:var(--r)}
 /* question */
 .q{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
 .clue{max-width:520px;width:100%;justify-self:center;display:flex;flex-direction:column;gap:10px}
-.hint{font-family:var(--f-t);font-size:1.05rem;color:var(--muted);min-height:1.5em}
 .options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 @media (max-width:480px){.options{grid-template-columns:minmax(0,1fr)}}
 .opt{display:flex;gap:10px;align-items:center;text-align:left;padding:14px;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;font-weight:600;min-width:0}
@@ -417,7 +416,7 @@ function startRound(){
   const opts=shuffle([b,...shuffle(pool.filter(x=>x!==b)).slice(0,3)]);
   return {b,opts}});
  qs.forEach(q=>{getAC();load(q.b).catch(()=>{})});
- S.round={qs,i:0,streak:0,bestStreak:0,right:0,answered:null,hint:false,lifers:[],missed:[],times:[],t0:null,done:false};
+ S.round={qs,i:0,streak:0,bestStreak:0,right:0,answered:null,lifers:[],missed:[],times:[],t0:null,done:false};
  slideTo(anim=>{renderHeader();renderQuestion(anim,true);afterPaint(true)});
 }
 const hudHTML=(R,done)=>`<div class="hud"><span class="mono">Bird ${R.i+1} of ${ROUND}</span><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${ROUND}" aria-valuenow="${R.i+(done?1:0)}"><i style="width:${(R.i+(done?1:0))/ROUND*100}%"></i></div><span class="stat">${R.i+(done?1:0)?Math.round(R.right/(R.i+(done?1:0))*100):0}% correct</span><span class="stat streak">${R.streak>1?'x'+R.streak+' streak':''}</span></div>`;
@@ -435,14 +434,13 @@ function runTimer(R){
 }
 function renderQuestion(anim=false,auto=true){
  const R=S.round,q=R.qs[R.i],b=q.b;
- const hint=R.hint?`<div class="hint">${esc(b.habitat)} · ${esc(b.size)}</div>`:`<div class="hint"></div>`;
  $main.innerHTML=`<section class="q${anim?' slide-in':''}">
   ${hudHTML(R,false)}
   <div class="clue">
    <div class="plate-btn" role="button" tabindex="0" data-act="replay" data-v="${b.id}" aria-label="Play the recording again">${plate(b,false,false,true)}</div>
    <div class="timer"><div class="bar" role="progressbar" aria-label="Time taken" aria-valuemin="0" aria-valuemax="60"><i id="tbar"></i></div><span class="mono" id="tnum">0.0 s</span></div>
-   <div class="mono" style="text-align:center">Study the field marks and listen</div>${hint}
-   ${!R.hint?`<div style="text-align:center"><button class="btn sm ghost" data-act="hint">Hint: habitat and size</button></div>`:''}</div>
+   <div class="mono" style="text-align:center">Study the field marks and listen</div>
+  </div>
   <div class="options" role="group" aria-label="Choose the species">${q.opts.map((o,k)=>`<button class="opt" data-act="answer" data-v="${o.id}"><kbd>${k+1}</kbd>${esc(o.name)}</button>`).join('')}</div>
  </section>`;
  if(R.t0==null)R.t0=performance.now();
@@ -474,7 +472,7 @@ function answer(id){
 }
 function next(){
  if(busy)return;
- const R=S.round;R.i++;R.answered=null;R.hint=false;R.lifer=false;R.t0=null;
+ const R=S.round;R.i++;R.answered=null;R.lifer=false;R.t0=null;
  if(R.i>=ROUND){R.done=true}
  stopSong();
  slideTo(anim=>{renderHeader();R.done?renderResults(anim):renderQuestion(anim,true);afterPaint(true)});
@@ -510,7 +508,6 @@ document.addEventListener('click',e=>{
  else if(a==='region'){if(v!==S.region){stopSong();S.region=v;S.round=null;save();render()}}
  else if(a==='tab'){S.tab=v;stopSong();render()}
  else if(a==='start'||a==='again'){getAC();startRound()}
- else if(a==='hint'){S.round.hint=true;renderQuestion(false,false);afterPaint(false)}
  else if(a==='answer'){answer(v)}
  else if(a==='next'){next()}
 });
