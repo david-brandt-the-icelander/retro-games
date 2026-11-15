@@ -3,7 +3,7 @@
   "kind": "component",
   "title": "Handyman Jim component diagram",
   "folder": "games/handyman-jim",
-  "description": "A Godot 4 game built in code from one scene: the flow controller, the global state autoload, the content tables, and the views for driving, rooms, cutscenes, HUD and dialogs.",
+  "description": "A Godot 4 game built in code from one scene: the flow controller, the global state autoload, the content tables, and the views for driving, rooms, cutscenes, HUD and dialogs, and the synthesised sounds.",
   "sources": [
     {
       "path": "games/handyman-jim/scripts/main.gd",
@@ -24,7 +24,7 @@
     {
       "id": "scripts",
       "name": "Game scripts",
-      "responsibility": "Game flow (main.gd), clock, money, jobs and sales (game.gd), content (data.gd), town layout (town.gd), and the driving, room, cutscene, HUD and dialog views drawn with the shared cartoon helpers (art.gd, pal.gd).",
+      "responsibility": "Game flow (main.gd), clock, money, jobs and sales (game.gd), content (data.gd), town layout (town.gd), and the driving, room, cutscene, HUD and dialog views drawn with the shared cartoon helpers (art.gd, pal.gd), and the phone ring, horn and per-speaker speech synthesised in code (sfx.gd).",
       "folder": "games/handyman-jim/scripts"
     },
     {
@@ -63,7 +63,7 @@
       "from": "scripts",
       "to": "godot",
       "kind": "depends-on",
-      "description": "Draw with CanvasItem, read input actions and run on the engine's main loop."
+      "description": "Draw with CanvasItem, play generated AudioStreamWAV sounds, read input actions and run on the engine's main loop."
     }
   ]
 }

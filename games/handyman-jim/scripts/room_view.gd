@@ -101,6 +101,8 @@ func _process(dt: float) -> void:
 		return
 	t += dt
 	queue_redraw()
+	if main.hud.paused():
+		return
 	if fixing > 0:
 		fixing -= dt
 		if fixing <= 0:
@@ -149,10 +151,10 @@ func _go_in() -> void:
 		return
 	if place.kind == "house" and job.is_empty():
 		var lines := ["You knock. A man in a Brett Favre jersey opens the door.",
-			"\"We didn't call no handyman. Unless you're sellin' brats?\" *SLAM*"]
+			"Favre jersey guy: \"We didn't call no handyman. Unless you're sellin' brats?\" *SLAM*"]
 		if Game.rng.randf() < 0.5:
 			lines = ["You knock. A lady peeks through the blinds.",
-				"\"If this is about the lawn flamingos, I've never seen 'em before in my life.\""]
+				"Lady at the blinds: \"If this is about the lawn flamingos, I've never seen 'em before in my life.\""]
 		main.dialog.message(lines)
 		return
 	_goto(entry, DOOR_X + 30)

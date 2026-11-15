@@ -17,17 +17,36 @@ var _opts: Array = []
 var _opened := -1
 var _queue: Array = []
 var _gen := 0
+var _voices: Array = []   # speaker per wrapped line ("" = silent narration)
+var _shown := 0.0         # characters revealed so far (typewriter)
+var _total := 0
+var _last_blip := 0
+
+const CPS := 55.0         # typewriter speed, characters per second
 
 func is_open() -> bool:
 	return _mode != ""
 
-func message(lines: Array, on_done: Callable = Callable(), title: String = "") -> void:
+## voice: who is talking on lines that don't say so themselves ("Gus: \"...\"" names its own speaker).
+func message(lines: Array, on_done: Callable = Callable(), title: String = "", voice: String = "") -> void:
 	if is_open():
-		_queue.append([lines, on_done, title])
+		_queue.append([lines, on_done, title, voice])
 		return
 	_lines = []
+	_voices = []
 	for l in lines:
-		_lines.append_array(Game.wrap(str(l), 540, SIZE))
+		var who: String = Sfx.speaker_of(str(l))
+		if who == "":
+			who = voice if str(l) != "" and not str(l).begins_with("*") else ""
+		var wrapped := Game.wrap(str(l), 540, SIZE)
+		_lines.append_array(wrapped)
+		for w in wrapped:
+			_voices.append(who)
+	_total = 0
+	for l in _lines:
+		_total += l.length()
+	_shown = 0.0
+	_last_blip = 0
 	_title = title
 	_on_done = on_done
 	_open("msg")
@@ -58,13 +77,21 @@ func _close() -> void:
 	Game.block_frame = Engine.get_process_frames()
 	if not _queue.is_empty():
 		var q: Array = _queue.pop_front()
-		message(q[0], q[1], q[2])
+		message(q[0], q[1], q[2], q[3])
 
 func _process(_dt: float) -> void:
 	if _mode == "" or Engine.get_process_frames() == _opened:
 		return
+	var go := Input.is_action_just_pressed("act") or Input.is_action_just_pressed("map")
 	if _mode == "msg":
-		if Input.is_action_just_pressed("act") or Input.is_action_just_pressed("cancel"):
+		if _shown < _total:
+			_shown = minf(_total, _shown + _dt * CPS)
+			_babble()
+			if go:
+				_shown = _total          # first press shows the whole page
+			queue_redraw()
+		elif go or Input.is_action_just_pressed("cancel"):
+			Sfx.stop_ring()
 			var cb := _on_done
 			_close()
 			if cb.is_valid():
@@ -79,7 +106,7 @@ func _process(_dt: float) -> void:
 			_close()
 			if cb.is_valid():
 				cb.call()
-		elif Input.is_action_just_pressed("act") and not _opts.is_empty():
+		elif go and not _opts.is_empty():
 			var g := _gen
 			var keep: bool = _on_pick.call(_sel)
 			if _gen != g:
@@ -100,10 +127,16 @@ func _draw() -> void:
 		if _title != "":
 			Art.text(self, Vector2(r.position.x + 12, y), _title, Pal.RED, SIZE)
 			y += LH + 2
+		var left := int(_shown)
 		for l in _lines:
-			Art.text(self, Vector2(r.position.x + 12, y), l, Pal.BLACK, SIZE)
+			if left <= 0:
+				break
+			Art.text(self, Vector2(r.position.x + 12, y), l.substr(0, left), Pal.BLACK, SIZE)
+			left -= l.length()
 			y += LH
-		Art.text(self, Vector2(r.end.x - 110, r.end.y - 8), "[E] continue", Pal.DGRAY, 10)
+		if _shown >= _total:
+			Art.text(self, Vector2(r.end.x - 150, r.end.y - 8), "[E / Space / Enter]", Pal.DGRAY, 10)
+
 	elif _mode == "menu":
 		var rows := mini(_opts.size(), 16)
 		var h := 56 + rows * LH
@@ -122,3 +155,19 @@ func _draw() -> void:
 				var col := Pal.RED if s.contains("SALE") else Pal.BLACK
 				Art.text(self, Vector2(r.position.x + 12, y), s, col, SIZE)
 		Art.text(self, Vector2(r.position.x + 12, r.end.y - 8), _footer, Pal.DGRAY, 10)
+
+## One syllable every three letters, in the voice of whoever is speaking on that line.
+func _babble() -> void:
+	var n := int(_shown)
+	if n - _last_blip < 3:
+		return
+	_last_blip = n
+	var left := n
+	for i in _lines.size():
+		var len: int = _lines[i].length()
+		if left <= len:
+			var ch: String = _lines[i].substr(maxi(0, left - 1), 1) if left > 0 else " "
+			if ch != " ":
+				Sfx.blip(_voices[i])
+			return
+		left -= len

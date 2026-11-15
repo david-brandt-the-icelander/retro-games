@@ -24,7 +24,7 @@ func _process(dt: float) -> void:
 		return
 	t += dt
 	queue_redraw()
-	if t > 1.2 and not Game.modal and Input.is_action_just_pressed("act"):
+	if t > 1.2 and not Game.modal and (Input.is_action_just_pressed("act") or Input.is_action_just_pressed("map")):
 		visible = false
 		Game.block_frame = Engine.get_process_frames()
 		var cb := on_done

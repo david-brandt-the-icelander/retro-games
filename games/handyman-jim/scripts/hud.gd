@@ -1,10 +1,9 @@
 extends Node2D
-## Status bar, job list, toasts, minimap, destination arrows and the Tab job board.
+## Status bar, job list, toasts, minimap, destination arrows and the map-and-jobs planner.
 
 var main: Node
 var toasts: Array = []    # [text, ttl]
-var board := false
-var bigmap := false
+var planner := false      # map + job board, one screen; the game is frozen while it's up
 var t := 0.0
 
 func _ready() -> void:
@@ -21,18 +20,12 @@ func _process(dt: float) -> void:
 		ts[1] -= dt
 	toasts = toasts.filter(func(ts): return ts[1] > 0)
 	var live: bool = main.mode in ["drive", "room"] and Game.free_input()
-	if live and Input.is_action_just_pressed("jobs"):
-		board = not board
-		bigmap = false
-	elif live and Input.is_action_just_pressed("map"):
-		bigmap = not bigmap
-		board = false
-	elif live and (board or bigmap) and Input.is_action_just_pressed("cancel"):
-		board = false
-		bigmap = false
+	if live and (Input.is_action_just_pressed("jobs") or Input.is_action_just_pressed("map")):
+		planner = not planner
+	elif live and planner and Input.is_action_just_pressed("cancel"):
+		planner = false
 	if not main.mode in ["drive", "room"]:
-		board = false
-		bigmap = false
+		planner = false
 	queue_redraw()
 
 func _draw() -> void:
@@ -52,7 +45,7 @@ func _draw() -> void:
 	var frac := clampf(Game.gas / Data.TANK_SIZE, 0, 1)
 	draw_rect(Rect2(470, 4, 60, 8), Pal.BLACK)
 	draw_rect(Rect2(470, 4, 60 * frac, 8), Pal.LGREEN if frac > 0.25 else Pal.LRED)
-	Art.text(self, Vector2(540, 12), "TAB jobs  M map", Pal.LCYAN, 10)
+	Art.text(self, Vector2(546, 12), "ENTER map/jobs", Pal.LCYAN, 10)
 	_draw_job_list()
 	if main.mode == "drive":
 		_draw_minimap()
@@ -67,10 +60,8 @@ func _draw() -> void:
 		var spd := int(main.drive.van_vel.length() / 5.0)
 		Art.text_shadow(self, Vector2(6, 392), "%d MPH" % spd, Pal.LRED if spd > 45 else Pal.WHITE, 12)
 	_draw_toasts()
-	if board:
-		_draw_board()
-	if bigmap:
-		_draw_bigmap()
+	if planner:
+		_draw_planner()
 
 func _draw_job_list() -> void:
 	var y := 28.0
@@ -93,9 +84,9 @@ func _draw_toasts() -> void:
 
 const MM := Rect2(466, 246, 170, 124)
 
-## The clock stops while the job board or the town map is open.
+## The whole game is frozen while the planner is open.
 func paused() -> bool:
-	return board or bigmap
+	return planner
 
 ## store id -> Array of "2 x Drywall Sheet" lines the current jobs still need from it.
 func needed_stores() -> Dictionary:
@@ -171,32 +162,7 @@ func _draw_map(r: Rect2, big: bool) -> void:
 func _draw_minimap() -> void:
 	_draw_map(MM, false)
 	if not needed_stores().is_empty():
-		Art.text_shadow(self, MM.position + Vector2(4, -6), "flashing = sells what you need (M)", Pal.YELLOW, 9)
-
-## Full-screen town map (M): streets by name, every shop, and what to buy where.
-func _draw_bigmap() -> void:
-	Art.box(self, Rect2(8, 20, 624, 372), Pal.WHITE, Pal.BLUE)
-	Art.text(self, Vector2(20, 40), "MAP OF MARSHFIELD  (M/Esc to close, clock paused)", Pal.BLUE, 12)
-	_draw_map(Rect2(20, 50, 380, 300), true)
-	var y := 64.0
-	Art.text(self, Vector2(412, y), "SHOPPING LIST", Pal.RED, 12)
-	y += 16
-	var need := needed_stores()
-	if Game.jobs.is_empty():
-		Art.text(self, Vector2(412, y), "No job right now.", Pal.BLACK, 11)
-	elif need.is_empty():
-		Art.text(self, Vector2(412, y), "You've got everything.", Pal.GREEN, 11)
-		Art.text(self, Vector2(412, y + 14), "Head to the flashing house!", Pal.GREEN, 11)
-	for st in need:
-		Art.text(self, Vector2(412, y), Data.STORES[st].name, Pal.BLUE, 11)
-		y += 13
-		for line in need[st]:
-			Art.text(self, Vector2(420, y), line, Pal.RED if line.ends_with("SALE") else Pal.BLACK, 10)
-			y += 12
-		y += 4
-		if y > 340:
-			break
-	Art.text(self, Vector2(20, 372), "Yellow flashing shops sell what you still need. Circle = the job. Arrow = your van.", Pal.DGRAY, 10)
+		Art.text_shadow(self, MM.position + Vector2(4, -6), "flashing = sells what you need (Enter)", Pal.YELLOW, 9)
 
 func _abbr(kind: String) -> String:
 	return {"shop": "J", "gas": "G", "hardware": "H", "bank": "$", "police": "P", "tavern": "T",
@@ -216,36 +182,53 @@ func _draw_arrows() -> void:
 		draw_colored_polygon(PackedVector2Array([tip, p + dir.orthogonal() * 7, p - dir.orthogonal() * 7]), Pal.YELLOW)
 		Art.text_shadow(self, p - dir * 12 + Vector2(-4, 4), str(j.num), Pal.YELLOW, 12)
 
-## Full job board (Tab): every job, every material, where it's sold, and today's sales.
-func _draw_board() -> void:
-	var r := Rect2(16, 20, 608, 360)
-	Art.box(self, r, Pal.WHITE, Pal.BLUE)
-	Art.text(self, Vector2(28, 40), "WORK ORDERS - %s %s   (Tab/Esc to close, clock paused)" % [Game.day_name(), Game.clock_text()], Pal.BLUE, 12)
-	var y := 58.0
+
+
+## The planner (Enter / M / Tab): town map on the left, the job and where to buy each part on
+## the right, today's sales underneath. The whole game is frozen while it is open.
+func _draw_planner() -> void:
+	Art.box(self, Rect2(6, 18, 628, 378), Pal.WHITE, Pal.BLUE)
+	Art.text(self, Vector2(18, 38), "MAP & JOBS - %s %s   (Enter/Esc closes, game paused)" % [Game.day_name(), Game.clock_text()], Pal.BLUE, 12)
+	var mr := Rect2(18, 48, 300, 238)
+	_draw_map(mr, true)
+	# today's sales under the map
+	var y := mr.end.y + 18
+	Art.text(self, Vector2(18, y), "TODAY'S SALES", Pal.RED, 11)
+	y += 13
+	for k in Game.sales:
+		var parts: PackedStringArray = k.split(":")
+		Art.text(self, Vector2(24, y), "%s: %s %d%% off" % [Data.STORES[parts[0]].name, Data.ITEMS[parts[1]][0], int(Game.sales[k] * 100)], Pal.BLACK, 10)
+		y += 12
+	# the job and its parts
+	var x := 334.0
+	y = 56.0
 	if Game.jobs.is_empty():
-		Art.text(self, Vector2(28, y), "No jobs right now. The phone will ring. It always rings.", Pal.BLACK, 12)
-		y += 16
+		Art.text(self, Vector2(x, y), "No job right now.", Pal.BLACK, 12)
+		Art.text(self, Vector2(x, y + 15), "The phone will ring. It always rings.", Pal.DGRAY, 11)
+		return
 	for j in Game.jobs:
 		var left := int(j.deadline - Game.minute)
-		Art.text(self, Vector2(28, y), "#%d %s - %s - pays $%d - %s" % [j.num, j.tpl.customer, Game.address(j), j.tpl.pay,
-			("due in %d min" % left) if left > 0 else "LATE (half pay)"], Pal.RED, 12)
+		Art.text(self, Vector2(x, y), "#%d %s" % [j.num, j.tpl.customer], Pal.RED, 12)
 		y += 14
+		Art.text(self, Vector2(x, y), "%s - pays $%d - %s" % [Game.address(j), j.tpl.pay,
+			("due in %d min" % left) if left > 0 else "LATE, half pay"], Pal.BLACK, 10)
+		y += 15
 		for item in j.tpl.mats:
 			var need: int = j.tpl.mats[item]
 			var ok := Game.have(item) >= need
-			var where := []
-			for s in Data.STORES:
-				if Data.STORES[s].stock.has(item):
-					where.append(_abbr(s))
-			Art.text(self, Vector2(44, y), "%s %d x %s  (have %d)   sold at: %s" % ["[x]" if ok else "[ ]", need,
-				Data.ITEMS[item][0], Game.have(item), " ".join(where)], Pal.GREEN if ok else Pal.BLACK, 11)
+			Art.text(self, Vector2(x + 4, y), "%s %d x %s  (have %d)" % ["[x]" if ok else "[ ]", need, Data.ITEMS[item][0], Game.have(item)],
+				Pal.GREEN if ok else Pal.BLACK, 11)
 			y += 13
-		y += 4
-	y = maxf(y, 250)
-	Art.text(self, Vector2(28, y), "TODAY'S SALES:", Pal.RED, 12)
+		y += 8
+	var need_st := needed_stores()
+	Art.text(self, Vector2(x, y), "WHERE TO BUY" if not need_st.is_empty() else "You've got everything - go fix it!", Pal.BLUE if not need_st.is_empty() else Pal.GREEN, 11)
 	y += 14
-	for k in Game.sales:
-		var parts: PackedStringArray = k.split(":")
-		Art.text(self, Vector2(44, y), "%s - %s %d%% off" % [Data.STORES[parts[0]].name, Data.ITEMS[parts[1]][0], int(Game.sales[k] * 100)], Pal.BLACK, 11)
-		y += 13
-	Art.text(self, Vector2(28, 372), "Map key: J Jim's  H Hardware  W Plumb Bob's  E Sparky's  L Lumber  F Farm  G Gas  $ Bank  P Police  T Tavern", Pal.DGRAY, 9)
+	for st in need_st:
+		Art.text(self, Vector2(x, y), Data.STORES[st].name, Pal.BLUE, 10)
+		y += 12
+		for line in need_st[st]:
+			Art.text(self, Vector2(x + 8, y), line, Pal.RED if line.ends_with("SALE") else Pal.BLACK, 10)
+			y += 11
+		y += 3
+		if y > 380:
+			break

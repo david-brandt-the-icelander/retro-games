@@ -27,6 +27,7 @@ var prompt_place: Dictionary = {}
 var hit_cool := 0.0
 var event_timer := 25.0
 var wall_cool := 0.0
+var current_lot := ""      # the driveway/lot the van is parked in ("" on the road)
 var rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
@@ -56,6 +57,7 @@ func activate(place_id: String) -> void:
 	van_speed = 0.0
 	van_vel = Vector2.ZERO
 	in_box = Vector2i(-1, -1)
+	current_lot = lot_at(van_pos)
 	cam.enabled = true
 	cam.make_current()
 	cam.position = van_pos
@@ -233,7 +235,7 @@ func _process(dt: float) -> void:
 	if not visible:
 		return
 	t += dt
-	if Game.modal:
+	if Game.modal or main.hud.paused():
 		queue_redraw()
 		return
 	hit_cool = maxf(0.0, hit_cool - dt)
@@ -245,7 +247,9 @@ func _process(dt: float) -> void:
 	_check_hits()
 	_check_lights()
 	_check_prompt()
-	if Game.free_input() and Input.is_action_just_pressed("horn"):
+	var act_horn := Game.free_input() and Input.is_action_just_pressed("act") and prompt_place.is_empty()
+	if Game.free_input() and Input.is_action_just_pressed("horn") or act_horn:
+		Sfx.horn()
 		Game.say("*HOOOONK*  (somewhere, a dog barks back)")
 		for p in peds:
 			if p.pos.distance_to(van_pos) < 120:
@@ -290,6 +294,13 @@ func _update_van(dt: float) -> void:
 	var step := van_vel * dt
 	van_pos += step
 	Game.gas -= step.length() / Data.PX_PER_GALLON
+	# rolling into a driveway or parking lot brings the van to a stop
+	var lot := lot_at(van_pos)
+	if lot != current_lot:
+		current_lot = lot
+		if lot != "":
+			van_speed = 0.0
+			van_vel = Vector2.ZERO
 	if _blocked(van_pos):
 		van_pos = old
 		if absf(van_speed) > 110 and wall_cool <= 0:
@@ -297,6 +308,13 @@ func _update_van(dt: float) -> void:
 			wall_cool = 2.0
 		van_speed *= -0.3
 		van_vel *= -0.3
+
+## id of the driveway / parking lot under p, or "".
+func lot_at(p: Vector2) -> String:
+	for pl in Town.places():
+		if pl.kind != "park" and (pl.lot as Rect2).has_point(p):
+			return pl.id
+	return ""
 
 func _blocked(p: Vector2) -> bool:
 	if p.x < Town.ROADS_X[0] - 70 or p.x > Town.ROADS_X[-1] + 70 or p.y < 12 or p.y > Town.H - 12:
@@ -342,7 +360,7 @@ func _check_hits() -> void:
 				return
 			elif hit_cool <= 0:
 				hit_cool = 2.0
-				Game.say("\"HEY! WATCH IT, YA HOSER!\"")
+				Game.say("Pedestrian: \"HEY! WATCH IT, YA HOSER!\"")
 				p.pos += (p.pos - van_pos).normalized() * 8
 	for c in cars:
 		if van_pos.distance_to(c.pos) < 13 + VAN_R and c.cool <= 0:

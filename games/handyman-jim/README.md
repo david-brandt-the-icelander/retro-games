@@ -13,11 +13,10 @@ Open `project.godot` and press F5.
 | Key | Does |
 |---|---|
 | Arrows / WASD | Drive the van (Up = gas, Down = brake/reverse); walk left/right indoors |
-| E / Enter / Space | Go in, talk, buy, fix, continue |
-| Tab / J | Job board: every job, what you still need, who sells it, today's sales (pauses the clock) |
-| M | Town map: streets by name, every shop, and a shopping list of who sells what you still need (pauses the clock) |
+| E / Space | Go in, talk, buy, fix, continue. While driving with nowhere to go in, honk |
+| Enter / M / Tab | Map and job board on one screen: streets by name, every shop, the job's parts checklist, where to buy each part and today's sales. The whole game is frozen while it's open. Enter also continues a dialog |
 | H | Horn |
-| Esc | Leave a menu |
+| Esc | Leave a menu or the map |
 
 ## How a day goes
 
@@ -27,7 +26,10 @@ Open `project.godot` and press F5.
 - **Shopping.** Six stores stock different things at different prices, and four random sales run
   every day. The job board shows them, and so does the bartender at the Rusty Muskie for $5.
   Leftovers sell back for half price.
-- **Driving.** The camera is zoomed out so you can see the road ahead, and the corner minimap
+- **Sound.** The phone rings (answer it with E, Space or Enter), and people "bla-bla-bla" as their
+  words type out, each speaker in their own pitch; Jim's voice is the low one. Every sound is
+  generated in code by `scripts/sfx.gd`, so there are no audio files.
+- **Driving.** Rolling into a driveway or parking lot stops the van. The camera is zoomed out so you can see the road ahead, and the corner minimap
   flashes the shops that sell what the job still needs. The van still takes a while to stop.
   Here is what can go wrong:
   - Trash cans $40, mailboxes $75, hydrants $150, cones $15, buildings $60, fender benders $300.
@@ -59,7 +61,8 @@ scripts/drive.gd     top-down driving, traffic, lights, pedestrians, road events
 scripts/room_view.gd building fronts and rooms, stores/bank/bar menus, fixing
 scripts/cutscene.gd  title, Zzzz, jail, weekend scenes
 scripts/hud.gd       status bar, job list, minimap, arrows, job board
-scripts/dialog.gd    message boxes and menus
+scripts/dialog.gd    message boxes (typed out, with speech babble) and menus
+scripts/sfx.gd       autoload "Sfx": phone ring, horn and per-speaker speech, synthesised at start-up
 scripts/art.gd, pal.gd  cartoon drawing helpers and the 16-colour palette
 tests/               smoke.tscn (screenshots of every screen), flow.tscn (headless logic test)
 ```

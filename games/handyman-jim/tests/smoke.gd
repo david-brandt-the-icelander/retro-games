@@ -37,23 +37,34 @@ func press(action: String) -> void:
 	Input.parse_input_event(r)
 	await wait(2)
 
+## Press E until no dialog is open (a typed-out message takes two presses).
+func dismiss() -> void:
+	for i in 8:
+		if not Game.modal:
+			return
+		await press("act")
+
 func _run() -> void:
 	await wait(10)
 	await shot("title")
 	await get_tree().create_timer(1.3).timeout
 	await press("act")
 	await shot("intro")
-	await press("act")
+	await dismiss()
 	await shot("workshop")
 	Game.next_call = Game.minute
 	await wait(5)
+	await shot("ringing")
+	await press("act")
+	await get_tree().create_timer(2.5).timeout
 	await shot("call")
 	await press("act")
-	await shot("work_order")
 	await press("act")
-	await press("jobs")
-	await shot("board")
-	await press("jobs")
+	await shot("work_order")
+	await dismiss()
+	await press("map")
+	await shot("planner")
+	await press("map")
 	m.to_drive("shop")
 	await shot("drive_start")
 	Input.action_press("up")
@@ -66,7 +77,7 @@ func _run() -> void:
 	m.drive._spawn_event(Data.ROAD_EVENTS[3])
 	await shot("drive_events")
 	await press("map")
-	await shot("town_map")
+	await shot("planner_driving")
 	await press("map")
 	var job: Dictionary = Game.jobs[0]
 	m.enter_place(Town.place("hardware"))
@@ -94,7 +105,7 @@ func _run() -> void:
 	await shot("fixing")
 	await get_tree().create_timer(2.5).timeout
 	await shot("job_done")
-	await press("act")
+	await dismiss()
 	for k in ["bank", "gas", "tavern", "police", "plumbing", "electric", "lumber", "farm"]:
 		m.enter_place(Town.place(k))
 		m.room._goto(1, 300.0)

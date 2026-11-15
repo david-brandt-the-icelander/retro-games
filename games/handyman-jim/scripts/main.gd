@@ -44,7 +44,7 @@ func _ready() -> void:
 
 func _title() -> void:
 	mode = "cut"
-	cut.play("title", ["Arrows/WASD drive & walk   E/Enter act   Tab job board   M map   H horn",
+	cut.play("title", ["Arrows/WASD drive & walk   E/Space act   Enter/M/Tab map & jobs   H horn",
 		"Press E to start your week."], func():
 			Game.new_game()
 			dialog.message([
@@ -52,7 +52,7 @@ func _title() -> void:
 				"Folks here break stuff in ways science can't explain. I get the call, I grab the parts, I fix it, I get paid. Mostly.",
 				"Watch the red lights - three tickets in a day and Sgt. Brekke locks me up. Run somebody over and he locks me up right away.",
 				"And the van's got a big engine. Real big. Stoppin' is more of a suggestion.",
-			], Callable(), "WELCOME TO JIM'S FIX-IT SHACK")
+			], Callable(), "WELCOME TO JIM'S FIX-IT SHACK", "JIM")
 			_morning())
 
 func _morning() -> void:
@@ -81,19 +81,26 @@ func _process(dt: float) -> void:
 func _incoming_call() -> void:
 	var j := Game.make_job()
 	var tpl: Dictionary = j.tpl
-	var call: Array = ["*BRRRING BRRRING*  It's %s." % tpl.customer, ""]
+	Sfx.ring()
+	# First the phone rings; answering (E / Space / Enter) stops it and the caller talks.
+	dialog.message(["*BRRRING BRRRING*", "*BRRRING BRRRING*", "", "The shop phone. Somebody's broken something again."],
+		func(): _answer_call(j), "THE PHONE IS RINGING - %s" % Game.clock_text())
+
+func _answer_call(j: Dictionary) -> void:
+	var tpl: Dictionary = j.tpl
+	var call: Array = ["JIM: \"Handyman Jim, what'd ya break?\"", ""]
 	call.append_array(tpl.call)
 	call.append("")
 	call.append("JIM: \"%s\"" % tpl.jim)
-	dialog.message(call, func():
+	var order_cb := func():
 		Game.jobs.append(j)
-		var order: Array = ["Where: the %s place, %s  (job #%d, yellow on the map)" % [Game.last_name(j), Game.address(j), j.num],
+		var order: Array = ["Where: the %s place, %s  (job #%d, flashing on the map)" % [Game.last_name(j), Game.address(j), j.num],
 			"Pays: $%d   Due in: %d minutes   (late = half pay)" % [tpl.pay, int(j.deadline - Game.minute)], "Need:"]
 		for item in tpl.mats:
 			order.append("   %d x %s" % [tpl.mats[item], Data.ITEMS[item][0]])
-		order.append("Tab shows the job board: who sells what, and today's sales.")
-		dialog.message(order, Callable(), "WORK ORDER #%d" % j.num),
-		"PHONE CALL - %s" % Game.clock_text())
+		order.append("Enter, M or Tab opens the map and job board: who sells what, and today's sales.")
+		dialog.message(order, Callable(), "WORK ORDER #%d" % j.num)
+	dialog.message(call, order_cb, "%s ON THE LINE" % tpl.customer.to_upper(), tpl.customer)
 
 func enter_place(p: Dictionary) -> void:
 	drive.deactivate()

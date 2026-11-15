@@ -113,8 +113,11 @@ func _ready() -> void:
 	Game.cash = 900
 	m.end_day()
 	await wait(3)
-	await act()
-	await wait(3)
+	for i in 5:   # the message types out, so it can take two presses to close
+		if m.mode == "cut":
+			break
+		await act()
+		await wait(3)
 	check(m.mode == "cut" and m.cut.scene == "bar", "$900 Friday = bar weekend scene (%s)" % m.cut.scene)
 	await settle()
 	check(Game.week == 2 and Game.day == 0 and Game.cash == 900 - Data.SHOP_RENT, "week 2 Monday, rent paid")
@@ -124,5 +127,36 @@ func _ready() -> void:
 	check(Game.modal, "7 PM quitting time triggers")
 	await settle()
 	check(Game.day == 1, "Tuesday after sleeping")
+	# rolling into a driveway stops the van
+	await settle()
+	m.to_drive("shop")
+	await wait(2)
+	var lot: Rect2 = Town.place("shop").lot
+	m.drive.current_lot = ""
+	m.drive.van_pos = lot.get_center()
+	m.drive.van_speed = 150.0
+	m.drive.van_vel = Vector2(0, -150)
+	m.drive._update_van(0.016)
+	check(m.drive.van_speed == 0.0 and m.drive.van_vel == Vector2.ZERO, "driving into a driveway stops the van")
+	# Enter opens the map-and-jobs planner, and nothing moves while it is open
+	var e := InputEventAction.new()
+	e.action = "map"
+	e.pressed = true
+	Input.parse_input_event(e)
+	await wait(2)
+	var r := InputEventAction.new()
+	r.action = "map"
+	Input.parse_input_event(r)
+	await wait(2)
+	check(m.hud.planner, "Enter opens the map and job board")
+	var t0 := Game.minute
+	var cars0: Vector2 = m.drive.cars[0].pos
+	await get_tree().create_timer(1.0).timeout
+	check(Game.minute == t0 and m.drive.cars[0].pos == cars0, "the game is frozen while the planner is open")
+	m.hud.planner = false
+	# sounds are generated, and speakers sound different
+	check(Sfx._ring.data.size() > 100000 and Sfx._syllables.size() == 5, "ring and speech sounds generated")
+	check(Sfx.speaker_of("Gus: \"Ope.\"") == "Gus" and Sfx.speaker_of("*BRRRING*") == "", "speaker detection")
+	check(absf(Sfx.voice_pitch("Gus") - Sfx.voice_pitch("Brenda Kowalski")) > 0.01 and Sfx.voice_pitch("JIM") < 0.8, "each speaker has their own pitch")
 	print("FLOW DONE, failures: ", fails)
 	get_tree().quit(1 if fails > 0 else 0)
