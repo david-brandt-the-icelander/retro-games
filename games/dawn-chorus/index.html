@@ -96,7 +96,11 @@ main{display:block;overflow-x:clip}
 .plate.locked img.bgimg{filter:blur(20px) brightness(.25) saturate(.4)}
 .plate-btn{position:relative;cursor:pointer;border-radius:14px}
 .start{display:flex;flex-direction:column;gap:18px}
-.strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
+.strip{overflow:hidden;pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
+.strip img{-webkit-user-drag:none;user-select:none}
+.strip-track{display:flex;gap:10px;width:max-content;padding-right:10px;animation:marquee var(--dur,240s) linear infinite}
+@keyframes marquee{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.strip-track{animation:none}}
 .strip-item{flex:none;width:min(190px,46vw)}
 .strip .plate{aspect-ratio:4/3}
 .strip .plate img.fg{height:100%;max-height:none}
@@ -655,9 +659,11 @@ function render(){
  requestAnimationFrame(refreshPlay);
 }
 function renderMenu(){
- const reg=S.region,lv=P.level[reg]||1,pick=shuffle(birdsIn(reg)).slice(0,10);
+ const reg=S.region,lv=P.level[reg]||1,all=shuffle(birdsIn(reg));
+ const item=b=>`<div class="strip-item"><div class="plate"><img class="bgimg" src="photos/thumb/${b.id}.jpg" alt="" draggable="false"><img class="fg" src="photos/thumb/${b.id}.jpg" alt="" draggable="false"></div></div>`;
+ const run=all.map(item).join('');
  $main.innerHTML=`<section class="start">
-  <div class="strip" aria-hidden="true">${pick.map(b=>`<div class="strip-item">${plate(b,false,false,true)}</div>`).join('')}</div>
+  <div class="strip" aria-hidden="true"><div class="strip-track" style="--dur:${all.length*6}s">${run}${run}</div></div>
   <div><button class="btn big" data-act="start">Start playing: ${SHORT[reg]} birds (level ${lv})</button></div>
  </section>`;
 }

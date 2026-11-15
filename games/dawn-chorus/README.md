@@ -4,7 +4,7 @@ A bird-identification game. Each region has ten levels, ordered from the most co
 
 The Album tab keeps each bird you have identified, with your fastest time (record) and your accuracy, saved in the browser.
 
-It is a static page: `index.html` plus `photos/` and `audio/`, with no build step and no server. Open it through any static web server (browsers will not load the audio from `file://`), for example `python3 -m http.server` in this folder. It has no `package.json`, so the repository's test and deploy workflows skip it.
+It is a static page: `index.html` plus `photos/` and `audio/`, with no build step and no server. `photos/thumb/` holds small copies of the photos for the scrolling strip on the Play tab. Open it through any static web server (browsers will not load the audio from `file://`), for example `python3 -m http.server` in this folder. It has no `package.json`, so the repository's test and deploy workflows skip it.
 
 ## How it works
 
