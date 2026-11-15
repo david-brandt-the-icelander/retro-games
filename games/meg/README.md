@@ -25,7 +25,34 @@ Everything else is automatic:
 
 ## How it plays
 
-Hunger drains all the time, and faster at speed; schools of fish, squid, whales and swimmers refill it. Exposure rises when lights, sonar, cameras or spotlights catch the shark, and falls when it hides deep or in the current. When exposure fills, a hunter fleet drops depth charges for a while. A charge tumbles down and bursts in a bubble blast when it touches anything (the shark, fish, a whale, the sub, the seabed) or at a random depth at least a third of the way from the surface to the seabed. Each file opens with a typed, redacted Directorate document and closes with a cover-story memo.
+Health drains all the time, and faster at speed; eating restores it. Exposure rises when lights, sonar, cameras or spotlights catch the shark, and falls when it hides deep or in the current. When exposure fills, a hunter fleet drops depth charges for a while. A charge tumbles down and bursts in a bubble blast when it touches anything (the shark, fish, a whale, the sub, the seabed) or at a random depth at least a third of the way from the surface to the seabed. Each file opens with a typed, redacted Directorate document and closes with a cover-story memo.
+
+## Prey and score
+
+Every catch scores points, more for bigger or more darkly funny prey. A cleared file adds a bonus of 500 × the file number plus 10 per point of health left. The score carries through a run of files and ends when the shark fails, after the last file, or with End run.
+
+| Prey | Points | Where |
+|---|---|---|
+| Reef fish | 10 | Everywhere, in schools |
+| Squid | 20 | Schools |
+| Cod, haddock | 25 | Schools; the trawler's net is full of them |
+| Salmon | 40 | Schools |
+| Whale | 100 a bite | File 4 |
+| Seal | 120 | Near the surface |
+| Seagull | 150 | Above the waves; only by breaching |
+| Manta ray | 150 | Mid-water |
+| Dolphin | 200 | Pods of two or three; they flee and leap |
+| Puffin | 200 | Above the waves; only by breaching |
+| Swimmer | 250 | At the surface; they panic and draw attention |
+| Scuba diver | 300 | Now and then, deep |
+| Greenlandic kayaker | 400 | At the surface, in a qajaq |
+| Polar bear | 500 | Swimming at the surface; swipes back |
+
+Visitors wander in over time and leave again; swimmers and kayaks keep clear of boats. Sabotage scores too: buoys, ships, the sub, drums, turrets and drones.
+
+The high-score table keeps the ten best runs on this device, with a name entered when a run ends with a qualifying score.
+
+## Files to clear
 
 | File | Goal |
 |---|---|
@@ -38,7 +65,7 @@ Hunger drains all the time, and faster at speed; schools of fish, squid, whales 
 | 7 Storm Breach | Bring down the hunter ship |
 | 8 The Directorate's Base | Destroy 3 turrets and free the young one |
 
-Progress (the highest file reached) and the sound setting are kept in the browser's `localStorage`.
+Progress (the highest file reached), the sound setting, the high-score table and the last name entered are kept in the browser's `localStorage`.
 
 ## Files
 

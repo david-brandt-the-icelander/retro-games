@@ -32,6 +32,14 @@
     {
       "path": "games/meg/index.html",
       "symbol": "resume"
+    },
+    {
+      "path": "games/meg/index.html",
+      "symbol": "quit"
+    },
+    {
+      "path": "games/meg/index.html",
+      "symbol": "showScores"
     }
   ],
   "machine": "the state variable in index.html",
@@ -55,24 +63,43 @@
     },
     {
       "id": "clear",
-      "description": "The level is sealed: statistics and the Directorate's cover-story memo; after the last level, the ending."
+      "description": "The level is sealed: statistics, the clear bonus, the score and the cover-story memo; after the last level, the ending, which also ends the run."
     },
     {
       "id": "fail",
-      "description": "The level is lost: hunger ran out, the photos reached the dive boat, or the current went cold."
+      "description": "The level is lost: health ran out, the photos reached the dive boat, or the current went cold. The run ends, with a name entry when its score makes the table."
+    },
+    {
+      "id": "scores",
+      "description": "The high-score table kept on this device."
+    },
+    {
+      "id": "over",
+      "description": "A run ended from the pause or clear screen with a qualifying score: the name entry for the high-score table."
     }
   ],
   "transitions": [
     {
       "from": "title",
       "to": "brief",
-      "trigger": "Begin, Continue or a file button"
+      "trigger": "Begin, Continue or a file button",
+      "action": "starts a new run"
+    },
+    {
+      "from": "title",
+      "to": "scores",
+      "trigger": "High scores"
+    },
+    {
+      "from": "scores",
+      "to": "title",
+      "trigger": "Back"
     },
     {
       "from": "brief",
       "to": "play",
       "trigger": "Dive",
-      "action": "startLevel() builds the level and the shark"
+      "action": "startLevel() builds the level and the shark; a new run starts at score 0"
     },
     {
       "from": "brief",
@@ -93,23 +120,29 @@
       "from": "paused",
       "to": "play",
       "trigger": "Restart file",
-      "action": "startLevel() rebuilds the level"
+      "action": "startLevel() rebuilds the level and puts the score back to its value when the file began"
+    },
+    {
+      "from": "paused",
+      "to": "over",
+      "trigger": "End run, with a qualifying score"
     },
     {
       "from": "paused",
       "to": "title",
-      "trigger": "All files"
+      "trigger": "End run, without a qualifying score"
     },
     {
       "from": "play",
       "to": "clear",
       "trigger": "the level's check() succeeds",
-      "action": "unlocks the next file in localStorage"
+      "action": "adds the clear bonus and unlocks the next file in localStorage"
     },
     {
       "from": "play",
       "to": "fail",
-      "trigger": "hunger reaches zero, the level sets failNow, or the current's temperature reaches zero"
+      "trigger": "health reaches zero, the level sets failNow, or the current's temperature reaches zero",
+      "action": "ends the run"
     },
     {
       "from": "clear",
@@ -118,6 +151,16 @@
     },
     {
       "from": "clear",
+      "to": "over",
+      "trigger": "End run, with a qualifying score"
+    },
+    {
+      "from": "clear",
+      "to": "title",
+      "trigger": "End run without a qualifying score, or All files after the last level"
+    },
+    {
+      "from": "over",
       "to": "title",
       "trigger": "All files"
     },
@@ -125,7 +168,7 @@
       "from": "fail",
       "to": "play",
       "trigger": "Try again",
-      "action": "startLevel() rebuilds the level"
+      "action": "starts a new run at this file"
     },
     {
       "from": "fail",

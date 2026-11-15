@@ -30,7 +30,7 @@
     {
       "id": "storage",
       "name": "Browser localStorage",
-      "responsibility": "Keeps the highest incident file reached and the sound setting on this device.",
+      "responsibility": "Keeps the highest incident file reached, the sound setting, the ten best scores and the last name entered, on this device.",
       "external": true
     }
   ],
@@ -45,7 +45,7 @@
       "from": "game",
       "to": "storage",
       "kind": "depends-on",
-      "description": "Reads and writes meg.unlocked and meg.muted, and plays on without them if storage is blocked."
+      "description": "Reads and writes meg.unlocked, meg.muted, meg.scores and meg.name, and plays on without them if storage is blocked."
     }
   ]
 }
