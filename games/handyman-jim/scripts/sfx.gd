@@ -78,13 +78,13 @@ func _make_horn() -> AudioStreamWAV:
 ## The voice for lines nobody in particular says: narration, work orders, results.
 const NARRATOR := "Narrator"
 
-## Each speaker gets a fixed pitch from their name; Jim is low and cheerful.
+## Each speaker gets a fixed pitch from their name; Jim is a light, high man's voice.
 func voice_pitch(speaker: String) -> float:
 	var k := speaker.to_upper()
 	if k == "NARRATOR":
 		return 0.74
 	if k == "JIM" or k.begins_with("JIM "):
-		return 0.62                                        # Jim: the lowest voice in town
+		return 1.12                                        # Jim: a man's voice on the high side
 	var h := absi(k.hash())
 	return 0.7 + float(h % 1000) / 1000.0 * 0.32     # everyone else: 0.70 - 1.02
 

@@ -25,12 +25,24 @@ func _process(dt: float) -> void:
 	t += dt
 	queue_redraw()
 	if t > 1.2 and not Game.modal and (Input.is_action_just_pressed("act") or Input.is_action_just_pressed("map")):
-		visible = false
-		Game.block_frame = Engine.get_process_frames()
-		var cb := on_done
-		on_done = Callable()
-		if cb.is_valid():
-			cb.call()
+		_finish()
+
+## The title screen starts the week on any key at all.
+func _input(event: InputEvent) -> void:
+	if visible and scene == "title" and t > 1.2 and not Game.modal \
+			and event is InputEventKey and event.pressed and not event.echo:
+		get_viewport().set_input_as_handled()
+		_finish()
+
+func _finish() -> void:
+	if not visible:
+		return
+	visible = false
+	Game.block_frame = Engine.get_process_frames()
+	var cb := on_done
+	on_done = Callable()
+	if cb.is_valid():
+		cb.call()
 
 func _draw() -> void:
 	if not Art.try_png(self, "cut_" + scene, Rect2(0, 0, 640, 300)):
@@ -50,7 +62,7 @@ func _draw() -> void:
 		Art.text(self, Vector2(0, y), l, Pal.WHITE, 12, HORIZONTAL_ALIGNMENT_CENTER, 640)
 		y += 15
 	if t > 1.2 and int(t * 2) % 2 == 0:
-		Art.text(self, Vector2(0, 394), "press Space / Enter", Pal.DGRAY, 10, HORIZONTAL_ALIGNMENT_CENTER, 640)
+		Art.text(self, Vector2(0, 394), "press any key" if scene == "title" else "press Space / Enter", Pal.DGRAY, 10, HORIZONTAL_ALIGNMENT_CENTER, 640)
 
 func _sky(c: Color = Pal.LCYAN) -> void:
 	Art.shape(self, Rect2(0, 0, 640, 300), c)

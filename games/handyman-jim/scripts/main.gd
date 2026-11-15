@@ -45,7 +45,7 @@ func _ready() -> void:
 func _title() -> void:
 	mode = "cut"
 	cut.play("title", ["WASD drive & walk     Space act / honk     Enter map & jobs",
-		"Press Space or Enter to start your week."], func():
+		"Press any key to start your week."], func():
 			Game.new_game()
 			dialog.message([
 				"Name's Jim. Handyman Jim. I fix things in Marshfield, Wisconsin.",

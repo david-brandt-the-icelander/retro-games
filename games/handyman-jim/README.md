@@ -16,7 +16,8 @@ Open `project.godot` and press F5.
 | Space | Go in, talk, buy, fix, continue. While driving with nowhere to go in, honk the horn |
 | Enter | Open or close the map and job board: streets by name, every shop, the job's parts checklist, where to buy each part and today's sales. The whole game is frozen while it's open. Enter also continues a dialog or picks in a menu |
 
-Those three play the whole game. **Escape** closes any dialog window, menu or the map; a closed dialog
+Those three play the whole game; on the title screen any key starts the week. **Escape** closes any
+dialog window, menu or the map; a closed dialog
 still moves the story on. Every menu also ends with a Leave (or Done) row.
 
 ## How a day goes
@@ -28,7 +29,7 @@ still moves the story on. Every menu also ends with a Leave (or Done) row.
   every day. The job board shows them, and so does the bartender at the Rusty Muskie for $5.
   Leftovers sell back for half price.
 - **Sound.** The phone rings (answer it with Space or Enter). Every line of dialog is voiced as it
-  types out: each person at their own pitch (Jim's the lowest), a narrator for everything else, and
+  types out: each person at their own pitch (Jim's a light, high man's voice), a narrator for everything else, and
   a radio voice for the traffic reports. It sounds like real talk through a wall, but no word can be
   made out: the voice is a public-domain LibriVox recording stored backwards and heavily muffled
   (`audio/voice.wav`, provenance in `audio/CREDITS.md`). The ring and the horn are synthesised in

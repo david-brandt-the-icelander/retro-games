@@ -69,15 +69,18 @@ static func ellipse_points(c: Vector2, rx: float, ry: float, n: int = 24) -> Pac
 		pts.append(c + Vector2(cos(a) * rx, sin(a) * ry))
 	return pts
 
-static func ellipse(ci: CanvasItem, c: Vector2, rx: float, ry: float, fill: Color, line: bool = true) -> void:
+static func ellipse(ci: CanvasItem, c: Vector2, rx: float, ry: float, fill: Color, line: bool = true, w: float = OUT) -> void:
 	var pts := ellipse_points(c, rx, ry, clampi(int(maxf(rx, ry) * 1.5), 12, 40))
 	ci.draw_colored_polygon(pts, fill)
 	if line:
-		outline(ci, pts, OUT, Color(INK, INK.a * fill.a))
+		outline(ci, pts, w, Color(INK, INK.a * fill.a))
 
 ## Drop-in for draw_circle with an outline.
 static func circ(ci: CanvasItem, c: Vector2, r: float, fill: Color) -> void:
 	ellipse(ci, c, r, r, fill, r >= 2.5)
+
+static func circ_w(ci: CanvasItem, c: Vector2, r: float, fill: Color, w: float) -> void:
+	ellipse(ci, c, r, r, fill, true, w)
 
 ## A thick limb: ink line under a coloured line, both with round ends.
 static func limb(ci: CanvasItem, a: Vector2, b: Vector2, w: float, col: Color) -> void:
@@ -198,33 +201,38 @@ static func jim(ci: CanvasItem, feet: Vector2, s: float, facing: int, phase: flo
 	limb(ci, Vector2(x + f * 5 * s, y - 33 * s), hand, 3.6 * s, JIM_SKIN)
 	limb(ci, Vector2(x + f * 5 * s, y - 33 * s), Vector2(x + f * 6.5 * s, y - 28.5 * s), 4.4 * s, Pal.WHITE)
 	circ(ci, hand + Vector2(0, 1 * s), 2.5 * s, JIM_SKIN)
-	# head: big, round and bald on top
+	# head: big and round, a shiny bald patch on top, lots of blond hair round it.
+	# Face lines are thin and scale with Jim, so his face never looks heavily inked.
+	var fw := clampf(0.16 * s, 0.35, 0.9)      # face line width
 	var hc := Vector2(x + f * 1 * s, y - 45.5 * s)
-	circ(ci, hc, 8 * s, JIM_SKIN)
-	ci.draw_colored_polygon(ellipse_points(hc + Vector2(-f * 1.5 * s, -5.2 * s), 3.2 * s, 1.5 * s), Color(1, 1, 1, 0.55))  # shiny scalp
-	# blond fringe round the back and sides, plus a hopeful three-hair comb-over
-	ellipse(ci, hc + Vector2(-f * 5.4 * s, 1.5 * s), 3 * s, 4.6 * s, BLOND)
-	for k in 3:
-		var a := hc + Vector2(-f * (5.5 - k) * s, (-3.5 - k * 1.2) * s)
-		var b := hc + Vector2(f * (1.5 + k) * s, (-6.6 - k * 0.3) * s)
-		ci.draw_line(a, b, BLOND.darkened(0.1), 0.6 * s, true)
-	ellipse(ci, hc + Vector2(-f * 4.6 * s, 0.8 * s), 1.8 * s, 2.5 * s, JIM_SKIN)   # ear
-	# blue eye with a highlight, blond eyebrow
-	ellipse(ci, hc + Vector2(f * 3.4 * s, -1.6 * s), 2.4 * s, 2.8 * s, Pal.WHITE)
+	# thick blond hair behind the head: shows round the back and sides
+	ellipse(ci, hc + Vector2(-f * 2.4 * s, 1.6 * s), 8.4 * s, 8.0 * s, BLOND, true, fw)
+	circ_w(ci, hc, 8 * s, JIM_SKIN, fw)
+	ci.draw_colored_polygon(ellipse_points(hc + Vector2(f * 0.6 * s, -5.6 * s), 3.0 * s, 1.4 * s), Color(1, 1, 1, 0.6))  # shiny bald patch
+	# a full fringe over the back of the head down past the ear
+	ellipse(ci, hc + Vector2(-f * 4.6 * s, 1.0 * s), 3.8 * s, 6.2 * s, BLOND, false)
+	# a generous comb-over swept across the top, stopping short of the shiny patch
+	for k in 4:
+		var a := hc + Vector2(-f * (6.2 - k * 0.6) * s, (-2.6 - k * 1.0) * s)
+		var b := hc + Vector2(f * (0.8 + k * 0.7) * s, (-6.2 - k * 0.3) * s)
+		ci.draw_line(a, b, BLOND.darkened(0.08), 0.55 * s, true)
+	ellipse(ci, hc + Vector2(-f * 4.4 * s, 0.9 * s), 1.7 * s, 2.4 * s, JIM_SKIN, true, fw)   # ear
+	# blue eye with a highlight, bushy blond eyebrow
+	ellipse(ci, hc + Vector2(f * 3.4 * s, -1.6 * s), 2.4 * s, 2.8 * s, Pal.WHITE, true, fw)
 	ci.draw_circle(hc + Vector2(f * 4.0 * s, -1.3 * s), 1.4 * s, Color("3b8fe0"))
 	ci.draw_circle(hc + Vector2(f * 4.2 * s, -1.2 * s), 0.7 * s, Pal.BLACK)
 	ci.draw_circle(hc + Vector2(f * 3.6 * s, -1.9 * s), 0.4 * s, Pal.WHITE)
-	ci.draw_line(hc + Vector2(f * 1.6 * s, -5.2 * s), hc + Vector2(f * 5.2 * s, -5.6 * s), BLOND.darkened(0.15), 1.1 * s, true)
+	ci.draw_line(hc + Vector2(f * 1.5 * s, -5.0 * s), hc + Vector2(f * 5.3 * s, -5.5 * s), BLOND.darkened(0.12), 1.3 * s, true)
 	# rosy cheek, round nose and a big clean-shaven toothy grin
 	ci.draw_circle(hc + Vector2(f * 1.5 * s, 2.5 * s), 1.9 * s, Color(1, 0.45, 0.45, 0.35))
-	circ(ci, hc + Vector2(f * 7.6 * s, 1.2 * s), 2.3 * s, JIM_SKIN.darkened(0.05))
+	circ_w(ci, hc + Vector2(f * 7.6 * s, 1.2 * s), 2.3 * s, JIM_SKIN.darkened(0.05), fw)
 	var grin := PackedVector2Array()
 	for k in 9:
 		var ang := 0.15 + (PI - 0.3) * k / 8.0
 		grin.append(hc + Vector2(f * 3.8 * s, 3.4 * s) + Vector2(cos(ang) * 3.6 * s, sin(ang) * 2.6 * s))
 	ci.draw_colored_polygon(grin, Pal.WHITE)
-	outline(ci, grin, 0.8 * s)
-	ci.draw_line(grin[0], grin[8], Pal.BLACK, 0.8 * s, true)
+	outline(ci, grin, fw)
+	ci.draw_line(grin[0], grin[8], Pal.BLACK, fw, true)
 
 ## Top-down vehicle centred on pos, pointing along angle (0 = +x).
 static func vehicle_top(ci: CanvasItem, pos: Vector2, angle: float, body: Color,

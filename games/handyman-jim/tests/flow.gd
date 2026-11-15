@@ -36,6 +36,20 @@ func _ready() -> void:
 	m = load("res://main.tscn").instantiate()
 	add_child(m)
 	await wait(5)
+	# any key starts the week: Q is bound to nothing
+	await get_tree().create_timer(1.3).timeout
+	var q := InputEventKey.new()
+	q.physical_keycode = KEY_Q
+	q.keycode = KEY_Q
+	q.pressed = true
+	Input.parse_input_event(q)
+	await wait(3)
+	var q_up := InputEventKey.new()
+	q_up.physical_keycode = KEY_Q
+	q_up.keycode = KEY_Q
+	Input.parse_input_event(q_up)
+	await wait(3)
+	check(m.mode == "room" and not m.cut.visible, "any key starts the week (here: Q)")
 	await settle()
 	check(m.mode == "room" and Game.day == 0, "game starts Monday in the shop")
 	# phone call -> job
@@ -165,7 +179,7 @@ func _ready() -> void:
 	# sounds are generated, and speakers sound different
 	check(Sfx._ring.data.size() > 100000 and Sfx.VOICE.get_length() > 40.0 and Sfx.PHRASES.size() > 20, "ring generated and the mumble recording loaded")
 	check(Sfx.speaker_of("Gus: \"Ope.\"") == "Gus" and Sfx.speaker_of("*BRRRING*") == "", "speaker detection")
-	check(absf(Sfx.voice_pitch("Gus") - Sfx.voice_pitch("Brenda Kowalski")) > 0.01 and Sfx.voice_pitch("JIM") < Sfx.voice_pitch("Gus") and Sfx.voice_pitch("JIM") < 0.85, "each speaker has their own pitch, Jim lowest")
+	check(absf(Sfx.voice_pitch("Gus") - Sfx.voice_pitch("Brenda Kowalski")) > 0.01 and Sfx.voice_pitch("JIM") > 1.0 and Sfx.voice_pitch("JIM") < 1.25, "each speaker has their own pitch; Jim's is a high man's voice")
 	# a speaker talks in continuous phrases and stops when told to
 	Sfx.talk("Gus")
 	var first_talker: String = Sfx._talker
