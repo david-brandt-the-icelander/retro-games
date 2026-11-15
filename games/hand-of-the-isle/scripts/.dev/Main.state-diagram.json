@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Main game states",
+  "folder": "games/hand-of-the-isle/scripts",
+  "description": "main.gd's state variable. Pause and help are flags inside play, not states.",
+  "sources": [
+    {"path": "games/hand-of-the-isle/scripts/main.gd", "symbol": "state"},
+    {"path": "games/hand-of-the-isle/scripts/main.gd", "symbol": "_on_game_over"}
+  ],
+  "machine": "Main",
+  "initialState": "title",
+  "states": [
+    {"id": "title", "description": "The title card over a rival-against-rival match on a fully revealed island; a finished match is replaced by a new one after four seconds."},
+    {"id": "play", "description": "A match against the rival at the chosen difficulty; the player's input acts on the world."},
+    {"id": "over", "description": "The end screen shows victory or defeat; the simulation stops."},
+    {"id": "autoplay", "description": "Test mode: rivals play both sides and balance is logged.", "terminal": true}
+  ],
+  "transitions": [
+    {"from": "title", "to": "play", "trigger": "Hud.start_requested(level)", "action": "Generate a new island and start the match."},
+    {"from": "title", "to": "play", "trigger": "_ready", "guard": "--play on the command line"},
+    {"from": "title", "to": "autoplay", "trigger": "_ready", "guard": "--autoplay on the command line", "action": "Quit when the match ends."},
+    {"from": "play", "to": "over", "trigger": "World.game_over(winner)", "action": "Show the end screen with the match statistics."},
+    {"from": "over", "to": "play", "trigger": "Hud.restart_requested", "action": "Start a new match at the same difficulty."}
+  ]
+}

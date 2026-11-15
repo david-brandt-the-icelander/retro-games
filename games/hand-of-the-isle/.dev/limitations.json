@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/limitations.schema.json",
+  "kind": "limitations",
+  "title": "Hand of the Isle limitations",
+  "folder": "games/hand-of-the-isle",
+  "entities": [
+    {
+      "id": "no-sound",
+      "title": "No sound",
+      "summary": "The game has no sound effects or music.",
+      "impact": "Powers, battles and collapsing homes are shown only on screen.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hand-of-the-isle/scripts/main.gd",
+          "symbol": "_build_environment"
+        }
+      ]
+    },
+    {
+      "id": "no-export",
+      "title": "Not exported or published",
+      "summary": "There are no export presets, so the game runs only from the Godot editor.",
+      "impact": "A player needs Godot 4.4 or newer installed to play it.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hand-of-the-isle/project.godot",
+          "symbol": "application"
+        }
+      ]
+    },
+    {
+      "id": "no-save",
+      "title": "No saved games",
+      "summary": "A match cannot be saved or resumed; each one is a new island.",
+      "impact": "Closing the game ends the match.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hand-of-the-isle/scripts/main.gd",
+          "symbol": "_new_world"
+        }
+      ]
+    }
+  ]
+}

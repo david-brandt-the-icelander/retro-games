@@ -12,6 +12,7 @@ Each game needs a sign-in with Google or GitHub, icelander.net's one sign-in (th
 | Hivestorm: an arcade shooter for one player, or two online each on their own device, with a high-score table | [icelander.net/games/retro/hivestorm](https://icelander.net/games/retro/hivestorm/) ([high scores](https://icelander.net/games/retro/hivestorm/scores/)) | [games/hivestorm](games/hivestorm) |
 | Samosa: a remake of a 1983 ZX Spectrum strategy game | [icelander.net/games/retro/samosa](https://icelander.net/games/retro/samosa/) ([high scores](https://icelander.net/games/retro/samosa/scores/)) | [games/dictator](games/dictator) |
 | Gambit: 3D chess made in Godot 4. Invite a friend by email and play with chat and a timed transcript, keep contacts and replay past games, or play Stockfish at eight strengths | [icelander.net/games/retro/chess](https://icelander.net/games/retro/chess/) | [games/chess](games/chess) |
+| Hand of the Isle: an original god game made in Godot 4 for desktop. Reshape an island and call down powers so your followers outgrow a rival deity's | Not published: open `project.godot` in Godot 4.4 or newer and press F5. No sign-in | [games/hand-of-the-isle](games/hand-of-the-isle) |
 
 ## Deploying
 

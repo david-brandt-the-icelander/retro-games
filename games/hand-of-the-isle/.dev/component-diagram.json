@@ -1,0 +1,87 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Hand of the Isle component diagram",
+  "folder": "games/hand-of-the-isle",
+  "description": "The Godot 4.4 project. main.tscn runs Main (scripts/main.gd), which owns the camera, the interface and one World at a time; the World owns the terrain and the units, and two RivalAI instances drive deities through the same World.cast rules the player uses. The scripts folder's class diagram and Main state diagram are in games/hand-of-the-isle/scripts/.dev/.",
+  "sources": [
+    {
+      "path": "games/hand-of-the-isle/main.tscn",
+      "symbol": "Main"
+    },
+    {
+      "path": "games/hand-of-the-isle/scripts/main.gd",
+      "symbol": "_new_world"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Hand of the Isle",
+      "responsibility": "Everything the Godot engine runs.",
+      "folder": "games/hand-of-the-isle"
+    },
+    {
+      "id": "main",
+      "name": "Main",
+      "responsibility": "Scene dressing (sky, sun, sea), input, the cursor, the game states and the command-line test switches.",
+      "folder": "games/hand-of-the-isle/scripts"
+    },
+    {
+      "id": "simulation",
+      "name": "Simulation",
+      "responsibility": "World, Terrain, Settlement and Walker: the heightmap, homes, followers, combat, faith, influence and the eight powers.",
+      "folder": "games/hand-of-the-isle/scripts"
+    },
+    {
+      "id": "rival",
+      "name": "Rival deity",
+      "responsibility": "RivalAI: sculpts inside its own influence, picks its followers' behaviour and casts powers, paying faith like the player.",
+      "folder": "games/hand-of-the-isle/scripts"
+    },
+    {
+      "id": "presentation",
+      "name": "Camera and interface",
+      "responsibility": "CameraRig (orbiting tabletop camera) and Hud (faith, follower balance, power bar, behaviour switch, notices, title, help and end screens).",
+      "folder": "games/hand-of-the-isle/scripts"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "main",
+      "kind": "contains",
+      "description": "main.tscn's root node runs scripts/main.gd."
+    },
+    {
+      "from": "main",
+      "to": "simulation",
+      "kind": "depends-on",
+      "description": "Creates a World per match, steps it and casts the player's powers through World.cast."
+    },
+    {
+      "from": "main",
+      "to": "rival",
+      "kind": "depends-on",
+      "description": "Ticks the rival, and a stand-in for the player on the title screen and in autoplay."
+    },
+    {
+      "from": "main",
+      "to": "presentation",
+      "kind": "depends-on",
+      "description": "Moves the camera and updates the interface; reacts to its signals."
+    },
+    {
+      "from": "rival",
+      "to": "simulation",
+      "kind": "depends-on",
+      "description": "Reads the World and acts only through World.cast and World.behavior."
+    },
+    {
+      "from": "presentation",
+      "to": "simulation",
+      "kind": "depends-on",
+      "description": "Hud reads faith and follower counts and the POWERS table."
+    }
+  ]
+}

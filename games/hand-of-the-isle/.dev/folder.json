@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Hand of the Isle",
+  "folder": "games/hand-of-the-isle",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Hand of the Isle",
+      "summary": "An original god game for desktop, made in Godot 4.4: the player reshapes an island and calls down powers so their followers outgrow a rival deity's.",
+      "purpose": "One scene (main.tscn) runs Main, which builds everything else in code: the terrain, the simulation, the rival, the camera and the interface. There are no external assets. README.md gives the rules, the controls and the command-line test switches.",
+      "boundaries": [
+        "It is not a browser game: it has no package.json, Worker, web export or high-score table, so the CI and Deploy workflows (.github/scripts/changed-games.sh) skip it.",
+        "It needs no sign-in and makes no network calls."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hand-of-the-isle/project.godot",
+          "symbol": "run/main_scene"
+        },
+        {
+          "path": "games/hand-of-the-isle/main.tscn",
+          "symbol": "Main"
+        }
+      ],
+      "links": [
+        {
+          "label": "README",
+          "path": "games/hand-of-the-isle/README.md"
+        }
+      ]
+    }
+  ]
+}
