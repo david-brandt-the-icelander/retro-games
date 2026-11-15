@@ -117,6 +117,47 @@ func fine(amount: int, why: String) -> void:
 	debt += amount
 	say("DEBT +$%d  %s" % [amount, why])
 
+## How many more of this item the open jobs still lack.
+func still_needed(item: String) -> int:
+	var n := 0
+	for j in jobs:
+		n += missing(j).get(item, 0)
+	return n
+
+const SNIDE := [
+	"%s: \"On the tab? Your tab has its own tab, Jim.\"",
+	"%s: \"Sure. I'll put it next to your IOU from the Packers parade.\"",
+	"%s: \"Credit. Bold move for a man in shorts.\"",
+	"%s: \"Fine. But I'm telling everybody at the Rusty Muskie.\"",
+	"%s: \"I'll write it down. In pen. Big letters.\"",
+	"%s: \"Take it. Your wallet's clearly on vacation.\"",
+]
+
+## Buy one item at a store. With the cash, it's a normal sale. Short of cash, a part an open job
+## still needs goes on the tab: the cash goes first, the rest is added to debt, and the keeper
+## gets a snide remark in. Anything else needs cash. Returns true if Jim got the item.
+func buy(store: String, item: String) -> bool:
+	var keeper: String = Data.STORES[store].keeper
+	var pr := price(store, item)
+	var name: String = Data.ITEMS[item][0]
+	if cash >= pr:
+		cash -= pr
+		add_item(item)
+		advance(2)
+		say("Bought %s for $%d." % [name, pr])
+		return true
+	if still_needed(item) > 0:
+		var short := pr - cash
+		cash = 0
+		debt += short
+		add_item(item)
+		advance(2)
+		say("Bought %s on the tab: $%d added to your debt." % [name, short])
+		say(SNIDE[rng.randi_range(0, SNIDE.size() - 1)] % keeper)
+		return true
+	say("%s: \"You don't need that for any job, Jim. Extras are cash only.\"" % keeper)
+	return false
+
 ## Pay off as much debt as the cash covers. Returns what was paid.
 func pay_debt() -> int:
 	var paid := mini(cash, debt)

@@ -170,7 +170,7 @@ func _needed(item: String) -> int:
 func open_store(store: String) -> void:
 	var s: Dictionary = Data.STORES[store]
 	var greet := ["%s: \"Jim! What'd they break this time?\"" % s.keeper,
-		"%s: \"Ope, there he is.\"" % s.keeper, "%s: \"Cash only, Jim. Always has been.\"" % s.keeper]
+		"%s: \"Ope, there he is.\"" % s.keeper, "%s: \"Need it, or just want it, Jim? Wants are cash.\"" % s.keeper]
 	Game.say(greet[Game.rng.randi_range(0, 2)])
 	var _b := func() -> Array:
 		_store_actions = []
@@ -180,6 +180,8 @@ func open_store(store: String) -> void:
 			var row := "BUY  %-20s $%-4d have %d" % [Data.ITEMS[item][0], pr, Game.have(item)]
 			if _needed(item) > 0:
 				row += "   need %d" % _needed(item)
+			if Game.cash < pr and Game.still_needed(item) > 0:
+				row += "   ON THE TAB"
 			if Game.sales.has("%s:%s" % [store, item]):
 				row += "   SALE -%d%%" % int(Game.sales["%s:%s" % [store, item]] * 100)
 			rows.append(row)
@@ -196,13 +198,7 @@ func open_store(store: String) -> void:
 		if a[0] == "leave":
 			return false
 		if a[0] == "buy":
-			if Game.cash < a[2]:
-				Game.say("%s: \"Short on cash, Jim. Hit the bank.\"" % s.keeper)
-			else:
-				Game.cash -= a[2]
-				Game.add_item(a[1])
-				Game.advance(2)
-				Game.say("Bought %s for $%d." % [Data.ITEMS[a[1]][0], a[2]])
+			Game.buy(store, a[1])
 		else:
 			Game.cash += a[2]
 			Game.add_item(a[1], -1)

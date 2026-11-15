@@ -79,6 +79,31 @@ func _ready() -> void:
 	check(Game.pay_debt() == 20 and Game.cash == 80 and Game.debt == 0, "paying debt clears it")
 	Game.cash = 100
 	check(Game.pay_rent() == Data.SHOP_RENT - 100 and Game.cash == 0 and Game.debt == Data.SHOP_RENT - 100, "rent the cash can't cover becomes debt")
+	# short of cash, a part the open job still needs goes on the tab with a snide remark;
+	# anything else is cash only
+	Game.jobs = [Game.make_job()]
+	var need_item: String = Game.jobs[0].tpl.mats.keys()[0]
+	var spare := "jerky" if not Game.jobs[0].tpl.mats.has("jerky") else "fence"
+	var shop := ""
+	for st in Data.STORES:
+		if Data.STORES[st].stock.has(need_item):
+			shop = st
+	Game.inventory.erase(need_item)
+	Game.cash = 0
+	Game.debt = 0
+	check(Game.buy(shop, need_item) and Game.have(need_item) == 1 and Game.debt == Game.price(shop, need_item) and Game.cash == 0,
+		"a needed part you can't afford goes on the tab (debt $%d)" % Game.debt)
+	Game.cash = 0
+	var debt_before := Game.debt
+	check(not Game.buy("farm", spare) and Game.debt == debt_before and Game.have(spare) == 0,
+		"an unneeded item you can't afford is refused")
+	Game.cash = 3
+	Game.inventory.erase(need_item)
+	debt_before = Game.debt
+	Game.buy(shop, need_item)
+	check(Game.cash == 0 and Game.debt == debt_before + Game.price(shop, need_item) - 3, "the cash goes first, the rest goes on the tab")
+	Game.jobs.clear()
+	Game.inventory.clear()
 	Game.cash = 500
 	Game.debt = 0
 	# drive: red light / pedestrian / trash can

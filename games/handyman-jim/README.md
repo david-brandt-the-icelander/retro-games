@@ -35,7 +35,8 @@ still moves the story on. Every menu also ends with a Leave (or Done) row.
   (`audio/voice.wav`, provenance in `audio/CREDITS.md`). The ring and the horn are synthesised in
   `scripts/sfx.gd`.
 - **Cash and debt.** Jim pays for parts, gas, brats and curds in cash, and customers always pay
-  cash. Fines, tickets, damages, bail and tows never take his cash: they go on his **debt**, which he
+  cash. Short of cash, he can still buy a part the current job needs: the cash goes first, the rest
+  goes on his debt, and the shopkeeper gets a snide remark in. Anything else is cash only. Fines, tickets, damages, bail and tows never take his cash: they go on his **debt**, which he
   pays down at First Dairyland Bank (open 9 AM to 5 PM) or at the police desk. Monday's $250 rent
   comes out of cash, and whatever the cash can't cover goes on the debt too.
 - **Driving.** Rolling into a driveway or parking lot stops the van. The camera is zoomed out so you can see the road ahead, and the corner minimap

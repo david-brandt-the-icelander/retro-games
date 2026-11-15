@@ -164,7 +164,7 @@ static func person(ci: CanvasItem, feet: Vector2, s: float, shirt: Color, pants:
 		outline(ci, dome, OUT, INK)
 		rrect(ci, Rect2(hc.x + (2.0 if f > 0 else -12.0) * s, hc.y - 5.5 * s, 10 * s, 2.4 * s), hat.darkened(0.15), 1.2 * s)
 
-const BLOND := Color("f2d16b")
+const BLOND := Color("ffe11a")         # bright yellow hair
 
 const JIM_SKIN := Color("ffdcc4")     # fair, a little sunburnt
 const SHORTS := Color("4f7fc4")       # faded denim
