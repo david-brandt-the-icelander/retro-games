@@ -31,22 +31,22 @@ Strength drains all the time, from 1.5 a second at rest to 5 a second at full sp
 
 Every catch scores points, more for bigger or more darkly funny prey. A cleared file adds a bonus of 500 × the file number plus 10 per point of strength left. The score carries through a run of files and ends when the shark fails, after the last file, or with End run.
 
-| Prey | Points | Where |
-|---|---|---|
-| Reef fish | 10 | Everywhere, in schools |
-| Squid | 20 | Schools |
-| Cod, haddock | 25 | Schools; the trawler's net is full of them |
-| Salmon | 40 | Schools |
-| Whale | 100 a bite, up to 6 | File 4 |
-| Seal | 120 | Near the surface |
-| Seagull | 150 | Above the waves; only by breaching |
-| Manta ray | 150 | Mid-water |
-| Dolphin | 200 | Pods of two or three; they flee and leap |
-| Puffin | 200 | Above the waves; only by breaching |
-| Swimmer | 250 | At the surface; they panic and draw attention |
-| Scuba diver | 300 | Now and then, deep |
-| Greenlandic kayaker | 400 | At the surface, in a qajaq |
-| Polar bear | 500 | Swimming at the surface; swipes back |
+| Prey | Points | Strength | Where |
+|---|---|---|---|
+| Reef fish | 10 | 10 | Everywhere, in schools |
+| Squid | 20 | 16 | Schools |
+| Cod, haddock | 25 | 14 | Schools; the trawler's net is full of them |
+| Salmon | 40 | 18 | Schools |
+| Whale | 100 a bite, up to 6 | 25 a bite | File 4 |
+| Seal | 120 | 28 | Near the surface |
+| Seagull | 150 | 12 | Above the waves; only by breaching |
+| Manta ray | 150 | 32 | Mid-water |
+| Dolphin | 200 | 30 | Pods of two or three; they flee and leap |
+| Puffin | 200 | 12 | Above the waves; only by breaching |
+| Swimmer | 250 | 45 | At the surface; they panic and draw attention |
+| Scuba diver | 300 | 45 | Now and then, deep |
+| Greenlandic kayaker | 400 | 50 | At the surface, in a qajaq |
+| Polar bear | 500 | 45 | Swimming at the surface; swipes back |
 
 Visitors wander in over time and leave again; swimmers and kayaks keep clear of boats. Sabotage scores too: buoys, ships, the sub, drums, turrets and drones.
 
