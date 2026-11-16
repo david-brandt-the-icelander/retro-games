@@ -409,6 +409,8 @@ func _start_side_turn(side: String) -> void:
 	arty_mode = false
 	_refresh_arty()
 	if side == player_side and not autotest:
+		if turn == 1 and not ui.help_visible():
+			ui.toggle_help()
 		ui.show_banner("Turn %d — Your move" % turn)
 		ui.log_msg("[b]— Turn %d: US Army —[/b]" % turn)
 		busy = false
@@ -724,6 +726,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			_deselect()
 	elif event is InputEventKey and event.pressed and not event.echo:
 		var k := event as InputEventKey
+		if k.keycode == KEY_F1 or k.keycode == KEY_H or (k.keycode == KEY_ESCAPE and ui.help_visible()):
+			ui.toggle_help()
+			return
+		if ui.help_visible():
+			return
 		match k.keycode:
 			KEY_ENTER, KEY_KP_ENTER:
 				_on_end_turn()
