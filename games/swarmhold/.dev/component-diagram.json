@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Swarmhold component diagram",
+  "folder": "games/swarmhold",
+  "description": "Swarmhold, a rescue game for the browser. The client is a Godot 4 project exported to WebAssembly and started by a small script in the page; its Worker only puts the page behind icelander.net's sign-in and joins the split engine file. Everything else, the city, the ants and the rules, runs in the browser.",
+  "sources": [
+    {
+      "path": "games/swarmhold/README.md",
+      "symbol": "How it works"
+    },
+    {
+      "path": "games/swarmhold/wrangler.jsonc",
+      "symbol": "swarmhold"
+    },
+    {
+      "path": "games/swarmhold/build.mjs",
+      "symbol": "SITE"
+    },
+    {
+      "path": "games/swarmhold/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/swarmhold/web/boot.js",
+      "symbol": "Engine"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Swarmhold",
+      "responsibility": "One game: the Godot client, the page's files and the Worker, built by build.mjs and deployed together with wrangler.",
+      "folder": "games/swarmhold"
+    },
+    {
+      "id": "client",
+      "name": "Godot client",
+      "responsibility": "The game itself: the generated city, the player, the hostage, the ants, grenades, effects, camera and HUD.",
+      "folder": "games/swarmhold/godot",
+      "diagram": "games/swarmhold/godot/.dev/component-diagram.json"
+    },
+    {
+      "id": "page",
+      "name": "Page",
+      "responsibility": "web/: boot.js starts the engine behind a loading screen (shell.css); _headers sets the Content-Security-Policy.",
+      "folder": "games/swarmhold/web"
+    },
+    {
+      "id": "worker",
+      "name": "Swarmhold Worker",
+      "responsibility": "worker/index.ts: the page behind icelander.net's sign-in (games:play), the split engine .wasm joined into one file, and every other path as a static asset.",
+      "folder": "games/swarmhold/worker"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Who is signed in to icelander.net and their games: roles, asked through a service binding.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "client",
+      "kind": "contains",
+      "description": "Exported by Godot (build.mjs) into dist/games/retro/swarmhold/."
+    },
+    {
+      "from": "game",
+      "to": "page",
+      "kind": "contains",
+      "description": "Copied into the export by build.mjs."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Deployed with wrangler."
+    },
+    {
+      "from": "page",
+      "to": "client",
+      "kind": "depends-on",
+      "description": "Starts the Godot engine with the export's configuration."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Service binding ACCOUNTS, through vendor/icelander-auth: who is signed in, on every request for the page."
+    }
+  ]
+}

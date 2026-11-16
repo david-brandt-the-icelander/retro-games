@@ -3,7 +3,7 @@
   "kind": "component",
   "title": "Retro games component diagram",
   "folder": "games",
-  "description": "The games folder groups eight independent games. Five are browser games, each its own npm project with its own Cloudflare Worker: four have an engine, a page and a replay-checked high-score table, and Gambit is a Godot client whose Worker handles sign-in, games and history. LodeStar is a desktop game, a Rust workspace presented by Godot, with no server. MEG is a browser game served by a Worker behind the sign-in, with its high scores kept on each device, and Hedgerow is a single-player Godot client whose Worker only serves it behind the sign-in. They share no code at build time, and three carry identical copies of the online module.",
+  "description": "The games folder groups eight independent games. Five are browser games, each its own npm project with its own Cloudflare Worker: four have an engine, a page and a replay-checked high-score table, and Gambit is a Godot client whose Worker handles sign-in, games and history. LodeStar is a desktop game, a Rust workspace presented by Godot, with no server. MEG is a browser game served by a Worker behind the sign-in, with its high scores kept on each device, Hedgerow is a single-player Godot client whose Worker only serves it behind the sign-in, and Swarmhold is another. They share no code at build time, and three carry identical copies of the online module.",
   "sources": [
     {
       "path": "README.md",
@@ -85,6 +85,13 @@
       "responsibility": "Snake made new in Godot: a glowing snake that glides, combos and bonus stars, on a board that fits any window.",
       "folder": "games/snake",
       "diagram": "games/snake/.dev/component-diagram.json"
+    },
+    {
+      "id": "swarmhold",
+      "name": "Swarmhold",
+      "responsibility": "An original single-player rescue game in Godot: lead the last person out of a walled desert city overrun by giant ants; everything runs in the browser.",
+      "folder": "games/swarmhold",
+      "diagram": "games/swarmhold/.dev/component-diagram.json"
     },
     {
       "id": "lodestar",
@@ -185,6 +192,12 @@
       "to": "snake",
       "kind": "contains",
       "description": "Neon Snake is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "swarmhold",
+      "kind": "contains",
+      "description": "Swarmhold is one of the games."
     }
   ]
 }
