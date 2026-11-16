@@ -5,6 +5,7 @@
 **Evidence (Gambit):** `games/chess/worker/index.ts` (`default.fetch`: the page needs a sign-in to icelander.net with the `games:play` role), `games/chess/worker/auth.ts` (`currentUser`: Gambit's own player record, keyed by address), `games/chess/worker/api.ts` (`handleApi`: an invitation is answered by the player signed in with the address it was sent to), `games/chess/godot/scripts/main.gd` (`Main._lobby`, `Main._setup`, `Main._history`)
 **Evidence (Samosa):** `games/dictator/worker/index.ts` (`AUTH`, `gamePage`: the page and the score API need a sign-in to icelander.net with the `games:play` role), `games/dictator/src/main.ts` (`title`, `io`, `offerTable`), `games/dictator/src/scores.ts` (`defaultName`)
 **Evidence (Hivestorm):** `games/hivestorm/worker/index.ts` (`AUTH`, `gamePage`: the same sign-in and role), `games/hivestorm/src/ui/input.ts` (`Controls`), `games/hivestorm/src/main.ts` (`step`, `joinMatch`, `offerTable`)
+**Evidence (Deep Claim):** `games/deep-claim/worker/index.ts` (`gamePage`: the page needs a sign-in to icelander.net with the `games:play` role), `games/deep-claim/godot/scripts/main.gd` (`Main._update_playing`)
 **Evidence (Shatterbelt):** `games/shatterbelt/worker/index.ts` (`AUTH`, `gamePage`: Shatterbelt's page and score API need the same sign-in and role), `games/shatterbelt/src/main.ts` (`launch`, `joinMatch`), `games/shatterbelt/src/input.ts` (`Input.controls`: one pilot per browser)
 
 ## What they want from the system
