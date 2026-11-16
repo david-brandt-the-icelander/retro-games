@@ -3,7 +3,7 @@
   "kind": "deployment",
   "title": "retro-games deployment diagram",
   "folder": ".",
-  "description": "Where every game runs: five Workers on icelander.net, each with its own D1 database, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
+  "description": "Where every game runs: six Workers on icelander.net, five with their own D1 database, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
   "sources": [
     {
       "path": "games/rally/wrangler.jsonc",
@@ -23,6 +23,10 @@
     },
     {
       "path": "games/chess/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
+      "path": "games/meg/wrangler.jsonc",
       "symbol": "routes"
     },
     {
@@ -114,6 +118,12 @@
       "name": "D1 chess",
       "kind": "database",
       "description": "Gambit's database (games/chess/worker/schema.sql)."
+    },
+    {
+      "id": "w-meg",
+      "name": "meg Worker",
+      "kind": "process",
+      "description": "MEG's Worker on icelander.net/games/retro/meg*, with no database; its own deployment diagram is in games/meg/.dev."
     },
     {
       "id": "rooms",
@@ -232,6 +242,20 @@
       "source": "games/lodestar/export_presets.cfg",
       "deployedTo": "desktop",
       "description": "The Godot export with the Rust sim as a GDExtension; not deployed by the workflows."
+    },
+    {
+      "id": "site-meg",
+      "name": "MEG's page and game",
+      "source": "games/meg/public/meg.js",
+      "deployedTo": "edge",
+      "description": "Copied into dist/ and served as static assets."
+    },
+    {
+      "id": "script-meg",
+      "name": "MEG's Worker script",
+      "source": "games/meg/worker/index.ts",
+      "deployedTo": "w-meg",
+      "description": "Bundled by wrangler deploy."
     }
   ],
   "relationships": [
@@ -354,6 +378,18 @@
       "to": "edge",
       "kind": "connects-to",
       "description": "wrangler deploy, with CLOUDFLARE_API_TOKEN."
+    },
+    {
+      "from": "edge",
+      "to": "w-meg",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/meg*."
+    },
+    {
+      "from": "w-meg",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
     }
   ]
 }
