@@ -15,6 +15,7 @@ Take and hold **two of the three objectives** (St. Aubin Church, Hill 112, Ferme
 | Left click | Select a unit · move to a highlighted hex · fire at a red-ringed enemy |
 | Right click / Esc | Cancel |
 | Tab | Next unit that can still act |
+| F1 or H | Help: the controls and the basics |
 | F | Artillery: three 105mm fire missions, one per turn at most |
 | Enter | End turn |
 | WASD / arrows, Q / E, wheel | Pan, rotate, zoom (middle drag orbits; Shift+middle drag pans) |

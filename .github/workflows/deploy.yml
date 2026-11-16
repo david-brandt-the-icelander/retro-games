@@ -15,7 +15,7 @@ on:
       game:
         description: Which game to deploy
         type: choice
-        options: [all, chess, dictator, hedgerow, hivestorm, meg, rally, rampart, shatterbelt, snake, thrustbound]
+        options: [all, chess, dictator, double-cross, hedgerow, hivestorm, meg, rally, rampart, shatterbelt, snake, swarmhold, thrustbound]
         default: all
       migration_applied:
         description: Production's database has been migrated for every change being deployed (docs/database-migrations.md)

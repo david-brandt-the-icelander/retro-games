@@ -40,6 +40,10 @@
     {
       "path": "games/hedgerow/wrangler.jsonc",
       "symbol": "routes"
+    },
+    {
+      "path": "games/swarmhold/wrangler.jsonc",
+      "symbol": "routes"
     }
   ],
   "nodes": [
@@ -142,6 +146,12 @@
       "description": "Hedgerow's Worker on icelander.net/games/retro/hedgerow*, with no database; its own deployment diagram is in games/hedgerow/.dev."
     },
     {
+      "id": "w-swarmhold",
+      "name": "swarmhold Worker",
+      "kind": "process",
+      "description": "Swarmhold's Worker on icelander.net/games/retro/swarmhold*, with no database; its own deployment diagram is in games/swarmhold/.dev."
+    },
+    {
       "id": "rooms",
       "name": "GameRoom Durable Objects",
       "kind": "process",
@@ -172,6 +182,12 @@
       "name": "GitHub Actions runner",
       "kind": "host",
       "description": "Runs the Deploy workflow, which deploys each changed game."
+    },
+    {
+      "id": "w-double-cross",
+      "name": "double-cross Worker",
+      "kind": "process",
+      "description": "Double Cross's Worker on icelander.net/games/retro/double-cross*; its own deployment diagram is in games/double-cross/.dev."
     }
   ],
   "artifacts": [
@@ -299,6 +315,34 @@
       "name": "MEG's Worker script",
       "source": "games/meg/worker/index.ts",
       "deployedTo": "w-meg",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-swarmhold",
+      "name": "Swarmhold's page and game",
+      "source": "games/swarmhold/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-swarmhold",
+      "name": "Swarmhold's Worker script",
+      "source": "games/swarmhold/worker/index.ts",
+      "deployedTo": "w-swarmhold",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-double-cross",
+      "name": "Double Cross's page and game",
+      "source": "games/double-cross/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-double-cross",
+      "name": "Double Cross's Worker script",
+      "source": "games/double-cross/worker/index.ts",
+      "deployedTo": "w-double-cross",
       "description": "Bundled by wrangler deploy."
     }
   ],
@@ -455,6 +499,30 @@
     },
     {
       "from": "w-meg",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-swarmhold",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/swarmhold*."
+    },
+    {
+      "from": "w-swarmhold",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-double-cross",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/double-cross*."
+    },
+    {
+      "from": "w-double-cross",
       "to": "accounts",
       "kind": "connects-to",
       "description": "Service binding ACCOUNTS: the page needs a signed-in player."
