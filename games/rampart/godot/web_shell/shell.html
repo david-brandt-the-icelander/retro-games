@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Rampart</title>
+  <meta name="description" content="An isometric fortress-run shooter: thread the walls, mind your altitude, destroy the Warden.">
+  <meta name="theme-color" content="#05070d">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="shell.css">
+  <script id="godot-config" type="application/json">$GODOT_CONFIG</script>
+  $GODOT_HEAD_INCLUDE
+</head>
+<body>
+  <canvas id="canvas" tabindex="0">Your browser does not support the canvas element.</canvas>
+  <div id="status" role="status">
+    <p class="eyebrow">ASSAULT ON THE ORBITAL CITADEL</p>
+    <h1>RAMPART</h1>
+    <div class="bar"><div id="bar-fill"></div></div>
+    <p id="notice"></p>
+    <p class="hint">Best with a keyboard or gamepad</p>
+  </div>
+  <noscript>Rampart needs JavaScript.</noscript>
+  <script src="$GODOT_URL"></script>
+  <script src="boot.js"></script>
+  <script src="/games/play.js" data-game="rampart" defer></script>
+</body>
+</html>

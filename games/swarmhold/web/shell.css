@@ -1,0 +1,15 @@
+/* The page around the game: a full-window canvas, and a loading screen in the game's desert colours. */
+html, body { margin: 0; height: 100%; background: #1c140c; overflow: hidden; touch-action: none; }
+#canvas { display: block; width: 100vw; height: 100vh; outline: none; }
+#status {
+  position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 35%, #8a6440 0%, #3a2716 55%, #1c140c 100%); color: #fbecd2;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif; transition: opacity 0.6s ease;
+}
+#status.done { opacity: 0; pointer-events: none; }
+#status h1 { font-weight: 800; font-size: 76px; margin: 6px 0 28px; letter-spacing: 1px; text-shadow: 0 3px 0 #3a2210; }
+#status .eyebrow { font: 700 12px/1 system-ui, sans-serif; letter-spacing: 3px; color: #ffc46a; margin: 0; }
+.bar { width: 220px; height: 3px; background: rgba(255, 255, 255, 0.15); border-radius: 2px; overflow: hidden; }
+#bar-fill { width: 0; height: 100%; background: #ffc46a; transition: width 0.2s; }
+#notice { font: 15px/1.4 system-ui, sans-serif; color: #ff8a6a; max-width: 480px; text-align: center; min-height: 1em; }
+#status.failed .bar { display: none; }

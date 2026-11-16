@@ -1,0 +1,87 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Net session",
+  "folder": "games/double-cross/godot/scripts",
+  "description": "A browser's session: from the menu, through the briefing room, into matches and back.",
+  "sources": [
+    {
+      "path": "games/double-cross/godot/scripts/net.gd",
+      "symbol": "transport"
+    },
+    {
+      "path": "games/double-cross/godot/scripts/net.gd",
+      "symbol": "in_game"
+    }
+  ],
+  "states": [
+    {
+      "id": "menu",
+      "description": "No session (transport is empty)."
+    },
+    {
+      "id": "connecting",
+      "description": "The relay or the ENet host hasn't answered yet."
+    },
+    {
+      "id": "briefing",
+      "description": "In a session, choosing map, mode, team or spectating."
+    },
+    {
+      "id": "match",
+      "description": "in_game is true; a Game is running."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "menu",
+      "to": "connecting",
+      "trigger": "join_match / join",
+      "action": "Opened with ?match=ID, or Join game."
+    },
+    {
+      "from": "menu",
+      "to": "briefing",
+      "trigger": "host / solo",
+      "action": "Host a game, or practise alone."
+    },
+    {
+      "from": "connecting",
+      "to": "briefing",
+      "trigger": "welcome / connected",
+      "action": "The relay welcomes this browser, or the host registers it."
+    },
+    {
+      "from": "connecting",
+      "to": "menu",
+      "trigger": "refused / closed",
+      "action": "The match is missing or not this player's; the reason is shown."
+    },
+    {
+      "from": "briefing",
+      "to": "match",
+      "trigger": "_start",
+      "action": "The host starts the mission."
+    },
+    {
+      "from": "match",
+      "to": "briefing",
+      "trigger": "_lobby / local_return_to_lobby",
+      "action": "The host returns everyone, or the host left and the others go back."
+    },
+    {
+      "from": "briefing",
+      "to": "menu",
+      "trigger": "leave / connection lost",
+      "action": "Leave, or the session ends."
+    },
+    {
+      "from": "match",
+      "to": "menu",
+      "trigger": "connection lost",
+      "action": "The relay or host goes away."
+    }
+  ],
+  "machine": "Net",
+  "initialState": "menu"
+}

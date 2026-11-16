@@ -50,7 +50,7 @@ func setup(tid: String, at_hex: Vector2i, pos: Vector3, yaw: float) -> void:
 	label = Label3D.new()
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.font_size = 36
-	label.pixel_size = 0.0035
+	label.pixel_size = 0.0044
 	label.outline_size = 10
 	label.no_depth_test = true
 	label.position = Vector3(0, 0.95 if is_vehicle() else 0.72, 0)

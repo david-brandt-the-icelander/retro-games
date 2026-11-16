@@ -1,0 +1,59 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Rampart component diagram",
+  "folder": "games/rampart",
+  "description": "Rampart: a Godot game exported for the web, a small boot script that starts it, and a Worker that serves it to signed-in players.",
+  "sources": [
+    { "path": "games/rampart/wrangler.jsonc", "symbol": "rampart" },
+    { "path": "games/rampart/worker/index.ts", "symbol": "default.fetch" },
+    { "path": "games/rampart/godot/scripts/main.gd", "symbol": "_ready" },
+    { "path": "games/rampart/web/boot.ts", "symbol": "startGame" }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Rampart",
+      "responsibility": "One game: the Godot client, its page and its Worker, built and deployed together.",
+      "folder": "games/rampart"
+    },
+    {
+      "id": "godot",
+      "name": "Godot game",
+      "responsibility": "The whole game: level streaming, ship, enemies, the Warden, HUD, procedural meshes, shaders and synthesised sound (godot/scripts, godot/shaders).",
+      "folder": "games/rampart/godot"
+    },
+    {
+      "id": "web",
+      "name": "Page shell",
+      "responsibility": "The export's HTML shell (godot/web_shell/shell.html), its stylesheet, favicon, headers, and boot.ts, which starts the engine with a progress bar.",
+      "folder": "games/rampart/web"
+    },
+    {
+      "id": "worker",
+      "name": "Worker",
+      "responsibility": "Serves the page to signed-in players, joins the engine's parts into index.wasm, and serves every other file as a static asset.",
+      "folder": "games/rampart/worker"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Who holds the site's cookie and their games: roles.",
+      "external": true
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in on this host and play time (/games/play.js).",
+      "external": true
+    }
+  ],
+  "relationships": [
+    { "from": "game", "to": "godot", "kind": "contains", "description": "Exported by build.mjs into dist/games/retro/rampart/." },
+    { "from": "game", "to": "web", "kind": "contains", "description": "Copied and bundled into dist/ by build.mjs." },
+    { "from": "game", "to": "worker", "kind": "contains", "description": "Deployed with wrangler." },
+    { "from": "web", "to": "godot", "kind": "depends-on", "description": "new Engine(config).startGame() with progress." },
+    { "from": "web", "to": "hub", "kind": "depends-on", "description": "Loads /games/play.js for play time." },
+    { "from": "worker", "to": "accounts", "kind": "depends-on", "description": "Checks the sign-in for the game's page." }
+  ]
+}

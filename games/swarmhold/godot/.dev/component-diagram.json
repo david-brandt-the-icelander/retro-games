@@ -1,0 +1,95 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Swarmhold Godot client component diagram",
+  "folder": "games/swarmhold/godot",
+  "description": "The Godot client. main.gd is the controller: it sets up the light and sky, builds each level, runs the timer, spawns ants, resolves explosions and moves the camera. city.gd generates the city and answers grid and path questions for the actors; the player, hostage, ants and grenades each have their own script.",
+  "sources": [
+    {
+      "path": "games/swarmhold/godot/scripts/main.gd",
+      "symbol": "_build_level"
+    },
+    {
+      "path": "games/swarmhold/godot/scripts/city.gd",
+      "symbol": "generate"
+    },
+    {
+      "path": "games/swarmhold/godot/scripts/ant.gd",
+      "symbol": "_best_neighbor"
+    },
+    {
+      "path": "games/swarmhold/godot/scripts/hostage.gd",
+      "symbol": "start_following"
+    }
+  ],
+  "components": [
+    {
+      "id": "main",
+      "name": "Game controller",
+      "responsibility": "scripts/main.gd: input actions, lighting and sky, levels, the timer, ant spawning, explosions, score, the camera, and the autotest.",
+      "folder": "games/swarmhold/godot/scripts"
+    },
+    {
+      "id": "city",
+      "name": "City",
+      "responsibility": "scripts/city.gd: generates the walled city, places the hostage and the nests, answers grid questions, computes the path fields the ants follow, and builds the blocks, collision and baked ground shading.",
+      "folder": "games/swarmhold/godot/scripts"
+    },
+    {
+      "id": "actors",
+      "name": "Actors",
+      "responsibility": "scripts/player.gd, hostage.gd, ant.gd and grenade.gd: the player's movement and throwing, the hostage following footsteps, the ants' pathing, climbing and biting, and the grenade's fuse.",
+      "folder": "games/swarmhold/godot/scripts"
+    },
+    {
+      "id": "models",
+      "name": "Models and effects",
+      "responsibility": "scripts/humanoid.gd, meshes.gd and fx.gd: the people and their walk cycle, bevelled blocks and materials, explosions, smoke, debris, scorch marks and dust.",
+      "folder": "games/swarmhold/godot/scripts"
+    },
+    {
+      "id": "hud",
+      "name": "HUD",
+      "responsibility": "scripts/hud.gd: health bars, timer, score, messages, the title screen and the damage vignette.",
+      "folder": "games/swarmhold/godot/scripts"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "main",
+      "to": "city",
+      "kind": "depends-on",
+      "description": "Generates and builds each level; refreshes the ants' path field towards the player."
+    },
+    {
+      "from": "main",
+      "to": "actors",
+      "kind": "depends-on",
+      "description": "Creates the player, hostage, ants and grenades and checks rescue and exit."
+    },
+    {
+      "from": "actors",
+      "to": "city",
+      "kind": "depends-on",
+      "description": "Ants follow the path field and climb by the grid's heights; the aim arc lands on the city's surface."
+    },
+    {
+      "from": "actors",
+      "to": "models",
+      "kind": "depends-on",
+      "description": "People are built by humanoid.gd; blocks and materials by meshes.gd."
+    },
+    {
+      "from": "main",
+      "to": "models",
+      "kind": "depends-on",
+      "description": "Explosions and dust from fx.gd."
+    },
+    {
+      "from": "main",
+      "to": "hud",
+      "kind": "depends-on",
+      "description": "Shows health, time, score and messages."
+    }
+  ]
+}

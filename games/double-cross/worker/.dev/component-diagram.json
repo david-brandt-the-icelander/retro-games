@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Double Cross Worker",
+  "folder": "games/double-cross/worker",
+  "description": "One fetch handler in front of the static assets.",
+  "sources": [
+    {
+      "path": "games/double-cross/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/double-cross/worker/index.ts",
+      "symbol": "joinedWasm"
+    }
+  ],
+  "components": [
+    {
+      "id": "fetch",
+      "name": "fetch",
+      "responsibility": "Routes: the address without its slash moves to it, the page needs a sign-in, the engine is joined, everything else is an asset.",
+      "folder": "games/double-cross/worker"
+    },
+    {
+      "id": "wasm",
+      "name": "joinedWasm",
+      "responsibility": "Streams index.wasm.0, .1, … back as one file.",
+      "folder": "games/double-cross/worker"
+    },
+    {
+      "id": "auth",
+      "name": "icelander-auth",
+      "responsibility": "The shared sign-in library, vendored.",
+      "external": true
+    },
+    {
+      "id": "assets",
+      "name": "Static assets",
+      "responsibility": "The build in ./dist.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "fetch",
+      "to": "auth",
+      "kind": "depends-on",
+      "description": "requireRole(games:play) for the page."
+    },
+    {
+      "from": "fetch",
+      "to": "wasm",
+      "kind": "depends-on",
+      "description": "For index.wasm."
+    },
+    {
+      "from": "fetch",
+      "to": "assets",
+      "kind": "depends-on",
+      "description": "Everything else."
+    },
+    {
+      "from": "wasm",
+      "to": "assets",
+      "kind": "depends-on",
+      "description": "Reads the parts."
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   "kind": "component",
   "title": "Retro games component diagram",
   "folder": "games",
-  "description": "The games folder groups eight independent games. Five are browser games, each its own npm project with its own Cloudflare Worker: four have an engine, a page and a replay-checked high-score table, and Gambit is a Godot client whose Worker handles sign-in, games and history. LodeStar is a desktop game, a Rust workspace presented by Godot, with no server. MEG is a browser game served by a Worker behind the sign-in, with its high scores kept on each device, and Hedgerow is a single-player Godot client whose Worker only serves it behind the sign-in. They share no code at build time, and three carry identical copies of the online module.",
+  "description": "The games folder groups eight independent games. Five are browser games, each its own npm project with its own Cloudflare Worker: four have an engine, a page and a replay-checked high-score table, and Gambit is a Godot client whose Worker handles sign-in, games and history. LodeStar is a desktop game, a Rust workspace presented by Godot, with no server. MEG is a browser game served by a Worker behind the sign-in, with its high scores kept on each device, Hedgerow is a single-player Godot client whose Worker only serves it behind the sign-in, and Swarmhold is another. They share no code at build time, and three carry identical copies of the online module.",
   "sources": [
     {
       "path": "README.md",
@@ -87,6 +87,13 @@
       "diagram": "games/snake/.dev/component-diagram.json"
     },
     {
+      "id": "swarmhold",
+      "name": "Swarmhold",
+      "responsibility": "An original single-player rescue game in Godot: lead the last person out of a walled desert city overrun by giant ants; everything runs in the browser.",
+      "folder": "games/swarmhold",
+      "diagram": "games/swarmhold/.dev/component-diagram.json"
+    },
+    {
       "id": "lodestar",
       "name": "LodeStar",
       "responsibility": "A desktop space trading and combat game: deterministic rules in the Rust lodestar-core crate, presented in Godot 4.",
@@ -105,6 +112,13 @@
       "name": "Games hub",
       "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
       "external": true
+    },
+    {
+      "id": "double-cross",
+      "name": "Double Cross",
+      "responsibility": "A new spy-trap party game in Godot: search for intel, rig traps, reach the extraction door, alone or online with up to eight agents.",
+      "folder": "games/double-cross",
+      "diagram": "games/double-cross/.dev/component-diagram.json"
     }
   ],
   "relationships": [
@@ -185,6 +199,18 @@
       "to": "snake",
       "kind": "contains",
       "description": "Neon Snake is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "swarmhold",
+      "kind": "contains",
+      "description": "Swarmhold is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "double-cross",
+      "kind": "contains",
+      "description": "Double Cross is one of the games."
     }
   ]
 }

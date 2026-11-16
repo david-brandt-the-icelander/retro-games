@@ -1,0 +1,95 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "Deep Claim deployment diagram",
+  "folder": "games/deep-claim",
+  "description": "How Deep Claim runs: one Cloudflare Worker with static assets and no database. The browser runs the whole game.",
+  "sources": [
+    {
+      "path": "games/deep-claim/wrangler.jsonc",
+      "symbol": "deep-claim"
+    },
+    {
+      "path": "games/deep-claim/build.mjs",
+      "symbol": "SITE"
+    },
+    {
+      "path": "games/deep-claim/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "vendor/icelander-auth/index.js",
+      "symbol": "createAuth"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "browser",
+      "name": "Player's browser",
+      "kind": "client",
+      "description": "Runs the Godot engine (WebAssembly, WebGL 2) and the whole game; keeps the best haul in its own storage.",
+      "actor": "Actors/player.md"
+    },
+    {
+      "id": "edge",
+      "name": "Cloudflare edge",
+      "kind": "host",
+      "description": "Runs the Worker on icelander.net/games/retro/deep-claim*, ahead of the games hub's less specific route icelander.net/games/*."
+    },
+    {
+      "id": "worker",
+      "name": "deep-claim Worker",
+      "kind": "process",
+      "description": "worker/index.ts: the signed-in game page and the joined engine file; every other path is a static asset from ./dist."
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "accounts.icelander.net, in the icelander.net repository (accounts/): who holds the host's site_session cookie and their games: roles. The Worker reaches it only through a service binding."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "export",
+      "name": "Godot web export",
+      "source": "games/deep-claim/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "index.html, index.js, index.pck and the engine split into index.wasm.0 and index.wasm.1, served as static assets."
+    },
+    {
+      "id": "page",
+      "name": "Page files",
+      "source": "games/deep-claim/web/boot.js",
+      "deployedTo": "edge",
+      "description": "boot.js, shell.css, favicon.svg and _headers (a strict Content-Security-Policy), copied into dist/."
+    },
+    {
+      "id": "script",
+      "name": "Worker script",
+      "source": "games/deep-claim/worker/index.ts",
+      "deployedTo": "worker",
+      "description": "The fetch handler, bundled by wrangler with vendor/icelander-auth."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "edge",
+      "to": "worker",
+      "kind": "hosts",
+      "description": "Routes icelander.net/games/retro/deep-claim* to the Worker."
+    },
+    {
+      "from": "browser",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "HTTPS: the page, its assets and the engine."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS (entrypoint Internal): the game's page needs a signed-in player."
+    }
+  ]
+}

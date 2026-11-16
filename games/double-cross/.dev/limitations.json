@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/limitations.schema.json",
+  "kind": "limitations",
+  "title": "Double Cross limitations",
+  "folder": "games/double-cross",
+  "entities": [
+    {
+      "id": "host-leaves",
+      "title": "The match ends when the host leaves",
+      "summary": "Only the host's browser knows where the intel and traps are, so a match can't go on without it.",
+      "impact": "Everyone else is told the host left and goes back to the briefing room, where the next lowest slot hosts.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/scripts/game.gd",
+          "symbol": "_on_peer_left"
+        }
+      ]
+    },
+    {
+      "id": "keyboard-only",
+      "title": "No touch controls",
+      "summary": "The game is played with a keyboard and mouse, or a gamepad; phones and tablets can load it but not play it.",
+      "impact": "Players on phones can only watch the menus.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/scripts/main.gd",
+          "symbol": "_setup_input"
+        }
+      ]
+    },
+    {
+      "id": "no-sound",
+      "title": "No sound",
+      "summary": "The game has no audio yet.",
+      "impact": "Traps going off are only seen.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/scripts/fx.gd",
+          "symbol": "explosion"
+        }
+      ]
+    },
+    {
+      "id": "no-late-join",
+      "title": "No joining a match in progress",
+      "summary": "Someone who joins the relay during a match waits in the briefing room for the next one.",
+      "impact": "A late friend watches nothing until the match ends.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/scripts/net.gd",
+          "symbol": "_late_joiner"
+        }
+      ]
+    }
+  ]
+}
