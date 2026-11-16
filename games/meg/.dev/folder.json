@@ -8,20 +8,20 @@
       "id": "folder",
       "title": "MEG: The Current Remembers",
       "summary": "An original cartoon shark game for the browser, desktop and phone: the player is the last megalodon, eating fish and swimmers and hiding in a warm current from the Directorate across eight levels.",
-      "purpose": "Holds the whole game as one self-contained page, index.html, with its styles, HUD, touch controls, synthesized sound, vector cartoon drawing, levels, scoring, high-score table and menus inline.",
+      "purpose": "Holds the whole game: the page, its stylesheet and the game script in public/, the Worker that serves them behind the sign-in in worker/, and the tests in test/. It is one npm project and one Cloudflare Worker.",
       "boundaries": [
-        "It has no package.json, Worker, sign-in or high-score table, so it is not built, tested or deployed by the repository's workflows.",
-        "It loads three Google Fonts and keeps its progress in the browser's localStorage; nothing else leaves the page."
+        "The sign-in is icelander.net's; the Worker checks it with the shared library in vendor/icelander-auth/, never edited here.",
+        "Progress and high scores live in each player's browser (localStorage); the Worker keeps nothing. The page loads three Google Fonts and nothing else from outside."
       ],
       "evidenceStatus": "source-verified",
       "sources": [
         {
           "path": "games/meg/README.md",
-          "symbol": "Play"
+          "symbol": "Develop"
         },
         {
-          "path": "games/meg/index.html",
-          "symbol": "startLevel"
+          "path": "games/meg/wrangler.jsonc",
+          "symbol": "main"
         }
       ]
     }

@@ -5,20 +5,20 @@
   "folder": "games/meg",
   "entities": [
     {
-      "id": "publish-on-icelander",
-      "title": "Make MEG a game on icelander.net",
-      "summary": "Turn the static page into a game like the others: an npm project with a Worker that serves it under icelander.net/games/retro/meg behind the shared sign-in.",
+      "id": "shared-high-scores",
+      "title": "A shared, replay-checked high-score table for MEG",
+      "summary": "High scores stay in each player's browser. A table shared across players, like the other games', needs the server to replay each run.",
       "type": "feature",
       "acceptanceCriteria": [
-        "games/meg has a package.json, build, tests and wrangler.jsonc, so the deploy workflow builds and deploys it.",
-        "The Worker checks icelander.net's sign-in with vendor/icelander-auth/, as the other games' Workers do.",
-        "The root README lists MEG with its play link."
+        "The simulation draws random numbers only from a seeded generator and uses only + − × ÷ and Math.sqrt, as AGENTS.md requires of engines the server replays.",
+        "A Worker API issues seeds and accepts recordings, replays them and keeps the table in a D1 database, with its migration.",
+        "A public scores page, as the other games have."
       ],
       "origin": {
         "kind": "conversation",
         "by": "Owner",
-        "date": "2026-11-15",
-        "description": "The owner had MEG built in a Claude session and asked for it to be put in a folder in this repository."
+        "date": "2026-11-16",
+        "description": "The owner asked for MEG to be published on icelander.net; it went up with a per-device table."
       },
       "status": "open",
       "evidenceStatus": "proposed",
@@ -26,14 +26,6 @@
         {
           "path": "games/meg/README.md",
           "symbol": "Status"
-        }
-      ],
-      "relationships": [
-        {
-          "relation": "depends-on",
-          "path": "games/meg/.dev/decisions.json",
-          "entityId": "publish-meg",
-          "description": "Waits on this decision."
         }
       ]
     }

@@ -3,23 +3,45 @@
   "kind": "component",
   "title": "MEG component diagram",
   "folder": "games/meg",
-  "description": "MEG is one static page; the only things outside it are the fonts it loads and the browser storage it keeps progress in.",
+  "description": "MEG: the game is one static page run in the browser, served behind icelander.net's sign-in by a small Worker.",
   "sources": [
     {
-      "path": "games/meg/index.html",
+      "path": "games/meg/public/meg.js",
       "symbol": "showTitle"
     },
     {
-      "path": "games/meg/index.html",
+      "path": "games/meg/public/meg.js",
       "symbol": "store"
+    },
+    {
+      "path": "games/meg/worker/index.ts",
+      "symbol": "default.fetch"
     }
   ],
   "components": [
     {
       "id": "game",
-      "name": "MEG page",
-      "responsibility": "The whole game in index.html: input, simulation of the shark and the eight levels, canvas drawing, synthesized audio, HUD and menu screens.",
+      "name": "MEG",
+      "responsibility": "One game: the browser page and its Worker, built and deployed together.",
       "folder": "games/meg"
+    },
+    {
+      "id": "page",
+      "name": "Browser game",
+      "responsibility": "public/: the page, its stylesheet and meg.js, which holds input, the simulation of the shark and the eight files, canvas drawing, synthesized audio, the HUD and the menus.",
+      "folder": "games/meg/public"
+    },
+    {
+      "id": "worker",
+      "name": "Sign-in Worker",
+      "responsibility": "worker/index.ts: sends anyone signed out to sign in before serving the page; serves every other file as a static asset.",
+      "folder": "games/meg/worker"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Says who is signed in and with which games: roles.",
+      "external": true
     },
     {
       "id": "fonts",
@@ -37,12 +59,36 @@
   "relationships": [
     {
       "from": "game",
+      "to": "page",
+      "kind": "contains",
+      "description": "Copied by build.mjs into dist/."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Deployed with wrangler."
+    },
+    {
+      "from": "worker",
+      "to": "page",
+      "kind": "depends-on",
+      "description": "Serves the page and its files from the ASSETS binding."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Checks the site_session cookie through the ACCOUNTS service binding."
+    },
+    {
+      "from": "page",
       "to": "fonts",
       "kind": "depends-on",
       "description": "Loads the three fonts with a stylesheet link; falls back to system fonts without them."
     },
     {
-      "from": "game",
+      "from": "page",
       "to": "storage",
       "kind": "depends-on",
       "description": "Reads and writes meg.unlocked, meg.muted, meg.scores and meg.name, and plays on without them if storage is blocked."

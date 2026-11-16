@@ -6,43 +6,43 @@
   "description": "Which screen the game is on. The page runs one animation loop; the state decides whether the world is simulated, shown behind a menu, or frozen.",
   "sources": [
     {
-      "path": "games/meg/index.html",
+      "path": "games/meg/public/meg.js",
       "symbol": "showTitle"
     },
     {
-      "path": "games/meg/index.html",
+      "path": "games/meg/public/meg.js",
       "symbol": "brief"
     },
     {
-      "path": "games/meg/index.html",
+      "path": "games/meg/public/meg.js",
       "symbol": "startLevel"
     },
     {
-      "path": "games/meg/index.html",
+      "path": "games/meg/public/meg.js",
       "symbol": "clear"
     },
     {
-      "path": "games/meg/index.html",
+      "path": "games/meg/public/meg.js",
       "symbol": "fail"
     },
     {
-      "path": "games/meg/index.html",
+      "path": "games/meg/public/meg.js",
       "symbol": "pause"
     },
     {
-      "path": "games/meg/index.html",
+      "path": "games/meg/public/meg.js",
       "symbol": "resume"
     },
     {
-      "path": "games/meg/index.html",
+      "path": "games/meg/public/meg.js",
       "symbol": "quit"
     },
     {
-      "path": "games/meg/index.html",
+      "path": "games/meg/public/meg.js",
       "symbol": "showScores"
     }
   ],
-  "machine": "the state variable in index.html",
+  "machine": "the state variable in public/meg.js",
   "initialState": "title",
   "states": [
     {

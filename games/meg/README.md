@@ -6,7 +6,9 @@ MEG is not a remake: its story, characters and look are its own.
 
 ## Play
 
-Open `index.html` in a browser. It is one self-contained page: the game, its cartoon art (drawn as vector shapes on a canvas at the screen's full pixel density) and its synthesized sound are all inline. The only things it loads from outside are three Google Fonts (Lilita One, Nunito and Special Elite), and it falls back to system fonts without them.
+At [icelander.net/games/retro/meg](https://icelander.net/games/retro/meg/), signed in to icelander.net (the games are part of the site; the Worker checks the sign-in with `vendor/icelander-auth/`).
+
+The game is one page, `public/index.html`, with its stylesheet `public/meg.css` and one script, `public/meg.js`: the cartoon art is drawn as vector shapes on a canvas at the screen's full pixel density, and the sound is synthesized. The only things it loads from outside are three Google Fonts (Lilita One, Nunito and Special Elite), and it falls back to system fonts without them.
 
 ## Controls
 
@@ -73,9 +75,30 @@ Progress (the highest file reached), the sound setting, the high-score table and
 
 | Path | What it is |
 |---|---|
-| `index.html` | The whole game: styles, HUD and touch controls, then one script with the audio, input, entities, the eight levels, the simulation loop, drawing and the menu screens |
+| `public/index.html` | The page: the canvas, HUD, touch controls and menu overlay |
+| `public/meg.js` | The whole game: audio, input, entities, the eight files, the simulation loop, drawing, scoring and the menu screens |
+| `public/meg.css` | The page's styles |
+| `public/_headers` | The Content-Security-Policy and other headers: scripts and styles from this origin and Google Fonts only, nothing inline |
+| `worker/index.ts` | The Worker: sends anyone signed out to sign in before serving the page; everything else is a static asset |
+| `test/` | The sign-in, and checks that the page works under its Content-Security-Policy and that the script parses |
+| `build.mjs` | Copies `public/` into `dist/games/retro/meg/` as served, and builds the tests |
+| `wrangler.jsonc` | The Worker's route, `icelander.net/games/retro/meg*`, its assets and the login service binding |
 | `.dev/` | This folder's diagrams and knowledge files |
+
+## Develop
+
+```bash
+npm install
+npm test        # type-check, then the tests
+npm run build   # dist/, as served
+```
+
+To play a local copy, open `public/index.html` in a browser; the sign-in is only on icelander.net.
+
+## Deploy
+
+A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`), running the same steps as `npm run deploy`: the tests, the build and `wrangler deploy`. MEG has no database, so it has no migrations.
 
 ## Status
 
-MEG is not yet part of icelander.net. Unlike the other games it has no `package.json`, Worker, sign-in or high-score table, so the deploy workflow (`.github/scripts/changed-games.sh` lists only games with a `package.json`) leaves it alone. Whether and how to publish it is an open decision in `.dev/decisions.json`; the work it would take is in `.dev/backlog.json`.
+MEG is on icelander.net behind the sign-in. Its high-score table is kept on each device; a shared, replay-checked table is a backlog item in `.dev/backlog.json`, which first needs the simulation made deterministic.
