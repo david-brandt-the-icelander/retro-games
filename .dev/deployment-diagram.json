@@ -116,6 +116,12 @@
       "description": "Gambit's database (games/chess/worker/schema.sql)."
     },
     {
+      "id": "w-snake",
+      "name": "snake Worker",
+      "kind": "process",
+      "description": "Neon Snake's Worker on icelander.net/games/retro/snake*; its own deployment diagram is in games/snake/.dev."
+    },
+    {
       "id": "rooms",
       "name": "GameRoom Durable Objects",
       "kind": "process",
@@ -225,6 +231,20 @@
       "source": "games/chess/worker/room.ts",
       "deployedTo": "rooms",
       "description": "The Durable Object class exported by Gambit's Worker."
+    },
+    {
+      "id": "site-snake",
+      "name": "Neon Snake's page and game",
+      "source": "games/snake/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-snake",
+      "name": "Neon Snake's Worker script",
+      "source": "games/snake/worker/index.ts",
+      "deployedTo": "w-snake",
+      "description": "Bundled by wrangler deploy."
     },
     {
       "id": "lodestar",
@@ -348,6 +368,18 @@
       "to": "resend",
       "kind": "connects-to",
       "description": "HTTPS to Resend's API, for an invitation."
+    },
+    {
+      "from": "edge",
+      "to": "w-snake",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/snake*."
+    },
+    {
+      "from": "w-snake",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
     },
     {
       "from": "actions",

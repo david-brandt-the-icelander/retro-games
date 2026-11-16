@@ -40,7 +40,7 @@
     {
       "id": "games",
       "name": "Games",
-      "responsibility": "Rally, Shatterbelt, Hivestorm, Samosa and Gambit, played in the browser, and LodeStar, a desktop game.",
+      "responsibility": "Rally, Shatterbelt, Hivestorm, Samosa, Gambit and Neon Snake, played in the browser, and LodeStar, a desktop game.",
       "folder": "games",
       "diagram": "games/.dev/component-diagram.json"
     },

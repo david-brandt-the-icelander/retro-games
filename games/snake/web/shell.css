@@ -1,0 +1,14 @@
+/* The page around the game: a full-window canvas, and a loading screen in the game's colours. */
+html, body { margin: 0; height: 100%; background: #04050b; overflow: hidden; touch-action: none; }
+#canvas { display: block; width: 100vw; height: 100vh; outline: none; }
+#status {
+  position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 30% 30%, #0b2a36 0%, transparent 55%), radial-gradient(ellipse at 75% 70%, #2a0b36 0%, transparent 55%), #04050b;
+  color: #7ffbea; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; transition: opacity 0.6s ease;
+}
+#status.done { opacity: 0; pointer-events: none; }
+#status h1 { font-weight: 700; font-size: clamp(40px, 9vw, 76px); margin: 0 0 28px; letter-spacing: 1px; text-shadow: 0 0 24px rgba(63, 245, 221, 0.6); }
+.bar { width: 220px; height: 3px; background: rgba(255, 255, 255, 0.08); border-radius: 3px; overflow: hidden; }
+#bar-fill { width: 0; height: 100%; background: linear-gradient(90deg, #3ff5dd, #8a4dff); transition: width 0.2s; }
+#notice { font: 15px/1.4 system-ui, sans-serif; color: #ff6b8a; max-width: 480px; padding: 0 20px; text-align: center; min-height: 1em; }
+#status.failed .bar { display: none; }

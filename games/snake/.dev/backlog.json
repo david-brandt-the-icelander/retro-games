@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Neon Snake backlog",
+  "folder": "games/snake",
+  "entities": [
+    {
+      "id": "online-high-scores",
+      "title": "A high-score table on icelander.net/games",
+      "summary": "Every other arcade game has a server-checked high-score table on the multiplayer page; Neon Snake keeps only each player's own best, in their browser.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "A finished game can be submitted and the Worker replays it before recording the score, as Rally's does.",
+        "site/games.json in icelander.net gets a scores entry for the game."
+      ],
+      "origin": {
+        "kind": "code",
+        "reference": "games/snake/godot/scripts/main.gd",
+        "description": "_save_best writes user://neon_snake.cfg only."
+      },
+      "status": "open",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/snake/godot/scripts/main.gd",
+          "symbol": "_save_best"
+        },
+        {
+          "path": "games/rally/worker/index.ts",
+          "symbol": "submitScore"
+        }
+      ]
+    }
+  ]
+}
