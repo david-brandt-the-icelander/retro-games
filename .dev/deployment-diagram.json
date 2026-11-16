@@ -40,6 +40,10 @@
     {
       "path": "games/hedgerow/wrangler.jsonc",
       "symbol": "routes"
+    },
+    {
+      "path": "games/swarmhold/wrangler.jsonc",
+      "symbol": "routes"
     }
   ],
   "nodes": [
@@ -140,6 +144,12 @@
       "name": "hedgerow Worker",
       "kind": "process",
       "description": "Hedgerow's Worker on icelander.net/games/retro/hedgerow*, with no database; its own deployment diagram is in games/hedgerow/.dev."
+    },
+    {
+      "id": "w-swarmhold",
+      "name": "swarmhold Worker",
+      "kind": "process",
+      "description": "Swarmhold's Worker on icelander.net/games/retro/swarmhold*, with no database; its own deployment diagram is in games/swarmhold/.dev."
     },
     {
       "id": "rooms",
@@ -305,6 +315,20 @@
       "name": "MEG's Worker script",
       "source": "games/meg/worker/index.ts",
       "deployedTo": "w-meg",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-swarmhold",
+      "name": "Swarmhold's page and game",
+      "source": "games/swarmhold/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-swarmhold",
+      "name": "Swarmhold's Worker script",
+      "source": "games/swarmhold/worker/index.ts",
+      "deployedTo": "w-swarmhold",
       "description": "Bundled by wrangler deploy."
     },
     {
@@ -475,6 +499,18 @@
     },
     {
       "from": "w-meg",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-swarmhold",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/swarmhold*."
+    },
+    {
+      "from": "w-swarmhold",
       "to": "accounts",
       "kind": "connects-to",
       "description": "Service binding ACCOUNTS: the page needs a signed-in player."
