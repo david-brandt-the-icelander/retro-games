@@ -30,6 +30,10 @@
       "symbol": "routes"
     },
     {
+      "path": "games/neon-cycles/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
       "path": ".github/workflows/deploy.yml",
       "symbol": "jobs"
     },
@@ -124,6 +128,12 @@
       "name": "meg Worker",
       "kind": "process",
       "description": "MEG's Worker on icelander.net/games/retro/meg*, with no database; its own deployment diagram is in games/meg/.dev."
+    },
+    {
+      "id": "w-neon-cycles",
+      "name": "neon-cycles Worker",
+      "kind": "process",
+      "description": "Neon Cycles' Worker on icelander.net/games/retro/neon-cycles*, with no database; it joins the Godot engine from its parts. Its own deployment diagram is in games/neon-cycles/.dev."
     },
     {
       "id": "rooms",
@@ -256,6 +266,20 @@
       "source": "games/meg/worker/index.ts",
       "deployedTo": "w-meg",
       "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-neon-cycles",
+      "name": "Neon Cycles' Godot web export",
+      "source": "games/neon-cycles/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Exported by build.mjs into dist/, the engine split into parts under 25 MiB, and served as static assets."
+    },
+    {
+      "id": "script-neon-cycles",
+      "name": "Neon Cycles' Worker script",
+      "source": "games/neon-cycles/worker/index.ts",
+      "deployedTo": "w-neon-cycles",
+      "description": "Bundled by wrangler deploy."
     }
   ],
   "relationships": [
@@ -387,6 +411,18 @@
     },
     {
       "from": "w-meg",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-neon-cycles",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/neon-cycles*."
+    },
+    {
+      "from": "w-neon-cycles",
       "to": "accounts",
       "kind": "connects-to",
       "description": "Service binding ACCOUNTS: the page needs a signed-in player."
