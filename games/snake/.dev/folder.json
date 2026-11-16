@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Neon Snake",
+  "folder": "games/snake",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Neon Snake",
+      "summary": "Snake made new, in Godot 4 for the web: a glowing snake that glides between cells, combos for quick bites, timed bonus stars, and a board that fits any window.",
+      "purpose": "Holds the whole game: the Godot project in godot/, the page's boot script in bridge/, the Worker that checks the sign-in and serves the game in worker/, the page's styles and headers in web/, and the Worker's tests in test/. It is one npm project and one Cloudflare Worker.",
+      "boundaries": [
+        "There is no server-side game state: the best score lives in the player's browser (Godot's user://, IndexedDB on the web).",
+        "The sign-in is icelander.net's; the Worker checks it with the shared library in vendor/icelander-auth/, never edited here."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/snake/README.md",
+          "symbol": "Develop"
+        },
+        {
+          "path": "games/snake/wrangler.jsonc",
+          "symbol": "main"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/snake/.dev/component-diagram.json",
+          "label": "Component diagram"
+        },
+        {
+          "path": "games/snake/.dev/deployment-diagram.json",
+          "label": "Deployment diagram"
+        }
+      ]
+    }
+  ]
+}
