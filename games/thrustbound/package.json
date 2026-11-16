@@ -1,0 +1,22 @@
+{
+  "name": "thrustbound",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Thrustbound: an original jetpack arcade game in Godot 4 for the web. Assemble a rocket, fuel it and escape, level after level.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && node build.mjs",
+    "test": "tsc --noEmit && node build.mjs --test && node --no-warnings --test dist-test/*.test.mjs",
+    "test:godot": "godot --headless --path godot --import && godot --headless --path godot -- --selftest",
+    "dev": "node build.mjs && wrangler dev",
+    "deploy": "npm test && npm run test:godot && npm run build && wrangler deploy"
+  },
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "esbuild": "^0.25.12",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.158.0"
+  }
+}
