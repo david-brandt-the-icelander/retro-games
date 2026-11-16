@@ -1,0 +1,155 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Double Cross script classes",
+  "folder": "games/double-cross/godot/scripts",
+  "description": "The classes the scripts declare.",
+  "sources": [
+    {
+      "path": "games/double-cross/godot/scripts/game.gd",
+      "symbol": "Game"
+    },
+    {
+      "path": "games/double-cross/godot/scripts/player.gd",
+      "symbol": "Agent"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "Game",
+      "to": "Agent",
+      "kind": "depends-on",
+      "description": "agents"
+    },
+    {
+      "from": "Game",
+      "to": "WorldBuilder",
+      "kind": "depends-on",
+      "description": "builder"
+    },
+    {
+      "from": "Game",
+      "to": "HUD",
+      "kind": "depends-on",
+      "description": "hud"
+    },
+    {
+      "from": "Game",
+      "to": "SpectatorView",
+      "kind": "depends-on",
+      "description": "spectator"
+    },
+    {
+      "from": "HUD",
+      "to": "Minimap",
+      "kind": "depends-on",
+      "description": "minimap"
+    },
+    {
+      "from": "Game",
+      "to": "FX",
+      "kind": "depends-on",
+      "description": "plays effects"
+    }
+  ],
+  "types": [
+    {
+      "id": "Game",
+      "name": "Game",
+      "kind": "class",
+      "sources": [
+        "games/double-cross/godot/scripts/game.gd"
+      ],
+      "members": [
+        "var agents: Dictionary",
+        "var info: Dictionary",
+        "var furn_content: Array",
+        "var furn_trap: Array",
+        "var door_trap: Array",
+        "func start(cfg)",
+        "func rq_search(f)",
+        "func rq_trap(kind, idx, type)",
+        "func rq_attack()",
+        "func ev_died(id, cause, dropped)",
+        "func ev_game_over(text, team)"
+      ]
+    },
+    {
+      "id": "Agent",
+      "name": "Agent",
+      "kind": "class",
+      "sources": [
+        "games/double-cross/godot/scripts/player.gd"
+      ],
+      "members": [
+        "var peer_id: int",
+        "var team: int",
+        "var alive: bool",
+        "func net_state(pos, yaw, moving)",
+        "func apply_hit(from, strength, stun, slow)",
+        "func set_dead()"
+      ]
+    },
+    {
+      "id": "WorldBuilder",
+      "name": "WorldBuilder",
+      "kind": "class",
+      "sources": [
+        "games/double-cross/godot/scripts/world_builder.gd"
+      ],
+      "members": [
+        "func build(layout, parent)"
+      ]
+    },
+    {
+      "id": "HUD",
+      "name": "HUD",
+      "kind": "class",
+      "sources": [
+        "games/double-cross/godot/scripts/hud.gd"
+      ],
+      "members": [
+        "func refresh()",
+        "func feed(text, color)",
+        "func game_over(title, text, color)"
+      ]
+    },
+    {
+      "id": "Minimap",
+      "name": "Minimap",
+      "kind": "class",
+      "sources": [
+        "games/double-cross/godot/scripts/hud.gd"
+      ],
+      "members": [
+        "extends Control"
+      ]
+    },
+    {
+      "id": "SpectatorView",
+      "name": "SpectatorView",
+      "kind": "class",
+      "sources": [
+        "games/double-cross/godot/scripts/spectator.gd"
+      ],
+      "members": [
+        "func open()",
+        "func rebuild()",
+        "func cycle_focus()"
+      ]
+    },
+    {
+      "id": "FX",
+      "name": "FX",
+      "kind": "class",
+      "sources": [
+        "games/double-cross/godot/scripts/fx.gd"
+      ],
+      "members": [
+        "func explosion(parent, pos)",
+        "func gas(parent, pos)",
+        "func shock(parent, pos)"
+      ]
+    }
+  ]
+}

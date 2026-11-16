@@ -1,0 +1,79 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Neon Snake Godot client component diagram",
+  "folder": "games/snake/godot",
+  "description": "One scene, main.tscn, runs main.gd, which builds the background, board, glow layer, effects, camera and HUD in code and owns the rules. sfx.gd is its child. The web export runs in web_shell/shell.html.",
+  "sources": [
+    {
+      "path": "games/snake/godot/main.tscn",
+      "symbol": "Main"
+    },
+    {
+      "path": "games/snake/godot/scripts/main.gd",
+      "symbol": "_ready"
+    },
+    {
+      "path": "games/snake/godot/export_presets.cfg",
+      "symbol": "html/custom_html_shell"
+    }
+  ],
+  "components": [
+    {
+      "id": "client",
+      "name": "Godot client",
+      "responsibility": "Everything the engine runs.",
+      "folder": "games/snake/godot"
+    },
+    {
+      "id": "main",
+      "name": "main.gd",
+      "responsibility": "Rules (grid tick, growth, combos, bonus stars, deaths), drawing, layout for any window, input (keys, gamepad, swipes) and the best score.",
+      "folder": "games/snake/godot/scripts"
+    },
+    {
+      "id": "sfx",
+      "name": "sfx.gd",
+      "responsibility": "Sound effects synthesised into AudioStreamWAVs at start-up.",
+      "folder": "games/snake/godot/scripts"
+    },
+    {
+      "id": "background",
+      "name": "Background shader",
+      "responsibility": "The drifting aurora behind the board, pulsing when an orb is eaten.",
+      "folder": "games/snake/godot/shaders"
+    },
+    {
+      "id": "shell",
+      "name": "Web shell (shell.html)",
+      "responsibility": "The page the web export runs in: the canvas, the loading screen and boot.js.",
+      "folder": "games/snake/godot/web_shell"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "client",
+      "to": "main",
+      "kind": "contains",
+      "description": "The scene's script."
+    },
+    {
+      "from": "main",
+      "to": "sfx",
+      "kind": "depends-on",
+      "description": "play(name, pitch) on eating, dying, starting and pausing."
+    },
+    {
+      "from": "main",
+      "to": "background",
+      "kind": "depends-on",
+      "description": "A ShaderMaterial on the background layer; main.gd sets its pulse and resolution."
+    },
+    {
+      "from": "client",
+      "to": "shell",
+      "kind": "contains",
+      "description": "Used by the Web export preset."
+    }
+  ]
+}

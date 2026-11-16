@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Double Cross Godot project",
+  "folder": "games/double-cross/godot",
+  "description": "The Godot project: the scripts that make the game, the main scene that starts them, the web page shell and the tests.",
+  "sources": [
+    {
+      "path": "games/double-cross/godot/project.godot",
+      "symbol": "autoload"
+    },
+    {
+      "path": "games/double-cross/godot/scenes/main.tscn",
+      "symbol": "Main"
+    }
+  ],
+  "components": [
+    {
+      "id": "scripts",
+      "name": "Scripts",
+      "responsibility": "Menus, lobby, match, world, agents, HUD, spectator grid, effects and networking.",
+      "folder": "games/double-cross/godot/scripts",
+      "diagram": "games/double-cross/godot/scripts/.dev/component-diagram.json"
+    },
+    {
+      "id": "shell",
+      "name": "Web page shell",
+      "responsibility": "The HTML around the canvas, with the loading screen.",
+      "folder": "games/double-cross/godot/web_shell"
+    },
+    {
+      "id": "tests",
+      "name": "Godot tests",
+      "responsibility": "Maps over many seeds, and the message layer's rules.",
+      "folder": "games/double-cross/godot/tests"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "tests",
+      "to": "scripts",
+      "kind": "depends-on",
+      "description": "Load maps.gd and net.gd directly."
+    },
+    {
+      "from": "shell",
+      "to": "scripts",
+      "kind": "depends-on",
+      "description": "Hosts the exported game."
+    }
+  ]
+}

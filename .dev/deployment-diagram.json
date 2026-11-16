@@ -30,10 +30,6 @@
       "symbol": "routes"
     },
     {
-      "path": "games/neon-cycles/wrangler.jsonc",
-      "symbol": "routes"
-    },
-    {
       "path": ".github/workflows/deploy.yml",
       "symbol": "jobs"
     },
@@ -43,6 +39,14 @@
     },
     {
       "path": "games/hedgerow/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
+      "path": "games/swarmhold/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
+      "path": "games/neon-cycles/wrangler.jsonc",
       "symbol": "routes"
     }
   ],
@@ -128,22 +132,28 @@
       "description": "Gambit's database (games/chess/worker/schema.sql)."
     },
     {
+      "id": "w-snake",
+      "name": "snake Worker",
+      "kind": "process",
+      "description": "Neon Snake's Worker on icelander.net/games/retro/snake*; its own deployment diagram is in games/snake/.dev."
+    },
+    {
       "id": "w-meg",
       "name": "meg Worker",
       "kind": "process",
       "description": "MEG's Worker on icelander.net/games/retro/meg*, with no database; its own deployment diagram is in games/meg/.dev."
     },
     {
-      "id": "w-neon-cycles",
-      "name": "neon-cycles Worker",
-      "kind": "process",
-      "description": "Neon Cycles' Worker on icelander.net/games/retro/neon-cycles*, with no database; it joins the Godot engine from its parts. Its own deployment diagram is in games/neon-cycles/.dev."
-    },
-    {
       "id": "w-hedgerow",
       "name": "hedgerow Worker",
       "kind": "process",
       "description": "Hedgerow's Worker on icelander.net/games/retro/hedgerow*, with no database; its own deployment diagram is in games/hedgerow/.dev."
+    },
+    {
+      "id": "w-swarmhold",
+      "name": "swarmhold Worker",
+      "kind": "process",
+      "description": "Swarmhold's Worker on icelander.net/games/retro/swarmhold*, with no database; its own deployment diagram is in games/swarmhold/.dev."
     },
     {
       "id": "rooms",
@@ -176,6 +186,18 @@
       "name": "GitHub Actions runner",
       "kind": "host",
       "description": "Runs the Deploy workflow, which deploys each changed game."
+    },
+    {
+      "id": "w-double-cross",
+      "name": "double-cross Worker",
+      "kind": "process",
+      "description": "Double Cross's Worker on icelander.net/games/retro/double-cross*; its own deployment diagram is in games/double-cross/.dev."
+    },
+    {
+      "id": "w-neon-cycles",
+      "name": "neon-cycles Worker",
+      "kind": "process",
+      "description": "Neon Cycles' Worker on icelander.net/games/retro/neon-cycles*, with no database; it joins the Godot engine from its parts. Its own deployment diagram is in games/neon-cycles/.dev."
     }
   ],
   "artifacts": [
@@ -271,6 +293,20 @@
       "description": "The Durable Object class exported by Gambit's Worker."
     },
     {
+      "id": "site-snake",
+      "name": "Neon Snake's page and game",
+      "source": "games/snake/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-snake",
+      "name": "Neon Snake's Worker script",
+      "source": "games/snake/worker/index.ts",
+      "deployedTo": "w-snake",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
       "id": "lodestar",
       "name": "LodeStar desktop export",
       "source": "games/lodestar/export_presets.cfg",
@@ -289,6 +325,34 @@
       "name": "MEG's Worker script",
       "source": "games/meg/worker/index.ts",
       "deployedTo": "w-meg",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-swarmhold",
+      "name": "Swarmhold's page and game",
+      "source": "games/swarmhold/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-swarmhold",
+      "name": "Swarmhold's Worker script",
+      "source": "games/swarmhold/worker/index.ts",
+      "deployedTo": "w-swarmhold",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-double-cross",
+      "name": "Double Cross's page and game",
+      "source": "games/double-cross/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-double-cross",
+      "name": "Double Cross's Worker script",
+      "source": "games/double-cross/worker/index.ts",
+      "deployedTo": "w-double-cross",
       "description": "Bundled by wrangler deploy."
     },
     {
@@ -423,6 +487,18 @@
     },
     {
       "from": "edge",
+      "to": "w-snake",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/snake*."
+    },
+    {
+      "from": "w-snake",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
       "to": "w-hedgerow",
       "kind": "hosts",
       "description": "Route icelander.net/games/retro/hedgerow*."
@@ -447,6 +523,30 @@
     },
     {
       "from": "w-meg",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-swarmhold",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/swarmhold*."
+    },
+    {
+      "from": "w-swarmhold",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-double-cross",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/double-cross*."
+    },
+    {
+      "from": "w-double-cross",
       "to": "accounts",
       "kind": "connects-to",
       "description": "Service binding ACCOUNTS: the page needs a signed-in player."

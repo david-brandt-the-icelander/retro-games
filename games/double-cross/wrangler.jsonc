@@ -1,0 +1,21 @@
+// The Double Cross Worker at icelander.net/games/retro/double-cross: the static game (dist/), for anyone
+// signed in to icelander.net (worker/index.ts, through icelander.net's login service). Online matches
+// need nothing here: they run through the games hub's match relay (/games/multiplayer/match/ID).
+// No secrets, no database.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "double-cross",
+  "compatibility_date": "2025-01-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "icelander.net/games/retro/double-cross*", "zone_name": "icelander.net" }],
+  "main": "worker/index.ts",
+  // The Worker runs first for the page (sign-in) and the joined engine file; everything else is a static asset.
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": ["/games/retro/double-cross", "/games/retro/double-cross/", "/games/retro/double-cross/index.html", "/games/retro/double-cross/index.wasm"] },
+  // icelander.net's login service: who is signed in, through the site's cookie (icelander.net and its games are one sign-in).
+  "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
+  "vars": {
+    // The login service's public keys (icelander.net docs/accounts.md, "Keys").
+    "ACCOUNTS_JWKS": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"kid\":\"k2026a\",\"x\":\"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc\"}]}"
+  }
+}

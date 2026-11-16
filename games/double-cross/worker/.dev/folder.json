@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Double Cross Worker",
+  "folder": "games/double-cross/worker",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Worker",
+      "summary": "Serves the build at icelander.net/games/retro/double-cross.",
+      "purpose": "The page for signed-in players (games:play), the engine joined back from its parts, and the static files.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/worker/index.ts",
+          "symbol": "default.fetch"
+        }
+      ]
+    }
+  ]
+}
