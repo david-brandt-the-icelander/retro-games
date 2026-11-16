@@ -1,0 +1,24 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Rampart",
+  "folder": "games/rampart",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Rampart",
+      "summary": "An original isometric fortress-run shooter in Godot 4 for the browser: fly through a fortress at the right altitude, shoot fuel tanks to stay airborne, cross open space and destroy the Warden at the citadel.",
+      "purpose": "Holds the whole game: the Godot project in godot/ (procedural models, shaders and synthesised sound, no binary assets), the page around it in web/, the Worker that serves it behind icelander.net's sign-in in worker/, and the tests in test/ and scripts/smoke.sh. It is one npm project and one Cloudflare Worker.",
+      "boundaries": [
+        "No API and no database: the high score is kept in the player's browser (Godot's user://).",
+        "The sign-in is icelander.net's; the Worker checks it with the shared library in vendor/icelander-auth/, never edited here.",
+        "The games page's listing of Rampart lives in the icelander.net repository (site/games.json)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        { "path": "games/rampart/README.md", "symbol": "Rampart" },
+        { "path": "games/rampart/wrangler.jsonc", "symbol": "main" }
+      ]
+    }
+  ]
+}

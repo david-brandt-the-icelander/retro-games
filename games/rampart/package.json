@@ -1,0 +1,22 @@
+{
+  "name": "rampart",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rampart: an original isometric fortress-run shooter in Godot 4 for the web. Thread the walls, mind your altitude, destroy the Warden.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && node build.mjs",
+    "test": "tsc --noEmit && node build.mjs --test && node --no-warnings --test dist-test/*.test.mjs",
+    "test:godot": "scripts/smoke.sh",
+    "dev": "node build.mjs && wrangler dev",
+    "deploy": "npm test && npm run test:godot && npm run build && wrangler deploy"
+  },
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "esbuild": "^0.25.12",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.158.0"
+  }
+}
