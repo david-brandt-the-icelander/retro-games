@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Swarmhold Godot client",
+  "folder": "games/swarmhold/godot",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Swarmhold Godot client",
+      "summary": "The game in Godot 4.7 (GDScript, Compatibility renderer for WebGL 2): the generated walled city, the player, the hostage, the ants, grenades, effects, camera and HUD, all built in code without imported assets apart from the Montserrat font.",
+      "purpose": "Everything the player sees and plays. main.gd runs the game and owns the camera and spawning; the other scripts each own one part, as the component diagram shows. Run with -- --autotest it plays three levels through headless (rescue, ants, grenades, the exit) and quits with a failing status on any miss, which is the game's test (npm run test:godot).",
+      "boundaries": [
+        "Talks to nothing: no server API, no storage. The Worker only serves it.",
+        "web_shell/ is the page template for the export and is left out of the pack."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/swarmhold/godot/project.godot",
+          "symbol": "run/main_scene"
+        },
+        {
+          "path": "games/swarmhold/godot/scripts/main.gd",
+          "symbol": "_run_autotest"
+        }
+      ]
+    }
+  ]
+}
