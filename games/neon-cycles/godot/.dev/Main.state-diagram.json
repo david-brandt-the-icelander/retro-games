@@ -1,0 +1,126 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Neon Cycles round state diagram",
+  "folder": "games/neon-cycles/godot",
+  "description": "Where a match stands. main.gd's _physics_process acts on the state: it simulates the riders in every state but PAUSED, and starts a new round from several of them.",
+  "sources": [
+    {
+      "path": "games/neon-cycles/godot/scripts/main.gd",
+      "symbol": "State"
+    },
+    {
+      "path": "games/neon-cycles/godot/scripts/main.gd",
+      "symbol": "_physics_process"
+    },
+    {
+      "path": "games/neon-cycles/godot/scripts/main.gd",
+      "symbol": "_end_round"
+    },
+    {
+      "path": "games/neon-cycles/godot/scripts/main.gd",
+      "symbol": "_toggle_pause"
+    }
+  ],
+  "machine": "the _state variable in scripts/main.gd",
+  "initialState": "COUNTDOWN",
+  "states": [
+    {
+      "id": "COUNTDOWN",
+      "description": "3, 2, 1, GO over the four riders at their spawns; they start moving at GO."
+    },
+    {
+      "id": "PLAYING",
+      "description": "The riders move, turn and crash. After the player crashes, the camera follows a rider still racing."
+    },
+    {
+      "id": "ROUND_OVER",
+      "description": "One rider (or none) is left; the winner scores and the next round starts after three seconds."
+    },
+    {
+      "id": "MATCH_OVER",
+      "description": "A rider has won five rounds; the match waits for Enter."
+    },
+    {
+      "id": "PAUSED",
+      "description": "The tree is paused; the state before it is kept."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "COUNTDOWN",
+      "to": "PLAYING",
+      "trigger": "the countdown runs out"
+    },
+    {
+      "from": "PLAYING",
+      "to": "ROUND_OVER",
+      "trigger": "one rider or none is left, and nobody has five wins",
+      "action": "_end_round() scores the winner"
+    },
+    {
+      "from": "PLAYING",
+      "to": "MATCH_OVER",
+      "trigger": "the last rider left reaches five wins",
+      "action": "_end_round() scores the winner"
+    },
+    {
+      "from": "PLAYING",
+      "to": "COUNTDOWN",
+      "trigger": "Enter after the player has crashed, or R",
+      "action": "_start_round()"
+    },
+    {
+      "from": "ROUND_OVER",
+      "to": "COUNTDOWN",
+      "trigger": "three seconds, or Enter",
+      "action": "_start_round()"
+    },
+    {
+      "from": "MATCH_OVER",
+      "to": "COUNTDOWN",
+      "trigger": "Enter",
+      "action": "resets every score and starts round 1"
+    },
+    {
+      "from": "COUNTDOWN",
+      "to": "PAUSED",
+      "trigger": "Esc or P"
+    },
+    {
+      "from": "PLAYING",
+      "to": "PAUSED",
+      "trigger": "Esc or P"
+    },
+    {
+      "from": "PAUSED",
+      "to": "PLAYING",
+      "trigger": "Esc or P, when the game was playing"
+    },
+    {
+      "from": "PAUSED",
+      "to": "COUNTDOWN",
+      "trigger": "Esc or P, when the game was counting down"
+    },
+    {
+      "from": "ROUND_OVER",
+      "to": "PAUSED",
+      "trigger": "Esc or P"
+    },
+    {
+      "from": "PAUSED",
+      "to": "ROUND_OVER",
+      "trigger": "Esc or P, when the game was in ROUND_OVER"
+    },
+    {
+      "from": "MATCH_OVER",
+      "to": "PAUSED",
+      "trigger": "Esc or P"
+    },
+    {
+      "from": "PAUSED",
+      "to": "MATCH_OVER",
+      "trigger": "Esc or P, when the game was in MATCH_OVER"
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   "kind": "deployment",
   "title": "retro-games deployment diagram",
   "folder": ".",
-  "description": "Where every game runs: six Workers on icelander.net, five with their own D1 database and MEG with a Durable Object, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
+  "description": "Where every game runs: eight Workers on icelander.net, five with their own D1 database and MEG with a Durable Object, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
   "sources": [
     {
       "path": "games/rally/wrangler.jsonc",
@@ -36,6 +36,22 @@
     {
       "path": "games/lodestar/export_presets.cfg",
       "symbol": "preset.0"
+    },
+    {
+      "path": "games/hedgerow/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
+      "path": "games/swarmhold/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
+      "path": "games/neon-cycles/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
+      "path": "games/iron-haze/wrangler.jsonc",
+      "symbol": "iron-haze"
     }
   ],
   "nodes": [
@@ -120,10 +136,34 @@
       "description": "Gambit's database (games/chess/worker/schema.sql)."
     },
     {
+      "id": "w-snake",
+      "name": "snake Worker",
+      "kind": "process",
+      "description": "Neon Snake's Worker on icelander.net/games/retro/snake*; its own deployment diagram is in games/snake/.dev."
+    },
+    {
       "id": "w-meg",
       "name": "meg Worker",
       "kind": "process",
       "description": "MEG's Worker on icelander.net/games/retro/meg*; its high-score table is a Durable Object; its own deployment diagram is in games/meg/.dev."
+    },
+    {
+      "id": "w-hedgerow",
+      "name": "hedgerow Worker",
+      "kind": "process",
+      "description": "Hedgerow's Worker on icelander.net/games/retro/hedgerow*, with no database; its own deployment diagram is in games/hedgerow/.dev."
+    },
+    {
+      "id": "w-swarmhold",
+      "name": "swarmhold Worker",
+      "kind": "process",
+      "description": "Swarmhold's Worker on icelander.net/games/retro/swarmhold*, with no database; its own deployment diagram is in games/swarmhold/.dev."
+    },
+    {
+      "id": "w-iron-haze",
+      "name": "iron-haze Worker",
+      "kind": "process",
+      "description": "Iron Haze's Worker on icelander.net/games/fresh/iron-haze*, for holders of games:iron-haze only; no database. Its own deployment diagram is in games/iron-haze/.dev."
     },
     {
       "id": "rooms",
@@ -156,6 +196,18 @@
       "name": "GitHub Actions runner",
       "kind": "host",
       "description": "Runs the Deploy workflow, which deploys each changed game."
+    },
+    {
+      "id": "w-double-cross",
+      "name": "double-cross Worker",
+      "kind": "process",
+      "description": "Double Cross's Worker on icelander.net/games/retro/double-cross*; its own deployment diagram is in games/double-cross/.dev."
+    },
+    {
+      "id": "w-neon-cycles",
+      "name": "neon-cycles Worker",
+      "kind": "process",
+      "description": "Neon Cycles' Worker on icelander.net/games/retro/neon-cycles*, with no database; it joins the Godot engine from its parts. Its own deployment diagram is in games/neon-cycles/.dev."
     }
   ],
   "artifacts": [
@@ -230,11 +282,53 @@
       "description": "Bundled by wrangler deploy."
     },
     {
+      "id": "site-hedgerow",
+      "name": "Hedgerow's page and game",
+      "source": "games/hedgerow/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-hedgerow",
+      "name": "Hedgerow's Worker script",
+      "source": "games/hedgerow/worker/index.ts",
+      "deployedTo": "w-hedgerow",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-iron-haze",
+      "name": "Iron Haze landing page, web export and desktop downloads",
+      "source": "games/iron-haze/build.mjs",
+      "deployedTo": "edge",
+      "description": "dist/games/fresh/iron-haze/: the landing page, the Godot web export under play/ and the Windows, macOS and Linux zips under download/, the large files in 20 MiB parts."
+    },
+    {
+      "id": "script-iron-haze",
+      "name": "iron-haze Worker script",
+      "source": "games/iron-haze/worker/index.ts",
+      "deployedTo": "w-iron-haze",
+      "description": "Gates every file on games:iron-haze and joins the parted files."
+    },
+    {
       "id": "room",
       "name": "GameRoom",
       "source": "games/chess/worker/room.ts",
       "deployedTo": "rooms",
       "description": "The Durable Object class exported by Gambit's Worker."
+    },
+    {
+      "id": "site-snake",
+      "name": "Neon Snake's page and game",
+      "source": "games/snake/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-snake",
+      "name": "Neon Snake's Worker script",
+      "source": "games/snake/worker/index.ts",
+      "deployedTo": "w-snake",
+      "description": "Bundled by wrangler deploy."
     },
     {
       "id": "lodestar",
@@ -255,6 +349,48 @@
       "name": "MEG's Worker script",
       "source": "games/meg/worker/index.ts",
       "deployedTo": "w-meg",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-swarmhold",
+      "name": "Swarmhold's page and game",
+      "source": "games/swarmhold/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-swarmhold",
+      "name": "Swarmhold's Worker script",
+      "source": "games/swarmhold/worker/index.ts",
+      "deployedTo": "w-swarmhold",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-double-cross",
+      "name": "Double Cross's page and game",
+      "source": "games/double-cross/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-double-cross",
+      "name": "Double Cross's Worker script",
+      "source": "games/double-cross/worker/index.ts",
+      "deployedTo": "w-double-cross",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-neon-cycles",
+      "name": "Neon Cycles' Godot web export",
+      "source": "games/neon-cycles/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Exported by build.mjs into dist/, the engine split into parts under 25 MiB, and served as static assets."
+    },
+    {
+      "id": "script-neon-cycles",
+      "name": "Neon Cycles' Worker script",
+      "source": "games/neon-cycles/worker/index.ts",
+      "deployedTo": "w-neon-cycles",
       "description": "Bundled by wrangler deploy."
     }
   ],
@@ -374,6 +510,30 @@
       "description": "HTTPS to Resend's API, for an invitation."
     },
     {
+      "from": "edge",
+      "to": "w-snake",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/snake*."
+    },
+    {
+      "from": "w-snake",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-hedgerow",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/hedgerow*."
+    },
+    {
+      "from": "w-hedgerow",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
       "from": "actions",
       "to": "edge",
       "kind": "connects-to",
@@ -390,6 +550,54 @@
       "to": "accounts",
       "kind": "connects-to",
       "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-swarmhold",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/swarmhold*."
+    },
+    {
+      "from": "w-swarmhold",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-double-cross",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/double-cross*."
+    },
+    {
+      "from": "w-double-cross",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-neon-cycles",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/neon-cycles*."
+    },
+    {
+      "from": "w-neon-cycles",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-iron-haze",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/fresh/iron-haze*."
+    },
+    {
+      "from": "w-iron-haze",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: every file needs a signed-in player holding games:iron-haze."
     }
   ]
 }

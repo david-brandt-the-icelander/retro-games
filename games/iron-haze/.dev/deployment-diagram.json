@@ -1,0 +1,127 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "Iron Haze deployment diagram",
+  "folder": "games/iron-haze",
+  "description": "How Iron Haze runs: one Cloudflare Worker with static assets and no storage, on the route icelander.net/games/fresh/iron-haze*. The browser runs the Godot WebAssembly export; the desktop builds run on the player's computer. The engine's .wasm and the desktop zips are larger than Cloudflare's 25 MiB limit for a static file, so build.mjs stores them in 20 MiB parts and the Worker streams the parts back as one file.",
+  "sources": [
+    {
+      "path": "games/iron-haze/wrangler.jsonc",
+      "symbol": "iron-haze"
+    },
+    {
+      "path": "games/iron-haze/build.mjs",
+      "symbol": "PART"
+    },
+    {
+      "path": "games/iron-haze/worker/index.ts",
+      "symbol": "joined"
+    },
+    {
+      "path": "games/iron-haze/godot/export_presets.cfg",
+      "symbol": "preset.0"
+    },
+    {
+      "path": ".github/workflows/game.yml",
+      "symbol": "GODOT_GAMES"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "browser",
+      "name": "Player's browser",
+      "kind": "client",
+      "description": "Shows the landing page and runs the Godot WebAssembly export (WebGL 2, Compatibility renderer).",
+      "actor": "Actors/player.md"
+    },
+    {
+      "id": "desktop",
+      "name": "Player's computer",
+      "kind": "client",
+      "description": "Runs a desktop build (Windows, macOS or Linux; Forward+ renderer).",
+      "actor": "Actors/player.md",
+      "condition": "The player downloads a desktop build"
+    },
+    {
+      "id": "edge",
+      "name": "Cloudflare edge",
+      "kind": "host",
+      "description": "Runs the Worker on the route icelander.net/games/fresh/iron-haze* and holds the static assets from ./dist."
+    },
+    {
+      "id": "worker",
+      "name": "iron-haze Worker",
+      "kind": "process",
+      "description": "worker/index.ts, run first for every path (run_worker_first: true)."
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "In the icelander.net repository (accounts/): who holds the site_session cookie and their games: roles, asked on every request through a service binding."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "export",
+      "name": "play/index.html, index.js, index.pck, audio worklets",
+      "source": "games/iron-haze/godot/export_presets.cfg",
+      "deployedTo": "edge",
+      "description": "Godot's Web export (preset Web, release, no threads), with web_shell/shell.html as the page."
+    },
+    {
+      "id": "wasm",
+      "name": "play/index.wasm.0, .1",
+      "source": "games/iron-haze/build.mjs",
+      "deployedTo": "edge",
+      "description": "The engine's WebAssembly in 20 MiB parts, joined by the Worker for play/index.wasm."
+    },
+    {
+      "id": "downloads",
+      "name": "download/iron-haze-{windows,macos,linux}.zip.0, .1, …",
+      "source": "games/iron-haze/build.mjs",
+      "deployedTo": "edge",
+      "description": "The Windows, macOS (universal) and Linux exports, zipped and stored in 20 MiB parts; the Worker joins each as an attachment."
+    },
+    {
+      "id": "pages",
+      "name": "index.html, shell.css, boot.js, favicon.svg, screenshots, _headers",
+      "source": "games/iron-haze/web/index.html",
+      "deployedTo": "edge",
+      "description": "The landing page, the play page's stylesheet and boot script, the icon, three screenshots and the Content-Security-Policy."
+    },
+    {
+      "id": "script",
+      "name": "Worker script",
+      "source": "games/iron-haze/worker/index.ts",
+      "deployedTo": "worker",
+      "description": "The fetch handler and vendor/icelander-auth, bundled by wrangler."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "edge",
+      "to": "worker",
+      "kind": "hosts",
+      "description": "Routes icelander.net/games/fresh/iron-haze* to the Worker."
+    },
+    {
+      "from": "browser",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "HTTPS: the landing page, play/ and its joined index.wasm, and download/."
+    },
+    {
+      "from": "desktop",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "Only to download the build, through the browser; the game makes no network requests."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS (entrypoint Internal)."
+    }
+  ]
+}
