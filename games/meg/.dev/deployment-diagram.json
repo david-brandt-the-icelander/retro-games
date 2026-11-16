@@ -3,7 +3,7 @@
   "kind": "deployment",
   "title": "MEG deployment diagram",
   "folder": "games/meg",
-  "description": "How MEG runs: one Cloudflare Worker with static assets and no database. The browser runs the whole game and keeps progress and high scores itself; the Worker only checks the sign-in and serves the files.",
+  "description": "How MEG runs: one Cloudflare Worker with static assets and a Durable Object holding the shared high-score table. The browser runs the whole game; the Worker checks the sign-in, serves the files and keeps the table.",
   "sources": [
     {
       "path": "games/meg/wrangler.jsonc",
@@ -40,7 +40,13 @@
       "id": "worker",
       "name": "meg Worker",
       "kind": "process",
-      "description": "worker/index.ts: the sign-in check on the page; every other path is a static asset from ./dist."
+      "description": "worker/index.ts: the sign-in check on the page, the high-score API under api/ and the public scores page; every other path is a static asset from ./dist."
+    },
+    {
+      "id": "table",
+      "name": "ScoreTable Durable Object",
+      "kind": "database",
+      "description": "One SQLite-backed object holding run tickets and the best hundred scores; created by the scores-v1 migration in wrangler.jsonc."
     },
     {
       "id": "accounts",
@@ -82,7 +88,7 @@
       "from": "browser",
       "to": "worker",
       "kind": "connects-to",
-      "description": "HTTPS: the page and its assets."
+      "description": "HTTPS: the page, its assets and the API under api/."
     },
     {
       "from": "worker",
@@ -95,6 +101,12 @@
       "to": "fonts",
       "kind": "connects-to",
       "description": "HTTPS: the stylesheet and font files."
+    },
+    {
+      "from": "worker",
+      "to": "table",
+      "kind": "connects-to",
+      "description": "Durable Object binding SCORES."
     }
   ]
 }

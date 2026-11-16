@@ -855,19 +855,38 @@ function act(a,n){ if(a==='new'){run=null;brief(1)} else if(a==='cont'){run=null
  else if(a==='title')showTitle(); else if(a==='quit')quit(); else if(a==='resume')resume(); else if(a==='scores')showScores() }
 // ---------- high scores (kept in this browser) ----------
 const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// High scores: on icelander.net the shared table (worker/scores.ts), kept on the server; anywhere else
+// (a copy opened from disk) the table kept in this browser.
+const API=location.pathname.startsWith('/games/retro/meg/')?'/games/retro/meg/api':null;
 function hsList(){ const l=store.get('meg.scores',[]); return Array.isArray(l)?l.filter(e=>e&&typeof e.score==='number').slice(0,10):[] }
 function qualifies(n){ const l=hsList(); return n>0&&(l.length<10||n>l[l.length-1].score) }
-function hsTable(hi){ const l=hsList(); if(!l.length)return '<p class="lede">No scores yet. Go and eat something.</p>';
- return `<ol class="hs">${l.map((e,i)=>`<li class="${i===hi?'me':''}"><span class="r">${i+1}</span><span class="n">${esc(e.name)}</span><span class="f">File ${pad2(e.file)}</span><span class="p">${e.score.toLocaleString('en-US')}</span></li>`).join('')}</ol>` }
+function hsTable(hi,list=hsList()){ if(!list.length)return '<p class="lede">No scores yet. Go and eat something.</p>';
+ return `<ol class="hs">${list.map((e,i)=>`<li class="${i===hi?'me':''}"><span class="r">${i+1}</span><span class="n">${esc(e.name)}</span><span class="f">File ${pad2(e.file)}</span><span class="p">${e.score.toLocaleString('en-US')}</span></li>`).join('')}</ol>` }
+async function api(path,body){ const r=await fetch(API+path,body===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); if(!r.ok)throw new Error(String(r.status)); return r.json() }
+function saveLocal(entry){ const l=hsList(); l.push(entry); l.sort((a,b)=>b.score-a.score); const keep=l.slice(0,10); store.set('meg.scores',keep); return keep.indexOf(entry) }
 // end the current run: returns the high-score block for the screen that ends it
-function endRun(){ const r=run; run=null; if(!r||!qualifies(score))return ''; pendingHS={score,file:lv,date:new Date().toISOString().slice(0,10)};
- return `<form id="hsForm" class="hsform"><label for="hsName">New high score: ${score.toLocaleString('en-US')}. Your name</label><div class="row"><input id="hsName" maxlength="12" autocomplete="off" value="${esc(store.get('meg.name',''))}" placeholder="Name"><button class="cta" type="submit">Save score</button></div></form>` }
+function endRun(){ const r=run; run=null; if(!r||score<=0)return ''; const online=!!(API&&r.id);
+ if(!online&&!qualifies(score))return '';
+ pendingHS={score,file:lv,date:new Date().toISOString().slice(0,10),id:online?r.id:null};
+ return `<form id="hsForm" class="hsform"><label for="hsName">${online?`Score ${score.toLocaleString('en-US')}. Your name for the icelander.net high scores`:`New high score: ${score.toLocaleString('en-US')}. Your name`}</label><div class="row"><input id="hsName" maxlength="12" autocomplete="off" value="${esc(store.get('meg.name',''))}" placeholder="Name"><button class="cta" type="submit">Save score</button></div></form>` }
 let pendingHS=null;
-function wireHS(){ const f=$('hsForm'); if(!f)return; f.addEventListener('submit',e=>{ e.preventDefault(); if(!pendingHS)return;
- const name=($('hsName').value.trim()||'Anonymous').slice(0,12); store.set('meg.name',name); const l=hsList(); const entry=Object.assign({name},pendingHS); pendingHS=null;
- l.push(entry); l.sort((a,b)=>b.score-a.score); const keep=l.slice(0,10); store.set('meg.scores',keep);
- const box=document.createElement('div'); box.innerHTML=`<p class="kicker">HIGH SCORES</p>${hsTable(keep.indexOf(entry))}`; f.replaceWith(box); sfx.win() }) }
-function showScores(){ state='scores'; screen(`<div class="panel"><p class="kicker">THIS DEVICE</p><h1 class="h2">High scores</h1>${hsTable(-1)}<div class="row"><button class="cta" data-act="title">Back</button></div></div>`) }
+function wireHS(){ const f=$('hsForm'); if(!f)return; f.addEventListener('submit',async e=>{ e.preventDefault(); if(!pendingHS)return;
+ const name=($('hsName').value.trim()||'Anonymous').slice(0,12); store.set('meg.name',name); const p=pendingHS; pendingHS=null;
+ const entry={name,score:p.score,file:p.file,date:p.date}; const localAt=saveLocal(entry);
+ const btn=f.querySelector('button'); btn.disabled=true; btn.textContent='Saving…';
+ const box=document.createElement('div');
+ if(p.id){ try{ const res=await api('/score',{id:p.id,name,score:p.score,file:p.file}); const {scores}=await api('/scores');
+   const at=res.rank&&res.rank<=scores.length?res.rank-1:-1;
+   box.innerHTML=`<p class="kicker">ICELANDER.NET HIGH SCORES</p>${hsTable(at,scores)}${at<0?`<p class="keys">You placed ${res.rank?'number '+res.rank:'outside the top 100'}.</p>`:''}`; }
+  catch(err){ box.innerHTML=`<p class="kicker">SAVED ON THIS DEVICE</p><p class="keys">The icelander.net table could not take the score just now.</p>${hsTable(localAt)}` } }
+ else box.innerHTML=`<p class="kicker">HIGH SCORES</p>${hsTable(localAt)}`;
+ f.replaceWith(box); sfx.win() }) }
+function showScores(){ state='scores';
+ const page=(kicker,body)=>`<div class="panel"><p class="kicker">${kicker}</p><h1 class="h2">High scores</h1>${body}<div class="row"><button class="cta" data-act="title">Back</button></div></div>`;
+ if(!API)return screen(page('THIS DEVICE',hsTable(-1)));
+ screen(page('ICELANDER.NET','<p class="keys" id="hsLoad">Loading the table…</p>'));
+ api('/scores').then(({scores})=>{ if(state==='scores')screen(page('ICELANDER.NET',hsTable(-1,scores))) })
+  .catch(()=>{ if(state==='scores')screen(page('THIS DEVICE',`<p class="keys">The icelander.net table could not be reached; these are the scores kept on this device.</p>${hsTable(-1)}`)) }) }
 function quit(){ const hs=endRun(); if(!hs)return showTitle(); state='over'; hudShow(false);
  screen(`<div class="panel"><p class="kicker">RUN OVER</p><h1 class="h2">Score ${score.toLocaleString('en-US')}</h1>${hs}<div class="row"><button class="cta alt" data-act="title">All files</button></div></div>`); wireHS() }
 function showTitle(){ state='title'; hudShow(false); startDemo();
@@ -924,7 +943,7 @@ function startDemo(){ world={w:1400,h:360}; L={vents:[],prog:()=>''}; storm=fals
  school(400,190,12); school(800,230,12); boat(600,{light:true,speed:10}); swimmer(300); swimmer(900); follow(0,true) }
 let wl=null;
 async function wake(){ try{ if(navigator.wakeLock&&!wl){ wl=await navigator.wakeLock.request('screen'); wl.addEventListener('release',()=>{wl=null}) } }catch(e){} }
-function startLevel(n){ lv=n; if(!run){run={from:n};score=0} lvlScore0=score; const d=LEVELS[n-1]; L=Object.assign({},d); L.vents=[]; if(d.temp)L.temp=d.temp;
+function startLevel(n){ lv=n; if(!run){ const r=run={from:n}; score=0; if(API)api('/run',{}).then(j=>{ r.id=j.id }).catch(()=>{}) } lvlScore0=score; const d=LEVELS[n-1]; L=Object.assign({},d); L.vents=[]; if(d.temp)L.temp=d.temp;
  world={w:d.w,h:360}; storm=!!d.storm; boltT=3; ents=[]; parts=[]; hunt=0; shake=0; flashA=0; stats=freshStats(); S=newShark(SIZES[n-1]);
  L.setup(); for(let i=0;i<(L.swimmers||0);i++)swimmer(rnd(150,world.w-60)); follow(0,true); state='play'; screen(null); for(const k in hc)delete hc[k]; hudShow(true); banner(d.n.toUpperCase(),2); wake(); last=performance.now(); acc=0 }
 

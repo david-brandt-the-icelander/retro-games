@@ -3,7 +3,7 @@
   "kind": "deployment",
   "title": "retro-games deployment diagram",
   "folder": ".",
-  "description": "Where every game runs: eight Workers on icelander.net, five with their own D1 database, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
+  "description": "Where every game runs: eight Workers on icelander.net, five with their own D1 database and MEG with a Durable Object, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
   "sources": [
     {
       "path": "games/rally/wrangler.jsonc",
@@ -145,7 +145,7 @@
       "id": "w-meg",
       "name": "meg Worker",
       "kind": "process",
-      "description": "MEG's Worker on icelander.net/games/retro/meg*, with no database; its own deployment diagram is in games/meg/.dev."
+      "description": "MEG's Worker on icelander.net/games/retro/meg*; its high-score table is a Durable Object; its own deployment diagram is in games/meg/.dev."
     },
     {
       "id": "w-hedgerow",

@@ -5,27 +5,26 @@
   "folder": "games/meg",
   "entities": [
     {
-      "id": "shared-high-scores",
-      "title": "A shared, replay-checked high-score table for MEG",
-      "summary": "High scores stay in each player's browser. A table shared across players, like the other games', needs the server to replay each run.",
+      "id": "replay-checked-scores",
+      "title": "Replay-check MEG's scores like the other games",
+      "summary": "MEG's shared table trusts scores within checked limits (decisions.json, trusted-scores). Replaying each run on the server would make it cheat-proof.",
       "type": "feature",
       "acceptanceCriteria": [
         "The simulation draws random numbers only from a seeded generator and uses only + − × ÷ and Math.sqrt, as AGENTS.md requires of engines the server replays.",
-        "A Worker API issues seeds and accepts recordings, replays them and keeps the table in a D1 database, with its migration.",
-        "A public scores page, as the other games have."
+        "The run ticket carries the seed, the game records its controls, and the Worker replays the run and records the score the replay produces."
       ],
       "origin": {
         "kind": "conversation",
         "by": "Owner",
         "date": "2026-11-16",
-        "description": "The owner asked for MEG to be published on icelander.net; it went up with a per-device table."
+        "description": "The owner asked for a high-score list and chose trusted scores for now."
       },
       "status": "open",
       "evidenceStatus": "proposed",
       "sources": [
         {
-          "path": "games/meg/README.md",
-          "symbol": "Status"
+          "path": "games/meg/worker/scores.ts",
+          "symbol": "ScoreBook.submit"
         }
       ]
     }

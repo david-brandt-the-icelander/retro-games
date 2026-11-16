@@ -7,7 +7,7 @@
     {
       "id": "publish-meg",
       "title": "Whether and how to publish MEG",
-      "summary": "MEG is published on icelander.net behind the sign-in, without a shared high-score table.",
+      "summary": "MEG is published on icelander.net behind the sign-in, with a shared high-score table.",
       "status": "accepted",
       "context": "Every other game is deployed by the workflow behind icelander.net's sign-in, and most have a replay-checked high-score table. MEG's simulation uses Math.random and Math.sin, so a replay-checked table would first need a deterministic engine with a seeded generator, as AGENTS.md requires.",
       "options": [
@@ -35,10 +35,70 @@
           "symbol": "default.fetch"
         }
       ],
-      "decision": "Publish it on icelander.net behind the sign-in, without scores on the server: the high-score table stays on each device.",
-      "rationale": "The owner asked for the game to be published. A shared, replay-checked table would need the engine made deterministic first; that is left as a backlog item.",
+      "decision": "Publish it on icelander.net behind the sign-in, with a shared high-score table of trusted scores (trusted-scores).",
+      "rationale": "The owner asked for the game to be published, and then for a high-score list.",
       "decidedBy": "Owner",
       "decidedOn": "2026-11-16"
+    },
+    {
+      "id": "trusted-scores",
+      "title": "Trust MEG's scores from the browser, within checked limits",
+      "summary": "MEG's shared table takes the score the game sends; the server checks it is plausible but cannot replay the run.",
+      "status": "accepted",
+      "context": "AGENTS.md says the server replays every submitted game. MEG's simulation uses Math.random, trigonometry and Math.hypot throughout, so it cannot be replayed exactly without rewriting its physics and AI.",
+      "options": [
+        {
+          "title": "Trusted scores",
+          "consequences": "Hours of work. A ticket per run, used once, and a score the run's time could have earned; a determined cheater can still fake a plausible score."
+        },
+        {
+          "title": "Replay-checked",
+          "consequences": "Cheat-proof like the other games, but a large rewrite of the simulation that could change how the game feels."
+        },
+        {
+          "title": "No shared table",
+          "consequences": "Scores stay on each device."
+        }
+      ],
+      "decision": "Trusted scores, as an exception to the replay rule for this game only.",
+      "rationale": "The owner chose it when asking for a high-score list.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-16",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/meg/worker/scores.ts",
+          "symbol": "ScoreBook.submit"
+        }
+      ]
+    },
+    {
+      "id": "durable-object-table",
+      "title": "Keep MEG's table in a Durable Object, not a D1 database",
+      "summary": "The table lives in one SQLite-backed Durable Object, which a deploy creates, instead of a D1 database like the other games'.",
+      "status": "accepted",
+      "context": "A new D1 database has to be created and migrated by hand in Cloudflare before the deploy (docs/database-migrations.md), and the session that built the table had no Cloudflare credentials. A Durable Object class is created by the migration in wrangler.jsonc when the Worker deploys.",
+      "options": [
+        {
+          "title": "Durable Object",
+          "consequences": "Deploys with no hand step; one object holds the whole table, which is ample for a hundred rows."
+        },
+        {
+          "title": "D1 database",
+          "consequences": "Matches the other games; needs the database created and its schema applied by someone with Cloudflare access first."
+        }
+      ],
+      "decision": "Durable Object.",
+      "rationale": "It needs no step outside the deploy, and the table is small.",
+      "decidedBy": "Claude (coding agent)",
+      "decidedOn": "2026-11-16",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/meg/wrangler.jsonc",
+          "symbol": "durable_objects"
+        }
+      ]
     }
   ]
 }
