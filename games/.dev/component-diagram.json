@@ -80,6 +80,13 @@
       "diagram": "games/hedgerow/.dev/component-diagram.json"
     },
     {
+      "id": "snake",
+      "name": "Neon Snake",
+      "responsibility": "Snake made new in Godot: a glowing snake that glides, combos and bonus stars, on a board that fits any window.",
+      "folder": "games/snake",
+      "diagram": "games/snake/.dev/component-diagram.json"
+    },
+    {
       "id": "lodestar",
       "name": "LodeStar",
       "responsibility": "A desktop space trading and combat game: deterministic rules in the Rust lodestar-core crate, presented in Godot 4.",
@@ -172,6 +179,12 @@
       "to": "hub",
       "kind": "depends-on",
       "description": "The default table name comes from /me."
+    },
+    {
+      "from": "games",
+      "to": "snake",
+      "kind": "contains",
+      "description": "Neon Snake is one of the games."
     }
   ]
 }
