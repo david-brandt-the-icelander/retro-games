@@ -1,0 +1,48 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Double Cross backlog",
+  "folder": "games/double-cross",
+  "entities": [
+    {
+      "id": "sound",
+      "title": "Sound effects",
+      "summary": "Explosions, gas, shocks, punches, pickups and the extraction door.",
+      "status": "open",
+      "priority": "medium",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/scripts/fx.gd",
+          "symbol": "explosion"
+        }
+      ],
+      "type": "feature",
+      "origin": {
+        "kind": "code",
+        "reference": "games/double-cross/README.md",
+        "description": "Left out of the first web release; the README lists it under what's missing."
+      }
+    },
+    {
+      "id": "touch",
+      "title": "Touch controls",
+      "summary": "A thumb stick and action buttons, so the game plays on phones and tablets, as the site asks of its pages.",
+      "status": "open",
+      "priority": "medium",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/scripts/main.gd",
+          "symbol": "_setup_input"
+        }
+      ],
+      "type": "feature",
+      "origin": {
+        "kind": "code",
+        "reference": "games/double-cross/README.md",
+        "description": "Left out of the first web release; the README lists it under what's missing."
+      }
+    }
+  ]
+}
