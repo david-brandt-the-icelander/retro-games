@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "MEG backlog",
+  "folder": "games/meg",
+  "entities": [
+    {
+      "id": "shared-high-scores",
+      "title": "A shared, replay-checked high-score table for MEG",
+      "summary": "High scores stay in each player's browser. A table shared across players, like the other games', needs the server to replay each run.",
+      "type": "feature",
+      "acceptanceCriteria": [
+        "The simulation draws random numbers only from a seeded generator and uses only + − × ÷ and Math.sqrt, as AGENTS.md requires of engines the server replays.",
+        "A Worker API issues seeds and accepts recordings, replays them and keeps the table in a D1 database, with its migration.",
+        "A public scores page, as the other games have."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-16",
+        "description": "The owner asked for MEG to be published on icelander.net; it went up with a per-device table."
+      },
+      "status": "open",
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "games/meg/README.md",
+          "symbol": "Status"
+        }
+      ]
+    }
+  ]
+}

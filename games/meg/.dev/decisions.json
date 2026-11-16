@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "MEG decisions",
+  "folder": "games/meg",
+  "entities": [
+    {
+      "id": "publish-meg",
+      "title": "Whether and how to publish MEG",
+      "summary": "MEG is published on icelander.net behind the sign-in, without a shared high-score table.",
+      "status": "accepted",
+      "context": "Every other game is deployed by the workflow behind icelander.net's sign-in, and most have a replay-checked high-score table. MEG's simulation uses Math.random and Math.sin, so a replay-checked table would first need a deterministic engine with a seeded generator, as AGENTS.md requires.",
+      "options": [
+        {
+          "title": "Keep it as a static page in the repository",
+          "consequences": "Nothing more to do; it is played by opening index.html."
+        },
+        {
+          "title": "Publish it on icelander.net behind the sign-in, without scores",
+          "consequences": "Needs an npm project and a Worker that serves the page; the game itself is unchanged."
+        },
+        {
+          "title": "Publish it with a replay-checked high-score table",
+          "consequences": "Also needs the engine split out and made deterministic, a score definition, and a D1 database with a migration."
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/meg/wrangler.jsonc",
+          "symbol": "meg"
+        },
+        {
+          "path": "games/meg/worker/index.ts",
+          "symbol": "default.fetch"
+        }
+      ],
+      "decision": "Publish it on icelander.net behind the sign-in, without scores on the server: the high-score table stays on each device.",
+      "rationale": "The owner asked for the game to be published. A shared, replay-checked table would need the engine made deterministic first; that is left as a backlog item.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-16"
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   "kind": "component",
   "title": "Retro games component diagram",
   "folder": "games",
-  "description": "The games folder groups six independent games. Five are browser games, each its own npm project with its own Cloudflare Worker: four have an engine, a page and a replay-checked high-score table, and Gambit is a Godot client whose Worker handles sign-in, games and history. LodeStar is a desktop game, a Rust workspace presented by Godot, with no server. They share no code at build time, and three carry identical copies of the online module.",
+  "description": "The games folder groups seven independent games. Five are browser games, each its own npm project with its own Cloudflare Worker: four have an engine, a page and a replay-checked high-score table, and Gambit is a Godot client whose Worker handles sign-in, games and history. LodeStar is a desktop game, a Rust workspace presented by Godot, with no server. MEG is a browser game served by a Worker behind the sign-in, with its high scores kept on each device. They share no code at build time, and three carry identical copies of the online module.",
   "sources": [
     {
       "path": "README.md",
@@ -34,7 +34,7 @@
     {
       "id": "games",
       "name": "Retro games",
-      "responsibility": "The six games, side by side.",
+      "responsibility": "The seven games, side by side.",
       "folder": "games"
     },
     {
@@ -87,6 +87,13 @@
       "diagram": "games/lodestar/.dev/component-diagram.json"
     },
     {
+      "id": "meg",
+      "name": "MEG",
+      "responsibility": "An original cartoon shark game: the player is the last megalodon, hiding in a warm current from the Directorate.",
+      "folder": "games/meg",
+      "diagram": "games/meg/.dev/component-diagram.json"
+    },
+    {
       "id": "hub",
       "name": "Games hub",
       "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
@@ -129,6 +136,12 @@
       "to": "lodestar",
       "kind": "contains",
       "description": "LodeStar is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "meg",
+      "kind": "contains",
+      "description": "MEG is one of the games."
     },
     {
       "from": "rally",

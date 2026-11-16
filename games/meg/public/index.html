@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MEG: The Current Remembers</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&amp;family=Nunito:wght@600;800&amp;family=Special+Elite&amp;display=swap">
+<link rel="stylesheet" href="meg.css">
+</head>
+<body>
+
+<div id="stage">
+ <canvas id="c" width="256" height="144" aria-label="Game screen"></canvas>
+ <div id="hud" hidden>
+  <div class="meters">
+   <div class="m" id="mHun"><span>STRENGTH</span><i><b id="hHun"></b></i></div>
+   <div class="m"><span>EXPOSED</span><i><b id="hExp"></b></i></div>
+   <div class="m"><span>SPEED</span><i><b id="hSpd"></b></i></div>
+   <div class="m" id="mX" hidden><span>CURRENT</span><i><b id="hX"></b></i></div>
+  </div>
+  <div id="hObj"></div>
+  <div id="banner"></div>
+  <div id="hTimer" hidden></div>
+ </div>
+ <div id="padL" class="pad" hidden>
+  <button id="bCCW" class="btn turn" aria-label="Turn counterclockwise">↺</button>
+  <button id="bCW" class="btn turn" aria-label="Turn clockwise">↻</button>
+ </div>
+ <div id="padR" class="pad" hidden>
+  <button id="bSwim" class="btn" aria-label="Hold to swim faster">SWIM</button>
+ </div>
+ <div class="chips">
+  <button id="bPause" class="chip" hidden aria-label="Pause">PAUSE</button>
+  <button id="bMute" class="chip">SOUND ON</button>
+ </div>
+ <div id="screen" hidden></div>
+</div>
+
+<script src="meg.js"></script>
+</body>
+</html>
