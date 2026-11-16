@@ -3,7 +3,7 @@
   "kind": "deployment",
   "title": "retro-games deployment diagram",
   "folder": ".",
-  "description": "Where every game runs: six Workers on icelander.net, five with their own D1 database, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
+  "description": "Where every game runs: seven Workers on icelander.net, five with their own D1 database, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
   "sources": [
     {
       "path": "games/rally/wrangler.jsonc",
@@ -36,6 +36,10 @@
     {
       "path": "games/lodestar/export_presets.cfg",
       "symbol": "preset.0"
+    },
+    {
+      "path": "games/hedgerow/wrangler.jsonc",
+      "symbol": "routes"
     }
   ],
   "nodes": [
@@ -124,6 +128,12 @@
       "name": "meg Worker",
       "kind": "process",
       "description": "MEG's Worker on icelander.net/games/retro/meg*, with no database; its own deployment diagram is in games/meg/.dev."
+    },
+    {
+      "id": "w-hedgerow",
+      "name": "hedgerow Worker",
+      "kind": "process",
+      "description": "Hedgerow's Worker on icelander.net/games/retro/hedgerow*, with no database; its own deployment diagram is in games/hedgerow/.dev."
     },
     {
       "id": "rooms",
@@ -227,6 +237,20 @@
       "name": "Gambit's Worker script",
       "source": "games/chess/worker/index.ts",
       "deployedTo": "w-chess",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-hedgerow",
+      "name": "Hedgerow's page and game",
+      "source": "games/hedgerow/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-hedgerow",
+      "name": "Hedgerow's Worker script",
+      "source": "games/hedgerow/worker/index.ts",
+      "deployedTo": "w-hedgerow",
       "description": "Bundled by wrangler deploy."
     },
     {
@@ -372,6 +396,18 @@
       "to": "resend",
       "kind": "connects-to",
       "description": "HTTPS to Resend's API, for an invitation."
+    },
+    {
+      "from": "edge",
+      "to": "w-hedgerow",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/hedgerow*."
+    },
+    {
+      "from": "w-hedgerow",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
     },
     {
       "from": "actions",
