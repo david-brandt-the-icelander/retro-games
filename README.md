@@ -17,6 +17,7 @@ Each game needs a sign-in with Google or GitHub, icelander.net's one sign-in (th
 | Thrustbound: an original jetpack arcade game made in Godot 4. Find the rocket's parts, stack them on the pad, catch six fuel pods and lift off, while a new kind of alien arrives each level | [icelander.net/games/retro/thrustbound](https://icelander.net/games/retro/thrustbound/) (best score kept on each device) | [games/thrustbound](games/thrustbound) |
 | Neon Snake: Snake made new in Godot 4, with a glowing snake that glides between cells, combos for quick bites and timed bonus stars, on a board that fits any window | [icelander.net/games/retro/snake](https://icelander.net/games/retro/snake/) (best score kept on each device) | [games/snake](games/snake) |
 | Swarmhold: an original single-player rescue game in Godot 4. Get into a walled desert city overrun by giant ants, find the last person left inside and lead them out through a gate before time runs out, with grenades against the swarm | [icelander.net/games/retro/swarmhold](https://icelander.net/games/retro/swarmhold/) | [games/swarmhold](games/swarmhold) |
+| Double Cross: a new spy-trap party game made in Godot 4. Search furniture for intel, rig furniture and doorways with traps, and reach the extraction door, alone or online with up to eight agents each on their own computer, in last-agent-standing or co-op teams; the eliminated watch every survivor at once | [icelander.net/games/retro/double-cross](https://icelander.net/games/retro/double-cross/) | [games/double-cross](games/double-cross) |
 
 ## Deploying
 

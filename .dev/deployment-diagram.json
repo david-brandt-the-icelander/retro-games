@@ -182,6 +182,12 @@
       "name": "GitHub Actions runner",
       "kind": "host",
       "description": "Runs the Deploy workflow, which deploys each changed game."
+    },
+    {
+      "id": "w-double-cross",
+      "name": "double-cross Worker",
+      "kind": "process",
+      "description": "Double Cross's Worker on icelander.net/games/retro/double-cross*; its own deployment diagram is in games/double-cross/.dev."
     }
   ],
   "artifacts": [
@@ -323,6 +329,20 @@
       "name": "Swarmhold's Worker script",
       "source": "games/swarmhold/worker/index.ts",
       "deployedTo": "w-swarmhold",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-double-cross",
+      "name": "Double Cross's page and game",
+      "source": "games/double-cross/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-double-cross",
+      "name": "Double Cross's Worker script",
+      "source": "games/double-cross/worker/index.ts",
+      "deployedTo": "w-double-cross",
       "description": "Bundled by wrangler deploy."
     }
   ],
@@ -491,6 +511,18 @@
     },
     {
       "from": "w-swarmhold",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-double-cross",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/double-cross*."
+    },
+    {
+      "from": "w-double-cross",
       "to": "accounts",
       "kind": "connects-to",
       "description": "Service binding ACCOUNTS: the page needs a signed-in player."

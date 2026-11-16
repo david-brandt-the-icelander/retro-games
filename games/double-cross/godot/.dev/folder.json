@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Double Cross Godot project",
+  "folder": "games/double-cross/godot",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Godot project",
+      "summary": "The game itself: Godot 4.7 with the Compatibility renderer, exported for the web by build.mjs and runnable on the desktop.",
+      "purpose": "Everything the player sees and does: menus, the briefing room, the match, and the message layer between browsers.",
+      "boundaries": [
+        "No art or sound files: the world, agents, furniture and effects are built from primitives in code."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/project.godot",
+          "symbol": "run/main_scene"
+        },
+        {
+          "path": "games/double-cross/godot/export_presets.cfg",
+          "symbol": "Web"
+        }
+      ]
+    }
+  ]
+}

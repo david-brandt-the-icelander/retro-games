@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Double Cross decisions",
+  "folder": "games/double-cross",
+  "entities": [
+    {
+      "id": "host-authoritative",
+      "title": "The host's browser decides the match",
+      "summary": "Unlike the lockstep games, Double Cross is not deterministic: the host's browser holds the hidden state (where the intel is, the traps) and decides every search, trap, punch and win.",
+      "status": "accepted",
+      "context": "Traps and hidden intel must stay secret from the other players, and a physics-driven 3D game is hard to keep bit-for-bit identical across browsers.",
+      "decision": "The lowest slot in the match hosts. Each browser moves its own agent and sends where it is; everything else goes to the host as a request (rq_*), and the host sends back what happened (ev_*). Only the host's ev_* messages are accepted.",
+      "rationale": "Keeps secrets out of the other browsers and needs nothing from the relay but delivery.",
+      "consequences": [
+        "If the host leaves, the match ends for everyone; the others go back to the briefing room together.",
+        "There is no high-score table: the server can't replay a match."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/scripts/net.gd",
+          "symbol": "_dispatch"
+        },
+        {
+          "path": "games/double-cross/godot/scripts/game.gd",
+          "symbol": "_on_peer_left"
+        }
+      ]
+    },
+    {
+      "id": "hub-relay",
+      "title": "Online matches use the games hub's relay",
+      "summary": "Double Cross has no Durable Object of its own; it sends its messages through the hub's relay at /games/multiplayer/match/{ID}, like Rally, Shatterbelt and Hivestorm.",
+      "status": "accepted",
+      "context": "Players meet in one multiplayer lobby on icelander.net, which already makes matches and relays them.",
+      "decision": "The client connects to the relay named by ?match=ID and wraps each message as base64 inside the relay's JSON ({t: g, d, to}).",
+      "rationale": "One lobby for every game; nothing to run or pay for here.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/scripts/net.gd",
+          "symbol": "join_match"
+        },
+        {
+          "path": "games/double-cross/godot/scripts/net.gd",
+          "symbol": "_send"
+        }
+      ]
+    },
+    {
+      "id": "compatibility-renderer",
+      "title": "The Compatibility renderer",
+      "summary": "The project uses Godot's Compatibility (WebGL 2) renderer, the only one the web export supports.",
+      "status": "accepted",
+      "context": "Forward+ has screen-space ambient occlusion and indirect light, but doesn't run in browsers.",
+      "decision": "rendering_method is gl_compatibility everywhere; the world builder turns SSAO and SSIL on only under Forward+. Only the room the player is in casts shadows.",
+      "rationale": "One look on every platform, and a frame rate browsers can hold.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/project.godot",
+          "symbol": "rendering_method"
+        },
+        {
+          "path": "games/double-cross/godot/scripts/world_builder.gd",
+          "symbol": "_environment"
+        }
+      ]
+    }
+  ]
+}

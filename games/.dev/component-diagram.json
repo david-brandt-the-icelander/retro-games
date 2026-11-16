@@ -112,6 +112,13 @@
       "name": "Games hub",
       "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
       "external": true
+    },
+    {
+      "id": "double-cross",
+      "name": "Double Cross",
+      "responsibility": "A new spy-trap party game in Godot: search for intel, rig traps, reach the extraction door, alone or online with up to eight agents.",
+      "folder": "games/double-cross",
+      "diagram": "games/double-cross/.dev/component-diagram.json"
     }
   ],
   "relationships": [
@@ -198,6 +205,12 @@
       "to": "swarmhold",
       "kind": "contains",
       "description": "Swarmhold is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "double-cross",
+      "kind": "contains",
+      "description": "Double Cross is one of the games."
     }
   ]
 }

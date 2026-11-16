@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/requirements.schema.json",
+  "kind": "requirements",
+  "title": "Double Cross requirements",
+  "folder": "games/double-cross",
+  "entities": [
+    {
+      "id": "max-players",
+      "title": "Each map holds a set number of agents",
+      "summary": "The Safehouse holds 2 agents, the Embassy 4, the Grand Hotel Meridian 6 and Polar Station Kappa 8.",
+      "statement": "The briefing room refuses to start a match with more agents than the chosen map holds; spectators don't count.",
+      "rationale": "The owner asked for maps with different maximum player counts.",
+      "acceptanceCriteria": [
+        "With 5 agents ready, the Embassy can't be started and the briefing room says why.",
+        "Choosing to spectate frees a place."
+      ],
+      "origin": {
+        "kind": "stakeholder",
+        "reference": "Actors/owner.md",
+        "description": "The owner's request for the game."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/scripts/maps.gd",
+          "symbol": "DEFS"
+        },
+        {
+          "path": "games/double-cross/godot/scripts/net.gd",
+          "symbol": "can_start"
+        }
+      ]
+    },
+    {
+      "id": "modes",
+      "title": "Two ways to play",
+      "summary": "Last Agent Standing (everyone for themselves) and Co-op Teams (two teams that pool their intel and can't hurt each other).",
+      "statement": "The host picks the mode. In Last Agent Standing the last agent alive wins, or the first to reach the extraction door with all four pieces of intel. In Co-op Teams a team wins when any member reaches the door while the team's living members hold all four between them, or when the other team is eliminated.",
+      "rationale": "The owner asked for co-op teams and last-man-standing modes.",
+      "acceptanceCriteria": [
+        "Teammates take no damage from each other's punches or traps.",
+        "An agent at the door without all the intel is told what is still missing."
+      ],
+      "origin": {
+        "kind": "stakeholder",
+        "reference": "Actors/owner.md",
+        "description": "The owner's request for the game."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/scripts/game.gd",
+          "symbol": "_check_win"
+        },
+        {
+          "path": "games/double-cross/godot/scripts/game.gd",
+          "symbol": "_server_tick"
+        }
+      ]
+    },
+    {
+      "id": "spectate-on-death",
+      "title": "The eliminated keep watching",
+      "summary": "An agent who dies enters spectator mode, which shows every surviving agent at once.",
+      "statement": "After elimination the screen becomes a grid with one live camera per surviving agent, every trap revealed; Tab switches to one agent full screen and back. Anyone can also join as a spectator from the briefing room.",
+      "rationale": "The owner asked for a spectator mode showing all players, entered on death.",
+      "acceptanceCriteria": [
+        "With three agents alive, a spectator sees three tiles.",
+        "When one of them dies, the grid rebuilds with two."
+      ],
+      "origin": {
+        "kind": "stakeholder",
+        "reference": "Actors/owner.md",
+        "description": "The owner's request for the game."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/scripts/spectator.gd",
+          "symbol": "rebuild"
+        },
+        {
+          "path": "games/double-cross/godot/scripts/game.gd",
+          "symbol": "_enter_spectator"
+        }
+      ]
+    },
+    {
+      "id": "separate-screens",
+      "title": "Every agent on their own screen",
+      "summary": "Each player plays on their own device; nobody shares a screen.",
+      "statement": "Online, each browser follows its own agent and lights only the room that agent is in; other agents are visible only in that room or its doorways.",
+      "rationale": "The owner asked for multiplayer on separate screens.",
+      "acceptanceCriteria": [
+        "An agent in another room is hidden.",
+        "Teammates show on the minimap; opponents never do."
+      ],
+      "origin": {
+        "kind": "stakeholder",
+        "reference": "Actors/owner.md",
+        "description": "The owner's request for the game."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/godot/scripts/game.gd",
+          "symbol": "_update_visibility"
+        },
+        {
+          "path": "games/double-cross/godot/scripts/hud.gd",
+          "symbol": "Minimap"
+        }
+      ]
+    }
+  ]
+}
