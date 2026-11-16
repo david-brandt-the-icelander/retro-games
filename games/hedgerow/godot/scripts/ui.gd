@@ -25,6 +25,8 @@ var arty_btn: Button
 var over: Control
 var over_title: Label
 var over_text: RichTextLabel
+var help_overlay: Control
+var help_btn: Button
 var headless_log := false
 
 
@@ -45,14 +47,14 @@ func _ready() -> void:
 	tf.font_names = PackedStringArray(["Georgia", "Times New Roman", "DejaVu Serif", "serif"])
 	tf.font_weight = 700
 	title.add_theme_font_override("font", tf)
-	title.add_theme_font_size_override("font_size", 28)
+	title.add_theme_font_size_override("font_size", 35)
 	title.add_theme_color_override("font_color", GOLD)
 	v.add_child(title)
 	var sub := Label.new()
 	sub.text = "Normandy · July 1944"
 	sub.add_theme_color_override("font_color", Color(0.75, 0.72, 0.62))
 	v.add_child(sub)
-	turn_label = _rtl(300)
+	turn_label = _rtl(375)
 	v.add_child(turn_label)
 
 	var tr := _panel()
@@ -63,11 +65,11 @@ func _ready() -> void:
 	oh.text = "OBJECTIVES"
 	oh.add_theme_color_override("font_color", GOLD)
 	v2.add_child(oh)
-	obj_label = _rtl(300)
+	obj_label = _rtl(375)
 	v2.add_child(obj_label)
 
 	var lp := _panel()
-	_place(lp, 1, 0, -16, 168)
+	_place(lp, 1, 0, -16, 222)
 	var v3 := VBoxContainer.new()
 	lp.add_child(v3)
 	var lh := Label.new()
@@ -77,20 +79,21 @@ func _ready() -> void:
 	log_label = RichTextLabel.new()
 	log_label.bbcode_enabled = true
 	log_label.scroll_following = true
-	log_label.custom_minimum_size = Vector2(400, 300)
-	log_label.add_theme_font_size_override("normal_font_size", 13)
-	log_label.add_theme_font_size_override("bold_font_size", 13)
+	log_label.custom_minimum_size = Vector2(500, 300)
+	log_label.add_theme_font_size_override("normal_font_size", 16)
+	log_label.add_theme_font_size_override("bold_font_size", 16)
 	v3.add_child(log_label)
 
 	unit_panel = _panel()
 	_place(unit_panel, 0, 1, 16, -16)
-	unit_card = _rtl(380)
+	unit_card = _rtl(475)
 	unit_panel.add_child(unit_card)
 	unit_panel.visible = false
 
 	hover_panel = _panel()
-	_place(hover_panel, 0.5, 1, 0, -16)
-	hover_label = _rtl(470)
+	# Top centre, clear of the unit card and the buttons along the bottom.
+	_place(hover_panel, 0.5, 0, 0, 16)
+	hover_label = _rtl(590)
 	hover_panel.add_child(hover_label)
 	hover_panel.visible = false
 
@@ -102,25 +105,30 @@ func _ready() -> void:
 	hb.alignment = BoxContainer.ALIGNMENT_END
 	hb.add_theme_constant_override("separation", 10)
 	br.add_child(hb)
+	help_btn = Button.new()
+	help_btn.text = "Help  [F1]"
+	help_btn.custom_minimum_size = Vector2(150, 54)
+	help_btn.pressed.connect(toggle_help)
+	hb.add_child(help_btn)
 	arty_btn = Button.new()
 	arty_btn.text = "Artillery (3)  [F]"
-	arty_btn.custom_minimum_size = Vector2(170, 44)
+	arty_btn.custom_minimum_size = Vector2(210, 54)
 	arty_btn.toggle_mode = true
 	arty_btn.pressed.connect(func() -> void: artillery_pressed.emit())
 	hb.add_child(arty_btn)
 	next_btn = Button.new()
 	next_btn.text = "Next unit  [Tab]"
-	next_btn.custom_minimum_size = Vector2(160, 44)
+	next_btn.custom_minimum_size = Vector2(200, 54)
 	next_btn.pressed.connect(func() -> void: next_unit_pressed.emit())
 	hb.add_child(next_btn)
 	end_btn = Button.new()
 	end_btn.text = "End turn  [Enter]"
-	end_btn.custom_minimum_size = Vector2(190, 44)
+	end_btn.custom_minimum_size = Vector2(235, 54)
 	end_btn.pressed.connect(func() -> void: end_turn_pressed.emit())
 	hb.add_child(end_btn)
 	var help := Label.new()
-	help.text = "LMB select · move · fire    F artillery    RMB cancel    WASD pan    Q/E rotate    Wheel zoom    MMB orbit"
-	help.add_theme_font_size_override("font_size", 12)
+	help.text = "F1 or H  Help and controls"
+	help.add_theme_font_size_override("font_size", 15)
 	help.add_theme_color_override("font_color", Color(0.85, 0.85, 0.8, 0.75))
 	help.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	br.add_child(help)
@@ -138,7 +146,7 @@ func _ready() -> void:
 	root.add_child(banner)
 
 	toast = Label.new()
-	toast.add_theme_font_size_override("font_size", 18)
+	toast.add_theme_font_size_override("font_size", 22)
 	toast.add_theme_color_override("font_color", Color(1.0, 0.7, 0.4))
 	toast.add_theme_constant_override("outline_size", 8)
 	toast.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
@@ -165,14 +173,71 @@ func _ready() -> void:
 	over_title.add_theme_font_size_override("font_size", 44)
 	over_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	ov.add_child(over_title)
-	over_text = _rtl(520)
+	over_text = _rtl(650)
 	ov.add_child(over_text)
 	var again := Button.new()
 	again.text = "Play again"
-	again.custom_minimum_size = Vector2(200, 46)
+	again.custom_minimum_size = Vector2(250, 56)
 	again.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	again.pressed.connect(func() -> void: restart_pressed.emit())
 	ov.add_child(again)
+	_build_help()
+
+
+func _build_help() -> void:
+	help_overlay = ColorRect.new()
+	(help_overlay as ColorRect).color = Color(0, 0, 0, 0.45)
+	help_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	help_overlay.visible = false
+	root.add_child(help_overlay)
+	var cc := CenterContainer.new()
+	cc.set_anchors_preset(Control.PRESET_FULL_RECT)
+	help_overlay.add_child(cc)
+	var p := _panel(false)
+	cc.add_child(p)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 12)
+	p.add_child(v)
+	var t := Label.new()
+	t.text = "How to play"
+	t.add_theme_font_size_override("font_size", 32)
+	t.add_theme_color_override("font_color", GOLD)
+	v.add_child(t)
+	var body := _rtl(900)
+	body.text = HELP_TEXT
+	v.add_child(body)
+	var ok := Button.new()
+	ok.text = "Got it  [Esc]"
+	ok.custom_minimum_size = Vector2(240, 54)
+	ok.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	ok.pressed.connect(toggle_help)
+	v.add_child(ok)
+
+
+const HELP_TEXT := """[color=#e8c46a][b]Goal[/b][/color]   Hold [b]2 of the 3 objectives[/b] (gold rings and flags) at the end of turn 12, or destroy every German unit.
+
+[color=#e8c46a][b]Your turn[/b][/color]
+[b]Left click[/b] one of your units to select it. Blue hexes: where it can move. [b]Click a blue hex[/b] to move there.
+[b]Click an enemy with a red ring[/b] to fire at it. Hover over it first to see your chances.
+A unit can move and then fire (-2 after moving), but cannot move after firing.
+[b]Tab[/b] next unit that can still act    [b]F[/b] call artillery (3 missions)    [b]Enter[/b] end turn    [b]Right click / Esc[/b] cancel
+
+[color=#e8c46a][b]Camera[/b][/color]
+[b]WASD / arrow keys[/b] pan    [b]Q / E[/b] rotate    [b]Mouse wheel[/b] zoom    [b]Middle drag[/b] orbit    [b]Shift + middle drag[/b] pan    [b]Space[/b] centre on the selected unit
+
+[color=#e8c46a][b]Good to know[/b][/color]
+Woods and buildings give cover and block line of sight; higher ground sees further.
+Germans in woods, buildings or wheat stay hidden until you are close or they fire.
+Units that don't fire in their turn shoot at enemies that move into view (opportunity fire).
+Tanks are stronger in front: hit them in the side or rear. A Panther arrives on turn 5."""
+
+
+func toggle_help() -> void:
+	help_overlay.visible = not help_overlay.visible
+
+
+func help_visible() -> bool:
+	return help_overlay != null and help_overlay.visible
 
 
 func _place(c: Control, ax: float, ay: float, ox: float, oy: float) -> void:
@@ -222,7 +287,7 @@ func _make_theme() -> Theme:
 	sb.border_color = Color(0.78, 0.66, 0.42, 0.5)
 	sb.set_border_width_all(1)
 	sb.set_corner_radius_all(6)
-	sb.set_content_margin_all(12)
+	sb.set_content_margin_all(15)
 	sb.shadow_color = Color(0, 0, 0, 0.35)
 	sb.shadow_size = 8
 	t.set_stylebox("panel", "PanelContainer", sb)
@@ -231,7 +296,7 @@ func _make_theme() -> Theme:
 	bn.border_color = Color(0.85, 0.72, 0.45, 0.8)
 	bn.set_border_width_all(1)
 	bn.set_corner_radius_all(5)
-	bn.set_content_margin_all(8)
+	bn.set_content_margin_all(10)
 	var bh := bn.duplicate() as StyleBoxFlat
 	bh.bg_color = Color(0.3, 0.32, 0.2, 0.98)
 	var bp := bn.duplicate() as StyleBoxFlat
@@ -246,12 +311,12 @@ func _make_theme() -> Theme:
 	t.set_stylebox("focus", "Button", StyleBoxEmpty.new())
 	t.set_color("font_color", "Button", Color(0.95, 0.9, 0.78))
 	t.set_color("font_disabled_color", "Button", Color(0.55, 0.55, 0.55))
-	t.set_font_size("font_size", "Button", 16)
+	t.set_font_size("font_size", "Button", 20)
 	t.set_color("font_color", "Label", Color(0.92, 0.9, 0.84))
-	t.set_font_size("font_size", "Label", 15)
+	t.set_font_size("font_size", "Label", 19)
 	t.set_color("default_color", "RichTextLabel", Color(0.92, 0.9, 0.84))
-	t.set_font_size("normal_font_size", "RichTextLabel", 15)
-	t.set_font_size("bold_font_size", "RichTextLabel", 15)
+	t.set_font_size("normal_font_size", "RichTextLabel", 19)
+	t.set_font_size("bold_font_size", "RichTextLabel", 19)
 	t.set_constant("separation", "VBoxContainer", 6)
 	return t
 
@@ -303,7 +368,7 @@ func show_unit(u: Unit) -> void:
 	unit_panel.visible = true
 	var d: Dictionary = u.d
 	var sc: String = "#8fbaff" if u.side == "US" else "#ff9585"
-	var s := "[font_size=21][b][color=%s]%s[/color][/b][/font_size]\n" % [sc, d["name"]]
+	var s := "[font_size=26][b][color=%s]%s[/color][/b][/font_size]\n" % [sc, d["name"]]
 	s += "[color=#b9b39b]%s · %s[/color]\n" % ["US Army" if u.side == "US" else "Wehrmacht", d["role"]]
 	s += "[color=#d8cfae]%s[/color]\n" % d["weapons"]
 	s += "Move [b]%d[/b]    Firepower [b]%d[/b]    Range [b]%d[/b]\n" % [int(d["mp"]), u.fp(), int(d["rng"])]
