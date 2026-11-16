@@ -44,6 +44,10 @@
     {
       "path": "games/swarmhold/wrangler.jsonc",
       "symbol": "routes"
+    },
+    {
+      "path": "games/neon-cycles/wrangler.jsonc",
+      "symbol": "routes"
     }
   ],
   "nodes": [
@@ -188,6 +192,12 @@
       "name": "double-cross Worker",
       "kind": "process",
       "description": "Double Cross's Worker on icelander.net/games/retro/double-cross*; its own deployment diagram is in games/double-cross/.dev."
+    },
+    {
+      "id": "w-neon-cycles",
+      "name": "neon-cycles Worker",
+      "kind": "process",
+      "description": "Neon Cycles' Worker on icelander.net/games/retro/neon-cycles*, with no database; it joins the Godot engine from its parts. Its own deployment diagram is in games/neon-cycles/.dev."
     }
   ],
   "artifacts": [
@@ -343,6 +353,20 @@
       "name": "Double Cross's Worker script",
       "source": "games/double-cross/worker/index.ts",
       "deployedTo": "w-double-cross",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-neon-cycles",
+      "name": "Neon Cycles' Godot web export",
+      "source": "games/neon-cycles/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Exported by build.mjs into dist/, the engine split into parts under 25 MiB, and served as static assets."
+    },
+    {
+      "id": "script-neon-cycles",
+      "name": "Neon Cycles' Worker script",
+      "source": "games/neon-cycles/worker/index.ts",
+      "deployedTo": "w-neon-cycles",
       "description": "Bundled by wrangler deploy."
     }
   ],
@@ -523,6 +547,18 @@
     },
     {
       "from": "w-double-cross",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-neon-cycles",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/neon-cycles*."
+    },
+    {
+      "from": "w-neon-cycles",
       "to": "accounts",
       "kind": "connects-to",
       "description": "Service binding ACCOUNTS: the page needs a signed-in player."
