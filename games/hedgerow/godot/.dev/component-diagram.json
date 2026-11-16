@@ -1,0 +1,101 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Hedgerow Godot client component diagram",
+  "folder": "games/hedgerow/godot",
+  "description": "The Godot client. main.gd is the controller: it builds the scene, deploys the units, runs each side's turn, takes the player's input and resolves movement, fire, opportunity fire and artillery. The rules live in combat.gd and map.gd, the pieces in unit.gd and models.gd, and the computer opponent in ai.gd.",
+  "sources": [
+    {
+      "path": "games/hedgerow/godot/scripts/main.gd",
+      "symbol": "do_attack"
+    },
+    {
+      "path": "games/hedgerow/godot/scripts/map.gd",
+      "symbol": "GameMap"
+    },
+    {
+      "path": "games/hedgerow/godot/scripts/combat.gd",
+      "symbol": "Combat"
+    },
+    {
+      "path": "games/hedgerow/godot/scripts/ai.gd",
+      "symbol": "AIController"
+    }
+  ],
+  "components": [
+    {
+      "id": "main",
+      "name": "Game controller",
+      "responsibility": "scripts/main.gd: setup, deployment, reinforcements, the turn sequence, player input, move and fire resolution, opportunity fire, artillery, objectives and victory.",
+      "folder": "games/hedgerow/godot/scripts"
+    },
+    {
+      "id": "map",
+      "name": "Map",
+      "responsibility": "scripts/map.gd and hex.gd: generates the battlefield, answers terrain questions (movement cost, cover, concealment, line of sight) and builds the stepped hex diorama and its overlays.",
+      "folder": "games/hedgerow/godot/scripts"
+    },
+    {
+      "id": "rules",
+      "name": "Combat rules",
+      "responsibility": "scripts/combat.gd: the infantry fire table, morale, anti-tank to-hit and penetration against armour facing, and the odds shown to the player and used by the computer.",
+      "folder": "games/hedgerow/godot/scripts"
+    },
+    {
+      "id": "units",
+      "name": "Pieces",
+      "responsibility": "scripts/unit.gd, unit_data.gd and models.gd: each unit's state and stats, its procedural 3D model, and its animations.",
+      "folder": "games/hedgerow/godot/scripts"
+    },
+    {
+      "id": "ai",
+      "name": "Computer opponent",
+      "responsibility": "scripts/ai.gd: scores every reachable hex for cover, shots, threats and objectives, and chooses between firing now and moving then firing.",
+      "folder": "games/hedgerow/godot/scripts"
+    },
+    {
+      "id": "view",
+      "name": "View",
+      "responsibility": "scripts/camera_rig.gd, ui.gd and fx.gd: the tabletop camera, the HUD and the effects.",
+      "folder": "games/hedgerow/godot/scripts"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "main",
+      "to": "map",
+      "kind": "depends-on",
+      "description": "Terrain, line of sight, overlays and objective owners."
+    },
+    {
+      "from": "main",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Resolves and previews every attack."
+    },
+    {
+      "from": "main",
+      "to": "units",
+      "kind": "contains",
+      "description": "Spawns and moves the pieces."
+    },
+    {
+      "from": "main",
+      "to": "ai",
+      "kind": "depends-on",
+      "description": "Runs the computer's turn (and both sides' turns under --autotest)."
+    },
+    {
+      "from": "ai",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Expected value of each possible attack."
+    },
+    {
+      "from": "main",
+      "to": "view",
+      "kind": "depends-on",
+      "description": "Camera focus, HUD text and effects."
+    }
+  ]
+}
