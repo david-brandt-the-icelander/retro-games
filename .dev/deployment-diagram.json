@@ -3,7 +3,7 @@
   "kind": "deployment",
   "title": "retro-games deployment diagram",
   "folder": ".",
-  "description": "Where every game runs: seven Workers on icelander.net, five with their own D1 database, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
+  "description": "Where every game runs: eight Workers on icelander.net, five with their own D1 database, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
   "sources": [
     {
       "path": "games/rally/wrangler.jsonc",
@@ -48,6 +48,10 @@
     {
       "path": "games/neon-cycles/wrangler.jsonc",
       "symbol": "routes"
+    },
+    {
+      "path": "games/iron-haze/wrangler.jsonc",
+      "symbol": "iron-haze"
     }
   ],
   "nodes": [
@@ -154,6 +158,12 @@
       "name": "swarmhold Worker",
       "kind": "process",
       "description": "Swarmhold's Worker on icelander.net/games/retro/swarmhold*, with no database; its own deployment diagram is in games/swarmhold/.dev."
+    },
+    {
+      "id": "w-iron-haze",
+      "name": "iron-haze Worker",
+      "kind": "process",
+      "description": "Iron Haze's Worker on icelander.net/games/fresh/iron-haze*, for holders of games:iron-haze only; no database. Its own deployment diagram is in games/iron-haze/.dev."
     },
     {
       "id": "rooms",
@@ -284,6 +294,20 @@
       "source": "games/hedgerow/worker/index.ts",
       "deployedTo": "w-hedgerow",
       "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-iron-haze",
+      "name": "Iron Haze landing page, web export and desktop downloads",
+      "source": "games/iron-haze/build.mjs",
+      "deployedTo": "edge",
+      "description": "dist/games/fresh/iron-haze/: the landing page, the Godot web export under play/ and the Windows, macOS and Linux zips under download/, the large files in 20 MiB parts."
+    },
+    {
+      "id": "script-iron-haze",
+      "name": "iron-haze Worker script",
+      "source": "games/iron-haze/worker/index.ts",
+      "deployedTo": "w-iron-haze",
+      "description": "Gates every file on games:iron-haze and joins the parted files."
     },
     {
       "id": "room",
@@ -562,6 +586,18 @@
       "to": "accounts",
       "kind": "connects-to",
       "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-iron-haze",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/fresh/iron-haze*."
+    },
+    {
+      "from": "w-iron-haze",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: every file needs a signed-in player holding games:iron-haze."
     }
   ]
 }
