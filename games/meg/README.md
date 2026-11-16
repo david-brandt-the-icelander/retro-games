@@ -52,7 +52,9 @@ Every catch scores points, more for bigger or more darkly funny prey. A cleared 
 
 Visitors wander in over time and leave again; swimmers and kayaks keep clear of boats. Sabotage scores too: buoys, ships, the sub, drums, turrets and drones.
 
-The high-score table keeps the ten best runs on this device, with a name entered when a run ends with a qualifying score.
+On icelander.net the high-score table is shared: when a run ends, the player enters a name and the score goes to the table, which the game, the public page at [/games/retro/meg/scores/](https://icelander.net/games/retro/meg/scores/) and icelander.net's games pages show. A copy opened from disk keeps its table on the device instead.
+
+The server cannot replay a run, so it trusts the score within limits it can check: each run gets a ticket from the server when it starts, a ticket takes one score, no sooner than five seconds and no later than a day after it was issued, and the score must be one the time since the ticket could have earned (150 points a second, plus every clear bonus up to the file reached). A determined cheater could still post a plausible score; replay-checking is a backlog item.
 
 ## Files to clear
 
@@ -79,8 +81,10 @@ Progress (the highest file reached), the sound setting, the high-score table and
 | `public/meg.js` | The whole game: audio, input, entities, the eight files, the simulation loop, drawing, scoring and the menu screens |
 | `public/meg.css` | The page's styles |
 | `public/_headers` | The Content-Security-Policy and other headers: scripts and styles from this origin and Google Fonts only, nothing inline |
-| `worker/index.ts` | The Worker: sends anyone signed out to sign in before serving the page; everything else is a static asset |
-| `test/` | The sign-in, and checks that the page works under its Content-Security-Policy and that the script parses |
+| `worker/index.ts` | The Worker: sends anyone signed out to sign in before serving the page; the high-score API under `api/` and the public scores page; everything else is a static asset |
+| `worker/scores.ts` | The shared table: run tickets, the plausibility limits, names, and the `ScoreTable` Durable Object that keeps the best hundred |
+| `worker/scores-page.ts`, `worker/look.ts` | The public scores page, in icelander.net's look |
+| `test/` | The sign-in, the high-score table and its API, and checks that the page works under its Content-Security-Policy and that the script parses |
 | `build.mjs` | Copies `public/` into `dist/games/retro/meg/` as served, and builds the tests |
 | `wrangler.jsonc` | The Worker's route, `icelander.net/games/retro/meg*`, its assets and the login service binding |
 | `.dev/` | This folder's diagrams and knowledge files |
@@ -97,8 +101,8 @@ To play a local copy, open `public/index.html` in a browser; the sign-in is only
 
 ## Deploy
 
-A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`), running the same steps as `npm run deploy`: the tests, the build and `wrangler deploy`. MEG has no database, so it has no migrations.
+A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`), running the same steps as `npm run deploy`: the tests, the build and `wrangler deploy`. MEG has no D1 database: its high-score table is a Durable Object, which the deploy creates from the migrations in `wrangler.jsonc`, so nothing is migrated by hand. Keep every entry in that list.
 
 ## Status
 
-MEG is on icelander.net behind the sign-in. Its high-score table is kept on each device; a shared, replay-checked table is a backlog item in `.dev/backlog.json`, which first needs the simulation made deterministic.
+MEG is on icelander.net behind the sign-in, with a shared high-score table of trusted scores. Replay-checking them, as the other games do, is a backlog item in `.dev/backlog.json`; it first needs the simulation made deterministic.

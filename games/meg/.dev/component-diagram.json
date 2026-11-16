@@ -3,7 +3,7 @@
   "kind": "component",
   "title": "MEG component diagram",
   "folder": "games/meg",
-  "description": "MEG: the game is one static page run in the browser, served behind icelander.net's sign-in by a small Worker.",
+  "description": "MEG: the game is one static page run in the browser, served behind icelander.net's sign-in by a Worker that also keeps the shared high-score table.",
   "sources": [
     {
       "path": "games/meg/public/meg.js",
@@ -33,8 +33,8 @@
     },
     {
       "id": "worker",
-      "name": "Sign-in Worker",
-      "responsibility": "worker/index.ts: sends anyone signed out to sign in before serving the page; serves every other file as a static asset.",
+      "name": "Worker",
+      "responsibility": "worker/: sends anyone signed out to sign in before serving the page, runs the high-score API and public scores page, and serves every other file as a static asset.",
       "folder": "games/meg/worker"
     },
     {
@@ -52,7 +52,13 @@
     {
       "id": "storage",
       "name": "Browser localStorage",
-      "responsibility": "Keeps the highest incident file reached, the sound setting, the ten best scores and the last name entered, on this device.",
+      "responsibility": "Keeps the highest incident file reached, the sound setting, the last name entered, and a copy of this device's best scores.",
+      "external": true
+    },
+    {
+      "id": "table",
+      "name": "ScoreTable Durable Object",
+      "responsibility": "The shared table: run tickets and the best hundred scores (worker/scores.ts).",
       "external": true
     }
   ],
@@ -92,6 +98,18 @@
       "to": "storage",
       "kind": "depends-on",
       "description": "Reads and writes meg.unlocked, meg.muted, meg.scores and meg.name, and plays on without them if storage is blocked."
+    },
+    {
+      "from": "worker",
+      "to": "table",
+      "kind": "depends-on",
+      "description": "Durable Object binding SCORES: issues tickets, takes scores, reads the table."
+    },
+    {
+      "from": "page",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "POST api/run when a run starts, POST api/score when it ends, GET api/scores for the table."
     }
   ]
 }
