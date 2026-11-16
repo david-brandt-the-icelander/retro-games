@@ -3,7 +3,7 @@
   "kind": "component",
   "title": "Retro games component diagram",
   "folder": "games",
-  "description": "The games folder groups seven independent games. Five are browser games, each its own npm project with its own Cloudflare Worker: four have an engine, a page and a replay-checked high-score table, and Gambit is a Godot client whose Worker handles sign-in, games and history. LodeStar is a desktop game, a Rust workspace presented by Godot, with no server. MEG is a browser game served by a Worker behind the sign-in, with its high scores kept on each device. They share no code at build time, and three carry identical copies of the online module.",
+  "description": "The games folder groups eight independent games. Five are browser games, each its own npm project with its own Cloudflare Worker: four have an engine, a page and a replay-checked high-score table, and Gambit is a Godot client whose Worker handles sign-in, games and history. LodeStar is a desktop game, a Rust workspace presented by Godot, with no server. MEG is a browser game served by a Worker behind the sign-in, with its high scores kept on each device, and Hedgerow is a single-player Godot client whose Worker only serves it behind the sign-in. They share no code at build time, and three carry identical copies of the online module.",
   "sources": [
     {
       "path": "README.md",
@@ -34,7 +34,7 @@
     {
       "id": "games",
       "name": "Retro games",
-      "responsibility": "The seven games, side by side.",
+      "responsibility": "The eight games, side by side.",
       "folder": "games"
     },
     {
@@ -71,6 +71,13 @@
       "responsibility": "3D chess in Godot: friends invited by email and played at their own pace with chat, or Stockfish at eight strengths; every game kept and replayable.",
       "folder": "games/chess",
       "diagram": "games/chess/.dev/component-diagram.json"
+    },
+    {
+      "id": "hedgerow",
+      "name": "Hedgerow",
+      "responsibility": "Single-player, turn-based WWII hex tactics in Godot against a computer opponent; everything runs in the browser.",
+      "folder": "games/hedgerow",
+      "diagram": "games/hedgerow/.dev/component-diagram.json"
     },
     {
       "id": "snake",
@@ -130,6 +137,12 @@
       "to": "gambit",
       "kind": "contains",
       "description": "Gambit is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "hedgerow",
+      "kind": "contains",
+      "description": "Hedgerow is one of the games."
     },
     {
       "from": "games",
