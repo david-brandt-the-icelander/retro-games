@@ -13,6 +13,7 @@ Each game needs a sign-in with Google or GitHub, icelander.net's one sign-in (th
 | Samosa: a remake of a 1983 ZX Spectrum strategy game | [icelander.net/games/retro/samosa](https://icelander.net/games/retro/samosa/) ([high scores](https://icelander.net/games/retro/samosa/scores/)) | [games/dictator](games/dictator) |
 | Gambit: 3D chess made in Godot 4. Invite a friend by email and play with chat and a timed transcript, keep contacts and replay past games, or play Stockfish at eight strengths | [icelander.net/games/retro/chess](https://icelander.net/games/retro/chess/) | [games/chess](games/chess) |
 | MEG: an original cartoon shark game. You are the last megalodon, hiding in a warm current from the Directorate across eight levels. Eat fish, seals, dolphins, kayakers, a polar bear and seabirds caught mid-leap for points and a high-score table. Turn, and hold Space to swim; biting, leaping and hiding are automatic. | [icelander.net/games/retro/meg](https://icelander.net/games/retro/meg/) (high scores kept on each device) | [games/meg](games/meg) |
+| Thrustbound: an original jetpack arcade game made in Godot 4. Find the rocket's parts, stack them on the pad, catch six fuel pods and lift off, while a new kind of alien arrives each level | [icelander.net/games/retro/thrustbound](https://icelander.net/games/retro/thrustbound/) (best score kept on each device) | [games/thrustbound](games/thrustbound) |
 
 ## Deploying
 

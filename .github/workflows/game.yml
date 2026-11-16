@@ -18,7 +18,7 @@ on:
         required: false
 
 env:
-  # Gambit's web export (games/chess/README.md).
+  # The Godot games' web exports (games/chess/README.md, games/thrustbound/README.md).
   GODOT_VERSION: 4.7.2
 
 jobs:
@@ -42,7 +42,7 @@ jobs:
           cache-dependency-path: games/${{ inputs.game }}/package-lock.json
       - run: npm ci
 
-      - if: inputs.game == 'chess'
+      - if: contains(fromJSON('["chess","thrustbound"]'), inputs.game)
         uses: actions/cache@v4
         id: godot-cache
         with:
@@ -50,7 +50,7 @@ jobs:
             ~/godot
             ~/.local/share/godot/export_templates
           key: godot-${{ env.GODOT_VERSION }}
-      - if: inputs.game == 'chess' && steps.godot-cache.outputs.cache-hit != 'true'
+      - if: contains(fromJSON('["chess","thrustbound"]'), inputs.game) && steps.godot-cache.outputs.cache-hit != 'true'
         name: Install Godot and its web export templates
         working-directory: ${{ runner.temp }}
         run: |
@@ -62,11 +62,11 @@ jobs:
           mv ~/godot/"Godot_v$GODOT_VERSION-stable_linux.x86_64" ~/godot/godot
           unzip -q "Godot_v$GODOT_VERSION-stable_export_templates.tpz"
           mv templates ~/.local/share/godot/export_templates/"$GODOT_VERSION.stable"
-      - if: inputs.game == 'chess'
+      - if: contains(fromJSON('["chess","thrustbound"]'), inputs.game)
         run: echo "$HOME/godot" >> "$GITHUB_PATH"
 
       - run: npm test
-      - if: inputs.game == 'chess'
+      - if: contains(fromJSON('["chess","thrustbound"]'), inputs.game)
         run: npm run test:godot
       - run: npm run build
       - name: No .dev files in the build

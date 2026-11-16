@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "Thrustbound deployment diagram",
+  "folder": "games/thrustbound",
+  "description": "How Thrustbound runs: one Cloudflare Worker with static assets and no database. The browser runs the whole game.",
+  "sources": [
+    { "path": "games/thrustbound/wrangler.jsonc", "symbol": "thrustbound" },
+    { "path": "games/thrustbound/build.mjs", "symbol": "SITE" },
+    { "path": "games/thrustbound/worker/index.ts", "symbol": "default.fetch" },
+    { "path": "vendor/icelander-auth/index.js", "symbol": "createAuth" }
+  ],
+  "nodes": [
+    { "id": "browser", "name": "Player's browser", "kind": "client", "description": "Runs the Godot web export (WebGL 2) and keeps the best score.", "actor": "Actors/player.md" },
+    { "id": "edge", "name": "Cloudflare edge", "kind": "host", "description": "Runs the Worker on icelander.net/games/retro/thrustbound*, ahead of the games hub's less specific route icelander.net/games/*." },
+    { "id": "worker", "name": "thrustbound Worker", "kind": "process", "description": "worker/index.ts: the signed-in game page and the joined engine file; every other path is a static asset from ./dist." },
+    { "id": "accounts", "name": "icelander.net login service", "kind": "external-service", "description": "accounts.icelander.net, in the icelander.net repository (accounts/): who holds the site_session cookie and their games: roles. Reached only through a service binding." }
+  ],
+  "artifacts": [
+    { "id": "export", "name": "Godot web export", "source": "games/thrustbound/godot/project.godot", "deployedTo": "edge", "description": "index.html, index.js, index.pck and the engine split into index.wasm.0, .1 (each under 25 MiB), built by build.mjs." },
+    { "id": "page", "name": "Loader, styles and headers", "source": "games/thrustbound/web/boot.js", "deployedTo": "edge", "description": "boot.js, shell.css, favicon.svg and _headers (a strict Content-Security-Policy), copied into dist/." },
+    { "id": "script", "name": "Worker script", "source": "games/thrustbound/worker/index.ts", "deployedTo": "worker", "description": "The fetch handler, bundled by wrangler." }
+  ],
+  "relationships": [
+    { "from": "edge", "to": "worker", "kind": "routes", "description": "Routes icelander.net/games/retro/thrustbound* to the Worker." },
+    { "from": "browser", "to": "edge", "kind": "connects-to", "description": "HTTPS: the page, the engine and the game's files." },
+    { "from": "worker", "to": "accounts", "kind": "connects-to", "description": "Service binding ACCOUNTS (entrypoint Internal): the page needs a signed-in player." }
+  ]
+}
