@@ -3,7 +3,7 @@
   "kind": "deployment",
   "title": "retro-games deployment diagram",
   "folder": ".",
-  "description": "Where every game runs: five Workers on icelander.net, each with its own D1 database, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
+  "description": "Where every game runs: seven Workers on icelander.net, five with their own D1 database, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
   "sources": [
     {
       "path": "games/rally/wrangler.jsonc",
@@ -26,12 +26,20 @@
       "symbol": "routes"
     },
     {
+      "path": "games/meg/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
       "path": ".github/workflows/deploy.yml",
       "symbol": "jobs"
     },
     {
       "path": "games/lodestar/export_presets.cfg",
       "symbol": "preset.0"
+    },
+    {
+      "path": "games/hedgerow/wrangler.jsonc",
+      "symbol": "routes"
     }
   ],
   "nodes": [
@@ -116,6 +124,24 @@
       "description": "Gambit's database (games/chess/worker/schema.sql)."
     },
     {
+      "id": "w-snake",
+      "name": "snake Worker",
+      "kind": "process",
+      "description": "Neon Snake's Worker on icelander.net/games/retro/snake*; its own deployment diagram is in games/snake/.dev."
+    },
+    {
+      "id": "w-meg",
+      "name": "meg Worker",
+      "kind": "process",
+      "description": "MEG's Worker on icelander.net/games/retro/meg*, with no database; its own deployment diagram is in games/meg/.dev."
+    },
+    {
+      "id": "w-hedgerow",
+      "name": "hedgerow Worker",
+      "kind": "process",
+      "description": "Hedgerow's Worker on icelander.net/games/retro/hedgerow*, with no database; its own deployment diagram is in games/hedgerow/.dev."
+    },
+    {
       "id": "rooms",
       "name": "GameRoom Durable Objects",
       "kind": "process",
@@ -146,6 +172,12 @@
       "name": "GitHub Actions runner",
       "kind": "host",
       "description": "Runs the Deploy workflow, which deploys each changed game."
+    },
+    {
+      "id": "w-double-cross",
+      "name": "double-cross Worker",
+      "kind": "process",
+      "description": "Double Cross's Worker on icelander.net/games/retro/double-cross*; its own deployment diagram is in games/double-cross/.dev."
     }
   ],
   "artifacts": [
@@ -220,6 +252,20 @@
       "description": "Bundled by wrangler deploy."
     },
     {
+      "id": "site-hedgerow",
+      "name": "Hedgerow's page and game",
+      "source": "games/hedgerow/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-hedgerow",
+      "name": "Hedgerow's Worker script",
+      "source": "games/hedgerow/worker/index.ts",
+      "deployedTo": "w-hedgerow",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
       "id": "room",
       "name": "GameRoom",
       "source": "games/chess/worker/room.ts",
@@ -227,11 +273,53 @@
       "description": "The Durable Object class exported by Gambit's Worker."
     },
     {
+      "id": "site-snake",
+      "name": "Neon Snake's page and game",
+      "source": "games/snake/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-snake",
+      "name": "Neon Snake's Worker script",
+      "source": "games/snake/worker/index.ts",
+      "deployedTo": "w-snake",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
       "id": "lodestar",
       "name": "LodeStar desktop export",
       "source": "games/lodestar/export_presets.cfg",
       "deployedTo": "desktop",
       "description": "The Godot export with the Rust sim as a GDExtension; not deployed by the workflows."
+    },
+    {
+      "id": "site-meg",
+      "name": "MEG's page and game",
+      "source": "games/meg/public/meg.js",
+      "deployedTo": "edge",
+      "description": "Copied into dist/ and served as static assets."
+    },
+    {
+      "id": "script-meg",
+      "name": "MEG's Worker script",
+      "source": "games/meg/worker/index.ts",
+      "deployedTo": "w-meg",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-double-cross",
+      "name": "Double Cross's page and game",
+      "source": "games/double-cross/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "Built into dist/ and served as static assets."
+    },
+    {
+      "id": "script-double-cross",
+      "name": "Double Cross's Worker script",
+      "source": "games/double-cross/worker/index.ts",
+      "deployedTo": "w-double-cross",
+      "description": "Bundled by wrangler deploy."
     }
   ],
   "relationships": [
@@ -350,10 +438,58 @@
       "description": "HTTPS to Resend's API, for an invitation."
     },
     {
+      "from": "edge",
+      "to": "w-snake",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/snake*."
+    },
+    {
+      "from": "w-snake",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-hedgerow",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/hedgerow*."
+    },
+    {
+      "from": "w-hedgerow",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
       "from": "actions",
       "to": "edge",
       "kind": "connects-to",
       "description": "wrangler deploy, with CLOUDFLARE_API_TOKEN."
+    },
+    {
+      "from": "edge",
+      "to": "w-meg",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/meg*."
+    },
+    {
+      "from": "w-meg",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-double-cross",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/retro/double-cross*."
+    },
+    {
+      "from": "w-double-cross",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: the page needs a signed-in player."
     }
   ]
 }

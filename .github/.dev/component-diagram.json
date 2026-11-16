@@ -204,7 +204,7 @@
       "from": "game",
       "to": "games",
       "kind": "depends-on",
-      "description": "npm ci, npm test, npm run build in the game's folder; Godot for Gambit and Double Cross."
+      "description": "npm ci, npm test, npm run build in the game's folder; Godot for Gambit, Hedgerow and Double Cross."
     },
     {
       "from": "game",

@@ -1,0 +1,86 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Neon Snake component diagram",
+  "folder": "games/snake",
+  "description": "The Godot client runs the whole game in the browser; the page's boot script starts it, and the Worker only checks the sign-in and serves the files.",
+  "sources": [
+    {
+      "path": "games/snake/build.mjs",
+      "symbol": "SITE"
+    },
+    {
+      "path": "games/snake/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/snake/bridge/boot.ts",
+      "symbol": "Engine"
+    }
+  ],
+  "components": [
+    {
+      "id": "snake",
+      "name": "Neon Snake",
+      "responsibility": "The game, its page and its Worker.",
+      "folder": "games/snake"
+    },
+    {
+      "id": "godot",
+      "name": "Godot client",
+      "responsibility": "Rules, drawing, particles, HUD, input and synthesised sound, all in GDScript.",
+      "folder": "games/snake/godot",
+      "diagram": "games/snake/godot/.dev/component-diagram.json"
+    },
+    {
+      "id": "boot",
+      "name": "Boot script",
+      "responsibility": "Starts the engine from the page, fills the loading bar, reports a browser that can't run it.",
+      "folder": "games/snake/bridge"
+    },
+    {
+      "id": "worker",
+      "name": "snake Worker",
+      "responsibility": "The page for signed-in players only; the engine file joined from its parts; everything else a static asset.",
+      "folder": "games/snake/worker"
+    },
+    {
+      "id": "auth",
+      "name": "icelander-auth",
+      "responsibility": "icelander.net's shared sign-in check, vendored.",
+      "folder": "vendor/icelander-auth"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "snake",
+      "to": "godot",
+      "kind": "contains",
+      "description": "The game itself."
+    },
+    {
+      "from": "snake",
+      "to": "boot",
+      "kind": "contains",
+      "description": "The page's script."
+    },
+    {
+      "from": "snake",
+      "to": "worker",
+      "kind": "contains",
+      "description": "The server side."
+    },
+    {
+      "from": "boot",
+      "to": "godot",
+      "kind": "depends-on",
+      "description": "new Engine(config).startGame() on the web export."
+    },
+    {
+      "from": "worker",
+      "to": "auth",
+      "kind": "depends-on",
+      "description": "requireRole(games:play) for the page."
+    }
+  ]
+}
