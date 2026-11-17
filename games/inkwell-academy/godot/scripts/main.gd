@@ -250,6 +250,25 @@ func _selftest() -> void:
 	check.call(lines > before2, "a teacher who sees Pip punch gives lines")
 	var shout: AudioStreamWAV = sfx["lines"]
 	check.call(shout != null and shout.get_length() > 1.0, "the lines shout is a long, loud sound")
+	# a teacher only gives lines for standing in class when he is looking Pip's way
+	var og: Chara = period["teacher"]
+	var rmk: Dictionary = ROOMS[period["room"]]
+	for n in npcs:
+		if n.kind == "pupil":
+			n.floor_i = 2; n.wy = FLOORS[2]["y"]; n.wx = 100.0; n.target = null
+	for o in T.values():
+		if o != og:
+			o.floor_i = 0; o.wy = FLOORS[0]["y"]; o.wx = 2400.0; o.target = null
+	og.floor_i = rmk["f"]; og.wy = FLOORS[og.floor_i]["y"]; og.wx = rmk["x0"] + 190.0; og.state = "idle"; og.target = null
+	period["phase"] = "teach"; period["mode"] = "write"; period["mode_until"] = period_t + 500.0
+	player.floor_i = rmk["f"]; player.wy = FLOORS[player.floor_i]["y"]; player.wx = rmk["x0"] + 500.0; player.state = "idle"; player.cool = 0.0
+	var l1 := lines
+	period["next_check"] = 0.0
+	_lesson_update(0.01)    # writing on the board: his back is turned
+	check.call(lines == l1, "a teacher with his back turned gives no lines for standing")
+	period["mode"] = "talk"; period["mode_until"] = period_t + 500.0; period["next_check"] = 0.0
+	_lesson_update(0.01)    # facing the class
+	check.call(lines > l1, "a teacher facing Pip gives lines for standing")
 	# a whole day goes by
 	for i in DAY_PLAN.size() + 2:
 		period_t = period["dur"]
@@ -1499,11 +1518,16 @@ func _lesson_update(dt: float) -> void:
 					period["chalk"] += dt * 6.0
 					bl.visible_characters = int(period["chalk"])
 			if el > period["next_check"]:
-				period["next_check"] = el + 6.0
+				# keep looking every half second; a teacher only punishes what he can see, so
+				# standing in class is safe while his back is turned (he is writing on the board)
+				period["next_check"] = el + 0.5
 				if not _in_room(player, rkey):
+					period["next_check"] = el + 6.0
 					add_lines(300, t, ["Where is Pip? {n} lines!", "Pip is absent! {n} lines!"].pick_random())
-				elif player.state != "sit":
-					t.dir = 1 if player.wx > t.wx else -1
+				elif player.state == "sit":
+					period["next_check"] = el + 6.0
+				elif _sees(t, player, 1400.0):
+					period["next_check"] = el + 6.0
 					add_lines(100, t, "Sit DOWN, Pip! {n} lines.")
 	elif ty == "dinner":
 		if period["phase"] == "gather" and el > GATHER:
