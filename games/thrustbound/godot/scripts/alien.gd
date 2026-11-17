@@ -1,6 +1,8 @@
 extends Node2D
-## Enemies. kind: 0 = ember meteor (burns up on platforms), 1 = jelly bouncer,
-## 2 = wobbling saucer, 3 = homing spike orb.
+## Enemies, one kind per level layout: 0 = ember meteor (burns up on platforms), 1 = jelly bouncer,
+## 2 = wobbling saucer, 3 = homing spike orb, 4 = drift mine (slow, bobbing), 5 = dart comet (fast, flat),
+## 6 = zigzag wasp, 7 = phase ghost (drifts through platforms towards you), 8 = dive hawk (patrols
+## high, then stoops on you), 9 = ricochet shard (fast diagonal bouncer), 10 = hunter drone (lunges).
 
 const W = preload("res://scripts/world.gd")
 const Gfx = preload("res://scripts/gfx.gd")
@@ -13,6 +15,7 @@ var t := 0.0
 var phase := 0.0
 var dead := false
 var hit_solid := false
+var mode := 0
 var rock_pts := PackedVector2Array()
 var trail: CPUParticles2D
 
@@ -36,6 +39,30 @@ func setup(k: int, pos: Vector2, dir: int, level: int, rng: RandomNumberGenerato
 			radius = 15.0
 			max_speed = 135.0 * sk
 			vel = Vector2(dir * 90.0, 0)
+		4:
+			radius = 21.0
+			vel = Vector2(dir * rng.randf_range(55, 90) * sk, 0)
+		5:
+			radius = 13.0
+			vel = Vector2(dir * minf(280.0 * sk, 460.0), 0)
+		6:
+			radius = 14.0
+			vel = Vector2(dir * rng.randf_range(100, 140) * sk, 0)
+		7:
+			radius = 17.0
+			max_speed = 78.0 * sk
+			vel = Vector2(dir * 40.0, 0)
+		8:
+			radius = 16.0
+			vel = Vector2(dir * rng.randf_range(100, 130) * sk, 0)
+		9:
+			radius = 13.0
+			var sp := minf(210.0 * sk, 340.0)
+			vel = Vector2(dir * sp, sp * (1 if rng.randf() < 0.5 else -1))
+		10:
+			radius = 15.0
+			max_speed = minf(330.0 * sk, 480.0)
+			vel = Vector2(dir * 60.0, 0)
 	for i in 9:
 		var a := TAU * float(i) / 9.0
 		rock_pts.append(Vector2(cos(a), sin(a)) * radius * rng.randf_range(0.78, 1.08))
@@ -87,6 +114,28 @@ func step(delta: float, target: Vector2) -> void:
 			var desired := Vector2(dx, target.y - position.y).normalized() * max_speed
 			vel = vel.lerp(desired, clampf(1.3 * delta, 0.0, 1.0))
 			_move_bounce(delta)
+		4:
+			vel.y = sin(t * 1.6 + phase) * 60.0
+			_move_bounce(delta)
+		5:
+			_move_bounce(delta)
+		6:
+			vel.y = cos(t * 6.0 + phase) * 170.0
+			_move_bounce(delta)
+		7:
+			var dx7 := W.wrap_dx(position.x, target.x)
+			vel = vel.lerp(Vector2(dx7, target.y - position.y).normalized() * max_speed, clampf(1.0 * delta, 0.0, 1.0))
+			position += vel * delta
+		8:
+			_step_hawk(delta, target)
+		9:
+			_move_bounce(delta)
+		10:
+			var dx10 := W.wrap_dx(position.x, target.x)
+			var lunging := fmod(t + phase, 2.2) < 0.7
+			var want := Vector2(dx10, target.y - position.y).normalized() * max_speed if lunging else Vector2.ZERO
+			vel = vel.lerp(want, clampf(6.0 * delta, 0.0, 1.0))
+			_move_bounce(delta)
 	if position.y < W.CEILING_Y + radius:
 		position.y = W.CEILING_Y + radius
 		vel.y = absf(vel.y)
@@ -94,6 +143,22 @@ func step(delta: float, target: Vector2) -> void:
 	if trail:
 		trail.direction = -vel.normalized() if vel.length() > 1.0 else Vector2.UP
 	queue_redraw()
+
+
+func _step_hawk(delta: float, target: Vector2) -> void:
+	if mode == 0:
+		vel.y = clampf((110.0 - position.y) * 2.0, -150.0, 150.0)
+		if absf(W.wrap_dx(position.x, target.x)) < 40.0 and position.y < 220.0:
+			mode = 1
+			vel = Vector2(0.0, 430.0)
+	elif mode == 1:
+		if vel.y < 0.0:
+			mode = 2
+	else:
+		vel = Vector2(signf(vel.x) * 110.0 if vel.x != 0.0 else 110.0, -170.0)
+		if position.y < 130.0:
+			mode = 0
+	_move_bounce(delta)
 
 
 func _move_bounce(delta: float) -> void:
@@ -168,3 +233,69 @@ func _draw_body() -> void:
 			draw_circle(Vector2.ZERO, radius * 0.55, Color(0.85, 0.2, 0.75))
 			draw_circle(look * 1.5, 4.2, Color(2.6, 2.3, 0.5))
 			draw_circle(look * 2.2, 1.8, Color(0.1, 0.0, 0.1))
+		4:
+			Gfx.glow(self, Vector2.ZERO, radius * 2.6, Color(2.0, 0.3, 0.3, 0.4))
+			for i in 10:
+				var a := TAU * float(i) / 10.0 + t * 0.6
+				draw_line(Vector2(cos(a), sin(a)) * radius * 0.8, Vector2(cos(a), sin(a)) * (radius + 7.0), Color(0.7, 0.72, 0.8), 3.0)
+			draw_circle(Vector2.ZERO, radius * 0.85, Color(0.22, 0.22, 0.28))
+			draw_circle(Vector2(-4, -4), radius * 0.35, Color(0.4, 0.42, 0.5))
+			var blink := 0.5 + 0.5 * sin(t * 6.0 + phase)
+			draw_circle(Vector2.ZERO, 5.0, Color(2.8 * blink + 0.4, 0.2, 0.2))
+		5:
+			var back := -vel.normalized() if vel.length() > 1.0 else Vector2.LEFT
+			Gfx.glow(self, Vector2.ZERO, radius * 3.0, Color(2.0, 1.8, 0.4, 0.5))
+			for i in 4:
+				draw_line(back * (radius + i * 9.0), back * (radius + 9.0 + i * 9.0), Color(2.4, 1.6 - i * 0.3, 0.3, 0.8 - i * 0.18), 7.0 - i * 1.5)
+			draw_circle(Vector2.ZERO, radius * 0.9, Color(2.6, 2.4, 1.2))
+			draw_circle(-back * 3.0, radius * 0.45, Color(3.0, 3.0, 2.6))
+		6:
+			var flap := sin(t * 40.0) * 0.5
+			Gfx.glow(self, Vector2.ZERO, radius * 2.4, Color(2.0, 1.3, 0.2, 0.4))
+			for sgn in [-1.0, 1.0]:
+				draw_colored_polygon(Gfx.ellipse(Vector2(sgn * 8.0, -10.0 - flap * 3.0), 10.0, 4.0 + flap * 2.0, 12), Color(0.8, 0.95, 1.0, 0.55))
+			draw_colored_polygon(Gfx.ellipse(Vector2.ZERO, radius * 0.85, radius * 0.62, 16), Color(0.95, 0.75, 0.1))
+			for bx in [-5.0, 1.0, 7.0]:
+				draw_line(Vector2(bx, -7), Vector2(bx, 7), Color(0.1, 0.07, 0.04), 3.0)
+			draw_line(Vector2(0, radius * 0.5), Vector2(0, radius + 5.0), Color(2.6, 0.5, 0.2), 2.5)
+			draw_circle(Vector2(-radius * 0.7, -2) + look, 2.5, Color(0.1, 0.0, 0.0))
+		7:
+			var a7 := 0.55 + 0.25 * sin(t * 3.0 + phase)
+			Gfx.glow(self, Vector2.ZERO, radius * 2.8, Color(0.8, 1.6, 2.0, 0.3))
+			var body7 := PackedVector2Array()
+			for i in 15:
+				var a := PI + PI * float(i) / 14.0
+				body7.append(Vector2(cos(a), sin(a)) * radius)
+			for i in 5:
+				var fx := radius - float(i) * radius * 0.5
+				body7.append(Vector2(fx, radius * (0.9 if i % 2 == 0 else 0.55) + sin(t * 5.0 + i) * 2.0))
+			draw_colored_polygon(body7, Color(0.75, 0.95, 1.1, a7))
+			for ex in [-6.0, 6.0]:
+				draw_circle(Vector2(ex, -3) + look, 3.2, Color(0.05, 0.1, 0.2))
+		8:
+			var wing := sin(t * 7.0 + phase) * 7.0
+			Gfx.glow(self, Vector2.ZERO, radius * 2.6, Color(0.2, 2.0, 1.4, 0.38))
+			var dirx := 1.0 if vel.x >= 0.0 else -1.0
+			draw_colored_polygon(PackedVector2Array([Vector2(0, -3), Vector2(-24, -10 + wing), Vector2(-8, 6)]), Color(0.1, 0.55, 0.45))
+			draw_colored_polygon(PackedVector2Array([Vector2(0, -3), Vector2(24, -10 + wing), Vector2(8, 6)]), Color(0.1, 0.55, 0.45))
+			draw_colored_polygon(Gfx.ellipse(Vector2.ZERO, 9, 13, 14), Color(0.2, 0.85, 0.65))
+			draw_colored_polygon(PackedVector2Array([Vector2(dirx * 5, -9), Vector2(dirx * 15, -4), Vector2(dirx * 5, -3)]), Color(2.6, 2.0, 0.4))
+			draw_circle(Vector2(dirx * 3, -6), 2.2, Color(0.05, 0.05, 0.1))
+		9:
+			Gfx.glow(self, Vector2.ZERO, radius * 2.8, Color(0.5, 1.4, 2.4, 0.45))
+			var rot9 := Transform2D(t * 5.0, Vector2.ZERO)
+			var shard := PackedVector2Array([Vector2(0, -radius * 1.35), Vector2(radius * 0.7, 0), Vector2(0, radius * 1.35), Vector2(-radius * 0.7, 0)])
+			draw_colored_polygon(rot9 * shard, Color(0.55, 0.85, 1.2, 0.95))
+			draw_polyline(Gfx.closed(rot9 * shard), Color(1.2, 2.2, 3.0), 2.0, true)
+			draw_line(rot9 * Vector2(0, -radius), rot9 * Vector2(0, radius), Color(1.8, 2.6, 3.0, 0.8), 1.5)
+		10:
+			var spin := t * 9.0
+			Gfx.glow(self, Vector2.ZERO, radius * 3.0, Color(2.2, 0.3, 0.8, 0.45))
+			for i in 4:
+				var a := spin + TAU * float(i) / 4.0
+				var arm := Vector2(cos(a), sin(a)) * (radius + 2.0)
+				draw_line(Vector2.ZERO, arm, Color(0.35, 0.08, 0.2), 4.0)
+				draw_circle(arm, 4.5, Color(0.9, 0.2, 0.4))
+			draw_circle(Vector2.ZERO, radius * 0.6, Color(0.25, 0.05, 0.15))
+			draw_circle(look * 1.4, 5.0, Color(2.8, 0.5, 1.0))
+			draw_circle(look * 1.8, 2.0, Color(1.0, 1.0, 1.0))
