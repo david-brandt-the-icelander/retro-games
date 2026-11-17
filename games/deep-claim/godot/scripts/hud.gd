@@ -224,8 +224,8 @@ func _draw_victory() -> void:
 	for i in rows.size():
 		var y := 315.0 + i * 40.0
 		var big: bool = i == 3
-		_text(Vector2(360, y), rows[i][0], 24 if big else 20, white if big else Color(0.75, 0.78, 0.9))
-		_text(Vector2(0, y), rows[i][1], 24 if big else 20, gold if big else white, HORIZONTAL_ALIGNMENT_RIGHT, 920)
+		_text(Vector2(360, y), rows[i][0], 24 if big else 20, Color(0.75, 0.78, 0.9))
+		_text(Vector2(0, y), rows[i][1], 24 if big else 20, gold if big else Color(0.95, 0.95, 1.0), HORIZONTAL_ALIGNMENT_RIGHT, 920)
 	if main.last_rank >= 0:
 		var msg := "NEW BEST HAUL!" if main.last_rank == 0 else "A place on the table: number %d" % (main.last_rank + 1)
 		_text(Vector2(0, 540), msg, 26, Color(2.4, 2.0, 1.0, 0.7 + 0.3 * sin(tt * 5.0)), HORIZONTAL_ALIGNMENT_CENTER, 1280)
