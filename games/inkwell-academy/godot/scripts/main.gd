@@ -179,6 +179,20 @@ func _selftest() -> void:
 	check.call(lines > 0, "firing where a teacher can see costs lines")
 	await frames.call(150)
 	check.call(vane.state == "down", "a pea knocks a teacher down")
+	# a pea that hits a teacher who is looking at Pip costs more lines than one that hits his back
+	vane.state = "idle"; vane.wx = 2500.0; vane.dir = 1; vane.target = null
+	player.wx = 2150.0; player.dir = 1; player.fire_cd = 0.0
+	var l0 := lines
+	pellets.append({"x": 2480.0, "f": 1, "dir": 1, "dist": 0.0, "n": _spr("res://art/pea.svg", Vector2(2480, 500), 0.5)})
+	_pellets_update(0.01)
+	await frames.call(150)
+	check.call(lines - l0 < 800, "a pea in a teacher's back does not cost the looking-at-you lines")
+	vane.state = "idle"; vane.wx = 2500.0; vane.dir = -1; vane.target = null
+	l0 = lines
+	pellets.append({"x": 2480.0, "f": 1, "dir": 1, "dist": 0.0, "n": _spr("res://art/pea.svg", Vector2(2480, 500), 0.5)})
+	_pellets_update(0.01)
+	await frames.call(150)
+	check.call(lines - l0 >= 800, "a pea at a teacher who is looking at Pip costs 800+ lines")
 	# the bell rope needs every crest, and the Head out of his study
 	for cr in crests:
 		if not cr["lit"]:
@@ -1679,6 +1693,9 @@ func _pellets_update(dt: float) -> void:
 		if not done:
 			for t in T.values():
 				if t.floor_i == pl["f"] and t.state != "down" and t.state != "stairs" and absf(t.wx - pl["x"]) < 28.0:
+					# hit while looking straight at Pip: he saw exactly who fired
+					if t.dir == -int(pl["dir"]):
+						later(0.5, func(): add_lines(800, t, "Shooting at a TEACHER, Pip?! {n} lines!"))
 					t.state = "down"
 					t.down_until = gt + 4.0
 					t.target = null
