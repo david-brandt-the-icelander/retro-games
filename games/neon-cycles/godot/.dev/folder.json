@@ -8,9 +8,9 @@
       "id": "folder",
       "title": "The Godot project",
       "summary": "The game itself, for Godot 4.7: one scene whose script builds the arena, lighting, camera and HUD in code, and the riders, trails and effects.",
-      "purpose": "scenes/main.tscn is one node; scripts/main.gd runs rounds and resolves collisions, scripts/light_cycle.gd is a rider (movement, trail walls, AI, model, crash), scripts/minimap.gd draws the radar, shaders/ holds the light-wall and grid-floor shaders, and tests/ holds the headless test.",
+      "purpose": "scenes/main.tscn is one node; scripts/main.gd runs rounds and resolves collisions, scripts/light_cycle.gd is a rider (movement, trail walls, AI, model, crash), scripts/sfx.gd synthesises the sound, scripts/minimap.gd draws the radar, shaders/ holds the light-wall and grid-floor shaders, and tests/ holds the headless test.",
       "boundaries": [
-        "No imported assets: every mesh, material and effect is made in code or a shader.",
+        "No imported assets: every mesh, material, effect and sound is made in code or a shader.",
         "Collision does not use the physics engine: riders move on axis-aligned lines, so every trail segment is a rectangle in the XZ plane, and each tick sweeps each rider's front against them.",
         "web_shell/ and tests/ are left out of the export (export_presets.cfg)."
       ],

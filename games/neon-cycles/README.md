@@ -15,6 +15,7 @@ At [icelander.net/games/retro/neon-cycles](https://icelander.net/games/retro/neo
 | Turn left / right | A / D or ← / → | Tap the left or right half of the screen | LB / RB or d-pad |
 | Boost (uses energy, which refills) | Space, W or ↑ | | A |
 | Pause | Esc or P | | |
+| Sound on / off | M | | |
 | Restart the round | R | | Back |
 | Skip ahead after crashing, new match | Enter | Tap | Start |
 
@@ -39,6 +40,7 @@ Building needs Godot 4.7.2 and its web export templates (set `GODOT` to its path
 | `godot/scenes/main.tscn` | The one scene: a node whose script builds everything else |
 | `godot/scripts/main.gd` | Rounds and scores, the arena and skyline, lighting, the camera, the HUD, collisions and the rays the AI uses |
 | `godot/scripts/light_cycle.gd` | A rider: movement, boost, trail walls, the AI, the bike model, and the crash and derez effects |
+| `godot/scripts/sfx.gd` | The sound: the engine hum and every effect are synthesised in code when the game starts |
 | `godot/scripts/minimap.gd` | The radar in the top right |
 | `godot/shaders/` | The light walls (trails and the arena edge) and the glossy grid floor |
 | `godot/web_shell/shell.html` | The page the web export is written into |

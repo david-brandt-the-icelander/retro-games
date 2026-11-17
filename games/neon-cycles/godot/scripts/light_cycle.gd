@@ -124,6 +124,8 @@ func turn(sign_dir: int) -> void:
 	trail_points.append(Vector2(position.x, position.z))
 	_start_wall()
 	_lean = clamp(_lean + sign_dir * 0.55, -0.7, 0.7)
+	if is_player and game.get("sfx") != null:
+		game.sfx.play("turn", -2.0)
 
 
 ## Collision rect of the live (growing) trail segment.
