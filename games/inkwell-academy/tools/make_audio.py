@@ -68,14 +68,47 @@ for i, fr in enumerate([784, 988, 1175, 1568, 1976]):
     place(buf, bell(fr, 0.8, ((1, 1), (3, .2), (4.2, .1)), decay=5), i * 0.07)
 save('crest', buf, 0.55)
 
-# lines: a gentle "uh-oh" (two descending soft tones)
-buf = np.zeros(int(SR * 0.7))
-for i, fr in enumerate([440, 330]):
-    tt = t(0.32)
-    s = (np.sin(2 * np.pi * fr * tt) + 0.3 * np.sin(2 * np.pi * fr * 2 * tt) + 0.15 * np.sin(2 * np.pi * fr * 3 * tt))
-    s *= env(len(tt), 0.01, 7) * (1 + 0.05 * np.sin(2 * np.pi * 6 * tt))
-    place(buf, s, i * 0.2)
-save('lines', buf, 0.55)
+# lines: a teacher screaming. A rasping, over-driven voice shouting a sharp "SIT DOWN!" on a rising-then-falling
+# pitch, run through vowel formants, with breath noise, a shaky vibrato and hard clipping.
+def formant(x, fc, bw):
+    # two-pole resonator
+    r = np.exp(-np.pi * bw / SR)
+    th = 2 * np.pi * fc / SR
+    a1, a2 = -2 * r * np.cos(th), r * r
+    y = np.zeros(len(x))
+    for i in range(2, len(x)):
+        y[i] = x[i] - a1 * y[i - 1] - a2 * y[i - 2]
+    return y
+
+
+rng_l = np.random.default_rng(7)
+dur = 1.25
+tt = t(dur)
+n = len(tt)
+# pitch: a hard jump up, a shouted plateau with a ragged wobble, then a falling bark
+f0 = np.interp(tt, [0, 0.05, 0.25, 0.75, 1.1, dur], [260, 520, 600, 560, 430, 300])
+f0 *= 1 + 0.035 * np.sin(2 * np.pi * 9.5 * tt) + 0.02 * rng_l.normal(0, 1, n).cumsum() / np.sqrt(np.arange(1, n + 1))
+phase = 2 * np.pi * np.cumsum(f0) / SR
+src = np.zeros(n)
+for k in range(1, 40):                       # bright, buzzy glottal source: many strong harmonics
+    src += np.sin(k * phase) / (k ** 0.7)
+src += rng_l.normal(0, 1, n) * 0.35          # rasp
+# two syllables: SIT (short) ... DOWN! (long), with a gap
+amp = np.interp(tt, [0, 0.03, 0.30, 0.34, 0.42, 0.46, 0.60, 1.0, dur], [0, 1, 0.9, 0.2, 0.15, 1.0, 1.0, 0.8, 0])
+src *= amp
+f1 = formant(src, 800, 140)                  # open, strained "aah"
+f2 = formant(src, 1500, 220)
+f3 = formant(src, 2700, 300)
+voice = f1 + 0.9 * f2 + 0.7 * f3
+voice += 0.4 * np.sin(2 * np.pi * np.cumsum(f0 * 2.01) / SR) * amp   # a screechy edge
+voice = voice / (np.max(np.abs(voice)) + 1e-9)
+voice = np.tanh(voice * 6.0)                 # shout it into distortion
+voice = np.clip(voice * 1.3, -1, 1)
+# a snap of consonant noise at the start of each syllable
+for at in (0.0, 0.43):
+    tn = t(0.07)
+    place(voice, rng_l.normal(0, 1, len(tn)) * env(len(tn), 0.001, 55) * 0.9, at)
+save('lines', voice, 0.98)
 
 # punch / thud
 tt = t(0.3)

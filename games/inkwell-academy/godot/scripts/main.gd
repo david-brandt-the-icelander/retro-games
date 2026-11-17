@@ -169,7 +169,7 @@ func _selftest() -> void:
 			n.floor_i = 2; n.wy = FLOORS[2]["y"]; n.wx = 100.0
 	player.floor_i = 1; player.wy = FLOORS[1]["y"]; player.wx = 2150.0; player.dir = 1; player.state = "idle"
 	_fire()
-	await frames.call(30)
+	await frames.call(150)
 	check.call(_lit_count() == 1 and lines == 0, "an unseen pea lights a crest without lines")
 	# firing in front of a teacher costs lines
 	var vane: Chara = T["vane"]
@@ -177,7 +177,7 @@ func _selftest() -> void:
 	player.fire_cd = 0.0
 	_fire()
 	check.call(lines > 0, "firing where a teacher can see costs lines")
-	await frames.call(30)
+	await frames.call(150)
 	check.call(vane.state == "down", "a pea knocks a teacher down")
 	# the bell rope needs every crest, and the Head out of his study
 	for cr in crests:
@@ -189,6 +189,53 @@ func _selftest() -> void:
 	var before := lines
 	_try_rope()
 	check.call(bells == 1 and lines == maxi(0, before - 3000) and _lit_count() == 0, "the Founder's Bell gives a half-holiday")
+	# seating: only at a desk, one kid per desk, a punched kid loses the desk, a kid in Pip's desk shoves Pip
+	for t in T.values():
+		t.floor_i = 0; t.wy = FLOORS[0]["y"]; t.wx = 4300.0; t.target = null
+	var rm1: Dictionary = ROOMS["room1"]
+	var kid: Chara = null
+	for n in npcs:
+		if n.id == "dot":
+			kid = n
+	player.floor_i = 2; player.wy = FLOORS[2]["y"]; player.state = "idle"; player.dir = 1
+	player.wx = rm1["x0"] + 100.0
+	_player_sit()
+	check.call(player.state == "idle", "Pip cannot sit anywhere but at a desk")
+	kid.floor_i = 2; kid.wy = FLOORS[2]["y"]; kid.wx = _desk_x(rm1, 3); kid.state = "sit"; kid.dir = -1; kid.target = null
+	player.wx = _desk_x(rm1, 3) + 12.0
+	_player_sit()
+	check.call(player.state == "idle", "Pip cannot sit at a desk someone is sitting at")
+	player.wx = _desk_x(rm1, 3) + 60.0; player.dir = -1; player.fire_cd = 0.0
+	_punch()
+	check.call(player.punch_p >= 0.0, "Pip's punch starts its animation")
+	_punch_lands()
+	check.call(kid.state == "down", "punching a sitting kid knocks them to the floor")
+	player.wx = _desk_x(rm1, 3) + 5.0
+	_player_sit()
+	check.call(player.state == "sit" and absf(player.wx - _desk_x(rm1, 3)) < 1.0, "Pip takes the emptied seat")
+	kid.state = "idle"; kid.wx = _desk_x(rm1, 3) + 5.0
+	check.call(not _pupil_takes_seat(kid, "room1", 3), "the knocked kid cannot just sit back down")
+	player.state = "idle"; player.wx = _desk_x(rm1, PLAYER_SEAT); _player_sit()
+	check.call(player.state == "sit", "Pip sits at Pip's own desk")
+	check.call(_pupil_takes_seat(kid, "room1", PLAYER_SEAT) and player.state == "down" and player.to_floor, "a kid taking Pip's desk shoves Pip to the floor")
+	await frames.call(2)
+	player.down_until = 0.0
+	await frames.call(4)
+	check.call(player.state == "floor", "Pip is left sitting on the floor")
+	var before2 := lines
+	vane.floor_i = 2; vane.wy = FLOORS[2]["y"]; vane.wx = player.wx - 200.0; vane.dir = 1; vane.state = "idle"; vane.target = null
+	player.cool = 0.0
+	await frames.call(4)
+	check.call(lines > before2, "a teacher who sees Pip on the floor gives lines")
+	player.state = "idle"
+	before2 = lines
+	player.fire_cd = 0.0; player.dir = 1; player.wx = kid.wx - 50.0; kid.state = "idle"
+	vane.wx = player.wx - 150.0; vane.dir = 1; vane.target = null
+	_punch()
+	_punch_lands()
+	check.call(lines > before2, "a teacher who sees Pip punch gives lines")
+	var shout: AudioStreamWAV = sfx["lines"]
+	check.call(shout != null and shout.get_length() > 1.0, "the lines shout is a long, loud sound")
 	# a whole day goes by
 	for i in DAY_PLAN.size() + 2:
 		period_t = period["dur"]
@@ -581,7 +628,7 @@ func _title_text() -> String:
 		+ "[b][color=#c0392b]10,000 lines and you're expelled.[/color][/b]\n\n"
 		+ "[font_size=24][color=#6a5a7a]Teachers only see what's in front of them. Peas fly over pupils' heads, but not teachers'. "
 		+ "Watch out for [b]Knuckles[/b] (thumps you) and [b]Tattle[/b] (tells on you). The Head leaves his study at dinner time.[/color][/font_size]\n\n"
-		+ "[center][font_size=24][b]Left / Right[/b] walk    [b]Up / Down[/b] stairs    [b]S[/b] sit / stand    [b]F[/b] or [b]Space[/b] pea-shooter    [b]E[/b] bell rope    [b]P[/b] pause    [b]M[/b] sound[/font_size]\n\n"
+		+ "[center][font_size=24][b]Left / Right[/b] walk    [b]Up / Down[/b] stairs    [b]S[/b] sit at a desk / stand    [b]X[/b] punch    [b]F[/b] or [b]Space[/b] pea-shooter    [b]E[/b] bell rope    [b]P[/b] pause    [b]M[/b] sound[/font_size]\n\n"
 		+ "[font_size=34][b][color=#2f6e5a]Press Enter or click to start[/color][/b][/font_size][/center]")
 
 
@@ -709,7 +756,7 @@ func _update_hud() -> void:
 		if not _in_room(c, info["room"]):
 			w = "Go to " + info["place"]
 		elif period["type"] != "dinner" and c.state != "sit":
-			w = "In class — press S to sit"
+			w = "In class — find a desk and press S"
 		else:
 			w = "Eating dinner" if period["type"] == "dinner" else "Sitting quietly…"
 	elif not period.is_empty() and period["type"] == "play":
@@ -853,6 +900,7 @@ func _start_period(i: int) -> void:
 			c.target = null
 			c.arrived = true
 			c.wait_until = 0.0
+		c.seat = -9
 	_play("bell")
 	var info := _period_info()
 	if ty == "home":
@@ -922,7 +970,7 @@ func add_lines(base: int, speaker: Chara, msg: String) -> void:
 	if speaker:
 		say(speaker, text)
 	log_msg(("%s: " % speaker.cname if speaker else "") + text, "bad")
-	_play("lines")
+	_play("lines", 6.0)
 	var tw := create_tween()
 	hud.lines.pivot_offset = hud.lines.size / 2.0
 	tw.tween_property(hud.lines, "scale", Vector2(1.25, 1.25), 0.08)
@@ -1088,6 +1136,8 @@ func _step_npc(c: Chara, dt: float) -> void:
 	if c.state == "down":
 		if gt > c.down_until:
 			c.state = "idle"
+			c.target = null
+			c.arrived = true
 			if c.kind == "teacher":
 				_on_teacher_wake(c)
 		return
@@ -1104,9 +1154,19 @@ func _step_npc(c: Chara, dt: float) -> void:
 			c.wx = tg["x"]
 			if not c.arrived:
 				c.arrived = true
-				c.state = "sit" if tg["sit"] else "idle"
+				c.state = "idle"
 				if tg["sit"]:
 					c.dir = -1
+					var key := _class_room(c)
+					if key != "":
+						var si := _seat_index_at(key, tg["x"])
+						if _pupil_takes_seat(c, key, si):
+							c.state = "sit"
+						elif c.kind == "pupil":
+							# its desk is taken: try Pip's own desk, otherwise stand about
+							c.seat = PLAYER_SEAT if si != PLAYER_SEAT else NO_SEAT
+					else:
+						c.state = "sit"
 			elif c.state == "walk":
 				c.state = "idle"
 			return
@@ -1139,8 +1199,97 @@ func _awake(c: Chara) -> bool:
 	return c.state != "down"
 
 
+func _seat_index_at(key: String, x: float) -> int:
+	var rm: Dictionary = ROOMS[key]
+	for i in 11:
+		if absf(_desk_x(rm, i) - x) < 6.0:
+			return i
+	return NO_SEAT
+
+
 func _desk_x(rm: Dictionary, i: int) -> float:
 	return roundf(lerpf(rm["x0"] + 375.0, rm["x1"] - 52.0, i / 10.0))
+
+
+const PLAYER_SEAT := 10     # the eleventh desk in every classroom is Pip's own
+const SEAT_REACH := 46.0
+const PUNCH_REACH := 92.0
+const NO_SEAT := -1
+
+
+## The classroom a character is standing in, or "" when it is not in one.
+func _class_room(c: Chara) -> String:
+	for k in ROOMS:
+		if ROOMS[k].get("board", false) and _in_room(c, k):
+			return k
+	return ""
+
+
+## Who is sitting at desk `i` of room `key`: one kid per table.
+func _seat_occupant(key: String, i: int) -> Chara:
+	var rm: Dictionary = ROOMS[key]
+	var x := _desk_x(rm, i)
+	for c in chars:
+		if c.state == "sit" and c.floor_i == rm["f"] and absf(c.wx - x) < 6.0:
+			return c
+	return null
+
+
+## The desk nearest to a character, when it is close enough to sit at; NO_SEAT otherwise.
+func _seat_near(c: Chara) -> int:
+	var key := _class_room(c)
+	if key == "":
+		return NO_SEAT
+	var rm: Dictionary = ROOMS[key]
+	var best := NO_SEAT
+	var bd := SEAT_REACH
+	for i in 11:
+		var d := absf(_desk_x(rm, i) - c.wx)
+		if d < bd:
+			bd = d
+			best = i
+	return best
+
+
+## Pip tries to sit. Only a desk will do, and a desk with someone at it is not free.
+func _player_sit() -> void:
+	var c := player
+	var i := _seat_near(c)
+	if i == NO_SEAT:
+		say(c, "I can only sit at a desk!", 1.6)
+		return
+	var key := _class_room(c)
+	if _seat_occupant(key, i) != null:
+		say(c, "Someone's already sitting there!", 1.6)
+		return
+	c.wx = _desk_x(ROOMS[key], i)
+	c.dir = -1
+	c.state = "sit"
+
+
+## A pupil has walked to its desk. The desk must be free; a pupil never shoves Pip out of
+## a desk that is not Pip's own, but anybody who takes Pip's own desk shoves Pip to the floor.
+func _pupil_takes_seat(c: Chara, key: String, i: int) -> bool:
+	var sitter := _seat_occupant(key, i)
+	if sitter != null and sitter != player:
+		return false
+	if sitter == player:
+		if i != PLAYER_SEAT:
+			return false
+		_shove_to_floor(player, c)
+	return true
+
+
+func _shove_to_floor(victim: Chara, by: Chara) -> void:
+	victim.state = "down"
+	victim.down_until = gt + 0.9
+	victim.to_floor = true
+	victim.moved = 0.0
+	say(by, ["Mine now!", "Shove over, Pip!", "That's my spot!"].pick_random(), 1.8)
+	log_msg("%s shoves you out of your seat!" % by.cname, "bad")
+	_play("punch")
+	_shake(7.0)
+	_burst(Vector2(victim.wx, victim.wy - 40.0), Color("ffe08a"), 10)
 
 
 func _wander(c: Chara, area) -> void:
@@ -1172,7 +1321,11 @@ func _pupil_duty(c: Chara) -> void:
 		return
 	if ty == "reg" or ty == "lesson":
 		var rm: Dictionary = ROOMS[period["room"]]
-		_set_target(c, rm["f"], _desk_x(rm, c.desk), true)
+		var want: int = c.desk if c.seat == -9 else c.seat
+		if want == NO_SEAT:
+			_wander(c, rm)
+		else:
+			_set_target(c, rm["f"], _desk_x(rm, want), true)
 	elif ty == "play":
 		_wander(c, ROOMS["yard"])
 	elif ty == "dinner":
@@ -1199,6 +1352,8 @@ func _teacher_duty(t: Chara) -> void:
 func _bully_update(k: Chara) -> bool:
 	if k.state == "down":
 		return true
+	if k.special == "punching":
+		return true
 	var ty: String = period["type"]
 	var calm: bool = (ty == "lesson" or ty == "reg") and period["phase"] == "teach"
 	if k.special == "chase":
@@ -1210,17 +1365,19 @@ func _bully_update(k: Chara) -> bool:
 			return false
 		k.speed = 285.0
 		_set_target(k, player.floor_i, player.wx)
-		if k.floor_i == player.floor_i and k.state != "stairs" and player.state != "stairs" and absf(k.wx - player.wx) < 45.0:
-			player.state = "down"
-			player.down_until = gt + 1.6
-			say(k, ["Gotcha, Pip!", "Take that!", "Ha! Too slow!"].pick_random())
-			log_msg("Knuckles knocks you flat!", "bad")
-			_play("punch")
-			_shake(10.0)
-			k.special = ""
-			k.next_bully = gt + randf_range(18, 30) / (1.0 + 0.1 * (day - 1))
+		if k.floor_i == player.floor_i and k.state != "stairs" and player.state != "stairs" and absf(k.wx - player.wx) < 78.0:
+			# wind up and throw the punch; it lands a moment later if Pip is still in reach
+			k.special = "punching"
 			k.target = null
+			k.arrived = true
+			k.state = "idle"
+			k.moved = 0.0
+			k.dir = 1 if player.wx > k.wx else -1
 			k.speed = k.base_speed
+			k.start_punch()
+			say(k, ["Gotcha, Pip!", "Take that!", "Ha! Too slow!"].pick_random())
+			_play("whoosh", -4.0)
+			later(0.13, func(): _knuckles_lands(k))
 		return true
 	if not calm and gt > k.next_bully and player.state != "down" and mode == "play":
 		k.special = "chase"
@@ -1228,6 +1385,22 @@ func _bully_update(k: Chara) -> bool:
 		say(k, "Oi, Pip! C'mere!")
 		return true
 	return false
+
+
+func _knuckles_lands(k: Chara) -> void:
+	k.special = ""
+	k.next_bully = gt + randf_range(18, 30) / (1.0 + 0.1 * (day - 1))
+	if mode != "play" or k.state == "down":
+		return
+	if k.floor_i == player.floor_i and player.state != "stairs" and player.state != "down" and absf(k.wx - player.wx) < 100.0:
+		player.state = "down"
+		player.down_until = gt + 1.6
+		player.to_floor = false
+		player.dir = -k.dir
+		log_msg("Knuckles knocks you flat!", "bad")
+		_play("punch")
+		_shake(10.0)
+		_burst(Vector2(player.wx - k.dir * 8.0, player.wy - 70.0), Color("fff0a0"), 14)
 
 
 func _nearest_teacher(c: Chara) -> Chara:
@@ -1344,8 +1517,14 @@ func _player_update(dt: float) -> void:
 	var D := Input.is_key_pressed(KEY_DOWN)
 	if c.state == "down":
 		if gt > c.down_until:
-			c.state = "idle"
+			c.state = "floor" if c.to_floor else "idle"
+			c.to_floor = false
 		return
+	if c.state == "floor":
+		if L or R or U or D:
+			c.state = "idle"
+		else:
+			return
 	if c.state == "stairs":
 		var d := 0.0
 		if U or R:
@@ -1390,12 +1569,13 @@ func _fire() -> void:
 	if c.state == "stairs":
 		say(c, "Can't aim on the stairs!", 1.5)
 		return
+	if c.state == "sit" or c.state == "floor":
+		say(c, "Can't aim from down here!", 1.5)
+		return
 	c.fire_cd = gt + 0.55
-	var y: float = FLOORS[c.floor_i]["y"] - PELLET_H
-	var n := _spr("res://art/pea.svg", Vector2(c.wx + c.dir * 30.0, y), 0.55)
-	n.z_index = 20
-	world.add_child(n)
-	pellets.append({"x": c.wx + c.dir * 30.0, "f": c.floor_i, "dir": c.dir, "dist": 0.0, "n": n})
+	c.start_fire()
+	# the pea leaves the tube when the puff does
+	later(0.1, func(): _spawn_pellet(c, c.dir, c.floor_i))
 	_play("fire")
 	var caught := false
 	for t in T.values():
@@ -1412,6 +1592,79 @@ func _fire() -> void:
 		tt.tell_until = gt + 25.0
 		say(tt, "Ooh! I'm telling!")
 		log_msg("Tattle saw that… and is off to tell a teacher!", "bad")
+
+
+func _spawn_pellet(c: Chara, dirn: int, f: int) -> void:
+	if mode != "play" or c.state == "down" or c.state == "stairs":
+		return
+	var y: float = FLOORS[f]["y"] - PELLET_H
+	var x := c.wx + dirn * 52.0
+	var n := _spr("res://art/pea.svg", Vector2(x, y), 0.55)
+	n.z_index = 20
+	world.add_child(n)
+	pellets.append({"x": x, "f": f, "dir": dirn, "dist": 0.0, "n": n})
+	_burst(Vector2(x, y), Color("d8f5c0"), 5)
+
+
+## Pip throws a punch. Whoever is in front, in reach, is knocked to the floor; any teacher
+## who sees it gives lines.
+func _punch() -> void:
+	var c := player
+	if c.state != "idle" and c.state != "walk":
+		return
+	if gt < c.fire_cd:
+		return
+	c.fire_cd = gt + 0.6
+	c.moved = 0.0
+	c.start_punch()
+	_play("whoosh", -4.0)
+	later(0.13, func(): _punch_lands())
+
+
+func _punch_lands() -> void:
+	var c := player
+	if mode != "play" or c.state == "down" or c.state == "stairs":
+		return
+	var victim: Chara = null
+	var bd := PUNCH_REACH
+	for n in npcs:
+		if n.kind != "pupil" or n.floor_i != c.floor_i or n.state == "down" or n.state == "stairs":
+			continue
+		var dx: float = n.wx - c.wx
+		if signf(dx) == c.dir and absf(dx) < bd:
+			bd = absf(dx)
+			victim = n
+	if victim != null:
+		victim.state = "down"
+		victim.down_until = gt + 3.5
+		victim.to_floor = false
+		victim.target = null
+		victim.arrived = true
+		victim.wait_until = 0.0
+		victim.special = ""
+		victim.dir = -c.dir
+		say(victim, ["Ow!", "Oi!", "Ooof!"].pick_random(), 1.4)
+		_play("punch")
+		_shake(6.0)
+		_burst(Vector2(victim.wx - c.dir * 10.0, victim.wy - 70.0), Color("fff0a0"), 12)
+		log_msg("You punch %s to the floor." % victim.cname)
+	for t in T.values():
+		if _sees(t, c, 640.0):
+			var what := "Hitting people! {n} lines, Pip!" if victim != null else "No fighting, Pip! {n} lines."
+			add_lines(500 if victim != null else 300, t, what)
+			break
+
+
+## Pip sitting on the floor, in plain view, is a caution.
+func _floor_update() -> void:
+	var c := player
+	if c.state != "floor" or gt < c.cool:
+		return
+	for t in T.values():
+		if _sees(t, c, 640.0):
+			c.cool = gt + 6.0
+			add_lines(200, t, "Get up off that floor, Pip! {n} lines.")
+			return
 
 
 func _pellets_update(dt: float) -> void:
@@ -1560,7 +1813,13 @@ func _unhandled_input(ev: InputEvent) -> void:
 			log_msg("Sound off." if muted else "Sound on.")
 		KEY_S:
 			if mode == "play" and player.state != "down" and player.state != "stairs":
-				player.state = "idle" if player.state == "sit" else "sit"
+				if player.state == "sit" or player.state == "floor":
+					player.state = "idle"
+				else:
+					_player_sit()
+		KEY_X, KEY_Z:
+			if mode == "play":
+				_punch()
 		KEY_F, KEY_SPACE:
 			if mode == "play":
 				_fire()
@@ -1633,6 +1892,7 @@ func _tick(dt: float) -> void:
 	_lesson_update(dt)
 	if mode != "play":
 		return
+	_floor_update()
 	if (period["type"] == "play" or period["type"] == "dinner") and gt > next_chat:
 		next_chat = gt + randf_range(5, 9)
 		var kids := npcs.filter(func(n): return n.kind == "pupil" and n.special == "" and n.state != "down")
