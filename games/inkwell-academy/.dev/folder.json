@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Inkwell Academy",
+  "folder": "games/inkwell-academy",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Inkwell Academy",
+      "summary": "An original school-day caper for the browser, made in Godot 4: follow the timetable, dodge lines, light the school's eight crests and ring the Founder's Bell.",
+      "purpose": "Holds the whole game: the Godot project in godot/, the generators of its art and sound in tools/, the page's loader and headers in web/, the Worker that serves it behind the sign-in in worker/, and the Worker's tests in test/. It is one npm project and one Cloudflare Worker.",
+      "boundaries": [
+        "The sign-in is icelander.net's; the Worker checks it with the shared library in vendor/icelander-auth/, never edited here.",
+        "There is no server-side state: the best score is kept in the player's browser."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/inkwell-academy/README.md",
+          "symbol": "Code"
+        },
+        {
+          "path": "games/inkwell-academy/wrangler.jsonc",
+          "symbol": "main"
+        }
+      ]
+    }
+  ]
+}
