@@ -5,7 +5,9 @@ An original school-day caper, made in Godot 4 for the web and served at
 
 You are Pip, a pupil at a three-storey school. Follow the timetable: get to each lesson's room and sit
 down before the teacher starts checking, or collect lines. Teachers only see what is in front of them.
-Light all eight school crests with your pea-shooter, then pull the Founder's Bell rope in the Head's
+Only a desk is a seat, and only one kid sits at each: punch a sitting kid and they hit the floor, so you can
+take the seat; but if a kid takes *your* desk you are shoved to the floor, and a teacher who spots you
+punching or sitting on the floor gives you lines (with a furious scream). Light all eight school crests with your pea-shooter, then pull the Founder's Bell rope in the Head's
 study for a half-holiday (+5,000 points and 3,000 lines forgiven). Knuckles knocks you flat between
 lessons, and Tattle tells a teacher if he sees you fire. 10,000 lines and you're expelled.
 
@@ -13,7 +15,8 @@ lessons, and Tattle tells a teacher if he sees you fire. 10,000 lines and you're
 |---|---|
 | Walk | ←/→ or A/D |
 | Stairs | ↑/↓ (or W) at the foot or head of a staircase |
-| Sit / stand | S |
+| Sit / stand (at a desk only) | S |
+| Punch | X or Z |
 | Pea-shooter | F or Space |
 | Bell rope | E |
 | Pause / sound | P or Esc / M |
