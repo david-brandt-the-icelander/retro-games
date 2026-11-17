@@ -43,36 +43,197 @@ const SUBJECTS := {
 	"register": {"name": "Registration", "room": "room1", "teacher": "ogle",
 		"boards": ["Register — Day {day}"], "open": "Good morning! Answer your names, please.",
 		"talk": ["Dot? Wilf? Ada? Good.", "Reg, stop yawning.", "Is Pip here? Ah, yes.", "Notices: no running in corridors.",
-			"Lunch money goes in the tin.", "Mo, where is your tie?", "Say 'here', don't just wave.", "Bas, shoes on, please.", "The raffle is on Friday."]},
+			"Lunch money goes in the tin.", "Mo, where is your tie?", "Say 'here', don't just wave.", "Bas, shoes on, please.", "The raffle is on Friday.",
+			"Whoever has my chalk, return it.",
+			"Quiet while I mark the register.",
+			"Lateness is a disease. Cure it.",
+			"Hair ribbons are not optional, Nell.",
+			"Who forgot their book bag?",
+			"Reg, that is not your name. Is it?",
+			"I want a clean desk from everyone.",
+			"Note: the hamster is NOT a class pet.",
+			"Wilf, take that off your head.",
+			"Homework in the tray, please.",
+			"Does anyone have a tissue?",
+			"Good morning, good morning, good MORNING.",
+			"Sit up, Dot, I can hear you slouching.",
+			"Pupils absent: nobody. Miraculous.",
+			"Mo, button your blazer.",
+			"The Head says smile. So smile.",
+			"Late slips go on my desk.",
+			"Ink stains are not a uniform.",
+			"Say your names clearly, please.",
+			"Another day, another register.",
+			"Who is humming?",
+			"Coats on pegs, not on chairs.",
+			"I will not repeat the notices.",
+			"Ivy, stop doodling the Head.",
+			"Sports kit is Thursday. Remember!",
+			"Wipe your feet, wipe your noses.",
+			"Registration is a serious business."]},
 	"geography": {"name": "Geography", "room": "map", "teacher": "ogle",
 		"boards": ["Rivers of the world", "Mountains and how to climb them", "Rainfall: why?"], "open": "Atlases open, class.",
 		"talk": ["Who can find Peru?", "Rivers flow downhill. Mostly.", "That's not a lake, Mo. It's a coffee stain.", "Copy the map. Neatly!",
-			"North is up. Usually.", "A delta is not a type of biscuit.", "Where does the Nile end?", "Colour in the sea BLUE, Reg.", "Mountains are tall. Remember that."]},
+			"North is up. Usually.", "A delta is not a type of biscuit.", "Where does the Nile end?", "Colour in the sea BLUE, Reg.", "Mountains are tall. Remember that.",
+			"The equator is imaginary. Truly.",
+			"Which way is east, Wilf?",
+			"Islands are land with ambitions of being lonely.",
+			"The Amazon is not a delivery company.",
+			"Volcanoes are NOT for climbing.",
+			"Glaciers move slowly. Be like a glacier. Quietly.",
+			"Capital cities, children, capital cities!",
+			"Latitude goes sideways. Longitude goes up.",
+			"Use a ruler for the coastline.",
+			"A desert gets very little rain. Very little.",
+			"Who knows the longest river?",
+			"Find the Alps. They're big.",
+			"Don't colour the whole map green.",
+			"Tides come in and go out. Like Mo's lunch.",
+			"Antarctica is cold. No, you cannot go.",
+			"Oceans are wet. Write that down.",
+			"Is that Africa or Australia, Reg?",
+			"The Sahara is a desert, not a beach.",
+			"Mountains have peaks. Peaks have snow.",
+			"Maps have keys. Use the key.",
+			"Rain falls from clouds. Clouds are not made of cotton wool.",
+			"The Thames is in London. Mostly.",
+			"Count the islands. All of them.",
+			"Where do you live on this map?",
+			"Points of the compass: N, E, S, W.",
+			"If you are lost, look at the map."]},
 	"maths": {"name": "Maths", "room": "room1", "teacher": "ogle",
 		"boards": ["Long division:  147 ÷ 7", "Fractions:  3/4 + 1/8 = ?", "Angles in a triangle"], "open": "Pencils sharpened? Good.",
 		"talk": ["Seven eights are fifty-six.", "Show your working!", "Carry the one...", "Nobody touch the protractors.",
-			"Is that a three or an eight, Ada?", "Fractions are friends.", "Divide, then check. Always check.", "A triangle has three sides. Three!", "No calculators. Brains!"]},
+			"Is that a three or an eight, Ada?", "Fractions are friends.", "Divide, then check. Always check.", "A triangle has three sides. Three!", "No calculators. Brains!",
+			"Nine nines are eighty-one.",
+			"Decimals have points. Mind them.",
+			"Is that a plus or a minus, Dot?",
+			"Show me the remainder.",
+			"Ruler! Ruler! Where is your ruler?",
+			"Percentages are not scary.",
+			"Square numbers: one, four, nine, sixteen.",
+			"A circle has no corners, Bas.",
+			"Multiply first. Then add.",
+			"Check it twice. Check it thrice.",
+			"Right angles are exactly ninety degrees.",
+			"Long division is a long journey.",
+			"Wilf, that is not an equation. That is a face.",
+			"Prime numbers are lonely numbers.",
+			"Half of ten is five. Half of five is... hmm.",
+			"Keep your columns straight.",
+			"Perimeter: go all the way round.",
+			"Area is not the same as perimeter!",
+			"Zero times anything is zero. Anything!",
+			"Count in sevens. Slowly.",
+			"Use a pencil, not a pen. Mistakes happen.",
+			"Nell, you have carried the wrong one.",
+			"Maths is everywhere. Even in dinner.",
+			"Estimate first, calculate second.",
+			"Graphs need titles. And labels. And patience.",
+			"Four sevens are twenty-eight. Write that."]},
 	"science": {"name": "Science", "room": "lab", "teacher": "vane",
 		"boards": ["The boiling point of water", "Magnets: attract or repel?", "Plants need light"], "open": "Goggles ON, everybody.",
 		"talk": ["Never lick the apparatus.", "Water boils at 100 degrees.", "Who left the tap on?", "Observe, then record.",
-			"Hair back, goggles down.", "That bubbling is NOT supposed to happen.", "Plants do not enjoy being watered with squash.", "Wilf, put down the magnet.", "Hypothesis first, explosion later."]},
+			"Hair back, goggles down.", "That bubbling is NOT supposed to happen.", "Plants do not enjoy being watered with squash.", "Wilf, put down the magnet.", "Hypothesis first, explosion later.",
+			"Safety goggles are not hats.",
+			"Bunsen burners are hot. Think about it.",
+			"Never mix the blue and the green.",
+			"Who has taken the thermometer?",
+			"Measure it twice, spill it never.",
+			"Gravity: it works. Ask anything that has fallen.",
+			"Mo, a beaker is not a cup.",
+			"Record your results in ink.",
+			"The experiment is called 'observation', not 'play'.",
+			"Slimy does not mean scientific.",
+			"A solid, a liquid, a gas. Pick one.",
+			"Don't taste the results!",
+			"Fair test: change only one thing.",
+			"Light travels faster than sound. Ahem.",
+			"Wash your hands afterwards. All of them.",
+			"That is not a rocket, Wilf. Put it down.",
+			"Stir slowly. SLOWLY.",
+			"Electricity is not for licking.",
+			"The sun is a star. Yes, really.",
+			"Labels on every jar, please.",
+			"Magnets stick to steel, not to Reg.",
+			"Pour with care. Pour with care!",
+			"Write 'method', 'results', 'conclusion'.",
+			"Is that smoke? That should not be smoke.",
+			"Ada, what happens when you heat ice?",
+			"Always read the label twice."]},
 	"history": {"name": "History", "room": "history", "teacher": "brandish",
 		"boards": ["Castles and moats", "The printing press", "Why kings wore crowns"], "open": "Turn to page ninety.",
 		"talk": ["Dates matter, children!", "A moat is not a swimming pool.", "Who built the castles? Peasants.", "Write it down. All of it.",
-			"Kings did not wear slippers.", "Eyes up, Nell. The Tudors await.", "Eighteen-sixty. Remember it.", "Yes, they really did eat that.", "History is not a spectator sport."]},
+			"Kings did not wear slippers.", "Eyes up, Nell. The Tudors await.", "Eighteen-sixty. Remember it.", "Yes, they really did eat that.", "History is not a spectator sport.",
+			"The Romans built roads. Straight ones.",
+			"Vikings did not have horns on their helmets.",
+			"Knights wore armour. Heavy armour.",
+			"A feudal lord owned the land. Ask him.",
+			"Parchment is not a type of pasta.",
+			"1066: say it with me.",
+			"The Tudors had very many wives. Well, six.",
+			"Castles had drawbridges for a reason.",
+			"The Great Fire of London began at a bakery.",
+			"Dates, dates, dates!",
+			"A scribe wrote with a quill. Hold it properly.",
+			"Georgian gentlemen wore wigs. Yes, wigs.",
+			"Mo, no, the pyramids were not built in a weekend.",
+			"Pharaohs were not called Gary.",
+			"The Black Death was not a good time.",
+			"Queen Victoria was not amused. Be amused later.",
+			"Who signed the Magna Carta? Not me.",
+			"Why did the Spartans shout? Discuss.",
+			"Look at the source. Is it reliable?",
+			"Kings had crowns. Crowns were heavy.",
+			"The printing press: a very big deal.",
+			"Cave paintings were the first homework.",
+			"Sit up, the Normans are coming.",
+			"Armour does not come in size 'small'.",
+			"The Industrial Revolution made soot.",
+			"Take notes on the Vikings. Take them neatly."]},
 	"english": {"name": "English", "room": "library", "teacher": "brandish",
 		"boards": ["Nouns, verbs & adjectives", "How to use a comma", "Write a poem about rain"], "open": "Quietly now. This is a library.",
 		"talk": ["A noun is a naming word.", "Commas are not confetti.", "Read chapter four.", "Ivy, that rhyme is dreadful.",
-			"Adjectives, children. Use some.", "Full stops. They exist.", "Who has borrowed my red pen?", "Shh. Library voices.", "A verb is a doing word. So do some doing."]},
+			"Adjectives, children. Use some.", "Full stops. They exist.", "Who has borrowed my red pen?", "Shh. Library voices.", "A verb is a doing word. So do some doing.",
+			"Metaphors are not lies. They are art.",
+			"A simile is 'like' something. Like this!",
+			"Capital letters start sentences. And names.",
+			"Exclamation marks! Use them! Rarely!",
+			"Pip, that is not a sentence. That is a noise.",
+			"An adjective describes a noun. Beautifully.",
+			"Spelling: i before e, except after c.",
+			"Read it aloud. Slowly.",
+			"Which of these is a pronoun?",
+			"Don't use 'got' six times, Bas.",
+			"Plot, character, setting. Remember them.",
+			"Poetry doesn't always rhyme. Thank goodness.",
+			"Paragraphs, children! New idea, new paragraph.",
+			"Dot, write in joined-up writing.",
+			"This is the dictionary. Use it.",
+			"Apostrophes show ownership, not plurals!",
+			"Full stop. Pause. Breathe.",
+			"Rain, Reg, is wet. Find a better word.",
+			"A story needs a beginning, a middle and an end.",
+			"Ivy, close the book. Gently.",
+			"An adverb is how you do the doing.",
+			"Write neatly, or write twice.",
+			"Who wrote this? It's wonderful. Or dreadful.",
+			"Alliteration: slithering, slippery snakes.",
+			"Quotation marks are tiny and important.",
+			"Verbs! Find the verbs!"]},
 }
 const GATHER_TALK := ["Settle down, please.", "Take your seats.", "Bags under the desks.", "Quickly, quickly, the bell has gone.",
-	"Stop dawdling, all of you.", "Sit. Sit! SIT.", "I am waiting.", "Books out, class."]
+	"Stop dawdling, all of you.", "Sit. Sit! SIT.", "I am waiting.", "Books out, class.",
+	"Chairs in, please.", "Is that everyone? Good.", "Faster. Faster!", "Don't dawdle in the doorway.", "Hurry along, children.", "Bags away, feet still.", "Late again? Sit down.", "Take your places.", "Come in, don't stand there.", "No pushing at the door.", "Straight to your desks.", "Shh. The lesson begins.", "Quickly, now. Quickly!", "Settle. Down. Now.", "Eyes front, mouths shut.", "The bell is not a suggestion.", "I do not repeat myself. Sit.", "Find your seats and stay in them.", "No talking until I begin.", "Who is still standing?"]
 const CLASS_TALK := ["Eyes on the board!", "Quiet at the back!", "Hands up if you know.", "Pens down, listen.", "Sit up straight.",
-	"Don't make me ask twice.", "Who is chewing?", "No whispering.", "That means YOU.", "Is this clear? Good."]
+	"Don't make me ask twice.", "Who is chewing?", "No whispering.", "That means YOU.", "Is this clear? Good.",
+	"Concentrate, please.", "Is anybody listening?", "Write that down.", "Not so loud, Bas.", "Hands UP, not mouths open.", "Look at me, not the window.", "Did I say you could stop?", "Yes? What is it? No, wait.", "Good. Moving on.", "Stop fidgeting.", "Heads up, everybody.", "Quiet! I'm thinking.", "I will wait.", "Nobody is leaving.", "Mo, that is a pencil, not a drum stick.", "Pay attention, or pay with lines.", "Don't pass that note!", "That's a detention face.", "Raise your hand, don't shout.", "I heard that.", "Page forty-two, children.", "Show me your best handwriting.", "You are all very quiet. Suspicious.", "Excellent. Do it again.", "Answers, not excuses.", "Remember what I said last week.", "You have five minutes. Four now.", "Back to work, please.", "Who is giggling?", "Look lively, class.", "I have eyes in the back of my head.", "Wilf, that is NOT a hat.", "Shoulders back, Ada.", "It's not a competition. It is, but quietly.", "Everybody take a deep breath.", "This will be on the test."]
 const DINNER_TALK := ["No running with trays.", "Eat your greens, Mo.", "Table manners, please.", "Who dropped a pea? Pip?",
-	"Queue properly, children.", "Pudding is for those who finish.", "Elbows OFF the table.", "Keep your voices down."]
+	"Queue properly, children.", "Pudding is for those who finish.", "Elbows OFF the table.", "Keep your voices down.",
+	"Mo, stop licking the spoon.", "No throwing peas, Pip.", "Sit down to eat, please.", "Wipe your mouth, Wilf.", "Is that custard on the ceiling?", "Finish what's on your plate.", "Pass the salt politely.", "Dinner ladies are not to be shouted at.", "One at a time, one at a time.", "Water jugs are not for splashing.", "Chew with your mouth closed.", "I said queue, not stampede.", "Napkins on laps, children.", "Is that a sausage on the floor?", "Bread rolls are for eating, not rolling.", "Thank the dinner ladies, please.", "Cabbage is good for you. It is.", "Clear your plates, then leave.", "Do not feed the pigeons from the window.", "No pudding until the plate is clean.", "Who is whistling at the table?", "Spaghetti is not a toy.", "The jelly is not for wobbling at people.", "Beans on the plate, Bas. The PLATE.", "Wash your hands after, all of you."]
 const PATROL_TALK := ["Walk, don't run!", "No loitering.", "Shouldn't you be somewhere?", "Tuck that shirt in.", "Hmm. Quiet today.",
-	"No chewing gum in corridors.", "Keep to the left.", "I have eyes everywhere.", "Move along, move along.", "Don't slouch."]
+	"No chewing gum in corridors.", "Keep to the left.", "I have eyes everywhere.", "Move along, move along.", "Don't slouch.",
+	"Why are you loitering?", "No dawdling on the stairs.", "Is that mud on the floor?", "Boys and girls, in line!", "Not a sound in the corridor.", "Hold the banister.", "Don't give me that look.", "Where are you off to?", "I'll be keeping an eye on you.", "I've got my eye on that corner.", "Bags on backs, not on the floor.", "Corridors are for walking.", "One step at a time on the stairs.", "I can hear laughing. Where is it?", "Never trust a quiet school.", "Slow down, you are not at a fair.", "Stand up straight, you.", "Don't run with scissors.", "I hear everything.", "This floor was mopped yesterday.", "Mind the puddle.", "Show me your hall pass.", "Not a word, I'm counting heads.", "Back inside, the lot of you.", "That's far too much noise for a Tuesday.", "Come away from the radiator.", "A tidy school is a quiet school.", "I'm watching the corner. And the other one.", "What's that behind your back?", "No chewing in corridors. Spit it out.", "Stay off the grass, children.", "Shirt tucked in, tie straight, shoes shiny.", "Lining up in silence. How novel.", "Who left a sock on the stairs?"]
 const LESSON_KEYS := ["geography", "maths", "science", "history", "english"]
 const DAY_PLAN := ["reg", "lesson", "play", "lesson", "dinner", "lesson", "lesson", "home"]
 const DURS := {"reg": 45.0, "lesson": 75.0, "play": 40.0, "dinner": 50.0, "home": 16.0}
@@ -236,7 +397,8 @@ func _selftest() -> void:
 	player.wx = _desk_x(rm1, 3) + 60.0; player.dir = -1; player.fire_cd = 0.0
 	_punch()
 	check.call(player.punch_p >= 0.0, "Pip's punch starts its animation")
-	_punch_lands()
+	gt += 0.2
+	await frames.call(3)
 	check.call(kid.state == "down", "punching a sitting kid knocks them to the floor")
 	player.wx = _desk_x(rm1, 3) + 5.0
 	_player_sit()
@@ -260,7 +422,8 @@ func _selftest() -> void:
 	player.fire_cd = 0.0; player.dir = 1; player.wx = kid.wx - 50.0; kid.state = "idle"
 	vane.wx = player.wx - 150.0; vane.dir = 1; vane.target = null
 	_punch()
-	_punch_lands()
+	gt += 0.2
+	await frames.call(3)
 	check.call(lines > before2, "a teacher who sees Pip punch gives lines")
 	var shout: AudioStreamWAV = sfx["lines"]
 	check.call(shout != null and shout.get_length() > 1.0, "the lines shout is a long, loud sound")
@@ -302,6 +465,39 @@ func _selftest() -> void:
 	var said_before := og.last_said
 	_teacher_chatter()
 	check.call(og.last_said != "" and og.last_said != said_before, "teachers speak up on their own")
+	# Tattle: punch him and he sets off to tell; reaching a teacher in time means lines, too late means none
+	var tat: Chara = null
+	for n in npcs:
+		if n.id == "tattle":
+			tat = n
+	tat.floor_i = 2; tat.wy = FLOORS[2]["y"]; tat.wx = 3800.0; tat.state = "idle"; tat.target = null; tat.special = ""; tat.cool = 0.0
+	og.floor_i = 2; og.wy = FLOORS[2]["y"]; og.wx = 3840.0; og.state = "idle"; og.target = null
+	player.floor_i = 2; player.wy = FLOORS[2]["y"]; player.wx = 3750.0; player.dir = 1; player.state = "idle"; player.fire_cd = 0.0
+	_punch()
+	gt += 0.2
+	await frames.call(3)
+	check.call(tat.special == "tell" and tat.state == "down", "punching Tattle sends him off to tell the teachers")
+	tat.state = "idle"
+	player.state = "sit"      # sitting, and the class still gathering: no other teacher check can add lines
+	period["phase"] = "gather"
+	period_t = 0.0
+	var l2 := lines
+	_tattle_update(tat)
+	check.call(tat.special == "", "Tattle reaching a teacher in time ends his errand")
+	gt += 2.0
+	await frames.call(3)
+	check.call(lines - l2 == 500, "Tattle reaching the teacher before the next class gives Pip lines")
+	tat.cool = 0.0
+	tat.special = ""
+	_tattle_goes("Pip's been fighting!", 400)
+	tat.target = null
+	tat.tell_period = period_idx - 1      # the period he set off in is over
+	l2 = lines
+	_tattle_update(tat)
+	gt += 2.0
+	await frames.call(3)
+	check.call(tat.special == "" and lines == l2, "if the next class starts first, Tattle gives up and Pip gets no lines")
+	_start_period(0)
 	# a whole day goes by
 	for i in DAY_PLAN.size() + 2:
 		period_t = period["dur"]
@@ -1521,21 +1717,58 @@ func _nearest_teacher(c: Chara) -> Chara:
 	return best
 
 
+## Tattle has seen (or felt) Pip do something wrong: he announces he will tell the teachers and sets off
+## to find one. If he gets to a teacher before the next period starts, Pip gets lines.
+func _tattle_goes(what: String, base: int) -> void:
+	var tt: Chara = null
+	for n2 in npcs:
+		if n2.id == "tattle":
+			tt = n2
+	if tt == null or tt.special == "tell" or gt < tt.cool:
+		return
+	tt.special = "tell"
+	tt.tell_period = period_idx
+	tt.tell_what = what
+	tt.tell_base = base
+	tt.target = null
+	say(tt, fresh(tt, ["I'm going to tell the teachers!", "Ooh! I'm telling!", "Wait till the teachers hear!", "I'm telling on you, Pip!", "Right, I'm fetching a teacher!"]))
+	log_msg("Tattle is off to tell a teacher!", "bad")
+
+
+## Tattle only tells what he can see: Pip standing about in a lesson, or sitting on the floor.
+func _tattle_watch() -> void:
+	var tt: Chara = null
+	for n2 in npcs:
+		if n2.id == "tattle":
+			tt = n2
+	if tt == null or tt.special == "tell" or tt.state == "down" or gt < tt.cool or not _sees(tt, player, 525.0):
+		return
+	if player.state == "floor":
+		_tattle_goes("Pip is sitting on the floor!", 200)
+	elif period.get("phase") == "teach" and (period["type"] == "lesson" or period["type"] == "reg") and _in_room(player, period["room"]) and player.state != "sit" and player.state != "down":
+		_tattle_goes("Pip won't sit down!", 150)
+
+
 func _tattle_update(tt: Chara) -> bool:
 	if tt.special != "tell":
 		return false
 	if tt.state == "down":
 		return true
 	var t := _nearest_teacher(tt)
-	if gt > tt.tell_until or t == null:
+	if period_idx != tt.tell_period or t == null:
+		# the next class has started and he never reached a teacher
 		tt.special = ""
 		tt.target = null
+		tt.speed = tt.base_speed
+		if t != null:
+			say(tt, fresh(tt, ["Oh, never mind.", "Too late now.", "Hmph. Next time!", "I'll tell them later."]))
 		return false
 	tt.speed = 270.0
 	_set_target(tt, t.floor_i, roundf(t.wx + (-45.0 if t.wx > tt.wx else 45.0)))
 	if tt.floor_i == t.floor_i and tt.state != "stairs" and t.state != "stairs" and absf(tt.wx - t.wx) < 68.0:
-		say(tt, "Please %s! Pip's got a pea-shooter!" % t.title)
-		later(1.4, func(): if _awake(t): add_lines(400, t, ["Is that so? {n} lines, Pip!", "A pea-shooter?! {n} lines, Pip!", "Hand it over! {n} lines, Pip!"]))
+		say(tt, "Please %s! %s" % [t.title, tt.tell_what])
+		var base := tt.tell_base
+		later(1.4, func(): if _awake(t): add_lines(base, t, ["Is that so? {n} lines, Pip!", "Telling tales is one thing, but you did it! {n} lines!", "I am shocked, Pip! {n} lines!", "Thank you, Tattle. {n} lines, Pip!", "Tattle tells no lies. {n} lines, Pip!", "Bring it here, Pip! {n} lines!", "Is it true, Pip? {n} lines!", "Not in my school! {n} lines, Pip!"]))
 		tt.special = ""
 		tt.target = null
 		tt.cool = gt + 20.0
@@ -1546,7 +1779,7 @@ func _tattle_update(tt: Chara) -> bool:
 func _on_teacher_wake(t: Chara) -> void:
 	if player.floor_i == t.floor_i and player.state != "stairs" and absf(player.wx - t.wx) < 260.0:
 		t.dir = 1 if player.wx > t.wx else -1
-		add_lines(300, t, ["Was that you, Pip? {n} lines!", "I think it was you, Pip. {n} lines!", "Pip! Again?! {n} lines!"])
+		add_lines(300, t, ["Was that you, Pip? {n} lines!", "I think it was you, Pip. {n} lines!", "Pip! Again?! {n} lines!", "That had your name on it, Pip! {n} lines!", "Ow! Pip, was it? {n} lines!", "Don't deny it, Pip! {n} lines!", "I know it was you! {n} lines!"])
 	else:
 		say(t, ["Who threw that?!", "Ow! My ear!", "Hooligans!"].pick_random())
 
@@ -1594,12 +1827,12 @@ func _lesson_update(dt: float) -> void:
 				period["next_check"] = el + 0.5
 				if not _in_room(player, rkey):
 					period["next_check"] = el + 6.0
-					add_lines(300, t, ["Where is Pip? {n} lines!", "Pip is absent! {n} lines!", "Pip, where were you? {n} lines!", "Late AGAIN, Pip? {n} lines!", "Truant! {n} lines!"])
+					add_lines(300, t, ["Where is Pip? {n} lines!", "Pip is absent! {n} lines!", "Pip, where were you? {n} lines!", "Late AGAIN, Pip? {n} lines!", "Truant! {n} lines!", "Where have you been, Pip? {n} lines!", "Skiving, Pip? {n} lines!", "Missing from the register! {n} lines!"])
 				elif player.state == "sit":
 					period["next_check"] = el + 6.0
 				elif _sees(t, player, 1400.0):
 					period["next_check"] = el + 6.0
-					add_lines(100, t, ["Sit DOWN, Pip! {n} lines.", "Pip, sit this instant! {n} lines.", "On your bottom, Pip! {n} lines.", "Why are you standing, Pip? {n} lines.", "Take a seat, Pip! {n} lines.", "Do you live on your feet? {n} lines."])
+					add_lines(100, t, ["Sit DOWN, Pip! {n} lines.", "Pip, sit this instant! {n} lines.", "On your bottom, Pip! {n} lines.", "Why are you standing, Pip? {n} lines.", "Take a seat, Pip! {n} lines.", "Do you live on your feet? {n} lines.", "Legs under a desk, Pip! {n} lines.", "Do I have to say it twice? {n} lines.", "SIT. {n} lines.", "Planted on your feet, are you? {n} lines.", "Stand up in MY class? {n} lines.", "Sit, or write more! {n} lines.", "Down, Pip, down! {n} lines.", "I did not say you could stand! {n} lines."])
 	elif ty == "dinner":
 		if period["phase"] == "gather" and el > GATHER:
 			period["phase"] = "teach"
@@ -1607,13 +1840,13 @@ func _lesson_update(dt: float) -> void:
 		if period["phase"] == "teach" and _awake(t) and el > period["next_check"]:
 			period["next_check"] = el + 7.0
 			if not _in_room(player, "dining"):
-				add_lines(250, t, ["Pip has skipped dinner! {n} lines!", "Where is Pip at dinner? {n} lines!", "Missing a meal, Pip? {n} lines!"])
+				add_lines(250, t, ["Pip has skipped dinner! {n} lines!", "Where is Pip at dinner? {n} lines!", "Missing a meal, Pip? {n} lines!", "No dinner, no excuse! {n} lines!", "Starving yourself, Pip? {n} lines!", "Dinner hall. Now. {n} lines!", "Skipping meals? {n} lines!"])
 	if (ty == "lesson" or ty == "reg") and period["phase"] == "teach":
 		for o in T.values():
 			if o == t or not _sees(o, player, 490.0) or _in_room(player, rkey) or gt < o.catch_cd:
 				continue
 			o.catch_cd = gt + 8.0
-			add_lines(250, o, ["Shouldn't you be in class, Pip? {n} lines.", "Out of class, Pip? {n} lines.", "Lost, are we? {n} lines.", "Get to your lesson, Pip! {n} lines."])
+			add_lines(250, o, ["Shouldn't you be in class, Pip? {n} lines.", "Out of class, Pip? {n} lines.", "Lost, are we? {n} lines.", "Get to your lesson, Pip! {n} lines.", "Why are you out here, Pip? {n} lines.", "Wandering the halls, Pip? {n} lines.", "Lesson time is lesson time! {n} lines.", "I'll hear no excuses. {n} lines.", "Back to class this instant! {n} lines.", "Loitering, are we? {n} lines."])
 
 
 # ================================================================= player
@@ -1689,18 +1922,15 @@ func _fire() -> void:
 	var caught := false
 	for t in T.values():
 		if _sees(t, c, 640.0):
-			add_lines(500, t, ["No pea-shooters in school! {n} lines.", "I SAW that, Pip! {n} lines.", "Put that away! {n} lines.", "Peas are for plates! {n} lines.", "Confiscated! Well, nearly. {n} lines."])
+			add_lines(500, t, ["No pea-shooters in school! {n} lines.", "I SAW that, Pip! {n} lines.", "Put that away! {n} lines.", "Peas are for plates! {n} lines.", "Confiscated! Well, nearly. {n} lines.", "Pea-shooter! Confiscation! {n} lines.", "You will not shoot in my corridor! {n} lines.", "Take that straw away! {n} lines.", "Do you think peas grow on trees? {n} lines.", "Put the weapon down! {n} lines."])
 			caught = true
 			break
 	var tt: Chara = null
 	for n2 in npcs:
 		if n2.id == "tattle":
 			tt = n2
-	if not caught and tt and tt.special != "tell" and gt > tt.cool and _sees(tt, c, 525.0):
-		tt.special = "tell"
-		tt.tell_until = gt + 25.0
-		say(tt, "Ooh! I'm telling!")
-		log_msg("Tattle saw that… and is off to tell a teacher!", "bad")
+	if not caught and tt and _sees(tt, c, 525.0):
+		_tattle_goes("Pip's got a pea-shooter!", 400)
 
 
 func _spawn_pellet(c: Chara, dirn: int, f: int) -> void:
@@ -1757,11 +1987,19 @@ func _punch_lands() -> void:
 		_shake(6.0)
 		_burst(Vector2(victim.wx - c.dir * 10.0, victim.wy - 70.0), Color("fff0a0"), 12)
 		log_msg("You punch %s to the floor." % victim.cname)
+	var caught := false
 	for t in T.values():
 		if _sees(t, c, 640.0):
-			var what: Array = ["Hitting people! {n} lines, Pip!", "We do not punch! {n} lines.", "Disgraceful, Pip! {n} lines."] if victim != null else ["No fighting, Pip! {n} lines.", "Fists down, Pip! {n} lines.", "Behave! {n} lines."]
+			caught = true
+			var what: Array = ["Hitting people! {n} lines, Pip!", "We do not punch! {n} lines.", "Disgraceful, Pip! {n} lines.", "We keep our hands to ourselves! {n} lines.", "Is that how we behave? {n} lines.", "I saw that fist! {n} lines.", "Violence! In MY school! {n} lines."] if victim != null else ["No fighting, Pip! {n} lines.", "Fists down, Pip! {n} lines.", "Behave! {n} lines.", "Don't you swing at me! {n} lines.", "Fighting air, are we? {n} lines.", "Put your fists down! {n} lines.", "Lines for lashing out! {n} lines."]
 			add_lines(500 if victim != null else 300, t, what)
 			break
+	if victim != null and victim.id == "tattle":
+		_tattle_goes("Pip punched me!", 500)
+	elif not caught:
+		for n in npcs:
+			if n.id == "tattle" and n.state != "down" and _sees(n, c, 525.0):
+				_tattle_goes("Pip's been fighting!", 400)
 
 
 ## Pip sitting on the floor, in plain view, is a caution.
@@ -1772,7 +2010,7 @@ func _floor_update() -> void:
 	for t in T.values():
 		if _sees(t, c, 640.0):
 			c.cool = gt + 6.0
-			add_lines(200, t, ["Get up off that floor, Pip! {n} lines.", "We do not sit on floors! {n} lines.", "Floors are for feet, Pip! {n} lines.", "Up! Up! {n} lines."])
+			add_lines(200, t, ["Get up off that floor, Pip! {n} lines.", "We do not sit on floors! {n} lines.", "Floors are for feet, Pip! {n} lines.", "Up! Up! {n} lines.", "The floor is dirty, Pip! {n} lines.", "Is that a chair? No! {n} lines.", "Sitting on the floor?! {n} lines.", "Stand, boy! {n} lines.", "Up off the carpet! {n} lines.", "I will not have loungers! {n} lines."])
 			return
 
 
@@ -1790,7 +2028,7 @@ func _pellets_update(dt: float) -> void:
 				if t.floor_i == pl["f"] and t.state != "down" and t.state != "stairs" and absf(t.wx - pl["x"]) < 28.0:
 					# hit while looking straight at Pip: he saw exactly who fired
 					if t.dir == -int(pl["dir"]):
-						later(0.5, func(): add_lines(800, t, ["Shooting at a TEACHER, Pip?! {n} lines!", "At ME?! {n} lines, Pip!", "How DARE you! {n} lines!"]))
+						later(0.5, func(): add_lines(800, t, ["Shooting at a TEACHER, Pip?! {n} lines!", "At ME?! {n} lines, Pip!", "How DARE you! {n} lines!", "A teacher! A TEACHER! {n} lines!", "Take that thing OUT of my sight! {n} lines!", "That went in my EAR! {n} lines!", "You will write it a THOUSAND times! {n} lines!"]))
 					t.state = "down"
 					t.down_until = gt + 4.0
 					t.target = null
@@ -1855,7 +2093,7 @@ func _try_rope() -> void:
 		return
 	if _awake(head) and head.floor_i == 0 and head.state != "stairs" and head.wx > ROOMS["study"]["x0"]:
 		head.dir = 1 if c.wx > head.wx else -1
-		add_lines(2000, head, ["Hands OFF the Founder's Bell! {n} lines!", "Not the bell, Pip! {n} lines!"])
+		add_lines(2000, head, ["Hands OFF the Founder's Bell! {n} lines!", "Not the bell, Pip! {n} lines!", "The bell is NOT a toy! {n} lines!", "Founder would be appalled! {n} lines!", "Step away from the rope! {n} lines!"])
 		return
 	_play("founders")
 	later(0.3, func(): _play("win"))
@@ -2005,6 +2243,7 @@ func _tick(dt: float) -> void:
 	if mode != "play":
 		return
 	_floor_update()
+	_tattle_watch()
 	_teacher_chatter()
 	if (period["type"] == "play" or period["type"] == "dinner") and gt > next_chat:
 		next_chat = gt + randf_range(5, 9)
