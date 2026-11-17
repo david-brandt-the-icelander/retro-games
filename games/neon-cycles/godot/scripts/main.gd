@@ -4,6 +4,7 @@ extends Node3D
 
 const LightCycleScript := preload("res://scripts/light_cycle.gd")
 const MinimapScript := preload("res://scripts/minimap.gd")
+const SfxScript := preload("res://scripts/sfx.gd")
 const WALL_SHADER := preload("res://shaders/light_wall.gdshader")
 const FLOOR_SHADER := preload("res://shaders/grid_floor.gdshader")
 
@@ -21,6 +22,7 @@ enum State { COUNTDOWN, PLAYING, ROUND_OVER, MATCH_OVER, PAUSED }
 
 var cycles: Array[LightCycle] = []
 var player: LightCycle
+var sfx: Sfx
 var scores := {}
 var round_num := 0
 
@@ -36,6 +38,9 @@ var _spectate: LightCycle
 var _cam_dir := Vector3.FORWARD
 var _cam_follow: LightCycle
 var _cam_blend := 1.0
+var _last_count := 0
+var _was_boosting := false
+var _toast_time := 0.0
 
 # HUD
 var _hud: CanvasLayer
@@ -55,6 +60,8 @@ func _ready() -> void:
 	_build_arena()
 	_build_camera()
 	_build_hud()
+	sfx = SfxScript.new()
+	add_child(sfx)
 	for r in RIDERS:
 		scores[r.name] = 0
 	_start_round()
@@ -71,6 +78,7 @@ func _setup_input() -> void:
 	_bind("confirm", [KEY_ENTER, KEY_KP_ENTER], [JOY_BUTTON_START])
 	_bind("restart", [KEY_R], [JOY_BUTTON_BACK])
 	_bind("pause", [KEY_ESCAPE, KEY_P], [])
+	_bind("mute", [KEY_M], [])
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -355,7 +363,7 @@ func _build_hud() -> void:
 	_boost_bar.add_theme_stylebox_override("fill", fill)
 	bottom.add_child(_boost_bar)
 	var hint := Label.new()
-	hint.text = "A / D  turn     SPACE  boost     ESC  pause     R  restart"
+	hint.text = "A / D  turn     SPACE  boost     ESC  pause     R  restart     M  sound"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.label_settings = _label_settings(14, Color(0.55, 0.7, 0.85, 0.8))
 	bottom.add_child(hint)
@@ -439,11 +447,13 @@ func _start_round() -> void:
 
 	_state = State.COUNTDOWN
 	_timer = 3.6
+	_last_count = 0
 	_refresh_scores()
 
 
 func _on_cycle_crashed(c: LightCycle) -> void:
 	_refresh_scores()
+	sfx.play_crash(_camera.global_position.distance_to(c.global_position), c == player)
 	if _camera.global_position.distance_to(c.global_position) < 40.0:
 		_cam_shake = max(_cam_shake, 1.0 if c == player else 0.45)
 	if c == player and _state == State.PLAYING:
@@ -469,11 +479,14 @@ func _end_round() -> void:
 			_state = State.MATCH_OVER
 			var msg := "YOU WIN THE GRID" if w == player else "%s WINS THE GRID" % w.display_name
 			_show_message(msg, "Press ENTER for a new match", w.color)
+			sfx.play("match" if w == player else "lose")
 			return
 		var msg2 := "ROUND WON" if w == player else "%s WINS" % w.display_name
 		_show_message(msg2, "Round %d  -  next round starting..." % round_num, w.color)
+		sfx.play("win" if w == player else "lose", -4.0)
 	else:
 		_show_message("DRAW", "Mutual derezzing", Color(0.8, 0.85, 1))
+		sfx.play("draw")
 	_state = State.ROUND_OVER
 	_timer = 3.0
 
@@ -485,6 +498,8 @@ func _end_round() -> void:
 func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("pause"):
 		_toggle_pause()
+	if Input.is_action_just_pressed("mute"):
+		_toast(sfx.toggle_mute())
 	if _state == State.PAUSED:
 		return
 	if Input.is_action_just_pressed("restart"):
@@ -494,6 +509,10 @@ func _physics_process(delta: float) -> void:
 	match _state:
 		State.COUNTDOWN:
 			_timer -= delta
+			var count := int(ceil(_timer - 0.6)) if _timer > 0.6 else 0
+			if count != _last_count:
+				_last_count = count
+				sfx.play("beep" if count > 0 else "go")
 			if _timer > 0.6:
 				_show_message(str(int(ceil(_timer - 0.6))), "Round %d  -  first to %d" % [round_num, WINS_TO_MATCH], Color(0.7, 0.95, 1.0))
 			else:
@@ -634,7 +653,27 @@ func _ray_rect(o: Vector2, d: Vector2, r: Rect2, best: float) -> float:
 # Camera & HUD update
 # --------------------------------------------------------------------------
 
+func _toast(is_muted: bool) -> void:
+	_sub_label.text = "SOUND OFF" if is_muted else "SOUND ON"
+	_toast_time = 1.2
+
+
+func _update_sound() -> void:
+	var racing := player != null and player.alive and player.active and _state != State.PAUSED
+	sfx.set_engine(player.speed if player != null else 0.0, LightCycle.BOOST_SPEED, LightCycle.BASE_SPEED, racing)
+	var boosting := racing and player.boosting
+	if boosting and not _was_boosting:
+		sfx.play("boost", -3.0)
+	_was_boosting = boosting
+
+
 func _process(delta: float) -> void:
+	if sfx != null:
+		_update_sound()
+	if _toast_time > 0.0:
+		_toast_time -= delta
+		if _toast_time <= 0.0 and _state == State.PLAYING:
+			_sub_label.text = ""
 	if _state == State.PAUSED:
 		return
 	_update_camera(delta)
