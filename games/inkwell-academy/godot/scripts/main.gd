@@ -42,23 +42,37 @@ const CREST_SPOTS := [[0, 3188.0], [0, 4350.0], [0, 5175.0], [1, 2325.0], [1, 41
 const SUBJECTS := {
 	"register": {"name": "Registration", "room": "room1", "teacher": "ogle",
 		"boards": ["Register — Day {day}"], "open": "Good morning! Answer your names, please.",
-		"talk": ["Dot? Wilf? Ada? Good.", "Reg, stop yawning.", "Is Pip here? Ah, yes.", "Notices: no running in corridors."]},
+		"talk": ["Dot? Wilf? Ada? Good.", "Reg, stop yawning.", "Is Pip here? Ah, yes.", "Notices: no running in corridors.",
+			"Lunch money goes in the tin.", "Mo, where is your tie?", "Say 'here', don't just wave.", "Bas, shoes on, please.", "The raffle is on Friday."]},
 	"geography": {"name": "Geography", "room": "map", "teacher": "ogle",
 		"boards": ["Rivers of the world", "Mountains and how to climb them", "Rainfall: why?"], "open": "Atlases open, class.",
-		"talk": ["Who can find Peru?", "Rivers flow downhill. Mostly.", "That's not a lake, Mo. It's a coffee stain.", "Copy the map. Neatly!"]},
+		"talk": ["Who can find Peru?", "Rivers flow downhill. Mostly.", "That's not a lake, Mo. It's a coffee stain.", "Copy the map. Neatly!",
+			"North is up. Usually.", "A delta is not a type of biscuit.", "Where does the Nile end?", "Colour in the sea BLUE, Reg.", "Mountains are tall. Remember that."]},
 	"maths": {"name": "Maths", "room": "room1", "teacher": "ogle",
 		"boards": ["Long division:  147 ÷ 7", "Fractions:  3/4 + 1/8 = ?", "Angles in a triangle"], "open": "Pencils sharpened? Good.",
-		"talk": ["Seven eights are fifty-six.", "Show your working!", "Carry the one...", "Nobody touch the protractors."]},
+		"talk": ["Seven eights are fifty-six.", "Show your working!", "Carry the one...", "Nobody touch the protractors.",
+			"Is that a three or an eight, Ada?", "Fractions are friends.", "Divide, then check. Always check.", "A triangle has three sides. Three!", "No calculators. Brains!"]},
 	"science": {"name": "Science", "room": "lab", "teacher": "vane",
 		"boards": ["The boiling point of water", "Magnets: attract or repel?", "Plants need light"], "open": "Goggles ON, everybody.",
-		"talk": ["Never lick the apparatus.", "Water boils at 100 degrees.", "Who left the tap on?", "Observe, then record."]},
+		"talk": ["Never lick the apparatus.", "Water boils at 100 degrees.", "Who left the tap on?", "Observe, then record.",
+			"Hair back, goggles down.", "That bubbling is NOT supposed to happen.", "Plants do not enjoy being watered with squash.", "Wilf, put down the magnet.", "Hypothesis first, explosion later."]},
 	"history": {"name": "History", "room": "history", "teacher": "brandish",
 		"boards": ["Castles and moats", "The printing press", "Why kings wore crowns"], "open": "Turn to page ninety.",
-		"talk": ["Dates matter, children!", "A moat is not a swimming pool.", "Who built the castles? Peasants.", "Write it down. All of it."]},
+		"talk": ["Dates matter, children!", "A moat is not a swimming pool.", "Who built the castles? Peasants.", "Write it down. All of it.",
+			"Kings did not wear slippers.", "Eyes up, Nell. The Tudors await.", "Eighteen-sixty. Remember it.", "Yes, they really did eat that.", "History is not a spectator sport."]},
 	"english": {"name": "English", "room": "library", "teacher": "brandish",
 		"boards": ["Nouns, verbs & adjectives", "How to use a comma", "Write a poem about rain"], "open": "Quietly now. This is a library.",
-		"talk": ["A noun is a naming word.", "Commas are not confetti.", "Read chapter four.", "Ivy, that rhyme is dreadful."]},
+		"talk": ["A noun is a naming word.", "Commas are not confetti.", "Read chapter four.", "Ivy, that rhyme is dreadful.",
+			"Adjectives, children. Use some.", "Full stops. They exist.", "Who has borrowed my red pen?", "Shh. Library voices.", "A verb is a doing word. So do some doing."]},
 }
+const GATHER_TALK := ["Settle down, please.", "Take your seats.", "Bags under the desks.", "Quickly, quickly, the bell has gone.",
+	"Stop dawdling, all of you.", "Sit. Sit! SIT.", "I am waiting.", "Books out, class."]
+const CLASS_TALK := ["Eyes on the board!", "Quiet at the back!", "Hands up if you know.", "Pens down, listen.", "Sit up straight.",
+	"Don't make me ask twice.", "Who is chewing?", "No whispering.", "That means YOU.", "Is this clear? Good."]
+const DINNER_TALK := ["No running with trays.", "Eat your greens, Mo.", "Table manners, please.", "Who dropped a pea? Pip?",
+	"Queue properly, children.", "Pudding is for those who finish.", "Elbows OFF the table.", "Keep your voices down."]
+const PATROL_TALK := ["Walk, don't run!", "No loitering.", "Shouldn't you be somewhere?", "Tuck that shirt in.", "Hmm. Quiet today.",
+	"No chewing gum in corridors.", "Keep to the left.", "I have eyes everywhere.", "Move along, move along.", "Don't slouch."]
 const LESSON_KEYS := ["geography", "maths", "science", "history", "english"]
 const DAY_PLAN := ["reg", "lesson", "play", "lesson", "dinner", "lesson", "lesson", "home"]
 const DURS := {"reg": 45.0, "lesson": 75.0, "play": 40.0, "dinner": 50.0, "home": 16.0}
@@ -269,6 +283,25 @@ func _selftest() -> void:
 	period["mode"] = "talk"; period["mode_until"] = period_t + 500.0; period["next_check"] = 0.0
 	_lesson_update(0.01)    # facing the class
 	check.call(lines > l1, "a teacher facing Pip gives lines for standing")
+	# teachers never say the same thing twice running, and use every line before any comes round again
+	var seen := {}
+	var prev := ""
+	var rep_ok := true
+	for i in 60:
+		var m := fresh(og, CLASS_TALK)
+		if m == prev:
+			rep_ok = false
+		prev = m
+		if i < CLASS_TALK.size():
+			if seen.has(m):
+				rep_ok = false
+			seen[m] = true
+	check.call(rep_ok and seen.size() == CLASS_TALK.size(), "a teacher never repeats himself until every line has been said")
+	og.next_speak = 0.0
+	og.bubble_until = 0.0
+	var said_before := og.last_said
+	_teacher_chatter()
+	check.call(og.last_said != "" and og.last_said != said_before, "teachers speak up on their own")
 	# a whole day goes by
 	for i in DAY_PLAN.size() + 2:
 		period_t = period["dur"]
@@ -993,12 +1026,13 @@ func _add_score(n: int) -> void:
 		cfg.save("user://inkwell.cfg")
 
 
-func add_lines(base: int, speaker: Chara, msg: String) -> void:
+func add_lines(base: int, speaker: Chara, msg_in) -> void:
 	if mode != "play":
 		return
 	var mult := 1.0 + 0.15 * (day - 1)
 	var n := maxi(50, int(round(base * mult / 50.0)) * 50)
 	lines = mini(MAX_LINES, lines + n)
+	var msg: String = fresh(speaker, msg_in) if (msg_in is Array and speaker) else (msg_in if msg_in is String else msg_in[0])
 	var text := msg.replace("{n}", _fmt(n))
 	if speaker:
 		say(speaker, text)
@@ -1013,7 +1047,45 @@ func add_lines(base: int, speaker: Chara, msg: String) -> void:
 
 
 # ================================================================= speech bubbles
+## A message from `pool` this character has not said yet. When the pool is used up it starts over,
+## but never opens with the message it finished on.
+func fresh(c: Chara, pool: Array) -> String:
+	var opts := pool.filter(func(m): return not c.used.has(m))
+	if opts.is_empty():
+		for m in pool:
+			c.used.erase(m)
+		opts = pool.filter(func(m): return m != c.last_said)
+		if opts.is_empty():
+			opts = pool.duplicate()
+	var pick: String = opts.pick_random()
+	c.used[pick] = true
+	c.last_said = pick
+	return pick
+
+
+## Teachers speak up every few seconds: lessons, registers, dinner, or patrolling the corridors.
+func _teacher_chatter() -> void:
+	for t in T.values():
+		if gt < t.next_speak or not _awake(t) or t.state == "stairs":
+			continue
+		t.next_speak = gt + randf_range(2.6, 4.8)
+		if t.bubble and gt < t.bubble_until:
+			continue
+		var pool: Array = PATROL_TALK
+		var ty: String = period["type"]
+		if period.get("teacher") == t and ty != "play" and ty != "home":
+			if ty == "dinner":
+				pool = DINNER_TALK
+			elif period["phase"] == "gather":
+				pool = GATHER_TALK
+			else:
+				pool = period["subject"]["talk"] + CLASS_TALK
+		say(t, fresh(t, pool))
+
+
 func say(c: Chara, text: String, dur := 2.8) -> void:
+	if c.kind == "teacher":
+		c.last_said = text
 	if c.bubble:
 		c.bubble.queue_free()
 	var b := Node2D.new()
@@ -1463,7 +1535,7 @@ func _tattle_update(tt: Chara) -> bool:
 	_set_target(tt, t.floor_i, roundf(t.wx + (-45.0 if t.wx > tt.wx else 45.0)))
 	if tt.floor_i == t.floor_i and tt.state != "stairs" and t.state != "stairs" and absf(tt.wx - t.wx) < 68.0:
 		say(tt, "Please %s! Pip's got a pea-shooter!" % t.title)
-		later(1.4, func(): if _awake(t): add_lines(400, t, "Is that so? {n} lines, Pip!"))
+		later(1.4, func(): if _awake(t): add_lines(400, t, ["Is that so? {n} lines, Pip!", "A pea-shooter?! {n} lines, Pip!", "Hand it over! {n} lines, Pip!"]))
 		tt.special = ""
 		tt.target = null
 		tt.cool = gt + 20.0
@@ -1474,7 +1546,7 @@ func _tattle_update(tt: Chara) -> bool:
 func _on_teacher_wake(t: Chara) -> void:
 	if player.floor_i == t.floor_i and player.state != "stairs" and absf(player.wx - t.wx) < 260.0:
 		t.dir = 1 if player.wx > t.wx else -1
-		add_lines(300, t, "Was that you, Pip? {n} lines!")
+		add_lines(300, t, ["Was that you, Pip? {n} lines!", "I think it was you, Pip. {n} lines!", "Pip! Again?! {n} lines!"])
 	else:
 		say(t, ["Who threw that?!", "Ow! My ear!", "Hooligans!"].pick_random())
 
@@ -1507,7 +1579,6 @@ func _lesson_update(dt: float) -> void:
 				if period["mode"] == "write":
 					period["mode"] = "talk"
 					period["mode_until"] = el + randf_range(3, 5)
-					say(t, period["subject"]["talk"].pick_random())
 				else:
 					period["mode"] = "write"
 					period["mode_until"] = el + randf_range(4, 7)
@@ -1523,12 +1594,12 @@ func _lesson_update(dt: float) -> void:
 				period["next_check"] = el + 0.5
 				if not _in_room(player, rkey):
 					period["next_check"] = el + 6.0
-					add_lines(300, t, ["Where is Pip? {n} lines!", "Pip is absent! {n} lines!"].pick_random())
+					add_lines(300, t, ["Where is Pip? {n} lines!", "Pip is absent! {n} lines!", "Pip, where were you? {n} lines!", "Late AGAIN, Pip? {n} lines!", "Truant! {n} lines!"])
 				elif player.state == "sit":
 					period["next_check"] = el + 6.0
 				elif _sees(t, player, 1400.0):
 					period["next_check"] = el + 6.0
-					add_lines(100, t, "Sit DOWN, Pip! {n} lines.")
+					add_lines(100, t, ["Sit DOWN, Pip! {n} lines.", "Pip, sit this instant! {n} lines.", "On your bottom, Pip! {n} lines.", "Why are you standing, Pip? {n} lines.", "Take a seat, Pip! {n} lines.", "Do you live on your feet? {n} lines."])
 	elif ty == "dinner":
 		if period["phase"] == "gather" and el > GATHER:
 			period["phase"] = "teach"
@@ -1536,13 +1607,13 @@ func _lesson_update(dt: float) -> void:
 		if period["phase"] == "teach" and _awake(t) and el > period["next_check"]:
 			period["next_check"] = el + 7.0
 			if not _in_room(player, "dining"):
-				add_lines(250, t, "Pip has skipped dinner! {n} lines!")
+				add_lines(250, t, ["Pip has skipped dinner! {n} lines!", "Where is Pip at dinner? {n} lines!", "Missing a meal, Pip? {n} lines!"])
 	if (ty == "lesson" or ty == "reg") and period["phase"] == "teach":
 		for o in T.values():
 			if o == t or not _sees(o, player, 490.0) or _in_room(player, rkey) or gt < o.catch_cd:
 				continue
 			o.catch_cd = gt + 8.0
-			add_lines(250, o, "Shouldn't you be in class, Pip? {n} lines.")
+			add_lines(250, o, ["Shouldn't you be in class, Pip? {n} lines.", "Out of class, Pip? {n} lines.", "Lost, are we? {n} lines.", "Get to your lesson, Pip! {n} lines."])
 
 
 # ================================================================= player
@@ -1618,7 +1689,7 @@ func _fire() -> void:
 	var caught := false
 	for t in T.values():
 		if _sees(t, c, 640.0):
-			add_lines(500, t, ["No pea-shooters in school! {n} lines.", "I SAW that, Pip! {n} lines."].pick_random())
+			add_lines(500, t, ["No pea-shooters in school! {n} lines.", "I SAW that, Pip! {n} lines.", "Put that away! {n} lines.", "Peas are for plates! {n} lines.", "Confiscated! Well, nearly. {n} lines."])
 			caught = true
 			break
 	var tt: Chara = null
@@ -1688,7 +1759,7 @@ func _punch_lands() -> void:
 		log_msg("You punch %s to the floor." % victim.cname)
 	for t in T.values():
 		if _sees(t, c, 640.0):
-			var what := "Hitting people! {n} lines, Pip!" if victim != null else "No fighting, Pip! {n} lines."
+			var what: Array = ["Hitting people! {n} lines, Pip!", "We do not punch! {n} lines.", "Disgraceful, Pip! {n} lines."] if victim != null else ["No fighting, Pip! {n} lines.", "Fists down, Pip! {n} lines.", "Behave! {n} lines."]
 			add_lines(500 if victim != null else 300, t, what)
 			break
 
@@ -1701,7 +1772,7 @@ func _floor_update() -> void:
 	for t in T.values():
 		if _sees(t, c, 640.0):
 			c.cool = gt + 6.0
-			add_lines(200, t, "Get up off that floor, Pip! {n} lines.")
+			add_lines(200, t, ["Get up off that floor, Pip! {n} lines.", "We do not sit on floors! {n} lines.", "Floors are for feet, Pip! {n} lines.", "Up! Up! {n} lines."])
 			return
 
 
@@ -1719,7 +1790,7 @@ func _pellets_update(dt: float) -> void:
 				if t.floor_i == pl["f"] and t.state != "down" and t.state != "stairs" and absf(t.wx - pl["x"]) < 28.0:
 					# hit while looking straight at Pip: he saw exactly who fired
 					if t.dir == -int(pl["dir"]):
-						later(0.5, func(): add_lines(800, t, "Shooting at a TEACHER, Pip?! {n} lines!"))
+						later(0.5, func(): add_lines(800, t, ["Shooting at a TEACHER, Pip?! {n} lines!", "At ME?! {n} lines, Pip!", "How DARE you! {n} lines!"]))
 					t.state = "down"
 					t.down_until = gt + 4.0
 					t.target = null
@@ -1784,7 +1855,7 @@ func _try_rope() -> void:
 		return
 	if _awake(head) and head.floor_i == 0 and head.state != "stairs" and head.wx > ROOMS["study"]["x0"]:
 		head.dir = 1 if c.wx > head.wx else -1
-		add_lines(2000, head, "Hands OFF the Founder's Bell! {n} lines!")
+		add_lines(2000, head, ["Hands OFF the Founder's Bell! {n} lines!", "Not the bell, Pip! {n} lines!"])
 		return
 	_play("founders")
 	later(0.3, func(): _play("win"))
@@ -1934,6 +2005,7 @@ func _tick(dt: float) -> void:
 	if mode != "play":
 		return
 	_floor_update()
+	_teacher_chatter()
 	if (period["type"] == "play" or period["type"] == "dinner") and gt > next_chat:
 		next_chat = gt + randf_range(5, 9)
 		var kids := npcs.filter(func(n): return n.kind == "pupil" and n.special == "" and n.state != "down")
