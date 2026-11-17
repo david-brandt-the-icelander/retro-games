@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Inkwell Academy</title>
+  <meta name="description" content="A school-day caper: follow the timetable, dodge lines, light the crests and ring the Founder's Bell.">
+  <meta name="theme-color" content="#17142a">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="shell.css">
+  <script id="godot-config" type="application/json">$GODOT_CONFIG</script>
+  $GODOT_HEAD_INCLUDE
+</head>
+<body>
+  <canvas id="canvas" tabindex="0">Your browser does not support the canvas element.</canvas>
+  <div id="status" role="status">
+    <p class="eyebrow">TIMETABLE / CRESTS / FOUNDER'S BELL</p>
+    <h1>Inkwell Academy</h1>
+    <div class="bar"><div id="bar-fill"></div></div>
+    <p id="notice"></p>
+  </div>
+  <noscript>Inkwell Academy needs JavaScript.</noscript>
+  <script src="$GODOT_URL"></script>
+  <script src="boot.js"></script>
+</body>
+</html>
