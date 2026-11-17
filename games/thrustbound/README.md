@@ -5,7 +5,8 @@ An original jetpack arcade game, made in Godot 4 for the web and served at
 
 Fly a jetpack, find the rocket's two loose parts and stack them on the launch pad, catch six fuel
 pods as they fall, then board the rocket and lift off. A new kind of alien arrives each level, and every
-fourth level the rocket is scrap and a new model has to be built. Crystals that fall from the sky are
+fourth level the rocket is scrap and a new model has to be built. Every level has its own layout
+(platforms, rocket pad and start position); there are eleven in `world.gd`, and they repeat after the last. Crystals that fall from the sky are
 bonus points; there is an extra life every 10,000 points.
 
 | Action | Keyboard | Gamepad |
@@ -28,7 +29,7 @@ no text, graphics, sound or code from any earlier game.
 - `godot/`: the Godot 4.7 project (Compatibility renderer, for the web). `scripts/main.gd` runs the game
   (states, spawning, collisions, scoring, levels); `player.gd`, `alien.gd`, `rocket.gd`, `item.gd`,
   `laser.gd` and `explosion.gd` are the things on screen; `background.gd` and `hud.gd` draw the world and
-  the overlays; `world.gd` holds the screen's layout and the wrap-around helpers. `web_shell/shell.html`
+  the overlays; `world.gd` holds the level layouts and the wrap-around helpers. `web_shell/shell.html`
   is the page the export is built into.
 - `web/`: the page's loader script (`boot.js`), styles, icon and `_headers` (a strict Content-Security-Policy).
 - `worker/index.ts`: the Worker. It asks for icelander.net's sign-in (role `games:play`) before serving the
