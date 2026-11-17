@@ -87,7 +87,7 @@ func step(delta: float) -> void:
 	vel.y = clampf(vel.y, MAX_UP, MAX_DOWN)
 
 	position.x += vel.x * delta
-	for r in W.PLATFORMS:
+	for r in W.platforms():
 		if rect().intersects(r):
 			if vel.x > 0.0:
 				position.x = r.position.x - HALF.x

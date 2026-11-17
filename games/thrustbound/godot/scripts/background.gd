@@ -90,7 +90,7 @@ func _draw() -> void:
 	draw_polyline(near_hills.slice(0, near_hills.size() - 2), Color(0.8, 0.35, 0.9, 0.3), 1.0, true)
 	_draw_ground()
 	_draw_pad()
-	for r in W.PLATFORMS:
+	for r in W.platforms():
 		_draw_platform(r)
 
 
@@ -131,7 +131,7 @@ func _draw_ground() -> void:
 
 
 func _draw_pad() -> void:
-	var x := W.PAD_X
+	var x := W.pad_x()
 	var y := W.GROUND_Y
 	draw_rect(Rect2(x - 58, y - 3, 116, 7), Color(0.26, 0.27, 0.33))
 	draw_rect(Rect2(x - 58, y - 3, 116, 2), Color(0.45, 0.46, 0.55))

@@ -69,6 +69,11 @@ func _ready() -> void:
 	rocket = Rocket.new()
 	world.add_child(rocket)
 	rocket.reset(0, 3)
+	var bad: Array = W.check_layouts()
+	if not bad.is_empty():
+		push_error("level layouts: " + "; ".join(bad))
+		if selftest:
+			get_tree().quit(1)
 	player = Player.new()
 	player.fired.connect(_on_player_fired)
 	world.add_child(player)
@@ -179,6 +184,7 @@ func _process(delta: float) -> void:
 			_update_aliens(delta)
 			if state_timer <= 0.0 and (Input.is_action_just_pressed("start") or Input.is_action_just_pressed("fire")):
 				_clear_world()
+				W.use_level(1)
 				rocket.reset(0, 3)
 				state = "title"
 	hud.tick(delta)
@@ -205,6 +211,7 @@ func _start_game() -> void:
 	score = 0
 	lives = START_LIVES
 	level = 1
+	W.use_level(level)
 	next_life_at = 10000
 	paused = false
 	_clear_world()
@@ -235,8 +242,14 @@ func _clear_world() -> void:
 	Sfx.set_thrust(false)
 
 
+func _clear_items() -> void:
+	for i in items:
+		i.queue_free()
+	items.clear()
+
+
 func _place_parts() -> void:
-	var spots := [W.PLATFORMS[0], W.PLATFORMS[2]]
+	var spots := W.part_spots()
 	for idx in [1, 2]:
 		var it = Item.new()
 		it.setup_part(idx, rocket.model)
@@ -249,7 +262,7 @@ func _place_parts() -> void:
 
 
 func _spawn_player() -> void:
-	player.reset(Vector2(300, W.GROUND_Y - player.HALF.y))
+	player.reset(Vector2(W.start_x(), W.GROUND_Y - player.HALF.y))
 
 
 func _update_playing(delta: float) -> void:
@@ -327,9 +340,11 @@ func _update_launch(delta: float) -> void:
 
 func _next_level() -> void:
 	level += 1
+	W.use_level(level)
 	pending_new_model = (level - 1) % 4 == 0
 	rocket.fuel = 0
-	rocket.position.y = -260.0
+	rocket.position = Vector2(W.pad_x(), -260.0)
+	_clear_items()
 	state = "land"
 	state_timer = 0.0
 	var k: int = (level - 1) % 4
@@ -350,7 +365,7 @@ func _update_land(delta: float) -> void:
 			rocket.reset(rocket.model + 1, 1)
 			_place_parts()
 			hud.show_message("NEW ROCKET", "The old one is scrap. Build the next model!", 3.0)
-		player.reset(Vector2(rocket.position.x - 70.0, W.GROUND_Y - player.HALF.y))
+		player.reset(Vector2(W.start_x(), W.GROUND_Y - player.HALF.y))
 		state = "playing"
 		spawn_timer = 2.0
 		fuel_timer = 1.0
@@ -530,7 +545,7 @@ func _spawn_logic(delta: float) -> void:
 func _drop_from_sky(it) -> void:
 	var x := rng.randf_range(60.0, W.WIDTH - 60.0)
 	for i in 10:
-		if absf(x - W.PAD_X) > 80.0:
+		if absf(x - W.pad_x()) > 80.0:
 			break
 		x = rng.randf_range(60.0, W.WIDTH - 60.0)
 	it.position = Vector2(x, -30.0)

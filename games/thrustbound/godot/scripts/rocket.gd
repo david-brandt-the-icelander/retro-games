@@ -15,7 +15,7 @@ var smoke: CPUParticles2D
 
 func _ready() -> void:
 	z_index = 2
-	position = Vector2(W.PAD_X, W.ROCKET_BASE_Y)
+	position = Vector2(W.pad_x(), W.ROCKET_BASE_Y)
 
 	smoke = CPUParticles2D.new()
 	smoke.amount = 70
@@ -58,7 +58,7 @@ func reset(m: int, segs: int = 1) -> void:
 	model = m % 4
 	segments = segs
 	fuel = 0
-	position = Vector2(W.PAD_X, W.ROCKET_BASE_Y)
+	position = Vector2(W.pad_x(), W.ROCKET_BASE_Y)
 	set_flame(false)
 
 
