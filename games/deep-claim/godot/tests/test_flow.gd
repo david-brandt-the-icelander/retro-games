@@ -38,7 +38,13 @@ func _process(delta: float) -> bool:
 		else:
 			Input.action_press("move_right")
 	if main.state == Main.State.WON:
-		print("PASS: all %d shafts cleared, %d credits, %d miners left" % [Levels.DATA.size(), main.score, main.lives])
+		var ok := main.cleared == Levels.DATA.size() and main.miner_bonus == main.lives * Main.MINER_BONUS and main.last_rank >= 0 \
+				and int(main.scores[main.last_rank]["score"]) == main.score
+		if not ok:
+			printerr("FAIL: won, but cleared %d, bonus %d, rank %d" % [main.cleared, main.miner_bonus, main.last_rank])
+			quit(1)
+			return false
+		print("PASS: all %d shafts cleared, %d credits, %d miners left, table place %d" % [Levels.DATA.size(), main.score, main.lives, main.last_rank + 1])
 		quit(0)
 	elif main.state == Main.State.GAMEOVER or t > 900.0:
 		printerr("FAIL: state %d in shaft %d after %.0f s" % [main.state, main.level_index, t])

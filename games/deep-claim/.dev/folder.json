@@ -11,7 +11,7 @@
       "purpose": "Holds the whole game: the Godot project in godot/, the page around the web export in godot/web_shell/ and web/, the Worker that serves it in worker/, the Worker's tests in test/ and the shaft-map builder in tools/. It is one npm project and one Cloudflare Worker.",
       "boundaries": [
         "The sign-in is icelander.net's; the Worker checks it with the shared library in vendor/icelander-auth/, never edited here.",
-        "The game keeps nothing on the server: no database, no high-score table. The best haul is saved in the player's browser."
+        "The game keeps nothing on the server: no database, no high-score table. The ten best hauls are saved in the player's browser."
       ],
       "evidenceStatus": "source-verified",
       "sources": [

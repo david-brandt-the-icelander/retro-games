@@ -12,7 +12,7 @@ An original single-screen platformer in the spirit of the 8-bit cavern games, ma
 - Every shaft is **collapsing**. Cracks spread, grit falls, then rocks drop (a dust trickle warns where). When the timer reaches zero the shaft caves in, buggy or not. Time left over pays a bonus.
 - Ore is mostly **rare earths** (Nd, Dy, Tb, Eu) and **precious metals** (Pt, Pd, Ir, Rh, Au), with some **spacecraft building materials** (Ti, Al, nickel-iron), each worth its own credits.
 - Hazards: crystal shards, crumbling ledges, conveyors, crawler bots, security drones and proximity mines. The buggy is armoured; your suit isn't.
-- Twenty shafts, three miners. The best haul is kept in the browser.
+- Twenty shafts, three miners. Clear the last shaft for the victory page (each miner still alive pays a bonus of 1,000 credits), then the table of best hauls. Losing your last miner also ends on the table when the haul earns a place. The ten best hauls are kept in the browser.
 
 | Action | Keyboard | Gamepad | Touch |
 |---|---|---|---|

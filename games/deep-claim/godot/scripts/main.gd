@@ -1,20 +1,26 @@
 class_name Main
 extends Node2D
-## Game flow: title → shafts → victory / game over. Owns oxygen, fuel refills, the collapse timer,
+## Game flow: title → shafts → victory or game over → best hauls → title. Owns oxygen, fuel refills, the collapse timer,
 ## lighting, bloom, camera shake, audio and the HUD.
 
-enum State { TITLE, PLAYING, DYING, COMPLETE, PAUSED, GAMEOVER, WON }
+enum State { TITLE, PLAYING, DYING, COMPLETE, PAUSED, GAMEOVER, WON, SCORES }
 
 const START_LIVES := 3
 const OXYGEN_TIME := 40.0      # seconds of air in the suit
 const REFILL_RATE := 0.7       # tank fractions per second while in the buggy
 const SAVE_PATH := "user://deep_claim.save"
+const TABLE_SIZE := 10
+const MINER_BONUS := 1000      # credits for each miner brought home alive after the last shaft
 
 var state := State.TITLE
 var level_index := 0
 var lives := START_LIVES
 var score := 0
 var hiscore := 0
+var scores: Array = []         # the browser's best hauls, best first: {"score": int, "shafts": int}
+var last_rank := -1            # where this run landed in `scores`, or -1 when it missed the table
+var cleared := 0               # shafts cleared in this run
+var miner_bonus := 0           # credits paid for surviving miners on the winning run
 var collapse := 1.0
 var level: Level
 var bg: Background
@@ -177,9 +183,18 @@ func _set_attract(on: bool) -> void:
 	level.player.frozen = on
 
 
+func _back_to_title() -> void:
+	state = State.TITLE
+	_load_level(0)
+	_set_attract(true)
+
+
 func _start_game() -> void:
 	lives = START_LIVES
 	score = 0
+	cleared = 0
+	miner_bonus = 0
+	last_rank = -1
 	sfx.play("start")
 	await _fade_to(1.0)
 	_load_level(0)
@@ -236,9 +251,15 @@ func _process(delta: float) -> void:
 				level._kill("CLAIM ABANDONED")
 		State.GAMEOVER, State.WON:
 			if (_pressed("start") or _pressed("jump")) and _input_lock <= 0.0:
-				state = State.TITLE
-				_load_level(0)
-				_set_attract(true)
+				if last_rank >= 0:
+					state = State.SCORES
+					_input_lock = 0.4
+					sfx.play("pickup", 1.2)
+				else:
+					_back_to_title()
+		State.SCORES:
+			if (_pressed("start") or _pressed("jump")) and _input_lock <= 0.0:
+				_back_to_title()
 	shake = maxf(0.0, shake - delta * 30.0)
 	camera.offset = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * shake
 	if level and level.player:
@@ -369,7 +390,7 @@ func _on_killed(reason: String) -> void:
 	if lives <= 0:
 		state = State.GAMEOVER
 		_set_attract(true)
-		_save_hiscore()
+		_record_score()
 		sfx.play("over")
 		_input_lock = 1.0
 		banner_t = 0.0
@@ -393,13 +414,21 @@ func _on_exit() -> void:
 		sfx.play("tick", 1.0 + (1.0 - collapse) * 0.5)
 		await get_tree().create_timer(0.02).timeout
 	collapse = 0.0
-	await get_tree().create_timer(0.6).timeout
+	cleared = level_index + 1
+	var last := level_index + 1 >= Levels.DATA.size()
+	if last:
+		miner_bonus = lives * MINER_BONUS
+		score += miner_bonus
+		banner_t = 0.0
+		_banner("LAST SHAFT CLEARED", "%d %s brought home: +%d" % [lives, "miner" if lives == 1 else "miners", miner_bonus], 2.5)
+		sfx.play("win")
+	await get_tree().create_timer(0.6 if not last else 2.2).timeout
 	await _fade_to(1.0)
-	if level_index + 1 >= Levels.DATA.size():
+	if last:
 		_load_level(0)
 		_set_attract(true)
 		state = State.WON
-		_save_hiscore()
+		_record_score()
 		_input_lock = 1.0
 		banner_t = 0.0
 	else:
@@ -411,18 +440,41 @@ func _on_exit() -> void:
 # ------------------------------------------------------------------ persistence
 
 func _load_hiscore() -> void:
+	scores.clear()
 	if FileAccess.file_exists(SAVE_PATH):
 		var f := FileAccess.open(SAVE_PATH, FileAccess.READ)
 		if f:
-			hiscore = int(f.get_var())
+			var v: Variant = f.get_var()
+			if v is Array:
+				for e in v:
+					if e is Dictionary and e.has("score"):
+						scores.append({"score": int(e["score"]), "shafts": int(e.get("shafts", 0))})
+			elif v is int:
+				scores.append({"score": int(v), "shafts": 0})  # the old save kept one best haul
+	scores.sort_custom(func(x: Dictionary, y: Dictionary) -> bool: return x["score"] > y["score"])
+	hiscore = int(scores[0]["score"]) if scores.size() > 0 else 0
 
 
-func _save_hiscore() -> void:
-	if score > hiscore:
-		hiscore = score
-		var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-		if f:
-			f.store_var(hiscore)
+## Puts this run on the table when it earns a place, and saves it.
+func _record_score() -> void:
+	last_rank = -1
+	if score <= 0:
+		return
+	var at := scores.size()
+	for i in scores.size():
+		if score > int(scores[i]["score"]):
+			at = i
+			break
+	if at >= TABLE_SIZE:
+		return
+	scores.insert(at, {"score": score, "shafts": cleared})
+	if scores.size() > TABLE_SIZE:
+		scores.resize(TABLE_SIZE)
+	last_rank = at
+	hiscore = int(scores[0]["score"])
+	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if f:
+		f.store_var(scores)
 
 
 # ------------------------------------------------------------------ headless smoke test
