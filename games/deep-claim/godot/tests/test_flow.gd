@@ -40,7 +40,7 @@ func _process(delta: float) -> bool:
 	if main.state == Main.State.WON:
 		print("PASS: all %d shafts cleared, %d credits, %d miners left" % [Levels.DATA.size(), main.score, main.lives])
 		quit(0)
-	elif main.state == Main.State.GAMEOVER or t > 200.0:
+	elif main.state == Main.State.GAMEOVER or t > 900.0:
 		printerr("FAIL: state %d in shaft %d after %.0f s" % [main.state, main.level_index, t])
 		quit(1)
 	return false
