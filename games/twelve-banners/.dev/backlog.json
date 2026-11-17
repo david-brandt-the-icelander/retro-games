@@ -1,0 +1,88 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Twelve Banners backlog",
+  "folder": "games/twelve-banners",
+  "entities": [
+    {
+      "id": "browser-online",
+      "title": "Online play in the browser",
+      "summary": "Carry Net.gd's commands and events over the games hub's match relay (/games/multiplayer/match/ID), as Double Cross does, so invited players can play together from the browser. The hub's lobby reads multiplayer games from /games/games.json, which leaves invited games out, so icelander.net needs a way to offer an invited game to holders of its role.",
+      "status": "open",
+      "priority": "high",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/twelve-banners/godot/scripts/Net.gd",
+          "symbol": "CAN_HOST"
+        }
+      ],
+      "type": "feature",
+      "origin": {
+        "kind": "code",
+        "reference": "games/twelve-banners/README.md",
+        "description": "The web build has no UDP, so online games are desktop-only in the first release."
+      }
+    },
+    {
+      "id": "save-load",
+      "title": "Saved games",
+      "summary": "Save and resume a game, including an online one (the host saves; everyone rejoins).",
+      "status": "open",
+      "priority": "high",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/twelve-banners/godot/scripts/Game.gd",
+          "symbol": "setup_from_dict"
+        }
+      ],
+      "type": "feature",
+      "origin": {
+        "kind": "code",
+        "reference": "games/twelve-banners/README.md",
+        "description": "Not in the first release; the README lists it under what's missing."
+      }
+    },
+    {
+      "id": "diplomacy",
+      "title": "Diplomacy",
+      "summary": "Peace, war and alliances between civilizations; today everyone is at war, the AI after a 20-turn grace period.",
+      "status": "open",
+      "priority": "medium",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/twelve-banners/godot/scripts/AI.gd",
+          "symbol": "GRACE_TURNS"
+        }
+      ],
+      "type": "feature",
+      "origin": {
+        "kind": "code",
+        "reference": "games/twelve-banners/README.md",
+        "description": "Not in the first release; the README lists it under what's missing."
+      }
+    },
+    {
+      "id": "map-features",
+      "title": "Naval units, roads and rivers",
+      "summary": "Ships for the oceans, roads for movement and trade, and rivers on the map.",
+      "status": "open",
+      "priority": "medium",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/twelve-banners/godot/scripts/Defs.gd",
+          "symbol": "UNITS"
+        }
+      ],
+      "type": "feature",
+      "origin": {
+        "kind": "code",
+        "reference": "games/twelve-banners/README.md",
+        "description": "Not in the first release; the README lists it under what's missing."
+      }
+    }
+  ]
+}
