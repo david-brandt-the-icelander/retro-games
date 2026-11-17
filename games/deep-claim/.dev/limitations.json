@@ -7,8 +7,8 @@
     {
       "id": "no-server-scores",
       "title": "No shared high-score table",
-      "summary": "The best haul is saved only in the player's browser; the Worker keeps no scores.",
-      "impact": "Players can't compare hauls, and clearing the browser's storage loses the best haul.",
+      "summary": "The ten best hauls are saved only in the player's browser; the Worker keeps no scores.",
+      "impact": "Players can't compare hauls, and clearing the browser's storage loses the table.",
       "evidenceStatus": "source-verified",
       "sources": [
         {

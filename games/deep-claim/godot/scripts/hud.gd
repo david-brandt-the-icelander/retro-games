@@ -120,13 +120,13 @@ func _draw() -> void:
 			_dim(0.6)
 			_text(Vector2(0, 300), "CLAIM LOST", 64, Color(3.0, 0.8, 0.7), HORIZONTAL_ALIGNMENT_CENTER, 1280)
 			_text(Vector2(0, 360), "Haul %s   ·   Best %s" % [_credits(main.score), _credits(main.hiscore)], 24, white, HORIZONTAL_ALIGNMENT_CENTER, 1280)
-			_text(Vector2(0, 430), "Press SPACE", 24, Color(1.6, 1.6, 1.8, _blink()), HORIZONTAL_ALIGNMENT_CENTER, 1280)
+			if main.last_rank >= 0:
+				_text(Vector2(0, 400), "A place on the table: number %d" % (main.last_rank + 1), 20, Color(2.2, 1.9, 1.0), HORIZONTAL_ALIGNMENT_CENTER, 1280)
+			_text(Vector2(0, 450), "Press SPACE", 24, Color(1.6, 1.6, 1.8, _blink()), HORIZONTAL_ALIGNMENT_CENTER, 1280)
 		Main.State.WON:
-			_dim(0.55)
-			_text(Vector2(0, 280), "CLAIM WORKED OUT", 56, Color(2.6, 2.2, 1.2), HORIZONTAL_ALIGNMENT_CENTER, 1280)
-			_text(Vector2(0, 330), "The haul goes to orbit, no gravity well to climb.", 20, Color(0.85, 0.87, 0.95), HORIZONTAL_ALIGNMENT_CENTER, 1280)
-			_text(Vector2(0, 380), "Haul %s   ·   Best %s" % [_credits(main.score), _credits(main.hiscore)], 24, white, HORIZONTAL_ALIGNMENT_CENTER, 1280)
-			_text(Vector2(0, 440), "Press SPACE", 24, Color(1.6, 1.6, 1.8, _blink()), HORIZONTAL_ALIGNMENT_CENTER, 1280)
+			_draw_victory()
+		Main.State.SCORES:
+			_draw_scores()
 	if main.banner_t > 0.0 and main.state != Main.State.TITLE:
 		var k := clampf(main.banner_t, 0.0, 1.0)
 		var y := 250.0 - (1.0 - k) * 20.0
@@ -198,6 +198,58 @@ func _draw_title() -> void:
 		_text(Vector2(0, 450 + i * 26), lines[i], 15, Color(0.6, 0.62, 0.72), HORIZONTAL_ALIGNMENT_CENTER, 1280)
 	if main.hiscore > 0:
 		_text(Vector2(0, 560), "BEST HAUL %s" % _credits(main.hiscore), 18, Color(0.9, 0.8, 0.5), HORIZONTAL_ALIGNMENT_CENTER, 1280)
+
+
+func _draw_victory() -> void:
+	_dim(0.7)
+	var tt := Time.get_ticks_msec() / 1000.0
+	var g := 2.3 + 0.4 * sin(tt * 2.0)
+	var gold := Color(g, g * 0.82, g * 0.4)
+	# a few drifting sparks of ore light behind the title
+	for i in 18:
+		var ph := float(i) * 0.7
+		var x := fposmod(120.0 + float(i) * 67.0 + sin(tt * 0.6 + ph) * 30.0, 1280.0)
+		var y := 70.0 + fposmod(float(i) * 41.0 - tt * 22.0, 150.0)
+		draw_circle(Vector2(x, y), 2.0 + sin(tt * 3.0 + ph), Color(gold.r, gold.g, gold.b, 0.5))
+	_text(Vector2(0, 150), "CLAIM WORKED OUT", 72, gold, HORIZONTAL_ALIGNMENT_CENTER, 1280)
+	_text(Vector2(0, 200), "All %d shafts of asteroid 4471 Halvard are cleared." % main.cleared, 22, Color(0.9, 0.92, 1.0), HORIZONTAL_ALIGNMENT_CENTER, 1280)
+	_text(Vector2(0, 232), "The haul goes to orbit, no gravity well to climb.", 18, Color(0.75, 0.78, 0.9), HORIZONTAL_ALIGNMENT_CENTER, 1280)
+	var rows := [
+		["Shafts cleared", "%d / %d" % [main.cleared, Levels.DATA.size()]],
+		["Miners brought home", "%d" % main.lives],
+		["Miner bonus", _credits(main.miner_bonus)],
+		["Final haul", _credits(main.score)],
+		["Best haul", _credits(main.hiscore)],
+	]
+	for i in rows.size():
+		var y := 315.0 + i * 40.0
+		var big: bool = i == 3
+		_text(Vector2(360, y), rows[i][0], 24 if big else 20, Color(0.75, 0.78, 0.9))
+		_text(Vector2(0, y), rows[i][1], 24 if big else 20, gold if big else Color(0.95, 0.95, 1.0), HORIZONTAL_ALIGNMENT_RIGHT, 920)
+	if main.last_rank >= 0:
+		var msg := "NEW BEST HAUL!" if main.last_rank == 0 else "A place on the table: number %d" % (main.last_rank + 1)
+		_text(Vector2(0, 540), msg, 26, Color(2.4, 2.0, 1.0, 0.7 + 0.3 * sin(tt * 5.0)), HORIZONTAL_ALIGNMENT_CENTER, 1280)
+	_text(Vector2(0, 595), "Press SPACE", 22, Color(1.6, 1.6, 1.8, _blink()), HORIZONTAL_ALIGNMENT_CENTER, 1280)
+
+
+func _draw_scores() -> void:
+	_dim(0.8)
+	var tt := Time.get_ticks_msec() / 1000.0
+	_text(Vector2(0, 110), "BEST HAULS", 64, Color(2.2, 1.7, 0.8), HORIZONTAL_ALIGNMENT_CENTER, 1280)
+	_text(Vector2(300, 170), "RANK", 16, Color(0.6, 0.62, 0.72))
+	_text(Vector2(430, 170), "HAUL", 16, Color(0.6, 0.62, 0.72))
+	_text(Vector2(0, 170), "SHAFTS", 16, Color(0.6, 0.62, 0.72), HORIZONTAL_ALIGNMENT_RIGHT, 980)
+	for i in main.scores.size():
+		var y := 205.0 + i * 36.0
+		var mine: bool = i == main.last_rank
+		var col := Color(2.4, 2.0, 1.0, 0.75 + 0.25 * sin(tt * 6.0)) if mine else Color(0.85, 0.87, 0.95)
+		_text(Vector2(300, y), "%d" % (i + 1), 22, col)
+		_text(Vector2(430, y), _credits(int(main.scores[i]["score"])), 22, col)
+		var n := int(main.scores[i]["shafts"])
+		_text(Vector2(0, y), "%d" % n if n > 0 else "-", 22, col, HORIZONTAL_ALIGNMENT_RIGHT, 980)
+		if mine:
+			_text(Vector2(1000, y), "< YOU", 18, col)
+	_text(Vector2(0, 600), "Press SPACE", 22, Color(1.6, 1.6, 1.8, _blink()), HORIZONTAL_ALIGNMENT_CENTER, 1280)
 
 
 func _draw_life_icon(c: Vector2) -> void:

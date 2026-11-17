@@ -50,7 +50,7 @@
     {
       "id": "levels",
       "name": "Shaft-map builder",
-      "responsibility": "Writes the five shaft maps into godot/scripts/levels.gd and checks that every ore can be reached from the buggy's lane.",
+      "responsibility": "Writes the twenty shaft maps into godot/scripts/levels.gd and checks that every ore can be reached from the buggy's lane.",
       "folder": "games/deep-claim/tools"
     },
     {

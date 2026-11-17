@@ -27,7 +27,7 @@
       "id": "browser",
       "name": "Player's browser",
       "kind": "client",
-      "description": "Runs the Godot engine (WebAssembly, WebGL 2) and the whole game; keeps the best haul in its own storage.",
+      "description": "Runs the Godot engine (WebAssembly, WebGL 2) and the whole game; keeps the ten best hauls in its own storage.",
       "actor": "Actors/player.md"
     },
     {
