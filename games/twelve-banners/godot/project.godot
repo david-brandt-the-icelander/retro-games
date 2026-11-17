@@ -1,0 +1,35 @@
+; Engine configuration file.
+; Twelve Banners: a hex-based 4X strategy game for up to 12 civilizations, for Godot 4.7
+; (Forward+ on the desktop, Compatibility on the web).
+
+config_version=5
+
+[application]
+
+config/name="Twelve Banners"
+config/description="A hex-based 4X strategy game: found cities, research, and outlast up to eleven rival civilizations, human or AI."
+run/main_scene="res://scenes/Main.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Net="*res://scripts/Net.gd"
+
+[display]
+
+window/size/viewport_width=1600
+window/size/viewport_height=900
+window/stretch/aspect="expand"
+
+[rendering]
+
+renderer/rendering_method="forward_plus"
+renderer/rendering_method.mobile="gl_compatibility"
+renderer/rendering_method.web="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+anti_aliasing/quality/msaa_3d=2
+anti_aliasing/quality/screen_space_aa=1
+anti_aliasing/quality/screen_space_aa.web=0
+lights_and_shadows/directional_shadow/size=4096
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3
