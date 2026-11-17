@@ -15,9 +15,12 @@ const Hud = preload("res://scripts/hud.gd")
 
 const SAVE_PATH := "user://thrustbound.save"
 const START_LIVES := 4
-const ALIEN_SCORES := [25, 50, 80, 100]
-const ALIEN_NAMES := ["Ember meteors", "Jelly bouncers", "Scout saucers", "Seeker orbs"]
-const ALIEN_COLORS := [Color(2.4, 0.9, 0.3), Color(0.4, 2.2, 0.8), Color(0.4, 1.4, 2.6), Color(2.4, 0.4, 2.0)]
+const ALIEN_SCORES := [25, 50, 80, 100, 60, 70, 90, 110, 120, 90, 150]
+const ALIEN_NAMES := ["Ember meteors", "Jelly bouncers", "Scout saucers", "Seeker orbs", "Drift mines", "Dart comets", "Zigzag wasps",
+		"Phase ghosts", "Dive hawks", "Ricochet shards", "Hunter drones"]
+const ALIEN_COLORS := [Color(2.4, 0.9, 0.3), Color(0.4, 2.2, 0.8), Color(0.4, 1.4, 2.6), Color(2.4, 0.4, 2.0),
+		Color(2.6, 0.3, 0.3), Color(2.6, 2.4, 0.6), Color(2.6, 1.6, 0.2), Color(1.6, 2.2, 2.4), Color(0.3, 2.4, 1.6),
+		Color(0.8, 1.8, 2.8), Color(2.6, 0.5, 1.0)]
 const LASER_COLORS := [Color(2.4, 0.4, 1.8), Color(0.4, 2.2, 2.4), Color(2.4, 2.0, 0.4), Color(0.6, 2.4, 0.6)]
 const GEM_COLORS := [Color(0.5, 2.4, 2.6), Color(2.6, 0.6, 1.6), Color(2.6, 2.2, 0.5), Color(0.8, 2.6, 0.8)]
 
@@ -70,6 +73,8 @@ func _ready() -> void:
 	world.add_child(rocket)
 	rocket.reset(0, 3)
 	var bad: Array = W.check_layouts()
+	if ALIEN_NAMES.size() < W.LAYOUTS.size() or ALIEN_SCORES.size() != ALIEN_NAMES.size() or ALIEN_COLORS.size() != ALIEN_NAMES.size():
+		bad.append("every level layout needs its own enemy kind, with a score and a colour")
 	if not bad.is_empty():
 		push_error("level layouts: " + "; ".join(bad))
 		if selftest:
@@ -347,7 +352,7 @@ func _next_level() -> void:
 	_clear_items()
 	state = "land"
 	state_timer = 0.0
-	var k: int = (level - 1) % 4
+	var k: int = _alien_kind()
 	hud.show_message("LEVEL %d" % level, "%s incoming" % ALIEN_NAMES[k], 3.0)
 
 
@@ -554,8 +559,13 @@ func _drop_from_sky(it) -> void:
 	items.append(it)
 
 
+## Every level layout has its own enemy, so no two levels in a cycle share one.
+func _alien_kind() -> int:
+	return (level - 1) % ALIEN_NAMES.size()
+
+
 func _spawn_alien() -> void:
-	var kind := (level - 1) % 4
+	var kind := _alien_kind()
 	var a = Alien.new()
 	var from_left := rng.randf() < 0.5
 	var pos := Vector2(1.0 if from_left else W.WIDTH - 1.0, 300.0)
@@ -645,10 +655,16 @@ func _selftest_drive(delta: float) -> void:
 	if test_t > 18.0 and test_t < 18.1 and player.alive:
 		player.invuln = 0.0
 		_kill_player_test()
-	for st in [0.3, 3.5, 7.5, 9.5, 11.2, 12.2, 18.3]:
+	for st in [0.3, 2.6, 3.5, 7.5, 9.5, 11.2, 12.2, 18.3]:
 		if test_t - delta < st and test_t >= st and OS.has_environment("THRUST_SHOTS"):
 			await RenderingServer.frame_post_draw
 			get_viewport().get_texture().get_image().save_png(OS.get_environment("THRUST_SHOTS") + "/shot_%05.1f.png" % st)
+	if test_t > 2.0 and test_t < 2.1 and aliens.size() < 20:
+		for k in ALIEN_NAMES.size():
+			var sa = Alien.new()
+			sa.setup(k, Vector2(200.0 + 80.0 * k, 160.0), 1, 12, rng)
+			world.add_child(sa)
+			aliens.append(sa)
 	if test_t > 26.0:
 		print("SELFTEST OK level=", level, " score=", score, " state=", state, " aliens=", aliens.size())
 		get_tree().quit()
