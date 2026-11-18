@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/limitations.schema.json",
+  "kind": "limitations",
+  "title": "Hand of the Isle limitations",
+  "folder": "games/hand-of-the-isle",
+  "entities": [
+    {
+      "id": "no-sound",
+      "title": "No sound",
+      "summary": "The game has no sound effects or music.",
+      "impact": "Powers, battles and collapsing homes are shown only on screen.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hand-of-the-isle/godot/scripts/main.gd",
+          "symbol": "_build_environment"
+        }
+      ]
+    },
+    {
+      "id": "no-save",
+      "title": "No saved games",
+      "summary": "A match cannot be saved or resumed; each one is a new island.",
+      "impact": "Closing the game ends the match.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hand-of-the-isle/godot/scripts/main.gd",
+          "symbol": "_new_world"
+        }
+      ]
+    },
+    {
+      "id": "browser-only",
+      "title": "Browser only",
+      "summary": "The only build is Godot's web export on the Compatibility renderer; there are no desktop downloads.",
+      "impact": "Players need WebGL 2, a keyboard and a mouse with a right button. Ambient occlusion, which the project asks for, isn't drawn in the browser.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hand-of-the-isle/godot/export_presets.cfg",
+          "symbol": "preset.0"
+        },
+        {
+          "path": "games/hand-of-the-isle/godot/scripts/main.gd",
+          "symbol": "_build_environment"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Hand of the Isle scripts class diagram",
+  "folder": "games/hand-of-the-isle/godot/scripts",
+  "description": "The GDScript global classes, and main.gd's unnamed script on the Main node. Team 0 is the player and team 1 the rival; both go through the same World rules.",
+  "sources": [
+    {
+      "path": "games/hand-of-the-isle/godot/scripts/world.gd",
+      "symbol": "World"
+    },
+    {
+      "path": "games/hand-of-the-isle/godot/scripts/main.gd",
+      "symbol": "_ready"
+    }
+  ],
+  "types": [
+    {
+      "id": "Main",
+      "name": "Main (main.gd)",
+      "kind": "class",
+      "sources": ["games/hand-of-the-isle/godot/scripts/main.gd"],
+      "members": ["var state: String", "var world: World", "var rival: RivalAI", "var stand_in: RivalAI", "func _start(lvl: int)", "func _new_world(seed_value: int, attract: bool)"]
+    },
+    {
+      "id": "World",
+      "name": "World",
+      "kind": "class",
+      "sources": ["games/hand-of-the-isle/godot/scripts/world.gd"],
+      "members": ["const POWERS: Array", "var terrain: Terrain", "var walkers: Array[Walker]", "var settlements: Array[Settlement]", "var mana: Array", "var behavior: Array", "signal message(text: String, team: int)", "signal game_over(winner: int)", "signal shake(amount: float)", "func start(seed_value: int)", "func step(dt: float)", "func cast(team: int, i: int, p: Vector3, alt := false) -> String"]
+    },
+    {
+      "id": "Terrain",
+      "name": "Terrain",
+      "kind": "class",
+      "sources": ["games/hand-of-the-isle/godot/scripts/terrain.gd", "games/hand-of-the-isle/godot/scripts/terrain.gdshader"],
+      "members": ["var h: PackedInt32Array", "var water_level: int", "var blight: Dictionary", "func generate(seed_value: int)", "func raise_vertex(x: int, z: int) -> bool", "func lower_vertex(x: int, z: int) -> bool", "func tile_buildable(t: Vector2i) -> bool", "func height_at(p: Vector2) -> float", "func raycast(from: Vector3, dir: Vector3) -> Variant"]
+    },
+    {
+      "id": "Settlement",
+      "name": "Settlement",
+      "kind": "class",
+      "sources": ["games/hand-of-the-isle/godot/scripts/settlement.gd"],
+      "members": ["const CAP: Array", "var team: int", "var tile: Vector2i", "var tier: int", "var pop: float", "func capacity() -> int", "func set_tier(t: int)"]
+    },
+    {
+      "id": "Walker",
+      "name": "Walker",
+      "kind": "class",
+      "sources": ["games/hand-of-the-isle/godot/scripts/walker.gd"],
+      "members": ["var team: int", "var strength: int", "var gp: Vector2", "var champion: bool", "var foe: Node3D", "static func team_color(t: int) -> Color", "func make_champion()"]
+    },
+    {
+      "id": "RivalAI",
+      "name": "RivalAI",
+      "kind": "class",
+      "sources": ["games/hand-of-the-isle/godot/scripts/rival_ai.gd"],
+      "members": ["var team: int", "var level: int", "func tick(dt: float)"]
+    },
+    {
+      "id": "CameraRig",
+      "name": "CameraRig",
+      "kind": "class",
+      "sources": ["games/hand-of-the-isle/godot/scripts/camera_rig.gd"],
+      "members": ["var cam: Camera3D", "var shake: float", "func look_at_point(p: Vector3, d := 30.0)"]
+    },
+    {
+      "id": "Hud",
+      "name": "Hud",
+      "kind": "class",
+      "sources": ["games/hand-of-the-isle/godot/scripts/hud.gd"],
+      "members": ["signal power_chosen(i: int)", "signal behavior_chosen(b: int)", "signal start_requested(level: int)", "signal restart_requested", "func update_stats(w: World, paused: bool, speed: float)", "func toast(text: String, col := Color(1, 1, 1))", "func show_end(won: bool, body: String)"]
+    }
+  ],
+  "relationships": [
+    {"from": "Main", "to": "World", "kind": "depends-on", "description": "Creates one World per match, steps it and casts the player's powers."},
+    {"from": "Main", "to": "RivalAI", "kind": "depends-on", "description": "Ticks the rival, and a stand-in for team 0 in attract and autoplay modes."},
+    {"from": "Main", "to": "CameraRig", "kind": "depends-on", "description": "Owns the camera and raycasts the cursor through it."},
+    {"from": "Main", "to": "Hud", "kind": "depends-on", "description": "Owns the interface and handles its signals."},
+    {"from": "World", "to": "Terrain", "kind": "depends-on", "description": "Owns the heightmap; settlement tiers and walker movement read it, powers reshape it."},
+    {"from": "World", "to": "Settlement", "kind": "depends-on", "description": "Founds, re-tiers, grows and destroys homes."},
+    {"from": "World", "to": "Walker", "kind": "depends-on", "description": "Spawns, moves, merges and fights followers."},
+    {"from": "RivalAI", "to": "World", "kind": "depends-on", "description": "Acts only through World.cast and World.behavior."},
+    {"from": "Hud", "to": "World", "kind": "depends-on", "description": "Reads faith, follower counts and the POWERS table."},
+    {"from": "Settlement", "to": "Walker", "kind": "depends-on", "description": "Uses Walker.team_color and Walker.mat for its materials."}
+  ]
+}

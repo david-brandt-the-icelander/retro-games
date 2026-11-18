@@ -52,6 +52,10 @@
     {
       "path": "games/iron-haze/wrangler.jsonc",
       "symbol": "iron-haze"
+    },
+    {
+      "path": "games/hand-of-the-isle/wrangler.jsonc",
+      "symbol": "hand-of-the-isle"
     }
   ],
   "nodes": [
@@ -164,6 +168,12 @@
       "name": "iron-haze Worker",
       "kind": "process",
       "description": "Iron Haze's Worker on icelander.net/games/fresh/iron-haze*, for holders of games:iron-haze only; no database. Its own deployment diagram is in games/iron-haze/.dev."
+    },
+    {
+      "id": "w-hand-of-the-isle",
+      "name": "hand-of-the-isle Worker",
+      "kind": "process",
+      "description": "Hand of the Isle's Worker on icelander.net/games/fresh/hand-of-the-isle*, for holders of games:hand-of-the-isle only; no database. Its own deployment diagram is in games/hand-of-the-isle/.dev."
     },
     {
       "id": "rooms",
@@ -308,6 +318,20 @@
       "source": "games/iron-haze/worker/index.ts",
       "deployedTo": "w-iron-haze",
       "description": "Gates every file on games:iron-haze and joins the parted files."
+    },
+    {
+      "id": "site-hand-of-the-isle",
+      "name": "Hand of the Isle landing page and web export",
+      "source": "games/hand-of-the-isle/build.mjs",
+      "deployedTo": "edge",
+      "description": "dist/games/fresh/hand-of-the-isle/: the landing page and the Godot web export under play/, its engine in 20 MiB parts."
+    },
+    {
+      "id": "script-hand-of-the-isle",
+      "name": "hand-of-the-isle Worker script",
+      "source": "games/hand-of-the-isle/worker/index.ts",
+      "deployedTo": "w-hand-of-the-isle",
+      "description": "Gates every file on games:hand-of-the-isle and joins the parted engine."
     },
     {
       "id": "room",
@@ -594,10 +618,22 @@
       "description": "Route icelander.net/games/fresh/iron-haze*."
     },
     {
+      "from": "edge",
+      "to": "w-hand-of-the-isle",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/fresh/hand-of-the-isle*."
+    },
+    {
       "from": "w-iron-haze",
       "to": "accounts",
       "kind": "connects-to",
       "description": "Service binding ACCOUNTS: every file needs a signed-in player holding games:iron-haze."
+    },
+    {
+      "from": "w-hand-of-the-isle",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: every file needs a signed-in player holding games:hand-of-the-isle."
     }
   ]
 }
