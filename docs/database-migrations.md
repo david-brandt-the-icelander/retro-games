@@ -24,6 +24,8 @@ Each game has its own D1 database, named in its `wrangler.jsonc`:
 | Rally | `games/rally` | `rally-scores` |
 | Shatterbelt | `games/shatterbelt` | `shatterbelt-scores` |
 
+MEG (`games/meg`) has no D1 database: its high-score table is a Durable Object, created by the migration in its `wrangler.jsonc` when it deploys, so nothing in it is migrated by hand.
+
 A game's `worker/schema.sql` describes a fresh database; the live one changes only through files in that game's `worker/migrations/`. The commands below run in the game's folder.
 
 ## Writing a migration

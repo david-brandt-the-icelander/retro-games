@@ -1,0 +1,486 @@
+{
+ "pip": {
+  "tpl": "kid",
+  "parts": {
+   "thigh": [
+    8.5,
+    8.5
+   ],
+   "shin": [
+    8.0,
+    8.0
+   ],
+   "torso": [
+    27.0,
+    40
+   ],
+   "arm": [
+    8.0,
+    8.0
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 24,
+  "shin": 30,
+  "torsoH": 36,
+  "arm": 30,
+  "scale": 0.96,
+  "legsBehind": true,
+  "skirt": 0
+ },
+ "knuckles": {
+  "tpl": "kid",
+  "parts": {
+   "thigh": [
+    8.5,
+    8.5
+   ],
+   "shin": [
+    8.0,
+    8.0
+   ],
+   "torso": [
+    27.0,
+    40
+   ],
+   "arm": [
+    8.0,
+    8.0
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 24,
+  "shin": 30,
+  "torsoH": 36,
+  "arm": 30,
+  "scale": 0.96,
+  "legsBehind": true,
+  "skirt": 0
+ },
+ "tattle": {
+  "tpl": "kid",
+  "parts": {
+   "thigh": [
+    8.5,
+    8.5
+   ],
+   "shin": [
+    8.0,
+    8.0
+   ],
+   "torso": [
+    27.0,
+    40
+   ],
+   "arm": [
+    8.0,
+    8.0
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 24,
+  "shin": 30,
+  "torsoH": 36,
+  "arm": 30,
+  "scale": 0.96,
+  "legsBehind": true,
+  "skirt": 0
+ },
+ "dot": {
+  "tpl": "kid",
+  "parts": {
+   "thigh": [
+    8.5,
+    8.5
+   ],
+   "shin": [
+    8.0,
+    8.0
+   ],
+   "torso": [
+    27.0,
+    40
+   ],
+   "arm": [
+    8.0,
+    8.0
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 24,
+  "shin": 30,
+  "torsoH": 36,
+  "arm": 30,
+  "scale": 0.96,
+  "legsBehind": true,
+  "skirt": 16
+ },
+ "wilf": {
+  "tpl": "kid",
+  "parts": {
+   "thigh": [
+    8.5,
+    8.5
+   ],
+   "shin": [
+    8.0,
+    8.0
+   ],
+   "torso": [
+    27.0,
+    40
+   ],
+   "arm": [
+    8.0,
+    8.0
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 24,
+  "shin": 30,
+  "torsoH": 36,
+  "arm": 30,
+  "scale": 0.96,
+  "legsBehind": true,
+  "skirt": 0
+ },
+ "mo": {
+  "tpl": "kid",
+  "parts": {
+   "thigh": [
+    8.5,
+    8.5
+   ],
+   "shin": [
+    8.0,
+    8.0
+   ],
+   "torso": [
+    27.0,
+    40
+   ],
+   "arm": [
+    8.0,
+    8.0
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 24,
+  "shin": 30,
+  "torsoH": 36,
+  "arm": 30,
+  "scale": 0.96,
+  "legsBehind": true,
+  "skirt": 0
+ },
+ "ada": {
+  "tpl": "kid",
+  "parts": {
+   "thigh": [
+    8.5,
+    8.5
+   ],
+   "shin": [
+    8.0,
+    8.0
+   ],
+   "torso": [
+    27.0,
+    40
+   ],
+   "arm": [
+    8.0,
+    8.0
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 24,
+  "shin": 30,
+  "torsoH": 36,
+  "arm": 30,
+  "scale": 0.96,
+  "legsBehind": true,
+  "skirt": 16
+ },
+ "reg": {
+  "tpl": "kid",
+  "parts": {
+   "thigh": [
+    8.5,
+    8.5
+   ],
+   "shin": [
+    8.0,
+    8.0
+   ],
+   "torso": [
+    27.0,
+    40
+   ],
+   "arm": [
+    8.0,
+    8.0
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 24,
+  "shin": 30,
+  "torsoH": 36,
+  "arm": 30,
+  "scale": 0.96,
+  "legsBehind": true,
+  "skirt": 0
+ },
+ "nell": {
+  "tpl": "kid",
+  "parts": {
+   "thigh": [
+    8.5,
+    8.5
+   ],
+   "shin": [
+    8.0,
+    8.0
+   ],
+   "torso": [
+    27.0,
+    40
+   ],
+   "arm": [
+    8.0,
+    8.0
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 24,
+  "shin": 30,
+  "torsoH": 36,
+  "arm": 30,
+  "scale": 0.96,
+  "legsBehind": true,
+  "skirt": 16
+ },
+ "bas": {
+  "tpl": "kid",
+  "parts": {
+   "thigh": [
+    8.5,
+    8.5
+   ],
+   "shin": [
+    8.0,
+    8.0
+   ],
+   "torso": [
+    27.0,
+    40
+   ],
+   "arm": [
+    8.0,
+    8.0
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 24,
+  "shin": 30,
+  "torsoH": 36,
+  "arm": 30,
+  "scale": 0.96,
+  "legsBehind": true,
+  "skirt": 0
+ },
+ "ivy": {
+  "tpl": "kid",
+  "parts": {
+   "thigh": [
+    8.5,
+    8.5
+   ],
+   "shin": [
+    8.0,
+    8.0
+   ],
+   "torso": [
+    27.0,
+    40
+   ],
+   "arm": [
+    8.0,
+    8.0
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 24,
+  "shin": 30,
+  "torsoH": 36,
+  "arm": 30,
+  "scale": 0.96,
+  "legsBehind": true,
+  "skirt": 16
+ },
+ "ogle": {
+  "tpl": "man",
+  "parts": {
+   "thigh": [
+    9.5,
+    9.5
+   ],
+   "shin": [
+    8.5,
+    8.5
+   ],
+   "torso": [
+    30.0,
+    56
+   ],
+   "arm": [
+    9.0,
+    9.0
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 32,
+  "shin": 40,
+  "torsoH": 52,
+  "arm": 42,
+  "scale": 1.03,
+  "legsBehind": true,
+  "skirt": 0
+ },
+ "vane": {
+  "tpl": "woman",
+  "parts": {
+   "thigh": [
+    9.0,
+    9.0
+   ],
+   "shin": [
+    7.5,
+    7.5
+   ],
+   "torso": [
+    29.0,
+    52
+   ],
+   "arm": [
+    8.5,
+    8.5
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 32,
+  "shin": 40,
+  "torsoH": 48,
+  "arm": 40,
+  "scale": 1.03,
+  "legsBehind": true,
+  "skirt": 50
+ },
+ "brandish": {
+  "tpl": "woman",
+  "parts": {
+   "thigh": [
+    9.0,
+    9.0
+   ],
+   "shin": [
+    7.5,
+    7.5
+   ],
+   "torso": [
+    29.0,
+    52
+   ],
+   "arm": [
+    8.5,
+    8.5
+   ],
+   "head": [
+    24.5,
+    63
+   ]
+  },
+  "thigh": 32,
+  "shin": 40,
+  "torsoH": 48,
+  "arm": 40,
+  "scale": 1.03,
+  "legsBehind": true,
+  "skirt": 46
+ },
+ "thistle": {
+  "tpl": "head",
+  "parts": {
+   "thigh": [
+    9.5,
+    9.5
+   ],
+   "shin": [
+    8.5,
+    8.5
+   ],
+   "torso": [
+    30.0,
+    56
+   ],
+   "arm": [
+    9.0,
+    9.0
+   ],
+   "head": [
+    24.5,
+    63
+   ],
+   "gown": [
+    35.0,
+    5
+   ]
+  },
+  "thigh": 32,
+  "shin": 40,
+  "torsoH": 52,
+  "arm": 42,
+  "scale": 1.03,
+  "legsBehind": true,
+  "skirt": 0
+ }
+}

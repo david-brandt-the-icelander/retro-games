@@ -3,47 +3,69 @@
   "kind": "component",
   "title": "Hand of the Isle component diagram",
   "folder": "games/hand-of-the-isle",
-  "description": "The Godot 4.4 project. main.tscn runs Main (scripts/main.gd), which owns the camera, the interface and one World at a time; the World owns the terrain and the units, and two RivalAI instances drive deities through the same World.cast rules the player uses. The scripts folder's class diagram and Main state diagram are in games/hand-of-the-isle/scripts/.dev/.",
+  "description": "The game and what serves it. godot/ is the Godot 4 project: main.tscn runs Main (scripts/main.gd), which owns the camera, the interface and one World at a time; the World owns the terrain and the units, and RivalAI drives a deity through the same World.cast rules the player uses. The Worker serves the landing page and the web export only to holders of games:hand-of-the-isle. The scripts' class diagram and Main state diagram are in games/hand-of-the-isle/godot/scripts/.dev/.",
   "sources": [
     {
-      "path": "games/hand-of-the-isle/main.tscn",
+      "path": "games/hand-of-the-isle/godot/main.tscn",
       "symbol": "Main"
     },
     {
-      "path": "games/hand-of-the-isle/scripts/main.gd",
+      "path": "games/hand-of-the-isle/godot/scripts/main.gd",
       "symbol": "_new_world"
+    },
+    {
+      "path": "games/hand-of-the-isle/worker/index.ts",
+      "symbol": "requireRole"
     }
   ],
   "components": [
     {
       "id": "game",
-      "name": "Hand of the Isle",
+      "name": "Godot project",
       "responsibility": "Everything the Godot engine runs.",
-      "folder": "games/hand-of-the-isle"
+      "folder": "games/hand-of-the-isle/godot"
     },
     {
       "id": "main",
       "name": "Main",
       "responsibility": "Scene dressing (sky, sun, sea), input, the cursor, the game states and the command-line test switches.",
-      "folder": "games/hand-of-the-isle/scripts"
+      "folder": "games/hand-of-the-isle/godot/scripts"
     },
     {
       "id": "simulation",
       "name": "Simulation",
       "responsibility": "World, Terrain, Settlement and Walker: the heightmap, homes, followers, combat, faith, influence and the eight powers.",
-      "folder": "games/hand-of-the-isle/scripts"
+      "folder": "games/hand-of-the-isle/godot/scripts"
     },
     {
       "id": "rival",
       "name": "Rival deity",
       "responsibility": "RivalAI: sculpts inside its own influence, picks its followers' behaviour and casts powers, paying faith like the player.",
-      "folder": "games/hand-of-the-isle/scripts"
+      "folder": "games/hand-of-the-isle/godot/scripts"
     },
     {
       "id": "presentation",
       "name": "Camera and interface",
       "responsibility": "CameraRig (orbiting tabletop camera) and Hud (faith, follower balance, power bar, behaviour switch, notices, title, help and end screens).",
-      "folder": "games/hand-of-the-isle/scripts"
+      "folder": "games/hand-of-the-isle/godot/scripts"
+    },
+    {
+      "id": "worker",
+      "name": "Hand of the Isle Worker",
+      "responsibility": "Serves every file only to signed-in players holding games:hand-of-the-isle, and joins the engine's parts (worker/index.ts).",
+      "folder": "games/hand-of-the-isle/worker"
+    },
+    {
+      "id": "web",
+      "name": "Landing and play pages",
+      "responsibility": "The landing page, the play page's stylesheet and boot script, the icon and the Content-Security-Policy (web/), around Godot's export (godot/web_shell/shell.html).",
+      "folder": "games/hand-of-the-isle/web"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Who is signed in and which roles they hold; declares games:hand-of-the-isle.",
+      "external": true
     }
   ],
   "relationships": [
@@ -82,6 +104,24 @@
       "to": "simulation",
       "kind": "depends-on",
       "description": "Hud reads faith and follower counts and the POWERS table."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Service binding ACCOUNTS, through vendor/icelander-auth: every file needs games:hand-of-the-isle."
+    },
+    {
+      "from": "worker",
+      "to": "web",
+      "kind": "depends-on",
+      "description": "Serves the pages from the static assets."
+    },
+    {
+      "from": "web",
+      "to": "game",
+      "kind": "depends-on",
+      "description": "The play page starts the Godot web export (boot.js)."
     }
   ]
 }

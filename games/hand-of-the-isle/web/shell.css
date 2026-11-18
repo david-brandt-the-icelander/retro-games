@@ -1,0 +1,41 @@
+/* Hand of the Isle's pages: the landing page (body.page) and the play page around the Godot canvas (body.game).
+   Gold on deep sea blue, the game's own HUD colours. */
+:root { --soot: #0b1a2a; --panel: #11243a; --brass: #c79a44; --gold: #ffcc61; --cream: #e8eef6; --dim: #93a6bd; --red: #f05a46; }
+html, body { margin: 0; background: var(--soot); color: var(--cream); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+body.game { height: 100%; overflow: hidden; touch-action: none; }
+body.game, html:has(body.game) { height: 100%; }
+#canvas { display: block; width: 100vw; height: 100vh; outline: none; }
+#status {
+  position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 40%, #173a5c 0%, var(--soot) 70%); transition: opacity 0.6s ease;
+}
+#status.done { opacity: 0; pointer-events: none; }
+#status h1, .title { font: 700 64px/1 "Bahnschrift", "Oswald", "Arial Narrow", system-ui, sans-serif; letter-spacing: 6px; color: var(--gold); margin: 6px 0 28px; }
+.eyebrow { font: 600 12px/1 system-ui, sans-serif; letter-spacing: 3px; color: var(--brass); margin: 0; text-transform: uppercase; }
+.bar { width: 240px; height: 3px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; }
+#bar-fill { width: 0; height: 100%; background: var(--brass); transition: width 0.2s; }
+#notice { color: #f08070; max-width: 520px; text-align: center; min-height: 1em; padding: 0 16px; }
+#status.failed .bar { display: none; }
+
+/* The landing page */
+body.page { padding: 0 20px 64px; }
+.wrap { max-width: 1040px; margin: 0 auto; }
+.crumbs { padding: 18px 0; font-size: 14px; color: var(--dim); }
+.crumbs a { color: var(--dim); }
+.hero { display: grid; gap: 28px; grid-template-columns: 1.15fr 1fr; align-items: center; padding: 12px 0 28px; }
+.hero img { width: 100%; height: auto; border: 2px solid var(--brass); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); }
+.title { font-size: 56px; margin: 8px 0 12px; }
+.lede { font-size: 18px; color: var(--cream); margin: 0 0 22px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { display: inline-block; padding: 12px 22px; border: 2px solid var(--gold); border-radius: 4px; background: #3a2f12; color: #fff3d6; font-weight: 700; text-decoration: none; letter-spacing: 0.5px; }
+.btn:hover { background: #55441a; }
+.btn.line { background: transparent; border-color: var(--brass); color: var(--cream); font-weight: 600; }
+.note { color: var(--dim); font-size: 14px; margin: 12px 0 0; }
+.panel { background: var(--panel); border: 2px solid #2c4a6b; border-radius: 6px; padding: 20px 24px; margin: 18px 0; }
+.panel h2 { font: 700 20px/1.2 "Bahnschrift", "Oswald", system-ui, sans-serif; letter-spacing: 2px; color: var(--gold); margin: 0 0 12px; text-transform: uppercase; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+td { padding: 6px 10px 6px 0; border-bottom: 1px solid #22384f; vertical-align: top; }
+td:first-child { color: var(--gold); white-space: nowrap; width: 34%; }
+.shots { display: grid; gap: 12px; grid-template-columns: 1fr; }
+.shots img { width: 100%; height: auto; border-radius: 4px; border: 1px solid #2c4a6b; }
+@media (max-width: 760px) { .hero, .shots { grid-template-columns: 1fr; } .title { font-size: 42px; } }

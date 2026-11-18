@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "MEG",
+  "folder": "games/meg",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "MEG: The Current Remembers",
+      "summary": "An original cartoon shark game for the browser, desktop and phone: the player is the last megalodon, eating fish and swimmers and hiding in a warm current from the Directorate across eight levels.",
+      "purpose": "Holds the whole game: the page, its stylesheet and the game script in public/, the Worker that serves them behind the sign-in and keeps the shared high-score table in worker/, and the tests in test/. It is one npm project and one Cloudflare Worker.",
+      "boundaries": [
+        "The sign-in is icelander.net's; the Worker checks it with the shared library in vendor/icelander-auth/, never edited here.",
+        "The shared table lives in a Durable Object, not a D1 database; scores are trusted within checked limits (decisions.json). The page loads three Google Fonts and nothing else from outside."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/meg/README.md",
+          "symbol": "Develop"
+        },
+        {
+          "path": "games/meg/wrangler.jsonc",
+          "symbol": "main"
+        }
+      ]
+    }
+  ]
+}

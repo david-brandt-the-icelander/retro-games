@@ -1,17 +1,16 @@
 # Hand of the Isle
 
-A modern god game for **Godot 4.4+**: you don't command your followers directly — you
-reshape the island they live on and call down divine powers, while a rival deity does the
-same. Everything (terrain, buildings, people, interface) is generated in code; there are no
-external assets.
+![A low-poly island dotted with blue-roofed homes and followers](docs/island.png)
 
-## Running
+An original god game made in Godot 4: you don't command your followers directly. You reshape the island they live on
+and call down divine powers, while a rival deity does the same under the same rules and costs. Everything (terrain,
+buildings, people, interface) is generated in code; there are no external assets.
 
-1. Install Godot 4.4 or newer (standard build, no .NET needed).
-2. In the Project Manager choose **Import**, select this folder's `project.godot`, then press **F5**.
-
-The title screen plays a rival-against-rival match in the background. Pick a rival:
-*Gentle*, *Even match* or *Wrathful*.
+It lives at <https://icelander.net/games/fresh/hand-of-the-isle/>, **for invited players only**: every file, the landing
+page included, is served only to someone signed in to icelander.net who holds the role `games:hand-of-the-isle`. The
+role is declared in the icelander.net repository (`accounts/src/config.js`) and granted, or sent as an invitation, at
+<https://icelander.net/private/admin>. The games page and the front page list Hand of the Isle only to holders of the
+role. It is played in the browser only: Godot's web export, on the Compatibility renderer (WebGL 2).
 
 ## How it plays
 
@@ -63,31 +62,62 @@ Hold **Shift** while casting to keep the power selected.
 | Esc | Back to Sculpt / close help |
 | H | Help |
 
-## Code layout
+## How it works
 
-| File | Role |
+```
+godot/                      the game (Godot 4.7; Compatibility renderer in the browser)
+  main.tscn                 the one scene; its root runs scripts/main.gd
+  scripts/main.gd           scene dressing (sky, sun, sea), input, cursor, game states, command-line test switches
+  scripts/world.gd          the simulation: settlements, walkers, combat, faith, influence, the eight powers
+  scripts/terrain.gd        heightmap, sculpting, the low-poly mesh, water and trees
+  scripts/terrain.gdshader  vertex-colour terrain with the influence overlay and tile grid
+  scripts/settlement.gd, walker.gd   homes and followers, and their models
+  scripts/rival_ai.gd       the rival deity: the same rules and costs as the player
+  scripts/camera_rig.gd     the orbiting tabletop camera
+  scripts/hud.gd            the interface, built in code
+  tests/selftest.gd         headless test: the island, sculpting and its limits, two powers, a whole match
+  web_shell/shell.html      the page the web export runs in (no inline script: the CSP forbids it)
+  export_presets.cfg        Web
+web/                        the landing page, the play page's stylesheet and boot script, the icon, _headers
+docs/                       the landing page's screenshots
+worker/index.ts             the Worker: games:hand-of-the-isle on every file but the stylesheet and icon; joins the engine's parts
+worker/config.ts            the game's path and role
+test/worker.test.ts         who may fetch what, and the joining of parts
+build.mjs                   exports the game into dist/ and cuts the engine into parts
+```
+
+Cloudflare serves static files of at most 25 MiB. The engine (`index.wasm`, about 40 MB) is stored as 20 MiB parts
+(`index.wasm.0`, `index.wasm.1`), and the Worker streams the parts back as one file, as Iron Haze does.
+
+Tunable numbers live at the top of `godot/scripts/world.gd` (`POWERS`, `WALKER_CAP`, `MANA_MAX`), in
+`Settlement.CAP`, and in `RivalAI` (think rate, sculpt budget, crusade grace period per difficulty).
+
+## Commands
+
+Requires Node 22, and Godot 4.7.2 with its web export templates for the build (set `GODOT` to its path if it isn't on
+the PATH as `godot`).
+
+| Command | What it does |
 |---|---|
-| `scripts/main.gd` | Scene dressing (sky, sun, sea), input, cursor, game states |
-| `scripts/world.gd` | Simulation: settlements, walkers, combat, faith, powers |
-| `scripts/terrain.gd` | Heightmap, sculpting, low-poly mesh, water, trees |
-| `scripts/terrain.gdshader` | Vertex-colour terrain with the influence overlay and tile grid |
-| `scripts/settlement.gd`, `scripts/walker.gd` | Units and their procedural models |
-| `scripts/rival_ai.gd` | The rival deity — obeys the same rules and costs as you |
-| `scripts/camera_rig.gd` | Orbiting tabletop camera |
-| `scripts/hud.gd` | Interface built in code |
+| `npm test` | Typecheck and the Worker's tests |
+| `npm run test:godot` | Import the project and run the headless self-test |
+| `npm run build` | The landing page and the web export, into `dist/` |
+| `npm run dev` | `build`, then `wrangler dev`. For the stand-in sign-in put `DEV_LOGIN="1"` in `.dev.vars` and run `npx wrangler dev --local-upstream localhost:8787`, with a `site_session` cookie of `dev.` and base64url JSON such as `{"email":"you@example.com","roles":["games:hand-of-the-isle"]}` |
+| `npm run deploy` | Test, build and deploy by hand (normally the merge to `main` does it) |
 
-Tunable numbers live at the top of `world.gd` (`POWERS`, `WALKER_CAP`, `MANA_MAX`), in
-`Settlement.CAP`, and in `RivalAI` (think rate, sculpt budget, crusade grace period per
-difficulty).
+To play it locally without the Worker, open `godot/project.godot` in Godot 4.7 and press F5.
 
-### Test switches
-
-Arguments after `--` on the command line:
-`--autoplay` (AI plays both sides; logs balance every 30 s; combine with `--headless`),
-`--play` (skip title), `--level=0..2`, `--seed=N`, `--speed=N`, `--zoom=N`,
-`--shot=out.png --shot-time=S` (save a screenshot and quit), `--click-test`,
-`--quit-after=S`.
+Test switches for the Godot project, after `--` on its command line:
+`--autoplay` (the rival AI plays both sides and logs the balance every 30 s; combine with `--headless`),
+`--play` (skip the title), `--level=0..2`, `--seed=N`, `--speed=N`, `--zoom=N --focus=red`,
+`--shot=out.png --shot-time=S` (save a screenshot and quit), `--click-test`, `--quit-after=S`.
 
 ```sh
-godot --headless --path . -- --autoplay --speed=20 --quit-after=60
+godot --headless --path godot -- --autoplay --speed=20 --quit-after=60
 ```
+
+## Deploy
+
+A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`, which installs Godot 4.7.2 and
+its export templates for the Godot games). The Worker needs no database and no secrets: only the route
+`icelander.net/games/fresh/hand-of-the-isle*` and the service binding to the login service, both in `wrangler.jsonc`.

@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/limitations.schema.json",
+  "kind": "limitations",
+  "title": "Deep Claim limitations",
+  "folder": "games/deep-claim",
+  "entities": [
+    {
+      "id": "no-server-scores",
+      "title": "No shared high-score table",
+      "summary": "The ten best hauls are saved only in the player's browser; the Worker keeps no scores.",
+      "impact": "Players can't compare hauls, and clearing the browser's storage loses the table.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/deep-claim/godot/scripts/main.gd",
+          "symbol": "SAVE_PATH"
+        }
+      ]
+    },
+    {
+      "id": "no-glow-on-web",
+      "title": "No bloom on the web",
+      "summary": "The web export uses the Compatibility renderer, which draws the game's bright colours without the HDR glow the desktop renderer adds.",
+      "impact": "The browser game looks flatter than it does in the Godot editor.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/deep-claim/godot/project.godot",
+          "symbol": "renderer/rendering_method"
+        }
+      ]
+    },
+    {
+      "id": "large-download",
+      "title": "A 40 MB first load",
+      "summary": "The Godot engine is about 39.5 MB of WebAssembly, fetched before the title screen appears.",
+      "impact": "The first visit on a slow or metered connection takes a while; the browser caches it for an hour.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/deep-claim/worker/index.ts",
+          "symbol": "joinedWasm"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Neon Cycles decisions",
+  "folder": "games/neon-cycles",
+  "entities": [
+    {
+      "id": "publish-neon-cycles",
+      "title": "Where and how to publish Neon Cycles",
+      "summary": "Neon Cycles is published from this repository at icelander.net/games/retro/neon-cycles, behind the sign-in, with the Compatibility renderer.",
+      "status": "accepted",
+      "context": "The game was made as a stand-alone Godot 4 project with the Forward+ renderer. The web needs WebGL 2, which only the Compatibility renderer targets, and the engine file (about 38 MiB) is over Cloudflare's 25 MiB limit for a static file, so icelander.net's own Worker could not serve it as it is.",
+      "options": [
+        {
+          "title": "In this repository, as Gambit is",
+          "consequences": "Its own Worker behind the sign-in, the engine split into parts that the Worker joins, and Godot in the workflow."
+        },
+        {
+          "title": "In the icelander.net repository, with the engine in R2",
+          "consequences": "Changes the site's Worker to serve the engine from a bucket."
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/neon-cycles/wrangler.jsonc",
+          "symbol": "neon-cycles"
+        },
+        {
+          "path": "games/neon-cycles/godot/project.godot",
+          "symbol": "rendering_method"
+        }
+      ],
+      "decision": "Publish it from this repository, like Gambit, with the Compatibility renderer and no threads.",
+      "rationale": "The owner chose this repository. The Compatibility renderer keeps the glow; it loses screen-space reflections and ambient occlusion, which the Forward+ build had.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-16"
+    }
+  ]
+}

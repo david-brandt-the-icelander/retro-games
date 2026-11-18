@@ -1,0 +1,22 @@
+{
+  "name": "hand-of-the-isle",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hand of the Isle: an original god game in Godot 4, in the browser, for players invited to games:hand-of-the-isle.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && node build.mjs",
+    "test": "tsc --noEmit && node build.mjs --test && node --no-warnings --test dist-test/*.test.mjs",
+    "test:godot": "godot --headless --path godot --import && godot --headless --path godot -s tests/selftest.gd",
+    "dev": "node build.mjs && wrangler dev",
+    "deploy": "npm test && npm run test:godot && npm run build && wrangler deploy"
+  },
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "esbuild": "^0.25.12",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.163.0"
+  }
+}

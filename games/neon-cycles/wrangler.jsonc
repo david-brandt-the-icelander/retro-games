@@ -1,0 +1,18 @@
+// The Neon Cycles Worker at icelander.net/games/retro/neon-cycles: the static Godot game behind icelander.net's sign-in.
+// Its route runs before the games hub (the recreations Worker), whose route icelander.net/games/* is less specific.
+// The game keeps no scores or progress anywhere, so it has no database.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "neon-cycles",
+  "compatibility_date": "2025-06-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "icelander.net/games/retro/neon-cycles*", "zone_name": "icelander.net" }],
+  "main": "worker/index.ts",
+  // The Worker runs first for the page (sign-in) and the joined engine file; everything else is a static asset.
+  "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "none", "run_worker_first": ["/games/retro/neon-cycles", "/games/retro/neon-cycles/", "/games/retro/neon-cycles/index.html", "/games/retro/neon-cycles/index.wasm"] },
+  // icelander.net's login service: who is signed in, through the site's cookie (icelander.net and its games are one sign-in).
+  "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
+  // The login service's public keys (icelander.net docs/accounts.md, "Keys").
+  "vars": { "ACCOUNTS_JWKS": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"kid\":\"k2026a\",\"x\":\"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc\"}]}" }
+}

@@ -1,0 +1,91 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Neon Cycles component diagram",
+  "folder": "games/neon-cycles",
+  "description": "Neon Cycles: a Godot web export run in the browser, in a small page of its own, served behind icelander.net's sign-in by a Worker that also joins the engine file from its parts.",
+  "sources": [
+    {
+      "path": "games/neon-cycles/build.mjs",
+      "symbol": "SITE"
+    },
+    {
+      "path": "games/neon-cycles/web/boot.js",
+      "symbol": "startGame"
+    },
+    {
+      "path": "games/neon-cycles/worker/index.ts",
+      "symbol": "default.fetch"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Neon Cycles",
+      "responsibility": "One game: the Godot project, its page and its Worker, built and deployed together.",
+      "folder": "games/neon-cycles"
+    },
+    {
+      "id": "godot",
+      "name": "Godot game",
+      "responsibility": "godot/: the arena, the riders and their AI, the trails, collisions, rounds, camera, HUD and effects, all built in code; exported for the web by build.mjs.",
+      "folder": "games/neon-cycles/godot"
+    },
+    {
+      "id": "page",
+      "name": "Page around the game",
+      "responsibility": "web/: the loading screen's stylesheet, the favicon, the headers and boot.js, which starts the engine from the configuration the page holds as JSON.",
+      "folder": "games/neon-cycles/web"
+    },
+    {
+      "id": "worker",
+      "name": "Sign-in Worker",
+      "responsibility": "worker/index.ts: sends anyone signed out to sign in before serving the page, streams the engine's parts back as one index.wasm, and serves every other file as a static asset.",
+      "folder": "games/neon-cycles/worker"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Says who is signed in and with which games: roles.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "godot",
+      "kind": "contains",
+      "description": "Exported by build.mjs into dist/, with the engine split into parts under 25 MiB."
+    },
+    {
+      "from": "game",
+      "to": "page",
+      "kind": "contains",
+      "description": "Copied by build.mjs into dist/; the export's HTML comes from godot/web_shell/shell.html."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Deployed with wrangler."
+    },
+    {
+      "from": "page",
+      "to": "godot",
+      "kind": "depends-on",
+      "description": "boot.js starts the exported engine (index.js, index.wasm, index.pck)."
+    },
+    {
+      "from": "worker",
+      "to": "page",
+      "kind": "depends-on",
+      "description": "Serves the page and its files from the ASSETS binding."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Checks the site_session cookie through the ACCOUNTS service binding."
+    }
+  ]
+}

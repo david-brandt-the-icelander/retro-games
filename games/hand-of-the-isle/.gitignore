@@ -1,2 +1,7 @@
-.godot/
-export/
+node_modules/
+dist/
+dist-test/
+.wrangler/
+.dev.vars
+godot/.godot/
+build/

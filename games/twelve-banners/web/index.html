@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twelve Banners · icelander.net</title>
+  <meta name="description" content="A hex-based strategy game for up to twelve civilizations, made in Godot.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0b1424">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="shell.css">
+</head>
+<body class="page">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/games/">Games</a> / Twelve Banners</nav>
+
+    <section class="hero">
+      <img src="city.png" width="1600" height="900" alt="A capital city of red-roofed houses on a green hex island, with farms, forests and warriors around it.">
+      <div>
+        <p class="eyebrow">Under construction · Strategy · Invited players</p>
+        <h1 class="title">TWELVE BANNERS</h1>
+        <p class="lede">Found cities on a hex world, research from Agriculture to Space Flight, and outlast up to eleven rivals, played by friends or by the computer.</p>
+        <div class="actions">
+          <a class="btn" href="play/">Play in the browser</a>
+          <a class="btn line" href="#download">Download for desktop</a>
+        </div>
+        <p class="note">The browser build plays against the computer and needs WebGL 2. Online games with friends, up to twelve civilizations, are in the desktop builds for now. The game is still being built: expect changes, and there are no saved games yet.</p>
+      </div>
+    </section>
+
+    <section class="panel" id="download" aria-labelledby="dl-h">
+      <h2 id="dl-h">Desktop builds</h2>
+      <ul class="downloads">
+        <li><a href="download/twelve-banners-windows.zip" download><b>Windows</b><span>64-bit · {{windows}}</span></a></li>
+        <li><a href="download/twelve-banners-macos.zip" download><b>macOS</b><span>Apple silicon and Intel · {{macos}}</span></a></li>
+        <li><a href="download/twelve-banners-linux.zip" download><b>Linux</b><span>x86_64 · {{linux}}</span></a></li>
+      </ul>
+      <p class="note">Unzip and run. The builds aren't code-signed: on Windows choose <b>More info → Run anyway</b>; on macOS right-click <b>Twelve Banners</b> and choose <b>Open</b> the first time; on Linux run <code>chmod +x TwelveBanners.x86_64</code> first. Build {{version}}.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="mp-h">
+      <h2 id="mp-h">Playing together</h2>
+      <table>
+        <tr><td>Host</td><td>Choose <b>Host Game</b>. The lobby shows the addresses your friends join at; over the internet, forward UDP port 24565 on your router.</td></tr>
+        <tr><td>Join</td><td>Choose <b>Join Game</b> with the host's address.</td></tr>
+        <tr><td>Seats</td><td>Up to twelve civilizations. The host sets how many the computer plays, and takes over for anyone who drops out.</td></tr>
+        <tr><td>Turns</td><td>Everyone moves at once. The turn ends when every player has pressed <b>End Turn</b>.</td></tr>
+      </table>
+    </section>
+
+    <section class="panel" aria-labelledby="how-h">
+      <h2 id="how-h">How to play</h2>
+      <table>
+        <tr><td>Cities</td><td>Found cities with Settlers (B). They grow on surplus food, work their best tiles and build units, buildings, Wealth or Research.</td></tr>
+        <tr><td>Land</td><td>Workers build farms, mines and trading posts. Borders grow when a city reaches size 3.</td></tr>
+        <tr><td>War</td><td>Right-click to move or attack; hover first to see the path or the odds. A city at 0 HP falls to a melee attack.</td></tr>
+        <tr><td>Win</td><td>Be the last civilization standing, launch the Spaceship, or have the highest score on turn 300.</td></tr>
+        <tr><td>Camera</td><td>WASD, arrow keys or the screen edge to pan, wheel to zoom, Q / E to rotate, H for your capital.</td></tr>
+        <tr><td>Keys</td><td>Enter ends the turn, T opens the technologies, F fortifies, Space skips a unit, Tab goes to the next one.</td></tr>
+      </table>
+    </section>
+
+    <section class="shots" aria-label="Screenshots">
+      <img src="overview.png" width="1600" height="900" alt="An island with five cities, farms and forests, the sea and unexplored land fading into cloud.">
+    </section>
+  </div>
+</body>
+</html>

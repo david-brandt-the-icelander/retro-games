@@ -12,21 +12,8 @@
       "evidenceStatus": "source-verified",
       "sources": [
         {
-          "path": "games/hand-of-the-isle/scripts/main.gd",
+          "path": "games/hand-of-the-isle/godot/scripts/main.gd",
           "symbol": "_build_environment"
-        }
-      ]
-    },
-    {
-      "id": "no-export",
-      "title": "Not exported or published",
-      "summary": "There are no export presets, so the game runs only from the Godot editor.",
-      "impact": "A player needs Godot 4.4 or newer installed to play it.",
-      "evidenceStatus": "source-verified",
-      "sources": [
-        {
-          "path": "games/hand-of-the-isle/project.godot",
-          "symbol": "application"
         }
       ]
     },
@@ -38,8 +25,25 @@
       "evidenceStatus": "source-verified",
       "sources": [
         {
-          "path": "games/hand-of-the-isle/scripts/main.gd",
+          "path": "games/hand-of-the-isle/godot/scripts/main.gd",
           "symbol": "_new_world"
+        }
+      ]
+    },
+    {
+      "id": "browser-only",
+      "title": "Browser only",
+      "summary": "The only build is Godot's web export on the Compatibility renderer; there are no desktop downloads.",
+      "impact": "Players need WebGL 2, a keyboard and a mouse with a right button. Ambient occlusion, which the project asks for, isn't drawn in the browser.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hand-of-the-isle/godot/export_presets.cfg",
+          "symbol": "preset.0"
+        },
+        {
+          "path": "games/hand-of-the-isle/godot/scripts/main.gd",
+          "symbol": "_build_environment"
         }
       ]
     }

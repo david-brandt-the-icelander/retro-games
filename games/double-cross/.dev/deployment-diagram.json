@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "Double Cross deployment diagram",
+  "folder": "games/double-cross",
+  "description": "How Double Cross runs: one Cloudflare Worker with static assets and no database. Every browser runs the match; the host's browser decides it, and the games hub relays messages between them.",
+  "sources": [
+    {
+      "path": "games/double-cross/wrangler.jsonc",
+      "symbol": "double-cross"
+    },
+    {
+      "path": "games/double-cross/build.mjs",
+      "symbol": "SITE"
+    },
+    {
+      "path": "games/double-cross/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "vendor/icelander-auth/index.js",
+      "symbol": "createAuth"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "browser",
+      "name": "Player's browser",
+      "kind": "client",
+      "description": "Runs the Godot web build; one agent per browser. The lowest slot in a match hosts it.",
+      "actor": "Actors/player.md"
+    },
+    {
+      "id": "edge",
+      "name": "Cloudflare edge",
+      "kind": "host",
+      "description": "Runs the Worker on icelander.net/games/retro/double-cross*, ahead of the games hub's less specific route icelander.net/games/*."
+    },
+    {
+      "id": "worker",
+      "name": "double-cross Worker",
+      "kind": "process",
+      "description": "worker/index.ts: the signed-in page and the joined engine; every other path is a static asset from ./dist."
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "kind": "external-service",
+      "description": "The games hub at icelander.net/games: the multiplayer lobby and one WebSocket relay per online match.",
+      "condition": "Online matches (opened with ?match=ID)"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "accounts.icelander.net: who holds the host's site_session cookie and their games: roles. The Worker reaches it only through a service binding."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "export",
+      "name": "Godot web export",
+      "source": "games/double-cross/godot/project.godot",
+      "deployedTo": "edge",
+      "description": "index.html, index.js, index.pck and the engine split into index.wasm.0, .1 (each under Cloudflare's 25 MiB limit)."
+    },
+    {
+      "id": "bootjs",
+      "name": "boot.js",
+      "source": "games/double-cross/boot/boot.ts",
+      "deployedTo": "edge",
+      "description": "The loading screen's script."
+    },
+    {
+      "id": "script",
+      "name": "Worker script",
+      "source": "games/double-cross/worker/index.ts",
+      "deployedTo": "worker",
+      "description": "Built and uploaded by wrangler deploy."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "browser",
+      "to": "edge",
+      "kind": "connects-to",
+      "description": "Loads the page and the build."
+    },
+    {
+      "from": "edge",
+      "to": "worker",
+      "kind": "routes",
+      "description": "The route sends the game's paths to the Worker."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Who is signed in."
+    },
+    {
+      "from": "browser",
+      "to": "hub",
+      "kind": "connects-to",
+      "description": "Online matches, through the relay."
+    }
+  ]
+}

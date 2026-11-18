@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Neon Cycles",
+  "folder": "games/neon-cycles",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Neon Cycles",
+      "summary": "A modern light-cycle arena game in Godot 4 for the browser: the player and three computer riders leave glowing walls behind them, and the last rider left wins the round; the first to five rounds wins the match.",
+      "purpose": "Holds the whole game: the Godot project in godot/, the page around the web export in web/, the Worker that serves it behind the sign-in in worker/, and the Worker's tests in test/. It is one npm project and one Cloudflare Worker.",
+      "boundaries": [
+        "The sign-in is icelander.net's; the Worker checks it with the shared library in vendor/icelander-auth/, never edited here.",
+        "The game keeps nothing between visits: no scores, no progress, no database. It loads nothing from outside this origin.",
+        "The web export uses Godot's Compatibility renderer (WebGL 2) and no threads, so the page needs no cross-origin isolation headers."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/neon-cycles/README.md",
+          "symbol": "Develop"
+        },
+        {
+          "path": "games/neon-cycles/wrangler.jsonc",
+          "symbol": "main"
+        }
+      ]
+    }
+  ]
+}
