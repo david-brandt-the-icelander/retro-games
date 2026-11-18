@@ -64,7 +64,7 @@ func _launch() -> void:
 		var tw := create_tween()
 		tw.tween_property(d, "position:x", d.position.x * 3.0, 0.25)
 	var m = MissileScript.new()
-	m.speed = 7.0 + 0.6 * lvl
+	m.speed = Game.ramp(lvl, 6.0, 12.0)
 	m.position = global_position + Vector3(0, 0.3, 0)
 	get_parent().add_child(m)
 	Sfx.play("launch", -6.0)
