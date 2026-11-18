@@ -4,7 +4,7 @@ An original school-day caper, made in Godot 4 for the web and served at
 <https://icelander.net/games/retro/inkwell-academy/> to anyone signed in to icelander.net.
 
 You are Pip, a pupil at a three-storey school. Follow the timetable: get to each lesson's room and sit
-down before the teacher starts checking, or collect lines. Teachers only see what is in front of them.
+down before the teacher starts checking, or collect lines. Teachers only see what is in front of them: stand about in class and you only get lines while the teacher is looking your way, not while his back is turned at the board.
 Only a desk is a seat, and only one kid sits at each: punch a sitting kid and they hit the floor, so you can
 take the seat; but if a kid takes *your* desk you are shoved to the floor, and a teacher who spots you
 punching or sitting on the floor gives you lines (with a furious scream). Light all eight school crests with your pea-shooter, then pull the Founder's Bell rope in the Head's
