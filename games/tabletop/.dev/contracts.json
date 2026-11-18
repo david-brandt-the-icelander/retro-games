@@ -1,0 +1,46 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Board-game table contracts",
+  "folder": "games/tabletop",
+  "entities": [
+    {
+      "id": "cartridge-abi",
+      "title": "Cartridge format (tt ABI)",
+      "summary": "What a board-game WebAssembly binary exports and the host may rely on: a manifest, the board and pieces, the rules text, and later the rules.",
+      "contractType": "file-format",
+      "consumers": [
+        "The table page (src/cartridge/)",
+        "Later: the table's Durable Object (worker/table.ts), for rules"
+      ],
+      "guarantees": [
+        "A cartridge imports nothing but env.abort.",
+        "tt_abi() names the version; the host refuses versions it does not know and loads every older one.",
+        "Blob 0 is the manifest JSON; every blob the manifest names exists.",
+        "A published cartridge file never changes: a new build is a new SHA-256."
+      ],
+      "compatibility": "Exports and manifest fields are only added in a new version, never renamed or removed; a host supports every version up to its own.",
+      "details": "A cartridge is one WebAssembly module (`<id>.wasm`). Version 1 carries data only; version 2 adds rules.\n\n### Version 1 (now)\n\n**Imports.** None, except `env.abort(msg: i32, file: i32, line: i32, col: i32)`, which AssemblyScript adds and the host answers by stopping the cartridge with an error. A module importing anything else is refused. The cartridge can therefore reach nothing outside itself: no network, no clock, no page.\n\n**Exports.** All numbers are `i32`.\n\n| Export | Returns |\n| --- | --- |\n| `memory` | the module's memory |\n| `tt_abi()` | the contract version, `1` |\n| `tt_blob_count()` | how many blobs the cartridge holds |\n| `tt_blob_ptr(i)` / `tt_blob_len(i)` | where blob `i` lies in `memory`, and its length in bytes |\n\n**Blob 0** is the manifest, UTF-8 JSON:\n\n```json\n{\n  \"abi\": 1,\n  \"id\": \"river-race\",\n  \"name\": \"River Race\",\n  \"version\": \"1.0.0\",\n  \"players\": { \"min\": 2, \"max\": 4 },\n  \"rules\": { \"blob\": 5, \"type\": \"text/markdown\" },\n  \"board\": { \"blob\": 1, \"type\": \"image/svg+xml\", \"width\": 1000, \"height\": 1000 },\n  \"seats\": [{ \"colour\": \"#c0392b\", \"label\": \"Red\" }, { \"colour\": \"#2471a3\", \"label\": \"Blue\" }],\n  \"pieces\": [\n    { \"id\": \"red-1\", \"blob\": 2, \"type\": \"image/svg+xml\", \"w\": 48, \"h\": 48, \"seat\": 0, \"x\": 80, \"y\": 920 }\n  ]\n}\n```\n\nPositions and sizes are in board units (the board's `width` × `height`). A piece's `seat` is the seat that owns it, or `null` for a shared piece. Every other blob is an image (`image/svg+xml`, `image/png` or `image/webp`) or text that the manifest names. Unknown manifest fields are ignored, so a cartridge can carry more than an older host understands.\n\n**Host rules.** The host fetches the cartridge by its SHA-256 (`cartridges/<id>/<sha256>.wasm`, cached for good), checks the hash, instantiates it in a dedicated Web Worker, copies the blobs out, and drops the instance. A table stores the hash it started with, so it keeps the same game when a newer cartridge is published. A file stays under 20 MiB so Cloudflare serves it as one static asset.\n\n### Version 2 (later, with rules; sketch, not promised)\n\nAdds `tt_init(seed, players)`, `tt_apply(action_ptr, action_len) -> i32` (0 accepted, otherwise a reason), `tt_state_ptr/len()`, `tt_current_seat()`, `tt_legal_ptr/len()` and `tt_outcome()`, plus `tt_alloc(len)` so the host can pass an action in. The same binary runs in the browser (to show legal moves at once) and in the table's Durable Object (to accept or refuse them), which is why cartridges are bundled with the Worker (decisions.json `cartridge-source`). Rules code must be deterministic, as the repository's other engines are: `+ − × ÷` and `sqrt` only, and random numbers only from the seed the host passes in. A version 1 cartridge keeps working: the host sees `tt_abi() == 1` and offers the free table.",
+      "status": "draft",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed",
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "cartridge-language"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/tabletop/.dev/decisions.json",
+          "entityId": "cartridge-source"
+        }
+      ]
+    }
+  ]
+}

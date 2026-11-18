@@ -1,0 +1,215 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/requirements.schema.json",
+  "kind": "requirements",
+  "title": "Board-game table requirements",
+  "folder": "games/tabletop",
+  "entities": [
+    {
+      "id": "board-game-cartridge",
+      "title": "A board game is one WebAssembly binary",
+      "summary": "Each board game is a single .wasm file that carries everything the game needs: its board, pieces, other pictures, its rules text and, later, its rules.",
+      "statement": "Each board game is a single .wasm file that carries everything the game needs: its board, pieces, other pictures, its rules text and, later, its rules.",
+      "rationale": "The owner wants a game to be one self-contained binary.",
+      "acceptanceCriteria": [
+        "The table loads a game from one .wasm file and nothing else.",
+        "The board, the pieces and the rules text shown to players all come out of that file.",
+        "A table keeps playing the exact binary it started with, even after a newer version is published."
+      ],
+      "priority": "must",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "invite-by-email",
+      "title": "Friends are invited by email",
+      "summary": "A player invites friends to a table by email address; the friend follows the link and signs in with Google to take their seat.",
+      "statement": "A player invites friends to a table by email address; the friend follows the link and signs in with Google to take their seat.",
+      "acceptanceCriteria": [
+        "Entering an address sends an invitation email with a link to the table.",
+        "When mail can't be sent, the inviter is given the link to send themselves.",
+        "A friend who signs in with the invited address sees the invitation and can accept or decline it.",
+        "Players they have played with before are offered as contacts."
+      ],
+      "priority": "must",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "google-sign-in",
+      "title": "Sign in with Google",
+      "summary": "Players sign in with their Google account through icelander.net's one sign-in, as every game on the site does.",
+      "statement": "Players sign in with their Google account through icelander.net's one sign-in, as every game on the site does.",
+      "acceptanceCriteria": [
+        "A signed-out visitor is sent to icelander.net's sign-in and comes back to the page they asked for.",
+        "The player's name and picture come from their Google account."
+      ],
+      "priority": "must",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "text-chat",
+      "title": "Chat at the table",
+      "summary": "Everyone at a table can write messages that everyone else at that table sees at once, and that stay with the game's record.",
+      "statement": "Everyone at a table can write messages that everyone else at that table sees at once, and that stay with the game's record.",
+      "acceptanceCriteria": [
+        "A message appears for every connected player within a second.",
+        "A player who reconnects or joins later sees the chat so far.",
+        "Messages are kept in the table's transcript with the time and the sender."
+      ],
+      "priority": "must",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "voice-chat",
+      "title": "Voice chat at the table",
+      "summary": "Players at a table can talk to each other by voice in the browser, without installing anything.",
+      "statement": "Players at a table can talk to each other by voice in the browser, without installing anything.",
+      "acceptanceCriteria": [
+        "A player can join and leave the voice chat, and mute themselves.",
+        "Everyone shows who is in the voice chat, who is muted and who is speaking.",
+        "Voice works between players on ordinary home and mobile networks, including behind NAT."
+      ],
+      "priority": "must",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "turn-indicator",
+      "title": "Whose turn it is",
+      "summary": "The table always shows, to everyone, whose turn it is.",
+      "statement": "The table always shows, to everyone, whose turn it is.",
+      "acceptanceCriteria": [
+        "Every player sees the same current player, highlighted in the list of seats.",
+        "The player whose turn it is is told so clearly (a banner and the tab's title)."
+      ],
+      "priority": "must",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "end-turn",
+      "title": "I'm done with this turn",
+      "summary": "The player whose turn it is has an \"I'm done with this turn\" button that passes the turn to the next player.",
+      "statement": "The player whose turn it is has an \"I'm done with this turn\" button that passes the turn to the next player.",
+      "acceptanceCriteria": [
+        "Only the player whose turn it is can press it.",
+        "Pressing it twice, or on two devices at once, passes the turn once.",
+        "The next player is the next seat in the table's order, wrapping round, skipping no one unless the decisions say so.",
+        "The transcript records every turn change with its time."
+      ],
+      "priority": "must",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "acknowledged-wins",
+      "title": "Wins count when the players acknowledge them",
+      "summary": "After a game, a player says who won; the win is recorded only when the other players acknowledge it, which they can do later, after the game.",
+      "statement": "After a game, a player says who won; the win is recorded only when the other players acknowledge it, which they can do later, after the game.",
+      "rationale": "The game has no rules yet, so it cannot know who won; the players agree instead.",
+      "acceptanceCriteria": [
+        "Any player at a finished or abandoned table can propose a result: a winner or winners, or no winner.",
+        "Each other player can acknowledge or dispute it, during the game or at any time afterwards.",
+        "A result counts toward the win record only once the players have acknowledged it as decisions.json \"result-consensus\" says.",
+        "Each player can see their wins per game, and against each friend."
+      ],
+      "priority": "must",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "typescript",
+      "title": "Written in TypeScript",
+      "summary": "The app, its server and its build are written in TypeScript.",
+      "statement": "The app, its server and its build are written in TypeScript.",
+      "acceptanceCriteria": [
+        "The page, the Worker and the build scripts are TypeScript, type-checked in npm test."
+      ],
+      "priority": "must",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "hosted-on-icelander",
+      "title": "Hosted on icelander.net",
+      "summary": "The app is served from icelander.net, as part of its games.",
+      "statement": "The app is served from icelander.net, as part of its games.",
+      "acceptanceCriteria": [
+        "The app answers under icelander.net/games/ at the path decisions.json \"path-and-name\" settles, deployed like the other games."
+      ],
+      "priority": "must",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "rules-later",
+      "title": "Rules come later, without a rewrite",
+      "summary": "Game rules are not part of the first version, but the design leaves room to add them to the same binary later.",
+      "statement": "Game rules are not part of the first version, but the design leaves room to add them to the same binary later.",
+      "acceptanceCriteria": [
+        "The first version plays any game as a free table: players move pieces by hand and pass the turn.",
+        "The cartridge format has a version number, and adding rules is a new version that old cartridges still load under."
+      ],
+      "priority": "later",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    }
+  ]
+}
