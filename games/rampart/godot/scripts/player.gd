@@ -189,7 +189,7 @@ func _steer(delta: float) -> void:
 		invuln -= delta
 		model.visible = Game.autopilot or invuln <= 0.0 or fmod(invuln, 0.16) > 0.08
 
-	Game.fuel -= delta * (1.6 + 0.12 * Game.level)
+	Game.fuel -= delta * Game.ramp(Game.level, 1.1, 2.4)
 	if Game.autopilot:
 		Game.fuel = maxf(Game.fuel, 30.0)
 	if Game.fuel <= 0.0:

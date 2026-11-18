@@ -104,16 +104,27 @@ func is_floor_at(pz: float) -> bool:
 
 # --- plan --------------------------------------------------------------------
 
+func _ramp(easy: float, hard: float) -> float:
+	return Game.ramp(level_num, easy, hard)
+
+
+func _ramp_i(easy: float, hard: float) -> int:
+	return int(round(_ramp(easy, hard)))
+
+
+## The level gets longer as it gets harder: 3 + 2 fortress chunks and 2 of open space on
+## level 1, up to 9 + 8 and 6 by the last level of the ramp.
 func _assault_block(lvl: int) -> Array:
+	level_num = lvl
 	var p: Array = ["gate"]
-	for i in mini(4 + lvl, 9):
+	for i in _ramp_i(3.0, 9.0):
 		p.append("fortress")
 	p.append("exit")
-	for i in 3 + mini(lvl, 3):
+	for i in _ramp_i(2.0, 6.0):
 		p.append("space")
 	p.append("entry")
 	p.append("gate")
-	for i in mini(3 + lvl, 8):
+	for i in _ramp_i(2.0, 8.0):
 		p.append("fortress")
 	p.append("citadel")
 	return p
@@ -220,19 +231,27 @@ func _floor_decor(node: Node3D, za: float, zb: float) -> void:
 
 
 func _fortress(node: Node3D, z0: float, z1: float) -> void:
-	var roll := rng.randf()
+	# Half the chunks on level 1 have no barrier at all; by the end of the ramp most do.
 	var oz := z0 - 6.0
-	if roll < 0.32:
-		_window_wall(node, oz)
-	elif roll < 0.5:
-		_low_wall(node, oz)
-	elif roll < 0.8:
-		_field(node, oz)
-	var kinds: Array = ["turret", "turret", "tank", "tank", "silo", "radar"]
+	if rng.randf() < _ramp(0.5, 0.88):
+		var roll := rng.randf()
+		if roll < 0.4:
+			_window_wall(node, oz)
+		elif roll < 0.65:
+			_low_wall(node, oz)
+		else:
+			_field(node, oz)
+	var kinds: Array = ["tank", "tank", "tank", "radar", "turret"]
 	if level_num >= 2:
-		kinds.append("silo")
 		kinds.append("turret")
-	_scatter(node, z0 - 12.0, z1 + 3.0, 3 + rng.randi_range(0, 1 + mini(level_num, 3)), kinds, true)
+	if level_num >= 3:
+		kinds.append("silo")
+	if level_num >= 5:
+		kinds.append_array(["turret", "silo"])
+	if level_num >= 8:
+		kinds.append_array(["turret", "silo"])
+	var count := _ramp_i(2.0, 5.0) + rng.randi_range(0, _ramp_i(1.0, 3.0))
+	_scatter(node, z0 - 12.0, z1 + 3.0, count, kinds, true)
 
 
 func _scatter(node: Node3D, za: float, zb: float, count: int, kinds: Array, ensure_tank: bool) -> void:
@@ -259,7 +278,8 @@ func _scatter(node: Node3D, za: float, zb: float, count: int, kinds: Array, ensu
 		match kind:
 			"turret":
 				obj = TurretScript.new()
-				obj.fire_interval = maxf(1.1, 2.6 - 0.25 * level_num)
+				obj.fire_interval = _ramp(3.8, 1.2)
+				obj.shot_speed = _ramp(12.0, 19.0)
 			"tank":
 				obj = TankScript.new()
 			"radar":
@@ -272,23 +292,25 @@ func _scatter(node: Node3D, za: float, zb: float, count: int, kinds: Array, ensu
 
 
 func _window_wall(node: Node3D, z: float) -> void:
-	var gw := rng.randf_range(4.5, 6.5)
+	var gw := rng.randf_range(_ramp(7.5, 4.5), _ramp(9.5, 6.0))
 	var gx := rng.randf_range(-7.5 + gw * 0.5, 7.5 - gw * 0.5)
-	var gh := maxf(2.6, 3.6 - 0.12 * level_num)
+	var gh := _ramp(4.8, 2.6)
 	var gb := rng.randf_range(0.3, 8.8 - gh)
 	_wall(node, z, 10.5, gx, gw, gb, gb + gh)
 
 
 func _low_wall(node: Node3D, z: float) -> void:
-	var h := rng.randf_range(2.5, 4.5 + minf(level_num * 0.4, 2.0))
+	var h := rng.randf_range(_ramp(1.8, 2.5), _ramp(3.2, 6.5))
 	_wall(node, z, h, 0.0, 0.0, 0.0, 0.0)
 
 
 func _gate(node: Node3D, z: float) -> void:
-	var gw := 7.0
-	var gx := rng.randf_range(-4.0, 4.0)
-	var gb := rng.randf_range(0.4, 4.0)
-	_wall(node, z, 10.5, gx, gw, gb, gb + 4.0)
+	var gw := _ramp(10.0, 6.5)
+	var spread := _ramp(2.5, 4.5)
+	var gx := rng.randf_range(-spread, spread)
+	var gh := _ramp(5.5, 3.6)
+	var gb := rng.randf_range(0.4, _ramp(2.5, 4.5))
+	_wall(node, z, 10.5, gx, gw, gb, gb + gh)
 	for s in [-1.0, 1.0]:
 		var side: float = s
 		_mesh(node, _box(Vector3(3.4, 15.0, 3.4)), wall_mat, Vector3(side * 14.0, 5.5, z))
@@ -358,38 +380,40 @@ func _wall(node: Node3D, z: float, height: float, gx: float, gw: float, gb: floa
 
 func _field(node: Node3D, z: float) -> void:
 	var f = FieldScript.new()
-	var r := rng.randf()
-	if r < 0.4:
-		f.y0 = 0.0
-		f.y1 = rng.randf_range(2.5, 5.0)
-	elif r < 0.75 or level_num < 2:
-		f.y0 = rng.randf_range(2.6, 5.0)
-		f.y1 = 10.5
-	else:
+	var blink_chance := 0.0 if level_num < 3 else _ramp(0.15, 0.4)
+	if rng.randf() < blink_chance:
 		f.y0 = 0.0
 		f.y1 = 10.5
 		f.blink = true
-		f.period = rng.randf_range(1.5, 2.1)
+		var pd := _ramp(2.6, 1.5)
+		f.period = rng.randf_range(pd, pd + 0.5)
 		f.phase = rng.randf() * 2.0
+	elif rng.randf() < 0.5:
+		f.y0 = 0.0
+		f.y1 = rng.randf_range(_ramp(1.8, 2.5), _ramp(3.0, 5.5))
+	else:
+		f.y0 = rng.randf_range(_ramp(4.5, 2.4), _ramp(6.0, 4.6))
+		f.y1 = 10.5
 	f.position = Vector3(0, 0, z)
 	node.add_child(f)
 
 
 func _space(node: Node3D, z0: float, z1: float) -> void:
 	_space_decor(node, z0, z1)
-	var n := 2 + mini(level_num, 3) + rng.randi_range(0, 1)
+	var n := _ramp_i(1.0, 5.0) + rng.randi_range(0, 1)
 	for i in n:
 		var f = FighterScript.new()
 		var x := rng.randf_range(-6.0, 6.0)
-		var y := rng.randf_range(1.5, 8.0)
+		var y := 3.5
 		f.position = Vector3(x, y, rng.randf_range(z1 + 2.0, z0 - 2.0))
 		f.base_x = x
 		f.base_y = y
 		f.phase = rng.randf() * TAU
-		f.amp_x = rng.randf_range(1.0, 4.0)
-		f.amp_y = rng.randf_range(0.5, 2.0)
-		f.speed = 8.0 + level_num
-		f.fire_chance = minf(0.25 + 0.12 * level_num, 0.8)
+		f.amp_x = rng.randf_range(_ramp(0.8, 2.0), _ramp(2.0, 4.0))
+		f.speed = _ramp(6.0, 13.0)
+		f.fire_chance = _ramp(0.1, 0.8)
+		f.fire_gap = _ramp(1.7, 1.0)
+		f.shot_speed = _ramp(14.0, 22.0)
 		node.add_child(f)
 
 

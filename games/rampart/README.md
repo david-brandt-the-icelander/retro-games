@@ -1,6 +1,6 @@
 # Rampart
 
-An original isometric fortress-run shooter, made in Godot 4 and played in the browser at
+An original isometric fortress-run shooter (the fortress runs up and to the right), made in Godot 4 and played in the browser at
 [icelander.net/games/retro/rampart](https://icelander.net/games/retro/rampart/) by anyone signed in to icelander.net.
 Everything in it is made in code: the models, the shaders and the sound effects, so the project has no binary assets.
 
@@ -9,8 +9,9 @@ Everything in it is made in code: the models, the shaders and the sound effects,
 - The ship flies forward on its own; you steer it sideways and up and down. **Altitude** is the skill: a cyan ring on the deck sits under the ship and the ALT gauge gives its height.
 - **Walls** are either tall, with a green-framed window to thread, or low enough to fly over. **Force fields** block the bottom or the top, and from level 2 some blink on and off.
 - **Fuel** drains all the time; shooting **fuel tanks** refuels. Ground targets can only be hit when flying low. **Turrets** aim ahead of you, **silos** launch missiles straight up, and **radar dishes** are worth 1000.
-- **Open space** has no deck, so no ring: interceptors weave toward you and you have only the gauge.
-- **The citadel** holds the Warden. Its armour petals open from time to time; hit the core while it is exposed. Each level after that is faster.
+- **Open space** has no deck, so no ring: interceptors weave side to side toward you, always at your altitude.
+- **The citadel** holds the Warden. Its armour petals open from time to time; hit the core while it is exposed.
+- **Twelve levels** ramp up from a gentle start: level 1 is short and slow, with wide windows, low walls, half the stretches empty, few turrets, no silos and two or three interceptors that rarely fire. Each level after that is longer and faster, with narrower gaps, more and quicker-firing enemies, silos from level 3, blinking fields from level 3 and a tougher Warden. `Game.ramp` in `game.gd` sets every value from level 1 to level 12; after 12 the game goes on at the hardest setting.
 - The high score is kept in the browser.
 
 Controls: arrows or WASD to steer and climb, Space to fire, P to pause, Enter to start. A gamepad works too.
@@ -40,7 +41,7 @@ npm run build          # dist/
 ```
 
 Open `godot/project.godot` in the Godot editor to play it on the desktop (the Forward+ renderer, with SSAO; the web build uses the Compatibility renderer).
-The developer flags `godot --path godot -- --autoplay [--goto=N] [--shots=DIR]` start an invulnerable autopilot run, jump to chunk N of the level plan (19 is the citadel on level 1), and save screenshots to DIR.
+The developer flags `godot --path godot -- --autoplay [--level=N] [--goto=N] [--shots=DIR]` start an invulnerable autopilot run, start on level N, jump to chunk N of the level plan (13 is the citadel on level 1, 29 on level 12), and save screenshots to DIR.
 
 ## Deploy
 

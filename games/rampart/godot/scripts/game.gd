@@ -7,6 +7,13 @@ const ExplosionScript = preload("res://scripts/explosion.gd")
 const PopupScript = preload("res://scripts/popup.gd")
 const BulletScript = preload("res://scripts/bullet.gd")
 const SAVE_PATH := "user://rampart.cfg"
+## Difficulty climbs steadily from level 1 to RAMP_LEVELS and then holds at its peak.
+const RAMP_LEVELS := 12
+const LEVEL_TITLES := [
+	"THE OUTER WATCH", "BREACH THE FORTRESS", "THE IRON MILE", "SILO FIELDS",
+	"THE BLINKING WALLS", "INTERCEPTOR ALLEY", "THE NARROWS", "DEEP BASTION",
+	"THE CROSSFIRE", "BLACK RAMPART", "THE LAST LINE", "THE WARDEN'S HOME",
+]
 
 var state: int = State.TITLE
 var score: int = 0
@@ -61,6 +68,18 @@ func new_game() -> void:
 	lives = 3
 	fuel = 100.0
 	level = 1
+
+
+## Interpolates from the easy value at level 1 to the hard value at RAMP_LEVELS and beyond.
+func ramp(lvl: int, easy: float, hard: float) -> float:
+	var k := clampf(float(lvl - 1) / float(RAMP_LEVELS - 1), 0.0, 1.0)
+	return lerpf(easy, hard, k)
+
+
+func level_title(lvl: int) -> String:
+	if lvl <= LEVEL_TITLES.size():
+		return LEVEL_TITLES[lvl - 1]
+	return "THE ENDLESS SIEGE"
 
 
 func add_score(p: int) -> void:

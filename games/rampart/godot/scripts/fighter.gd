@@ -1,5 +1,6 @@
 extends "res://scripts/target.gd"
-## Interceptor that weaves toward the ship in open space.
+## Interceptor that weaves toward the ship in open space. It weaves only sideways and always
+## matches the ship's altitude, so you can line up a shot without the ring.
 
 const M = preload("res://scripts/mats.gd")
 
@@ -7,11 +8,12 @@ var active: bool = false
 var base_x: float = 0.0
 var base_y: float = 4.0
 var amp_x: float = 3.0
-var amp_y: float = 1.5
 var freq: float = 1.3
 var phase: float = 0.0
 var speed: float = 9.0
 var fire_chance: float = 0.3
+var fire_gap: float = 1.0
+var shot_speed: float = 20.0
 var fire_timer: float = 1.5
 var t: float = 0.0
 var body: Node3D
@@ -23,7 +25,7 @@ func _ready() -> void:
 	explosion_size = 1.0
 	explosion_color = Color(1.0, 0.3, 0.6)
 	setup_collision(Vector3(2.6, 1.5, 2.2))
-	fire_timer = randf_range(0.8, 2.5)
+	fire_timer = randf_range(0.8, 2.5) * fire_gap
 	make_visual()
 	body = Node3D.new()
 	body.rotation.y = PI
@@ -54,22 +56,21 @@ func _process(delta: float) -> void:
 	t += delta
 	if p.alive:
 		base_x = move_toward(base_x, p.global_position.x, 1.4 * delta)
-		base_y = move_toward(base_y, p.global_position.y, 0.7 * delta)
+		base_y = p.global_position.y
 	position.z += speed * delta
 	var nx := base_x + sin(t * freq + phase) * amp_x
-	var ny := base_y + sin(t * freq * 0.7 + phase * 1.3) * amp_y
 	var vx := (nx - position.x) / maxf(delta, 0.0001)
 	position.x = clampf(nx, -10.0, 10.0)
-	position.y = clampf(ny, 1.0, 9.0)
+	position.y = clampf(base_y, 0.9, 9.0)
 	body.rotation.z = lerpf(body.rotation.z, clampf(-vx * 0.12, -0.9, 0.9), 1.0 - exp(-6.0 * delta))
 	var dz: float = global_position.z - pz
 	if p.alive and dz < -16.0 and dz > -70.0:
 		fire_timer -= delta
 		if fire_timer <= 0.0:
-			fire_timer = randf_range(1.2, 2.6)
+			fire_timer = randf_range(1.2, 2.6) * fire_gap
 			if randf() < fire_chance:
 				var dir: Vector3 = (p.global_position + Vector3(0, 0, -p.speed_forward * 0.6) - global_position).normalized()
-				Game.spawn_shot(global_position + Vector3(0, 0, 1.4), dir * 20.0, Color(1.0, 0.3, 0.75))
+				Game.spawn_shot(global_position + Vector3(0, 0, 1.4), dir * shot_speed, Color(1.0, 0.3, 0.75))
 				Sfx.play("enemy_shot", -14.0, 1.3)
 	if dz > 14.0:
 		queue_free()

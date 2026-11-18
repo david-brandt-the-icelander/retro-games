@@ -9,7 +9,8 @@ const M = preload("res://scripts/mats.gd")
 const T = preload("res://scripts/target.gd")
 const SKY_SHADER = preload("res://shaders/sky.gdshader")
 
-const CAM_OFFSET := Vector3(-19.0, 25.0, 21.0)
+# The camera sits right of and behind the ship, so the fortress runs up and to the right.
+const CAM_OFFSET := Vector3(19.0, 25.0, 21.0)
 
 var camera: Camera3D
 var player
@@ -28,6 +29,7 @@ var shot_dir: String = ""
 var shot_times: Array = [3.0, 7.0, 11.0]
 var elapsed: float = 0.0
 var goto_chunk: int = 0
+var start_level: int = 1
 
 
 func _ready() -> void:
@@ -56,6 +58,8 @@ func _ready() -> void:
 			Game.autopilot = true
 		elif a.begins_with("--goto="):
 			goto_chunk = int(a.substr(7))
+		elif a.begins_with("--level="):
+			start_level = maxi(1, int(a.substr(8)))
 		elif a.begins_with("--shots="):
 			shot_dir = a.substr(8)
 	if Game.autopilot:
@@ -104,7 +108,7 @@ func _setup_environment() -> void:
 	add_child(we)
 
 	sun = DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-62.0, -35.0, 0.0)
+	sun.rotation_degrees = Vector3(-62.0, 35.0, 0.0)
 	sun.light_energy = 1.35
 	sun.light_color = Color(1.0, 0.95, 0.88)
 	sun.shadow_enabled = true
@@ -113,7 +117,7 @@ func _setup_environment() -> void:
 	sun.shadow_blur = 1.5
 	add_child(sun)
 	var fill := DirectionalLight3D.new()
-	fill.rotation_degrees = Vector3(-25.0, -150.0, 0.0)
+	fill.rotation_degrees = Vector3(-25.0, 150.0, 0.0)
 	fill.light_energy = 0.35
 	fill.light_color = Color(0.4, 0.6, 1.0)
 	add_child(fill)
@@ -146,7 +150,7 @@ func _make_starfield() -> void:
 # --- flow --------------------------------------------------------------------
 
 func _speed_for(l: int) -> float:
-	return minf(15.0 + (l - 1) * 2.0, 24.0)
+	return Game.ramp(l, 12.0, 22.0)
 
 
 func _clear_dynamic() -> void:
@@ -172,11 +176,12 @@ func _enter_title() -> void:
 func _start_game() -> void:
 	get_tree().paused = false
 	Game.new_game()
+	Game.level = start_level
 	_clear_dynamic()
 	var z: float = player.global_position.z
-	level.start(1, z)
+	level.start(Game.level, z)
 	level.plan_index = goto_chunk
-	player.speed_forward = _speed_for(1)
+	player.speed_forward = _speed_for(Game.level)
 	player.reset_to(Vector3(0, 3.5, z))
 	player.set_active(true)
 	respawn_timer = -1.0
@@ -184,7 +189,7 @@ func _start_game() -> void:
 	last_section = ""
 	Game.state = Game.State.PLAYING
 	hud.show_game()
-	hud.message("LEVEL 1", "BREACH THE FORTRESS", 2.5)
+	hud.message("LEVEL %d" % Game.level, Game.level_title(Game.level), 2.5)
 	Sfx.play("start", -4.0)
 
 
@@ -242,7 +247,7 @@ func _next_level() -> void:
 	level.next_level(Game.level)
 	player.speed_forward = _speed_for(Game.level)
 	Game.add_fuel(50.0)
-	hud.message("LEVEL %d" % Game.level, "THE NEXT FORTRESS AWAITS", 2.5)
+	hud.message("LEVEL %d" % Game.level, Game.level_title(Game.level), 2.5)
 
 
 # --- per frame ---------------------------------------------------------------

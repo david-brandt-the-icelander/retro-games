@@ -36,7 +36,7 @@ var flash: float = 0.0
 
 
 func _ready() -> void:
-	hp_max = 22 + 6 * lvl
+	hp_max = int(round(Game.ramp(lvl, 16.0, 70.0)))
 	var dark := M.metal(Color(0.13, 0.12, 0.16), 0.35, 0.9)
 	var mid := M.metal(Color(0.32, 0.3, 0.38), 0.3, 0.9)
 	var pink := Color(1.0, 0.25, 0.75)
@@ -165,7 +165,7 @@ func _process(delta: float) -> void:
 	phase_timer -= delta
 	if phase_timer <= 0.0:
 		open = not open
-		phase_timer = 2.7 if open else 3.3
+		phase_timer = Game.ramp(lvl, 3.4, 2.4) if open else Game.ramp(lvl, 2.6, 3.4)
 		if open:
 			Sfx.play("boss_open", -4.0)
 	open_amount = move_toward(open_amount, 1.0 if open else 0.0, delta * 3.5)
@@ -182,7 +182,7 @@ func _process(delta: float) -> void:
 	var sp: float = p.speed_forward
 	fire_timer -= delta
 	if fire_timer <= 0.0:
-		fire_timer = maxf(0.4, 1.05 - lvl * 0.1)
+		fire_timer = Game.ramp(lvl, 1.6, 0.45)
 		var pod: Node3D = pods[pod_index]
 		pod_index = (pod_index + 1) % pods.size()
 		var from := pod.global_position + Vector3(0, 0, 2.3)
@@ -193,8 +193,8 @@ func _process(delta: float) -> void:
 	if not open:
 		burst_timer -= delta
 		if burst_timer <= 0.0:
-			burst_timer = maxf(1.8, 3.2 - lvl * 0.25)
-			var n := 8 + 2 * mini(lvl, 4)
+			burst_timer = Game.ramp(lvl, 4.5, 1.8)
+			var n := int(round(Game.ramp(lvl, 6.0, 16.0)))
 			for i in n:
 				var a := TAU * i / n + t
 				var rel := Vector3(cos(a) * 4.0, sin(a) * 4.0, 13.0)
