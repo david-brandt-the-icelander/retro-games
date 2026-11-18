@@ -404,12 +404,18 @@ func _space(node: Node3D, z0: float, z1: float) -> void:
 	for i in n:
 		var f = FighterScript.new()
 		var x := rng.randf_range(-6.0, 6.0)
-		var y := 3.5
+		var y := rng.randf_range(1.5, 8.0)
 		f.position = Vector3(x, y, rng.randf_range(z1 + 2.0, z0 - 2.0))
 		f.base_x = x
 		f.base_y = y
 		f.phase = rng.randf() * TAU
 		f.amp_x = rng.randf_range(_ramp(0.8, 2.0), _ramp(2.0, 4.0))
+		f.amp_y = rng.randf_range(0.5, _ramp(1.2, 2.0))
+		f.climb_rate = _ramp(2.5, 6.0)
+		f.evade_chance = _ramp(0.3, 0.85)
+		f.evade_cooldown = _ramp(1.8, 0.8)
+		f.attack_lead = _ramp(1.2, 0.7)
+		f.attack_chance = _ramp(0.5, 0.9)
 		f.speed = _ramp(6.0, 13.0)
 		f.fire_chance = _ramp(0.1, 0.8)
 		f.fire_gap = _ramp(1.7, 1.0)
