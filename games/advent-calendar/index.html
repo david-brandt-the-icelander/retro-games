@@ -70,6 +70,9 @@ button{font:inherit;color:inherit}
 .sw input:checked+i{background:#1f6f58}
 .sw input:checked+i::after{transform:translateX(18px)}
 .sw input:focus-visible+i{outline:3px solid #b3243b;outline-offset:3px}
+.when{margin:0;padding:10px;text-align:center}
+.dev{display:contents}
+.dev[hidden]{display:none}
 .link{background:none;border:0;text-decoration:underline;color:#2c3a66;cursor:pointer;padding:10px;min-height:44px}
 .toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);opacity:0;pointer-events:none;background:#0a1030;border:1px solid var(--gold);color:var(--snow);padding:10px 16px;border-radius:999px;transition:.3s;z-index:80;white-space:nowrap}
 .toast.on{opacity:1;transform:translate(-50%,0)}
@@ -97,8 +100,12 @@ button{font:inherit;color:inherit}
   <div class="title"><small id="yr">Yuletide</small><h1>Advent</h1></div>
 </div>
 <div class="foot">
-  <label class="sw"><input type="checkbox" id="preview"><i></i><span id="pvlabel">Preview mode: every window opens</span></label>
-  <button class="link" id="reset" type="button">Close and forget all the windows</button>
+  <p class="when" id="when">A new window opens each day from 1 to 24 December.</p>
+  <!-- for holders of games:advent-calendar-dev only (calendar.js asks the Worker, me.json) -->
+  <div class="dev" id="dev" hidden>
+    <label class="sw"><input type="checkbox" id="preview"><i></i><span id="pvlabel">Preview mode: every window opens</span></label>
+    <button class="link" id="reset" type="button">Close and forget all the windows</button>
+  </div>
 </div>
 <div class="veil" id="veil"></div>
 <div class="wrap" id="wrap">

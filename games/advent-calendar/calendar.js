@@ -181,9 +181,11 @@ function animateDoor(el,open){return new Promise(res=>{if(el._anim)cancelAnimati
 
 /* ---------- windows ---------- */
 const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-let seen=new Set(store.get('adv2-seen',[]));const inDec=now.getMonth()===11;let preview=store.get('adv2-preview',!inDec);
+let seen=new Set(store.get('adv2-seen',[]));const inDec=now.getMonth()===11;
+// Preview mode and forgetting the windows are for developers (games:advent-calendar-dev): see whoAmI below.
+let developer=false,preview=false;
 const pv=$('preview');pv.checked=preview;const pvText=()=>{$('pvlabel').textContent=preview?'Preview mode: every window opens':'Real dates: window 1 opens on 1 December'};pvText();
-const canOpen=d=>preview||(inDec&&d<=now.getDate());
+const canOpen=d=>(developer&&preview)||(inDec&&d<=now.getDate());
 const ORDER=[14,3,21,8,17,1,23,6,11,19,4,13,24,9,2,16,7,20,12,5,22,10,18,15];
 const front=doorBg('door0'),back=doorBg('back');
 stage.style.setProperty('--atlas','url("assets/'+DM.file+'")');
@@ -192,8 +194,8 @@ ORDER.forEach((d,i)=>{const b=winBox(i),el=document.createElement('div'),v=d%DM.
  el.innerHTML='<div class="glass"></div><button class="door" type="button" aria-label="Open window '+d+'">'+buildDoor(d,v)+'</button><i class="badge"></i>';stage.appendChild(el)});
 function refresh(){const today=inDec&&!preview?now.getDate():0;stage.querySelectorAll('.win').forEach(w=>{const d=+w.dataset.d;w.classList.toggle('seen',seen.has(d));w.classList.toggle('lock',!canOpen(d));w.classList.toggle('today',d===today&&!seen.has(d))})}refresh();
 let toastT;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),2200)}
-pv.addEventListener('change',()=>{preview=pv.checked;store.set('adv2-preview',preview);pvText();refresh()});
-$('reset').addEventListener('click',()=>{seen=new Set();store.set('adv2-seen',[]);refresh();toast('All windows closed')});
+pv.addEventListener('change',()=>{if(!developer)return;preview=pv.checked;store.set('adv2-preview',preview);pvText();refresh()});
+$('reset').addEventListener('click',()=>{if(!developer)return;seen=new Set();store.set('adv2-seen',[]);refresh();toast('All windows closed')});
 
 /* ---------- opened window ---------- */
 const veil=$('veil'),wrap=$('wrap'),card=$('card'),cap=$('cap'),cv=$('scene'),cx=cv.getContext('2d');
@@ -246,6 +248,13 @@ addEventListener('load',()=>setTimeout(()=>sheet('common').catch(()=>{}),400));
 /* test hooks: ?sheet=SECONDS draws every card at that moment into a grid; ?open=N&t=SECONDS opens window N held at that moment */
 const qs=new URLSearchParams(location.search);
 window.advent={SC:SC,loadScene:loadScene,renderCard:renderCard,viewer:viewer,open:d=>openWin(stage.querySelector('.win[data-d="'+d+'"]')),close:closeWin};
+// Developer or not: the Worker answers me.json from the signed-in player's roles. With no Worker in front (the page
+// opened from a file, or a plain static server while working on it) there is no me.json, and the page is in developer mode.
+function setDeveloper(on){developer=on;$('dev').hidden=!on;$('when').hidden=on;if(on){preview=store.get('adv2-preview',!inDec);pv.checked=preview;pvText()}refresh()}
+const whenLoaded=f=>document.readyState==='complete'?f():addEventListener('load',f);
+const whoAmI=fetch('me.json',{cache:'no-store'}).then(r=>r.status===404?true:r.ok?r.json().then(j=>j.developer===true):false,()=>location.protocol==='file:');
+whoAmI.then(dev=>{setDeveloper(dev);if(!dev)return;
 if(qs.get('sheet')){const ts=qs.get('sheet').split(',').map(Number),cols=6,sw=270,sh=480;Promise.all(SC.map((_,i)=>loadScene(i+1))).then(()=>document.fonts.ready).then(()=>{const s=document.createElement('canvas');s.width=sw*cols;s.height=sh*4*ts.length;s.style.cssText='position:absolute;left:0;top:0;z-index:999;background:#000;width:'+(s.width/2)+'px';document.body.appendChild(s);const g=s.getContext('2d');ts.forEach((t,j)=>SC.forEach((x,i)=>{const o=document.createElement('canvas');o.width=CW*1.5;o.height=CH*1.5;const c=o.getContext('2d');c.scale(1.5,1.5);renderCard(c,i+1,t,{x:0,y:0,cx:180,cy:300,on:false});g.drawImage(o,(i%cols)*sw,(Math.floor(i/cols)+j*4)*sh,sw,sh)}));window.sheetDone=true})}
-if(qs.get('open')){const d=+qs.get('open');viewer.frozen=qs.get('t')!=null?+qs.get('t'):null;preview=true;refresh();addEventListener('load',()=>advent.open(d))}
+if(qs.get('open')){const d=+qs.get('open');viewer.frozen=qs.get('t')!=null?+qs.get('t'):null;preview=true;refresh();whenLoaded(()=>advent.open(d))}
+});
 })();
