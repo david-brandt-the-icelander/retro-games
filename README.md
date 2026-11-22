@@ -25,6 +25,7 @@ Each game needs a sign-in with Google or GitHub, icelander.net's one sign-in (th
 | Iron Haze: a dieselpunk real-time strategy game made in Godot 4, in the browser or as Windows, macOS and Linux downloads. Invited players only (the role `games:iron-haze`) | [icelander.net/games/fresh/iron-haze](https://icelander.net/games/fresh/iron-haze/) | [games/iron-haze](games/iron-haze) |
 | Twelve Banners: a hex-based strategy game for up to 12 civilizations, made in Godot 4 and under construction; against the computer in the browser, online with friends in the Windows, macOS and Linux downloads. Invited players only (the role `games:twelve-banners`) | [icelander.net/games/fresh/twelve-banners](https://icelander.net/games/fresh/twelve-banners/) | [games/twelve-banners](games/twelve-banners) |
 | Hand of the Isle: an original god game made in Godot 4. Reshape an island and call down earthquakes, swamps and floods so your followers outgrow a rival deity's, in the browser. Invited players only (the role `games:hand-of-the-isle`) | [icelander.net/games/fresh/hand-of-the-isle](https://icelander.net/games/fresh/hand-of-the-isle/) | [games/hand-of-the-isle](games/hand-of-the-isle) |
+| Pinochle: partnership auction pinochle for phones and browsers, solo against bots or online with friends (not deployed yet) | run it locally: [games/pinochle](games/pinochle) | [games/pinochle](games/pinochle) |
 
 ## Deploying
 
