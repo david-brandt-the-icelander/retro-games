@@ -4,7 +4,11 @@ A bird-identification game. Each region has ten levels, ordered from the most co
 
 The Album tab keeps each bird you have identified, with your fastest time (record) and your accuracy, saved in the browser.
 
-It is a static page: `index.html` plus `photos/` and `audio/`, with no build step and no server. `photos/thumb/` holds small copies of the photos for the scrolling strip on the Play tab. Open it through any static web server (browsers will not load the audio from `file://`), for example `python3 -m http.server` in this folder. It has no `package.json`, so the repository's test and deploy workflows skip it.
+It is a static page: `index.html` plus `photos/` and `audio/`, with no build step for the page itself. `photos/thumb/` holds small copies of the photos for the scrolling strip on the Play tab. To try it, run `python3 -m http.server` in this folder and open it in a browser (browsers will not load the audio from `file://`).
+
+## Deploy
+
+`worker/index.ts` is a Cloudflare Worker at `icelander.net/games/retro/dawn-chorus`: it serves `dist/` to anyone signed in to icelander.net (role `games:play`, through `vendor/icelander-auth`) and sends everyone else to the site's sign-in. No database, no secrets. `npm test` checks the Worker; `npm run build` copies the page, photos and audio into `dist/`; `npm run deploy` runs both and `wrangler deploy`. A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`).
 
 ## How it works
 
