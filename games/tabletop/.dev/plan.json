@@ -1,0 +1,146 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/plan.schema.json",
+  "kind": "plan",
+  "title": "Board-game table plan",
+  "folder": "games/tabletop",
+  "entities": [
+    {
+      "id": "tabletop",
+      "title": "A board-game table for friends, with chat, voice, turns and acknowledged wins",
+      "summary": "Build a TypeScript app on icelander.net where friends invited by email play a board game shipped as one WebAssembly cartridge, with chat, voice, a turn indicator and an end-turn button, and wins the players acknowledge. Rules come later, in the same cartridge.",
+      "goal": "Two to six friends, invited by email and signed in with Google, sit at a table for a cartridge board game, see whose turn it is, move pieces and pass the turn, talk by text and voice, and afterwards record a winner that counts once the others acknowledge it.",
+      "status": "proposed",
+      "approach": "Reuse Gambit's proven shape (icelander.net sign-in, email invitations, a Durable Object per game with WebSockets, a D1 transcript) with a plain TypeScript page instead of Godot. Define a small, versioned cartridge contract now that carries only data, so rules can be added to the same binary later without changing the table. Build in vertical slices, each tested with the in-memory database and two browsers.",
+      "scope": [
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "scaffold"
+        },
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "lobby-and-invitations"
+        },
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "cartridge-format"
+        },
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "first-cartridge"
+        },
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "live-table"
+        },
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "text-chat"
+        },
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "voice-chat"
+        },
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "wins"
+        },
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "ship"
+        }
+      ],
+      "steps": [
+        {
+          "id": "0",
+          "title": "Owner decisions (decisions.json) and the project scaffold",
+          "status": "todo"
+        },
+        {
+          "id": "1",
+          "title": "Sign-in, tables, invitations by email, contacts",
+          "status": "todo"
+        },
+        {
+          "id": "2",
+          "title": "Cartridge format v1, its build and loader, and the first cartridge",
+          "status": "todo"
+        },
+        {
+          "id": "3",
+          "title": "The live table: board, seats, whose turn, I'm done with this turn",
+          "status": "todo"
+        },
+        {
+          "id": "4",
+          "title": "Text chat",
+          "status": "todo"
+        },
+        {
+          "id": "5",
+          "title": "Voice chat",
+          "status": "todo"
+        },
+        {
+          "id": "6",
+          "title": "Results, acknowledgements and the win record",
+          "status": "todo"
+        },
+        {
+          "id": "7",
+          "title": "End-to-end test, .dev views, first deploy",
+          "status": "todo"
+        }
+      ],
+      "outOfScope": [
+        "Game rules, legal moves and automatic winners (cartridge version 2, a later plan).",
+        "Dice, cards, hidden hands and other hidden information.",
+        "Cartridges uploaded by players.",
+        "Video chat, spectators, matchmaking with strangers, ratings.",
+        "Native mobile apps (the page works in mobile browsers)."
+      ],
+      "details": "## What it is\n\nA page at icelander.net where a player picks a board game, invites friends by email, and plays it with them live: everyone sees the same board, whose turn it is, a chat, and can talk by voice. The game itself is a WebAssembly *cartridge* holding the board, the pieces and the rules text. Until rules arrive the table is free: the current player moves pieces by hand and presses **I'm done with this turn**. After a game the players record who won, and it counts when the others acknowledge it.\n\n## How it is built\n\nIt is built like Gambit (`games/chess`), which already has sign-in, invitations by email, a Durable Object per game with WebSockets, a transcript and contacts, but with a TypeScript page instead of Godot.\n\n| Part | Runs on | Does |\n| --- | --- | --- |\n| Page (`src/`) | Browser | Lobby, table canvas, seats and turn banner, chat, voice, stats; TypeScript bundled with esbuild, no framework, like the other games |\n| Cartridge host (`src/cartridge/`) | Browser, in a Web Worker | Fetches a cartridge by hash, checks it, runs it with no imports, copies out the manifest and blobs |\n| Worker (`worker/index.ts`, `api.ts`) | Cloudflare | Sign-in check (vendor/icelander-auth), REST API for tables, invitations, results and stats; static files |\n| TableRoom (`worker/table.ts`) | Cloudflare Durable Object, one per table | Accepts actions one at a time (moves, end turn, chat, results), broadcasts state, relays WebRTC signalling, tracks presence |\n| D1 `tabletop` | Cloudflare | users, contacts, tables, seats, invitations, table_events (the transcript), results, result_votes |\n| Resend | External | Invitation emails (optional; the inviter gets the link otherwise) |\n| Cloudflare TURN | External | Relays voice for players behind strict NAT |\n\n## The table's data (worker/schema.sql)\n\n- `users` (id, email, name, picture, created, last_seen) and `contacts` (owner_id, email, name): as Gambit.\n- `tables` (id, cartridge_id, cartridge_sha256, host_user, status `lobby|playing|finished|abandoned`, current_seat, turn, state JSON of piece positions, version, created, updated).\n- `seats` (table_id, seat, user_id, status `joined|left`): the play order.\n- `invitations` (id, table_id, from_user, to_email, status `open|accepted|declined|cancelled`, created).\n- `table_events` (table_id, seq, at, kind `start|move|undo|end-turn|pass|chat|join|leave|result-proposed|result-vote|result-confirmed|result-rejected`, user_id, data JSON): the transcript.\n- `results` (id, table_id, proposed_by, winners JSON, status `pending|confirmed|rejected`, created, decided) and `result_votes` (result_id, user_id, vote `ack|dispute`, at).\n\n## The table's messages (shared/protocol.ts)\n\nActions go to `POST api/tables/:id/action` and through the TableRoom, as Gambit's do: `move-piece {piece, x, y}`, `undo-last`, `end-turn {turn}`, `pass-for {seat}`, `chat {text}`, `propose-result {winners}`, `vote-result {result, vote}`. The WebSocket `api/tables/:id/live` carries `state` (the whole table after each change), `event` (one transcript line), `presence`, and `signal {from, to, data}` for voice, which the TableRoom forwards and never stores.\n\n## The turn\n\nThe order is the seats' order, fixed when the host starts. `end-turn` carries the turn number the button showed; the TableRoom accepts it only from the current player and only for the current turn, then moves to the next seat, wrapping round, and broadcasts. That one rule makes double presses and two devices harmless. The host may pass the turn for a player who is not connected (decision `stuck-turn`).\n\n## Wins\n\nA player proposes a result; it is `pending` until every other seated player has voted `ack`, then `confirmed`, and counted; one `dispute` makes it `rejected` (decision `result-consensus`). Votes can be cast at any time after the game, from the home screen. Stats count only confirmed results.\n\n## Order of work\n\nThe steps below each end with tests passing and something the owner can try with `npm run dev` and two browsers. Phases 1 and 2 are independent and can be done side by side.\n\n## Risks\n\n- **Voice on hard networks.** Some corporate and mobile networks block UDP; TURN over TLS on port 443 covers most of them.\n- **Copying Gambit.** Users, invitations, mail and the room would be a fifth copy of shared code; the `shared-game-kit` backlog item in games/.dev is the cure, and this app could be its first user.\n- **Hidden information** (hands of cards, secret tiles) cannot be kept secret on a free table, since every player gets the whole state; it waits for rules, where the TableRoom can send each player only their view.",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "games/chess/worker/room.ts",
+          "symbol": "RoomCore"
+        },
+        {
+          "path": "games/chess/worker/auth.ts",
+          "symbol": "currentUser"
+        },
+        {
+          "path": "games/chess/worker/mail.ts",
+          "symbol": "sendMail"
+        },
+        {
+          "path": "games/chess/worker/schema.sql",
+          "symbol": "challenges"
+        },
+        {
+          "path": "games/chess/wrangler.jsonc"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/tabletop/.dev/requirements.json",
+          "label": "Requirements"
+        },
+        {
+          "path": "games/tabletop/.dev/decisions.json",
+          "label": "Decisions waiting on the owner"
+        },
+        {
+          "path": "games/tabletop/.dev/contracts.json",
+          "label": "Cartridge format"
+        }
+      ]
+    }
+  ]
+}

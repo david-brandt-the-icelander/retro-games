@@ -1,0 +1,379 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Board-game table decisions",
+  "folder": "games/tabletop",
+  "entities": [
+    {
+      "id": "path-and-name",
+      "title": "The app's name and address",
+      "summary": "What the app is called, its folder and where it lives on icelander.net.",
+      "status": "open",
+      "context": "The other games live at icelander.net/games/retro/<slug>/, but this one is not a retro remake. The plan uses the working name Tabletop, the folder games/tabletop and the D1 database tabletop.",
+      "options": [
+        {
+          "title": "icelander.net/games/tabletop/",
+          "consequences": "Outside retro/, which says what it is; the sign-in rules for /games/ still apply."
+        },
+        {
+          "title": "icelander.net/games/retro/tabletop/",
+          "consequences": "Next to the other games; the address calls it retro."
+        }
+      ],
+      "waitingOn": "The owner",
+      "blocks": [
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "scaffold"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "sign-in-providers",
+      "title": "Google only, or Google and GitHub",
+      "summary": "icelander.net's one sign-in offers Google and GitHub; the owner asked for Google.",
+      "status": "proposed",
+      "context": "Every game's Worker uses the login service through vendor/icelander-auth, which offers both providers. An invitation is addressed to an email, so the friend must sign in with an account that has that address.",
+      "options": [
+        {
+          "title": "Take the login service as it is (Google and GitHub)",
+          "consequences": "No sign-in code of our own; GitHub users can play too."
+        },
+        {
+          "title": "Offer only Google on this app's pages",
+          "consequences": "Matches the request exactly; the login service still knows GitHub, so a player who signed in elsewhere with GitHub is still signed in."
+        }
+      ],
+      "decision": "Take the login service as it is; the invitation email says to sign in with Google.",
+      "rationale": "One sign-in for the whole site, and nothing new to maintain.",
+      "waitingOn": "The owner, to confirm",
+      "blocks": [
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "lobby-and-invitations"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "invitation-address",
+      "title": "Who may take an invited seat",
+      "summary": "Whether an invitation link only works for the invited address.",
+      "status": "proposed",
+      "context": "Gambit's challenges are addressed to an email and only that signed-in address may answer. Friends often have several Google accounts.",
+      "options": [
+        {
+          "title": "Only the invited address (as Gambit)",
+          "consequences": "Safe if a link is forwarded; a friend signed in with another account must switch."
+        },
+        {
+          "title": "Anyone holding the link, once",
+          "consequences": "Easier; a forwarded link seats a stranger."
+        }
+      ],
+      "decision": "Only the invited address; the page says which address to sign in with.",
+      "rationale": "Matches Gambit and keeps tables private.",
+      "waitingOn": "The owner, to confirm",
+      "blocks": [
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "lobby-and-invitations"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "max-players",
+      "title": "How many seats a table has",
+      "summary": "The most players at one table.",
+      "status": "proposed",
+      "context": "Voice runs as a mesh (decision voice-topology): each player sends their voice to every other player, which is fine for a handful of people and costly beyond that. The cartridge also states its own minimum and maximum.",
+      "options": [
+        {
+          "title": "At most 6",
+          "consequences": "Mesh voice stays light; covers most board games."
+        },
+        {
+          "title": "At most 8",
+          "consequences": "More games fit; voice upload grows to 7 streams."
+        },
+        {
+          "title": "No limit, with an SFU for voice",
+          "consequences": "Needs Cloudflare Realtime's SFU and its costs."
+        }
+      ],
+      "decision": "At most 6, and never more than the cartridge allows.",
+      "rationale": "Keeps voice peer to peer, with a clear path to an SFU if needed.",
+      "waitingOn": "The owner, to confirm",
+      "blocks": [
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "voice-chat"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "voice-topology",
+      "title": "How voice is carried",
+      "summary": "Peer-to-peer WebRTC with TURN, or a media server.",
+      "status": "proposed",
+      "context": "WebRTC needs signalling (the table's Durable Object already holds a WebSocket to every player) and, for players behind strict NAT, a TURN relay. Cloudflare offers a TURN service and an SFU.",
+      "options": [
+        {
+          "title": "Mesh: WebRTC peer to peer, signalled over the table's socket, Cloudflare TURN for NAT",
+          "consequences": "No media server; TURN is billed only for relayed traffic; fine up to about six people."
+        },
+        {
+          "title": "Cloudflare Realtime SFU",
+          "consequences": "Scales past six; more moving parts and per-minute cost from the start."
+        }
+      ],
+      "decision": "Mesh with Cloudflare TURN.",
+      "rationale": "Small tables of friends; nothing to run; can move to an SFU later without changing the UI.",
+      "waitingOn": "The owner, to confirm",
+      "blocks": [
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "voice-chat"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "free-table",
+      "title": "What players can do before rules exist",
+      "summary": "Without rules, how do players play?",
+      "status": "proposed",
+      "context": "The rules come later, but a board with nothing to do is not playable. The cartridge describes the board and the pieces and where they start.",
+      "options": [
+        {
+          "title": "A free table: the current player drags pieces anywhere; everyone sees it",
+          "consequences": "Playable now with any board game, the way a physical board is; the players enforce the rules."
+        },
+        {
+          "title": "A free table where anyone may move pieces at any time",
+          "consequences": "Closer to a real table; two players can fight over a piece."
+        },
+        {
+          "title": "Show the board only",
+          "consequences": "Nothing to build; players need a physical set."
+        }
+      ],
+      "decision": "A free table where only the player whose turn it is moves pieces; any player can propose undoing the last move.",
+      "rationale": "Makes the turn indicator meaningful and avoids conflicting moves.",
+      "waitingOn": "The owner, to confirm",
+      "blocks": [
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "live-table"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "stuck-turn",
+      "title": "When the current player is away",
+      "summary": "Whether the turn can be passed for someone who has left or gone quiet.",
+      "status": "proposed",
+      "context": "Only the current player can end their turn. A player who closes the tab would stop the game.",
+      "options": [
+        {
+          "title": "The table's host can pass the turn for them, which the transcript records",
+          "consequences": "Games keep going; the host has a little more power."
+        },
+        {
+          "title": "Nobody can; the others wait",
+          "consequences": "Simplest; games stall."
+        }
+      ],
+      "decision": "The host can pass the turn for a player who is not connected.",
+      "rationale": "Keeps games moving without letting anyone take turns from a present player.",
+      "waitingOn": "The owner, to confirm",
+      "blocks": [
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "live-table"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "result-consensus",
+      "title": "When a proposed result counts",
+      "summary": "How many players must acknowledge a result before it counts as a win.",
+      "status": "proposed",
+      "context": "The owner asked for wins to be tracked if players acknowledge victory after the fact. Players may have left the table by then.",
+      "options": [
+        {
+          "title": "Every other player acknowledges; one dispute rejects it",
+          "consequences": "Wins are never contested; one absent friend leaves it pending."
+        },
+        {
+          "title": "A majority of the players",
+          "consequences": "Results settle faster; a win can count over a friend's objection."
+        },
+        {
+          "title": "Every other player, or a majority after 14 days",
+          "consequences": "Settles stalled results, at the cost of a rule players must learn."
+        }
+      ],
+      "decision": "Every other player acknowledges; one dispute rejects it and anyone may propose again. A result left pending is shown as pending, never counted.",
+      "rationale": "The simplest rule that is fair among friends.",
+      "waitingOn": "The owner, to confirm",
+      "blocks": [
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "wins"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "cartridge-language",
+      "title": "What cartridges are written in",
+      "summary": "The language a board-game binary is built from.",
+      "status": "proposed",
+      "context": "The owner wants the app in TypeScript and the game as a WebAssembly binary. AssemblyScript is a TypeScript dialect that compiles to WebAssembly. The cartridge contract (contracts.json) depends only on WebAssembly, so any language can target it.",
+      "options": [
+        {
+          "title": "AssemblyScript",
+          "consequences": "One language family across the repository; its numbers are typed (i32, f64), and the rules can later be written in it."
+        },
+        {
+          "title": "Rust",
+          "consequences": "Mature WebAssembly tooling and already used by LodeStar; a second language."
+        }
+      ],
+      "decision": "AssemblyScript for the cartridges in this repository; the contract stays language-neutral.",
+      "rationale": "Keeps everything TypeScript-shaped as the owner asked.",
+      "waitingOn": "The owner, to confirm",
+      "blocks": [
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "cartridge-format"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "cartridge-source",
+      "title": "Where cartridges come from",
+      "summary": "Whether only the owner publishes board games, or players can upload them.",
+      "status": "proposed",
+      "context": "A cartridge is code that runs in every player's browser and, once rules arrive, on the server. Cloudflare Workers can only run WebAssembly bundled when the Worker is deployed, not bytes uploaded later.",
+      "options": [
+        {
+          "title": "Only from the repository: each cartridge is built and deployed with the app",
+          "consequences": "Reviewed by pull request; the server can run its rules later."
+        },
+        {
+          "title": "Players upload cartridges",
+          "consequences": "Anyone can add a game; untrusted code, storage in R2, and no server-side rules."
+        }
+      ],
+      "decision": "Only from the repository, under games/tabletop/cartridges/.",
+      "rationale": "Safe, simple, and the only option that lets the server check rules later.",
+      "waitingOn": "The owner, to confirm",
+      "blocks": [
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "cartridge-format"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    },
+    {
+      "id": "first-cartridge",
+      "title": "Which board game comes first",
+      "summary": "The board game the first version ships with, to prove the format.",
+      "status": "open",
+      "context": "The format needs one real cartridge to test against. It must be a game the owner has the right to publish: an original design, or a public-domain game with original artwork.",
+      "options": [
+        {
+          "title": "A public-domain race game (for example a pachisi-style race) with original art",
+          "consequences": "Uses pieces, a board and turns; no copyrighted material."
+        },
+        {
+          "title": "A board game the owner designs or supplies",
+          "consequences": "Exactly what they want to play; waits for their assets."
+        }
+      ],
+      "waitingOn": "The owner",
+      "blocks": [
+        {
+          "path": "games/tabletop/.dev/backlog.json",
+          "entityId": "first-cartridge"
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed"
+    }
+  ]
+}

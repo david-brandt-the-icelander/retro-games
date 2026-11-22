@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Tabletop",
+  "folder": "games/tabletop",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Tabletop (planned)",
+      "summary": "A planned board-game table for friends on icelander.net; for now only its plan exists.",
+      "purpose": "Will hold the board-game table app: its page, its Cloudflare Worker and Durable Object, its D1 schema and its WebAssembly cartridges. Until the scaffold backlog item is done it holds only the plan in this .dev folder.",
+      "boundaries": [
+        "No package.json yet, so the workflows neither test nor deploy it.",
+        "Board games are cartridges built from cartridges/ in this folder (decisions.json cartridge-source)."
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-12",
+        "description": "The owner asked for a plan for a TypeScript web app on icelander.net where friends invited by email play a board game shipped as a WebAssembly binary, with chat, voice chat, a turn indicator, an end-turn button and wins the players acknowledge; the rules come later."
+      },
+      "evidenceStatus": "proposed",
+      "links": [
+        {
+          "path": "games/tabletop/.dev/plan.json",
+          "label": "Plan"
+        }
+      ]
+    }
+  ]
+}
