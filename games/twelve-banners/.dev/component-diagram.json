@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Twelve Banners component diagram",
+  "folder": "games/twelve-banners",
+  "description": "Twelve Banners: a Godot 4 project exported for the browser and the desktop, and a Worker that serves both, behind icelander.net's sign-in and the role games:twelve-banners, to invited players only.",
+  "sources": [
+    {
+      "path": "games/twelve-banners/README.md",
+      "symbol": "How it works"
+    },
+    {
+      "path": "games/twelve-banners/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/twelve-banners/build.mjs",
+      "symbol": "DOWNLOADS"
+    },
+    {
+      "path": "games/twelve-banners/godot/project.godot",
+      "symbol": "autoload"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Twelve Banners",
+      "responsibility": "One game: the Godot project, the page files and the Worker, built by build.mjs and deployed together with wrangler.",
+      "folder": "games/twelve-banners"
+    },
+    {
+      "id": "client",
+      "name": "Godot project",
+      "responsibility": "The game: rules and turn resolution (scripts/Game.gd), map generator, AI, the ENet lobby and command/event relay (scripts/Net.gd), the 3D world view, procedural models, camera, HUD and menu, with a headless self-test (godot/tests/selftest.gd) that checks the rules, lockstep between host and client, and a twelve-civilization game.",
+      "folder": "games/twelve-banners/godot"
+    },
+    {
+      "id": "web",
+      "name": "Page files",
+      "responsibility": "The landing page (play in the browser, or download), the play page's stylesheet and boot script (the CSP allows no inline script), the icon and the headers.",
+      "folder": "games/twelve-banners/web"
+    },
+    {
+      "id": "worker",
+      "name": "Twelve Banners Worker",
+      "responsibility": "Serves every file to signed-in holders of games:twelve-banners, sends visitors to sign in, shows others a not-invited page, and joins the parted engine and downloads.",
+      "folder": "games/twelve-banners/worker"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Who holds the site_session cookie, and their games: roles.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "client",
+      "kind": "contains",
+      "description": "Exported by Godot (build.mjs) to dist/games/fresh/twelve-banners/play/ and to three desktop zips."
+    },
+    {
+      "from": "game",
+      "to": "web",
+      "kind": "contains",
+      "description": "Copied into dist/ by build.mjs, the landing page filled in with the downloads' sizes."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Bundled by wrangler from worker/index.ts."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Service binding ACCOUNTS, through vendor/icelander-auth: requireRole(games:twelve-banners) on every request but the stylesheet and the icon."
+    }
+  ]
+}

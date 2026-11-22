@@ -1,0 +1,20 @@
+{
+  "name": "meg",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MEG: The Current Remembers. An original cartoon shark game: the last megalodon, hiding in a warm current from the Directorate.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && node build.mjs",
+    "test": "tsc --noEmit && node build.mjs --test && node --test dist-test/test/*.test.mjs",
+    "deploy": "npm test && npm run build && wrangler deploy"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.6.0",
+    "wrangler": "^4.0.0"
+  },
+  "license": "MPL-2.0"
+}

@@ -1,0 +1,74 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Advent art renderer</title>
+<!-- build.mjs loads this page in headless Chrome. It turns the SVG art from
+     sheets.mjs into pixels, trims and packs sprites into atlases, and hands
+     back WebP data URLs plus the manifest. Open it with ?sheet=NAME to look
+     at one sheet in a browser. -->
+<body style="margin:0;background:#556">
+<script type="module">
+import { SHEETS } from './sheets.mjs';
+
+async function raster(svg) {
+  const img = new Image();
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  await img.decode();
+  const c = document.createElement('canvas');
+  c.width = img.naturalWidth; c.height = img.naturalHeight;
+  c.getContext('2d').drawImage(img, 0, 0);
+  return c;
+}
+
+function trim(c) {
+  const { width: w, height: h } = c, d = c.getContext('2d').getImageData(0, 0, w, h).data;
+  let x0 = w, y0 = h, x1 = -1, y1 = -1;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (d[(y * w + x) * 4 + 3] > 3) {
+    if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+  }
+  if (x1 < 0) return { x: 0, y: 0, w: 1, h: 1 };
+  return { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+}
+
+// Shelf packing, tallest first.
+function pack(list, pad = 3) {
+  const W = Math.max(512, ...list.map(s => s.t.w + pad * 2));
+  const width = Math.min(4096, 1 << Math.ceil(Math.log2(Math.max(W, Math.sqrt(list.reduce((a, s) => a + (s.t.w + pad) * (s.t.h + pad), 0)) * 1.15))));
+  const order = [...list].sort((a, b) => b.t.h - a.t.h);
+  let x = pad, y = pad, row = 0;
+  for (const s of order) {
+    if (x + s.t.w + pad > width) { x = pad; y += row + pad; row = 0; }
+    s.at = { x, y }; x += s.t.w + pad; row = Math.max(row, s.t.h);
+  }
+  return { width, height: y + row + pad };
+}
+
+window.sheetNames = () => Object.keys(SHEETS);
+
+window.renderSheet = async (name, show) => {
+  const sh = SHEETS[name]();
+  if (sh.kind === 'image') {
+    const c = await raster(sh.svg);
+    if (show) document.body.appendChild(c);
+    return { file: sh.file, data: c.toDataURL('image/webp', sh.q ?? 0.82), meta: { w: c.width, h: c.height, s: sh.scale, ...(sh.meta || {}) } };
+  }
+  const items = [];
+  for (const it of sh.items) {
+    const c = await raster(it.svg);
+    items.push({ it, c, t: trim(c) });
+  }
+  const { width, height } = pack(items);
+  const out = document.createElement('canvas'); out.width = width; out.height = height;
+  const ctx = out.getContext('2d'), sprites = {};
+  for (const { it, c, t, at } of items) {
+    ctx.drawImage(c, t.x, t.y, t.w, t.h, at.x, at.y, t.w, t.h);
+    // ax, ay: where the sprite's own origin (its pivot) falls, in sprite pixels
+    sprites[it.id] = [at.x, at.y, t.w, t.h, +(-it.box[0] * it.scale - t.x).toFixed(1), +(-it.box[1] * it.scale - t.y).toFixed(1), it.scale];
+  }
+  if (show) document.body.appendChild(out);
+  return { file: sh.file, data: out.toDataURL('image/webp', sh.q ?? 0.85), meta: { aw: width, ah: height, sprites, ...(sh.meta || {}) } };
+};
+
+const q = new URLSearchParams(location.search).get('sheet');
+if (q) window.renderSheet(q, true);
+window.ready = true;
+</script>

@@ -1,0 +1,23 @@
+{
+  "name": "iron-haze",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Iron Haze: a dieselpunk real-time strategy game in Godot 4, in the browser and as desktop builds, for players invited to games:iron-haze.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && node build.mjs",
+    "build:web": "tsc --noEmit && node build.mjs --web",
+    "test": "tsc --noEmit && node build.mjs --test && node --no-warnings --test dist-test/*.test.mjs",
+    "test:godot": "godot --headless --path godot --import && godot --headless --fixed-fps 30 --path godot -s tests/selftest.gd",
+    "dev": "node build.mjs --web && wrangler dev",
+    "deploy": "npm test && npm run test:godot && npm run build && wrangler deploy"
+  },
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "esbuild": "^0.25.12",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.163.0"
+  }
+}

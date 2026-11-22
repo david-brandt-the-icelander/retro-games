@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Double Cross",
+  "folder": "games/double-cross",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Double Cross",
+      "summary": "A spy-trap party game in Godot 4 for the browser: up to eight agents search furniture for intel, rig furniture and doorways with traps, and race to the extraction door; the eliminated keep watching every survivor in spectator mode.",
+      "purpose": "Holds the whole game: the Godot project in godot/, the page's boot script in boot/, the Worker that serves the build in worker/, and the tests in test/ and godot/tests/. It is one npm project and one Cloudflare Worker.",
+      "boundaries": [
+        "Online matches are made on icelander.net's multiplayer page and relayed by the games hub, which lives in another repository; this folder only connects to the relay.",
+        "The sign-in is icelander.net's; the Worker checks it with the shared library in vendor/icelander-auth/, never edited here."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/double-cross/README.md",
+          "symbol": "Files"
+        },
+        {
+          "path": "games/double-cross/wrangler.jsonc",
+          "symbol": "main"
+        }
+      ]
+    }
+  ]
+}

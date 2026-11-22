@@ -1,0 +1,107 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Inkwell Academy component diagram",
+  "folder": "games/inkwell-academy",
+  "description": "Inkwell Academy: a Godot game exported for the web, and a Worker that serves it to signed-in players.",
+  "sources": [
+    {
+      "path": "games/inkwell-academy/wrangler.jsonc",
+      "symbol": "inkwell-academy"
+    },
+    {
+      "path": "games/inkwell-academy/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/inkwell-academy/godot/scripts/main.gd",
+      "symbol": "_process"
+    },
+    {
+      "path": "games/inkwell-academy/build.mjs",
+      "symbol": "SITE"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Inkwell Academy",
+      "responsibility": "One game: the Godot client and its Worker, built and deployed together.",
+      "folder": "games/inkwell-academy"
+    },
+    {
+      "id": "client",
+      "name": "Godot game",
+      "responsibility": "The whole game: the timetable, teachers' and pupils' behaviour, lines, crests and the Founder's Bell, the cut-out character rig, HUD and sound.",
+      "folder": "games/inkwell-academy/godot"
+    },
+    {
+      "id": "tools",
+      "name": "Asset generators",
+      "responsibility": "Generate the SVG artwork and the synthesised sound effects into godot/art and godot/audio.",
+      "folder": "games/inkwell-academy/tools"
+    },
+    {
+      "id": "page",
+      "name": "Web page",
+      "responsibility": "The loader script, loading screen, icon and Content-Security-Policy around the exported engine.",
+      "folder": "games/inkwell-academy/web"
+    },
+    {
+      "id": "worker",
+      "name": "Worker",
+      "responsibility": "Serves the page to signed-in players, joins the engine's parts into index.wasm, and serves the other files as static assets.",
+      "folder": "games/inkwell-academy/worker"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Who is signed in and which games: roles they hold.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "client",
+      "kind": "contains",
+      "description": "Exported for the web by build.mjs into dist/."
+    },
+    {
+      "from": "game",
+      "to": "tools",
+      "kind": "contains",
+      "description": "Run by hand to restyle the game."
+    },
+    {
+      "from": "game",
+      "to": "page",
+      "kind": "contains",
+      "description": "Copied into dist/ next to the export."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Deployed with wrangler."
+    },
+    {
+      "from": "page",
+      "to": "client",
+      "kind": "depends-on",
+      "description": "Starts the exported engine (boot.js)."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Checks the sign-in before serving the page."
+    },
+    {
+      "from": "tools",
+      "to": "client",
+      "kind": "depends-on",
+      "description": "Writes the art and audio the Godot project imports."
+    }
+  ]
+}

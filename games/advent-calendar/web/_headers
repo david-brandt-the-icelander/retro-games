@@ -1,0 +1,9 @@
+# Cloudflare static-asset headers for the Advent calendar. Everything comes from this origin, except Google Fonts
+# and Cloudflare Web Analytics. Inline styles are allowed (the doors are built with style attributes); inline script is not.
+# The Worker serves every file behind the games:advent-calendar role and marks it private (worker/index.ts).
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; connect-src 'self' https://cloudflareinsights.com; img-src 'self' data: blob:; font-src https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: same-origin
+  X-Robots-Tag: noindex
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()

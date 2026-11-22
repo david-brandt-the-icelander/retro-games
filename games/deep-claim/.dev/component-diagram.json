@@ -1,0 +1,101 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Deep Claim component diagram",
+  "folder": "games/deep-claim",
+  "description": "Deep Claim, an asteroid-mining platformer: the Godot game runs entirely in the browser, and the Worker only checks the sign-in and serves the files.",
+  "sources": [
+    {
+      "path": "games/deep-claim/wrangler.jsonc",
+      "symbol": "deep-claim"
+    },
+    {
+      "path": "games/deep-claim/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/deep-claim/godot/scripts/main.gd",
+      "symbol": "Main"
+    },
+    {
+      "path": "games/deep-claim/build.mjs",
+      "symbol": "SITE"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Deep Claim",
+      "responsibility": "One game: the Godot client and its Worker, built and deployed together.",
+      "folder": "games/deep-claim"
+    },
+    {
+      "id": "client",
+      "name": "Godot game",
+      "responsibility": "Everything the player sees and does: shafts, the miner, the buggy, oxygen and fuel, the collapse timer, hazards, HUD, sound and touch buttons.",
+      "folder": "games/deep-claim/godot"
+    },
+    {
+      "id": "shell",
+      "name": "Web page",
+      "responsibility": "The page the web export runs in (godot/web_shell/shell.html) and its loading screen, script, styles and Content-Security-Policy (web/).",
+      "folder": "games/deep-claim/web"
+    },
+    {
+      "id": "worker",
+      "name": "Worker",
+      "responsibility": "Sends a visitor without a sign-in to sign in, serves the page and assets, and joins the engine's parts into one index.wasm.",
+      "folder": "games/deep-claim/worker"
+    },
+    {
+      "id": "levels",
+      "name": "Shaft-map builder",
+      "responsibility": "Writes the twenty shaft maps into godot/scripts/levels.gd and checks that every ore can be reached from the buggy's lane.",
+      "folder": "games/deep-claim/tools"
+    },
+    {
+      "id": "auth",
+      "name": "icelander-auth",
+      "responsibility": "icelander.net's shared sign-in library, copied into vendor/; asks the login service who holds the site_session cookie.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "client",
+      "kind": "contains",
+      "description": "Exported for the web by build.mjs into dist/games/retro/deep-claim/."
+    },
+    {
+      "from": "game",
+      "to": "shell",
+      "kind": "contains",
+      "description": "Copied into the export by build.mjs."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Deployed with wrangler."
+    },
+    {
+      "from": "shell",
+      "to": "client",
+      "kind": "depends-on",
+      "description": "boot.js starts the engine with the export's configuration."
+    },
+    {
+      "from": "levels",
+      "to": "client",
+      "kind": "depends-on",
+      "description": "Generates godot/scripts/levels.gd."
+    },
+    {
+      "from": "worker",
+      "to": "auth",
+      "kind": "depends-on",
+      "description": "requireRole(games:play) for the page."
+    }
+  ]
+}

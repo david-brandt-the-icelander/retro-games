@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070d2e">
+<title>Yule Advent Calendar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fredoka:wght@600&family=Mountains+of+Christmas:wght@700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/house.webp">
+<script src="assets/art.js"></script>
+<style>
+/* Layout: one tall painted illustration of a snowy log house. 24 arched wooden doors sit in its wall. Tapping one curls the door open, then the window grows into a framed card where a friend does one little animation. Tap the card to close it. */
+:root{
+  --night:#070d2e; --gold:#f4c95d; --berry:#b3243b; --snow:#f5f8ff;
+  --display:'Mountains of Christmas',Georgia,serif; --num:'Fredoka','DM Sans',system-ui,sans-serif; --body:'DM Sans',system-ui,-apple-system,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%}
+body{margin:0;background:#050a24;color:var(--snow);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+body.lock{overflow:hidden}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+.stage{position:relative;width:100%;max-width:520px;margin:0 auto;aspect-ratio:390/960;container-type:inline-size;overflow:hidden;background:#0f1d52}
+/* on wide screens the whole house fits the window height */
+@media (min-width:600px){.stage{width:max(380px,min(520px,calc(100dvh * 390 / 960)))}}
+.stage>img,.stage>canvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;user-select:none}
+.title{position:absolute;left:0;right:0;top:2.2%;text-align:center;pointer-events:none;padding-top:env(safe-area-inset-top,0px)}
+.title small{display:block;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-weight:700;font-size:3.1cqw}
+.title h1{margin:.5cqw 0 0;font-family:var(--display);font-size:15.5cqw;line-height:.95;
+  background:linear-gradient(180deg,#fff7d9,#f4c95d 60%,#d99a35);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 .6cqw 2.4cqw rgba(0,0,0,.6))}
+
+/* windows: a glowing opening behind a door made of strips that curl like paper */
+.win{position:absolute;z-index:2;perspective:90cqw;perspective-origin:30% 50%}
+.glass{position:absolute;inset:0;border-radius:50% 50% 0 0/28% 28% 0 0;background:radial-gradient(circle at 50% 62%,#fffbe0,#ffd36e 45%,#e08a2a 85%);opacity:.0;transition:opacity .35s;box-shadow:0 0 5cqw 1cqw rgba(255,190,90,.0)}
+.win.open .glass,.win.closing .glass{opacity:1;box-shadow:0 0 6cqw 2cqw rgba(255,190,90,.55)}
+.door{position:absolute;inset:0;padding:0;border:0;background:none;cursor:pointer;transform-style:preserve-3d;touch-action:manipulation}
+.door:focus-visible{outline-offset:1cqw;border-radius:30% 30% 4% 4%/20% 20% 4% 4%}
+.strip{position:absolute;top:0;height:100%;transform-origin:0 50%;transform-style:preserve-3d;will-change:transform}
+.door>.strip{left:0;width:20%}
+.strip>.strip{left:100%;width:100%}
+.face,.back{position:absolute;inset:0 -0.5px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.back{transform:rotateY(180deg)}
+.full{position:absolute;top:0;height:100%;width:500%;background-image:var(--atlas);background-size:var(--bs);background-position:var(--bp);background-repeat:no-repeat}
+.back .full{background-position:var(--bpb)}
+.face::after,.back::after{content:"";position:absolute;inset:0;background:#1a0c10;opacity:var(--sh,0);pointer-events:none}
+.n{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);font-family:var(--num);font-weight:600;font-size:4.6cqw;line-height:1;color:#b3243b;
+  -webkit-text-stroke:.25cqw #fffaf0;paint-order:stroke fill;text-shadow:0 .2cqw 0 rgba(90,40,10,.25)}
+.badge{position:absolute;right:-1.2cqw;top:-1.6cqw;width:4.6cqw;height:4.6cqw;z-index:3;pointer-events:none;opacity:0;transform:scale(.4);transition:opacity .3s,transform .4s cubic-bezier(.3,1.6,.5,1);
+  background:radial-gradient(circle at 40% 35%,#fff6c8,#f4c95d 50%,#b8862a);clip-path:polygon(50% 0,62% 36%,100% 38%,70% 60%,80% 100%,50% 76%,20% 100%,30% 60%,0 38%,38% 36%);filter:drop-shadow(0 0 1cqw #ffd470)}
+.win.seen .badge{opacity:1;transform:none}
+.win.open .badge,.win.closing .badge{opacity:0}
+.win.lock .door{filter:saturate(.55) brightness(.72)}
+.win.lock .n{color:#6a4a3a}
+.win.today .door{animation:beckon 2.6s ease-in-out infinite}
+@keyframes beckon{0%,100%{filter:drop-shadow(0 0 .6cqw rgba(255,210,120,.5))}50%{filter:drop-shadow(0 0 2.4cqw rgba(255,210,120,.95))}}
+.win.shake{animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-.8cqw)}40%{transform:translateX(.8cqw)}60%{transform:translateX(-.6cqw)}80%{transform:translateX(.6cqw)}}
+
+.foot{max-width:520px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-left,0px)) max(30px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:12px;font-size:13px;text-align:center;background:#dfe8fb;color:#2c3a66}
+.sw{display:flex;align-items:center;gap:10px;cursor:pointer;min-height:44px}
+.sw input{position:absolute;opacity:0}
+.sw i{width:40px;height:22px;border-radius:11px;background:#7e8fc4;position:relative;transition:background .2s;flex:none}
+.sw i::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw input:checked+i{background:#1f6f58}
+.sw input:checked+i::after{transform:translateX(18px)}
+.sw input:focus-visible+i{outline:3px solid #b3243b;outline-offset:3px}
+.link{background:none;border:0;text-decoration:underline;color:#2c3a66;cursor:pointer;padding:10px;min-height:44px}
+.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);opacity:0;pointer-events:none;background:#0a1030;border:1px solid var(--gold);color:var(--snow);padding:10px 16px;border-radius:999px;transition:.3s;z-index:80;white-space:nowrap}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* the opened window */
+.veil{position:fixed;inset:0;z-index:50;background:rgba(4,6,20,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .4s,visibility 0s .4s}
+.veil.on{opacity:1;visibility:visible;transition:opacity .4s}
+.wrap{position:fixed;inset:0;z-index:51;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;pointer-events:none;
+  padding:max(10px,env(safe-area-inset-top,0px)) max(10px,env(safe-area-inset-right,0px)) max(10px,env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px))}
+.wrap.on{display:flex}
+.card{width:min(94vw,calc((100dvh - 120px) * .5625),420px);aspect-ratio:9/16;border-radius:22px;pointer-events:auto;cursor:pointer;transform-origin:0 0;box-shadow:0 20px 50px rgba(0,0,0,.6),0 0 60px rgba(244,201,93,.25);touch-action:none;user-select:none;-webkit-user-select:none}
+.card canvas{width:100%;height:100%;display:block;border-radius:22px}
+.cap{text-align:center;max-width:min(94vw,420px);opacity:0;transition:opacity .4s;pointer-events:none}
+.cap.on{opacity:1}
+.cap h3{font-family:var(--display);font-size:28px;line-height:1.05;margin:0 0 2px}
+.cap p{margin:0;color:#cdd8f5;font-size:14px;text-wrap:pretty}
+.cap small{display:block;margin-top:4px;color:var(--gold);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+@media (prefers-reduced-motion:reduce){.win.today .door{animation:none}.badge{transition:none}}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <img id="house" src="assets/house.webp" alt="A snowy log house at night with 24 numbered wooden doors">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="title"><small id="yr">Yuletide</small><h1>Advent</h1></div>
+</div>
+<div class="foot">
+  <label class="sw"><input type="checkbox" id="preview"><i></i><span id="pvlabel">Preview mode: every window opens</span></label>
+  <button class="link" id="reset" type="button">Close and forget all the windows</button>
+</div>
+<div class="veil" id="veil"></div>
+<div class="wrap" id="wrap">
+  <div class="card" id="card" role="button" tabindex="0" aria-label="Tap to close this window"><canvas id="scene"></canvas></div>
+  <div class="cap" id="cap"><h3 id="vt"></h3><p id="vm"></p><small>Tap the window to close it</small></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="calendar.js"></script>
+</body>
+</html>

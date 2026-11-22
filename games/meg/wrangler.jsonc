@@ -1,0 +1,22 @@
+// The MEG Worker at icelander.net/games/retro/meg: the static game behind icelander.net's sign-in, and its high-score table.
+// Its route runs before the games hub (the recreations Worker), whose route icelander.net/games/* is less specific.
+// The shared high-score table lives in one Durable Object (ScoreTable in worker/scores.ts), which a deploy creates;
+// so MEG has no D1 database and nothing to migrate by hand.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "meg",
+  "compatibility_date": "2025-06-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "icelander.net/games/retro/meg*", "zone_name": "icelander.net" }],
+  "main": "worker/index.ts",
+  // The game's page runs the Worker first, for the sign-in (every game needs one; the hub's docs/SIGN-IN.md).
+  "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "none", "run_worker_first": ["/games/retro/meg", "/games/retro/meg/", "/games/retro/meg/index.html"] },
+  "durable_objects": { "bindings": [{ "name": "SCORES", "class_name": "ScoreTable" }] },
+  // Cloudflare applies these in order; keep every entry.
+  "migrations": [{ "tag": "scores-v1", "new_sqlite_classes": ["ScoreTable"] }],
+  // icelander.net's login service: who is signed in, through the site's cookie (icelander.net and its games are one sign-in).
+  "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
+  // The login service's public keys (icelander.net docs/accounts.md, "Keys").
+  "vars": { "ACCOUNTS_JWKS": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"kid\":\"k2026a\",\"x\":\"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc\"}]}" }
+}

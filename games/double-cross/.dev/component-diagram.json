@@ -1,0 +1,99 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Double Cross component diagram",
+  "folder": "games/double-cross",
+  "description": "Double Cross: a Godot client that plays the whole match in each browser, with the host's browser deciding what happens, and a small Worker that serves the build to signed-in players.",
+  "sources": [
+    {
+      "path": "games/double-cross/wrangler.jsonc",
+      "symbol": "double-cross"
+    },
+    {
+      "path": "games/double-cross/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/double-cross/godot/scripts/net.gd",
+      "symbol": "join_match"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Double Cross",
+      "responsibility": "One game: the Godot client and its Worker, built and deployed together.",
+      "folder": "games/double-cross"
+    },
+    {
+      "id": "client",
+      "name": "Godot client",
+      "responsibility": "Menus, the briefing room, the match (world, agents, traps, HUD, spectator grid) and the message layer that carries it between browsers.",
+      "folder": "games/double-cross/godot",
+      "diagram": "games/double-cross/godot/.dev/component-diagram.json"
+    },
+    {
+      "id": "boot",
+      "name": "Page boot script",
+      "responsibility": "Starts the Godot engine behind the loading screen.",
+      "folder": "games/double-cross/boot"
+    },
+    {
+      "id": "worker",
+      "name": "Game Worker",
+      "responsibility": "Serves the build: the signed-in page, the engine joined from its parts, and the static files.",
+      "folder": "games/double-cross/worker",
+      "diagram": "games/double-cross/worker/.dev/component-diagram.json"
+    },
+    {
+      "id": "hub",
+      "name": "Games hub",
+      "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): the multiplayer lobby and one WebSocket relay per online match.",
+      "external": true
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Who is signed in, and their games: roles.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "client",
+      "kind": "contains",
+      "description": "Exported by build.mjs into dist/."
+    },
+    {
+      "from": "game",
+      "to": "boot",
+      "kind": "contains",
+      "description": "Bundled by build.mjs into boot.js."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Deployed with wrangler."
+    },
+    {
+      "from": "boot",
+      "to": "client",
+      "kind": "depends-on",
+      "description": "Starts the engine with the export's configuration."
+    },
+    {
+      "from": "client",
+      "to": "hub",
+      "kind": "depends-on",
+      "description": "Online matches: a WebSocket to /games/multiplayer/match/{ID}, opened with ?match=ID from the lobby."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Asks who is signed in before serving the page (games:play)."
+    }
+  ]
+}

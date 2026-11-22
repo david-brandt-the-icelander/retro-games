@@ -1,0 +1,20 @@
+// The Hand of the Isle Worker at icelander.net/games/fresh/hand-of-the-isle: the landing page and the Godot web build,
+// both for players holding games:hand-of-the-isle (worker/index.ts). No database, no secrets.
+// Deployed by .github/workflows/deploy.yml on a merge to main (README "Deploy").
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hand-of-the-isle",
+  "compatibility_date": "2025-01-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "icelander.net/games/fresh/hand-of-the-isle*", "zone_name": "icelander.net" }],
+  "main": "worker/index.ts",
+  // Every request goes through the Worker first: nothing here is public except the stylesheet and the icon.
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": true },
+  // icelander.net's login service: who is signed in, through the site's cookie (icelander.net and its games are one sign-in).
+  "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
+  "vars": {
+    // The login service's public keys (icelander.net docs/accounts.md, "Keys").
+    "ACCOUNTS_JWKS": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"kid\":\"k2026a\",\"x\":\"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc\"}]}"
+  }
+}

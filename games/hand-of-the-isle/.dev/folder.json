@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Hand of the Isle",
+  "folder": "games/hand-of-the-isle",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Hand of the Isle",
+      "summary": "An original god game made in Godot 4: the player reshapes an island and calls down powers so their followers outgrow a rival deity's. It runs in the browser at icelander.net/games/fresh/hand-of-the-isle/, for invited players only.",
+      "purpose": "godot/ is the game: one scene (main.tscn) runs Main, which builds everything else in code (the terrain, the simulation, the rival, the camera and the interface), with no external assets. web/ is the landing page and the play page's stylesheet and boot script, worker/ the Cloudflare Worker that serves every file only to signed-in holders of the invite-only role games:hand-of-the-isle, and build.mjs exports the game for the web. README.md gives the rules, the controls and the commands.",
+      "boundaries": [
+        "The role games:hand-of-the-isle is declared in the icelander.net repository (accounts/src/config.js) and granted or sent as an invitation at icelander.net/private/admin; the login service checks it, not this folder.",
+        "There are no desktop builds, saved games or high scores, and the game makes no network requests of its own."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/hand-of-the-isle/godot/project.godot",
+          "symbol": "run/main_scene"
+        },
+        {
+          "path": "games/hand-of-the-isle/worker/config.ts",
+          "symbol": "ROLE"
+        },
+        {
+          "path": "games/hand-of-the-isle/wrangler.jsonc",
+          "symbol": "routes"
+        }
+      ],
+      "links": [
+        {
+          "label": "README",
+          "path": "games/hand-of-the-isle/README.md"
+        }
+      ]
+    }
+  ]
+}

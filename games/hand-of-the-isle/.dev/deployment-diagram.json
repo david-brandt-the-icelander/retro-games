@@ -1,0 +1,106 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "Hand of the Isle deployment diagram",
+  "folder": "games/hand-of-the-isle",
+  "description": "How Hand of the Isle runs: one Cloudflare Worker with static assets and no storage, on the route icelander.net/games/fresh/hand-of-the-isle*, for signed-in players holding games:hand-of-the-isle. The browser runs the Godot WebAssembly export. The engine's .wasm is larger than Cloudflare's 25 MiB limit for a static file, so build.mjs stores it in 20 MiB parts and the Worker streams the parts back as one file.",
+  "sources": [
+    {
+      "path": "games/hand-of-the-isle/wrangler.jsonc",
+      "symbol": "hand-of-the-isle"
+    },
+    {
+      "path": "games/hand-of-the-isle/build.mjs",
+      "symbol": "PART"
+    },
+    {
+      "path": "games/hand-of-the-isle/worker/index.ts",
+      "symbol": "joined"
+    },
+    {
+      "path": "games/hand-of-the-isle/godot/export_presets.cfg",
+      "symbol": "preset.0"
+    },
+    {
+      "path": ".github/workflows/game.yml",
+      "symbol": "GODOT_GAMES"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "browser",
+      "name": "Player's browser",
+      "kind": "client",
+      "description": "Shows the landing page and runs the Godot WebAssembly export (WebGL 2, Compatibility renderer).",
+      "actor": "Actors/player.md"
+    },
+    {
+      "id": "edge",
+      "name": "Cloudflare edge",
+      "kind": "host",
+      "description": "Runs the Worker on the route icelander.net/games/fresh/hand-of-the-isle* and holds the static assets from ./dist."
+    },
+    {
+      "id": "worker",
+      "name": "hand-of-the-isle Worker",
+      "kind": "process",
+      "description": "worker/index.ts, run first for every path (run_worker_first: true)."
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "In the icelander.net repository (accounts/): who holds the site_session cookie and their games: roles, asked on every request through a service binding."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "export",
+      "name": "play/index.html, index.js, index.pck, audio worklets",
+      "source": "games/hand-of-the-isle/godot/export_presets.cfg",
+      "deployedTo": "edge",
+      "description": "Godot's Web export (preset Web, release, no threads), with web_shell/shell.html as the page."
+    },
+    {
+      "id": "wasm",
+      "name": "play/index.wasm.0, .1",
+      "source": "games/hand-of-the-isle/build.mjs",
+      "deployedTo": "edge",
+      "description": "The engine's WebAssembly in 20 MiB parts, joined by the Worker for play/index.wasm."
+    },
+    {
+      "id": "pages",
+      "name": "index.html, shell.css, boot.js, favicon.svg, screenshots, _headers",
+      "source": "games/hand-of-the-isle/web/index.html",
+      "deployedTo": "edge",
+      "description": "The landing page, the play page's stylesheet and boot script, the icon, two screenshots and the Content-Security-Policy."
+    },
+    {
+      "id": "script",
+      "name": "Worker script",
+      "source": "games/hand-of-the-isle/worker/index.ts",
+      "deployedTo": "worker",
+      "description": "The fetch handler and vendor/icelander-auth, bundled by wrangler."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "edge",
+      "to": "worker",
+      "kind": "hosts",
+      "description": "Routes icelander.net/games/fresh/hand-of-the-isle* to the Worker."
+    },
+    {
+      "from": "browser",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "HTTPS: the landing page, and play/ with its joined index.wasm."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS (entrypoint Internal)."
+    }
+  ]
+}

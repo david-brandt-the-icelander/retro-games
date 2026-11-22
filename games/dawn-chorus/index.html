@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dawn Chorus</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap">
+<style>
+/* Layout: one column field notebook. Region choice re-tints the whole page (lake blue / desert sunset). */
+:root{
+  --bg:#E6EDEB; --surface:#F5F8F6; --ink:#13262B; --muted:#4B6166; --line:#C3D1CE;
+  --r:#2B6B78; --on-r:#FFFFFF; --r-soft:#D3E4E6;
+  --plate-a:#CFE3E6; --plate-b:#E6EFEA; --scene:#2B5560;
+  --gold:#B8860B; --good:#1D7A4A; --bad:#B2382A;
+  --sono-on:#1B5E6B; --sono-off:#A3B6B6; --sil:brightness(0);
+  --f-d:"Bricolage Grotesque",system-ui,sans-serif;
+  --f-t:"Newsreader",Georgia,serif;
+  --f-m:"IBM Plex Mono",ui-monospace,monospace;
+}
+:root[data-region="az"]{ --r:#B6521E; --on-r:#FFFFFF; --r-soft:#F3DCC8; --plate-a:#F6D8B4; --plate-b:#F1E6D2; --scene:#8A4A25; --sono-on:#A5471A; --sono-off:#CDB8A6; }
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D191C; --surface:#152327; --ink:#E5EEEB; --muted:#93A8AA; --line:#2A3C40;
+    --r:#72BBC8; --on-r:#08181B; --r-soft:#1C353B; --plate-a:#1D3B43; --plate-b:#142A30; --scene:#7FB4BE;
+    --gold:#E3B341; --good:#4CC58A; --bad:#FF8A78; --sono-on:#72BBC8; --sono-off:#3B5358; --sil:brightness(0) invert(.82);
+    color-scheme:dark;
+  }
+  :root:not([data-theme="light"])[data-region="az"]{ --r:#F19462; --on-r:#25100A; --r-soft:#3A2218; --plate-a:#4B2E22; --plate-b:#2D1E19; --scene:#E9A074; --sono-on:#F19462; --sono-off:#5C4034; }
+}
+:root[data-theme="dark"]{
+  --bg:#0D191C; --surface:#152327; --ink:#E5EEEB; --muted:#93A8AA; --line:#2A3C40;
+  --r:#72BBC8; --on-r:#08181B; --r-soft:#1C353B; --plate-a:#1D3B43; --plate-b:#142A30; --scene:#7FB4BE;
+  --gold:#E3B341; --good:#4CC58A; --bad:#FF8A78; --sono-on:#72BBC8; --sono-off:#3B5358; --sil:brightness(0) invert(.82);
+  color-scheme:dark;
+}
+:root[data-theme="dark"][data-region="az"]{ --r:#F19462; --on-r:#25100A; --r-soft:#3A2218; --plate-a:#4B2E22; --plate-b:#2D1E19; --scene:#E9A074; --sono-on:#F19462; --sono-off:#5C4034; }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-d);font-size:16px;line-height:1.45;
+  padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  transition:background .3s}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--r);outline-offset:2px}
+.mono{font-family:var(--f-m);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.sci{font-family:var(--f-t);font-style:italic;color:var(--muted)}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;gap:16px 24px;justify-content:space-between;align-items:flex-end}
+.brand{min-width:0}
+h1{font-size:clamp(2.4rem,9vw,3.8rem);line-height:.92;margin:6px 0 0;font-weight:800;letter-spacing:-.035em;font-variation-settings:"opsz" 96}
+h1 em{font-style:normal;color:var(--r)}
+.regions{display:flex;gap:8px;flex:1 1 100%;min-width:0;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin;cursor:grab;-webkit-user-select:none;user-select:none;overscroll-behavior-x:contain}
+.regions.dragging{cursor:grabbing}
+.regions.dragging button{pointer-events:none}
+.regions button{flex:none;width:min(230px,64vw);text-align:left;padding:10px 14px;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.regions button b{font-size:1.05rem;font-weight:700}
+.regions button span{font-size:.78rem;color:var(--muted)}
+.regions button[aria-pressed="true"]{background:var(--r);border-color:var(--r);color:var(--on-r)}
+.regions button[aria-pressed="true"] span{color:inherit;opacity:.85}
+
+.tabs{display:flex;gap:4px;border-bottom:1.5px solid var(--line)}
+.tabs button{background:none;border:0;padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1.5px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--r)}
+
+/* buttons */
+.btn{border:0;background:var(--r);color:var(--on-r);padding:12px 20px;border-radius:10px;font-weight:700;display:inline-flex;gap:8px;align-items:center;justify-content:center}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.sm{padding:7px 12px;font-size:.88rem}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* mode picker */
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.mode{text-align:left;padding:16px;border:1.5px solid var(--line);background:var(--surface);border-radius:14px;display:flex;flex-direction:column;gap:4px}
+.mode[aria-pressed="true"]{border-color:var(--r);box-shadow:inset 0 0 0 1.5px var(--r)}
+.mode b{font-size:1.15rem}
+.mode span{color:var(--muted);font-size:.9rem}
+.opts-row{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center}
+.check{display:flex;gap:8px;align-items:center;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--r)}
+.intro{font-family:var(--f-t);font-size:1.15rem;max-width:62ch;color:var(--ink)}
+
+/* plate (photo) */
+.plate{position:relative;isolation:isolate;display:flex;justify-content:center;align-items:center;border-radius:14px;overflow:hidden;background:var(--r-soft);border:1.5px solid var(--line)}
+.plate img.fg{position:relative;display:block;width:100%;height:auto;max-height:min(66vh,520px);object-fit:contain}
+.tile .plate,.grid .bcard .plate{aspect-ratio:4/3}
+.tile .plate img.fg,.grid .bcard .plate img.fg{height:100%;max-height:none}
+.plate img.bgimg{position:absolute;left:-12%;top:-12%;width:124%!important;height:124%!important;max-height:none!important;object-fit:cover;filter:blur(20px) brightness(.85) saturate(1.15);z-index:-1}
+main{display:block;overflow-x:clip}
+@keyframes outL{to{transform:translateX(-105%);opacity:0}}
+@keyframes inR{from{transform:translateX(105%);opacity:0}to{transform:none;opacity:1}}
+.slide-out{animation:outL .28s cubic-bezier(.5,0,.75,0) forwards}
+.slide-in{animation:inR .34s cubic-bezier(.2,.7,.2,1)}
+.plate.locked img.fg{filter:brightness(.25) blur(7px) saturate(.4);transform:scale(1.1)}
+.plate.locked img.bgimg{filter:blur(20px) brightness(.25) saturate(.4)}
+.plate-btn{position:relative;cursor:pointer;border-radius:14px}
+.start{display:flex;flex-direction:column;gap:18px}
+.strip{overflow:hidden;pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
+.strip img{-webkit-user-drag:none;user-select:none}
+.strip-track{display:flex;gap:10px;width:max-content;padding-right:10px;animation:marquee var(--dur,240s) linear infinite}
+@keyframes marquee{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.strip-track{animation:none}}
+.strip-item{flex:none;width:min(190px,46vw)}
+.strip .plate{aspect-ratio:4/3}
+.strip .plate img.fg{height:100%;max-height:none}
+.btn.big{padding:15px 24px;font-size:1.05rem}
+.timer{display:flex;align-items:center;gap:12px}
+.timer .bar{height:8px}
+.timer .bar i{transition:none}
+.timer .mono{min-width:4.2em;text-align:right;font-variant-numeric:tabular-nums}
+.took{font-family:var(--f-m);font-size:.9rem;color:var(--muted);font-weight:500;margin-top:2px}
+.credits-box{display:flex;flex-direction:column;gap:2px;padding-top:8px;border-top:1px solid var(--line)}
+.credit{font-size:.72rem;color:var(--muted);margin-top:6px;line-height:1.35}
+.credit a{color:var(--muted)}
+details.credits{font-size:.82rem;color:var(--muted)}
+details.credits summary{cursor:pointer;font-weight:600}
+details.credits ul{padding-left:1.1em;margin:8px 0 0}
+details.credits a{color:var(--r)}
+
+/* HUD */
+.hud{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bar{flex:1 1 120px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--r);transition:width .3s}
+.stat{font-variant-numeric:tabular-nums;font-weight:700}
+.streak{color:var(--gold)}
+
+/* question */
+.q{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.clue{max-width:520px;width:100%;justify-self:center;display:flex;flex-direction:column;gap:10px}
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:480px){.options{grid-template-columns:minmax(0,1fr)}}
+.opt{display:flex;gap:10px;align-items:center;text-align:left;padding:14px;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;font-weight:600;min-width:0}
+.opt kbd{font-family:var(--f-m);font-size:.72rem;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+.opt:hover:not(:disabled){border-color:var(--r)}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 16%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--surface))}
+.opt:disabled{cursor:default}
+
+/* canvases */
+.playbtn.on{background:var(--ink);color:var(--bg)}
+
+/* bird card */
+.bcard{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:14px}
+.bcard.wide{grid-template-columns:minmax(0,260px) minmax(0,1fr)}
+@media (max-width:640px){.bcard.wide{grid-template-columns:minmax(0,1fr)}}
+.bcard h3{margin:0;font-size:1.35rem;line-height:1.15;letter-spacing:-.01em}
+.bcard .body{display:flex;flex-direction:column;gap:10px;min-width:0}
+.mn{font-family:var(--f-t);font-size:1.12rem;line-height:1.3}
+.mn q{quotes:"\201C" "\201D";font-style:italic}
+.cues{margin:0;padding-left:1.1em;color:var(--ink);font-size:.93rem;display:flex;flex-direction:column;gap:3px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px}
+.links{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.88rem}
+.links a{color:var(--r);font-weight:600}
+.reveal{border-color:var(--r)}
+.verdict{font-weight:800;font-size:1.05rem}
+.verdict.ok{color:var(--good)} .verdict.no{color:var(--bad)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
+
+/* life list */
+.life{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr));gap:12px}
+.tile{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.tile b{font-size:.95rem;line-height:1.2}
+.tile.locked .plate{filter:brightness(.9)}
+.tile .lock{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-m);font-size:2.4rem;color:var(--muted)}
+.prog{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.prog b{font-size:2.2rem;letter-spacing:-.03em}
+
+/* results */
+.score{font-size:clamp(3rem,14vw,5rem);font-weight:800;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:5px 12px;border-radius:99px;background:var(--r-soft);font-weight:600;font-size:.9rem}
+.note{font-size:.85rem;color:var(--muted);max-width:70ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<style>html{color-scheme:light}body{margin:0}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){color-scheme:dark}}:root[data-theme="dark"]{color-scheme:dark}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <header class="top">
+    <div class="brand">
+      <div class="mono" id="kicker"></div>
+      <h1>Dawn <em>Chorus</em></h1>
+    </div>
+    <div class="regions" id="regions" role="group" aria-label="Region"></div>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="main"></main>
+  <details class="credits" id="credits"></details>
+  <p class="note">Photos come from Wikimedia Commons and recordings from xeno-canto, all openly licensed and credited on each card. Each recording is a trimmed clip of a longer field recording.</p>
+</div>
+
+<script>
+/* ---------- bird data ---------- */
+const BIRDS=[
+/* ===== WISCONSIN ===== */
+{id:'norcar',region:'wi',name:'Northern Cardinal',sci:'Cardinalis cardinalis',size:'8–9 in',habitat:'Thickets, backyards and forest edges, all year',
+ mn:'cheer-cheer-cheer, birdie-birdie-birdie',
+ cues:['Male is red all over with a black face mask','Tall pointed crest and a thick orange bill','Sings from high exposed perches, even in winter'],
+},
+{id:'bkcchi',region:'wi',name:'Black-capped Chickadee',sci:'Poecile atricapillus',size:'5–6 in',habitat:'Mixed woods, feeders, thickets',
+ mn:'fee-bee (the call is chick-a-dee-dee-dee)',
+ cues:['Black cap and bib with a bright white cheek','Tiny, round, gray back and buff flanks','Acrobatic, often hangs upside down on twigs'],
+},
+{id:'amerob',region:'wi',name:'American Robin',sci:'Turdus migratorius',size:'9–11 in',habitat:'Lawns, parks, woodland edges',
+ mn:'cheerily, cheer-up, cheerio',
+ cues:['Brick-orange breast on a dark gray-brown back','Yellow bill and a broken white eye-ring','Hops across lawns, head tilted, listening for worms'],
+},
+{id:'blujay',region:'wi',name:'Blue Jay',sci:'Cyanocitta cristata',size:'11–12 in',habitat:'Oak woods, suburbs, feeders',
+ mn:'JAY! JAY! (a harsh scream, plus bell-like notes)',
+ cues:['Blue crest, back and tail with white-and-black barring','Black necklace on a pale gray chest','Loud and bold; can mimic hawk calls'],
+},
+{id:'amegfi',region:'wi',name:'American Goldfinch',sci:'Spinus tristis',size:'4–5 in',habitat:'Weedy fields, thistle, feeders',
+ mn:'per-chic-o-ree, and in flight po-ta-to-chip',
+ cues:['Breeding male is lemon yellow with a black forehead','Black wings with white bars','Rolling, bounding flight with a call on each dip'],
+},
+{id:'rewbla',region:'wi',name:'Red-winged Blackbird',sci:'Agelaius phoeniceus',size:'7–9 in',habitat:'Cattail marshes and wet ditches',
+ mn:'conk-la-REEEE',
+ cues:['Male is glossy black with red-and-yellow shoulder patches','Clings to cattail stalks above the water','Males fiercely defend their territory'],
+},
+{id:'comloo',region:'wi',name:'Common Loon',sci:'Gavia immer',size:'28–36 in',habitat:'Clear northern lakes, summer',
+ mn:'a haunting wail and a wavering, laughing tremolo',
+ cues:['Black head with a white necklace and checkered back','Red eye and dagger bill; sits low in the water','Dives deep and long to catch fish'],
+},
+{id:'ovenbi',region:'wi',name:'Ovenbird',sci:'Seiurus aurocapilla',size:'5–6 in',habitat:'Mature hardwood forest floor',
+ mn:'TEA-cher, TEA-cher, TEA-cher (growing louder)',
+ cues:['Orange crown bordered by black stripes','Streaked breast and pink legs','Walks the forest floor; builds a domed, oven-like nest'],
+},
+{id:'sancra',region:'wi',name:'Sandhill Crane',sci:'Antigone canadensis',size:'34–48 in tall',habitat:'Marshes, wet meadows, farm fields',
+ mn:'garoo-oo-oo, a rolling, rattling bugle',
+ cues:['Tall gray bird with a red forehead patch','Long straight bill; neck stretched out in flight','Pairs dance, bow and leap'],
+},
+{id:'brdowl',region:'wi',name:'Barred Owl',sci:'Strix varia',size:'17–20 in',habitat:'Wooded swamps and big woods',
+ mn:'who cooks for you, who cooks for you-all',
+ cues:['Round head with no ear tufts and dark brown eyes','Brown and white barring across the chest','Calls by day as well as at night'],
+},
+{id:'balori',region:'wi',name:'Baltimore Oriole',sci:'Icterus galbula',size:'7–8 in',habitat:'Tall deciduous trees, river edges',
+ mn:'rich, flute-like whistled phrases',
+ cues:['Male is flame orange below with a black hood and back','White bar on a black wing','Weaves a hanging, sock-shaped nest'],
+},
+{id:'moudov',region:'wi',name:'Mourning Dove',sci:'Zenaida macroura',size:'9–13 in',habitat:'Fields, wires, backyards',
+ mn:'coo-OO-oo-oo-oo',
+ cues:['Plain buff-gray with black spots on the wings','Long, pointed tail with white edges','Wings whistle when it takes off'],
+},
+
+/* ===== PHOENIX, ARIZONA ===== */
+{id:'gamqua',region:'az',name:"Gambel's Quail",sci:'Callipepla gambelii',size:'10–11 in',habitat:'Desert washes and mesquite thickets',
+ mn:'chi-CA-go (the Phoenix quail!)',
+ cues:['Curled black teardrop plume on the forehead','Black face outlined in white, rusty flanks','Runs in groups called coveys'],
+},
+{id:'cacwre',region:'az',name:'Cactus Wren',sci:'Campylorhynchus brunneicapillus',size:'7–9 in',habitat:'Saguaro, cholla and thorny scrub',
+ mn:'chug-chug-chug, like a car that will not start',
+ cues:['Largest US wren, with a bold white eyebrow','Brown back flecked with white; spotted breast','Arizona state bird'],
+},
+{id:'greroa',region:'az',name:'Greater Roadrunner',sci:'Geococcyx californianus',size:'20–24 in',habitat:'Open desert and scrub',
+ mn:'a slow series of descending coos (it also clatters its bill)',
+ cues:['Long tail, shaggy crest and long legs','Streaked brown-and-white body','Runs fast and eats lizards and snakes'],
+},
+{id:'gilwoo',region:'az',name:'Gila Woodpecker',sci:'Melanerpes uropygialis',size:'9–10 in',habitat:'Saguaros and desert washes',
+ mn:'pik-pik-pik, then a rolling churr',
+ cues:['Zebra-barred black-and-white back','Tan head and belly; male wears a small red cap','Carves nest holes in saguaros'],
+},
+{id:'cubthr',region:'az',name:'Curve-billed Thrasher',sci:'Toxostoma curvirostre',size:'9–11 in',habitat:'Cholla, prickly pear, desert yards',
+ mn:'whit-WHEET! (a sharp, rising two-note call)',
+ cues:['Long, downcurved black bill','Gray-brown with a faintly spotted breast','Orange eye; sings from the tops of cholla'],
+},
+{id:'verdin',region:'az',name:'Verdin',sci:'Auriparus flaviceps',size:'4–4.5 in',habitat:'Mesquite and desert scrub',
+ mn:'tsee-tsee-tsee, thin and plaintive',
+ cues:['Tiny gray bird with a bright yellow face','Chestnut patch on the shoulder','Builds ball-shaped nests from thorny twigs'],
+},
+{id:'verfly',region:'az',name:'Vermilion Flycatcher',sci:'Pyrocephalus obscurus',size:'5–6 in',habitat:'Streamsides, ponds, golf courses',
+ mn:'pit-pit-pit-a-ZEEEEE, a rising display song',
+ cues:['Male is blazing red with a dark brown mask and back','Darts out from a perch to catch insects','Fluffs its crest during display flights'],
+},
+{id:'coshum',region:'az',name:"Costa's Hummingbird",sci:'Calypte costae',size:'3–3.5 in',habitat:'Desert washes, ocotillo, feeders',
+ mn:'a thin, high whistle that rises then plunges',
+ cues:['Male has a violet crown and gorget that flares to the sides','Tiny with a short tail and a long, thin bill','Visits ocotillo and chuparosa flowers'],
+},
+{id:'phaino',region:'az',name:'Phainopepla',sci:'Phainopepla nitens',size:'7–8 in',habitat:'Mesquite and mistletoe thickets',
+ mn:'a soft, liquid wurp? that rises at the end',
+ cues:['Slender, glossy black bird with a shaggy crest','Red eye','Lives on mistletoe berries'],
+},
+{id:'grhowl',region:'az',name:'Great Horned Owl',sci:'Bubo virginianus',size:'18–25 in',habitat:'Saguaros, cliffs, cottonwoods',
+ mn:'hoo, hu-HOOO, hoo, hoo',
+ cues:['Big owl with prominent ear tufts','Yellow eyes set in a rusty face; white throat patch','Hoots at dusk from saguaros and ledges'],
+},
+{id:'whwdov',region:'az',name:'White-winged Dove',sci:'Zenaida asiatica',size:'11–12 in',habitat:'Saguaro, palo verde, backyards',
+ mn:'who-cooks-for-YOU (the same words as the Barred Owl!)',
+ cues:['White band along the folded wing','Blue eye-ring around an orange-red eye','Feeds on saguaro fruit and nectar'],
+},
+{id:'bktspa',region:'az',name:'Black-throated Sparrow',sci:'Amphispiza bilineata',size:'5–5.5 in',habitat:'Dry desert scrub and rocky slopes',
+ mn:'two or three clear notes, then a tinkling trill',
+ cues:['Black bib with a bold white eyebrow and cheek stripe','Plain gray-brown back, white belly','Thrives in dry scrub, often far from water'],
+},
+{id:"easblu",region:"wi",name:"Eastern Bluebird",sci:"Sialia sialis",size:"6.5–8 in",habitat:"Open fields, farms and fence lines",
+ mn:"a soft, warbling cheer-cheerful-charmer",
+ cues:["Male is deep blue above with a rusty-orange breast","Perches on wires and fence posts, then drops to catch insects","Nests in boxes and old woodpecker holes"],
+},
+{id:"indbun",region:"wi",name:"Indigo Bunting",sci:"Passerina cyanea",size:"4.5–5.5 in",habitat:"Brushy edges and power-line cuts",
+ mn:"sweet-sweet, chew-chew, sweet-sweet (phrases sung in pairs)",
+ cues:["Male is blue all over, deepest on the head","Sings from the tops of shrubs and wires all summer","Looks black in poor light; short, thick bill"],
+},
+{id:"scatan",region:"wi",name:"Scarlet Tanager",sci:"Piranga olivacea",size:"6.5–7.5 in",habitat:"Tall oak and maple woods",
+ mn:"chick-burr, a hoarse, robin-like phrase",
+ cues:["Male is brilliant red with jet-black wings and tail","Stays high in the canopy: easy to hear, hard to see","Female is yellow-green with darker wings"],
+},
+{id:"robgro",region:"wi",name:"Rose-breasted Grosbeak",sci:"Pheucticus ludovicianus",size:"7–8.5 in",habitat:"Woodland edges and mature second growth",
+ mn:"a rich, rolling song, like a robin that took singing lessons",
+ cues:["Male has a rose-red triangle on a white chest","Black head and back with white wing patches","Big, pale, cone-shaped bill"],
+},
+{id:"easmea",region:"wi",name:"Eastern Meadowlark",sci:"Sturnella magna",size:"8.5–10 in",habitat:"Grasslands, hayfields and pastures",
+ mn:"see-you, see-yeeer (a clear, slurred whistle)",
+ cues:["Bright yellow chest with a black V","Long pointed bill and short tail with white sides","Sings from fence posts and low perches"],
+},
+{id:"sonspa",region:"wi",name:"Song Sparrow",sci:"Melospiza melodia",size:"5–7 in",habitat:"Brushy wetland edges, hedgerows and yards",
+ mn:"maids-maids-maids, put on your tea-kettle-ettle-ettle",
+ cues:["Streaked breast with a dark central spot","Rusty-brown crown and eye stripe","Pumps its tail as it flies"],
+},
+{id:"comyel",region:"wi",name:"Common Yellowthroat",sci:"Geothlypis trichas",size:"4–5 in",habitat:"Marshes, wet meadows and tangles",
+ mn:"wichity-wichity-wichity",
+ cues:["Male wears a black bandit mask over a yellow throat","Olive back; skulks in low cover","Pops up to sing, then drops back in"],
+},
+{id:"yelwar",region:"wi",name:"Yellow Warbler",sci:"Setophaga petechia",size:"4.5–5.5 in",habitat:"Willows and streamside thickets",
+ mn:"sweet-sweet-sweet, I’m so sweet",
+ cues:["All yellow, with red-brown streaks on the male’s chest","Dark eye stands out on a plain face","Rebuilds its nest over cowbird eggs"],
+},
+{id:"chswar",region:"wi",name:"Chestnut-sided Warbler",sci:"Setophaga pensylvanica",size:"4.5–5.5 in",habitat:"Young forest and brushy clearings",
+ mn:"pleased-pleased-pleased to MEETcha",
+ cues:["Yellow cap and chestnut flanks","Black eye line and white underparts","Holds its tail cocked up while feeding"],
+},
+{id:"reevir",region:"wi",name:"Red-eyed Vireo",sci:"Vireo olivaceus",size:"5–6.5 in",habitat:"Deciduous forest canopy",
+ mn:"here I am, where are you, up here (repeated all day)",
+ cues:["Gray cap with a white eyebrow bordered in black","Red eye and olive back","Sings all day long, even in summer heat"],
+},
+{id:"woothr",region:"wi",name:"Wood Thrush",sci:"Hylocichla mustelina",size:"7.5–8.5 in",habitat:"Moist, shady hardwood forest",
+ mn:"ee-oh-lay, a flute-like song that ends in a trill",
+ cues:["Cinnamon back and bold black spots on a white chest","Large dark eyes with a white eye-ring","Can sing two notes at once"],
+},
+{id:"tuftit",region:"wi",name:"Tufted Titmouse",sci:"Baeolophus bicolor",size:"5.5–6.5 in",habitat:"Deciduous woods and feeders",
+ mn:"peter-peter-peter",
+ cues:["Gray crest, big black eye and rusty flanks","Black patch just above the bill","Takes one sunflower seed at a time from feeders"],
+},
+{id:"wbnuth",region:"wi",name:"White-breasted Nuthatch",sci:"Sitta carolinensis",size:"5–5.5 in",habitat:"Mature woods and feeders",
+ mn:"yank-yank-yank, a nasal, tin-horn call",
+ cues:["Creeps down tree trunks headfirst","Black cap, white face and chest, blue-gray back","Wedges seeds into bark to crack them"],
+},
+{id:"dowwoo",region:"wi",name:"Downy Woodpecker",sci:"Dryobates pubescens",size:"5.5–6.5 in",habitat:"Woods, orchards and suburban feeders",
+ mn:"a whinny of rapid, descending notes",
+ cues:["Tiny woodpecker with a white stripe down the back","Short bill, about a third the length of the head","Male has a small red patch on the back of the head"],
+},
+{id:"pilwoo",region:"wi",name:"Pileated Woodpecker",sci:"Dryocopus pileatus",size:"16–19 in",habitat:"Large mature forest",
+ mn:"loud kuk-kuk-kuk-kuk, like a jungle bird",
+ cues:["Crow-sized with a flaming red crest","Chisels big rectangular holes in dead trees","White stripe down a black neck"],
+},
+{id:"norfli",region:"wi",name:"Northern Flicker",sci:"Colaptes auratus",size:"11–12 in",habitat:"Open woods, lawns and forest edges",
+ mn:"wick-a-wick-a-wick-a, plus a loud klee-yer",
+ cues:["Brown, barred back and a black bib","White rump flashes in flight","Often feeds on ants on the ground"],
+},
+{id:"gracat",region:"wi",name:"Gray Catbird",sci:"Dumetella carolinensis",size:"8–9.5 in",habitat:"Dense shrubs and thickets",
+ mn:"a long, jumbled medley of squeaks and mews, including a cat-like meow",
+ cues:["Slate gray all over with a black cap","Rusty patch under the tail","Mimics other birds, but rarely repeats a phrase"],
+},
+{id:"houwre",region:"wi",name:"House Wren",sci:"Troglodytes aedon",size:"4.5–5 in",habitat:"Yards, woodland edges and nest boxes",
+ mn:"a bubbling, rattling burst of notes that rises and falls",
+ cues:["Small, plain brown wren with faint barring on wings and tail","Tail often cocked up","Stuffs twigs into nest boxes, even ones it won’t use"],
+},
+{id:"easpho",region:"wi",name:"Eastern Phoebe",sci:"Sayornis phoebe",size:"5.5–7 in",habitat:"Bridges, barns and streamsides",
+ mn:"fee-bee, fee-bee, a hoarse, burry two-note song",
+ cues:["Dark head and a plain gray-brown back with no wing bars","Wags its tail up and down when perched","Builds a mud-and-moss nest under eaves and bridges"],
+},
+{id:"cedwax",region:"wi",name:"Cedar Waxwing",sci:"Bombycilla cedrorum",size:"5.5–6.5 in",habitat:"Fruiting trees and woodland edges",
+ mn:"a high, thin, trilled sree-sree",
+ cues:["Smooth tan-brown with a black mask and a sleek crest","Yellow band at the tail tip; red, wax-like wing tips","Travels in flocks and passes berries down a line"],
+},
+{id:"amecro",region:"wi",name:"American Crow",sci:"Corvus brachyrhynchos",size:"16–21 in",habitat:"Fields, towns and woodlands",
+ mn:"caw, caw, caw",
+ cues:["All black with a thick bill and a fanned tail","Walks on the ground rather than hopping","Lives in family groups and mobs owls and hawks"],
+},
+{id:"cangoo",region:"wi",name:"Canada Goose",sci:"Branta canadensis",size:"30–43 in",habitat:"Lakes, ponds, parks and fields",
+ mn:"honk! ha-honk! from flocks flying in a V",
+ cues:["Black head and neck with a white chinstrap","Brown body and a white undertail","Flies in V formation"],
+},
+{id:"grbher",region:"wi",name:"Great Blue Heron",sci:"Ardea herodias",size:"38–54 in",habitat:"Shorelines, marshes and slow rivers",
+ mn:"a harsh, prehistoric-sounding croak",
+ cues:["Very tall gray-blue wader with a long S-shaped neck","Dagger bill and long legs","Stands motionless, then spears fish"],
+},
+{id:"rethaw",region:"wi",name:"Red-tailed Hawk",sci:"Buteo jamaicensis",size:"18–26 in",habitat:"Open country with perches, highways",
+ mn:"a hoarse, descending kee-eeeer scream",
+ cues:["Brick-red tail on adults; pale chest with a dark belly band","Broad wings; soars in wide circles","Often perched along roadsides"],
+},
+{id:"belkin",region:"wi",name:"Belted Kingfisher",sci:"Megaceryle alcyon",size:"11–14 in",habitat:"Rivers, lakes and streams",
+ mn:"a loud, dry rattle as it flies",
+ cues:["Big head with a shaggy crest and a heavy bill","Blue-gray with a white collar and a belt band","Hovers over water, then dives for fish"],
+},
+{id:"rthumm",region:"wi",name:"Ruby-throated Hummingbird",sci:"Archilochus colubris",size:"2.8–3.5 in",habitat:"Gardens, woodland edges and flowers",
+ mn:"high, squeaky chips over the hum of its wings",
+ cues:["Male has a glittering ruby-red throat","Metallic green back and tiny size","Wings beat about 50 times a second"],
+},
+{id:"chisp",region:"wi",name:"Chipping Sparrow",sci:"Spizella passerina",size:"4.5–5.8 in",habitat:"Lawns, open woods and parks",
+ mn:"a dry, mechanical chip-chip-chip trill on one pitch",
+ cues:["Bright rusty-red cap and a black line through the eye","Clean gray chest and a white eyebrow","Feeds on lawns and driveways in small flocks"],
+},
+{id:"whtspa",region:"wi",name:"White-throated Sparrow",sci:"Zonotrichia albicollis",size:"6–7 in",habitat:"Northern forest and brushy edges",
+ mn:"Old Sam Peabody, Peabody, Peabody",
+ cues:["Crisp white throat with a yellow patch between eye and bill","Striped black-and-white or tan-and-brown head","Sings its clear whistle across northern Wisconsin in summer"],
+},
+{id:"killde",region:"wi",name:"Killdeer",sci:"Charadrius vociferus",size:"9–11 in",habitat:"Fields, gravel lots and shorelines",
+ mn:"kill-deer, kill-deer, kill-dee-dee-dee",
+ cues:["Two black bands across a white chest","Orange rump seen in flight","Fakes a broken wing to lead predators from its nest"],
+},
+{id:"wiltur",region:"wi",name:"Wild Turkey",sci:"Meleagris gallopavo",size:"37–46 in",habitat:"Woods and field edges",
+ mn:"gobble-obble-obble from males; clucks and yelps from hens",
+ cues:["Huge dark bird with a bare blue-gray head","Males fan their tails and strut in spring","Roosts in trees at night"],
+},
+{id:"browth",region:"wi",name:"Brown Thrasher",sci:"Toxostoma rufum",size:"9–12 in",habitat:"Dense brush and thickets",
+ mn:"phrases sung in pairs: drop-it, drop-it, plant-it, plant-it",
+ cues:["Rusty brown above with a heavily streaked chest","Long tail and a long, slightly curved bill","Yellow eye"],
+},
+{id:"normoc",region:"az",name:"Northern Mockingbird",sci:"Mimus polyglottos",size:"8–10 in",habitat:"Yards, parks and desert scrub",
+ mn:"a long string of phrases, each repeated three or more times",
+ cues:["Gray with white wing patches and white outer tail feathers","Slender and long-tailed","Mimics other birds, and sings at night"],
+},
+{id:"annhum",region:"az",name:"Anna's Hummingbird",sci:"Calypte anna",size:"3.5–4.3 in",habitat:"Gardens, desert washes and feeders",
+ mn:"a scratchy, squeaky song, plus a loud pop at the bottom of a display dive",
+ cues:["Male has a rose-red crown and throat","Gray-green below; stocky for a hummingbird","Stays in the Phoenix area all year"],
+},
+{id:"houfin",region:"az",name:"House Finch",sci:"Haemorhous mexicanus",size:"5–5.5 in",habitat:"Towns, backyards and desert edges",
+ mn:"a bright, jumbled warble that ends in a wheer",
+ cues:["Male has a red head and chest with brown streaked sides","Heavy, rounded bill","Common at feeders"],
+},
+{id:"abetow",region:"az",name:"Abert's Towhee",sci:"Melozone aberti",size:"9–10 in",habitat:"Streamside thickets, desert washes and yards",
+ mn:"peek!, a sharp, metallic call, and a fast series of chips",
+ cues:["Plain cinnamon-brown with a black mask around the bill","Pale bill and a rusty undertail","Scratches in the leaf litter under mesquite and cottonwood"],
+},
+{id:"lesgol",region:"az",name:"Lesser Goldfinch",sci:"Spinus psaltria",size:"3.5–4.5 in",habitat:"Open woods, gardens and weedy fields",
+ mn:"a sweet, cheerful jumble of notes that mimics other birds",
+ cues:["Male has a black cap and a green or black back","Bright yellow below","White patches in the wings and tail"],
+},
+{id:"btgnat",region:"az",name:"Black-tailed Gnatcatcher",sci:"Polioptila melanura",size:"4–4.5 in",habitat:"Desert washes, mesquite and creosote scrub",
+ mn:"a thin, scolding, nasal mew, like a kitten",
+ cues:["Tiny gray bird with a long, black, white-edged tail","Male has a black cap in breeding season","Constantly flicks and fans its tail"],
+},
+{id:"lucwar",region:"az",name:"Lucy's Warbler",sci:"Leiothlypis luciae",size:"4–4.5 in",habitat:"Mesquite bosques and desert washes",
+ mn:"a bright, fast, rolling trill that rises and falls",
+ cues:["Tiny pale gray warbler with a rusty rump","Chestnut patch on the crown","One of the few warblers that nests in tree cavities"],
+},
+{id:"ladwoo",region:"az",name:"Ladder-backed Woodpecker",sci:"Dryobates scalaris",size:"6–7 in",habitat:"Desert scrub, cholla and mesquite",
+ mn:"a rattling, descending trill, plus a sharp pik",
+ cues:["Back barred like the rungs of a ladder","Spotted chest and bold stripes on the face","Male has a red cap"],
+},
+{id:"gilfli",region:"az",name:"Gilded Flicker",sci:"Colaptes chrysoides",size:"10–12 in",habitat:"Saguaro forest and desert riverbeds",
+ mn:"a sharp klee-yer and a loud, rolling flicker call",
+ cues:["Large barred woodpecker with yellow under the wings and tail","Male has a red whisker mark","Nests in holes in saguaro cacti"],
+},
+{id:"wesking",region:"az",name:"Western Kingbird",sci:"Tyrannus verticalis",size:"8–9 in",habitat:"Open country, ranches and parks",
+ mn:"a high, sharp, chattering whit-ker-whit",
+ cues:["Gray head and chest with a bright yellow belly","Black tail with white outer edges","Perches on wires and fences, then sallies out for insects"],
+},
+{id:"saypho",region:"az",name:"Say's Phoebe",sci:"Sayornis saya",size:"6.5–7.5 in",habitat:"Open desert, ranches and rocky areas",
+ mn:"a plaintive, whistled pee-ur",
+ cues:["Gray-brown back with a cinnamon-orange belly","Black tail","Pumps its tail and hovers to catch insects"],
+},
+{id:"astfly",region:"az",name:"Ash-throated Flycatcher",sci:"Myiarchus cinerascens",size:"7–8.5 in",habitat:"Mesquite, saguaro and desert scrub",
+ mn:"a rough, rolling ka-brick, ka-brick",
+ cues:["Pale gray throat and chest with a soft yellow belly","Rusty edges on the wing feathers and tail","Nests in cavities, including saguaro holes"],
+},
+{id:"blkpho",region:"az",name:"Black Phoebe",sci:"Sayornis nigricans",size:"6–7 in",habitat:"Streams, ponds and canals",
+ mn:"a thin, whistled fee-bee, fee-bee that rises then falls",
+ cues:["Black head and chest with a bright white belly","Always near water","Wags its tail on a low rock or fence"],
+},
+{id:"harhaw",region:"az",name:"Harris's Hawk",sci:"Parabuteo unicinctus",size:"18–23 in",habitat:"Saguaro desert and mesquite",
+ mn:"a long, harsh, raspy scream",
+ cues:["Dark brown with chestnut shoulders and thighs","White at the base and tip of the tail","Hunts in family groups"],
+},
+{id:"comrav",region:"az",name:"Common Raven",sci:"Corvus corax",size:"22–27 in",habitat:"Mountains, desert and cities",
+ mn:"a deep croak, gronk, and many other sounds",
+ cues:["Large black bird with a thick bill and a shaggy throat","Wedge-shaped tail in flight","Soars and tumbles in the air"],
+},
+{id:"eucdov",region:"az",name:"Eurasian Collared-Dove",sci:"Streptopelia decaocto",size:"11–13 in",habitat:"Towns, yards and farms",
+ mn:"coo-COO-coo, repeated",
+ cues:["Pale gray-tan with a thin black half-collar at the nape","Square-tipped tail with white corners","Introduced, and now widespread"],
+},
+{id:"incdov",region:"az",name:"Inca Dove",sci:"Columbina inca",size:"7–8.5 in",habitat:"Yards, parks and desert towns",
+ mn:"no-hope, no-hope",
+ cues:["Small dove whose feathers look scaly","Long, square tail with white edges","Rusty wing patches show in flight"],
+},
+{id:"bewwre",region:"az",name:"Bewick's Wren",sci:"Thryomanes bewickii",size:"4.5–5.5 in",habitat:"Desert scrub, brush and canyons",
+ mn:"a high, buzzy start followed by a faster trill",
+ cues:["Long white eyebrow and a plain brown back","Long tail that flicks, with white corners","Forages in thickets"],
+},
+{id:"canwre",region:"az",name:"Canyon Wren",sci:"Catherpes mexicanus",size:"4.5–5.7 in",habitat:"Cliffs, canyons and rocky slopes",
+ mn:"a cascade of clear, descending notes",
+ cues:["White throat and chest with a rusty-brown belly","Long, thin bill","Clings to rock faces and crevices"],
+},
+{id:"rocwre",region:"az",name:"Rock Wren",sci:"Salpinctes obsoletus",size:"5–6 in",habitat:"Rocky slopes, boulder fields and washes",
+ mn:"a mix of buzzy trills and repeated notes",
+ cues:["Pale gray-brown with fine speckles and a buffy rump","Bobs up and down on rocks","Lays a path of pebbles at its nest entrance"],
+},
+{id:"hoodor",region:"az",name:"Hooded Oriole",sci:"Icterus cucullatus",size:"7–8 in",habitat:"Palm trees, yards and cottonwood groves",
+ mn:"a loose, whistled warble with chatters and whinnies",
+ cues:["Male is bright orange-yellow with a black bib and back","Slim, curved bill","Stitches its nest to the underside of palm fronds"],
+},
+{id:"bulori",region:"az",name:"Bullock's Oriole",sci:"Icterus bullockii",size:"6.5–7.5 in",habitat:"Cottonwoods and riverside trees",
+ mn:"a series of chatters and whistles with a rattle",
+ cues:["Male is orange with a black cap, eye line and bib","Large white wing patch","Hangs a woven pouch nest from branch tips"],
+},
+{id:"burowl",region:"az",name:"Burrowing Owl",sci:"Athene cunicularia",size:"7.5–10 in",habitat:"Open ground, golf courses and canal banks",
+ mn:"a soft, rising coo-hoo, plus a rattling chatter",
+ cues:["Small, long-legged owl that stands on the ground","Yellow eyes and bold white eyebrows","Nests in burrows dug by other animals"],
+},
+{id:"elfowl",region:"az",name:"Elf Owl",sci:"Micrathene whitneyi",size:"5–6 in",habitat:"Saguaro desert and wooded canyons",
+ mn:"a rapid, high, yipping chatter, like a puppy",
+ cues:["The world’s smallest owl, about the size of a sparrow","Pale eyebrows and a streaked, buffy chest","Nests in old woodpecker holes in saguaros"],
+},
+{id:"coohaw",region:"az",name:"Cooper's Hawk",sci:"Astur cooperii",size:"14–20 in",habitat:"Woodlands, suburbs and towns",
+ mn:"a fast, rough kak-kak-kak-kak",
+ cues:["Long, rounded, banded tail","Slate-gray back and a rufous-barred chest","Hunts birds, often at feeders"],
+},
+{id:"lesnig",region:"az",name:"Lesser Nighthawk",sci:"Chordeiles acutipennis",size:"8–9.5 in",habitat:"Open desert at dusk",
+ mn:"a soft, steady, trilled purr, like a distant tractor",
+ cues:["Long pointed wings with a white bar","Mottled gray-brown; flies low at dusk","Rests on the ground in daylight"],
+},
+{id:"pyrrhu",region:"az",name:"Pyrrhuloxia",sci:"Cardinalis sinuatus",size:"8–9 in",habitat:"Mesquite and desert scrub",
+ mn:"a thin, whistled what-cheer, what-cheer, and a sharp chip",
+ cues:["Gray with a red wash on the face, crest and chest","Stubby, parrot-like yellow bill","Looks like a gray cardinal"],
+},
+{id:"brcfly",region:"az",name:"Brown-crested Flycatcher",sci:"Myiarchus tyrannulus",size:"8.5–9.5 in",habitat:"Saguaro desert and wooded washes",
+ mn:"a hollow, sharp whit-whit, plus a rolling prrrt",
+ cues:["Larger than the Ash-throated, with a heavy, dark bill","Pale gray throat and a yellow belly","Rusty edges on the tail feathers"],
+},
+{id:"bkchum",region:"az",name:"Black-chinned Hummingbird",sci:"Archilochus alexandri",size:"3.2–3.7 in",habitat:"Washes, gardens and shady canyons",
+ mn:"a soft, high tsip over the hum of its wings",
+ cues:["Male has a black chin and throat above a violet band","Slender, slightly curved bill","Pumps its tail while it hovers"],
+},
+{id:"wesmea",region:"az",name:"Western Meadowlark",sci:"Sturnella neglecta",size:"8–11 in",habitat:"Open grassland, fields and golf courses in winter",
+ mn:"a rich, flute-like, gurgling song that tumbles downward",
+ cues:["Yellow chest with a bold black V","Streaked brown back and white outer tail","Sings from fence posts"],
+},
+];
+const STATES=[['al','Alabama'],['ak','Alaska'],['az','Arizona'],['ar','Arkansas'],['ca','California'],['co','Colorado'],['ct','Connecticut'],['de','Delaware'],['fl','Florida'],['ga','Georgia'],['hi','Hawaii'],['id','Idaho'],['il','Illinois'],['in','Indiana'],['ia','Iowa'],['ks','Kansas'],['ky','Kentucky'],['la','Louisiana'],['me','Maine'],['md','Maryland'],['ma','Massachusetts'],['mi','Michigan'],['mn','Minnesota'],['ms','Mississippi'],['mo','Missouri'],['mt','Montana'],['ne','Nebraska'],['nv','Nevada'],['nh','New Hampshire'],['nj','New Jersey'],['nm','New Mexico'],['ny','New York'],['nc','North Carolina'],['nd','North Dakota'],['oh','Ohio'],['ok','Oklahoma'],['or','Oregon'],['pa','Pennsylvania'],['ri','Rhode Island'],['sc','South Carolina'],['sd','South Dakota'],['tn','Tennessee'],['tx','Texas'],['ut','Utah'],['vt','Vermont'],['va','Virginia'],['wa','Washington'],['wv','West Virginia'],['wi','Wisconsin'],['wy','Wyoming']];
+const REGIONS={};
+STATES.slice().sort((x,y)=>x[1].localeCompare(y[1])).forEach(([k,n])=>{REGIONS[k]={name:n,sub:'No birds yet'}});
+REGIONS.wi.sub='Northwoods, lakes, prairie';
+REGIONS.az.sub='Phoenix area, Sonoran Desert';
+const birdsIn=reg=>BIRDS.filter(b=>b.region===reg);
+const byId=id=>BIRDS.find(b=>b.id===id);
+/* Most common first, as I judged how widespread and abundant each bird is in the region. Ten levels follow this order. */
+const RANK={wi:["amerob", "bkcchi", "norcar", "amecro", "blujay", "rewbla", "amegfi", "moudov", "sonspa", "cangoo", "dowwoo", "wbnuth", "comyel", "gracat", "yelwar", "reevir", "balori", "easpho", "chisp", "cedwax", "houwre", "killde", "sancra", "grbher", "rethaw", "norfli", "rthumm", "browth", "easmea", "indbun", "tuftit", "belkin", "ovenbi", "comloo", "robgro", "easblu", "wiltur", "brdowl", "pilwoo", "whtspa", "chswar", "woothr", "scatan"],
+ az:["houfin", "whwdov", "gamqua", "normoc", "cubthr", "gilwoo", "annhum", "cacwre", "eucdov", "incdov", "abetow", "comrav", "blkpho", "saypho", "verdin", "lesgol", "coshum", "btgnat", "wesking", "ladwoo", "greroa", "phaino", "bewwre", "hoodor", "coohaw", "astfly", "gilfli", "bulori", "grhowl", "bktspa", "lucwar", "verfly", "harhaw", "bkchum", "wesmea", "canwre", "rocwre", "burowl", "brcfly", "pyrrhu", "lesnig", "elfowl"]};
+const LEVEL_SIZES={wi:[5,4,4,4,4,4,4,4,5,5],az:[5,4,4,4,4,4,4,4,4,5]};
+const LEVELS={};
+for(const reg of Object.keys(RANK)){let i=0;LEVELS[reg]=LEVEL_SIZES[reg].map(n=>{const ids=RANK[reg].slice(i,i+n);i+=n;return ids.map(byId)})}
+const ranked=reg=>(RANK[reg]||[]).map(byId);
+const levelOf=b=>LEVELS[b.region].findIndex(l=>l.includes(b))+1;
+const CLEAR_SHARE=.8;
+
+/* ---------- photos (Wikimedia Commons, credited) ---------- */
+const PHOTO={"norcar": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Male_northern_cardinal_in_Central_Park_%2852612%29.jpg"}, "bkcchi": {"a": "No machine-readable author provided. Mdf assumed (based on copyright claims).", "l": "CC BY-SA 3.0", "u": "http://creativecommons.org/licenses/by-sa/3.0/", "p": "https://commons.wikimedia.org/wiki/File:Poecile-atricapilla-001.jpg"}, "amerob": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:American_robin_%2871307%29.jpg"}, "blujay": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Blue_jay_in_PP_%2830960%29.jpg"}, "amegfi": {"a": "Rodney Campbell", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Carduelis_tristis_-Michigan%2C_USA_-male-8.jpg"}, "rewbla": {"a": "Chuck Homler, Focus On Wildlife", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Red-Winged_Blackbird.png"}, "comloo": {"a": "John Picken from Chicago, USA", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Gavia_immer_-Minocqua%2C_Wisconsin%2C_USA_-swimming-8.jpg"}, "ovenbi": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Ovenbird_%2890497%29.jpg"}, "sancra": {"a": "JeffreyGammon", "l": "CC BY 4.0", "u": "https://creativecommons.org/licenses/by/4.0", "p": "https://commons.wikimedia.org/wiki/File:Sandhill_Crane_JG.jpg"}, "brdowl": {"a": "Andy Reago & Chrissy McClarren", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Barred_Owl_%2833795815188%29.jpg"}, "balori": {"a": "TonyCastro", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Baltimore_Oriole-_dorsum.jpg"}, "moudov": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Mourning_dove_perched_%2861179%29.jpg"}, "gamqua": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Gambel%27s_Quail_Rockhound_State_Park.jpg"}, "cacwre": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Cactus_Wren_Sandia_Mountains.jpg"}, "greroa": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Greater_Roadrunner_Tingley_Beach.jpg"}, "gilwoo": {"a": "lwolfartist", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Gila_woodpecker_Paton_Center_for_Hummingbirds_4.11.22_DSC_7716.jpg"}, "cubthr": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Curve-billed_thrasher_Sandia_Mountains.jpg"}, "verdin": {"a": "Vickie J Anderson", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Verdin_5029_m.jpg"}, "verfly": {"a": "Henry", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Karmintyrann_%28Pyrocephalus_obscurus%29%2C_M%C3%A4nnchen_1.jpg"}, "coshum": {"a": "San Diego Zoo", "l": "Public domain", "u": "", "p": "https://commons.wikimedia.org/wiki/File:Hummingbird.jpg"}, "phaino": {"a": "Lip Kee Yap from Singapore, Republic of Singapore", "l": "CC BY-SA 2.0", "u": "https://creativecommons.org/licenses/by-sa/2.0", "p": "https://commons.wikimedia.org/wiki/File:Phainopepla_nitens_M_2.jpg"}, "grhowl": {"a": "Greg Hume", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:Bubo_virginianus_06.jpg"}, "whwdov": {"a": "SearchNet Media", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Zenaida_asiatica_-Tuscon_-Arizona_-USA_-8a.jpg"}, "bktspa": {"a": "Elaine R. Wilson", "l": "CC BY-SA 2.5", "u": "https://creativecommons.org/licenses/by-sa/2.5", "p": "https://commons.wikimedia.org/wiki/File:Amphispiza_bilineata.jpg"}, "easblu": {"a": "Sandysphotos2009", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Sialia_sialis_-Michigan%2C_USA_-pair-8c.jpg"}, "indbun": {"a": "Dan Pancamo", "l": "CC BY-SA 2.0", "u": "https://creativecommons.org/licenses/by-sa/2.0", "p": "https://commons.wikimedia.org/wiki/File:Indigo_Bunting_by_Dan_Pancamo_4.jpg"}, "scatan": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Scarlet_tanager_in_GWC_%2850867%29.jpg"}, "robgro": {"a": "John Harrison at https://www.flickr.com/photos/15512543@N04/", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:RosebreastedGrosbeak08.jpg"}, "easmea": {"a": "Charles J. Sharp", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Eastern_meadowlark_%28Sturnella_magna_mexicana%29_Orange_Walk.jpg"}, "sonspa": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Song_sparrow_in_Prospect_Park_%2893031%29.jpg"}, "comyel": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Common_yellowthroat_in_PP_%2814155%29.jpg"}, "yelwar": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Yellow_warbler_%2882905%29.jpg"}, "chswar": {"a": "Mdf", "l": "CC BY-SA 3.0", "u": "http://creativecommons.org/licenses/by-sa/3.0/", "p": "https://commons.wikimedia.org/wiki/File:Dendroica-pensylvanica-003.jpg"}, "reevir": {"a": "John Benson from Madison WI", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Vireo_olivaceus_-Madison_-Wisconsin_-USA-8.jpg"}, "woothr": {"a": "Charles J. Sharp", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Wood_thrush_%28Hylocichla_mustelina%29_Peten.jpg"}, "tuftit": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Tufted_titmouse_%2884917%29.jpg"}, "wbnuth": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:White-breasted_nuthatch_%2826471%29.jpg"}, "dowwoo": {"a": "Cephas", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Dryobates_pubescens_UL_03.jpg"}, "pilwoo": {"a": "Joshlaymon", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:PileatedWoodpeckerFeedingonTree%2C_crop.jpg"}, "norfli": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Northern_yellow-shafted_flicker_male_%2833737%29_%28cropped%29.jpg"}, "gracat": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Gray_catbird_%2885315%29.jpg"}, "houwre": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:House_wren_singing_in_PP_%2813873%29.jpg"}, "easpho": {"a": "John Benson", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Sayornis_phoebe_-Owen_Conservation_Park%2C_Madison%2C_Wisconsin%2C_USA-8.jpg"}, "cedwax": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Cedar_waxwing_in_pokeweed_%2810132%29.jpg"}, "amecro": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:American_crow_in_Marine_Park_%2802333%29.jpg"}, "cangoo": {"a": "USFWS Mountain-Prairie", "l": "Public domain", "u": "", "p": "https://commons.wikimedia.org/wiki/File:Canada_goose_on_Seedskadee_NWR_%2827826185489%29.jpg"}, "grbher": {"a": "DallasPenner", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:GreatBlueHeronInARiver.jpg"}, "rethaw": {"a": "Becky Matsubara from El Sobrante, California", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Red-tailed_Hawk_%2845812546121%29.jpg"}, "belkin": {"a": "JeffreyGammon", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:BeltedKingfisherJG_Male.jpg"}, "rthumm": {"a": "jeffreyw", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Archilochus_colubris_-flying_-male-8.jpg"}, "chisp": {"a": "Mdf, Edited by Fir0002", "l": "CC BY-SA 3.0", "u": "http://creativecommons.org/licenses/by-sa/3.0/", "p": "https://commons.wikimedia.org/wiki/File:Spizella-passerina-015_edit.jpg"}, "whtspa": {"a": "Cephas", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:Zonotrichia_albicollis_CT1.jpg"}, "killde": {"a": "Charles Homler d/b/a FocusOnWildlife", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Killdeer_Heislerville.png"}, "wiltur": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Wild_turkey_crossing_the_road_by_Trustom_Pond_%2812584%29.jpg"}, "browth": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Brown_thrasher_in_CP_%2802147%29.jpg"}, "normoc": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Mockingbird_in_Bay_Ridge_%2885082%29.jpg"}, "annhum": {"a": "Charles J. Sharp", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Anna%27s_hummingbird_%28Calypte_anna%29_male_in_flight_Campbell_River.jpg"}, "houfin": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:House_finch_%2833688%292.jpg"}, "abetow": {"a": "Alan D. Wilson", "l": "CC BY-SA 2.5", "u": "https://creativecommons.org/licenses/by-sa/2.5", "p": "https://commons.wikimedia.org/wiki/File:Pipilo_aberti.jpg"}, "lesgol": {"a": "Bettina Arrigoni", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Lesser_Goldfinch_%28_Eastern_race%29_Kerr_WMA_Kerrville_TX_2018-05-06_12-11-15-2_%2842881554344%29.jpg"}, "btgnat": {"a": "Dominic Sherony", "l": "CC BY-SA 2.0", "u": "https://creativecommons.org/licenses/by-sa/2.0", "p": "https://commons.wikimedia.org/wiki/File:Black-tailed_Gnatcatcher_%28Polioptila_melanura%29_%2816875128691%29.jpg"}, "lucwar": {"a": "Chuck Homler d/b/a Focus On Wildlife", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Lucys_Warbler.jpg"}, "ladwoo": {"a": "Alan D. Wilson, www.naturespicsonline.com", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:Ladder-back_Woodpecker_on_Cactus.jpg"}, "gilfli": {"a": "Glenn Seplak from Tucson, Arizona", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Gilded_Flicker_%28Colaptes_chrysoides%29_on_top_of_cactus.jpg"}, "wesking": {"a": "Rhododendrites", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Western_kingbird_%2871748%29.jpg"}, "saypho": {"a": "Cephas", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Sayornis_saya_GNP_01.jpg"}, "astfly": {"a": "docentjoyce on Flickr", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Myiarchus_cinerascens.jpg"}, "blkpho": {"a": "Charles J. Sharp", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Black_phoebe_%28Sayornis_nigricans_aquaticus%29_Palopo.jpg"}, "harhaw": {"a": "Alan Vernon", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Harris%27s_Hawk_%28Parabuteo_unicinctus%29_3_of_4_in_set.jpg"}, "comrav": {"a": "Frank Schulenburg", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Corvus_corax_clarionensis%2C_Point_Reyes_National_Seashore.jpg"}, "eucdov": {"a": "stevem4560", "l": "CC BY 4.0", "u": "https://creativecommons.org/licenses/by/4.0", "p": "https://commons.wikimedia.org/wiki/File:2022-04-06_Streptopelia_decaocto%2C_Plovdiv%2C_Bulgaria_1.jpg"}, "incdov": {"a": "Elaine R. Wilson", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:IncaDove.jpg"}, "bewwre": {"a": "Minette Layne", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Bewicks_Wren.jpg"}, "canwre": {"a": "Gary L. Clark", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Canyon_Wren.jpg"}, "rocwre": {"a": "Polinova", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:RockWren.jpg"}, "hoodor": {"a": "Linda Tanner from Los Osos, California, U.S.A.", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Icterus_cucullatus_Male_2.jpg"}, "bulori": {"a": "Kevin Cole from Pacific Coast, USA (en:User:Kevinlcole)", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Bullock%27s_Oriole.jpg"}, "burowl": {"a": "Charles J. Sharp", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Southern_burrowing_owl_%28Athene_cunicularia_cunicularia%29_Colonia.jpg"}, "elfowl": {"a": "BBODO", "l": "CC BY 3.0", "u": "https://creativecommons.org/licenses/by/3.0", "p": "https://commons.wikimedia.org/wiki/File:Micrathene_whitneyi_29APR12_Madera_Canyon_AZ.jpg"}, "coohaw": {"a": "Mykola Swarnyk", "l": "CC BY-SA 3.0", "u": "https://creativecommons.org/licenses/by-sa/3.0", "p": "https://commons.wikimedia.org/wiki/File:Accipiter_cooperii_m_Sam_Smith_Toronto3.jpg"}, "lesnig": {"a": "Chuck Homler, Focus On Wildlife", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Lesser_Nighthawk_Sleeping_SPI.jpg"}, "pyrrhu": {"a": "Andy Morffew from Itchen Abbas, Hampshire, UK", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Pyrrhuloxia_%2834152495333%29_%28cropped%29.jpg"}, "brcfly": {"a": "Myiarchus_tyrannulus_-8.jpg: Dario Sanches\nderivative work: Berichard (talk)", "l": "CC BY-SA 2.0", "u": "https://creativecommons.org/licenses/by-sa/2.0", "p": "https://commons.wikimedia.org/wiki/File:Myiarchus_tyrannulus_1.jpg"}, "bkchum": {"a": "lwolfartist", "l": "CC BY 2.0", "u": "https://creativecommons.org/licenses/by/2.0", "p": "https://commons.wikimedia.org/wiki/File:Black-chinned_hummingbird.jpg"}, "wesmea": {"a": "Cephas", "l": "CC BY-SA 4.0", "u": "https://creativecommons.org/licenses/by-sa/4.0", "p": "https://commons.wikimedia.org/wiki/File:Sturnella_neglecta_GNP_02.jpg"}};
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function plate(b,_x,locked,quiz){const alt=quiz?'Bird to identify':locked?'Unidentified bird':'Photo of a '+esc(b.name);return `<div class="plate${locked?' locked':''}"><img class="bgimg" src="photos/${b.id}.jpg" alt="" aria-hidden="true" ${quiz?'':'loading="lazy" '}decoding="async"><img class="fg" src="photos/${b.id}.jpg" alt="${alt}" ${quiz?'':'loading="lazy" '}decoding="async"></div>`}
+function recCredit(b){const r=REC[b.id];if(!r)return '';return `<div class="credit">Recording: ${esc(r.w)}${r.o?', '+esc(r.o):''} · <a href="https://xeno-canto.org/${esc(r.x)}" target="_blank" rel="noopener">XC${esc(r.x)}</a> · <a href="${esc(r.u)}" target="_blank" rel="noopener">${esc(r.l)}</a> via xeno-canto</div>`}
+function credit(b){const p=PHOTO[b.id];if(!p)return '';return `<div class="credit">Photo: ${esc(p.a||'Unknown photographer')} · <a href="${esc(p.p)}" target="_blank" rel="noopener">${esc(p.l)}</a> via Wikimedia Commons</div>`}
+
+/* ---------- recordings (xeno-canto, credited) ---------- */
+const REC={"norcar": {"x": "962371", "w": "A Richardson", "o": "Marathon County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "bkcchi": {"x": "727094", "w": "David A. Brinkman", "o": "Milwaukee County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "amerob": {"x": "825254", "w": "Richard E. Webster", "o": "Iosco County, Michigan", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "blujay": {"x": "549775", "w": "Kimberly Wood", "o": "Dane County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "amegfi": {"x": "169085", "w": "Paul Marvin", "o": "Sauk County, Wisconsin", "l": "CC BY-NC-SA 3.0", "u": "https://creativecommons.org/licenses/by-nc-sa/3.0/"}, "rewbla": {"x": "860970", "w": "Sue Riffe", "o": "Marathon County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "comloo": {"x": "1036225", "w": "Greg Irving", "o": "Barron County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "ovenbi": {"x": "1018252", "w": "David Liebl", "o": "Dane County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "sancra": {"x": "860971", "w": "Sue Riffe", "o": "Marathon County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "brdowl": {"x": "698851", "w": "wisconagus", "o": "Crawford County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "balori": {"x": "692074", "w": "wisconagus", "o": "Trempealeau County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "moudov": {"x": "860758", "w": "Sue Riffe", "o": "Juneau County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "gamqua": {"x": "1148854", "w": "Pat Goltz", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "cacwre": {"x": "999614", "w": "David Tattersley", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "greroa": {"x": "254901", "w": "Richard E. Webster", "o": "Portal, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "gilwoo": {"x": "1000173", "w": "David Tattersley", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "cubthr": {"x": "857002", "w": "Scott Crabtree", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "verdin": {"x": "644220", "w": "Pat Goltz", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "verfly": {"x": "622251", "w": "Richard E. Webster", "o": "Greenlee County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "coshum": {"x": "1083961", "w": "Scott Olmstead", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "phaino": {"x": "1078194", "w": "Richard E. Webster", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "grhowl": {"x": "1140509", "w": "Scott Olmstead", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "whwdov": {"x": "1085857", "w": "Scott Crabtree", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "bktspa": {"x": "1190558", "w": "Richard E. Webster", "o": "near Portal, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "easblu": {"x": "824503", "w": "Valerie Heemstra", "o": "Delta County, Michigan", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "indbun": {"x": "322489", "w": "Ross Gallardy", "o": "Adams County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "scatan": {"x": "860752", "w": "Sue Riffe", "o": "Juneau County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "robgro": {"x": "298162", "w": "Paul Marvin", "o": "Wyalusing State Park, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "easmea": {"x": "1018270", "w": "David Liebl", "o": "Dane County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "sonspa": {"x": "1190618", "w": "Richard E. Webster", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "comyel": {"x": "844273", "w": "Sue Riffe", "o": "Ramsey County, Minnesota", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "yelwar": {"x": "1019374", "w": "Valerie Heemstra", "o": "Delta County, Michigan", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "chswar": {"x": "296485", "w": "Paul Marvin", "o": "Burnett County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "reevir": {"x": "325531", "w": "Ross Gallardy", "o": "Adams County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "woothr": {"x": "1018228", "w": "David Liebl", "o": "Dane County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "tuftit": {"x": "216382", "w": "Dory Owen", "o": "Dane County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "wbnuth": {"x": "682009", "w": "Valerie Heemstra", "o": "Marinette County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "dowwoo": {"x": "1049467", "w": "Valerie Heemstra", "o": "Menominee County, Michigan", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "pilwoo": {"x": "566467", "w": "Matt Wistrand", "o": "Lee County, Illinois", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "norfli": {"x": "1009102", "w": "Valerie Heemstra", "o": "Delta County, Michigan", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "gracat": {"x": "727096", "w": "David A. Brinkman", "o": "Milwaukee County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "houwre": {"x": "860967", "w": "Sue Riffe", "o": "Marathon County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "easpho": {"x": "388696", "w": "Antonio Xeira", "o": "Chippewa County, Michigan", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "cedwax": {"x": "860963", "w": "Sue Riffe", "o": "Marathon County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "amecro": {"x": "857348", "w": "Yishai Blum", "o": "Sauk County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "cangoo": {"x": "173438", "w": "Paul Marvin", "o": "Burnett County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "grbher": {"x": "1038693", "w": "Greg Irving", "o": "Barron County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "rethaw": {"x": "824513", "w": "Valerie Heemstra", "o": "Delta County, Michigan", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "belkin": {"x": "149289", "w": "Paul Marvin", "o": "Nicolet National Forest (north of Argonne), Wisconsin", "l": "CC BY-NC-SA 3.0", "u": "https://creativecommons.org/licenses/by-nc-sa/3.0/"}, "rthumm": {"x": "298963", "w": "Paul Marvin", "o": "Wyalusing State Park, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "chisp": {"x": "844258", "w": "Sue Riffe", "o": "Adams County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "whtspa": {"x": "726915", "w": "David A. Brinkman", "o": "Nicolet National Forest (north of Argonne), Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "killde": {"x": "1016734", "w": "David Liebl", "o": "Dane County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "wiltur": {"x": "467291", "w": "Dan Lane", "o": "Roscommon County, Michigan", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "browth": {"x": "322488", "w": "Ross Gallardy", "o": "Adams County, Wisconsin", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "normoc": {"x": "807240", "w": "Scott Crabtree", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "annhum": {"x": "860679", "w": "Scott Crabtree", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "houfin": {"x": "941235", "w": "Richard E. Webster", "o": "Portal, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "abetow": {"x": "703926", "w": "Paul Marvin", "o": "Pinal County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "lesgol": {"x": "805420", "w": "Alex Lin-Moore", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "btgnat": {"x": "971130", "w": "Richard E. Webster", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "lucwar": {"x": "1101964", "w": "Scott Crabtree", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "ladwoo": {"x": "196553", "w": "Dan Lane", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "gilfli": {"x": "841949", "w": "Scott Crabtree", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "wesking": {"x": "415515", "w": "Russ Wigh", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "saypho": {"x": "1078494", "w": "Richard E. Webster", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "astfly": {"x": "941395", "w": "Richard E. Webster", "o": "Portal, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "blkpho": {"x": "384905", "w": "Antonio Xeira", "o": "Santa Cruz County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "harhaw": {"x": "1149974", "w": "Scott Crabtree", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "comrav": {"x": "773723", "w": "Richard E. Webster", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "eucdov": {"x": "936984", "w": "Richard E. Webster", "o": "Portal, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "incdov": {"x": "1000179", "w": "David Tattersley", "o": "Cochise County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "bewwre": {"x": "1083967", "w": "Scott Olmstead", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "canwre": {"x": "1080746", "w": "Scott Olmstead", "o": "Santa Cruz County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "rocwre": {"x": "1080773", "w": "Scott Olmstead", "o": "Santa Cruz County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "hoodor": {"x": "1040263", "w": "Richard E. Webster", "o": "Portal, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "bulori": {"x": "1038999", "w": "Richard E. Webster", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "burowl": {"x": "1106113", "w": "Manuel Grosselet", "o": "Maricopa County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "elfowl": {"x": "1138696", "w": "Paul Marvin", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "coohaw": {"x": "944418", "w": "Scott Crabtree", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "lesnig": {"x": "1035206", "w": "Richard E. Webster", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "pyrrhu": {"x": "1153540", "w": "Scott Crabtree", "o": "Pima County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "brcfly": {"x": "877059", "w": "Skyler Bol", "o": "Santa Cruz County, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}, "bkchum": {"x": "132693", "w": "Richard E. Webster", "o": "Portal, Arizona", "l": "CC BY-NC-SA 3.0", "u": "https://creativecommons.org/licenses/by-nc-sa/3.0/"}, "wesmea": {"x": "607466", "w": "Richard E. Webster", "o": "Cochise Co, Arizona", "l": "CC BY-NC-SA 4.0", "u": "https://creativecommons.org/licenses/by-nc-sa/4.0/"}};
+let AC=null,cur=null,playTok=0;
+function getAC(){
+ if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AC=new C()}
+ if(AC.state==='suspended')AC.resume();return AC;
+}
+function load(b){
+ if(b._p)return b._p;
+ b._p=(async()=>{
+  const ac=getAC();if(!ac)throw new Error('no audio');
+  const ab=await (await fetch(`audio/${b.id}.mp3`)).arrayBuffer();
+  const buf=await new Promise((res,rej)=>ac.decodeAudioData(ab,res,rej));
+  b._buf=buf;return buf;
+ })();
+ b._p.catch(()=>{b._p=null});
+ return b._p;
+}
+function stopSong(){
+ playTok++;
+ if(cur){try{cur.src.onended=null;cur.src.stop()}catch(_){}cur=null}
+ refreshPlay();
+}
+async function playSong(b,force){
+ const ac=getAC();if(!ac)return;
+ const same=cur&&cur.id===b.id;stopSong();if(same&&!force)return;
+ const tok=playTok;
+ setLoading(b.id,true);
+ let buf;try{buf=await load(b)}catch(_){setLoading(b.id,false);return}
+ setLoading(b.id,false);
+ if(tok!==playTok)return;
+ const src=ac.createBufferSource();src.buffer=buf;
+ const g=ac.createGain();g.gain.value=.9;src.connect(g);g.connect(ac.destination);
+ const c={id:b.id,src,t0:ac.currentTime+.05,dur:buf.duration};cur=c;
+ src.onended=()=>{if(cur===c){cur=null;refreshPlay()}};
+ src.start(c.t0);refreshPlay();
+}
+function setLoading(id,on){document.querySelectorAll(`[data-play="${id}"] span`).forEach(sp=>{if(on)sp.textContent='Loading…'})}
+function refreshPlay(){
+ document.querySelectorAll('[data-play]').forEach(btn=>{
+  const on=!!cur&&cur.id===btn.dataset.play;btn.classList.toggle('on',on);
+  const sp=btn.querySelector('span');if(sp)sp.textContent=on?'Stop':(btn.dataset.label||'Play song');
+ });
+}
+
+/* ---------- state ---------- */
+const KEY='dawnchorus.v1';
+const P={life:{}};
+try{Object.assign(P,JSON.parse(localStorage.getItem(KEY))||{})}catch(_){}
+P.level=P.level||P.unlocked||{wi:1,az:1};delete P.unlocked;
+const isCleared=b=>{const r=P.life[b.id];return !!(r&&r.last===true)};
+const levelCleared=(reg,n)=>LEVELS[reg][n-1].filter(isCleared).length;
+const S={region:P.region||'wi',tab:'play',round:null};
+function save(){try{localStorage.setItem(KEY,JSON.stringify({...P,region:S.region,}))}catch(_){}}
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+/* ---------- views ---------- */
+const $main=document.getElementById('main');
+const ICON_PLAY='<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg>';
+const links=b=>{
+ const slug=b.name.replace(/['’]/g,'').replace(/ /g,'_');
+ return `<div class="links"><a href="https://www.allaboutbirds.org/guide/${encodeURIComponent(slug)}/sounds" target="_blank" rel="noopener">More recordings (All About Birds)</a><a href="https://xeno-canto.org/explore?query=${encodeURIComponent(b.name)}" target="_blank" rel="noopener">Xeno-canto</a></div>`;
+};
+const playBtn=(b,label='Play recording',cls='')=>`<button class="btn sm ${cls||'ghost'} playbtn" data-play="${b.id}" data-label="${label}" data-act="play">${ICON_PLAY}<span>${label}</span></button>`;
+function birdCard(b,opt={}){
+ const media=opt.info?'':`<div><div class="plate-btn" role="button" tabindex="0" data-act="replay" data-v="${b.id}" aria-label="Play the ${esc(b.name)} recording again">${plate(b,false)}</div>${credit(b)}</div>`;
+ const player=opt.info?'':`<div style="display:flex;gap:8px;align-items:center">${playBtn(b)}</div>
+   ${recCredit(b)}`;
+ const credits=opt.info?`<div class="credits-box">${credit(b)}${recCredit(b)}</div>`:'';
+ return `<article class="bcard ${opt.wide&&!opt.info?'wide':''} ${opt.cls||''}">
+  ${media}
+  <div class="body">
+   ${opt.head||''}
+   <div><h3>${esc(b.name)}</h3><div class="sci">${esc(b.sci)}</div></div>
+   <div class="mn"><q>${esc(b.mn)}</q></div>
+   ${player}
+   <ul class="cues">${b.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
+   <div class="meta mono"><span>Level ${levelOf(b)}</span><span>${esc(b.size)}</span><span>${esc(b.habitat)}</span></div>
+   ${links(b)}
+   ${credits}
+  </div></article>`;
+}
+
+function renderHeader(){
+ document.documentElement.dataset.region=S.region;
+ const n=birdsIn(S.region).length;
+ document.getElementById('kicker').textContent=n?`Field trainer · ${n} species in ${REGIONS[S.region].name}`:`Field trainer · no birds yet for ${REGIONS[S.region].name}`;
+ const rg=document.getElementById('regions'),sl=rg.scrollLeft;
+ rg.innerHTML=Object.entries(REGIONS).map(([k,v])=>`<button data-act="region" data-v="${k}" aria-pressed="${k===S.region}"><b>${v.name}</b><span>${v.sub}</span></button>`).join('');
+ rg.scrollLeft=sl;
+ document.getElementById('tabs').innerHTML=[['play','Play'],['guide','Field guide'],['life','Album']].map(([k,v])=>`<button role="tab" data-act="tab" data-v="${k}" aria-selected="${S.tab===k}">${v}</button>`).join('');
+}
+function render(){
+ renderHeader();
+ if(S.tab==='play')S.round?(S.round.done?renderResults():S.round.answered?renderInfo():renderQuestion()):renderMenu();
+ if(S.tab==='guide')renderGuide();
+ if(S.tab==='life')renderLife();
+ requestAnimationFrame(refreshPlay);
+}
+function renderMenu(){
+ const reg=S.region,lv=P.level[reg]||1,all=shuffle(birdsIn(reg));
+ if(!all.length){$main.innerHTML=`<p class="intro">No birds have been added for ${esc(REGIONS[reg].name)} yet.</p>`;return}
+ const item=b=>`<div class="strip-item"><div class="plate"><img class="bgimg" src="photos/thumb/${b.id}.jpg" alt="" draggable="false"><img class="fg" src="photos/thumb/${b.id}.jpg" alt="" draggable="false"></div></div>`;
+ const run=all.map(item).join('');
+ $main.innerHTML=`<section class="start">
+  <div class="strip" aria-hidden="true"><div class="strip-track" style="--dur:${all.length*6}s">${run}${run}</div></div>
+  <div><button class="btn big" data-act="start">Start playing: ${REGIONS[reg].name} birds (level ${lv})</button></div>
+ </section>`;
+}
+const REDUCE=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+let busy=false;
+function slideTo(fn){
+ const old=$main.firstElementChild;
+ if(!old||REDUCE){fn(false);return}
+ busy=true;old.classList.add('slide-out');
+ setTimeout(()=>{busy=false;fn(true)},280);
+}
+function afterPaint(top){requestAnimationFrame(()=>{refreshPlay();if(top)window.scrollTo({top:0})})}
+const GAME_SIZE=10;
+function pickBirds(reg,level){
+ const lv=LEVELS[reg],cur=lv[level-1],lower=lv.slice(0,level-1).flat();
+ const seen=b=>!!(P.life[b.id]&&P.life[b.id].seen);
+ const pool=new Set(cur);
+ lv.slice(0,level).flat().filter(b=>!seen(b)).forEach(b=>pool.add(b));
+ shuffle(lower.filter(b=>!pool.has(b))).slice(0,4).forEach(b=>pool.add(b));
+ let birds=shuffle([...pool]).slice(0,GAME_SIZE);
+ for(let n=level;birds.length<GAME_SIZE&&n<lv.length;n++)for(const b of lv[n]){if(birds.length<GAME_SIZE&&!birds.includes(b))birds.push(b)}
+ for(const b of shuffle(lv.flat())){if(birds.length<GAME_SIZE&&!birds.includes(b))birds.push(b)}
+ return shuffle(birds);
+}
+function startRound(){
+ const reg=S.region,level=P.level[reg]||1,birds=pickBirds(reg,level);
+ const top=Math.max(level,...birds.map(levelOf)),pool=LEVELS[reg].slice(0,top).flat();
+ const qs=birds.map(b=>({b,opts:shuffle([b,...shuffle(pool.filter(x=>x!==b)).slice(0,3)])}));
+ qs.forEach(q=>{getAC();load(q.b).catch(()=>{})});
+ S.round={level,qs,i:0,streak:0,bestStreak:0,right:0,answered:null,lifers:[],missed:[],times:[],t0:null,done:false};
+ slideTo(anim=>{renderHeader();renderQuestion(anim,true);afterPaint(true)});
+}
+const hudHTML=(R,done)=>{const n=R.qs.length,k=R.i+(done?1:0);return `<div class="hud"><span class="mono">Level ${R.level} · Bird ${R.i+1} of ${n}</span><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${k}"><i style="width:${k/n*100}%"></i></div><span class="stat">${k?Math.round(R.right/k*100):0}% correct</span><span class="stat streak">${R.streak>1?'x'+R.streak+' streak':''}</span></div>`};
+let timerRaf=0;
+function runTimer(R){
+ cancelAnimationFrame(timerRaf);
+ const bar=document.getElementById('tbar'),num=document.getElementById('tnum');if(!bar)return;
+ const step=()=>{
+  if(S.round!==R||R.answered)return;
+  const t=Math.min(60,(performance.now()-R.t0)/1000);
+  bar.style.width=(t/60*100)+'%';bar.parentNode.setAttribute('aria-valuenow',t.toFixed(0));num.textContent=t.toFixed(1)+' s';
+  if(t<60)timerRaf=requestAnimationFrame(step);
+ };
+ step();
+}
+function renderQuestion(anim=false,auto=true){
+ const R=S.round,q=R.qs[R.i],b=q.b;
+ $main.innerHTML=`<section class="q${anim?' slide-in':''}">
+  ${hudHTML(R,false)}
+  <div class="clue">
+   <div class="plate-btn" role="button" tabindex="0" data-act="replay" data-v="${b.id}" aria-label="Play the recording again">${plate(b,false,false,true)}</div>
+   <div class="timer"><div class="bar" role="progressbar" aria-label="Time taken" aria-valuemin="0" aria-valuemax="60"><i id="tbar"></i></div><span class="mono" id="tnum">0.0 s</span></div>
+   <div class="mono" style="text-align:center">Study the field marks and listen</div>
+  </div>
+  <div class="options" role="group" aria-label="Choose the species">${q.opts.map((o,k)=>`<button class="opt" data-act="answer" data-v="${o.id}"><kbd>${k+1}</kbd>${esc(o.name)}</button>`).join('')}</div>
+ </section>`;
+ if(R.t0==null)R.t0=performance.now();
+ runTimer(R);
+ if(auto)setTimeout(()=>{if(S.round===R&&R.qs[R.i]===q&&!R.answered&&S.tab==='play')playSong(b,true)},anim?340:150);
+}
+function renderInfo(anim=false){
+ const R=S.round,q=R.qs[R.i],b=q.b,ans=R.answered,ok=ans===b.id;
+ const verdict=(ok?`Correct${R.lifer?' · First time identified!':''}`:`Not this time. You chose ${esc(byId(ans).name)}.`)+`<div class="took">Time: ${R.t.toFixed(1)} seconds</div>`;
+ $main.innerHTML=`<section class="q${anim?' slide-in':''}">
+  ${hudHTML(R,true)}
+  ${birdCard(b,{info:true,cls:'reveal',head:`<div class="verdict ${ok?'ok':'no'}">${verdict}</div>`})}
+  <div><button class="btn" data-act="next" id="nextbtn">${R.i+1<R.qs.length?'Next bird':'See results'}</button></div>
+ </section>`;
+}
+function answer(id){
+ const R=S.round,q=R.qs[R.i];if(busy||R.answered)return;
+ cancelAnimationFrame(timerRaf);
+ R.answered=id;R.t=Math.min(60,(performance.now()-R.t0)/1000);R.times.push(R.t);
+ const ok=id===q.b.id;
+ const rec=P.life[q.b.id]||(P.life[q.b.id]={r:0,w:0,seen:false});rec.last=ok;
+ if(ok){
+  R.streak++;R.bestStreak=Math.max(R.bestStreak,R.streak);R.right++;rec.r++;
+  if(!rec.best||R.t<rec.best)rec.best=R.t;
+  R.lifer=!rec.seen;if(!rec.seen){rec.seen=true;R.lifers.push(q.b.id)}
+ }else{R.streak=0;rec.w++;R.missed.push(q.b.id);R.lifer=false}
+ save();
+ slideTo(anim=>{renderHeader();renderInfo(anim);afterPaint(true);const el=document.getElementById('nextbtn');if(el)el.focus({preventScroll:true})});
+}
+function next(){
+ if(busy)return;
+ const R=S.round;R.i++;R.answered=null;R.lifer=false;R.t0=null;
+ if(R.i>=R.qs.length){
+  R.done=true;const reg=S.region;
+  const cur=P.level[reg]||1;
+  if(cur<10&&levelCleared(reg,cur)/LEVELS[reg][cur-1].length>=CLEAR_SHARE){P.level[reg]=cur+1;R.advanced=true}
+  save();
+ }
+ stopSong();
+ slideTo(anim=>{renderHeader();R.done?renderResults(anim):renderQuestion(anim,true);afterPaint(true)});
+}
+function renderResults(anim=false){
+ const R=S.round,n=R.qs.length,miss=[...new Set(R.missed)].map(byId);
+ $main.innerHTML=`<section class="${anim?'slide-in':''}" style="display:flex;flex-direction:column;gap:18px">
+  <div class="mono">Level ${R.level}${R.advanced?' → '+(R.level+1):''} · ${esc(REGIONS[S.region].name)}</div>
+  <div class="score">${Math.round(R.right/n*100)}%</div>
+  <div class="prog"><b>${R.right}/${n}</b><span>correct · average time ${(R.times.reduce((a,b)=>a+b,0)/R.times.length).toFixed(1)} seconds · best streak ${R.bestStreak}</span></div>
+  ${R.lifers.length?`<div><div class="mono" style="margin-bottom:8px">First time identified</div><div class="chips">${R.lifers.map(i=>`<span class="chip">${esc(byId(i).name)}</span>`).join('')}</div></div>`:''}
+  ${miss.length?`<div><div class="mono" style="margin-bottom:8px">Missed</div><div class="chips">${miss.map(b=>`<span class="chip">${esc(b.name)}</span>`).join('')}</div></div>`:'<p class="intro">A clean sweep.</p>'}
+  <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-act="start">Play again</button><button class="btn ghost" data-act="tab" data-v="guide">Open field guide</button></div>
+ </section>`;
+}
+function renderGuide(){
+ const list=ranked(S.region);
+ if(!list.length){$main.innerHTML=`<p class="intro">No birds have been added for ${esc(REGIONS[S.region].name)} yet.</p>`;return}
+ $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:16px"><p class="intro">${list.length} species found in ${esc(REGIONS[S.region].name)}, most common first. Tap a photo or press play to hear each bird.</p><div class="grid">${list.map(b=>birdCard(b)).join('')}</div></section>`;
+}
+function renderLife(){
+ const list=ranked(S.region);
+ if(!list.length){$main.innerHTML=`<p class="intro">No birds have been added for ${esc(REGIONS[S.region].name)} yet.</p>`;return}
+ const seen=list.filter(b=>P.life[b.id]&&P.life[b.id].seen).length;
+ const acc=rec=>{const t=(rec.r||0)+(rec.w||0);return t?Math.round((rec.r||0)/t*100):null};
+ $main.innerHTML=`<section style="display:flex;flex-direction:column;gap:16px">
+  <div class="prog"><b>${seen}/${list.length}</b><span>species identified in ${esc(REGIONS[S.region].name)}</span></div>
+  <div class="life">${list.map(b=>{const rec=P.life[b.id]||{},ok=rec.seen,a=acc(rec);
+   return `<div class="tile ${ok?'':'locked'}"><div style="position:relative">${plate(b,false,!ok)}${ok?'':'<div class="lock" aria-hidden="true">?</div>'}</div>${ok?`<b>${esc(b.name)}</b><span class="mono">Your record: ${rec.best!=null?rec.best.toFixed(1)+'s':'–'}</span><span class="mono">Your accuracy: ${a}%</span>`:`<b>Not identified yet</b><span class="mono">${a!==null?'Your accuracy: '+a+'%':'Not seen in a round yet'}</span>`}</div>`}).join('')}</div>
+ </section>`;
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act,v=t.dataset.v;
+ if(a==='play'){playSong(byId(t.dataset.play))}
+ else if(a==='replay'){playSong(byId(v),true)}
+ else if(a==='region'){if(v!==S.region){stopSong();S.region=v;S.round=null;save();render()}}
+ else if(a==='tab'){S.tab=v;stopSong();render()}
+ else if(a==='start'){if(busy)return;getAC();startRound()}
+ else if(a==='answer'){answer(v)}
+ else if(a==='next'){next()}
+});
+document.addEventListener('keydown',e=>{
+ if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('plate-btn')){e.preventDefault();e.target.click();return}
+ if(e.target.matches('input,textarea')||e.metaKey||e.ctrlKey||e.altKey)return;
+ if(S.tab!=='play'||!S.round||S.round.done)return;
+ const R=S.round,q=R.qs[R.i];
+ if(!R.answered&&/^[1-4]$/.test(e.key)){answer(q.opts[+e.key-1].id)}
+ else if(R.answered&&e.key==='Enter'&&e.target.tagName!=='BUTTON'){next()}
+ else if(e.key==='p'||e.key==='P'){playSong(q.b,true)}
+});
+function renderCredits(){
+ document.getElementById('credits').innerHTML='<summary>Photo and recording credits</summary><ul>'+BIRDS.map(b=>{const p=PHOTO[b.id];const r=REC[b.id];return p?`<li>${esc(b.name)}: photo by ${esc(p.a)} (<a href="${esc(p.p)}" target="_blank" rel="noopener">${esc(p.l)}</a>)${r?`; recording by ${esc(r.w)} (<a href="https://xeno-canto.org/${esc(r.x)}" target="_blank" rel="noopener">XC${esc(r.x)}, ${esc(r.l)}</a>)`:''}</li>`:''}).join('')+'</ul>';
+}
+renderCredits();
+(function(){
+ const el=document.getElementById('regions');let down=false,sx=0,sl=0,moved=false;
+ el.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;down=true;moved=false;sx=e.clientX;sl=el.scrollLeft});
+ window.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;if(Math.abs(dx)>4){moved=true;el.classList.add('dragging')}if(moved)el.scrollLeft=sl-dx});
+ window.addEventListener('pointerup',()=>{down=false;setTimeout(()=>el.classList.remove('dragging'),0)});
+ el.addEventListener('click',e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false}},true);
+ el.addEventListener('dragstart',e=>e.preventDefault());
+})();
+render();
+{const rg=document.getElementById('regions'),b=rg.querySelector('[aria-pressed="true"]');if(b)rg.scrollLeft=Math.max(0,b.offsetLeft-(rg.clientWidth-b.offsetWidth)/2)}
+</script>
+</body>
+</html>
