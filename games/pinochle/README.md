@@ -1,6 +1,6 @@
 # Pinochle
 
-> **Live at [icelander.net/games/fresh/pinochle](https://icelander.net/games/fresh/pinochle/)**, solo against bots only, for anyone signed in to icelander.net. `worker/index.ts` is a Cloudflare Worker that serves `public/` (built into `dist/` by `build.mjs`) behind the site's sign-in (`games:play`); `npm test` checks it and `npm run deploy` publishes it. The Node server in `server/` is not deployed, so the online buttons are hidden (`ONLINE` in `public/app.js`); online rooms would need the server ported to a Durable Object.
+> **Live at [icelander.net/games/fresh/pinochle](https://icelander.net/games/fresh/pinochle/)**, solo against bots only, for invited players only (role `games:pinochle`, granted at icelander.net/private/admin). `worker/index.ts` is a Cloudflare Worker that serves `public/` (built into `dist/` by `build.mjs`) behind the site's sign-in; `npm test` checks it and `npm run deploy` publishes it. The Node server in `server/` is not deployed, so the online buttons are hidden (`ONLINE` in `public/app.js`); online rooms would need the server ported to a Durable Object.
 
 Four-player partnership auction pinochle for phones and browsers. Installable as a PWA (Add to Home Screen).
 
