@@ -2,8 +2,12 @@
 // holding games:advent-calendar, an invite-only role granted at icelander.net/private/admin. Sign-in is
 // icelander.net's (vendor/icelander-auth, through its login service): a visitor who isn't signed in is sent to
 // the site's sign-in and back; a signed-in player without the role gets a page saying so.
+//
+// Holders of games:advent-calendar-dev are developers: me.json tells the page so, and it then offers preview mode
+// (every window opens) and forgetting the opened windows. Everyone else gets each window's backdrop only from its
+// day in December, so a window can't be opened early by editing the page.
 import { createAuth, type AuthEnv } from "../../../vendor/icelander-auth/index.js";
-import { BASE, ROLE } from "./config";
+import { BASE, DEV_ROLE, ROLE, lastOpenDay } from "./config";
 
 interface Fetcher { fetch(req: Request): Promise<Response> }
 export interface Env extends AuthEnv { ASSETS: Fetcher; DEV_LOGIN?: string }
@@ -22,6 +26,14 @@ export default {
 
     const { response, user } = await AUTH.requireRole(req, shared(env), ROLE);
     if (response) return user ? notInvited() : response;
+    const developer = AUTH.hasRole(user, DEV_ROLE);
+
+    const rest = url.pathname.slice(BASE.length);
+    if (rest === "/me.json") return Response.json({ developer }, { headers: { "Cache-Control": "private, no-store" } });
+    const backdrop = /^\/assets\/bg-(\d\d)\.webp$/.exec(rest);
+    if (backdrop && !developer && Number(backdrop[1]) > lastOpenDay(new Date())) {
+      return new Response("This window isn't open yet.", { status: 403, headers: { "Cache-Control": "private, no-store" } });
+    }
 
     const asset = await env.ASSETS.fetch(req);
     const out = new Response(asset.body, asset);

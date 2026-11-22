@@ -12,7 +12,9 @@ Open `index.html` in a browser. It needs `calendar.js` and the `assets/` folder 
 
 ## Dates
 
-Window N opens on N December. Before December, and after it, the page starts in preview mode with every window open; the switch under the house turns real dates on. In December, today's door glows. Opened windows (marked with a gold star) and the switch are remembered in `localStorage`.
+Window N opens on N December, and opened windows (marked with a gold star) are remembered in `localStorage`. In December, today's door glows; outside December every door stays shut.
+
+**Developers** (holders of `games:advent-calendar-dev`, granted at <https://icelander.net/private/admin>) also get, under the house, the preview switch (every window opens, before its date) and "Close and forget all the windows". The page asks the Worker (`me.json`) which it is; everyone else sees only a line saying when windows open. So that a window can't be opened early by editing the page, the Worker sends a window's backdrop (`assets/bg-NN.webp`) to a non-developer only from day NN of December, by the calendar date furthest ahead anywhere (UTC+14). With no Worker in front (the page opened from a file, or a plain static server such as `art/snap.mjs`'s), there is no `me.json` and the page is in developer mode.
 
 ## Files
 
@@ -26,7 +28,7 @@ Window N opens on N December. Before December, and after it, the page starts in 
   - `bg-01.webp` to `bg-24.webp` are what each window looks onto.
   - `art.js` is the manifest: sprite rectangles and pivots, the window grid, and light positions.
 - `art/`: the art sources and tools. They need Node 22 or later and Google Chrome, and install nothing. They are not part of the site.
-- `worker/index.ts`: the Worker. It serves every file only to holders of `games:advent-calendar`; `worker/config.ts` holds the address and the role.
+- `worker/index.ts`: the Worker. It serves every file only to holders of `games:advent-calendar`, answers `me.json` (developer or not), and holds back future backdrops from non-developers; `worker/config.ts` holds the address, the two roles and the date rule.
 - `web/_headers`: the Content-Security-Policy and the other headers for the static files.
 - `build.mjs`: copies the page, its script and `assets/` into `dist/`, and builds the tests.
 - `test/worker.test.ts`: who may fetch what.
@@ -66,7 +68,7 @@ node art/build.mjs 'sp-*' house # some sheets only
 - contact sheets of all 24 windows at 0.6, 2, 3.5 and 6 seconds;
 - one window under reduced motion.
 
-The page also has two test hooks. `?sheet=0.6,2` draws every card at those moments. `?open=N&t=SECONDS` opens window N, held at that moment.
+The page also has two test hooks, for developers only. `?sheet=0.6,2` draws every card at those moments. `?open=N&t=SECONDS` opens window N, held at that moment.
 
 With reduced motion, doors open without the curl, and each window shows its friend's final pose.
 

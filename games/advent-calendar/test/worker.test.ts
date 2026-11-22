@@ -1,7 +1,7 @@
 // The Advent calendar Worker: who may fetch what.
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { BASE, ROLE } from "../worker/config";
+import { BASE, DEV_ROLE, ROLE, lastOpenDay } from "../worker/config";
 import worker, { type Env } from "../worker/index";
 
 const ORIGIN = "https://icelander.net";
@@ -11,10 +11,12 @@ const FILES: Record<string, { body: string; type: string }> = {
   [`${BASE}/`]: { body: "<!doctype html><title>Advent</title>", type: "text/html" },
   [`${BASE}/calendar.js`]: { body: "(function(){})();", type: "text/javascript" },
   [`${BASE}/assets/house.webp`]: { body: "webp", type: "image/webp" },
+  [`${BASE}/assets/bg-24.webp`]: { body: "bg24", type: "image/webp" },
 };
 
 const USERS: Record<string, { roles: string[] }> = {
   member: { roles: ["site:reader", "games:play", ROLE] },
+  dev: { roles: ["site:reader", "games:play", ROLE, DEV_ROLE] },
   player: { roles: ["site:reader", "games:play", "games:kingdoms"] },
 };
 
@@ -71,4 +73,29 @@ test("nothing outside the calendar is answered; no writes; the bare address gets
   const bare = await get(BASE, "member");
   assert.equal(bare.status, 301);
   assert.equal(bare.headers.get("location"), `${ORIGIN}${BASE}/`);
+});
+
+test("me.json says whether the player is a developer", async () => {
+  assert.deepEqual(await (await get(`${BASE}/me.json`, "member")).json(), { developer: false });
+  assert.deepEqual(await (await get(`${BASE}/me.json`, "dev")).json(), { developer: true });
+  const r = await get(`${BASE}/me.json`, "dev");
+  assert.equal(r.headers.get("cache-control"), "private, no-store");
+  assert.equal((await get(`${BASE}/me.json`, "player")).status, 403);
+});
+
+test("a window's backdrop is refused before its day, except to developers", async () => {
+  const open = lastOpenDay(new Date()) >= 24;
+  assert.equal((await get(`${BASE}/assets/bg-24.webp`, "member")).status, open ? 200 : 403);
+  const dev = await get(`${BASE}/assets/bg-24.webp`, "dev");
+  assert.equal(dev.status, 200);
+  assert.equal(await dev.text(), "bg24");
+});
+
+test("lastOpenDay: December's day where the date is furthest ahead, 0 outside December", () => {
+  assert.equal(lastOpenDay(new Date("2026-11-30T09:59:00Z")), 0);
+  assert.equal(lastOpenDay(new Date("2026-11-30T10:00:00Z")), 1);
+  assert.equal(lastOpenDay(new Date("2026-12-05T12:00:00Z")), 6);
+  assert.equal(lastOpenDay(new Date("2026-12-24T09:00:00Z")), 24);
+  assert.equal(lastOpenDay(new Date("2026-12-31T09:00:00Z")), 24);
+  assert.equal(lastOpenDay(new Date("2026-12-31T10:00:00Z")), 0);
 });
