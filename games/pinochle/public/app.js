@@ -107,11 +107,6 @@ function renderHome() {
     <h1 class="logo">Pinochle<small>Partnership auction pinochle</small></h1>
     <input id="name" maxlength="14" placeholder="Your name" value="${esc(ui.name)}" autocomplete="nickname">
     <button class="big" data-act="solo">Play solo vs computer</button>
-    <button class="big ghost" data-act="create">Create online game</button>
-    <div class="row">
-      <input id="code" maxlength="4" placeholder="CODE" value="${esc(ui.joinCode)}" autocapitalize="characters" style="text-transform:uppercase;text-align:center;letter-spacing:6px;font-weight:800">
-      <button class="ghost" data-act="join" style="min-width:110px">Join</button>
-    </div>
     <button class="ghost" data-act="rules">How to play</button>
     <p class="sub">You and your partner (across the table) against two opponents. First team to ${TARGET} wins.</p>
   </div>`;
@@ -362,8 +357,10 @@ function onCard(id) {
 window.addEventListener('resize', () => { if (ui.screen === 'game') render(); });
 
 // ---------------- boot ----------------
+// Online rooms need the Node server in server/, which icelander.net does not run; the Worker build plays solo only.
+const ONLINE = false;
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
 render();
 // resume an online game after a reload
 const savedRoom = store.get('pin.room');
-if (savedRoom && ui.name !== undefined) online(() => wsend({ t: 'join', code: savedRoom, name: ui.name || 'Player', token }));
+if (ONLINE && savedRoom && ui.name !== undefined) online(() => wsend({ t: 'join', code: savedRoom, name: ui.name || 'Player', token }));
