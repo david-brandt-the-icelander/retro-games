@@ -1,0 +1,8 @@
+# Cloudflare static-asset headers for Pinochle. Everything comes from this origin; no inline script.
+# The Worker serves every file to signed-in players and marks it private (worker/index.ts).
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: same-origin
+  X-Robots-Tag: noindex
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
