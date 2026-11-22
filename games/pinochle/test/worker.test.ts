@@ -15,6 +15,7 @@ const FILES: Record<string, { body: string; type: string }> = {
 
 const USERS: Record<string, { roles: string[] }> = {
   member: { roles: ["site:reader", "games:play", ROLE] },
+  player: { roles: ["site:reader", "games:play"] },
   };
 
 const env: Env = {
@@ -46,7 +47,15 @@ test("a visitor who isn't signed in is sent to sign in and back", async () => {
   }
 });
 
-test("a signed-in player gets the page and the files, privately", async () => {
+test("a signed-in player without the role gets the not-invited page, and none of the game", async () => {
+  for (const path of [`${BASE}/`, `${BASE}/app.js`, `${BASE}/icon.svg`]) {
+    const r = await get(path, "player");
+    assert.equal(r.status, 403, path);
+    assert.match(await r.text(), /open to invited players only/, path);
+  }
+});
+
+test("a member gets the page and the files, privately", async () => {
   const page = await get(`${BASE}/`, "member");
   assert.equal(page.status, 200);
   assert.equal(page.headers.get("cache-control"), "private, no-cache");
