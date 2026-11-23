@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Decisions for the Icelandic word-bluff game",
+  "folder": "games/word-bluff",
+  "entities": [
+    {
+      "id": "phase-1-go",
+      "title": "Approve Phase 1 and start building the game",
+      "summary": "Phase 1 found 391 verified, usable words (280 of them at obscurity 2–3), above the 200 needed. The research recommends GO; the owner decides.",
+      "status": "open",
+      "context": "The owner asked for the game in two phases and for Phase 2 not to start until Phase 1 is approved. Phase 1 had to show at least 200 verified words that are real, obscure, not given away by their parts, short to define and suitable.",
+      "options": [
+        { "title": "GO", "consequences": "Phase 2 builds the game: lobby with room code, rounds, voting, scoring, reveal with source link, big-screen view, reconnects, custom words." },
+        { "title": "Revise the list first", "consequences": "The owner or another native speaker reviews the sample and the uncertain wording; words are dropped or reworded before the build." }
+      ],
+      "waitingOn": "The owner",
+      "evidenceStatus": "documented",
+      "origin": "The owner's request for the game, in a Claude Code session, 23 November 2026",
+      "links": [ { "path": "games/word-bluff/research/REPORT.md", "label": "Phase 1 report" } ]
+    },
+    {
+      "id": "rare-senses",
+      "title": "How to handle rare senses of common words",
+      "summary": "A large share of the words are a rare sense of a word everyone knows (rjúpa = hnykill, áróður = róður móti straumi). Decide whether the game hints at this or lets the host filter them out.",
+      "status": "open",
+      "context": "These make good bluffs, but a player who writes the common meaning may feel cheated when it is not counted as correct.",
+      "options": [
+        { "title": "Show a hint such as \"sjaldgæf merking\" with the word" },
+        { "title": "Let the host leave such words out" },
+        { "title": "Do nothing; the host's \"essentially correct\" button covers disputes" }
+      ],
+      "waitingOn": "The owner, in Phase 2",
+      "evidenceStatus": "documented",
+      "origin": "Phase 1 research, 23 November 2026"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Dictionary sources for the word list",
+  "folder": "games/word-bluff",
+  "entities": [
+    {
+      "id": "malid",
+      "title": "Málið.is",
+      "summary": "The Árni Magnússon Institute's portal; one JSON lookup per word returns its entries in all the sources below. Every word was verified through it.",
+      "url": "https://malid.is/",
+      "relevance": "All lookups went through https://malid.is/api_proxy/<word>. No terms published; robots.txt allows crawling.",
+      "evidenceStatus": "documented"
+    },
+    {
+      "id": "ino",
+      "title": "Íslensk nútímamálsorðabók (ÍNO)",
+      "summary": "Contemporary Icelandic dictionary with Icelandic definitions and usage labels such as gamalt and skáldamál. Source of 230 definitions.",
+      "url": "https://islenskordabok.arnastofnun.is/",
+      "citation": "Íslensk nútímamálsorðabók. Halldóra Jónsdóttir og Þórdís Úlfarsdóttir (ritstj.). Reykjavík: Stofnun Árna Magnússonar í íslenskum fræðum.",
+      "relevance": "The 2023-12 CLARIN-IS dataset (http://hdl.handle.net/20.500.12537/318) is CC BY-SA 4.0; it was used to find candidate words labelled old or rare. The 2026 release is CC BY-NC-ND 4.0 and was not used. Entry links: https://islenskordabok.arnastofnun.is/ord/<id>. Its robots.txt disallows bots other than the big search engines.",
+      "evidenceStatus": "documented"
+    },
+    {
+      "id": "blondal",
+      "title": "Íslensk-dönsk orðabók (Sigfús Blöndal, 1920–24)",
+      "summary": "Icelandic–Danish dictionary, rich in old and regional words. Source of 122 definitions (Danish glosses translated and paraphrased).",
+      "url": "https://blondal.arnastofnun.is/",
+      "relevance": "No licence published; the site says the digital edition is open to all free of charge. Entry links: https://blondal.arnastofnun.is/faersla/<id>. Its robots.txt disallows bots other than the big search engines.",
+      "evidenceStatus": "documented"
+    },
+    {
+      "id": "ordsifjabok",
+      "title": "Íslensk orðsifjabók (Ásgeir Blöndal Magnússon)",
+      "summary": "Etymological dictionary shown on málið.is. Source of 26 definitions.",
+      "url": "https://malid.is/",
+      "relevance": "No terms found; definitions are paraphrased and linked to the málið.is page.",
+      "evidenceStatus": "documented"
+    },
+    {
+      "id": "idordabanki",
+      "title": "Íðorðabankinn",
+      "summary": "The institute's term bank. Source of 11 definitions.",
+      "url": "https://idordabanki.arnastofnun.is/",
+      "relevance": "No terms found; definitions are paraphrased and linked to the málið.is page.",
+      "evidenceStatus": "documented"
+    },
+    {
+      "id": "islex",
+      "title": "ISLEX",
+      "summary": "Icelandic–Nordic dictionary; its translations were evidence for 2 definitions.",
+      "url": "https://islex.arnastofnun.is/",
+      "citation": "ISLEX. Þórdís Úlfarsdóttir (aðalritstj.). Reykjavík: Stofnun Árna Magnússonar í íslenskum fræðum.",
+      "relevance": "CLARIN-IS dataset 2026 (http://hdl.handle.net/20.500.12537/376) is CC BY-SA 4.0.",
+      "evidenceStatus": "documented"
+    },
+    {
+      "id": "ritmalssafn",
+      "title": "Ritmálssafn Orðabókar Háskólans",
+      "summary": "Corpus of written citations; its count and age of citations were a signal of how obscure a word is.",
+      "url": "https://ritmalssafn.arnastofnun.is/",
+      "citation": "Ritmálssafn Orðabókar Háskólans. Stofnun Árna Magnússonar í íslenskum fræðum.",
+      "relevance": "No terms published. Used only as a signal, not for definitions.",
+      "evidenceStatus": "documented"
+    }
+  ]
+}

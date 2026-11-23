@@ -1,0 +1,7317 @@
+[
+ {
+  "ord": "afglapi",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Uppnefni á fólk; auk þess vel þekkt."
+ },
+ {
+  "ord": "afltaug",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Læknisfræðilegt."
+ },
+ {
+  "ord": "aflæsa",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "aflíðandi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "afskrift",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "afþyrstur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "akkerisfesti",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "alin",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "allhvass",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "allir",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "allt",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "alltént",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "almennilegur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "alrím",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "altént",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "Alþýðubandalagið",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "Alþýðuflokkurinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "alþýðufræðsla",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "amtmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "andarnefja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "andvari",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "andóf",
+  "astaeda": "DUPLICATE",
+  "athugasemd": "Sama merking (róður gegn vindi) og haldið er í andófsmaður; algenga merkingin er vel þekkt."
+ },
+ {
+  "ord": "angurgapi",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "apalhraun",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "arðgæfur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "asahláka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "askur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "atarna",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "atfylgi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "atgeir",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "aukasól",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Auk þess rýr skýring."
+ },
+ {
+  "ord": "aumka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "aurar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "auðnutittlingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "aðalhending",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "aðsjáll",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "baggi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bandamenn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bannsyngja",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "barnakennari",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bartskeri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bauti",
+  "astaeda": "KNOWN",
+  "athugasemd": "Kjötsneiðin er vel þekkt; merking Blöndals aðeins latneskt tegundaheiti."
+ },
+ {
+  "ord": "beitarhús",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "beitilyng",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "beitukóngur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "beiðast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "belgingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "belgvettlingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bending",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bevís",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bikar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "biti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bitur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bjargálna",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bjargálnamaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bjargálnir",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bjartmáfur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bjóða",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bjúgaldin",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blakkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blanda",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blankskór",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blaðstýfa",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Skýrð aðeins með vísun í fjármarkið blaðstýft."
+ },
+ {
+  "ord": "blekbytta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blesgæs",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blesóttur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bleytuhríð",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blindingi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blálanga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blástur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blómálfur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blóðberg",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blóðgun",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Um blóð og sár."
+ },
+ {
+  "ord": "blóðrás",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "blóðsuga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "boddí",
+  "astaeda": "KNOWN",
+  "athugasemd": "Yfirbygging bíls er vel þekkt; gamla merkingin auðráðin af henni."
+ },
+ {
+  "ord": "boddíbíll",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bolöxi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "borgardómari",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "borgardómur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "borgarfógeti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "boðbíldur",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Blöndal vísar aðeins á 'mark'."
+ },
+ {
+  "ord": "bragfótur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "braghenda",
+  "astaeda": "KNOWN",
+  "athugasemd": "Bragfræði úr skóla."
+ },
+ {
+  "ord": "bragliður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "braglína",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bragregla",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "brandugla",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bransi",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Sjaldgæfa merkingin snýst um samneyti kvenna við hermenn; algenga merkingin þekkt."
+ },
+ {
+  "ord": "breiða",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "brenglast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "briggskip",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Augljóslega skipsgerð."
+ },
+ {
+  "ord": "brigsla",
+  "astaeda": "KNOWN",
+  "athugasemd": "Aukamerking um illa gróið beinbrot er læknisfræðileg."
+ },
+ {
+  "ord": "brimgarður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "brjóstveikur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "broddur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "brotsjór",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "brundur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "brynna",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bryntröll",
+  "astaeda": "KNOWN",
+  "athugasemd": "Þekkt vopnaheiti úr Íslendingasögum."
+ },
+ {
+  "ord": "bræla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "brönugras",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "brýni",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "burnirót",
+  "astaeda": "KNOWN",
+  "athugasemd": "Þekkt úr heilsuvörum."
+ },
+ {
+  "ord": "burst",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "busla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bylur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "byrgi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bæjardyr",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bæjarfógeti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bæjarleið",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bæjarþing",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bænhús",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bær",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bókfell",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "böðlast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "búmark",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "búr",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bússa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "bústýra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "búverk",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "búálfur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "býtta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dagmál",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dagsanna",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dagslátta",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dagstofa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dalalæða",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dalverpi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dammur",
+  "astaeda": "KNOWN",
+  "athugasemd": "Auðráðið af dönsku/ensku 'dam'."
+ },
+ {
+  "ord": "dampskip",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dauðasekur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "deilurit",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "diktur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dilkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dimmviðri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dirfð",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "doppa",
+  "astaeda": "KNOWN",
+  "athugasemd": "Sjaldgæfa merking Blöndals (hnappur á málmsmíði) of óljós."
+ },
+ {
+  "ord": "dorga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dorma",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dotta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "drangur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "draumsóley",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dreki",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "drjúgum",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "drolla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "drossía",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "drottinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "drottinsvikari",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dróg",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dufl",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dugga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "duggarapeysa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "duggönd",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dumbungur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "durgur",
+  "astaeda": "KNOWN",
+  "athugasemd": "Einnig niðrandi um fólk."
+ },
+ {
+  "ord": "durtur",
+  "astaeda": "KNOWN",
+  "athugasemd": "Einnig niðrandi um fólk."
+ },
+ {
+  "ord": "dvergasteinn",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dvergmál",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "dyngja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dánumaður",
+  "astaeda": "KNOWN",
+  "athugasemd": "Tvímynd af dándimaður, sem er haldið."
+ },
+ {
+  "ord": "dári",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dável",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dílaskarfur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dúntekja",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dúsín",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dútla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dý",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "dýrleiki",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "edduháttur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "efnagerð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "eftirleit",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "eftirlætisgoð",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "eg",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "eggver",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "einatt",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "einherji",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "einhver",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "einhyrningur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "einmánuður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "einokunarkaupmaður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "eitthvað",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "eiðsvari",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ekkert",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "elfur",
+  "astaeda": "DUPLICATE",
+  "athugasemd": "Sama merking og elfa, sem er haldið."
+ },
+ {
+  "ord": "elixír",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "endarím",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "enginn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "engjarós",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "eyktamörk",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Mörk milli eykta; auðskilið ef eykt er þekkt."
+ },
+ {
+  "ord": "eyrarvinna",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "eðla",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Lýsingarorðið auðráðið af 'eðal'; aðrar merkingar þekktar eða kynferðislegar."
+ },
+ {
+  "ord": "fala",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "falbjóða",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "faldbúningur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "faldur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fararefni",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Svipuð merking og fararbeini, sem er haldið."
+ },
+ {
+  "ord": "fardagar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "farkennari",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "farkennsla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "farprestur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "farskóli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fastlyndur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fastna",
+  "astaeda": "KNOWN",
+  "athugasemd": "Þekkt úr fornsögum ('fastna sér konu')."
+ },
+ {
+  "ord": "fataplögg",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fauti",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Niðrandi um fólk."
+ },
+ {
+  "ord": "faðmur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fellibylur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ferhenda",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ferskeytla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ferskeyttur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ferðakoffort",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "festar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "festarmey",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fikra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "finnast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fipast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "firrast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fiskbreiðsla",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fiskbyrgi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fiskifang",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fiskstakkur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fiskverkun",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fiskvinnsluskóli",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fiskvirði",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fit",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fitla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjallabúi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjallagrös",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjalldrapi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjallkóngur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjarska",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjórðungur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjölhagur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjölkynngi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjörbaugsmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjöregg",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjörkálfur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjörráð",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjörugrös",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Aðeins orðflokksmerking hjá Blöndal."
+ },
+ {
+  "ord": "fjöður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fjúk",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "flagð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "flatbrauð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "flatning",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fleki",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "flekkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "flekkóttur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fleti",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Aðeins beygingarmynd af flötur."
+ },
+ {
+  "ord": "fley",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fljóð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "floti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "flá",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "flóa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "flórgoði",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "flúð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fokka",
+  "astaeda": "KNOWN",
+  "athugasemd": "Einnig óheppilegur hljómur."
+ },
+ {
+  "ord": "fold",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "forarvilpa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fordjörfun",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fordæða",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "forfæra",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "forkelast",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Um veikindi; auk þess þekkt."
+ },
+ {
+  "ord": "formyrkvaður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fornfræði",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fornyrðislag",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "forsmá",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "forsóma",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "forsöngvari",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "frakkneskur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "framfærslueyrir",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "framreiðslustúlka",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "frelsingi",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "fremst",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "freðhvolf",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "frillulifnaður",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "frillulífi",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "friðland",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "frostreykur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "frumburðarréttur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fráfærur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fræðakver",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fræðslulög",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "frón",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fröken",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fullnaðarpróf",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fylgja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fylki",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fyrirbjóða",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fyrirkoma",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fága",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fáleikar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fálki",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fárviðri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fáráður",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Niðrandi um fólk."
+ },
+ {
+  "ord": "fáskiptinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fénast",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fífilbleikur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fífla",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fífukveikur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fógetavald",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fógeti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fólkorrusta",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fólksvagn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fólskur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fórnfæra",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fóstri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fóstruskóli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fósturskóli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fótstykki",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "föl",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "föng",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "förukona",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "förumaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "föxóttur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "fúx",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "fýll",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gagnfræðapróf",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gagnfræðaskóli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gagnfræðingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gagnvart",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "galdrastafur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "galgopi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "Galli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "galsafenginn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gandreið",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gangnaforingi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gangnakofi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gantast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gapastokkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "garri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "garðlag",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gasalegur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gaspra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gaufa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "geir",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "geldfé",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "geldingahnappur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "geldingur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Vönun."
+ },
+ {
+  "ord": "gemlingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gervigígur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gestastofa",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "geðveikrahæli",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "geðveikraspítali",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gikkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gildur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gilja",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gimbur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ginnheilagur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ginnungagap",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gjóla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gjörningur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gjörð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "glanni",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "glaseygður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gleiðgosi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "glerhálka",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "glerungur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "glettast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gleði",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "glitra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "glitský",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gluggaveður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "glófextur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "glókollur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "glópaldi",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "glópur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Niðrandi um fólk; auk þess þekkt."
+ },
+ {
+  "ord": "gormánuður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gortari",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "goðaveldi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "goðorð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "goðorðsmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "grafskrift",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "grafönd",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "-önd gefur upp merkinguna."
+ },
+ {
+  "ord": "grallaraspói",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "grasagrautur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "greyskarnið",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "griðka",
+  "astaeda": "KNOWN",
+  "athugasemd": "Stytting á griðkona sem flestir þekkja."
+ },
+ {
+  "ord": "griðrof",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "grynning",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "grágæs",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "grásleppa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gráðugur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "græðari",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "græðisúra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gríðarstór",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "grósseri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "grútartýra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "grútur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "Grýla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gufuhvolf",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gulllax",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gulmaðra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gumpur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Rass."
+ },
+ {
+  "ord": "gunnreifur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gutla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gylta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gáta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gæði",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gígja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "góa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gósseigandi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "góðbóndi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "göng",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "gýgur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hafgola",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hafræna",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "haftyrðill",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hafvilla",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hafátt",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "haförn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hagyrðingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "haldinorður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "halur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hamast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hamhleypa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hamla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "handavinna",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "handfæri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "handrit",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hangsa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "Hansakaupmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "harpa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "harðhugaður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "harðmæltur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "haugarfi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "haustmánuður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hausun",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "heilrím",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "heimskringla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "heitrof",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "heittempraður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "heiðagæs",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "heiðhvolf",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "heiðlóa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hellidemba",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hellisbúi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "helluhraun",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "helreið",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Ferð til heljar."
+ },
+ {
+  "ord": "helsingi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hempa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hending",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "herradómur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hersir",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hespa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hestburður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hestfóður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "heyannir",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "heykvísl",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "himbrimi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "himinskaut",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hirðisbréf",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hirðstjóri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hitahvolf",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hitaskil",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hjala",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hjalli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hjallur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hjarn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hjáleiga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hjásól",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hjónakorn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hjónaleysi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hlakka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hlandkoppur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Salernisorð."
+ },
+ {
+  "ord": "hliðskjálf",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hljóðpípa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hljóðstafasetning",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hljóðstafur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hláka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hlóðir",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hlýri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hnaus",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hnausþykkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hnoðmör",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hnusa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hnykill",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hnútukast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hokra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "holtasóley",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hornreka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hornsíli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hosa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrafnaklukka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrafnaspark",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrafnaþing",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrafnsönd",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrakfallabálkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrappur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrata",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrekkja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hreppstjóri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hreppsómagi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hret",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hretviðri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hringeygður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrognkelsi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrossafluga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrossagaukur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrosshvalur",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Aðeins óljóst: hvaltegund eða þjóðsagnaskepna."
+ },
+ {
+  "ord": "hryðja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hræringur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrífutindur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrímþoka",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrímþurs",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrís",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrísla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hríð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hró",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrönn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hrösun",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Yfirsjón í ástarmálum."
+ },
+ {
+  "ord": "hrútaber",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "huldufólk",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "huldufólksbyggð",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "huldukona",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "huldulæknir",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "huldumaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hulduvera",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hulinshjálmur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "huliðshjálmur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hundadagar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hundaveður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hundslappadrífa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hvannarót",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Aðeins vísað á hvannrót."
+ },
+ {
+  "ord": "hvassviðri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hvað",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hver",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hverabrauð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hverfisteinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hvílíkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hvítmáfur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "há",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "háfur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hákveða",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "hálfdrættingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hálfkirkja",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hálfrím",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hálfverk",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "háloft",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "háloftakort",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "háloftavindur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hálsknýti",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hámóðins",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hásetahlutur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hávelborinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hávella",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "háyfirdómari",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "háæruverðugur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "háþrýstingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "háþrýstisvæði",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hæka",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Haiku."
+ },
+ {
+  "ord": "hæð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hæðarhryggur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hæðarmiðja",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "héraðshöfðingi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "héraðsskóli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "héraðsþing",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hírast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hófblaðka",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Blöndal-færslan er tóm."
+ },
+ {
+  "ord": "hófsóley",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hólkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hómilía",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "hómópati",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Lækningar."
+ },
+ {
+  "ord": "hórdómsbrot",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "höfrungahlaup",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "höfuðsmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "höfuðstafur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "högld",
+  "astaeda": "DUPLICATE",
+  "athugasemd": "Sama hugtak og hagldir (eintala), sem er haldið."
+ },
+ {
+  "ord": "hönk",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "húsbréf",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "húsfrú",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "húslestur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "húsnæðismálastofnun",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "húsvitja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "húsvitjun",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "húðlát",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Hýðing."
+ },
+ {
+  "ord": "hýða",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "illhveli",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ilmsætur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "innanbúðarmaður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "innantökur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Magaverkur og niðurgangur."
+ },
+ {
+  "ord": "innanþrautir",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Verkir."
+ },
+ {
+  "ord": "innrím",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "iðjuleysingi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "jafnhitalína",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "jafnþrýstilína",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "jagast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "jakahröngl",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "japla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "jarpur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "jaðrakan",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "járnsmiður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "jólaköttur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "jólasveinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "jómfrú",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "jór",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "jóðsjúkur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Fæðingarhríðir."
+ },
+ {
+  "ord": "jökulfýla",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "jötunn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kafald",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kafsnjór",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kalda",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Malaría."
+ },
+ {
+  "ord": "kaldi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kaldtempraður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kallfæri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kalsi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kampselur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kansellístíll",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kargaþýfi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kaskeiti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kaupafólk",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kaupahéðinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kaupakona",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kaupamaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kaupamennska",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kaupavinna",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kaupstaðarferð",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kauði",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kefli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "keila",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kelda",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kenna",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kinnfiskur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kjaftaskur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kjaga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kjamsa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kjarr",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kjói",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kjökra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kjörbúð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "klafi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "klakabrynja",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "klaufhali",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "klepptækur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Geðveiki, notað um fólk."
+ },
+ {
+  "ord": "klyfberi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "klyfjar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kláfur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "klóelfting",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "klófífa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "klósigar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "knörr",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "koffort",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kolla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kollhnís",
+  "astaeda": "KNOWN",
+  "athugasemd": "Engin skýring nema í Orðsifjabók (kollsteypa), vel þekkt."
+ },
+ {
+  "ord": "kollur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kolmunni",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "koppur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kotkarl",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kotra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kotroskinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kotungur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "krankur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Veikindi."
+ },
+ {
+  "ord": "krapahríð",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kringla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "krof",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Skrokkur sláturdýrs."
+ },
+ {
+  "ord": "krosskirkja",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "krunka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "krækilyng",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kría",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "krókstjaki",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "krókur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kröm",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Langvarandi veikindi."
+ },
+ {
+  "ord": "kufl",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kul",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kuldaboli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kurra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kvartil",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kvarði",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kveikur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kvellisjúkur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Heilsuveila."
+ },
+ {
+  "ord": "Kvennalistinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kvensilfur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kver",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kveðlingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kvika",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kvongast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kvos",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kvæðamaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kví",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kvíaær",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kvöldvaka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kyndilmessa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kyrja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kyrrabelti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kássast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kæla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "Kænugarður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kæsa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kólga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kópur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kölski",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kúgildi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kúldrast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kúra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kúristi",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Niðrandi um fólk."
+ },
+ {
+  "ord": "kútter",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kútur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "kýrfóður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lag",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lagnaðarís",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "ís + lagnaður (vatn leggur) – auðgiskað"
+ },
+ {
+  "ord": "lagsmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lambagras",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lambakjöt",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Óformlegt um unga stúlku."
+ },
+ {
+  "ord": "lambsfóður",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Aðeins tilvísun (= lambseldi)."
+ },
+ {
+  "ord": "landeyða",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "landfesti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "landpóstur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "landseti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "landshöfðingi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "landskuld",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Leiga af jörð; þekkt úr sögukennslu"
+ },
+ {
+  "ord": "landátt",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "langa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "langfætla",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "langskip",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "langspil",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "langvía",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "langæi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "laug",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lauga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lausakaup",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lausamaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lausamennska",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "legorð",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "legorðssök",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "leigukúgildi",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Aðeins vísað á innstæðukúgildi"
+ },
+ {
+  "ord": "leiguliði",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "leiktjaldamálari",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "leirburður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "leirljós",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "leistur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lekker",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "Leppalúði",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lesa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "letingi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lifandis",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "liðsbón",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ljá",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ljábakki",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ljósta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ljóstollur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ljósálfur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ljóðlína",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ljóðstafur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lofast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "loftstraumur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "loftþrýstingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "log",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Auðráðið af loga/logi."
+ },
+ {
+  "ord": "logn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "logndrífa",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lognmolla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lokrekkja",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lufsa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lundabaggi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lundarlag",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lunning",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ládauður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lágkveða",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "lágnætti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lágþrýstingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lágþrýstisvæði",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lægðardrag",
+  "astaeda": "KNOWN",
+  "athugasemd": "Algengt í veðurfréttum."
+ },
+ {
+  "ord": "lægðarmiðja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "læknislyf",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lénsmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lóa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lómur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lóuþræll",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lóð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lögbönd",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "löghald",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "löghelgur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lögréttumaður",
+  "astaeda": "KNOWN",
+  "athugasemd": "Kennt í sögu."
+ },
+ {
+  "ord": "lögsögumaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lögtak",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lúkar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lúpulegur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lúra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lúsamulningur",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": ""
+ },
+ {
+  "ord": "lýsislampi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "maddama",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "malpoki",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "manni",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "mannkerti",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Niðrandi um karlmann"
+ },
+ {
+  "ord": "mansöngur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mara",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "marbendill",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "margæs",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "marhnútur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "markaskrá",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "maríuerla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "maríustakkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "masa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mathákur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "matstofa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "matvinnungur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "meinbægni",
+  "astaeda": "DUPLICATE",
+  "athugasemd": "Sama merking og meinbæginn."
+ },
+ {
+  "ord": "meinyrtur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mektarbokki",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "melasól",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "melur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "metaskálar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "meðalvindhraði",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "meðalvindur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "meðhjálpari",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "meðreiðarsveinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "Mikligarður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "millibar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "minn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "misgjörð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mistur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "miðaftann",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "miðdagur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "miðgarður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "miðhvolf",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "miðrím",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "miðskóli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mjaltafata",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mjaltakona",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mjaðarlyng",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Mjöður + lyng gefur merkinguna nokkurn veginn upp"
+ },
+ {
+  "ord": "mjaðjurt",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mjólkurbúð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mjólkursamlag",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "molakaffi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "moldviðri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "monthani",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "morgunhani",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "moð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "moðsuða",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Aðeins danska orðið Høkogning; of rýrt"
+ },
+ {
+  "ord": "mugga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "munnharpa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mussa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mylla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "myrkrastofa",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "myrkvastofa",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mysingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mysuostur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "málaflutningsmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "málafærslumaður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "málflutningsmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "máske",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "máski",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mæliker",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mælistika",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mógröf",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "móhraukur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "móka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mór",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "móri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "móðins",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "möppudýr",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mörk",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mörlandi",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Háðsheiti um Íslendinga"
+ },
+ {
+  "ord": "mörsugur",
+  "astaeda": "KNOWN",
+  "athugasemd": "Gamalt mánaðarheiti, kennt í skóla"
+ },
+ {
+  "ord": "möttull",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "múgur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "músareyra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "músarrindill",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mýraljós",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "mýrasóley",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "naust",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "negrakoss",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "negri",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "neinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nepja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "Niflheimur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "niðursetningur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nokkuð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nornaveiðar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "norðangarri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nykur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nábrók",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Skinn af líki"
+ },
+ {
+  "ord": "náhveli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "náttfall",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nátthrafn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nátttröll",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "náttverður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "náttúrusaga",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "náðhús",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nærkona",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "nærverandi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nón",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nónbil",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nóti",
+  "astaeda": "KNOWN",
+  "athugasemd": "Sbr. 'og hans nótar'."
+ },
+ {
+  "ord": "nökkvi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nöldra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nýlenduvara",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nýmóðins",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nýsköpunartogari",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "nýtísku-",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "offra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "offur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "oflátungur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ofsaveður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ofstuðlun",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "opinbera",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "pakkhúsmaður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "pappírshandrit",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "pempía",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "plagsiður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "pokaprestur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "pollur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "portkona",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "postilla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "pottur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "prestsmaddama",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "prjónles",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "prísa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "prótókollur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "Prússi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "pundari",
+  "astaeda": "DUPLICATE",
+  "athugasemd": "Sama merking (vog með rennilóði) og reisla sem er haldið."
+ },
+ {
+  "ord": "purpuri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "pyttur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "páskahret",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "pæja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "pípa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "pískra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "póstmeistari",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ragnarök",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rannsóknardómari",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rauðbrystingur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rauðliði",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rauðmagi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rauðskinni",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "refskák",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "refti",
+  "astaeda": "DUPLICATE",
+  "athugasemd": "Nátengt 'refta' sem er haldið."
+ },
+ {
+  "ord": "regin",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "regnbogi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "reifabarn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "reifar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "reifastrangi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "reisubók",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "reiðarslag",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "reka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rekafjara",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "reki",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rekkja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rengi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ribbaldi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "riklingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "risi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rismál",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rita",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rjáfur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rjála",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rjátla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rjómabú",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rok",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "rokkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rola",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rosabaugur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "roðinn",
+  "astaeda": "DUPLICATE",
+  "athugasemd": "Lýsingarháttur af 'rjóða'."
+ },
+ {
+  "ord": "roðskór",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ruddi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rugga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rumska",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "runurím",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rykti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rymja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ráfa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "Rán",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ráðsmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ríkisdalur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ríkismaður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rímnaháttur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rímnalag",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rímorð",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rökkursvefn",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "röst",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rúmbrík",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rúmfjöl",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "rýja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sakadómari",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sakadómur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sakka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sallafínn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "samblástur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "samhenda",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "samsala",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "samstafa",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "samvinnumaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "samvinnuskóli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sanderla",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Sand + erla gefur upp að þetta sé fugl; heimild rýr"
+ },
+ {
+  "ord": "sandsíli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sannferðugur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sauðamaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sauðasmjör",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sauðskinnsskór",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "seggur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "segulhvolf",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "seiða",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sekkjapípa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sekkjavara",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sel",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "selanót",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "selstaða",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "selstúlka",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "selveiðari",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sending",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sendisveit",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "serða",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "set",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "setbekkur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "setjari",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "setningur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Merking 1 (ásetningur) auðgiskuð; aðrar merkingar slitnar."
+ },
+ {
+  "ord": "seytjándi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sig",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "siginn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sigldur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sigmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "silfurmáfur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sinfón",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Aðeins tilvísun."
+ },
+ {
+  "ord": "sinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "siðvani",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sjálfsmennska",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sjóklæði",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sjónleikur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sjór",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skafbylur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skafrenningur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skakklappast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skapanorn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skarfakál",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skarfur",
+  "astaeda": "KNOWN",
+  "athugasemd": "Myntmerkingin aðeins í Orðsifjabók"
+ },
+ {
+  "ord": "skari",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skata",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skattkonungur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skattur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skautbúningur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skauð",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skeina",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Aðalmerking um að þurrka afturenda; sjaldgæfa merkingin 'rétta letilega' þó til í Orðsifjabók."
+ },
+ {
+  "ord": "skeinast",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skeið",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skemma",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skemmtifundur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skermur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skerpla",
+  "astaeda": "KNOWN",
+  "athugasemd": "Gamalt mánaðarheiti, kennt í skóla"
+ },
+ {
+  "ord": "skessa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skildagatíð",
+  "astaeda": "KNOWN",
+  "athugasemd": "Kennt í málfræði."
+ },
+ {
+  "ord": "skildingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skilflötur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skinnbók",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skinnklæði",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skinnstakkur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skippund",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skjaldborg",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skjaldmey",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skjaldsveinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skjár",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skjóla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skjóttur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skjóða",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skoffín",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skollabrók",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Skinn af líki."
+ },
+ {
+  "ord": "skollaleikur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skollaþýska",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skonnorta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skonrok",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skotta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skotthúfa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skrafa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skrafhreifinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skrattakollur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Niðrandi um mann"
+ },
+ {
+  "ord": "skreið",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skriffinnur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skrifli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skrugga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skrumlaus",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skrælingi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skrína",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skrölta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skrönglast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skuggsjá",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skuldafangelsi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skussi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skutur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skvaldra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skvampa",
+  "astaeda": "KNOWN",
+  "athugasemd": "Algeng sögn; \"skvampa í sig\" er orðasamband"
+ },
+ {
+  "ord": "skyldusparnaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skyrhræringur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skyrker",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Engin skýring í gögnum."
+ },
+ {
+  "ord": "skyrsía",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skytta",
+  "astaeda": "KNOWN",
+  "athugasemd": "Vefstólsmerkingin er líka allþekkt"
+ },
+ {
+  "ord": "skál",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skáldalaun",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skáldamjöður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skáldaður",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "skáli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skæðadrífa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skógarmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skóggangsmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": "Sama og skógarmaður (útlagi), vel þekkt úr fornsögum."
+ },
+ {
+  "ord": "skóggangur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skólapiltur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skúfur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skúfönd",
+  "astaeda": "KNOWN",
+  "athugasemd": "Þekktur fugl"
+ },
+ {
+  "ord": "skúmur",
+  "astaeda": "KNOWN",
+  "athugasemd": "Þekktur fugl; hin merkingin er uppnefni á fólki"
+ },
+ {
+  "ord": "skúraleiðingar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "skýluklútur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "slafra",
+  "astaeda": "KNOWN",
+  "athugasemd": "Sögnin þekkt; 2. merking Blöndals (slá óvandlega) óljós."
+ },
+ {
+  "ord": "slagveður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "slangra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sleipa",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "slekti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "slæpingi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sléttmáll",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "slóg",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "slóra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "slóði",
+  "astaeda": "KNOWN",
+  "athugasemd": "Slóði á kjól er líka algengt"
+ },
+ {
+  "ord": "smali",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "smiðjubelgur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "smjörkista",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Aðeins tilvísun (= smjörklefi)."
+ },
+ {
+  "ord": "smokka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "smyrill",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "smástreymi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "smáður",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "snemmbær",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sniglast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "snjóflóð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "snjóhengja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "snjómaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "snjótittlingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "snuðrari",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "snælda",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "snót",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sokkatré",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sokkóttur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sonnetta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sortulyng",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "spanskur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "spjátrungur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "spói",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "spónn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "spönn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stafrófskver",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stapi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "steinbítur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "steindepill",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stekkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stemma",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stiftamtmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stinningsgola",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stinningskaldi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stjórafæri",
+  "astaeda": "DUPLICATE",
+  "athugasemd": "Akkerisfæri; of nátengt stjóra sem er haldið."
+ },
+ {
+  "ord": "stjórnarbót",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stjörnóttur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stormsvala",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stormur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "straff",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "straffa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "strand",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "straumönd",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "strengur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "strjúka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "strokka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "strokkhljóð",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stríða",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "strýkja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stuttnefja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stuðlasetning",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stuðlun",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stuðull",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "styr",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stælgæi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stía",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stólræða",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stóridómur",
+  "astaeda": "KNOWN",
+  "athugasemd": "Þekkt úr Íslandssögu; auk þess um skírlífisbrot."
+ },
+ {
+  "ord": "stórstreymi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stúdína",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stúfrifa",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": ""
+ },
+ {
+  "ord": "stýfa",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "sullast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sumir",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sumt",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "suðuhella",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "svanni",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "svartbakur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sveitarlimur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sveitarstyrkur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sveitarómagi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sveitfesti",
+  "astaeda": "DUPLICATE",
+  "athugasemd": "Sama efni og sveitfastur, sem er haldið."
+ },
+ {
+  "ord": "svelgur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sviptivindur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sviðasulta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "svíun",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "svívirða",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sár",
+  "astaeda": "KNOWN",
+  "athugasemd": "Merkingin kerald/áma kemur aðeins fram í Orðsifjabók"
+ },
+ {
+  "ord": "sáta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sáð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sæbjúga",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sæfa",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sækýr",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sælinú",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sætsúpa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sérvitringur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "símritun",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "símstöð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sínkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "síðbær",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sólbráð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sólmánuður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Gamalt mánaðarheiti, \"sól\" gefur sumarið upp"
+ },
+ {
+  "ord": "sónar",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sótt",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "söl",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sölubúð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "söluturn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "söðlasmiður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "söðull",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "súla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "súð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sýlt",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Beygingarmynd af sýla"
+ },
+ {
+  "ord": "sýra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sýrukerald",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "sýsluvegur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "taltæki",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "taumur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "taurulla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tauta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tað",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "taðhraukur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Taðhlaði (saur)"
+ },
+ {
+  "ord": "taðkvörn",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Saur"
+ },
+ {
+  "ord": "teigur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "teista",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "telpa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tilberi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tilbúningur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tildra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tildurrófa",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tog",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tollheimtumaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "toppskarfur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "toppönd",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "torfljár",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "torfrista",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "torfskeri",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "trauðlega",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "traðir",
+  "astaeda": "DUPLICATE",
+  "athugasemd": "Fleirtala af tröð"
+ },
+ {
+  "ord": "trjáviður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "trjónukrabbi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "trunta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tryggingaráð",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tryggðarof",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tröllastakkur",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "tröð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "trúlyndur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tungljurt",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "tungl + jurt (hálfmánalaga blöð) gefur of mikið upp."
+ },
+ {
+  "ord": "tvævetla",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Sbr. tvævetur"
+ },
+ {
+  "ord": "tvævetur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tvíliður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tvísöngur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tyfta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tyftun",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tæring",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tíbrá",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tímakorn",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tólg",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tólgarkerti",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "tómthúsmaður",
+  "astaeda": "DUPLICATE",
+  "athugasemd": "Sama merking og tómthús/þurrabúðarmaður; tómthús haldið."
+ },
+ {
+  "ord": "töðugjöld",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "túkall",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "túngarður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "týra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "umfeðmingur",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Engin skýring á orðinu sjálfu."
+ },
+ {
+  "ord": "umrenningur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "umskiptingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "undiralda",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "undirlak",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "undirsáti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "undirsæng",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "undorn",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Orðsifjabók: ýmist dagmál eða nón."
+ },
+ {
+  "ord": "uppbótarsæti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "uppbótarþingmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "uppfæða",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "uppfóstur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "upphlutur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "uppskrift",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "uppskveraður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "upptökuheimili",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "uppvakningur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "urtönd",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "-önd gefur upp merkinguna."
+ },
+ {
+  "ord": "urð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "urðarköttur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Þjóðsagnamerkingin snýst um lík og dráp"
+ },
+ {
+  "ord": "valhoppa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "valkyrja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "valköstur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vallhumall",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vappa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "varasemi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vari",
+  "astaeda": "KNOWN",
+  "athugasemd": "Merkingin viðvörun/gætni þekkt (hafa varann á); naglamerkingin óljós."
+ },
+ {
+  "ord": "vatn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vatnshvolf",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vaðmál",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vefstaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vegvísir",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vellingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ver",
+  "astaeda": "KNOWN",
+  "athugasemd": "Margar merkingar orðsins vel þekktar (veiðistöð, koddaver)."
+ },
+ {
+  "ord": "verbúð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vermaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vesalingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vetrarblóm",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vetrarmaður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "veturnætur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "veðrahvolf",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "veðrakerfi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vigt",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vik",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vika",
+  "astaeda": "KNOWN",
+  "athugasemd": "Sögnin (víkja) er aðeins einangrað dæmi; nafnorðið er hversdagsorð."
+ },
+ {
+  "ord": "vikalipur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vikapiltur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vikivaki",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "villur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vindsveipur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vinnuhjú",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vinnuhjúaskildagi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vinnukona",
+  "astaeda": "KNOWN",
+  "athugasemd": "Merkingin rúðuþurrka er vel þekkt meðal fólks á þessum aldri."
+ },
+ {
+  "ord": "vistarband",
+  "astaeda": "KNOWN",
+  "athugasemd": "kennt í sögu"
+ },
+ {
+  "ord": "vistaskipti",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vitlausrahæli",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vitlausraspítali",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "viðlega",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vog",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vogmær",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "vola",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vor",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "væflast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vænleiki",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vænleikur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vélskóli",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vér",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vígur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "víking",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "víravirki",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vögguvísa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vökukona",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vökulok",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Engin skýring í gögnum."
+ },
+ {
+  "ord": "vökulög",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vökustaur",
+  "astaeda": "KNOWN",
+  "athugasemd": "Eina skilgreiningin er læknisfræðileg"
+ },
+ {
+  "ord": "völva",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vör",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vörslugarður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "vöðuselur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "yfirdómur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "yfirfljótanlegur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "yfirsakadómari",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "yfirseta",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "yfirsetukona",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "yfirsæng",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "yrkja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ytra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ábrystir",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "áfir",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ágæta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "álagablettur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "álfadrottning",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "álfakóngur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "álfamær",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "álfasteinn",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "álfkona",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "álft",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "álfur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "álka",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "álkulegur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "álpast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "áma",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ámátlegur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "árvakur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ás",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "áttungur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "átvagl",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ávirðing",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ægi-",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ægir",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ægishjálmur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ærgildi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ætihvönn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ættborinn",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "íklæðast",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "íleppur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ílöngun",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "íshús",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ítak",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ívera",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ódáinsveig",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ódöngun",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Um vanþrif barna."
+ },
+ {
+  "ord": "ófeigur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": "Tengist dauða."
+ },
+ {
+  "ord": "ógn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ólafssúra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ólag",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ólystugur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ólátabelgur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ómagi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ónytjungur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "óskasteinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "óskastund",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ósonlag",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "óvita",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "óvættur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "óðinshani",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "óþjóðalýður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "óþokki",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "óþurrkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "öfuguggi",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "öldungaráð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ölkelda",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ölmusumaður",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "öndvegissúla",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "öngull",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "örlyndi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": "Auðráðið af örlátur/ör í lund."
+ },
+ {
+  "ord": "örviti",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "öskukarl",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "öxl",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "útburður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "úthey",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "útilegumaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "útlát",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "útræði",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "útselur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "útsynningur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "útvarpsvirki",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "ýmis",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þegnfrelsi",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þekja",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þel",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þessi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þetta",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þeytingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þilskip",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þingsveinn",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þingvitni",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þinn",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þjó",
+  "astaeda": "DROPPED_IN_AUDIT",
+  "athugasemd": "Fjarlægt við yfirferð: veikur stuðningur, of nálægt öðru orði eða óhentugt."
+ },
+ {
+  "ord": "þjóðjörð",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þjóðrækni",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þokubakki",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þorraþræll",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þorri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þrasa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þrjótur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þrumuveður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þríhenda",
+  "astaeda": "DUPLICATE",
+  "athugasemd": "Sama og tersína, sem er haldið."
+ },
+ {
+  "ord": "þríliður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þrýstilína",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þula",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þumlungur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þunnildi",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þurfalingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þurrabúðarmaður",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þurradrumbur",
+  "astaeda": "UNSUITABLE",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þvara",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þvottastandur",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þykkvalúra",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þykkviðri",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þá",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þáskildagatíð",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þæfa",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þéna",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þér",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þíðviðri",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þónokkur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þórshani",
+  "astaeda": "TRANSPARENT",
+  "athugasemd": ""
+ },
+ {
+  "ord": "þúfnabani",
+  "astaeda": "NO_CLEAR_MEANING",
+  "athugasemd": "Blöndal gefur enga skýringu."
+ },
+ {
+  "ord": "þúfutittlingur",
+  "astaeda": "KNOWN",
+  "athugasemd": ""
+ }
+]
