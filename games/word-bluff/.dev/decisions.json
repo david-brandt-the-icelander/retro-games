@@ -7,17 +7,28 @@
     {
       "id": "phase-1-go",
       "title": "Approve Phase 1 and start building the game",
-      "summary": "Phase 1 found 391 verified, usable words (280 of them at obscurity 2–3), above the 200 needed. The research recommends GO; the owner decides.",
+      "summary": "Phase 1 found 1,800 verified words scored for difficulty 1–10. Every proposed level has well over 200 words (Barnvænt 973, Létt 1,408, Miðlungs 966, Erfitt 537). The research recommends GO; the owner decides.",
       "status": "open",
-      "context": "The owner asked for the game in two phases and for Phase 2 not to start until Phase 1 is approved. Phase 1 had to show at least 200 verified words that are real, obscure, not given away by their parts, short to define and suitable.",
+      "context": "The owner asked for the game in two phases and for Phase 2 not to start until Phase 1 is approved. Phase 1 had to show at least 200 verified words that are real, obscure, not given away by their parts, short to define and suitable. The owner then asked for difficulty levels, the easiest playable with children, and for a larger list to fill them.",
       "options": [
-        { "title": "GO", "consequences": "Phase 2 builds the game: lobby with room code, rounds, voting, scoring, reveal with source link, big-screen view, reconnects, custom words." },
-        { "title": "Revise the list first", "consequences": "The owner or another native speaker reviews the sample and the uncertain wording; words are dropped or reworded before the build." }
+        {
+          "title": "GO",
+          "consequences": "Phase 2 builds the game: lobby with room code, rounds, voting, scoring, reveal with source link, big-screen view, reconnects, custom words."
+        },
+        {
+          "title": "Revise the list first",
+          "consequences": "The owner or another native speaker reviews the sample and the uncertain wording; words are dropped or reworded before the build."
+        }
       ],
       "waitingOn": "The owner",
       "evidenceStatus": "documented",
       "origin": "The owner's request for the game, in a Claude Code session, 23 November 2026",
-      "links": [ { "path": "games/word-bluff/research/REPORT.md", "label": "Phase 1 report" } ]
+      "links": [
+        {
+          "path": "games/word-bluff/research/REPORT.md",
+          "label": "Phase 1 report"
+        }
+      ]
     },
     {
       "id": "rare-senses",
@@ -26,13 +37,50 @@
       "status": "open",
       "context": "These make good bluffs, but a player who writes the common meaning may feel cheated when it is not counted as correct.",
       "options": [
-        { "title": "Show a hint such as \"sjaldgæf merking\" with the word" },
-        { "title": "Let the host leave such words out" },
-        { "title": "Do nothing; the host's \"essentially correct\" button covers disputes" }
+        {
+          "title": "Show a hint such as \"sjaldgæf merking\" with the word"
+        },
+        {
+          "title": "Let the host leave such words out"
+        },
+        {
+          "title": "Do nothing; the host's \"essentially correct\" button covers disputes"
+        }
       ],
       "waitingOn": "The owner, in Phase 2",
       "evidenceStatus": "documented",
       "origin": "Phase 1 research, 23 November 2026"
+    },
+    {
+      "id": "difficulty-levels",
+      "title": "Difficulty levels as windows on a 1–10 word difficulty score",
+      "summary": "Every word has a difficulty score 1–10; a level is a [min, max] window on it, so levels overlap like cut-offs on a bell curve. The easiest level also requires child-friendly words that are not a rare sense of a common word.",
+      "status": "decided",
+      "context": "The owner asked for difficulty levels: the lowest playable with children, the highest holding the obscure words of the first round, with each level setting minimum and maximum word difficulty on a bell curve.",
+      "decision": "Proposed windows, stored in research/words.json under erfidleikastig: Barnvænt 1–4 (child-friendly only), Létt 2–6, Miðlungs 4–8, Erfitt 6–10. The windows are data and can be changed without touching the words.",
+      "rationale": "Overlapping windows give every level enough words (537–1,408) and let the owner tune levels without re-scoring.",
+      "decidedBy": "The owner (the approach); the windows are a proposal",
+      "decidedOn": "2026-11-23",
+      "evidenceStatus": "documented",
+      "origin": "The owner's request in a Claude Code session, 23 November 2026",
+      "links": [
+        {
+          "path": "games/word-bluff/research/REPORT.md",
+          "label": "Phase 1 report"
+        }
+      ]
+    },
+    {
+      "id": "domain-words",
+      "title": "Words known only inside a trade are fair game",
+      "summary": "A word that farmers, sailors, weavers or clergy know but most people outside the trade don't counts as obscure; it is scored by how many people in the general adult population know it.",
+      "status": "decided",
+      "context": "Raised when reviewing sheep-farming words in Phase 1.",
+      "decision": "Domain-specific words are allowed at every level, scored by general-population familiarity.",
+      "decidedBy": "The owner",
+      "decidedOn": "2026-11-23",
+      "evidenceStatus": "documented",
+      "origin": "The owner's message in a Claude Code session, 23 November 2026"
     }
   ]
 }
