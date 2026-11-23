@@ -40,7 +40,7 @@ In the browser the messages travel through the games hub's match relay, `/games/
 | `npm run test:godot` | The Godot tests (needs `godot` 4.7.2 on the PATH). |
 | `npm run build` | The web export into `dist/games/retro/double-cross/` (needs Godot 4.7.2 with its web export templates; set `GODOT` to its path). |
 | `npm run dev` | Build and run the Worker locally with wrangler. |
-| `npm run deploy` | Test, build and deploy. Normally the Deploy workflow does this when a change reaches `main`. |
+| `npm run deploy` | Test, build and deploy. Nothing deploys from GitHub, so this is how it goes live. |
 
 Desktop testing flags, after `--`: `--host`, `--join=IP`, `--solo`, `--match=ID --relay=ws://HOST:PORT`, `--name=NAME`, `--map=ID`, `--mode=lms|teams`, `--autostart=N`, `--spectate`, `--bot`, `--quit-after=S`, `--shot=FILE --shot-at=S`, `--selftest`.
 

@@ -32,7 +32,7 @@ Each game needs a sign-in with Google or GitHub, icelander.net's one sign-in (th
 
 ## Deploying
 
-Pushing to `main` deploys each game whose folder changed outside its `.dev` folders (`.github/workflows/deploy.yml`): it runs the game's tests, builds it and runs `wrangler deploy`, as the game's own `npm run deploy` does. Gambit, Hedgerow, Thrustbound, Neon Snake, Swarmhold, Rampart, Deep Claim, Neon Cycles, Inkwell Academy, Iron Haze and Twelve Banners also get Godot 4.7.2 and its export templates. "Run workflow" on the Deploy workflow in the Actions tab deploys one game, or all of them, by hand. Pull requests test and build the games they change, and check the `.dev` files, without deploying. The workflows need the repository secret `CLOUDFLARE_API_TOKEN`. Database migrations are applied by hand, and a check holds back any pull request and deploy that changes a database until that is acknowledged: see [docs/database-migrations.md](docs/database-migrations.md).
+Nothing deploys from GitHub: merging to `main` deploys nothing. A game goes live when it is deployed by hand from its folder with `npm run deploy`, which runs its tests, builds it and runs `wrangler deploy`, with a Cloudflare API token for the account. The Godot games need Godot 4.7.2 and its export templates installed for that (each game's README says which). Pull requests test and build the games they change (`.github/workflows/ci.yml`, `game.yml`), and check the `.dev` files. Database migrations are applied by hand, and the "Database migration" check holds back any pull request that changes a database until that is acknowledged: see [docs/database-migrations.md](docs/database-migrations.md).
 
 ## Architecture
 

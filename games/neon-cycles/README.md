@@ -53,7 +53,7 @@ The web export uses the Compatibility renderer (WebGL 2), keeps the glow and lea
 
 ## Deploy
 
-Pushing to `main` deploys it (`.github/workflows/deploy.yml`), or run `npm run deploy` here. It has no database and no secrets: the sign-in is icelander.net's login service, through the `ACCOUNTS` service binding and the public keys in `ACCOUNTS_JWKS` in `wrangler.jsonc`.
+Nothing deploys from GitHub: deploy it by hand with `npm run deploy` here. It has no database and no secrets: the sign-in is icelander.net's login service, through the `ACCOUNTS` service binding and the public keys in `ACCOUNTS_JWKS` in `wrangler.jsonc`.
 
 ## Licence
 

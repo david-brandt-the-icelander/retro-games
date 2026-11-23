@@ -50,4 +50,4 @@ npm run dev              # exports the game, then wrangler dev at http://localho
 
 ## Deploy
 
-A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`), as `npm run deploy` would: tests, the Godot export, then `wrangler deploy`. The Worker needs no secrets and no database. It is listed on icelander.net/games from `site/games.json` in the icelander.net repository.
+Nothing deploys from GitHub: deploy it by hand with `npm run deploy`, which runs the tests, the Godot export, then `wrangler deploy`. The Worker needs no secrets and no database. It is listed on icelander.net/games from `site/games.json` in the icelander.net repository.

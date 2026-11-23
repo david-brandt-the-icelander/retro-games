@@ -55,4 +55,4 @@ Run it from the Godot editor with `godot/project.godot`. `godot --path godot -- 
 
 ## Deploy
 
-A merge to `main` that changes this folder deploys it (the repository README, "Deploying"). By hand: `npm run deploy`. No database, secrets or one-time set-up.
+Nothing deploys from GitHub (the repository README, "Deploying"): deploy it by hand with `npm run deploy`. No database, secrets or one-time set-up.

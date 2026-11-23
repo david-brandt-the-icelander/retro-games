@@ -72,4 +72,4 @@ Row 19 must be a continuous floor and rows 17–18 free of rock, so the buggy ca
 
 ## Deploy
 
-A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`; `game.yml` lists it among the Godot games, which get Godot 4.7.2 and its web templates), as `npm run deploy` does by hand. The Worker `deep-claim` takes the route `icelander.net/games/retro/deep-claim*`, ahead of the games hub's `icelander.net/games/*`. It needs no secrets and no database. The game is listed on icelander.net/games from `site/games.json` in the icelander.net repository.
+Nothing deploys from GitHub: deploy it by hand with `npm run deploy`, with Godot 4.7.2 and its web templates installed (CI's `game.yml` installs them to test and build it). The Worker `deep-claim` takes the route `icelander.net/games/retro/deep-claim*`, ahead of the games hub's `icelander.net/games/*`. It needs no secrets and no database. The game is listed on icelander.net/games from `site/games.json` in the icelander.net repository.

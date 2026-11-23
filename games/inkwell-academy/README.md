@@ -56,5 +56,5 @@ npm test && npm run test:godot
 npm run build      # dist/games/retro/inkwell-academy/, with the engine split under Cloudflare's 25 MiB limit
 ```
 
-A merge to `main` deploys it (`.github/workflows/deploy.yml`); `npm run deploy` does the same by hand.
+Nothing deploys from GitHub: deploy it by hand with `npm run deploy`.
 It has no database and no secrets.

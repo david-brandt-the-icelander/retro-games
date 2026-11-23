@@ -1,7 +1,7 @@
 # Owner
 
 **Kind:** person in a role
-**Evidence:** `AGENTS.md` (`Agent instructions`: never deploy, or run `wrangler` against the remote databases, unless the owner asks; merging is deploying), `docs/database-migrations.md` (`Applying it to production`: only when the owner has asked for the change to go live; `When something went wrong`: only the owner decides on a restore), `.github/workflows/deploy.yml` (`on.workflow_dispatch`, and the `production` environment's reviewer), the `decisions` records whose `waitingOn` is the owner (listed by the explorer's Waiting panel)
+**Evidence:** `AGENTS.md` (`Agent instructions`: never deploy, or run `wrangler` against the remote databases, unless the owner asks; nothing deploys from GitHub), `docs/database-migrations.md` (`Applying it to production`: only when the owner has asked for the change to go live; `When something went wrong`: only the owner decides on a restore), the `decisions` records whose `waitingOn` is the owner (listed by the explorer's Waiting panel)
 
 ## What they want from the system
 
@@ -11,7 +11,7 @@
 
 ## How they reach it
 
-GitHub: pull requests to merge, Run workflow on the Deploy workflow, and the `production` environment's approval when a reviewer is set. Cloudflare, with the account's credentials, for what the workflows never do (database migrations, secrets).
+GitHub: pull requests to merge. Cloudflare, with the account's credentials, for everything that goes live: deploying a game by hand with `npm run deploy` (nothing deploys from GitHub since 2026-11-21), database migrations and secrets.
 
 ## Not to be confused with
 

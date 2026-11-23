@@ -101,7 +101,7 @@ To play a local copy, open `public/index.html` in a browser; the sign-in is only
 
 ## Deploy
 
-A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`), running the same steps as `npm run deploy`: the tests, the build and `wrangler deploy`. MEG has no D1 database: its high-score table is a Durable Object, which the deploy creates from the migrations in `wrangler.jsonc`, so nothing is migrated by hand. Keep every entry in that list.
+Nothing deploys from GitHub: deploy it by hand with `npm run deploy`, which runs the tests, the build and `wrangler deploy`. MEG has no D1 database: its high-score table is a Durable Object, which the deploy creates from the migrations in `wrangler.jsonc`, so nothing is migrated by hand. Keep every entry in that list.
 
 ## Status
 

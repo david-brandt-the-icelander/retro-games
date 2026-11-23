@@ -118,6 +118,6 @@ godot --headless --path godot -- --autoplay --speed=20 --quit-after=60
 
 ## Deploy
 
-A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`, which installs Godot 4.7.2 and
-its export templates for the Godot games). The Worker needs no database and no secrets: only the route
+Nothing deploys from GitHub: deploy it by hand with `npm run deploy`, with Godot 4.7.2 and its export
+templates installed. The Worker needs no database and no secrets: only the route
 `icelander.net/games/fresh/hand-of-the-isle*` and the service binding to the login service, both in `wrangler.jsonc`.
