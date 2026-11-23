@@ -7,6 +7,7 @@
 **Evidence (Hivestorm):** `games/hivestorm/worker/index.ts` (`AUTH`, `gamePage`: the same sign-in and role), `games/hivestorm/src/ui/input.ts` (`Controls`), `games/hivestorm/src/main.ts` (`step`, `joinMatch`, `offerTable`)
 **Evidence (Deep Claim):** `games/deep-claim/worker/index.ts` (`gamePage`: the page needs a sign-in to icelander.net with the `games:play` role), `games/deep-claim/godot/scripts/main.gd` (`Main._update_playing`)
 **Evidence (Shatterbelt):** `games/shatterbelt/worker/index.ts` (`AUTH`, `gamePage`: Shatterbelt's page and score API need the same sign-in and role), `games/shatterbelt/src/main.ts` (`launch`, `joinMatch`), `games/shatterbelt/src/input.ts` (`Input.controls`: one pilot per browser)
+**Evidence (Dulmál):** `games/dulmal/worker/index.ts` (`default.fetch`: no sign-in, a room's link is enough), `games/dulmal/src/shared/game.ts` (`join`, `claim`: a seat in a room, kept by a token in the browser), `games/dulmal/src/client/main.ts` (`connect`)
 
 ## What they want from the system
 
@@ -21,6 +22,7 @@
 - To play a friend at Hivestorm on another device, taking turns, each with their own score on the table ([Hivestorm's use cases](../games/hivestorm/src/.dev/use-case.json), `play-online`; [journeys](../games/hivestorm/.dev/user-journey.json), `play-a-friend`).
 - To fly Shatterbelt alone and get onto its high-score table ([Shatterbelt's use cases](../games/shatterbelt/src/.dev/use-case.json), `fly-solo-and-enter-table`; [journeys](../games/shatterbelt/.dev/user-journey.json), `climb-the-table`).
 - To fly Shatterbelt with up to eight friends online, each on their own device, together or against each other, and see everyone's scores on the table ([Shatterbelt's use cases](../games/shatterbelt/src/.dev/use-case.json), `fly-online`; [journeys](../games/shatterbelt/.dev/user-journey.json), `fly-with-friends`).
+- To play Dulmál, an Icelandic team word game, with friends and family in the same room or elsewhere, each on their own phone, by opening one shared link ([Dulmál's deployment diagram](../games/dulmal/.dev/deployment-diagram.json)).
 
 ## How they reach it
 
@@ -33,3 +35,5 @@ Samosa's page at icelander.net/games/retro/samosa/, signed in to icelander.net, 
 Hivestorm's page at icelander.net/games/retro/hivestorm/, signed in to icelander.net, with a keyboard or the touch buttons under the screen. Its online games also start on the multiplayer page, which opens the game with `?match=ID`; there, the other player plays their own turns of the same two-player game.
 
 Shatterbelt's page is at icelander.net/games/retro/shatterbelt/, signed in the same way, with a keyboard, a gamepad or a touch screen; its online games, for two to nine pilots, start on the same multiplayer page, and every pilot in them is a player too.
+
+Dulmál's page is at icelander.net/games/fresh/dulmal/, with no sign-in: a player opens a room's link (`?herbergi=CODE`), or types its four-letter code, and gives a name. A TV or projector in the room can show the board with `&skjar=1`; it is a screen, not a player.

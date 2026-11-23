@@ -1,0 +1,96 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "Dulmál deployment diagram",
+  "folder": "games/dulmal",
+  "description": "How Dulmál runs: one Cloudflare Worker with static assets and a Durable Object class, one object per room, with no database and no sign-in.",
+  "sources": [
+    {
+      "path": "games/dulmal/wrangler.jsonc",
+      "symbol": "dulmal"
+    },
+    {
+      "path": "games/dulmal/build.mjs",
+      "symbol": "SITE"
+    },
+    {
+      "path": "games/dulmal/worker/index.ts",
+      "symbol": "RoomObject"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "browser",
+      "name": "Player's phone or computer",
+      "kind": "client",
+      "description": "Runs the page; one WebSocket to the room.",
+      "actor": "Actors/player.md"
+    },
+    {
+      "id": "tv",
+      "name": "Shared big screen",
+      "kind": "client",
+      "description": "A browser on a TV or projector opened with &skjar=1: the board, the clue and the score, never the key."
+    },
+    {
+      "id": "edge",
+      "name": "Cloudflare edge",
+      "kind": "host",
+      "description": "Runs the Worker on icelander.net/games/fresh/dulmal*, ahead of the games hub's route."
+    },
+    {
+      "id": "worker",
+      "name": "dulmal Worker",
+      "kind": "process",
+      "description": "worker/index.ts: the room API and the static page from ./dist."
+    },
+    {
+      "id": "room",
+      "name": "RoomObject Durable Object",
+      "kind": "process",
+      "description": "One per room code, with SQLite-backed storage holding the room as JSON and an alarm for the turn timer and idle deletion. Its WebSockets hibernate between messages."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "page",
+      "name": "index.html, app.js, style.css, icon.svg and _headers",
+      "source": "games/dulmal/src/client/main.ts",
+      "deployedTo": "edge",
+      "description": "Built by build.mjs into dist/games/fresh/dulmal/, with a strict Content-Security-Policy."
+    },
+    {
+      "id": "script",
+      "name": "Worker script",
+      "source": "games/dulmal/worker/index.ts",
+      "deployedTo": "worker",
+      "description": "The fetch handler and the RoomObject class, bundled by wrangler with data/ord.txt."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "edge",
+      "to": "worker",
+      "kind": "hosts",
+      "description": "Routes icelander.net/games/fresh/dulmal* to the Worker."
+    },
+    {
+      "from": "browser",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "HTTPS for the page and to create a room; a WebSocket for the room."
+    },
+    {
+      "from": "tv",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "The same page and WebSocket, as a screen."
+    },
+    {
+      "from": "worker",
+      "to": "room",
+      "kind": "connects-to",
+      "description": "Durable Object binding ROOMS, idFromName(code)."
+    }
+  ]
+}

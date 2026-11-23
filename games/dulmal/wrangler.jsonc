@@ -1,0 +1,17 @@
+// The Dulmál Worker at icelander.net/games/fresh/dulmal: the page, and one Durable Object per
+// room that holds the game and talks to every device over a WebSocket (worker/index.ts, worker/room.ts).
+// No sign-in, no D1 database and no secrets. Deployed by .github/workflows/deploy.yml on a merge to main.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dulmal",
+  "compatibility_date": "2025-06-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "icelander.net/games/fresh/dulmal*", "zone_name": "icelander.net" }],
+  "main": "worker/index.ts",
+  // Every request goes through the Worker first, so it can answer the room API and set cache headers.
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": true },
+  "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "RoomObject" }] },
+  // Cloudflare applies these in order; keep every entry.
+  "migrations": [{ "tag": "rooms-v1", "new_sqlite_classes": ["RoomObject"] }]
+}
