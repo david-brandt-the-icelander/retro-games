@@ -1,0 +1,29 @@
+// The Kvarðinn Worker at icelander.net/games/fresh/kvardinn: the page, and the game rooms as
+// Durable Objects (worker/room.ts). Open to everyone: no sign-in (README.md, "No sign-in").
+// Deployed by .github/workflows/deploy.yml on a merge to main (README.md, "Hosting").
+//
+// `wrangler deploy --env standalone` instead puts the same game at the root of a workers.dev
+// address on whatever Cloudflare account wrangler is logged in to, for hosting it elsewhere.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kvardinn",
+  "main": "worker/index.ts",
+  "compatibility_date": "2025-04-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "icelander.net/games/fresh/kvardinn*", "zone_name": "icelander.net" }],
+  // Every request goes through the Worker first, which maps BASE onto dist/.
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": true },
+  "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "Room" }] },
+  "migrations": [{ "tag": "rooms-v1", "new_sqlite_classes": ["Room"] }],
+  "vars": { "BASE": "/games/fresh/kvardinn" },
+  "env": {
+    "standalone": {
+      "name": "kvardinn",
+      "workers_dev": true,
+      "routes": [],
+      "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "Room" }] },
+      "vars": { "BASE": "" }
+    }
+  }
+}
