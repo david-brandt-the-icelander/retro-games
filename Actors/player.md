@@ -7,6 +7,7 @@
 **Evidence (Hivestorm):** `games/hivestorm/worker/index.ts` (`AUTH`, `gamePage`: the same sign-in and role), `games/hivestorm/src/ui/input.ts` (`Controls`), `games/hivestorm/src/main.ts` (`step`, `joinMatch`, `offerTable`)
 **Evidence (Deep Claim):** `games/deep-claim/worker/index.ts` (`gamePage`: the page needs a sign-in to icelander.net with the `games:play` role), `games/deep-claim/godot/scripts/main.gd` (`Main._update_playing`)
 **Evidence (Shatterbelt):** `games/shatterbelt/worker/index.ts` (`AUTH`, `gamePage`: Shatterbelt's page and score API need the same sign-in and role), `games/shatterbelt/src/main.ts` (`launch`, `joinMatch`), `games/shatterbelt/src/input.ts` (`Input.controls`: one pilot per browser)
+**Evidence (Kvarðinn):** `games/kvardinn/worker/index.ts` (`default.fetch`: no sign-in; anyone with the room's link plays), `games/kvardinn/src/engine/game.ts` (`addPlayer`: a seat is a name, a team and a seat token; `effectiveHost`: the first player in, or while they are away the earliest-joined player online, gets the host's buttons), `games/kvardinn/src/client/net.ts` (`loadSeat`, `saveSeat`: the seat is kept in that browser)
 
 ## What they want from the system
 
@@ -21,6 +22,7 @@
 - To play a friend at Hivestorm on another device, taking turns, each with their own score on the table ([Hivestorm's use cases](../games/hivestorm/src/.dev/use-case.json), `play-online`; [journeys](../games/hivestorm/.dev/user-journey.json), `play-a-friend`).
 - To fly Shatterbelt alone and get onto its high-score table ([Shatterbelt's use cases](../games/shatterbelt/src/.dev/use-case.json), `fly-solo-and-enter-table`; [journeys](../games/shatterbelt/.dev/user-journey.json), `climb-the-table`).
 - To fly Shatterbelt with up to eight friends online, each on their own device, together or against each other, and see everyone's scores on the table ([Shatterbelt's use cases](../games/shatterbelt/src/.dev/use-case.json), `fly-online`; [journeys](../games/shatterbelt/.dev/user-journey.json), `fly-with-friends`).
+- To play Kvarðinn with friends, some in the same room and some remote, each on their own phone, joining from one link with only a name: give clues, guess on the scale as a team, and win or beat the group's best ([Kvarðinn's deployment](../games/kvardinn/.dev/deployment-diagram.json); [the phases of a game](../games/kvardinn/src/engine/.dev/Game.state-diagram.json)).
 
 ## How they reach it
 
@@ -33,3 +35,5 @@ Samosa's page at icelander.net/games/retro/samosa/, signed in to icelander.net, 
 Hivestorm's page at icelander.net/games/retro/hivestorm/, signed in to icelander.net, with a keyboard or the touch buttons under the screen. Its online games also start on the multiplayer page, which opens the game with `?match=ID`; there, the other player plays their own turns of the same two-player game.
 
 Shatterbelt's page is at icelander.net/games/retro/shatterbelt/, signed in the same way, with a keyboard, a gamepad or a touch screen; its online games, for two to nine pilots, start on the same multiplayer page, and every pilot in them is a player too.
+
+Kvarðinn is at icelander.net/games/fresh/kvardinn/ (or a workers.dev address), with no sign-in: a player opens the room's link or types its code, gives a name and picks a team, on a phone or a laptop. The host is a player too, the first one in; the code gives them more buttons but knows them only as a seat. A big screen (`#CODE/skjar`) is a device the players open, not a player: it holds no seat.

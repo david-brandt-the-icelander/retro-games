@@ -119,6 +119,13 @@
       "responsibility": "A new spy-trap party game in Godot: search for intel, rig traps, reach the extraction door, alone or online with up to eight agents.",
       "folder": "games/double-cross",
       "diagram": "games/double-cross/.dev/component-diagram.json"
+    },
+    {
+      "id": "kvardinn",
+      "name": "Kvarðinn",
+      "responsibility": "A new Icelandic team guessing game on a 0–100 scale for 4–12 players on their own phones, served by a Cloudflare Worker with a Durable Object per room and no sign-in.",
+      "folder": "games/kvardinn",
+      "diagram": "games/kvardinn/.dev/component-diagram.json"
     }
   ],
   "relationships": [
@@ -211,6 +218,12 @@
       "to": "double-cross",
       "kind": "contains",
       "description": "Double Cross is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "kvardinn",
+      "kind": "contains",
+      "description": "Kvarðinn is one of the games."
     }
   ]
 }
