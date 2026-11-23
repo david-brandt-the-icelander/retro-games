@@ -3,14 +3,10 @@
   "kind": "operation",
   "title": "Workflow operations",
   "folder": ".github",
-  "description": "The events that start each workflow, and the scripts the workflows call, which can also be run by hand from the repository root.",
+  "description": "The events that start each workflow, all of them on pull requests, and the scripts the workflows call, which can also be run by hand from the repository root. None of them deploys.",
   "sources": [
     {
       "path": ".github/workflows/ci.yml",
-      "symbol": "on"
-    },
-    {
-      "path": ".github/workflows/deploy.yml",
       "symbol": "on"
     },
     {
@@ -73,55 +69,6 @@
       ]
     },
     {
-      "id": "deploy-changed-games",
-      "name": "Deploy the changed games",
-      "description": "Deploys each game a push to main changed, once the migration gate passes.",
-      "sources": [
-        {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "jobs"
-        },
-        {
-          "path": ".github/workflows/game.yml",
-          "symbol": "jobs"
-        }
-      ],
-      "entrypoint": {
-        "path": ".github/workflows/deploy.yml",
-        "symbol": "on.push"
-      },
-      "action": "command",
-      "transport": "GitHub push event on main",
-      "authorization": "Only pull requests reach main (AGENTS.md); deploy jobs run in the production environment, with its reviewer if one is set, and need CLOUDFLARE_API_TOKEN.",
-      "result": "Each changed game tested, built and deployed with wrangler deploy; a change to .dev files alone deploys nothing.",
-      "failures": [
-        "A database change since the last deploy is not acknowledged: the migrations job fails and nothing is deployed.",
-        "A game's tests, build or deploy fail: that game is not deployed, and the others still are."
-      ]
-    },
-    {
-      "id": "deploy-by-hand",
-      "name": "Deploy by hand",
-      "description": "Run workflow on deploy.yml deploys one game, or all, from main.",
-      "sources": [
-        {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "on.workflow_dispatch"
-        }
-      ],
-      "entrypoint": {
-        "path": ".github/workflows/deploy.yml",
-        "symbol": "on.workflow_dispatch"
-      },
-      "action": "command",
-      "transport": "GitHub workflow_dispatch, with the inputs game and migration_applied",
-      "authorization": "Whoever GitHub lets run workflows in the repository; the same production environment and secret as a push.",
-      "result": "The chosen game, or every game, deployed; migration_applied acknowledges any database change since the last deploy.",
-      "failures": [
-        "A database change is not acknowledged and migration_applied is not ticked: nothing is deployed."
-      ]
-    },
-    {
       "id": "list-changed-games",
       "name": "List the changed games",
       "description": "Which games have a package.json and changed between a commit and HEAD.",
@@ -142,29 +89,9 @@
       "failures": []
     },
     {
-      "id": "find-last-deploy",
-      "name": "Find the last deployed commit",
-      "description": "The commit the last successful Deploy run deployed, where the migration gate starts.",
-      "sources": [
-        {
-          "path": ".github/scripts/last-deployed.sh",
-          "symbol": "last"
-        }
-      ],
-      "entrypoint": {
-        "path": ".github/scripts/last-deployed.sh",
-        "symbol": "last"
-      },
-      "action": "query",
-      "transport": ".github/scripts/last-deployed.sh [<before sha>]",
-      "authorization": "gh signed in with read access to the repository's Actions runs.",
-      "result": "That commit; else the push's before commit; else nothing, when Git has neither.",
-      "failures": []
-    },
-    {
       "id": "run-migration-gate",
       "name": "Run the migration gate",
-      "description": "Lists the database files changed since a commit and fails unless their migration is acknowledged.",
+      "description": "Lists the database files changed since a commit and fails unless their migration is acknowledged. migrations.yml runs its pr mode; nothing runs its deploy mode since the Deploy workflow was removed.",
       "sources": [
         {
           "path": ".github/scripts/migration-gate.sh",
@@ -186,7 +113,7 @@
       "action": "query",
       "transport": ".github/scripts/migration-gate.sh pr <base sha> <pull request number> | deploy [<base sha>]",
       "authorization": "gh signed in with read access to pull requests.",
-      "result": "Exits 0 when there is no database change or every change is acknowledged (in the pull request, by the pull request that brought each commit, or by migration_applied); prints how to apply each changed file.",
+      "result": "Exits 0 when there is no database change or every change is acknowledged (pr: in the pull request's description; deploy: by the pull request that brought each commit, or by MIGRATION_APPLIED=true); prints how to apply each changed file.",
       "failures": [
         "A change is not acknowledged: exit 1, with an error annotation.",
         "No mode, or an unknown one: the usage line, exit 2."

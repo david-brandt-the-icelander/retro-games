@@ -73,7 +73,8 @@
       ],
       "blocks": "merge",
       "notChecked": [
-        "Whether the migration was in fact applied to production: the gate reads the acknowledgement, not the database."
+        "Whether the migration was in fact applied to production: the gate reads the acknowledgement, not the database.",
+        "Anything at deploy time: no gate runs before a deploy any more, since the owner deploys each game by hand with npm run deploy."
       ],
       "evidenceStatus": "source-verified",
       "sources": [
@@ -88,35 +89,10 @@
         {
           "path": "AGENTS.md",
           "symbol": "Database migrations"
-        }
-      ]
-    },
-    {
-      "id": "push-to-main",
-      "title": "On a push to main",
-      "summary": "The migration gate, then each changed game tested, built and deployed.",
-      "trigger": "A push to main, which only a merged pull request makes; or Run workflow, for one game or all.",
-      "checks": [
-        "migration-gate.sh deploy, from the last successful deploy",
-        "For each changed game: game.yml with deploy true"
-      ],
-      "blocks": "release",
-      "secrets": [
-        "CLOUDFLARE_API_TOKEN"
-      ],
-      "evidenceStatus": "source-verified",
-      "sources": [
-        {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "jobs"
         },
         {
-          "path": ".github/scripts/last-deployed.sh",
-          "symbol": "last"
-        },
-        {
-          "path": ".github/scripts/migration-gate.sh",
-          "symbol": "deploy"
+          "path": "docs/database-migrations.md",
+          "symbol": "Database migrations"
         }
       ]
     }

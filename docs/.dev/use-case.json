@@ -3,7 +3,7 @@
   "kind": "use-case",
   "title": "Database use cases",
   "folder": "docs",
-  "description": "Changing a game's live database, which the deploy pipeline never does.",
+  "description": "Changing a game's live database, which no deploy ever does.",
   "sources": [
     {
       "path": "docs/database-migrations.md",
@@ -193,16 +193,12 @@
         },
         {
           "atStep": "check-passes",
-          "condition": "The merge was made and the deploy stopped at the gate.",
-          "outcome": "Apply, acknowledge on the merged pull request, and re-run the failed Deploy jobs.",
+          "condition": "The change reached main without an acknowledgement.",
+          "outcome": "Nothing stops its deploy any more: apply the migration before the game is deployed with npm run deploy.",
           "sources": [
             {
               "path": "docs/database-migrations.md",
               "symbol": "When something went wrong"
-            },
-            {
-              "path": ".github/scripts/migration-gate.sh",
-              "symbol": "deploy"
             }
           ]
         },
@@ -225,7 +221,7 @@
       "kind": "use-case",
       "folder": ".github",
       "path": ".github/.dev/use-case.json",
-      "relationship": "Merging afterwards ships the change."
+      "relationship": "Merging afterwards, and the owner's deploy, ship the change."
     },
     {
       "kind": "operation",
@@ -237,7 +233,7 @@
       "kind": "capability",
       "folder": ".github",
       "path": ".github/.dev/capability.json",
-      "relationship": "The capability whose gate enforces it."
+      "relationship": "The capability whose pull request check enforces it."
     }
   ]
 }
