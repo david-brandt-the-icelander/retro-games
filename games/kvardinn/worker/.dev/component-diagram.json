@@ -1,0 +1,132 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Kvarðinn Worker component diagram",
+  "folder": "games/kvardinn/worker",
+  "description": "The Kvarðinn Worker: a router in front of the static page, room creation, and one authoritative Room Durable Object per code that runs the rules and sends each socket its own view. No sign-in.",
+  "sources": [
+    {
+      "path": "games/kvardinn/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/kvardinn/worker/room.ts",
+      "symbol": "Room"
+    },
+    {
+      "path": "games/kvardinn/worker/codes.ts",
+      "symbol": "CODE_RE"
+    },
+    {
+      "path": "games/kvardinn/wrangler.jsonc",
+      "symbol": "durable_objects"
+    }
+  ],
+  "components": [
+    {
+      "id": "worker",
+      "name": "Kvarðinn Worker",
+      "responsibility": "Everything the game runs on the server.",
+      "folder": "games/kvardinn/worker"
+    },
+    {
+      "id": "router",
+      "name": "Router (index.ts)",
+      "responsibility": "Maps BASE onto the routes: POST api/rooms tries up to eight new codes until a Room accepts /init; ws/CODE is passed to that Room; other GETs come from the assets binding, with cache, CSP and other security headers.",
+      "folder": "games/kvardinn/worker"
+    },
+    {
+      "id": "codes",
+      "name": "Room codes (codes.ts)",
+      "responsibility": "Four letters from an alphabet without I, O, Q, W, C or Z, from crypto.getRandomValues; CODE_RE checks them.",
+      "folder": "games/kvardinn/worker"
+    },
+    {
+      "id": "room",
+      "name": "Room Durable Object (room.ts)",
+      "responsibility": "Holds one Game in storage; accepts hibernatable WebSockets whose attachments record the seat (or a big screen); handles hello, join, claim, act and ping; broadcasts viewFor() per socket, or only the pointer for drags; deletes itself after two idle days.",
+      "folder": "games/kvardinn/worker"
+    },
+    {
+      "id": "engine",
+      "name": "Rules",
+      "responsibility": "act(), addPlayer(), newGame(), viewFor() and parseCards().",
+      "folder": "games/kvardinn/src/engine",
+      "diagram": "games/kvardinn/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "cards",
+      "name": "Scale cards (data/kvardar.txt)",
+      "responsibility": "The built-in cards, bundled as text.",
+      "folder": "games/kvardinn/data"
+    },
+    {
+      "id": "assets",
+      "name": "Static assets binding",
+      "responsibility": "Cloudflare's assets for ./dist (binding ASSETS): the page, app.js, style.css and the icon.",
+      "external": true
+    },
+    {
+      "id": "storage",
+      "name": "Durable Object storage",
+      "responsibility": "Each Room's game and last-touched time, and its alarm.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "worker",
+      "to": "router",
+      "kind": "contains",
+      "description": "The fetch handler."
+    },
+    {
+      "from": "worker",
+      "to": "codes",
+      "kind": "contains",
+      "description": "Used by the router."
+    },
+    {
+      "from": "worker",
+      "to": "room",
+      "kind": "contains",
+      "description": "Exported from index.ts as class Room (binding ROOMS)."
+    },
+    {
+      "from": "router",
+      "to": "codes",
+      "kind": "depends-on",
+      "description": "newCode() for a new room; CODE_RE for ws/CODE."
+    },
+    {
+      "from": "router",
+      "to": "room",
+      "kind": "depends-on",
+      "description": "ROOMS.idFromName(code): POST /init, and the WebSocket upgrade."
+    },
+    {
+      "from": "router",
+      "to": "assets",
+      "kind": "depends-on",
+      "description": "Every other GET or HEAD, with BASE stripped and redirects kept under BASE."
+    },
+    {
+      "from": "room",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "newGame on /init, addPlayer on join, act on act, viewFor for every broadcast."
+    },
+    {
+      "from": "room",
+      "to": "cards",
+      "kind": "depends-on",
+      "description": "Imported as text and parsed once with parseCards()."
+    },
+    {
+      "from": "room",
+      "to": "storage",
+      "kind": "depends-on",
+      "description": "Reads the game at start-up; writes it after every change; sets the idle alarm."
+    }
+  ]
+}

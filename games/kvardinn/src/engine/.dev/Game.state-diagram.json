@@ -1,0 +1,179 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Kvarðinn game phase state diagram",
+  "folder": "games/kvardinn/src/engine",
+  "description": "The phase of one room's Game. newGame() starts in lobby, and only act() changes it, for the player whose action it applies; a refused action changes nothing. The room's Durable Object stores the Game, so the phase survives restarts. Lobby-only edits (team, settings, shuffle, move-player, custom cards) and rename and kick in any phase leave the phase as it is, except kicking the clue-giver mid-round.",
+  "sources": [
+    {
+      "path": "games/kvardinn/src/engine/game.ts",
+      "symbol": "Phase"
+    },
+    {
+      "path": "games/kvardinn/src/engine/game.ts",
+      "symbol": "newGame"
+    },
+    {
+      "path": "games/kvardinn/src/engine/game.ts",
+      "symbol": "act"
+    },
+    {
+      "path": "games/kvardinn/src/engine/game.ts",
+      "symbol": "startGame"
+    },
+    {
+      "path": "games/kvardinn/src/engine/game.ts",
+      "symbol": "startRound"
+    },
+    {
+      "path": "games/kvardinn/src/engine/game.ts",
+      "symbol": "reveal"
+    },
+    {
+      "path": "games/kvardinn/src/engine/game.ts",
+      "symbol": "undoRound"
+    }
+  ],
+  "machine": "Game.phase (src/engine/game.ts)",
+  "initialState": "lobby",
+  "states": [
+    {
+      "id": "lobby",
+      "description": "Players join and pick teams; the host changes the settings and adds custom scales. No round."
+    },
+    {
+      "id": "clue",
+      "description": "A round has a card, a hidden target and a clue-giver; only the giver's view carries the target. The giver may redraw the card."
+    },
+    {
+      "id": "guess",
+      "description": "The clue is out; the guessing team (everyone in co-op), not the giver, drags the shared pointer, and the locker locks it."
+    },
+    {
+      "id": "bonus",
+      "description": "Team mode with the bonus on: the other team picks left or right of the pointer, and its bonus locker confirms."
+    },
+    {
+      "id": "reveal",
+      "description": "The round is scored (4, 3, 2 or 0, plus the bonus point); every view now carries the target."
+    },
+    {
+      "id": "over",
+      "description": "A team reached the goal with a lead, or the co-op rounds ran out; only the host's again leaves it."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "lobby",
+      "to": "clue",
+      "trigger": "act(start) by the host",
+      "guard": "Two players on each team (two in all in co-op), and some custom scales if only those are to be played",
+      "action": "startGame(): reset scores, turns and the deck, pick the starting team at random, then startRound(): pick the giver, the locker and the bonus locker, draw a card, place the target at 5–95."
+    },
+    {
+      "from": "clue",
+      "to": "clue",
+      "trigger": "act(redraw) by the clue-giver",
+      "action": "Draw another card."
+    },
+    {
+      "from": "clue",
+      "to": "guess",
+      "trigger": "act(ready) by the clue-giver",
+      "action": "Store the cleaned clue."
+    },
+    {
+      "from": "guess",
+      "to": "guess",
+      "trigger": "act(move) by a member of the guessing team other than the giver",
+      "action": "Set the pointer, clamped to 0–100; only the pointer is sent after the mover's first move."
+    },
+    {
+      "from": "guess",
+      "to": "bonus",
+      "trigger": "act(lock) by the locker, or by any guesser while the locker is offline",
+      "guard": "The bonus setting is on, it is team mode, and someone on the other team is online"
+    },
+    {
+      "from": "guess",
+      "to": "reveal",
+      "trigger": "act(lock) by the locker, or by any guesser while the locker is offline",
+      "guard": "Otherwise",
+      "action": "reveal(): score the pointer against the target; decide whether the game is finished."
+    },
+    {
+      "from": "bonus",
+      "to": "bonus",
+      "trigger": "act(pick) by a member of the other team",
+      "action": "Store the side, L or R."
+    },
+    {
+      "from": "bonus",
+      "to": "reveal",
+      "trigger": "act(bonus-lock) by the bonus locker, or by any member of the other team while it is offline",
+      "guard": "A side has been picked",
+      "action": "reveal(): score the round, and one point to the other team if the target is on the side it picked."
+    },
+    {
+      "from": "reveal",
+      "to": "clue",
+      "trigger": "act(next) by any player",
+      "guard": "The game is not finished",
+      "action": "startRound() for the other team (the group in co-op) and its next online clue-giver."
+    },
+    {
+      "from": "reveal",
+      "to": "over",
+      "trigger": "act(next) by any player",
+      "guard": "The game is finished"
+    },
+    {
+      "from": "clue",
+      "to": "clue",
+      "trigger": "act(skip), or act(kick) of the clue-giver, by the host",
+      "action": "undoRound() then startRound(): the round does not count, and the same team plays again with its next clue-giver."
+    },
+    {
+      "from": "guess",
+      "to": "clue",
+      "trigger": "act(skip), or act(kick) of the clue-giver, by the host",
+      "action": "undoRound() then startRound()."
+    },
+    {
+      "from": "bonus",
+      "to": "clue",
+      "trigger": "act(skip), or act(kick) of the clue-giver, by the host",
+      "action": "undoRound() then startRound()."
+    },
+    {
+      "from": "clue",
+      "to": "lobby",
+      "trigger": "act(again) by the host",
+      "action": "Drop the round and zero the scores; players, settings, custom scales and the co-op best stay."
+    },
+    {
+      "from": "guess",
+      "to": "lobby",
+      "trigger": "act(again) by the host",
+      "action": "Drop the round and zero the scores."
+    },
+    {
+      "from": "bonus",
+      "to": "lobby",
+      "trigger": "act(again) by the host",
+      "action": "Drop the round and zero the scores."
+    },
+    {
+      "from": "reveal",
+      "to": "lobby",
+      "trigger": "act(again) by the host",
+      "action": "Drop the round and zero the scores."
+    },
+    {
+      "from": "over",
+      "to": "lobby",
+      "trigger": "act(again) by the host",
+      "action": "Drop the round and zero the scores; the co-op best stays."
+    }
+  ]
+}

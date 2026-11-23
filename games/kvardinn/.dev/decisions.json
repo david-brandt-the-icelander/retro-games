@@ -1,0 +1,182 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Kvarðinn decisions",
+  "folder": "games/kvardinn",
+  "entities": [
+    {
+      "id": "no-sign-in",
+      "title": "No sign-in: players join by link and name only",
+      "summary": "Kvarðinn's Worker checks no sign-in. Anyone with the room's link (or its four-letter code) types a name, picks a team and plays.",
+      "status": "accepted",
+      "context": "The requester asked for a party game with \"no logins\": everyone in a room, some in it and some remote, joins from one shared link on their own phone. The repository's convention (AGENTS.md, \"Sign-in\") is that every game's Worker checks icelander.net's sign-in with vendor/icelander-auth/; this game departs from it.",
+      "options": [
+        {
+          "title": "No sign-in; a seat is a name and a secret token kept in the browser",
+          "consequences": "Anyone can join from a link with nothing to set up. Anyone who learns or guesses a live room's code can join it or watch it as a big screen; the host can remove a player. Room creation is open to anyone."
+        },
+        {
+          "title": "icelander.net sign-in, as every other game",
+          "consequences": "Follows the repository's convention and limits play to people with the games:play role, but every guest needs an icelander.net account before they can join, which is what the requester asked not to have."
+        }
+      ],
+      "decision": "No sign-in. worker/index.ts does not import vendor/icelander-auth and has no ACCOUNTS binding; a player is seated by addPlayer() with a name and gets a seat token, saved per room in localStorage, that gets the seat back after a refresh.",
+      "rationale": "The requester's \"no logins\" is the point of the game: a party joins in seconds from one link. Whether to publish it like that on icelander.net is left to the owner (publish-without-sign-in).",
+      "origin": {
+        "kind": "conversation",
+        "by": "Requester",
+        "date": "2026-11-23",
+        "description": "The request for the game asked for \"no logins\": players join from a shared link with only a name."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/kvardinn/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/kvardinn/wrangler.jsonc",
+          "symbol": "kvardinn"
+        },
+        {
+          "path": "games/kvardinn/src/engine/game.ts",
+          "symbol": "addPlayer"
+        },
+        {
+          "path": "games/kvardinn/src/client/net.ts",
+          "symbol": "saveSeat"
+        },
+        {
+          "path": "AGENTS.md",
+          "symbol": "Sign-in"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/kvardinn/.dev/decisions.json",
+          "entityId": "publish-without-sign-in",
+          "description": "Where it may be published without a sign-in is the owner's open question."
+        }
+      ]
+    },
+    {
+      "id": "authoritative-room",
+      "title": "An authoritative Durable Object per room, not the games hub's relay",
+      "summary": "Each room is Kvarðinn's own Durable Object, which holds the game, applies every move with the rules and sends each device its own view, instead of relaying messages between browsers through the games hub.",
+      "status": "accepted",
+      "context": "Rally, Hivestorm and Shatterbelt play online through the games hub's relay at /games/multiplayer/match/{ID}, which forwards every message to every browser in the match. In Kvarðinn the round's target is hidden from everyone but the clue-giver until the reveal; through a relay, some browser would have to hold the target and every other device would receive it in its frames. The hub's relay also sits behind icelander.net's sign-in, which this game does not use (no-sign-in).",
+      "options": [
+        {
+          "title": "The games hub's relay",
+          "consequences": "One lobby and one relay for every game, but the hidden target would reach every device, and players would need a sign-in."
+        },
+        {
+          "title": "Kvarðinn's own Durable Object running the rules",
+          "consequences": "The target leaves the server only to the clue-giver's sockets; the room survives refreshes and drops because the game is in storage. The game carries its own Durable Object class and migration, and is not in the hub's multiplayer lobby."
+        }
+      ],
+      "decision": "worker/room.ts is a Durable Object named after the room code. It keeps the Game in storage, applies each action with act(), and sends every socket viewFor(game, its seat), which carries the target only for the clue-giver until the reveal. Pointer drags send only the new position.",
+      "rationale": "The hidden target must never reach a non-clue-giver's device, and only a server that runs the rules can keep it there. test/engine.test.ts and test/e2e.mjs check it.",
+      "origin": {
+        "kind": "conversation",
+        "by": "Requester",
+        "date": "2026-11-23",
+        "description": "Follows from the game's rules: only the clue-giver may see the target."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/kvardinn/worker/room.ts",
+          "symbol": "Room.broadcast"
+        },
+        {
+          "path": "games/kvardinn/src/engine/game.ts",
+          "symbol": "viewFor"
+        },
+        {
+          "path": "games/kvardinn/wrangler.jsonc",
+          "symbol": "migrations"
+        },
+        {
+          "path": "games/kvardinn/test/engine.test.ts",
+          "symbol": "the target reaches only the clue-giver until the reveal"
+        },
+        {
+          "path": "games/kvardinn/test/e2e.mjs"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/rally/.dev/decisions.json",
+          "entityId": "rooms-to-hub",
+          "description": "The other games' online rooms moved to the hub; this game keeps its own, for the reason above."
+        }
+      ]
+    },
+    {
+      "id": "publish-without-sign-in",
+      "title": "Publish at icelander.net/games/fresh/kvardinn without a sign-in?",
+      "summary": "wrangler.jsonc routes the game to icelander.net/games/fresh/kvardinn*, and merging to main deploys it there, open to anyone, with no sign-in. The owner decides whether that is acceptable, or whether it goes behind the sign-in or onto a separate workers.dev account instead.",
+      "status": "open",
+      "waitingOn": "The owner",
+      "context": "Every other game on icelander.net is behind its sign-in. Kvarðinn has none (no-sign-in), and .github/scripts/changed-games.sh deploys every game with a package.json that a merge changes, so merging this folder publishes it on icelander.net: anyone on the internet can create rooms, which cost Durable Object storage until the two-day idle alarm deletes them, and type names and custom scales that others in the room see. The standalone environment in wrangler.jsonc already lets the same code run on a workers.dev address instead.",
+      "options": [
+        {
+          "title": "Publish publicly at icelander.net/games/fresh/kvardinn, no sign-in",
+          "consequences": "Merging as it stands. Guests join with nothing to set up; icelander.net hosts a page open to anyone, unlike the other games, with no rate limit on room creation."
+        },
+        {
+          "title": "Put it behind icelander.net's sign-in",
+          "consequences": "Follows the convention with vendor/icelander-auth and an ACCOUNTS binding; every guest needs an icelander.net account with games:play, which goes against the requester's \"no logins\". Needs code changes in worker/index.ts and wrangler.jsonc before merging."
+        },
+        {
+          "title": "Host it only on a separate workers.dev account",
+          "consequences": "Deploy with --env standalone on another Cloudflare account and keep it off icelander.net; the default route has to be removed (or the game kept out of the deploy workflow) before merging, or the merge still deploys it."
+        }
+      ],
+      "blocks": [
+        {
+          "path": "games/kvardinn/wrangler.jsonc",
+          "description": "Merging the game: its route deploys it to icelander.net/games/fresh/kvardinn* on the next push to main."
+        }
+      ],
+      "origin": {
+        "kind": "agent",
+        "by": "Coding agent",
+        "date": "2026-11-23",
+        "description": "Raised while adding the game, because its no-sign-in design departs from the repository's convention and merging deploys it."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/kvardinn/wrangler.jsonc",
+          "symbol": "routes"
+        },
+        {
+          "path": "games/kvardinn/wrangler.jsonc",
+          "symbol": "env.standalone"
+        },
+        {
+          "path": ".github/scripts/changed-games.sh",
+          "symbol": "all"
+        },
+        {
+          "path": ".github/workflows/deploy.yml"
+        },
+        {
+          "path": "games/kvardinn/worker/room.ts",
+          "symbol": "Room.alarm"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": "games/kvardinn/.dev/decisions.json",
+          "entityId": "no-sign-in"
+        }
+      ]
+    }
+  ]
+}

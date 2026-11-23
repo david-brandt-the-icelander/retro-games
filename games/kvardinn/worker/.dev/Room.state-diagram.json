@@ -1,0 +1,81 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Kvarðinn room lifecycle state diagram",
+  "folder": "games/kvardinn/worker",
+  "description": "Whether a Room Durable Object holds a game. The object for a code exists as soon as it is addressed; Room.game (loaded from storage in the constructor) is null until POST /init creates the game, and null again once the idle alarm deletes it. The game's own phases are the Game state diagram (games/kvardinn/src/engine/.dev/Game.state-diagram.json).",
+  "sources": [
+    {
+      "path": "games/kvardinn/worker/room.ts",
+      "symbol": "Room.fetch"
+    },
+    {
+      "path": "games/kvardinn/worker/room.ts",
+      "symbol": "Room.webSocketMessage"
+    },
+    {
+      "path": "games/kvardinn/worker/room.ts",
+      "symbol": "Room.alarm"
+    },
+    {
+      "path": "games/kvardinn/worker/room.ts",
+      "symbol": "Room.save"
+    },
+    {
+      "path": "games/kvardinn/worker/index.ts",
+      "symbol": "default.fetch"
+    }
+  ],
+  "machine": "Room.game (worker/room.ts), kept in the Durable Object's storage under \"game\"",
+  "initialState": "empty",
+  "states": [
+    {
+      "id": "empty",
+      "description": "No game in storage: the code is free."
+    },
+    {
+      "id": "open",
+      "description": "A game is stored, with its last-touched time and an alarm set two days after it."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "empty",
+      "to": "open",
+      "trigger": "POST /init with the code (from POST {BASE}/api/rooms)",
+      "action": "newGame(code); save it, touched now, alarm at now + IDLE_MS; reply 201."
+    },
+    {
+      "from": "open",
+      "to": "open",
+      "trigger": "POST /init",
+      "action": "Reply 409 taken; the router tries another code."
+    },
+    {
+      "from": "empty",
+      "to": "empty",
+      "trigger": "A WebSocket upgrade, or a message on a socket",
+      "action": "On an upgrade, accept the socket, send gone and close it with 4404; on a message, send gone."
+    },
+    {
+      "from": "open",
+      "to": "open",
+      "trigger": "A join, or an act that changes more than the pointer",
+      "action": "Save the game, touched now, and move the alarm to now + IDLE_MS."
+    },
+    {
+      "from": "open",
+      "to": "open",
+      "trigger": "alarm()",
+      "guard": "Touched less than IDLE_MS ago, or a socket is still connected",
+      "action": "Set the alarm again for touched + IDLE_MS."
+    },
+    {
+      "from": "open",
+      "to": "empty",
+      "trigger": "alarm()",
+      "guard": "Touched at least IDLE_MS (two days) ago and no socket connected",
+      "action": "storage.deleteAll(); game = null."
+    }
+  ]
+}

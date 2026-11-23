@@ -1,0 +1,114 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Kvarðinn component diagram",
+  "folder": "games/kvardinn",
+  "description": "Kvarðinn: the page in every player's browser talks over one WebSocket to its room's Durable Object, which holds the game and runs the same pure rules module, sending each device only what it may see.",
+  "sources": [
+    {
+      "path": "games/kvardinn/wrangler.jsonc",
+      "symbol": "kvardinn"
+    },
+    {
+      "path": "games/kvardinn/build.mjs",
+      "symbol": "build"
+    },
+    {
+      "path": "games/kvardinn/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/kvardinn/worker/room.ts",
+      "symbol": "Room"
+    },
+    {
+      "path": "games/kvardinn/src/client/net.ts",
+      "symbol": "Connection"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Kvarðinn",
+      "responsibility": "One game: the page and its Worker, built and deployed together.",
+      "folder": "games/kvardinn"
+    },
+    {
+      "id": "engine",
+      "name": "Rules",
+      "responsibility": "The game as plain data and pure functions: seats, rounds, scoring and the per-device view that hides the target.",
+      "folder": "games/kvardinn/src/engine",
+      "diagram": "games/kvardinn/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "client",
+      "name": "Page",
+      "responsibility": "Every screen for players' phones and the room's big screen, the draggable scale and the reconnecting connection.",
+      "folder": "games/kvardinn/src/client",
+      "diagram": "games/kvardinn/src/client/.dev/component-diagram.json"
+    },
+    {
+      "id": "worker",
+      "name": "Worker and rooms",
+      "responsibility": "Creates rooms, routes each room's WebSocket to its Durable Object, and serves the page from dist/.",
+      "folder": "games/kvardinn/worker",
+      "diagram": "games/kvardinn/worker/.dev/component-diagram.json"
+    },
+    {
+      "id": "cards",
+      "name": "Scale cards (data/kvardar.txt)",
+      "responsibility": "The built-in cards, one \"Left ↔ Right\" per line, bundled into the Worker as text.",
+      "folder": "games/kvardinn/data"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "engine",
+      "kind": "contains",
+      "description": "Shared by the Worker, the page (its types and constants) and the tests."
+    },
+    {
+      "from": "game",
+      "to": "client",
+      "kind": "contains",
+      "description": "Bundled by build.mjs into dist/app.js."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Deployed with wrangler."
+    },
+    {
+      "from": "game",
+      "to": "cards",
+      "kind": "contains",
+      "description": "Edited by hand; checked by test/cards.test.ts."
+    },
+    {
+      "from": "client",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "POST api/rooms for a new room, then the WebSocket ws/CODE for everything else."
+    },
+    {
+      "from": "client",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "The View and Action types and the limits and scoring bands; it never runs the rules."
+    },
+    {
+      "from": "worker",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "The room applies every action with act() and sends each socket viewFor()."
+    },
+    {
+      "from": "worker",
+      "to": "cards",
+      "kind": "depends-on",
+      "description": "Imports the file as text and parses it with parseCards()."
+    }
+  ]
+}
