@@ -1,7 +1,7 @@
 // The Pinochle Worker: who may fetch what.
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { BASE, ROLE } from "../worker/config";
+import { BASE, OLD_BASE, ROLE } from "../worker/config";
 import worker, { type Env } from "../worker/index";
 
 const ORIGIN = "https://icelander.net";
@@ -71,4 +71,20 @@ test("nothing outside the game is answered; no writes; the bare address gets its
   const bare = await get(BASE, "member");
   assert.equal(bare.status, 301);
   assert.equal(bare.headers.get("location"), `${ORIGIN}${BASE}/`);
+});
+
+test("the old address sends everyone, signed in or not, to the same place at the new one", async () => {
+  for (const [path, to] of [
+    [OLD_BASE, `${BASE}`],
+    [`${OLD_BASE}/`, `${BASE}/`],
+    [`${OLD_BASE}/?join=ABCD`, `${BASE}/?join=ABCD`],
+    [`${OLD_BASE}/app.js`, `${BASE}/app.js`],
+  ]) {
+    for (const who of [undefined, "member"]) {
+      const r = await get(path, who);
+      assert.equal(r.status, 301, `${path} ${who}`);
+      assert.equal(r.headers.get("location"), `${ORIGIN}${to}`, `${path} ${who}`);
+    }
+  }
+  assert.equal(BASE, "/games/pinochle");
 });

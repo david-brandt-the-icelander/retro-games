@@ -1,4 +1,4 @@
-// The Pinochle Worker at icelander.net/games/fresh/pinochle: the page and its scripts, all for players
+// The Pinochle Worker at icelander.net/games/pinochle (its old address, /games/fresh/pinochle, redirects there): the page and its scripts, all for players
 // signed in to icelander.net (worker/index.ts). No database, no secrets.
 // Deployed by .github/workflows/deploy.yml on a merge to main (README "Deploy").
 {
@@ -7,7 +7,10 @@
   "compatibility_date": "2025-01-01",
   "workers_dev": false,
   "preview_urls": false,
-  "routes": [{ "pattern": "icelander.net/games/fresh/pinochle*", "zone_name": "icelander.net" }],
+  "routes": [
+    { "pattern": "icelander.net/games/pinochle*", "zone_name": "icelander.net" },
+    { "pattern": "icelander.net/games/fresh/pinochle*", "zone_name": "icelander.net" }
+  ],
   "main": "worker/index.ts",
   // Every request goes through the Worker first: nothing here is public.
   "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": true },

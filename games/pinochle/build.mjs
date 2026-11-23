@@ -1,4 +1,4 @@
-// Builds Pinochle into dist/games/fresh/pinochle/ and the tests into dist-test/.
+// Builds Pinochle into dist/games/pinochle/ and the tests into dist-test/.
 //
 //   node build.mjs           the page, its scripts and the PWA files from public/
 //   node build.mjs --test    the TypeScript tests
@@ -7,7 +7,7 @@
 import { build } from "esbuild";
 import { cpSync, mkdirSync, readdirSync, rmSync } from "node:fs";
 
-const SITE = "dist/games/fresh/pinochle";
+const SITE = "dist/games/pinochle";
 
 if (process.argv.includes("--test")) {
   rmSync("dist-test", { recursive: true, force: true });
