@@ -1,11 +1,11 @@
-// Builds Laumufarþegi into dist/games/fresh/laumufarthegi/ and the tests into dist-test/.
+// Builds Laumufarþegi into dist/games/laumufarthegi/ and the tests into dist-test/.
 //
 //   node build.mjs           the page, its script and styles
 //   node build.mjs --test    the TypeScript tests
 import { build } from "esbuild";
 import { cpSync, mkdirSync, readdirSync, rmSync } from "node:fs";
 
-const SITE = "dist/games/fresh/laumufarthegi";
+const SITE = "dist/games/laumufarthegi";
 
 if (process.argv.includes("--test")) {
   rmSync("dist-test", { recursive: true, force: true });

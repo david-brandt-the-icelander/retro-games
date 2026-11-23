@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Worker and rooms",
+  "folder": "games/kvardinn/worker",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Worker and rooms",
+      "summary": "The Cloudflare Worker: creates rooms, routes each room's WebSocket to its Durable Object, and serves the page under BASE.",
+      "purpose": "handler.ts handles every request (index.ts exports it with the Durable Object), checking icelander.net's sign-in and the games:kvardinn role first except in the standalone environment (run before the assets): POST {BASE}/api/rooms finds a free four-letter code, {BASE}/ws/CODE goes to that code's Room, and every other GET or HEAD is a file from dist/ with a strict Content-Security-Policy. room.ts is the Room Durable Object, which holds one game and every device's socket.",
+      "boundaries": [
+        "No database. The sign-in is icelander.net's, checked with vendor/icelander-auth/ (see games/kvardinn/.dev/decisions.json, invite-only).",
+        "The rules are src/engine's; the room only feeds them messages and sends out their views.",
+        "codes.ts is its own module because the Worker's main module may export only the handler and the Durable Object."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/kvardinn/worker/handler.ts",
+          "symbol": "handle"
+        },
+        {
+          "path": "games/kvardinn/worker/room.ts",
+          "symbol": "Room"
+        },
+        {
+          "path": "games/kvardinn/worker/codes.ts",
+          "symbol": "newCode"
+        },
+        {
+          "path": "games/kvardinn/worker/handler.ts",
+          "symbol": "handle"
+        }
+      ]
+    }
+  ]
+}

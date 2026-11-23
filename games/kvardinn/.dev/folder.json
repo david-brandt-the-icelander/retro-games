@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Kvarðinn",
+  "folder": "games/kvardinn",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Kvarðinn",
+      "summary": "An Icelandic team guessing game on a 0–100 scale for 4–12 players, each on their own phone or laptop, joined from one shared link with only a name.",
+      "purpose": "Holds the whole game: the rules in src/engine/, the page in src/client/ and public/, the scale cards in data/kvardar.txt, the Worker and its room Durable Object in worker/, and the tests in test/. It is one npm project and one Cloudflare Worker.",
+      "boundaries": [
+        "The sign-in is icelander.net's; worker/handler.ts checks it with the shared library in vendor/icelander-auth/, never edited here, and lets in only holders of the invite-only role games:kvardinn (decisions.json, invite-only).",
+        "Rooms are its own Durable Object, not the games hub's relay (decisions.json, authoritative-room).",
+        "No database: each room's game lives in its Durable Object's storage and is deleted after two idle days."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/kvardinn/wrangler.jsonc",
+          "symbol": "durable_objects"
+        },
+        {
+          "path": "games/kvardinn/package.json",
+          "symbol": "scripts"
+        },
+        {
+          "path": "games/kvardinn/build.mjs"
+        },
+        {
+          "path": "games/kvardinn/worker/room.ts",
+          "symbol": "IDLE_MS"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/kvardinn/README.md",
+          "label": "README"
+        },
+        {
+          "path": "games/kvardinn/.dev/component-diagram.json",
+          "label": "Component diagram"
+        },
+        {
+          "path": "games/kvardinn/.dev/deployment-diagram.json",
+          "label": "Deployment diagram"
+        }
+      ]
+    }
+  ]
+}

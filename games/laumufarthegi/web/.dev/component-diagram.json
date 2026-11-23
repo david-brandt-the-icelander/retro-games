@@ -26,7 +26,7 @@
     {
       "id": "web",
       "name": "Browser page",
-      "responsibility": "The page's source, built by build.mjs into dist/games/fresh/laumufarthegi/.",
+      "responsibility": "The page's source, built by build.mjs into dist/games/laumufarthegi/.",
       "folder": "games/laumufarthegi/web"
     },
     {

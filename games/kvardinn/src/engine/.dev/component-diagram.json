@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Kvarðinn rules component diagram",
+  "folder": "games/kvardinn/src/engine",
+  "description": "The pure rules: a Game, the actions that change it, and the view each device gets; plus the parser for the card file. Random numbers, who is online and the cards arrive through Ctx.",
+  "sources": [
+    {
+      "path": "games/kvardinn/src/engine/game.ts",
+      "symbol": "act"
+    },
+    {
+      "path": "games/kvardinn/src/engine/game.ts",
+      "symbol": "viewFor"
+    },
+    {
+      "path": "games/kvardinn/src/engine/game.ts",
+      "symbol": "Ctx"
+    },
+    {
+      "path": "games/kvardinn/src/engine/cards.ts",
+      "symbol": "parseCards"
+    }
+  ],
+  "components": [
+    {
+      "id": "engine",
+      "name": "Kvarðinn rules",
+      "responsibility": "The game, with no DOM, network, storage, clock or randomness of its own.",
+      "folder": "games/kvardinn/src/engine"
+    },
+    {
+      "id": "game",
+      "name": "Game rules (game.ts)",
+      "responsibility": "newGame, addPlayer and act(): seats, teams, host hand-over, settings, custom cards, the phase machine, turn order, scoring bands and the bonus guess; viewFor() hides tokens, the deck and, until the reveal, the target.",
+      "folder": "games/kvardinn/src/engine"
+    },
+    {
+      "id": "cards",
+      "name": "Card parser (cards.ts)",
+      "responsibility": "parseCards(): one card per \"Left ↔ Right\" line (or <-> or |), skipping # comments, with the lines it could not read.",
+      "folder": "games/kvardinn/src/engine"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "engine",
+      "to": "game",
+      "kind": "contains",
+      "description": "The rules."
+    },
+    {
+      "from": "engine",
+      "to": "cards",
+      "kind": "contains",
+      "description": "The card file's format."
+    },
+    {
+      "from": "cards",
+      "to": "game",
+      "kind": "depends-on",
+      "description": "Returns the Card type game.ts declares."
+    }
+  ]
+}

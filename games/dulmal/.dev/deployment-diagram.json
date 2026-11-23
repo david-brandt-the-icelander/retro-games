@@ -1,0 +1,112 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "Dulmál deployment diagram",
+  "folder": "games/dulmal",
+  "description": "How Dulmál runs: one Cloudflare Worker with static assets and a Durable Object class, one object per room, behind icelander.net's sign-in for holders of games:dulmal, with no database.",
+  "sources": [
+    {
+      "path": "games/dulmal/wrangler.jsonc",
+      "symbol": "dulmal"
+    },
+    {
+      "path": "games/dulmal/build.mjs",
+      "symbol": "SITE"
+    },
+    {
+      "path": "games/dulmal/worker/index.ts",
+      "symbol": "RoomObject"
+    },
+    {
+      "path": "vendor/icelander-auth/index.js",
+      "symbol": "createAuth"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "browser",
+      "name": "Player's phone or computer",
+      "kind": "client",
+      "description": "Runs the page; one WebSocket to the room.",
+      "actor": "Actors/player.md"
+    },
+    {
+      "id": "tv",
+      "name": "Shared big screen",
+      "kind": "client",
+      "description": "A browser on a TV or projector opened with &skjar=1: the board, the clue and the score, never the key."
+    },
+    {
+      "id": "edge",
+      "name": "Cloudflare edge",
+      "kind": "host",
+      "description": "Runs the Worker on icelander.net/games/dulmal*, ahead of the games hub's route."
+    },
+    {
+      "id": "worker",
+      "name": "dulmal Worker",
+      "kind": "process",
+      "description": "worker/index.ts: the sign-in check on every request, the room API and the static page from ./dist."
+    },
+    {
+      "id": "room",
+      "name": "RoomObject Durable Object",
+      "kind": "process",
+      "description": "One per room code, with SQLite-backed storage holding the room as JSON and an alarm for the turn timer and idle deletion. Its WebSockets hibernate between messages."
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "accounts.icelander.net, in the icelander.net repository (accounts/): who holds the host's site_session cookie and their games: roles. The Worker reaches it only through a service binding."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "page",
+      "name": "index.html, app.js, style.css, icon.svg and _headers",
+      "source": "games/dulmal/src/client/main.ts",
+      "deployedTo": "edge",
+      "description": "Built by build.mjs into dist/games/dulmal/, with a strict Content-Security-Policy."
+    },
+    {
+      "id": "script",
+      "name": "Worker script",
+      "source": "games/dulmal/worker/index.ts",
+      "deployedTo": "worker",
+      "description": "The fetch handler and the RoomObject class, bundled by wrangler with data/ord.txt."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "edge",
+      "to": "worker",
+      "kind": "hosts",
+      "description": "Routes icelander.net/games/dulmal* to the Worker."
+    },
+    {
+      "from": "browser",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "HTTPS for the page and to create a room; a WebSocket for the room."
+    },
+    {
+      "from": "tv",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "The same page and WebSocket, as a screen."
+    },
+    {
+      "from": "worker",
+      "to": "room",
+      "kind": "connects-to",
+      "description": "Durable Object binding ROOMS, idFromName(code)."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS (entrypoint Internal): every request needs a signed-in player with games:dulmal."
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "Kvarðinn deployment diagram",
+  "folder": "games/kvardinn",
+  "description": "How Kvarðinn runs: one Cloudflare Worker with static assets and a Durable Object per room, behind icelander.net's sign-in for holders of the invite-only role games:kvardinn. No database. The same Worker deploys by hand (npm run deploy) to icelander.net/games/kvardinn* by default, or, open to anyone, to the root of a workers.dev address with --env standalone.",
+  "sources": [
+    {
+      "path": "games/kvardinn/wrangler.jsonc",
+      "symbol": "routes"
+    },
+    {
+      "path": "games/kvardinn/wrangler.jsonc",
+      "symbol": "env.standalone"
+    },
+    {
+      "path": "games/kvardinn/build.mjs",
+      "symbol": "build"
+    },
+    {
+      "path": "games/kvardinn/worker/handler.ts",
+      "symbol": "handle"
+    },
+    {
+      "path": "games/kvardinn/worker/room.ts",
+      "symbol": "Room"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "phone",
+      "name": "Player's phone or laptop",
+      "kind": "client",
+      "description": "Runs the page; one seat per device, remembered in that browser's localStorage.",
+      "actor": "Actors/player.md"
+    },
+    {
+      "id": "screen",
+      "name": "Big screen (TV or projector)",
+      "kind": "client",
+      "description": "The page at #CODE/skjar, opened by the players on a shared display: holds no seat and sees what a non-clue-giver sees.",
+      "condition": "Only when the players open it"
+    },
+    {
+      "id": "edge",
+      "name": "Cloudflare edge",
+      "kind": "host",
+      "description": "Runs the Worker on icelander.net/games/kvardinn* (BASE /games/kvardinn), deployed by hand with npm run deploy (nothing deploys from GitHub); or, with --env standalone, on a workers.dev address at the root (BASE empty), on whichever account wrangler is logged in to."
+    },
+    {
+      "id": "worker",
+      "name": "kvardinn Worker",
+      "kind": "process",
+      "description": "worker/handler.ts, run before the assets for every request: on icelander.net it first checks the sign-in and the games:kvardinn role, then answers POST {BASE}/api/rooms, the WebSocket {BASE}/ws/CODE, and every other GET from ./dist under BASE."
+    },
+    {
+      "id": "room",
+      "name": "Room Durable Object",
+      "kind": "process",
+      "description": "One per four-letter code (binding ROOMS, SQLite-backed class Room): holds the game in its storage and every device's hibernatable WebSocket; an alarm deletes it after two idle days."
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "accounts.icelander.net, in the icelander.net repository: who holds the site_session cookie and whether they hold games:kvardinn, asked on every request. Reached only through the ACCOUNTS service binding; the standalone environment has none.",
+      "condition": "Only on icelander.net"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "bundle",
+      "name": "app.js",
+      "source": "games/kvardinn/src/client/main.ts",
+      "deployedTo": "edge",
+      "description": "esbuild bundle of src/client/main.ts, minified; served as a static asset and run in the browser."
+    },
+    {
+      "id": "page",
+      "name": "index.html, style.css, icon.svg",
+      "source": "games/kvardinn/public/index.html",
+      "deployedTo": "edge",
+      "description": "Copied from public/ into dist/ by build.mjs."
+    },
+    {
+      "id": "script",
+      "name": "Worker script",
+      "source": "games/kvardinn/worker/index.ts",
+      "deployedTo": "worker",
+      "description": "The fetch handler and the Room class, bundled by wrangler with the rules and data/kvardar.txt."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "edge",
+      "to": "worker",
+      "kind": "hosts",
+      "description": "Routes icelander.net/games/kvardinn* (or the workers.dev address) to the Worker."
+    },
+    {
+      "from": "edge",
+      "to": "room",
+      "kind": "hosts",
+      "description": "Durable Object namespace ROOMS, migration rooms-v1."
+    },
+    {
+      "from": "phone",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "HTTPS: the page and its files, and POST api/rooms; then a WebSocket to ws/CODE."
+    },
+    {
+      "from": "screen",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "HTTPS for the page, then a WebSocket to ws/CODE marked as a screen."
+    },
+    {
+      "from": "worker",
+      "to": "room",
+      "kind": "routes",
+      "description": "idFromName(code): POST /init to create a room, and the WebSocket upgrade passed through."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS (entrypoint Internal): the page, room creation and the room WebSockets need a signed-in player with games:kvardinn."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "kvardinn",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kvarðinn: an Icelandic team guessing game on a scale, for 4–8 players on their own phones, in the same room or remote.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit && tsc --noEmit -p worker",
+    "build": "npm run typecheck && node build.mjs",
+    "test": "npm run typecheck && node build.mjs --test && node --no-warnings --test dist-test/*.test.mjs",
+    "dev": "node build.mjs && wrangler dev --env standalone --ip 0.0.0.0",
+    "test:e2e": "node build.mjs && node test/e2e.mjs",
+    "deploy": "npm test && npm run build && wrangler deploy"
+  },
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261123.1",
+    "@types/node": "^22.20.5",
+    "esbuild": "^0.25.12",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.163.0"
+  },
+  "dependencies": {
+    "qrcode-generator": "^1.4.4"
+  }
+}

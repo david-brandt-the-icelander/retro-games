@@ -1,6 +1,6 @@
-// The Laumufarþegi Worker at icelander.net/games/fresh/laumufarthegi: the page (dist/), a small API and one Durable
+// The Laumufarþegi Worker at icelander.net/games/laumufarthegi: the page (dist/), a small API and one Durable
 // Object per room (worker/room.ts). No database and no secrets: a room lives in its object's storage and deletes
-// itself after a day without use. Deployed by .github/workflows/deploy.yml on a merge to main (README "Deploy").
+// itself after a day without use. Deployed from the owner's machine with `npm run deploy` (README "Deploy").
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "laumufarthegi",
@@ -8,10 +8,10 @@
   "workers_dev": false,
   "preview_urls": false,
   // Its route runs before the games hub (the recreations Worker), whose route icelander.net/games/* is less specific.
-  "routes": [{ "pattern": "icelander.net/games/fresh/laumufarthegi*", "zone_name": "icelander.net" }],
+  "routes": [{ "pattern": "icelander.net/games/laumufarthegi*", "zone_name": "icelander.net" }],
   "main": "worker/index.ts",
   // The Worker answers the API under {BASE}/api/ and sets the page's caching; everything else is a static asset.
-  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": ["/games/fresh/laumufarthegi", "/games/fresh/laumufarthegi/", "/games/fresh/laumufarthegi/index.html", "/games/fresh/laumufarthegi/api/*"] },
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": ["/games/laumufarthegi", "/games/laumufarthegi/", "/games/laumufarthegi/index.html", "/games/laumufarthegi/api/*"] },
   "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "Room" }] },
   "migrations": [{ "tag": "rooms-v1", "new_sqlite_classes": ["Room"] }],
   // icelander.net's login service: who is signed in, through the site's cookie. Only starting a room needs it.

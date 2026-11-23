@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Dulmál decisions",
+  "folder": "games/dulmal",
+  "entities": [
+    {
+      "id": "invite-only",
+      "title": "Dulmál is for invited players only",
+      "summary": "Every request, the page, the room API and each room's WebSocket, needs a sign-in to icelander.net with the invite-only role games:dulmal, granted at icelander.net/private/admin.",
+      "status": "accepted",
+      "context": "The first version needed no sign-in, as the first brief asked (no logins). Before publishing, the owner asked for it to be invite-only, like Pinochle, at icelander.net/games/dulmal.",
+      "options": [
+        {
+          "title": "Invite-only, through the site's sign-in",
+          "consequences": "Each guest needs an icelander.net sign-in and the games:dulmal role before they can open a room's link. The room API and WebSockets are checked too, so a room's code alone gets nobody in."
+        },
+        {
+          "title": "No sign-in; rooms reached by code",
+          "consequences": "Anyone with a link can join; the first version did this."
+        }
+      ],
+      "decision": "Invite-only, with the role games:dulmal, at icelander.net/games/dulmal.",
+      "rationale": "The owner's request when merging.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-23",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dulmal/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/dulmal/worker/config.ts",
+          "symbol": "ROLE"
+        }
+      ]
+    },
+    {
+      "id": "game-name",
+      "title": "The game's name",
+      "summary": "The game is called Dulmál, at icelander.net/games/dulmal.",
+      "status": "accepted",
+      "context": "The game needed its own Icelandic name, not that of any published game. Changing it means GAME_NAME in src/client/text.ts, the title in public/index.html and, if the address should change too, the route in wrangler.jsonc and BASE in worker/config.ts.",
+      "options": [
+        {
+          "title": "Dulmál",
+          "consequences": "'Secret language': plain, short and easy to say."
+        },
+        {
+          "title": "Huldumál",
+          "consequences": "'The hidden people's language': a nod to folklore, a little longer."
+        },
+        {
+          "title": "Leyniorð",
+          "consequences": "'Secret word', or 'password': clear, but also an everyday word for a password."
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dulmal/src/client/text.ts",
+          "symbol": "GAME_NAME"
+        }
+      ],
+      "decision": "Dulmál.",
+      "rationale": "The owner's choice.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-23"
+    },
+    {
+      "id": "icelandic-review",
+      "title": "A native speaker's review of the word list and the page's text",
+      "summary": "The words and phrases listed in LANGUAGE-QA.md were written without a native speaker's check.",
+      "status": "open",
+      "context": "All player-facing text is Icelandic. LANGUAGE-QA.md lists the words and phrases whose spelling, form or naturalness is least certain.",
+      "options": [
+        {
+          "title": "Review and correct",
+          "consequences": "Edit data/ord.txt and src/client/text.ts; the tests check the list's form."
+        }
+      ],
+      "waitingOn": "Owner",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dulmal/LANGUAGE-QA.md",
+          "symbol": "Orðalisti"
+        }
+      ]
+    }
+  ]
+}

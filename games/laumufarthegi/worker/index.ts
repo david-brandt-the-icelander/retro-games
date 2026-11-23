@@ -1,4 +1,4 @@
-// The Laumufarþegi Worker at icelander.net/games/fresh/laumufarthegi: the page and its files (dist/), a small API,
+// The Laumufarþegi Worker at icelander.net/games/laumufarthegi: the page and its files (dist/), a small API,
 // and one Durable Object per room (worker/room.ts).
 //
 //   GET  {BASE}/                      the game (anyone with the link may play)

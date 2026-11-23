@@ -3,7 +3,7 @@
   "kind": "component",
   "title": "Laumufarþegi Worker component diagram",
   "folder": "games/laumufarthegi/worker",
-  "description": "The Worker at icelander.net/games/fresh/laumufarthegi: routes the page, a small API and each room's WebSocket, checks icelander.net's sign-in only to start a room, and runs one Room Durable Object per room, which holds the room's state in its storage, applies every action through the shared rules and sends each player their own view.",
+  "description": "The Worker at icelander.net/games/laumufarthegi: routes the page, a small API and each room's WebSocket, checks icelander.net's sign-in only to start a room, and runs one Room Durable Object per room, which holds the room's state in its storage, applies every action through the shared rules and sends each player their own view.",
   "sources": [
     {
       "path": "games/laumufarthegi/worker/index.ts",

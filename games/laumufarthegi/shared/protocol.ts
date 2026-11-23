@@ -2,7 +2,7 @@
 import type { Action, View } from "./game";
 
 /** The game's address on icelander.net. */
-export const BASE = "/games/fresh/laumufarthegi";
+export const BASE = "/games/laumufarthegi";
 
 /** Room codes: five letters, none that look alike (no I, O, Q, W). */
 export const CODE_LETTERS = "ABCDEFGHJKLMNPRSTUVXYZ";

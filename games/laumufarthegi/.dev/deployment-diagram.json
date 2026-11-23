@@ -45,7 +45,7 @@
       "id": "edge",
       "name": "Cloudflare edge",
       "kind": "host",
-      "description": "Runs the Worker on the route icelander.net/games/fresh/laumufarthegi*, ahead of the games hub's less specific icelander.net/games/*, and serves the static assets."
+      "description": "Runs the Worker on the route icelander.net/games/laumufarthegi*, ahead of the games hub's less specific icelander.net/games/*, and serves the static assets."
     },
     {
       "id": "worker",
@@ -86,7 +86,7 @@
       "name": "index.html, style.css, favicon.svg and _headers",
       "source": "games/laumufarthegi/web/index.html",
       "deployedTo": "edge",
-      "description": "Copied into dist/games/fresh/laumufarthegi/ (and _headers to dist/): a Content-Security-Policy that allows only this origin and wss://icelander.net."
+      "description": "Copied into dist/games/laumufarthegi/ (and _headers to dist/): a Content-Security-Policy that allows only this origin and wss://icelander.net."
     },
     {
       "id": "script",
@@ -108,7 +108,7 @@
       "from": "edge",
       "to": "worker",
       "kind": "hosts",
-      "description": "Routes icelander.net/games/fresh/laumufarthegi* to the Worker; the Worker runs first only for the page and api/*."
+      "description": "Routes icelander.net/games/laumufarthegi* to the Worker; the Worker runs first only for the page and api/*."
     },
     {
       "from": "edge",

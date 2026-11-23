@@ -3,7 +3,7 @@
   "kind": "operation",
   "title": "Laumufarþegi Worker operations",
   "folder": "games/laumufarthegi/worker",
-  "description": "The ways into the Worker and its Room Durable Object: two HTTP routes, the room's WebSocket and the messages it takes, and the room's alarm. BASE is /games/fresh/laumufarthegi.",
+  "description": "The ways into the Worker and its Room Durable Object: two HTTP routes, the room's WebSocket and the messages it takes, and the room's alarm. BASE is /games/laumufarthegi.",
   "sources": [
     {
       "path": "games/laumufarthegi/worker/index.ts",

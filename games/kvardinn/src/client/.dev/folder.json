@@ -1,0 +1,32 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Page",
+  "folder": "games/kvardinn/src/client",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Page",
+      "summary": "The browser page: every screen for players and for the room's big screen, the draggable scale, the reconnecting connection, sound and shared text.",
+      "purpose": "Draws whatever View the room last sent and turns taps and drags into actions. The hash picks the screen: none for the front page, #CODE for a player's room, #CODE/skjar for a big screen. build.mjs bundles main.ts into dist/app.js.",
+      "boundaries": [
+        "Never runs the rules: it only uses src/engine's types, limits and scoring bands, and the room decides every move.",
+        "Holds no secret but its own seat token, kept per room in localStorage."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/kvardinn/src/client/main.ts",
+          "symbol": "screenHtml"
+        },
+        {
+          "path": "games/kvardinn/src/client/net.ts",
+          "symbol": "Connection"
+        },
+        {
+          "path": "games/kvardinn/build.mjs"
+        }
+      ]
+    }
+  ]
+}

@@ -7,7 +7,7 @@
     {
       "id": "folder",
       "title": "Laumufarþegi Worker",
-      "summary": "The Cloudflare Worker at icelander.net/games/fresh/laumufarthegi and its Room Durable Object, one per room.",
+      "summary": "The Cloudflare Worker at icelander.net/games/laumufarthegi and its Room Durable Object, one per room.",
       "purpose": "index.ts routes the page, api/me, api/rooms and each room's WebSocket, and checks the sign-in only for starting a room; room.ts is the Room Durable Object, which keeps a room's state, takes its players' hibernatable WebSockets, applies their actions through shared/game.ts, sends each player their own view, runs the timers on its alarm and deletes an idle room.",
       "boundaries": [
         "The rules are shared/game.ts; this folder stores, sequences and delivers them, and decides nothing about the game itself.",

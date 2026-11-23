@@ -2,7 +2,7 @@
 
 An Icelandic party word game for 3–10 players, each on their own phone or laptop, in the same room or on a call. Everyone sees a topic and 16 words. Everyone but one player, the **laumufarþegi** (stowaway), also sees which word is secret. In turn, each player gives a short clue; then everyone votes for who they think the stowaway is. If the stowaway is caught, they may guess the secret word.
 
-Play at [icelander.net/games/fresh/laumufarthegi](https://icelander.net/games/fresh/laumufarthegi/) once it is deployed.
+Play at [icelander.net/games/laumufarthegi](https://icelander.net/games/laumufarthegi/) once it is deployed.
 
 ## Hosting and sharing a game
 
@@ -58,13 +58,13 @@ npm test
 npx wrangler dev --var HOST_SIGN_IN:none
 ```
 
-Then open http://localhost:8787/games/fresh/laumufarthegi/. The local run lets anyone start a room, because there is no login service on your machine. Open the room link in several browser windows to play against yourself.
+Then open http://localhost:8787/games/laumufarthegi/. The local run lets anyone start a room, because there is no login service on your machine. Open the room link in several browser windows to play against yourself.
 
 ## Deploy
 
-A merge to `main` deploys the game (`.github/workflows/deploy.yml` runs `npm test`, `node build.mjs` and `wrangler deploy`).
+Nothing deploys from GitHub any more: the owner deploys from their own machine, with a Cloudflare token for the icelander.net account, by running `npm run deploy` in this folder (it runs `npm test`, the build and `wrangler deploy`).
 
-The game has no database and no secrets. Its first deploy creates the `Room` Durable Object class through the `rooms-v1` migration in `wrangler.jsonc`, and the route `icelander.net/games/fresh/laumufarthegi*`.
+The game has no database and no secrets. Its first deploy creates the `Room` Durable Object class through the `rooms-v1` migration in `wrangler.jsonc`, and the route `icelander.net/games/laumufarthegi*`.
 
 Only starting a room checks icelander.net's sign-in, through the site's own cookie (no new app needs registering with the login service): `HOST_SIGN_IN` is `"required"` and `HOST_ROLE` is `games:laumufarthegi` in `wrangler.jsonc`. The role is declared in the icelander.net repository (`accounts/src/config.js`) and granted, or sent as an invitation, at icelander.net/private/admin. Joining a room never needs a sign-in. Set `HOST_SIGN_IN` to `"none"` to let anyone start rooms.
 
