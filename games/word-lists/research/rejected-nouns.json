@@ -1,0 +1,5866 @@
+[
+{
+"ord": "absúrdleikrit",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "afburður",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "afgreiðsla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "afgreiðsluferli",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "afgreiðslukona",
+"astaeda": "VARIANT"
+},
+{
+"ord": "afhending",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "afkomandi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "afköst",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "afl",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "afmælispartý",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "afneitun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "afskipti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "afsláttarkort",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "afspilun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "afstaða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "aftaka",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "afturhvarf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "afþreying",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "aksturshegðun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "algleymi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "almannatengslafulltrúi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "almenningssamgöngur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "almenningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "altari",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "alvöruþungi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "alþingismaður",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "alþjóðanefnd",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "alþjóðaskrifstofa",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "andlát",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "andstaða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "andstæða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "andúð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "arfleifð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "athafnamaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "athugasemd",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "atkvæði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "atriði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "atvinna",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "atvinnuauglýsing",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "atvinnuleit",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "atvinnumöguleiki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "atvinnuvegur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "aukaferð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "aukagrein",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "aukamerking",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "aukanótt",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "aukavakt",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "aukavarmi",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "aukaverkun",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "aukavinna",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "auki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "aukning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "aumingi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "austurborg",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "austurhluti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "aðalumferðaræð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "aðdragandi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "aðfinnsla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "aðgangur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "aðgerðarsinni",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "aðskilnaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "aðstoðarskólastjóri",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "aðstæður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "bakarofn",
+"astaeda": "VARIANT"
+},
+{
+"ord": "bakgrunnur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "banakringla",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "banaslys",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "bani",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "bankakona",
+"astaeda": "VARIANT"
+},
+{
+"ord": "bankanúmer",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bankareikningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "bann",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "bar",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "bardagastelling",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "bari",
+"astaeda": "VARIANT"
+},
+{
+"ord": "barmur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "barnabók",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "barnadeild",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "barnalest",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "barnastóll",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bassaleikari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "baðgestur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "baðmotta",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "beinbrot",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "bensínsprenging",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bernskuminning",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bil",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "bið",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "bjór",
+"astaeda": "DROPPED_IN_AUDIT"
+},
+{
+"ord": "bjórhátíð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bjóð",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "björgunarbúnaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "björgunarleiðangur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "björgunarsveitarfólk",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "björgunarsveitargæi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "björgunarsveitarstelpa",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "blanda",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "blaðagrein",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "blaðsalat",
+"astaeda": "VARIANT"
+},
+{
+"ord": "blekking",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "bláberjaskyr",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "blæðing",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "blóð",
+"astaeda": "DROPPED_IN_AUDIT"
+},
+{
+"ord": "blóðþrýstingur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "borgarbúi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "borgarstjórn",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "borðplata",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bragliður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "bragðtegund",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "brennivín",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "breyting",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "brjálæðingur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "brjóst",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "brjóstahaldari",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "brosa",
+"astaeda": "VARIANT"
+},
+{
+"ord": "brottfall",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "bréfritari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "byggingarfyrirtæki",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bylting",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "byrjun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "byrði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "byssa",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "bátsferð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bæjarbúi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "bæjarstjóri",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "bænarrómur",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "bændasamfélag",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bílaframleiðsla",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bílakaup",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bílaleigubíll",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bílaumferð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bílgluggi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bílþjófnaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bíóauglýsing",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bókasafnskort",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bókfell",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "bókhaldsdeild",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bókmennt",
+"astaeda": "VARIANT"
+},
+{
+"ord": "bókmenntagildi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "bókmenntastarf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "bókmenntatexti",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "bóknám",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "bólstur",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "búddisti",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "covid",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "dagatala",
+"astaeda": "VARIANT"
+},
+{
+"ord": "dagsetningarsnið",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "dagskrá",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "danstónlist",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "dauðadá",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "dauði",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "debetkort",
+"astaeda": "VARIANT"
+},
+{
+"ord": "deila",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "deildarstjóri",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "desílítri",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "deyfing",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "diplómanám",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "doktorsnemi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "doktorspróf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "dratthali",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "draugasýn",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "draumaborg",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "draumavinna",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "dreif",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "dreifiblað",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "drekadans",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "drykkjuvenja",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "drykkjuvísa",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "dugnaðarmanneskja",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "dvöl",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "dystópía",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "dómharka",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "dómsmálaráðherra",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "dómur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "dönskukennari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "dútl",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "dýralíf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "dýraspítali",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "efasemd",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "efnasamband",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "efni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "eftirlit",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "eftirvinnsla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "eiga",
+"astaeda": "VARIANT"
+},
+{
+"ord": "eigandi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "eign",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "einkabíll",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "einkalíf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "einkennistákn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "einleikari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "einræði",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "einstaklingur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "eintala",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ekkja",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "ektastand",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "eldfjallafræðingur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "eldhúsborð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "eldhúsinnrétting",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "eldhúskollur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "eldhússtóll",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "eldhúsvaskur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "eldkeila",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "elska",
+"astaeda": "VARIANT"
+},
+{
+"ord": "elskhugi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "embætti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "endi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ending",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "endurnotkun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "endursögn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "enskukennari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "eplabiti",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "erfidrykkja",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "erfingi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "erfiðleiki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "erfðaskrá",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "erindi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "eskimói",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "ex",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "eyða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "eð",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "eðlishvöt",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fagverðlaun",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fallbeyging",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "faraldur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "faratæki",
+"astaeda": "VARIANT"
+},
+{
+"ord": "farg",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "farsæld",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "farþegaflutningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fasismi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "fasteign",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fatahönnun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fataverslun",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ferli",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fermetri",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fermingarveisla",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fertugsafmæli",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fertugsaldur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ferðabolli",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ferðafólk",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ferðamannaflóð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ferðamannaiðnaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ferðamálafræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ferðarúm",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ferðasaga",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ferðaþjónusta",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fimmtugsaldur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fiskréttur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fiðluleikari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fjallafólk",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fjarski",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fjarvera",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fjármálaráðherra",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "fjölbreytileiki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fjöldi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fjölskyldusaga",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "flatarmál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fleirtala",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "flipp",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "flugeldasala",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "flugnasuð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "flutningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "flyksa",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "flæði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "flóttafólk",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "flöskumóttaka",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "foreldrahlutverk",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "foreldrar",
+"astaeda": "VARIANT"
+},
+{
+"ord": "forföll",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fornnorræna",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "forráðamaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "forsetafrú",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "forsetakjör",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "forspá",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "forstöðumaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "forysta",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "framfæri",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "framför",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "framhald",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "framhaldsnám",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "framhaldsskólastig",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "framhaldsþáttur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "framkoma",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "framkvæmd",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "framkvæmdastjóri",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "framleiðslusvæði",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "framlína",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "framvinda",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "frelsishetja",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "freska",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "friðun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "frumkvæði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "frumvarp",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "frumverk",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "frásögn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fræðingur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fræðsluferð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fræðsluþáttur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "frígír",
+"astaeda": "DROPPED_IN_AUDIT"
+},
+{
+"ord": "frítími",
+"astaeda": "VARIANT"
+},
+{
+"ord": "frón",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "fróðleikur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "frönskunámskeið",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fuglalíf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fullorðinsár",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fundarsalur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "furða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fylgdarmaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fylgiskjal",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fylkisstjóri",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "fyllerí",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "fyrirbrigði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fyrirbæri",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fyrirkomulag",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fyrirmynd",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fyrradagur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fyrramál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fyrsta",
+"astaeda": "VARIANT"
+},
+{
+"ord": "fá",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "fæðing",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "fæðingarvottorð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "félag",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "félagsfræðibraut",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fíkn",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "fíkniefni",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "fíla",
+"astaeda": "VARIANT"
+},
+{
+"ord": "fílahjörð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fólksbíll",
+"astaeda": "VARIANT"
+},
+{
+"ord": "fósturfaðir",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fósturfjölskylda",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fósturforeldrar",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fótboltaleikur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fótboltaæfing",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fótgangandi",
+"astaeda": "VARIANT"
+},
+{
+"ord": "för",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "förgun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "fössari",
+"astaeda": "VARIANT"
+},
+{
+"ord": "föstudagsmessa",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "föstudagsmorgunn",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "fötlun",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "gagnrýni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "gagnsleysi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "gangtegund",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "geithafur",
+"astaeda": "VARIANT"
+},
+{
+"ord": "gemsi",
+"astaeda": "VARIANT"
+},
+{
+"ord": "germynd",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "gerviefni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "gervifótur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "geð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "geðklofi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "gildistaka",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "gjaldeyristekjur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "gjaldskrá",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "gleðidagur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "glæpatíðni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "glæpaverk",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "glæta",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "gneisti",
+"astaeda": "VARIANT"
+},
+{
+"ord": "golfmót",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "gosdrykkur",
+"astaeda": "VARIANT"
+},
+{
+"ord": "gossvæði",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "greinargerð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "greining",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "greinir",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "grunnskólanemandi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "grunnur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "grásleppuskúr",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "grænmetisréttur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "grænmetissúpa",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "gróðurfar",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "gubba",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "gáski",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "gærkvöld",
+"astaeda": "VARIANT"
+},
+{
+"ord": "gærnótt",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "gæsla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "gólflisti",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "góða",
+"astaeda": "VARIANT"
+},
+{
+"ord": "góði",
+"astaeda": "VARIANT"
+},
+{
+"ord": "göngufæri",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "göngufólk",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "gönguklúbbur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "götuheiti",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "götukort",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "gúlsopi",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "gúmmíblaðra",
+"astaeda": "VARIANT"
+},
+{
+"ord": "hafnarmynni",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hagfræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hagfræðibraut",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hagnaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hagsmunir",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hagur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hanastél",
+"astaeda": "DROPPED_IN_AUDIT"
+},
+{
+"ord": "handhafi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "handknattleikur",
+"astaeda": "VARIANT"
+},
+{
+"ord": "harmleikur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "harðfiskbiti",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "harðræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "haughús",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "hegðunarmynstur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heilbrigði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heildarhugsun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heildarlausn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heill",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heilsugæsla",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "heilsugæslustöð",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "heimaborg",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "heimakennsla",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "heimaland",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heimaskóli",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "heimasvæði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heimild",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heimildavinna",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heimilisfang",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heimilislæknir",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "heimkoma",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heimsathygli",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heimsfaraldur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "heimshorn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heimspeki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heimsvísa",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "heimtun",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "heiðni",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "helför",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "helgarferð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "helmingur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "henna",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "herstöð",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "hetjusaga",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "heymoð",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "heyrnartæki",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "hindí",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "hitabeltisstormur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hitabeltisveður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hitastig",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hjartarhorn",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hjartarkálfur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hjartaáfall",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "hjólageymsla",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hjólastóll",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "hjólreið",
+"astaeda": "VARIANT"
+},
+{
+"ord": "hjúkrun",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "hlið",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hliðarverkefni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hliðsjón",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hljóðfæraleikari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hljóðskrá",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hljóðsköpun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hlustun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hlutabréf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hlutfall",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hluti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hlutverk",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hlífðarfatnaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hneykslunartónn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hnoð",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "holtaþór",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "hreinlætisregla",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hrifning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hringrás",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hrista",
+"astaeda": "VARIANT"
+},
+{
+"ord": "hrossabóndi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hrossarækt",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hrun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hrynjandi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hræsnari",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "hugarfar",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hugarfóstur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hugblær",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hugmyndafræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hugmyndaheimur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hugur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hugvísindasvið",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "humarveisla",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hundrað",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hvalaskoðunarskip",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hvati",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hviss",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "hvorugkyn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hvíla",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "hvítasunna",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "hvítrússneska",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hvítvínsglas",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hádegispása",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hálfpartur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hálkublettur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hálsliður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hálstafla",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "hámark",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "háski",
+"astaeda": "VARIANT"
+},
+{
+"ord": "háskólakennari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "háttur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hátíðahald",
+"astaeda": "VARIANT"
+},
+{
+"ord": "hátíðarbúningur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hátíðartónleikar",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hátíðisdagur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "hæfni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hækja",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "hækkun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hérað",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "héraðsdómur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hóstakast",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "hóstasaft",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "hótelvæðing",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "höfnun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "höfuðhögg",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "hökt",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "hörmung",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "húsaleiga",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "húsamús",
+"astaeda": "VARIANT"
+},
+{
+"ord": "húsasmíði",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "húsgafl",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "húsgagnaverslun",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "húshorn",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "húsnæði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "húsnæðislán",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "húsnúmer",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "húsþak",
+"astaeda": "VARIANT"
+},
+{
+"ord": "inna",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "innblástur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "innflytjandi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "innheimtubréf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "innpökkun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "innskot",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "innviðir",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "iðja",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "iðnaðarfyrirtæki",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "jafna",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "jarðbað",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "jarðefnaeldsneyti",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "jarðeðlisfræðingur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "jarðfræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "jarðfræðingur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "jarðhitasvæði",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "jarðhitavirkjun",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "jeppaferð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "jógakennari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "jólamynd",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "jökultunga",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kaf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kapp",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "karlaklefi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "karlkyn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "karlkynsorð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "karlmannsnafn",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kattarskinn",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kaup",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kaupbætir",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kaupsamningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kayakferð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kenniliður",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "kenning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kennsla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kennsluaðferð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kennslufræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kennsluháttur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kennsluáætlun",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kerfi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kerling",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "kiddi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "kirkjukór",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kisa",
+"astaeda": "VARIANT"
+},
+{
+"ord": "kisi",
+"astaeda": "VARIANT"
+},
+{
+"ord": "kjarasamningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kjötframleiðsla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kjúklingaréttur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "klaufdýr",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "klettabelti",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "klisja",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "klórfar",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "knattspyrnustjóri",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kolefni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kolefnisfótspor",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "koma",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kommúnismi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "kommúnisti",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "koníak",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "koparpeningur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kosning",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "kristnitaka",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "krónhjörtur",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "kunningi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kvenleiki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kvikmyndagerðarmaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kvikmyndaleikstjóri",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kvikmyndalist",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kvikmyndaáhugamaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kvíði",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "kvöldskóli",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kvöldvakt",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kvöldvörður",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "kynhormón",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "kynlíf",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "kynning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kynþáttamismunun",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "kírópraktor",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "kísill",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "kóramót",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kórónuveirufaraldur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "köllun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "körfuboltaþjálfari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "kú",
+"astaeda": "VARIANT"
+},
+{
+"ord": "landamærasvæði",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "landbúnaðarskóli",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "landbúnaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "landfræðingur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "landkynning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "landnámstími",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "landsdrottinn",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "landsliðsþjálfari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "landsmaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "langdvöl",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "latneska",
+"astaeda": "VARIANT"
+},
+{
+"ord": "laugardagsmorgunn",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "launaseðill",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "lausn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "leif",
+"astaeda": "VARIANT"
+},
+{
+"ord": "leiga",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "leiguhúsnæði",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "leikfimistími",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "leikhljóð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "leikhússtjóri",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "leiklistarsaga",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "leikskólalóð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "leikskólastýra",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "leikslok",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "leit",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "leitarljós",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "leið",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "leiðangursstjóri",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "leiðbeining",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "leiðindapúki",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "les",
+"astaeda": "VARIANT"
+},
+{
+"ord": "lesandi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "lesefni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "lettneska",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "leyfi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "leynileikhús",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "leynilögregla",
+"astaeda": "VARIANT"
+},
+{
+"ord": "leyti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "lifnaðarháttur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "lipurð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "listaháskóli",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "listakona",
+"astaeda": "VARIANT"
+},
+{
+"ord": "listasafns",
+"astaeda": "VARIANT"
+},
+{
+"ord": "lita",
+"astaeda": "VARIANT"
+},
+{
+"ord": "litaafbrigði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "liðband",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "liðfall",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "liðsauki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ljóðakvöld",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ljóðasafn",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ljóðaunnandi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ljóðgreining",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ljóðlist",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ljúfur",
+"astaeda": "VARIANT"
+},
+{
+"ord": "lof",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "loftfímleikakennari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "loftljós",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "loftslagsfræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "lofttegund",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "loka",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "lokapróf",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "lottómiði",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "luktarhátíð",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "lungnabólga",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "lyf",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "lyfjafræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "lyfseðill",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "lykilhlutverk",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "láð",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "læknisfræðinám",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "læknisvottorð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "læknisþjónusta",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "léttir",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "lífdagar",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "lífsferill",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "lífsstíll",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "líkamsmeiðing",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "líkamsræktardagur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "líking",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "líkkista",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "lít",
+"astaeda": "VARIANT"
+},
+{
+"ord": "líða",
+"astaeda": "VARIANT"
+},
+{
+"ord": "lögfræðiþjónusta",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "löggjafarþing",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "lögreglumynd",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "lögregluvefur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "lögur",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "lúser",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "lúxusferð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "lýsa",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "lýsing",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "lýsingarháttur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "lýðræði",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "lýðræðisríki",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "magapest",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "magapína",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "mannanöfn",
+"astaeda": "VARIANT"
+},
+{
+"ord": "mannbjörg",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mannfólk",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mannkyn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mannréttindi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mannsbein",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "mannshöfuð",
+"astaeda": "VARIANT"
+},
+{
+"ord": "mannslíf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mannvera",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mantra",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "markaðshlutdeild",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "markmið",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "matargerð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "matarmenning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "matjurtagarður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "matsatriði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "matvörubúð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "matvöruverslun",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "maímánuður",
+"astaeda": "VARIANT"
+},
+{
+"ord": "meginhlutverk",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "megináhersla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "meira",
+"astaeda": "VARIANT"
+},
+{
+"ord": "meirihluti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "meistaragráða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "meistaranemandi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "meistaranemi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "menning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "menningarborg",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "menningarheimur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mennt",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "menntun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "menntunarskortur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "metan",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "meðalaldur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "meðalmaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "meðaltal",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "meðferð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "meðlimur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "meðstjórnandi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "meðvitund",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mikilvægi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "millibil",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "millilag",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "millilandaflug",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "millilending",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "milljarður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "misnotkun",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "misseri",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mið",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "miðaldatexti",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "miðannarspróf",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "miðlag",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "miðmisserispróf",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "miðstig",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "miðstærð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mjalli",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "mjólkurbúð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "morgunbolla",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "morgunfrétt",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "morgunrútína",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "morgunskíma",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "morgunsól",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "morgunvakt",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "mundur",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "munur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mura",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "myndhvörf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "myndlistanám",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "myndlistarkona",
+"astaeda": "VARIANT"
+},
+{
+"ord": "myndlistarnemi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "myndmenntakennari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "máfur",
+"astaeda": "DROPPED_IN_AUDIT"
+},
+{
+"ord": "málabraut",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "málagjöld",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "málaskóli",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "málefni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "málfræðingur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "málgagn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "málkerfi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mállýska",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "málrómur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "málsgrein",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "málstofa",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "máltaka",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "máltæki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "málvísindi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mánaðarheiti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mælikvarði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mætur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mínus",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "móttökuskilmáli",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "móttökustöð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "mótvægi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "móðurmál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "möguleiki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "mök",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "nasistastjórn",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "nauðsynjavara",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "nefkirtill",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "nemendafjöldi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "netkaffihús",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "neyðaraðstoð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "neyðarskeyti",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "neyðarsími",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "neðanjarðarlestarstöð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "norðanbál",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "norðurhluti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "norðurland",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "not",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "notandi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "nágrenni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "nákvæmni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "nám",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "námsferill",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "námskeið",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "náttmyrkur",
+"astaeda": "VARIANT"
+},
+{
+"ord": "náttúruvætti",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "nærumhverfi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "næturklúbbur",
+"astaeda": "DROPPED_IN_AUDIT"
+},
+{
+"ord": "næturvakt",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "nútímahús",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "nútímamál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "nýlendustefna",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "nýlenduvæðing",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "nýliðaþjálfun",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "nýmjólk",
+"astaeda": "VARIANT"
+},
+{
+"ord": "nýra",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "nýting",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ofa",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "ofanálag",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ofbeldi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "ofgnótt",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ofkæling",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "ofþyngd",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "opnunartími",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "orkugjafi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "orlof",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "orlofshús",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "orsök",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "orð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "orðabil",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "orðaforði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "orðalag",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "orðasamband",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "orðsifjafræði",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "orðskýring",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "partur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "peningasóun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "persónufornafn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "persónugervingur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "persónulýsing",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "persónutöfrar",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "pissa",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "pitsa",
+"astaeda": "VARIANT"
+},
+{
+"ord": "pjalla",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "plómuvín",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "postuli",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "prestssonur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "prufa",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "prófun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "prósent",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "prótín",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "píanókennari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "píanótími",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "píka",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "póstnúmer",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "púl",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rafmagnskló",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "rafmagnsverkfræðingur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "raftækjabúð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "raftækjaverslun",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ragnarökkur",
+"astaeda": "VARIANT"
+},
+{
+"ord": "rangindi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rannsóknarvinna",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rasismi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "rass",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "raun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rauðvín",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "refapar",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "refaveiði",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "regla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "reglufesta",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "reglukerfi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "regn",
+"astaeda": "VARIANT"
+},
+{
+"ord": "regnskór",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "regntímabil",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "reik",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "reisa",
+"astaeda": "VARIANT"
+},
+{
+"ord": "rekstur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rest",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "riddarafélag",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "rigningarskúr",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "rigningartímabil",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ritháttur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ritmál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rjómapönnukaka",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "rumur",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "ráð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ráðherra",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "ráðsmaður",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "ráðstefna",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ráðuneyti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ræsting",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ræstingastjóri",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ræða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rétta",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "ríkisborgararéttur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ríkisfang",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ríkislögreglustjóri",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ríkisstjórn",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "rólegheit",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rök",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rökræða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rökstuðningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rötun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rúmenska",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "rúmmál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rútína",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "rými",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "safnkassi",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "sagnfræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sakavottorð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sakleysi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "saltverk",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "samband",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sambandsland",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sambúð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sambýlismaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sameining",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samfélagsmál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samgöngustyrkur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samgönguvika",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "samheldni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samhengi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samkennd",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samkeppni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samnemandi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samræmi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samskiptahæfni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samskiptamál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samspil",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samstarf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samstarfsfólk",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samstarfsmaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "samstarfsverkefni",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "samstarfsörðugleikar",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samsvörun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samtenging",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samtök",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "samverustund",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "segulbandsupptaka",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sellufundur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "sending",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sens",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "sentímetri",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sess",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "silkikjóll",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sinn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sitjandi",
+"astaeda": "VARIANT"
+},
+{
+"ord": "siðaskipti",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "siðmenning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sjálfsmyndarkreppa",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sjálfstæðismaður",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "sjálfsöryggi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sjár",
+"astaeda": "VARIANT"
+},
+{
+"ord": "sjávarháski",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sjávarlíf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sjávarréttur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sjóbjörgunarsveit",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sjómannaborg",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sjónvarpsakademía",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sjónvarpsrás",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sjóður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sjötugsaldur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sjúklingur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "sjúkraliði",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "skaf",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "skammtur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skapgerð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skartgripabúð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "skattkort",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skattur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skaði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skemmtiatriði",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "skemmtinefnd",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "skemmtun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skilagjald",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skilmáli",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skilningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skilyrði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skiptastjóri",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skipti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skiptinemasamtök",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "skiptisamningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skiptistöð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "skipulag",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skjal",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skjalasafn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skotgleði",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "skotta",
+"astaeda": "DROPPED_IN_AUDIT"
+},
+{
+"ord": "skoðanafrelsi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skoðun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skoðunarferð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "skrafl",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "skratti",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "skrif",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skriffinnska",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skráning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skráningarkerfi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "skutill",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "skutl",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skylda",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skyldleiki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skyldmenni",
+"astaeda": "VARIANT"
+},
+{
+"ord": "skyn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ská",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skóladagur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "skólaganga",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skólastarf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skólaönn",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sköpunargáfa",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sköpunarsaga",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "skýring",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "skýrsla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "slagorð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "slagsmál",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "slitlag",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "slys",
+"astaeda": "DROPPED_IN_AUDIT"
+},
+{
+"ord": "slysstaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "slysó",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "smurbók",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "smáatriði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "smástelpa",
+"astaeda": "VARIANT"
+},
+{
+"ord": "smástund",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "snatur",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "snerta",
+"astaeda": "VARIANT"
+},
+{
+"ord": "snotra",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "snökt",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "snúða",
+"astaeda": "VARIANT"
+},
+{
+"ord": "sorg",
+"astaeda": "DROPPED_IN_AUDIT"
+},
+{
+"ord": "sorgarferli",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "sorpeyðingarstöð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "spangól",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "spað",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "spilakassi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "spjall",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sporbaugur",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "sprang",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "sprengjuleitarhundur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sprengjusvæði",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "spretta",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "spölur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "spýting",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "stakkaskipti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "starf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "starfsfólk",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "starfshópur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "starfsmannaviðtal",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "starfsmaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "starfsnám",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "starfsráðgjafi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "starfsþjálfun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "starfsþróun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "staða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "staðsetning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "staður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stefna",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "steinefni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stjarneðlisfræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stjórn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stjórnandi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stjórnmálamaður",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "stjúpforeldrar",
+"astaeda": "VARIANT"
+},
+{
+"ord": "strandstaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "strætóbílstjóri",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "strætóleið",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "stríð",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "stund",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stuttmyndagerð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "stuðningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stykki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "styrktarreikningur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "stytting",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stærð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stærðarmunur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stíll",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stöðnun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stúdentspróf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "stýrivextir",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sumarbústaðaland",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sumardagur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sumarlag",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sumarveður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sundfatnaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sunnudagskvöld",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "suðurhluti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "suðurjaðar",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "suðurland",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "suðurströnd",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "svefnaðstaða",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sveinspróf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sverð",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "svæfill",
+"astaeda": "VARIANT"
+},
+{
+"ord": "svínarí",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "systkinahópur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sárabót",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sækir",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "séra",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "sérakrein",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sérhljóð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sérstaða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sérverslun",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sífella",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "símaskjár",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "síðkastið",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sófasett",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sóknaraðili",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sólarljós",
+"astaeda": "VARIANT"
+},
+{
+"ord": "sólstjarna",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "sótt",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "sóttkví",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "söfnuður",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "sögn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sögubygging",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "söguhöfundur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sögusögn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "söguþráður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "söludagur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sölukona",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sölusíða",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sönglag",
+"astaeda": "VARIANT"
+},
+{
+"ord": "söngstund",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "sýking",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "sýklalyf",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "sýn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "sýslumaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tag",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tagalog",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "takmark",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tannlæknanám",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tannlæknastofa",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tegund",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tekja",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tekjuskattur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tengilína",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "tengsl",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "teymisvinna",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tilbóð",
+"astaeda": "VARIANT"
+},
+{
+"ord": "tilgáta",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tilhugsun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tilkynning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tilraunastarfsemi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tilraunaverkefni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tilvera",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tilvísun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tilþrif",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "titill",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tjaldhiminn",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tjaldútilega",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tjáning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tjón",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "toga",
+"astaeda": "VARIANT"
+},
+{
+"ord": "trítill",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "trú",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "trúnaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tugabrot",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tungumálabakgrunnur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tungumálabraut",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tungumálakennsla",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tungumálaskóli",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tvíburabróðir",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tvíræðni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "typpi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "tákn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tæknimál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tækninám",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tækniþróun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tímalengd",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tímarammi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tímaröð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tímasetning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tímatal",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tískublað",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tískufatnaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tískuljósmyndari",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tíð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tíðarandi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tóm",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tónakerfi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tónlistarmenning",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tónlistarmyndband",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tökuorð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "tökustaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tökuþýðing",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "tölvuleikjaheimur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "tölvunarfræðingur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "túlkun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "túr",
+"astaeda": "DROPPED_IN_AUDIT"
+},
+{
+"ord": "túristadjöfull",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "umbúð",
+"astaeda": "VARIANT"
+},
+{
+"ord": "umferðarlög",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "umferðarslys",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "umfjöllun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "umheimur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "umhverfi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "umhverfisfræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "umhverfismál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "umhverfisáhrif",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "umhyggja",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "umkvörtun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "umræða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "undantekning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "undirheimur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "ungbarn",
+"astaeda": "VARIANT"
+},
+{
+"ord": "ungdómur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "unglingasaga",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "unglingastarf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "unglingaveiki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ungmenni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "uppeldismarkmið",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "uppgötvun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "upphaf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "upplifun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "upplýsing",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "upplýsingamiðlun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "upplýsingatækni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "uppreisn",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "uppstigningardagur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "upptalning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "upptökuforrit",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "uppáhaldsbók",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "uppáhaldsdagur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "uppáhaldskvikmynd",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "uppáhaldsmatur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "uppáhaldsmynd",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "uppáhaldsíþróttagrein",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "urður",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "utanríkisráðherra",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "vaktavinna",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "valkostur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vandamál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vandræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vangavelta",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vannæring",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "vanvirðing",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "var",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "vara",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "varaformaður",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "varaplan",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "varnargarður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "varnaðarorð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "varðveisla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vatnapóló",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "vatnsborð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vatnsglas",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vatnslögn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vatnsorka",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vefútgáfa",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vegagerð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vegakerfi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vegalengd",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "veikindi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "veikleiki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "veislubakki",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "veiting",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "veitingakeðja",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "veiðibúð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "veiðiferð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "veiðiskapur",
+"astaeda": "VARIANT"
+},
+{
+"ord": "veiðitúr",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "velgengni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "velta",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "verkalýðsdagur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "verkefnastjóri",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "verkefni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "verkfall",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "verkfræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "verkjatafla",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "verslunarmaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "verð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "verðlaunaafhending",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "verðlaunahafi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "verðmæti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "verðtrygging",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vesalingur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "vetrarmorgunn",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vetrartími",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vetrarveður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vetraríþrótt",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "veðurfrétt",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vikudvöl",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vil",
+"astaeda": "VARIANT"
+},
+{
+"ord": "vina",
+"astaeda": "VARIANT"
+},
+{
+"ord": "vinnsla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vinnuaðstaða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vinnudagur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vinnuferli",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vinnuherbergi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vinnulota",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vinnutími",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viskí",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "vist",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vistunartími",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vitneskja",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vitund",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðbragð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðbót",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðgerð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðhald",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðhengi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðhorf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðleitni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðloðun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðræða",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðskiptaborg",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "viðskiptabraut",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "viðskiptafræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðtal",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðtalsþáttur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "viðurkenning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "viðvera",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vodki",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "vopn",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "vormisseri",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vottorð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vígi",
+"astaeda": "VARIANT"
+},
+{
+"ord": "vímuefnafíkn",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "vín",
+"astaeda": "DROPPED_IN_AUDIT"
+},
+{
+"ord": "vínbúð",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "vísan",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vísindasafn",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vísindatímarit",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vísun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vísuorð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "víðavangur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "vöggustofa",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "vöruafhending",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "yfirlýsing",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "yfirstærð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "yfirsýn",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "yfirtaka",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "yfirvald",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ábending",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ábyrgðarmaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "áfall",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "áfangaskóli",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "áfangastaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "áfengi",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "áfylling",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ágreiningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ágóði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ágústkvöld",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "áhersla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "áhrif",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "áhugi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ákveðni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ákvæði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ákvörðun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "áminning",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "árangur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "áratugur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ársbyrjun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "árslok",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "áskorun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "áskrift",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ástand",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ástarljóð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ástarlíf",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "ástarstjarna",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "ástartilfinning",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "áta",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "átta",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "áttaleyti",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "átök",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "ávarp",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "áverki",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "ávinningur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "áætlun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "æla",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "ælupest",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "ævintýragarður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ævintýrakona",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ævintýratölvuleikur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "íbúðalánasjóður",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "ímyndun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ísland",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "íslenskukennsla",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "íslenskunám",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "íslenskupróf",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "íslenskutími",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ívafsmál",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "íþróttakona",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "íþróttatími",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "íþróttaálfur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "óendanleiki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ógnvaldur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ókostur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ólæsi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "óman",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "ónot",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "órækt",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "ósköp",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "óvenja",
+"astaeda": "VARIANT"
+},
+{
+"ord": "óvitaskapur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "öfugmæli",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "öfundsýki",
+"astaeda": "VARIANT"
+},
+{
+"ord": "ökutækjatjón",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "öl",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "öld",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "öldrunarmiðstöð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "ölgerðarmaður",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "örnefni",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "öryggi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "öryggisfræðingur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "öryggismál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "öryggistæki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "öskulag",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "öskumistur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "úrræði",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "úrvinnsla",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "útflutningsvara",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "útgáfa",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "útgáfuröð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "útihurð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "útilegumannakofi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "útilistaverk",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "útivistarfatnaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "útivistarmaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "útivöllur",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "útlit",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "útreiðartúr",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "útsending",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "útskýring",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þekking",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þema",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þing",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "þingmaður",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "þjófnaður",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þjónustufulltrúi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "þjónustugátt",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þjónustumaður",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "þjónustumiðstöð",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "þjónustutæki",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "þjóð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þjóðarfugl",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "þjóðarsál",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þjóðflokkur",
+"astaeda": "UNSUITABLE"
+},
+{
+"ord": "þjóðhátíðargestur",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "þjóðhátíðarnefnd",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "þjóðskrá",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þjóðsögn",
+"astaeda": "VARIANT"
+},
+{
+"ord": "þolfall",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þolmynd",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þrautseigja",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þref",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þrekvirki",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þrá",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þróun",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þróunarstarf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þurrkherbergi",
+"astaeda": "DULL_COMPOUND"
+},
+{
+"ord": "þátttakandi",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þátíð",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þétting",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þökk",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þörf",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þúsund",
+"astaeda": "ABSTRACT"
+},
+{
+"ord": "þúsöld",
+"astaeda": "TOO_OBSCURE"
+},
+{
+"ord": "þýðingartexti",
+"astaeda": "DULL_COMPOUND"
+}
+]

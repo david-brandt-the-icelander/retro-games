@@ -1,14 +1,14 @@
 {
   "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
   "kind": "decisions",
-  "title": "Decisions for the Icelandic word-bluff game",
-  "folder": "games/word-bluff",
+  "title": "Decisions for the Icelandic word lists",
+  "folder": "games/word-lists",
   "entities": [
     {
       "id": "phase-1-go",
-      "title": "Approve Phase 1 and start building the game",
-      "summary": "Phase 1 found 1,800 verified words scored for difficulty 1–10. Every proposed level has well over 200 words (Barnvænt 973, Létt 1,408, Miðlungs 966, Erfitt 537). The research recommends GO; the owner decides.",
-      "status": "open",
+      "title": "Build the bluff-the-definition game (dropped)",
+      "summary": "Phase 1 of an Icelandic bluff-the-definition game produced 1,800 verified rare words with difficulty levels. The owner then dropped the game because an Icelandic edition of such a game already exists; the word list is kept in data/rare-words.json, unused.",
+      "status": "superseded",
       "context": "The owner asked for the game in two phases and for Phase 2 not to start until Phase 1 is approved. Phase 1 had to show at least 200 verified words that are real, obscure, not given away by their parts, short to define and suitable. The owner then asked for difficulty levels, the easiest playable with children, and for a larger list to fill them.",
       "options": [
         {
@@ -20,41 +20,22 @@
           "consequences": "The owner or another native speaker reviews the sample and the uncertain wording; words are dropped or reworded before the build."
         }
       ],
-      "waitingOn": "The owner",
       "evidenceStatus": "documented",
       "origin": "The owner's request for the game, in a Claude Code session, 23 November 2026",
       "links": [
         {
-          "path": "games/word-bluff/research/REPORT.md",
-          "label": "Phase 1 report"
-        }
-      ]
-    },
-    {
-      "id": "rare-senses",
-      "title": "How to handle rare senses of common words",
-      "summary": "A large share of the words are a rare sense of a word everyone knows (rjúpa = hnykill, áróður = róður móti straumi). Decide whether the game hints at this or lets the host filter them out.",
-      "status": "open",
-      "context": "These make good bluffs, but a player who writes the common meaning may feel cheated when it is not counted as correct.",
-      "options": [
-        {
-          "title": "Show a hint such as \"sjaldgæf merking\" with the word"
-        },
-        {
-          "title": "Let the host leave such words out"
-        },
-        {
-          "title": "Do nothing; the host's \"essentially correct\" button covers disputes"
+          "path": "games/word-lists/research/bluff/REPORT.md",
+          "label": "Phase 1 report of the bluff game"
         }
       ],
-      "waitingOn": "The owner, in Phase 2",
-      "evidenceStatus": "documented",
-      "origin": "Phase 1 research, 23 November 2026"
+      "decision": "Not built. The folder was repurposed for word lists for other party games.",
+      "decidedBy": "The owner",
+      "decidedOn": "2026-11-23"
     },
     {
       "id": "difficulty-levels",
       "title": "Difficulty levels as windows on a 1–10 word difficulty score",
-      "summary": "Every word has a difficulty score 1–10; a level is a [min, max] window on it, so levels overlap like cut-offs on a bell curve. The easiest level also requires child-friendly words that are not a rare sense of a common word.",
+      "summary": "For the rare-word list (data/rare-words.json): every word has a difficulty score 1–10 and a level is a [min, max] window on it. Kept for reference; no game uses the list.",
       "status": "decided",
       "context": "The owner asked for difficulty levels: the lowest playable with children, the highest holding the obscure words of the first round, with each level setting minimum and maximum word difficulty on a bell curve.",
       "decision": "Proposed windows, stored in research/words.json under erfidleikastig: Barnvænt 1–4 (child-friendly only), Létt 2–6, Miðlungs 4–8, Erfitt 6–10. The windows are data and can be changed without touching the words.",
@@ -65,8 +46,8 @@
       "origin": "The owner's request in a Claude Code session, 23 November 2026",
       "links": [
         {
-          "path": "games/word-bluff/research/REPORT.md",
-          "label": "Phase 1 report"
+          "path": "games/word-lists/research/bluff/REPORT.md",
+          "label": "Phase 1 report of the bluff game"
         }
       ]
     },
@@ -81,6 +62,25 @@
       "decidedOn": "2026-11-23",
       "evidenceStatus": "documented",
       "origin": "The owner's message in a Claude Code session, 23 November 2026"
+    },
+    {
+      "id": "party-game-lists",
+      "title": "Word lists for six party-game mechanics",
+      "summary": "Build original Icelandic lists for a code-clue team game, a grid-clue game, an outsider game, a describe-around-traps game, a category race and a one-syllable describing game, without copying any published game's cards.",
+      "status": "decided",
+      "context": "The owner listed six word, clue and bluffing games with no known Icelandic edition and asked for good word lists for all of them.",
+      "decision": "One reviewed list of common nouns with per-game suitability fields serves the four clue/describe games; separate original lists serve the outsider game (16-word topic grids) and the category race (prompts with example answers); a one-syllable word-form list supports the one-syllable game.",
+      "rationale": "The four clue games all need well-known nouns and differ only in which properties matter (associations, concreteness, describability), so one list with fields avoids duplicate review work.",
+      "decidedBy": "The owner (the goal); the structure is a proposal",
+      "decidedOn": "2026-11-23",
+      "evidenceStatus": "documented",
+      "origin": "The owner's message in a Claude Code session, 23 November 2026",
+      "links": [
+        {
+          "path": "games/word-lists/research/REPORT.md",
+          "label": "Word-list report"
+        }
+      ]
     }
   ]
 }

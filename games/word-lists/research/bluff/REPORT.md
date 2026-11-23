@@ -1,3 +1,5 @@
+> **Archived.** The bluff-the-definition game was dropped on 23 November 2026, because an Icelandic edition of such a game already exists. Its word list is kept, unused, in `../../data/rare-words.json`, and the files named below now live in this folder or in `../../data/`.
+
 # Phase 1 report: word list with difficulty levels
 
 Research for an Icelandic "bluff the definition" party game (working folder name `word-bluff`; the game's name is chosen in Phase 2). Lookups made on 23 November 2026.
