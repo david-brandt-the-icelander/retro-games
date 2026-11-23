@@ -3,7 +3,7 @@
   "kind": "use-case",
   "title": "Workflow use cases",
   "folder": ".github",
-  "description": "How a change to a game gets from a branch to icelander.net.",
+  "description": "How a change to a game gets from a branch to main, and from main to icelander.net when it is deployed by hand.",
   "sources": [
     {
       "path": "AGENTS.md",
@@ -14,15 +14,15 @@
       "symbol": "jobs"
     },
     {
-      "path": ".github/workflows/deploy.yml",
-      "symbol": "jobs"
+      "path": "games/rally/package.json",
+      "symbol": "scripts.deploy"
     }
   ],
   "entities": [
     {
       "id": "ship-a-change",
       "name": "Ship a change to a game",
-      "description": "A change made on a branch is checked on a pull request and, once merged, deployed to icelander.net.",
+      "description": "A change made on a branch is checked on a pull request and merged to main. Merging deploys nothing: the game goes live only when it is deployed by hand (Deploy a game by hand).",
       "sources": [
         {
           "path": "AGENTS.md",
@@ -35,10 +35,6 @@
         {
           "path": ".github/workflows/migrations.yml",
           "symbol": "jobs"
-        },
-        {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "jobs"
         }
       ],
       "actor": "Owner",
@@ -49,14 +45,14 @@
           "actorDocument": "Actors/coding-agent.md"
         }
       ],
-      "goal": "See a change to a game live on icelander.net.",
+      "goal": "Get a change to a game onto main, checked and ready to deploy.",
       "preconditions": [
         "The change is on a branch, not on main: main takes only pull requests.",
         "The game's own tests pass in its folder (npm test)."
       ],
       "postconditions": [
-        "Each game the change touched, outside its .dev folders, runs the merged code on icelander.net.",
-        "A change to .dev files alone is on main and nothing was deployed."
+        "The change is on main.",
+        "Nothing was deployed: icelander.net runs each game's previous version until someone deploys it by hand."
       ],
       "flow": [
         {
@@ -113,51 +109,11 @@
           "actor": "Owner",
           "participantKind": "actor",
           "actorDocument": "Actors/owner.md",
-          "action": "Merges the pull request, which deploys it.",
+          "action": "Merges the pull request. Nothing is deployed.",
           "sources": [
             {
               "path": "AGENTS.md",
               "symbol": "Agent instructions"
-            }
-          ]
-        },
-        {
-          "id": "gate",
-          "actor": "Deploy",
-          "participantKind": "system",
-          "action": "Checks every database change since the last successful deploy for an acknowledgement.",
-          "sources": [
-            {
-              "path": ".github/workflows/deploy.yml",
-              "symbol": "jobs.migrations"
-            },
-            {
-              "path": ".github/scripts/last-deployed.sh",
-              "symbol": "last"
-            },
-            {
-              "path": ".github/scripts/migration-gate.sh",
-              "symbol": "deploy"
-            }
-          ]
-        },
-        {
-          "id": "deploy",
-          "actor": "Deploy",
-          "participantKind": "system",
-          "action": "Lists the games the push changed and, for each, tests, builds and runs wrangler deploy in the production environment.",
-          "sources": [
-            {
-              "path": ".github/workflows/deploy.yml",
-              "symbol": "jobs.deploy"
-            },
-            {
-              "path": ".github/scripts/changed-games.sh",
-              "symbol": "all"
-            },
-            {
-              "path": ".github/workflows/game.yml",
-              "symbol": "jobs"
             }
           ]
         }
@@ -166,7 +122,7 @@
         {
           "atStep": "ci",
           "condition": "The pull request changes only .dev files, outside .github/ or not.",
-          "outcome": "No game is tested; the validators still run, and the merge deploys nothing.",
+          "outcome": "No game is tested; the validators still run.",
           "sources": [
             {
               "path": ".github/scripts/changed-games.sh",
@@ -203,41 +159,99 @@
               "symbol": "Database migrations"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "deploy-a-game",
+      "name": "Deploy a game by hand",
+      "description": "The owner, or an agent the owner asks, deploys one game from main with npm run deploy in its folder. Nothing else deploys a game since the Deploy workflow was removed on 2026-11-23.",
+      "sources": [
+        {
+          "path": "games/rally/package.json",
+          "symbol": "scripts.deploy"
         },
         {
-          "atStep": "gate",
-          "condition": "A database change since the last deploy is not acknowledged.",
-          "outcome": "Nothing is deployed.",
+          "path": "docs/database-migrations.md",
+          "symbol": "Applying it to production"
+        }
+      ],
+      "actor": "Owner",
+      "actorDocument": "Actors/owner.md",
+      "supportingActors": [
+        {
+          "name": "Coding agent",
+          "actorDocument": "Actors/coding-agent.md"
+        }
+      ],
+      "goal": "See a change to a game live on icelander.net.",
+      "preconditions": [
+        "The change is merged to main (Ship a change to a game).",
+        "The machine deploying has a Cloudflare API token for the icelander.net account, and Godot 4.7.2 for the Godot games."
+      ],
+      "postconditions": [
+        "The game runs the deployed commit on icelander.net."
+      ],
+      "flow": [
+        {
+          "id": "check-migrations",
+          "actor": "Owner",
+          "participantKind": "actor",
+          "actorDocument": "Actors/owner.md",
+          "action": "Checks, as docs/database-migrations.md says, that every migration the code needs has been applied to production; no gate checks this before a hand deploy.",
           "sources": [
             {
-              "path": ".github/scripts/migration-gate.sh",
-              "symbol": "deploy"
+              "path": "docs/database-migrations.md",
+              "symbol": "Applying it to production"
             }
           ]
         },
         {
-          "atStep": "deploy",
-          "condition": "A production reviewer is set.",
-          "outcome": "Each game's deploy waits for the reviewer's approval.",
+          "id": "run",
+          "actor": "Owner",
+          "participantKind": "actor",
+          "actorDocument": "Actors/owner.md",
+          "action": "Runs npm run deploy in the game's folder, on an up-to-date main.",
           "sources": [
             {
-              "path": ".github/workflows/game.yml",
-              "symbol": "environment"
-            },
-            {
-              "path": ".github/workflows/deploy.yml",
-              "symbol": "Deploy"
+              "path": "games/rally/package.json",
+              "symbol": "scripts.deploy"
             }
           ]
         },
         {
-          "atStep": "deploy",
-          "condition": "One game's tests, build or deploy fail.",
-          "outcome": "That game stays as it was; the others are deployed.",
+          "id": "upload",
+          "actor": "npm run deploy",
+          "participantKind": "system",
+          "action": "Runs the game's tests and build, then wrangler deploy uploads its Worker and assets to Cloudflare.",
           "sources": [
             {
-              "path": ".github/workflows/deploy.yml",
-              "symbol": "fail-fast"
+              "path": "games/rally/package.json",
+              "symbol": "scripts.deploy"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "check-migrations",
+          "condition": "A migration the code needs has not been applied.",
+          "outcome": "Apply it first (Migrate a game's database), then deploy.",
+          "sources": [
+            {
+              "path": "docs/database-migrations.md",
+              "symbol": "Applying it to production"
+            }
+          ]
+        },
+        {
+          "atStep": "upload",
+          "condition": "The game's tests or build fail.",
+          "outcome": "Nothing is uploaded; the game stays as it was.",
+          "sources": [
+            {
+              "path": "games/rally/package.json",
+              "symbol": "scripts.deploy"
             }
           ]
         }

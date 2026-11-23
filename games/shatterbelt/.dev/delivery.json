@@ -10,12 +10,12 @@
       "summary": "The shatterbelt Worker at icelander.net/games/retro/shatterbelt* and icelander.net/retro-games/shatterbelt*, with its static game and the D1 database shatterbelt-scores.",
       "environment": "production",
       "purpose": "The game players reach at icelander.net/games/retro/shatterbelt/ and its public scores page.",
-      "deployedBy": "The Deploy workflow on every push to main that changes games/shatterbelt outside its .dev folders (or anything under .github/ outside .github/.dev); by hand with Run workflow; or `npm run deploy` with a Cloudflare token.",
+      "deployedBy": "By hand: the owner, or an agent the owner asks, runs `npm run deploy` in games/shatterbelt (npm test, npm run build, wrangler deploy) with a Cloudflare API token for the icelander.net account. Nothing deploys on a merge to main; the Deploy workflow was removed on 2026-11-23.",
       "approvals": [
         "A pull request: main accepts nothing else.",
-        "A reviewer on the repository's production environment, if one is set."
+        "The owner's say-so: only the owner, or an agent the owner asks, deploys."
       ],
-      "rollback": "No rollback is recorded. The Deploy workflow deploys only from main, so going back means merging a revert, which deploys it. A database migration is not undone by this; migrations are written so the previous code keeps working (docs/database-migrations.md).",
+      "rollback": "No rollback is recorded: check out an earlier commit and deploy it again by hand with `npm run deploy`. A database migration is not undone by this; migrations are written so the previous code keeps working (docs/database-migrations.md).",
       "details": "The Worker's routes run ahead of the games hub's less specific icelander.net/games/*. workers_dev and preview URLs are off. Its migrations delete the Durable Object class Room, which held online rooms before they moved to the games hub; both migration entries stay, because Cloudflare applies them in order. The database was first created from worker/schema.sql by hand.",
       "evidenceStatus": "documented",
       "sources": [
@@ -24,12 +24,12 @@
           "symbol": "routes"
         },
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "on"
-        },
-        {
           "path": "games/shatterbelt/README.md",
           "symbol": "Deploy"
+        },
+        {
+          "path": "games/shatterbelt/package.json",
+          "symbol": "scripts.deploy"
         }
       ],
       "relationships": [

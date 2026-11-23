@@ -92,31 +92,30 @@
       ]
     },
     {
-      "id": "push-to-main",
-      "title": "On a push to main",
-      "summary": "The migration gate, then each changed game tested, built and deployed.",
-      "trigger": "A push to main, which only a merged pull request makes; or Run workflow, for one game or all.",
+      "id": "deploy-by-hand",
+      "title": "Deploying, by hand",
+      "summary": "A merge to main deploys nothing; each game is deployed by hand with npm run deploy in its folder.",
+      "trigger": "The owner, or an agent the owner asks, runs npm run deploy in a game's folder. A push to main starts no workflow since deploy.yml was removed on 2026-11-23.",
       "checks": [
-        "migration-gate.sh deploy, from the last successful deploy",
-        "For each changed game: game.yml with deploy true"
+        "The game's own npm run deploy: its tests (for most games), its build, then wrangler deploy"
       ],
       "blocks": "release",
-      "secrets": [
-        "CLOUDFLARE_API_TOKEN"
+      "notChecked": [
+        "Database migrations: the migration gate no longer runs before a deploy; whoever deploys checks docs/database-migrations.md first.",
+        "No .dev folders in dist/: only game.yml checks that, on the pull request."
       ],
-      "evidenceStatus": "source-verified",
+      "secrets": [
+        "A Cloudflare API token for the icelander.net account, on the machine that deploys"
+      ],
+      "evidenceStatus": "documented",
       "sources": [
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "jobs"
+          "path": "games/rally/package.json",
+          "symbol": "scripts.deploy"
         },
         {
-          "path": ".github/scripts/last-deployed.sh",
-          "symbol": "last"
-        },
-        {
-          "path": ".github/scripts/migration-gate.sh",
-          "symbol": "deploy"
+          "path": "docs/database-migrations.md",
+          "symbol": "Database migrations"
         }
       ]
     }

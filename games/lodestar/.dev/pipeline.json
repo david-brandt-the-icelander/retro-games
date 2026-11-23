@@ -40,19 +40,19 @@
     {
       "id": "main",
       "title": "On a merge to main",
-      "summary": "Nothing: the Deploy workflow neither builds nor deploys LodeStar.",
-      "trigger": "A push to main (deploy.yml).",
+      "summary": "Nothing: a merge to main deploys no game, LodeStar included.",
+      "trigger": "A push to main, which starts no workflow since deploy.yml was removed on 2026-11-23 (ci.yml runs on pull requests only).",
       "checks": [
-        "None for LodeStar"
+        "None"
       ],
       "notChecked": [
-        "Everything; LodeStar is not among deploy.yml's games"
+        "Everything; nothing builds or deploys a game on a merge"
       ],
       "evidenceStatus": "source-verified",
       "sources": [
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "options"
+          "path": ".github/workflows/ci.yml",
+          "symbol": "on"
         }
       ]
     }

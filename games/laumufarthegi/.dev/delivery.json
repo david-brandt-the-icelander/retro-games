@@ -13,10 +13,10 @@
       "deployedBy": "The owner, from their own machine: `npm run deploy` in games/laumufarthegi with a Cloudflare token for the icelander.net account. Nothing deploys from GitHub's runners (the Deploy workflow was removed on 2026-11-23).",
       "approvals": [
         "A pull request: main accepts nothing else.",
-        "A reviewer on the repository's production environment, if one is set."
+        "The owner's say-so: only the owner, or an agent the owner asks, deploys."
       ],
       "rollback": "No rollback is recorded: deploy the previous commit again with `npm run deploy`, or roll back the Worker's version in Cloudflare's dashboard.",
-      "details": "The Durable Object class Room is created by the rooms-v1 migration in wrangler.jsonc (new_sqlite_classes) when the Worker first deploys; there is no D1 database, so the database-migration gate has nothing of this game's to check. A change to games/word-lists/data/topic-grids.json alone does not deploy this game: changed-games.sh looks only under games/laumufarthegi/, so new topics go live with the game's next change.",
+      "details": "The Durable Object class Room is created by the rooms-v1 migration in wrangler.jsonc (new_sqlite_classes) when the Worker first deploys; there is no D1 database, so the Database migration check has nothing of this game's to check. A change to games/word-lists/data/topic-grids.json goes live only when the game is next deployed by hand; on its own it does not even run this game's CI, because changed-games.sh looks only under games/laumufarthegi/.",
       "evidenceStatus": "documented",
       "sources": [
         {

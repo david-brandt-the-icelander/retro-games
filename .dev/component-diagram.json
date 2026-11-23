@@ -47,7 +47,7 @@
     {
       "id": "workflows",
       "name": "Workflows",
-      "responsibility": "Check every pull request and deploy each changed game from main.",
+      "responsibility": "Check every pull request; they deploy nothing, since each game is deployed by hand with npm run deploy.",
       "folder": ".github",
       "diagram": ".github/.dev/component-diagram.json"
     },
@@ -177,13 +177,13 @@
       "from": "workflows",
       "to": "github",
       "kind": "depends-on",
-      "description": "Pull request descriptions and Deploy runs, through gh."
+      "description": "Pull request descriptions, through gh."
     },
     {
       "from": "workflows",
       "to": "cloudflare",
       "kind": "depends-on",
-      "description": "wrangler deploy."
+      "description": "wrangler deploy in game.yml, only when called with deploy true, which nothing does now."
     }
   ]
 }

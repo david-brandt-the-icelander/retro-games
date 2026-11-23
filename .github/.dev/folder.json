@@ -7,20 +7,16 @@
     {
       "id": "folder",
       "title": "Workflows",
-      "summary": "The GitHub Actions that test every pull request and deploy each changed game from main.",
-      "purpose": "Holds the workflows and their scripts: ci.yml validates the .dev diagrams and knowledge files and tests and builds each game a pull request changes; deploy.yml deploys each game a push to main changes, or one or all games by hand; game.yml is the one game's test, build and deploy that both call; migrations.yml is the Database migration check on pull requests. scripts/ lists the changed games (leaving .dev files out), finds the last deployed commit and runs the migration gate.",
+      "summary": "The GitHub Actions that test every pull request and check its database changes; nothing here deploys.",
+      "purpose": "Holds the workflows and their scripts: ci.yml validates the .dev diagrams and knowledge files and tests and builds each game a pull request changes; game.yml is the one game's test and build that ci.yml calls (its deploy input and wrangler deploy step are left over: nothing calls it with deploy true since deploy.yml was removed on 2026-11-23); migrations.yml is the Database migration check on pull requests. scripts/ lists the changed games (leaving .dev files out) and runs the migration gate; last-deployed.sh and the gate's deploy mode are left over from deploy.yml and nothing runs them.",
       "boundaries": [
         "Each game's pipeline, as it applies to that game, is described in that game's .dev/pipeline.json; this folder's pipeline.json describes the workflows themselves and links to them.",
-        "Deploying needs the repository secret CLOUDFLARE_API_TOKEN; production database migrations are applied by hand, outside these workflows."
+        "Nothing here deploys: each game is deployed by hand with npm run deploy in its folder and a Cloudflare API token for the account. Production database migrations are applied by hand too, and whoever deploys checks docs/database-migrations.md first."
       ],
       "evidenceStatus": "source-verified",
       "sources": [
         {
           "path": ".github/workflows/ci.yml",
-          "symbol": "jobs"
-        },
-        {
-          "path": ".github/workflows/deploy.yml",
           "symbol": "jobs"
         },
         {

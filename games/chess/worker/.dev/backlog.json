@@ -7,7 +7,7 @@
     {
       "id": "retire-sessions-outside-migrations",
       "title": "retire-sessions.sql is a migration outside worker/migrations/",
-      "summary": "The file that drops the old sessions table sits beside schema.sql, where the migration check and the deploy gate do not look.",
+      "summary": "The file that drops the old sessions table sits beside schema.sql, where the migration check does not look.",
       "type": "debt",
       "compromise": "It was written as a one-off command in the README's sign-in move, before the repository's migration convention; Gambit has no worker/migrations/ folder.",
       "cost": "Nothing records whether production has run it, and the next migration has no numbered file to follow.",

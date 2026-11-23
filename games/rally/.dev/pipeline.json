@@ -37,30 +37,32 @@
     },
     {
       "id": "deploy",
-      "title": "On a push to main",
-      "summary": "The same steps again, then wrangler deploy.",
-      "trigger": "A push to main that changes games/rally or .github/, or Run workflow on the Deploy workflow.",
+      "title": "Deploying, by hand",
+      "summary": "Nothing deploys on a merge to main: the owner, or an agent the owner asks, runs npm run deploy.",
+      "trigger": "npm run deploy in games/rally, by hand on an up-to-date main. A push to main starts nothing; the Deploy workflow was removed on 2026-11-23.",
       "checks": [
-        "The migration gate: every database change since the last deploy has been acknowledged",
         "npm test",
         "npm run build",
-        "No .dev folders in dist/: the build must not ship the folders' documentation",
-        "npx wrangler deploy"
+        "wrangler deploy"
       ],
       "blocks": "release",
       "secrets": [
-        "CLOUDFLARE_API_TOKEN"
+        "A Cloudflare API token for the icelander.net account, on the machine that deploys"
       ],
       "evidenceStatus": "documented",
       "sources": [
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "jobs"
+          "path": "games/rally/package.json",
+          "symbol": "scripts.deploy"
         },
         {
           "path": "docs/database-migrations.md",
           "symbol": "Database migrations"
         }
+      ],
+      "notChecked": [
+        "Database migrations: no gate runs before a hand deploy; whoever deploys checks docs/database-migrations.md and applies any migration first.",
+        "No .dev folders in dist/: only CI's game.yml checks that, on the pull request."
       ]
     }
   ]

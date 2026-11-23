@@ -3,14 +3,10 @@
   "kind": "capability",
   "title": "Workflow capabilities",
   "folder": ".github",
-  "description": "What the workflows can do for the repository, and who can set them going.",
+  "description": "What the workflows can do for the repository, and who can set them going. Deploying is not among them since deploy.yml was removed on 2026-11-23.",
   "sources": [
     {
       "path": ".github/workflows/ci.yml",
-      "symbol": "on"
-    },
-    {
-      "path": ".github/workflows/deploy.yml",
       "symbol": "on"
     },
     {
@@ -20,16 +16,12 @@
   ],
   "entities": [
     {
-      "id": "continuous-delivery",
-      "name": "Continuous delivery",
-      "description": "Every pull request is checked, and every change that reaches main is deployed to icelander.net, game by game.",
+      "id": "continuous-integration",
+      "name": "Continuous integration",
+      "description": "Every pull request is checked: its .dev files validated, each game it changes tested and built, and its database changes held for an acknowledgement. Nothing is deployed; games are deployed by hand.",
       "sources": [
         {
           "path": ".github/workflows/ci.yml",
-          "symbol": "jobs"
-        },
-        {
-          "path": ".github/workflows/deploy.yml",
           "symbol": "jobs"
         },
         {
@@ -41,11 +33,11 @@
           "symbol": "jobs"
         }
       ],
-      "responsibility": "Test and build each game a change touches, refuse database changes nobody has applied, and deploy each changed game from main.",
+      "responsibility": "Test and build each game a change touches, and refuse database changes nobody has applied. Deploying each game is done by hand with npm run deploy, outside the workflows.",
       "access": [
         "Any pull request runs CI and the Database migration check; the workflows check nobody.",
-        "Deploying starts on a push to main, which takes only pull requests because main requires the Database migration check (AGENTS.md), or with Run workflow on deploy.yml.",
-        "Deploy jobs run in the production environment, which holds them for a reviewer if one is set in the repository's settings, and need the CLOUDFLARE_API_TOKEN secret."
+        "main takes only pull requests, because it requires the Database migration check (AGENTS.md); a merge to main starts no workflow.",
+        "Deploying is outside the workflows: the owner, or an agent the owner asks, runs npm run deploy in a game's folder with a Cloudflare API token for the account."
       ],
       "operations": [
         {
@@ -57,20 +49,8 @@
           "symbol": "on.pull_request"
         },
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "on.push"
-        },
-        {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "on.workflow_dispatch"
-        },
-        {
           "path": ".github/scripts/changed-games.sh",
           "symbol": "all"
-        },
-        {
-          "path": ".github/scripts/last-deployed.sh",
-          "symbol": "last"
         },
         {
           "path": ".github/scripts/migration-gate.sh",

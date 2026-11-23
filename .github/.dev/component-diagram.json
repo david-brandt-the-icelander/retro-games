@@ -3,14 +3,10 @@
   "kind": "component",
   "title": "Workflows component diagram",
   "folder": ".github",
-  "description": "The four workflows GitHub runs and the three scripts they share: what each calls, and what lies outside the folder.",
+  "description": "The three workflows GitHub runs and the three scripts beside them: what each calls, and what lies outside the folder. Nothing here deploys since deploy.yml was removed on 2026-11-23; last-deployed.sh, migration-gate.sh's deploy mode and game.yml's deploy input are left over from it.",
   "sources": [
     {
       "path": ".github/workflows/ci.yml",
-      "symbol": "jobs"
-    },
-    {
-      "path": ".github/workflows/deploy.yml",
       "symbol": "jobs"
     },
     {
@@ -38,7 +34,7 @@
     {
       "id": "workflows",
       "name": "Workflows",
-      "responsibility": "Tests every pull request, checks its database changes, and deploys each changed game from main.",
+      "responsibility": "Tests every pull request and checks its database changes. Deploys nothing: each game is deployed by hand with npm run deploy in its folder.",
       "folder": ".github"
     },
     {
@@ -54,15 +50,9 @@
       "folder": ".github/workflows"
     },
     {
-      "id": "deploy",
-      "name": "Deploy (deploy.yml)",
-      "responsibility": "On a push to main, or by hand: runs the migration gate, then deploys each changed game.",
-      "folder": ".github/workflows"
-    },
-    {
       "id": "game",
       "name": "Game (game.yml)",
-      "responsibility": "One game's install, tests, build, the check that no .dev folder is in the build, and, when asked, wrangler deploy.",
+      "responsibility": "One game's install, tests, build and the check that no .dev folder is in the build. Its wrangler deploy step runs only when called with deploy true, which nothing does since deploy.yml was removed.",
       "folder": ".github/workflows"
     },
     {
@@ -74,19 +64,19 @@
     {
       "id": "last-deployed",
       "name": "Last deployed (last-deployed.sh)",
-      "responsibility": "Finds the commit the last successful Deploy run deployed.",
+      "responsibility": "Finds the commit the last successful Deploy run deployed. Unused since deploy.yml was removed: nothing calls it.",
       "folder": ".github/scripts"
     },
     {
       "id": "migration-gate",
       "name": "Migration gate (migration-gate.sh)",
-      "responsibility": "Finds database files changed since a commit and fails unless each change is acknowledged.",
+      "responsibility": "Finds database files changed since a commit and fails unless each change is acknowledged. Only its pr mode runs (migrations.yml); its deploy mode is unused since deploy.yml was removed.",
       "folder": ".github/scripts"
     },
     {
       "id": "games",
       "name": "Games",
-      "responsibility": "The games the workflows test, build and deploy.",
+      "responsibility": "The games the workflows test and build; each is deployed by hand from its own folder with npm run deploy.",
       "folder": "games",
       "diagram": "games/.dev/component-diagram.json"
     },
@@ -99,13 +89,13 @@
     {
       "id": "github",
       "name": "GitHub",
-      "responsibility": "Runs the workflows on its events, and answers the gh calls for pull request descriptions and Deploy runs.",
+      "responsibility": "Runs the workflows on its events, and answers the gh calls for pull request descriptions (and, from the unused last-deployed.sh, for Deploy runs).",
       "external": true
     },
     {
       "id": "cloudflare",
       "name": "Cloudflare",
-      "responsibility": "Receives each game's Worker and assets from wrangler deploy.",
+      "responsibility": "Receives each game's Worker and assets from wrangler deploy, which is run by hand from the game's folder.",
       "external": true
     }
   ],
@@ -119,12 +109,6 @@
     {
       "from": "workflows",
       "to": "migrations",
-      "kind": "contains",
-      "description": "Part of the folder."
-    },
-    {
-      "from": "workflows",
-      "to": "deploy",
       "kind": "contains",
       "description": "Part of the folder."
     },
@@ -177,30 +161,6 @@
       "description": "migration-gate.sh pr, against the pull request's base."
     },
     {
-      "from": "deploy",
-      "to": "last-deployed",
-      "kind": "depends-on",
-      "description": "Where the migration gate starts looking."
-    },
-    {
-      "from": "deploy",
-      "to": "migration-gate",
-      "kind": "depends-on",
-      "description": "migration-gate.sh deploy; nothing deploys if it fails."
-    },
-    {
-      "from": "deploy",
-      "to": "changed-games",
-      "kind": "depends-on",
-      "description": "Picks the games to deploy against the push's before commit, or every game by hand."
-    },
-    {
-      "from": "deploy",
-      "to": "game",
-      "kind": "depends-on",
-      "description": "Calls it once per game, with deploy true."
-    },
-    {
       "from": "game",
       "to": "games",
       "kind": "depends-on",
@@ -210,7 +170,7 @@
       "from": "game",
       "to": "cloudflare",
       "kind": "depends-on",
-      "description": "npx wrangler deploy, with CLOUDFLARE_API_TOKEN."
+      "description": "npx wrangler deploy, with CLOUDFLARE_API_TOKEN, only when called with deploy true, which nothing does now."
     },
     {
       "from": "changed-games",
@@ -228,7 +188,7 @@
       "from": "last-deployed",
       "to": "github",
       "kind": "depends-on",
-      "description": "gh run list for the last successful Deploy run."
+      "description": "gh run list for the last successful Deploy run; unused since deploy.yml was removed."
     }
   ]
 }

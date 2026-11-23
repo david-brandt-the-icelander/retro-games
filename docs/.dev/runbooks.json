@@ -7,7 +7,7 @@
     {
       "id": "apply-migration",
       "title": "Apply a migration to production",
-      "summary": "Apply a game's new migration files by hand, before its pull request is merged.",
+      "summary": "Apply a game's new migration files by hand, before its pull request is merged and the game deployed.",
       "purpose": "operate",
       "when": "A pull request adds a file to a game's worker/migrations/, and the owner has asked for it to go live.",
       "steps": [
@@ -16,7 +16,7 @@
         "Apply each new migration file once, in filename order: npx wrangler d1 execute <database> --remote -y --file worker/migrations/<file>",
         "Look at a table the migration changed",
         "Add the acknowledgement line to the pull request's description",
-        "Merge: merging deploys"
+        "Merge. Merging deploys nothing: the game goes live when it is deployed by hand with npm run deploy in its folder"
       ],
       "verify": "The Database migration check passes on the pull request.",
       "evidenceStatus": "documented",
@@ -60,36 +60,36 @@
       ]
     },
     {
-      "id": "deploy-stopped-at-gate",
-      "title": "The deploy stopped at the migration gate",
-      "summary": "A merge brought a database change nobody acknowledged, so nothing was deployed.",
-      "purpose": "recover",
-      "when": "The migrations job of a Deploy run failed.",
+      "id": "check-before-deploy",
+      "title": "Check a game's migrations before deploying it by hand",
+      "summary": "No migration gate runs before a deploy any more, so whoever deploys checks that the database is ready for the code.",
+      "purpose": "operate",
+      "when": "Before npm run deploy in a game's folder that has a worker/schema.sql or worker/migrations/.",
       "steps": [
-        "Apply the migration as in Apply a migration to production",
-        "Add the acknowledgement to the merged pull request's description",
-        "Re-run the failed jobs: gh run rerun <run id> --failed"
+        "Look for changes to worker/schema.sql or worker/migrations/ in the game's folder since it was last deployed",
+        "For each, check that its pull request acknowledges the migration; if not, apply it as in Apply a migration to production and acknowledge it on the merged pull request",
+        "Then deploy: npm run deploy in the game's folder"
       ],
-      "verify": "The Deploy run's migrations job passes and the games deploy.",
+      "verify": "The game works against its database after the deploy.",
       "evidenceStatus": "documented",
       "sources": [
         {
           "path": "docs/database-migrations.md",
-          "symbol": "When something went wrong"
+          "symbol": "Applying it to production"
         }
       ]
     },
     {
       "id": "pushed-without-pull-request",
       "title": "A database change reached main without a pull request",
-      "summary": "No pull request carries an acknowledgement, so the gate can only be passed by hand.",
+      "summary": "No pull request carries an acknowledgement, so nothing records that the migration was applied.",
       "purpose": "recover",
-      "when": "The gate reports a commit that no pull request brought.",
+      "when": "A change to a game's worker/schema.sql or worker/migrations/ is on main with no pull request behind it.",
       "steps": [
-        "Apply the migration",
-        "Deploy by hand with the acknowledgement: gh workflow run deploy.yml --ref main -f migration_applied=true"
+        "Apply the migration as in Apply a migration to production",
+        "Only then deploy the game by hand: npm run deploy in its folder"
       ],
-      "verify": "The Deploy run passes the gate.",
+      "verify": "The game works against the migrated database after the deploy.",
       "evidenceStatus": "documented",
       "sources": [
         {

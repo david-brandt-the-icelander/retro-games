@@ -3,19 +3,19 @@
   "kind": "operation",
   "title": "Workflow operations",
   "folder": ".github",
-  "description": "The events that start each workflow, and the scripts the workflows call, which can also be run by hand from the repository root.",
+  "description": "The events that start each workflow, the scripts the workflows call, which can also be run by hand from the repository root, and deploying a game by hand, which no workflow does since deploy.yml was removed on 2026-11-23.",
   "sources": [
     {
       "path": ".github/workflows/ci.yml",
       "symbol": "on"
     },
     {
-      "path": ".github/workflows/deploy.yml",
+      "path": ".github/workflows/migrations.yml",
       "symbol": "on"
     },
     {
-      "path": ".github/workflows/migrations.yml",
-      "symbol": "on"
+      "path": "games/rally/package.json",
+      "symbol": "scripts.deploy"
     }
   ],
   "entities": [
@@ -73,52 +73,30 @@
       ]
     },
     {
-      "id": "deploy-changed-games",
-      "name": "Deploy the changed games",
-      "description": "Deploys each game a push to main changed, once the migration gate passes.",
+      "id": "deploy-by-hand",
+      "name": "Deploy a game by hand",
+      "description": "npm run deploy in a game's folder: the game's own tests, its build, then wrangler deploy. Rally's script is cited; each deployable game has its own in its package.json.",
       "sources": [
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "jobs"
+          "path": "games/rally/package.json",
+          "symbol": "scripts.deploy"
         },
         {
-          "path": ".github/workflows/game.yml",
-          "symbol": "jobs"
+          "path": "docs/database-migrations.md",
+          "symbol": "Applying it to production"
         }
       ],
       "entrypoint": {
-        "path": ".github/workflows/deploy.yml",
-        "symbol": "on.push"
+        "path": "games/rally/package.json",
+        "symbol": "scripts.deploy"
       },
       "action": "command",
-      "transport": "GitHub push event on main",
-      "authorization": "Only pull requests reach main (AGENTS.md); deploy jobs run in the production environment, with its reviewer if one is set, and need CLOUDFLARE_API_TOKEN.",
-      "result": "Each changed game tested, built and deployed with wrangler deploy; a change to .dev files alone deploys nothing.",
+      "transport": "npm run deploy, in games/<game>, on the machine of whoever deploys",
+      "authorization": "The owner, or an agent the owner asks; wrangler needs a Cloudflare API token for the icelander.net account.",
+      "result": "That game's Worker and static assets uploaded to icelander.net by wrangler deploy.",
       "failures": [
-        "A database change since the last deploy is not acknowledged: the migrations job fails and nothing is deployed.",
-        "A game's tests, build or deploy fail: that game is not deployed, and the others still are."
-      ]
-    },
-    {
-      "id": "deploy-by-hand",
-      "name": "Deploy by hand",
-      "description": "Run workflow on deploy.yml deploys one game, or all, from main.",
-      "sources": [
-        {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "on.workflow_dispatch"
-        }
-      ],
-      "entrypoint": {
-        "path": ".github/workflows/deploy.yml",
-        "symbol": "on.workflow_dispatch"
-      },
-      "action": "command",
-      "transport": "GitHub workflow_dispatch, with the inputs game and migration_applied",
-      "authorization": "Whoever GitHub lets run workflows in the repository; the same production environment and secret as a push.",
-      "result": "The chosen game, or every game, deployed; migration_applied acknowledges any database change since the last deploy.",
-      "failures": [
-        "A database change is not acknowledged and migration_applied is not ticked: nothing is deployed."
+        "The game's tests or build fail: nothing is uploaded.",
+        "No migration gate runs before it: whoever deploys checks docs/database-migrations.md first, or the deployed code may meet a database without the migration it needs."
       ]
     },
     {
@@ -144,7 +122,7 @@
     {
       "id": "find-last-deploy",
       "name": "Find the last deployed commit",
-      "description": "The commit the last successful Deploy run deployed, where the migration gate starts.",
+      "description": "The commit the last successful Deploy run deployed. Unused since deploy.yml was removed on 2026-11-23: nothing calls it.",
       "sources": [
         {
           "path": ".github/scripts/last-deployed.sh",
@@ -164,7 +142,7 @@
     {
       "id": "run-migration-gate",
       "name": "Run the migration gate",
-      "description": "Lists the database files changed since a commit and fails unless their migration is acknowledged.",
+      "description": "Lists the database files changed since a commit and fails unless their migration is acknowledged. migrations.yml runs its pr mode; its deploy mode is unused since deploy.yml was removed.",
       "sources": [
         {
           "path": ".github/scripts/migration-gate.sh",
