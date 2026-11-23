@@ -10,12 +10,12 @@
       "summary": "The hivestorm Worker at icelander.net/games/retro/hivestorm*, with its static game and the D1 database hivestorm-scores.",
       "environment": "production",
       "purpose": "The game players reach at icelander.net/games/retro/hivestorm/ and its public scores page.",
-      "deployedBy": "The Deploy workflow on every push to main that changes games/hivestorm outside its .dev folders (or anything under .github/ outside .github/.dev); by hand with Run workflow; or `npm run deploy` with a Cloudflare token.",
+      "deployedBy": "The owner, from their own machine: `npm run deploy` in games/hivestorm, with a Cloudflare token for the icelander.net account (or wrangler logged in to it). Nothing deploys from GitHub's runners: the Deploy workflow was removed (the owner's decision, 2026-11-21).",
       "approvals": [
-        "A pull request: main accepts nothing else.",
-        "A reviewer on the repository's production environment, if one is set."
+        "The owner's decision: nothing deploys on its own, and only the owner runs the deploy.",
+        "A pull request, tested by CI, for anything that reaches main: main accepts nothing else."
       ],
-      "rollback": "No rollback is recorded. The Deploy workflow deploys only from main, so going back means merging a revert, which deploys it. A database migration is not undone by this; migrations are written so the previous code keeps working (docs/database-migrations.md).",
+      "rollback": "No rollback is recorded: check out an earlier commit and run npm run deploy again, or roll back the Worker's version in Cloudflare. A database migration is not undone by this; migrations are written so the previous code keeps working (docs/database-migrations.md).",
       "details": "The Worker's route runs ahead of the games hub's less specific icelander.net/games/*. workers_dev and preview URLs are off, so production is the only address. Its migrations delete the Durable Object class Room, which held online rooms before they moved to the games hub; both migration entries stay, because Cloudflare applies them in order.",
       "evidenceStatus": "documented",
       "sources": [
@@ -24,12 +24,8 @@
           "symbol": "routes"
         },
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "on"
-        },
-        {
           "path": "games/hivestorm/package.json",
-          "symbol": "deploy"
+          "symbol": "scripts.deploy"
         }
       ],
       "relationships": [

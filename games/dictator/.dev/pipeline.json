@@ -47,30 +47,31 @@
     },
     {
       "id": "deploy",
-      "title": "On a push to main",
-      "summary": "The same steps again, then wrangler deploy.",
-      "trigger": "A push to main that changes games/dictator or .github/, or Run workflow on the Deploy workflow.",
+      "title": "Deploying, by hand",
+      "summary": "The owner runs npm run deploy: npm run build, then wrangler deploy.",
+      "trigger": "The owner, on their own machine; nothing deploys from GitHub's runners, on a push to main or otherwise.",
       "checks": [
-        "The migration gate: every database change since the last deploy has been acknowledged",
-        "npm test",
         "npm run build",
-        "No .dev folders in dist/: the build must not ship the folders' documentation",
         "npx wrangler deploy"
       ],
       "blocks": "release",
       "secrets": [
-        "CLOUDFLARE_API_TOKEN"
+        "A Cloudflare API token for the icelander.net account (CLOUDFLARE_API_TOKEN, or wrangler login), on the owner's machine"
       ],
       "evidenceStatus": "documented",
       "sources": [
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "jobs"
+          "path": "games/dictator/package.json",
+          "symbol": "scripts.deploy"
         },
         {
           "path": "docs/database-migrations.md",
           "symbol": "Database migrations"
         }
+      ],
+      "notChecked": [
+        "The migration gate: .github/scripts/migration-gate.sh ran before every deploy only in the removed Deploy workflow, and npm run deploy does not run it, so the owner makes sure production's database has been migrated before deploying (docs/database-migrations.md).",
+        "The tests: Samosa's deploy script builds and deploys without running npm test, so they run only on the pull request."
       ]
     }
   ]

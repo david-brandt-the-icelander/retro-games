@@ -103,7 +103,7 @@ the PATH as `godot`).
 | `npm run test:godot` | Import the project and run the headless self-test |
 | `npm run build` | The landing page and the web export, into `dist/` |
 | `npm run dev` | `build`, then `wrangler dev`. For the stand-in sign-in put `DEV_LOGIN="1"` in `.dev.vars` and run `npx wrangler dev --local-upstream localhost:8787`, with a `site_session` cookie of `dev.` and base64url JSON such as `{"email":"you@example.com","roles":["games:hand-of-the-isle"]}` |
-| `npm run deploy` | Test, build and deploy by hand (normally the merge to `main` does it) |
+| `npm run deploy` | Test, build and deploy, from the owner's machine (nothing deploys from GitHub) |
 
 To play it locally without the Worker, open `godot/project.godot` in Godot 4.7 and press F5.
 
@@ -118,6 +118,6 @@ godot --headless --path godot -- --autoplay --speed=20 --quit-after=60
 
 ## Deploy
 
-A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`, which installs Godot 4.7.2 and
-its export templates for the Godot games). The Worker needs no database and no secrets: only the route
+Nothing deploys from GitHub any more: the owner deploys it from their own machine by running `npm run deploy` in this
+folder, with Godot 4.7.2 and its export templates installed and wrangler logged in to icelander.net's Cloudflare account. The Worker needs no database and no secrets: only the route
 `icelander.net/games/fresh/hand-of-the-isle*` and the service binding to the login service, both in `wrangler.jsonc`.

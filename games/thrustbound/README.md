@@ -50,5 +50,5 @@ npm test && npm run test:godot
 npm run build      # dist/games/retro/thrustbound/, with the engine split under Cloudflare's 25 MiB limit
 ```
 
-A merge to `main` deploys it (`.github/workflows/deploy.yml`); `npm run deploy` does the same by hand.
+Nothing deploys from GitHub any more: the owner deploys it from their own machine by running `npm run deploy` in this folder (the tests, the build, then `wrangler deploy`), with Godot as above and wrangler logged in to icelander.net's Cloudflare account.
 It has no database and no secrets.

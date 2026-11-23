@@ -74,4 +74,4 @@ With reduced motion, doors open without the curl, and each window shows its frie
 
 ## Deploy
 
-`npm install`, then `npm test` checks the Worker and `npm run build` makes `dist/`. A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`), as `npm run deploy` does by hand. The Worker's route is `icelander.net/games/fresh/advent-calendar*`, and it needs icelander.net's login service (the `accounts` Worker) deployed with the role `games:advent-calendar` declared.
+`npm install`, then `npm test` checks the Worker and `npm run build` makes `dist/`. Nothing deploys from GitHub any more: the owner deploys it from their own machine by running `npm run deploy` in this folder (the tests, the build, then `wrangler deploy`), with wrangler logged in to icelander.net's Cloudflare account. The Worker's route is `icelander.net/games/fresh/advent-calendar*`, and it needs icelander.net's login service (the `accounts` Worker) deployed with the role `games:advent-calendar` declared.

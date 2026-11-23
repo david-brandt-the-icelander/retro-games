@@ -8,7 +8,7 @@ It is a static page: `index.html` plus `photos/` and `audio/`, with no build ste
 
 ## Deploy
 
-`worker/index.ts` is a Cloudflare Worker at `icelander.net/games/retro/dawn-chorus`: it serves `dist/` to anyone signed in to icelander.net (role `games:play`, through `vendor/icelander-auth`) and sends everyone else to the site's sign-in. No database, no secrets. `npm test` checks the Worker; `npm run build` copies the page, photos and audio into `dist/`; `npm run deploy` runs both and `wrangler deploy`. A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`).
+`worker/index.ts` is a Cloudflare Worker at `icelander.net/games/retro/dawn-chorus`: it serves `dist/` to anyone signed in to icelander.net (role `games:play`, through `vendor/icelander-auth`) and sends everyone else to the site's sign-in. No database, no secrets. `npm test` checks the Worker; `npm run build` copies the page, photos and audio into `dist/`; `npm run deploy` runs both and `wrangler deploy`. Nothing deploys from GitHub any more: the owner runs `npm run deploy` here from their own machine, with wrangler logged in to icelander.net's Cloudflare account.
 
 ## How it works
 

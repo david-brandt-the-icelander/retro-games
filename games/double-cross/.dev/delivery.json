@@ -6,8 +6,8 @@
   "entities": [
     {
       "id": "deploy",
-      "title": "Merging to main deploys the game",
-      "summary": "The Deploy workflow tests, builds and uploads the game whenever its folder changes on main.",
+      "title": "The owner deploys the game by hand",
+      "summary": "The owner runs npm run deploy in games/double-cross from their own machine: it tests, builds and uploads the game.",
       "steps": [
         "npm test (the Worker), npm run test:godot (maps and the message layer)",
         "npm run build: Godot 4.7.2 web export, the engine split in parts, boot.js",
@@ -17,7 +17,7 @@
       "sources": [
         {
           "path": "games/double-cross/package.json",
-          "symbol": "deploy"
+          "symbol": "scripts.deploy"
         },
         {
           "path": ".github/workflows/game.yml",
@@ -26,8 +26,8 @@
       ],
       "environment": "production",
       "purpose": "The game players reach at icelander.net/games/retro/double-cross/.",
-      "deployedBy": "The Deploy workflow on every push to main that changes games/double-cross outside its .dev folders; by hand with Run workflow; or `npm run deploy` with a Cloudflare token.",
-      "rollback": "No rollback is recorded. The Deploy workflow deploys only from main, so going back means merging a revert, which deploys it. There is no database to undo."
+      "deployedBy": "The owner, from their own machine: `npm run deploy` in games/double-cross with Godot 4.7.2 and its web export templates installed, with a Cloudflare token for the icelander.net account (or wrangler logged in to it). Nothing deploys from GitHub's runners: the Deploy workflow was removed (the owner's decision, 2026-11-21).",
+      "rollback": "No rollback is recorded: check out an earlier commit and run npm run deploy again, or roll back the Worker's version in Cloudflare. There is no database to undo."
     }
   ]
 }

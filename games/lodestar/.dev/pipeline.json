@@ -36,25 +36,6 @@
           "entityId": "ci-for-lodestar"
         }
       ]
-    },
-    {
-      "id": "main",
-      "title": "On a merge to main",
-      "summary": "Nothing: the Deploy workflow neither builds nor deploys LodeStar.",
-      "trigger": "A push to main (deploy.yml).",
-      "checks": [
-        "None for LodeStar"
-      ],
-      "notChecked": [
-        "Everything; LodeStar is not among deploy.yml's games"
-      ],
-      "evidenceStatus": "source-verified",
-      "sources": [
-        {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "options"
-        }
-      ]
     }
   ]
 }

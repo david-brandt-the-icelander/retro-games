@@ -10,13 +10,13 @@
       "summary": "The laumufarthegi Worker at icelander.net/games/laumufarthegi*, with its static page and the Room Durable Object namespace.",
       "environment": "production",
       "purpose": "The game players reach at icelander.net/games/laumufarthegi/ and the room links they share.",
-      "deployedBy": "The owner, from their own machine: `npm run deploy` in games/laumufarthegi with a Cloudflare token for the icelander.net account. Nothing deploys from GitHub's runners (the Deploy workflow was removed on 2026-11-23).",
+      "deployedBy": "The owner, from their own machine: `npm run deploy` in games/laumufarthegi, with a Cloudflare token for the icelander.net account (or wrangler logged in to it). Nothing deploys from GitHub's runners: the Deploy workflow was removed (the owner's decision, 2026-11-21).",
       "approvals": [
-        "A pull request: main accepts nothing else.",
-        "A reviewer on the repository's production environment, if one is set."
+        "The owner's decision: nothing deploys on its own, and only the owner runs the deploy.",
+        "A pull request, tested by CI, for anything that reaches main: main accepts nothing else."
       ],
       "rollback": "No rollback is recorded: deploy the previous commit again with `npm run deploy`, or roll back the Worker's version in Cloudflare's dashboard.",
-      "details": "The Durable Object class Room is created by the rooms-v1 migration in wrangler.jsonc (new_sqlite_classes) when the Worker first deploys; there is no D1 database, so the database-migration gate has nothing of this game's to check. A change to games/word-lists/data/topic-grids.json alone does not deploy this game: changed-games.sh looks only under games/laumufarthegi/, so new topics go live with the game's next change.",
+      "details": "The Durable Object class Room is created by the rooms-v1 migration in wrangler.jsonc (new_sqlite_classes) when the Worker first deploys; there is no D1 database, so the database-migration gate has nothing of this game's to check. The topics are bundled at build time from games/word-lists/data/topic-grids.json, so a change there goes live with the game's next deploy.",
       "evidenceStatus": "documented",
       "sources": [
         {

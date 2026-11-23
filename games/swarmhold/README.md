@@ -55,4 +55,4 @@ Run it from the Godot editor with `godot/project.godot`. `godot --path godot -- 
 
 ## Deploy
 
-A merge to `main` that changes this folder deploys it (the repository README, "Deploying"). By hand: `npm run deploy`. No database, secrets or one-time set-up.
+Nothing deploys from GitHub any more: the owner deploys it from their own machine by running `npm run deploy` in this folder (tests, the Godot export, then `wrangler deploy`), with Godot 4.7.2 and its web export templates installed and wrangler logged in to icelander.net's Cloudflare account. No database, secrets or one-time set-up.

@@ -1,6 +1,6 @@
 // The Pinochle Worker at icelander.net/games/pinochle (its old address, /games/fresh/pinochle, redirects there): the page and its scripts, all for players
 // signed in to icelander.net (worker/index.ts). No database, no secrets.
-// Deployed by .github/workflows/deploy.yml on a merge to main (README "Deploy").
+// Deployed by the owner from their own machine with `npm run deploy` (README, first paragraph).
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "pinochle",
