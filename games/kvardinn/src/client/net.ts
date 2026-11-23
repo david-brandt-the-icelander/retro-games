@@ -97,6 +97,14 @@ export class Connection {
         return;
       }
       if (!this.stopped) {
+        // Several failures in a row: if the sign-in has run out, reloading takes the player to sign in.
+        if (this.retry === 4) {
+          fetch(location.pathname, { method: "HEAD", redirect: "manual", cache: "no-store" })
+            .then((r) => {
+              if (r.type === "opaqueredirect" || r.status === 401 || r.status === 403) location.reload();
+            })
+            .catch(() => undefined);
+        }
         const delay = Math.min(5000, 400 * 2 ** this.retry++);
         this.timer = setTimeout(() => this.open(), delay);
       }

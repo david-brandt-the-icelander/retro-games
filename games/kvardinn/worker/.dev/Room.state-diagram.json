@@ -22,8 +22,8 @@
       "symbol": "Room.save"
     },
     {
-      "path": "games/kvardinn/worker/index.ts",
-      "symbol": "default.fetch"
+      "path": "games/kvardinn/worker/handler.ts",
+      "symbol": "handle"
     }
   ],
   "machine": "Room.game (worker/room.ts), kept in the Durable Object's storage under \"game\"",

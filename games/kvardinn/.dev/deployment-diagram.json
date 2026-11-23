@@ -3,7 +3,7 @@
   "kind": "deployment",
   "title": "Kvarðinn deployment diagram",
   "folder": "games/kvardinn",
-  "description": "How Kvarðinn runs: one Cloudflare Worker with static assets and a Durable Object per room. No database and no sign-in. The same Worker deploys to icelander.net/games/fresh/kvardinn* by default, or to the root of a workers.dev address with --env standalone.",
+  "description": "How Kvarðinn runs: one Cloudflare Worker with static assets and a Durable Object per room, behind icelander.net's sign-in for holders of the invite-only role games:kvardinn. No database. The same Worker deploys to icelander.net/games/fresh/kvardinn* by default, or, open to anyone, to the root of a workers.dev address with --env standalone.",
   "sources": [
     {
       "path": "games/kvardinn/wrangler.jsonc",
@@ -18,8 +18,8 @@
       "symbol": "build"
     },
     {
-      "path": "games/kvardinn/worker/index.ts",
-      "symbol": "default.fetch"
+      "path": "games/kvardinn/worker/handler.ts",
+      "symbol": "handle"
     },
     {
       "path": "games/kvardinn/worker/room.ts",
@@ -55,13 +55,20 @@
       "id": "worker",
       "name": "kvardinn Worker",
       "kind": "process",
-      "description": "worker/index.ts, run before the assets for every request: POST {BASE}/api/rooms, the WebSocket {BASE}/ws/CODE, and every other GET from ./dist under BASE."
+      "description": "worker/handler.ts, run before the assets for every request: on icelander.net it first checks the sign-in and the games:kvardinn role, then answers POST {BASE}/api/rooms, the WebSocket {BASE}/ws/CODE, and every other GET from ./dist under BASE."
     },
     {
       "id": "room",
       "name": "Room Durable Object",
       "kind": "process",
       "description": "One per four-letter code (binding ROOMS, SQLite-backed class Room): holds the game in its storage and every device's hibernatable WebSocket; an alarm deletes it after two idle days."
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "accounts.icelander.net, in the icelander.net repository: who holds the site_session cookie and whether they hold games:kvardinn, asked on every request. Reached only through the ACCOUNTS service binding; the standalone environment has none.",
+      "condition": "Only on icelander.net"
     }
   ],
   "artifacts": [
@@ -117,6 +124,12 @@
       "to": "room",
       "kind": "routes",
       "description": "idFromName(code): POST /init to create a room, and the WebSocket upgrade passed through."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS (entrypoint Internal): the page, room creation and the room WebSockets need a signed-in player with games:kvardinn."
     }
   ]
 }

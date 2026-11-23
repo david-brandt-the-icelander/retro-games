@@ -3,11 +3,11 @@
   "kind": "component",
   "title": "Kvarðinn Worker component diagram",
   "folder": "games/kvardinn/worker",
-  "description": "The Kvarðinn Worker: a router in front of the static page, room creation, and one authoritative Room Durable Object per code that runs the rules and sends each socket its own view. No sign-in.",
+  "description": "The Kvarðinn Worker: a router that checks icelander.net's sign-in and the invite-only role games:kvardinn, in front of the static page, room creation, and one authoritative Room Durable Object per code that runs the rules and sends each socket its own view.",
   "sources": [
     {
-      "path": "games/kvardinn/worker/index.ts",
-      "symbol": "default.fetch"
+      "path": "games/kvardinn/worker/handler.ts",
+      "symbol": "handle"
     },
     {
       "path": "games/kvardinn/worker/room.ts",
@@ -31,8 +31,8 @@
     },
     {
       "id": "router",
-      "name": "Router (index.ts)",
-      "responsibility": "Maps BASE onto the routes: POST api/rooms tries up to eight new codes until a Room accepts /init; ws/CODE is passed to that Room; other GETs come from the assets binding, with cache, CSP and other security headers.",
+      "name": "Router (handler.ts)",
+      "responsibility": "On icelander.net, first requires the sign-in and games:kvardinn (vendor/icelander-auth; config.ts holds BASE and ROLE): a visitor is sent to sign in, a player without the role gets a not-invited page, the API and sockets 401/403. Then maps BASE onto the routes: POST api/rooms tries up to eight new codes until a Room accepts /init; ws/CODE is passed to that Room; other GETs come from the assets binding, with cache, CSP and other security headers. index.ts exports it as the Worker's fetch.",
       "folder": "games/kvardinn/worker"
     },
     {

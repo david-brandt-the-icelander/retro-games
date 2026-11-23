@@ -1,6 +1,8 @@
 # Kvarðinn
 
-An original Icelandic party game for 4–8 players (up to 12), some in the same room and some remote. Everyone joins from one shared link on their own phone or laptop: a name, a team, and play. No sign-in, no install.
+> **At [icelander.net/games/fresh/kvardinn](https://icelander.net/games/fresh/kvardinn/)**, for invited players only (role `games:kvardinn`, granted at icelander.net/private/admin).
+
+An original Icelandic party game for 4–8 players (up to 12), some in the same room and some remote. Everyone joins from one shared link on their own phone or laptop: a name, a team, and play. Nothing to install. On icelander.net each player signs in once and needs the invite; on a standalone copy (below) nobody signs in.
 
 A scale card shows two opposites ("Kalt ↔ Heitt"). The app hides a target somewhere on the 0–100 scale; only that round's clue-giver sees it. They say or type a clue, their team drags a shared pointer (it moves live on every device) and a designated player locks it in. The other team may guess whether the target is left or right of the pointer for 1 point. The reveal scores 4 / 3 / 2 points for the centre and outer bands. First team to 10 wins (5, 10, 15 or 20 in the lobby). In **Allir saman** mode everyone guesses together for 5, 10 or 15 rounds and tries to beat the room's best score.
 
@@ -19,9 +21,9 @@ A player who refreshes, loses signal or locks their phone gets the same seat bac
 
 The game is one Cloudflare Worker with a Durable Object per room. Rooms are deleted after two idle days.
 
-**On icelander.net** (`wrangler.jsonc`, route `icelander.net/games/fresh/kvardinn*`): a merge to `main` deploys it, like the other games. Unlike them, it has **no sign-in**, because players must join from a link without logging in; that is an open decision for the owner (`.dev/decisions.json`).
+**On icelander.net** (`wrangler.jsonc`, route `icelander.net/games/fresh/kvardinn*`): a merge to `main` deploys it, like the other games. `worker/handler.ts` lets in only players signed in to icelander.net who hold `games:kvardinn`, for the page, for starting rooms and for the room connections alike; anyone else is sent to sign in or told the game is for invited players. Grant the role to each player (and to whoever signs in on the TV for the big screen) at icelander.net/private/admin. A player whose sign-in runs out mid-game is sent to sign in again.
 
-**On your own Cloudflare account** (free plan is enough):
+**On your own Cloudflare account**, open to anyone with the link and with no sign-in (the `standalone` environment; the free plan is enough):
 
 ```bash
 npm install
@@ -37,7 +39,7 @@ npm run build && npx wrangler deploy --env standalone
 
 Wrangler prints the address, e.g. `https://kvardinn.<your-subdomain>.workers.dev/`. Open it, create a game, and share the link the lobby shows.
 
-**On your own computer, for players on the same Wi-Fi** (no account needed):
+**On your own computer, for players on the same Wi-Fi** (no account, no sign-in):
 
 ```bash
 npm install && npm run dev
@@ -57,11 +59,11 @@ The cards and the interface text that a native speaker should check are listed i
 |---|---|
 | `src/engine/game.ts` | The rules as pure functions: seats, rounds, turns, scoring, and `viewFor`, which hides the target from everyone but the clue-giver until the reveal. |
 | `src/engine/cards.ts` | Reads `data/kvardar.txt`. |
-| `worker/index.ts` | The Worker: `POST {BASE}/api/rooms`, the room WebSocket at `{BASE}/ws/CODE`, and the page from `dist/`. |
+| `worker/handler.ts` | Every request: icelander.net's sign-in and the `games:kvardinn` role (not in the standalone environment, where `OPEN` is `"1"`), then `POST {BASE}/api/rooms`, the room WebSocket at `{BASE}/ws/CODE`, and the page from `dist/`. `worker/config.ts` holds `BASE` and `ROLE`; `worker/index.ts` exports the handler and the Durable Object. |
 | `worker/room.ts` | The `Room` Durable Object: holds one game in storage, talks to every device over hibernatable WebSockets, sends each its own view. |
 | `src/client/` | The page: `main.ts` (screens), `scale.ts` (the scale and the draggable pointer), `net.ts` (reconnecting connection and saved seat), `sound.ts`, `text.ts` (how-to text). |
 | `public/` | `index.html`, `style.css`, `icon.svg`. `build.mjs` copies them to `dist/` and bundles the page into `dist/app.js`. |
-| `test/` | `npm test`: the rules (including that the target never reaches a non-giver's view) and the card file. `npm run test:e2e`: plays a round in Chromium with four phones and a TV against a running `wrangler dev`, watching every WebSocket frame for a leaked target. |
+| `test/` | `npm test`: the rules (including that the target never reaches a non-giver's view), the card file, and who the Worker lets in. `npm run test:e2e`: plays a round in Chromium with four phones and a TV against a running `wrangler dev`, watching every WebSocket frame for a leaked target. |
 
 ## Develop
 

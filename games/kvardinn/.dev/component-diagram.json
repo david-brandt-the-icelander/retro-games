@@ -14,8 +14,8 @@
       "symbol": "build"
     },
     {
-      "path": "games/kvardinn/worker/index.ts",
-      "symbol": "default.fetch"
+      "path": "games/kvardinn/worker/handler.ts",
+      "symbol": "handle"
     },
     {
       "path": "games/kvardinn/worker/room.ts",

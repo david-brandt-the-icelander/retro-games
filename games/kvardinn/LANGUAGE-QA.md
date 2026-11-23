@@ -75,3 +75,4 @@ The working name is **Kvarðinn** ("the scale"). Two alternatives:
 | Ertu þegar í leiknum? Ef þú skiptir um tæki eða datt út, ýttu á nafnið þitt | join screen | Mixed tenses ("skiptir", "datt"): natural? |
 | Bíðum eftir að allir komi inn. Anna hefur leikinn. | lobby, non-host | Natural? |
 | Sleppa þessari umferð? Sama lið fær nýja umferð. | host confirm | Natural? |
+| Kvarðinn er aðeins fyrir boðsgesti og þessum aðgangi hefur ekki verið boðið enn. / Ef þér var boðið á öðru netfangi, skráðu þig inn með því. | page for a signed-in player without the invite (`worker/handler.ts`) | Natural? Is "boðsgestir" right for "invited players"? |
