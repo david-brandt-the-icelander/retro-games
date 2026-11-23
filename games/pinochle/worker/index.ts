@@ -1,9 +1,9 @@
-// The Pinochle Worker at icelander.net/games/fresh/pinochle: every file is for signed-in players
+// The Pinochle Worker at icelander.net/games/pinochle (and its old address, /games/fresh/pinochle, which redirects): every file is for signed-in players
 // holding games:pinochle, an invite-only role granted at icelander.net/private/admin. Sign-in is
 // icelander.net's (vendor/icelander-auth, through its login service): a visitor who isn't signed in is sent to
 // the site's sign-in and back; a signed-in player without the role gets a page saying so.
 import { createAuth, type AuthEnv } from "../../../vendor/icelander-auth/index.js";
-import { BASE, ROLE } from "./config";
+import { BASE, OLD_BASE, ROLE } from "./config";
 
 interface Fetcher { fetch(req: Request): Promise<Response> }
 export interface Env extends AuthEnv { ASSETS: Fetcher; DEV_LOGIN?: string }
@@ -16,6 +16,9 @@ const shared = (env: Env): Env => (env.DEV_LOGIN === "1" ? { ...env, DEV_SIGN_IN
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
+    if (url.pathname === OLD_BASE || url.pathname.startsWith(`${OLD_BASE}/`)) {
+      return Response.redirect(`${url.origin}${BASE}${url.pathname.slice(OLD_BASE.length)}${url.search}`, 301);
+    }
     if (url.pathname === BASE) return Response.redirect(`${url.origin}${BASE}/${url.search}`, 301);
     if (!url.pathname.startsWith(`${BASE}/`)) return new Response("Not found", { status: 404 });
     if (req.method !== "GET" && req.method !== "HEAD") return new Response("Method not allowed", { status: 405, headers: { Allow: "GET, HEAD" } });
