@@ -1,0 +1,119 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Dulmál component diagram",
+  "folder": "games/dulmal",
+  "description": "Dulmál: a page that every device loads, a Worker that checks the sign-in, serves the page and opens rooms, and one Durable Object per room that applies the shared rules and sends each device the view it may see.",
+  "sources": [
+    {
+      "path": "games/dulmal/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/dulmal/worker/room.ts",
+      "symbol": "RoomCore"
+    },
+    {
+      "path": "games/dulmal/src/shared/game.ts",
+      "symbol": "view"
+    },
+    {
+      "path": "games/dulmal/src/client/main.ts",
+      "symbol": "render"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Dulmál",
+      "responsibility": "One game: the page, the rules, the word list and the Worker, built and deployed together.",
+      "folder": "games/dulmal"
+    },
+    {
+      "id": "rules",
+      "name": "Rules and messages",
+      "responsibility": "src/shared/: seats and teams, dealing, clues, guesses, turns, the timer, and the per-viewer view that hides the key; the WebSocket messages; reading and dealing word lists.",
+      "folder": "games/dulmal/src/shared"
+    },
+    {
+      "id": "page",
+      "name": "Page",
+      "responsibility": "src/client/ and public/: the start, join, lobby, game and big-screen screens, all text in Icelandic (text.ts), a WebSocket that reconnects to the same seat.",
+      "folder": "games/dulmal/src/client"
+    },
+    {
+      "id": "words",
+      "name": "Word list",
+      "responsibility": "data/ord.txt: about 400 Icelandic words, one per line, with | where a long word may be split.",
+      "folder": "games/dulmal/data"
+    },
+    {
+      "id": "worker",
+      "name": "Worker and rooms",
+      "responsibility": "worker/: checks the sign-in and the games:dulmal role on every request, serves the page, creates rooms with new codes, and routes each room's WebSocket to its Durable Object (RoomObject, with its logic in RoomCore), which stores the room, runs the turn timer as an alarm and deletes idle rooms.",
+      "folder": "games/dulmal/worker"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Says who is signed in and with which games: roles.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "rules",
+      "kind": "contains",
+      "description": "Bundled into both the page and the Worker."
+    },
+    {
+      "from": "game",
+      "to": "page",
+      "kind": "contains",
+      "description": "Bundled by build.mjs into dist/."
+    },
+    {
+      "from": "game",
+      "to": "words",
+      "kind": "contains",
+      "description": "Imported as text by the Worker."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Deployed with wrangler."
+    },
+    {
+      "from": "worker",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "RoomCore calls the rules for every message and sends each socket view()."
+    },
+    {
+      "from": "worker",
+      "to": "words",
+      "kind": "depends-on",
+      "description": "The built-in list, read with parseWords."
+    },
+    {
+      "from": "page",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "POST api/rooms to create a room; a WebSocket at api/rooms/<CODE>/ws for everything else."
+    },
+    {
+      "from": "page",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Only the message types and constants."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Checks the site_session cookie through the ACCOUNTS service binding."
+    }
+  ]
+}

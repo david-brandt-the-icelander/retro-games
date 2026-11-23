@@ -1,0 +1,113 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Dulmál room state diagram",
+  "folder": "games/dulmal/src/shared",
+  "description": "Where a room is: in the lobby with no game, or in a game whose phase is the clue, the guessing or the end. The Durable Object keeps it; every change comes from a player's message or the timer alarm.",
+  "sources": [
+    {
+      "path": "games/dulmal/src/shared/game.ts",
+      "symbol": "deal"
+    },
+    {
+      "path": "games/dulmal/src/shared/game.ts",
+      "symbol": "giveClue"
+    },
+    {
+      "path": "games/dulmal/src/shared/game.ts",
+      "symbol": "guess"
+    },
+    {
+      "path": "games/dulmal/src/shared/game.ts",
+      "symbol": "stop"
+    },
+    {
+      "path": "games/dulmal/src/shared/game.ts",
+      "symbol": "expire"
+    },
+    {
+      "path": "games/dulmal/src/shared/game.ts",
+      "symbol": "toLobby"
+    }
+  ],
+  "machine": "Room.game and Game.phase in src/shared/game.ts",
+  "initialState": "lobby",
+  "states": [
+    {
+      "id": "lobby",
+      "description": "No game: players join, trade teams and choose clue-givers; the host sets the timer and word list."
+    },
+    {
+      "id": "clue",
+      "description": "The team on turn waits for its clue-giver's word and number."
+    },
+    {
+      "id": "guess",
+      "description": "The team on turn's guessers reveal words, up to the number plus one."
+    },
+    {
+      "id": "over",
+      "description": "A team found all its words, or the other revealed the game-over word; everyone sees the key."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "lobby",
+      "to": "clue",
+      "trigger": "start (host)",
+      "guard": "each team has a clue-giver and a guesser",
+      "action": "deal 25 words: 9, 8, 7 neutral and the game-over word"
+    },
+    {
+      "from": "clue",
+      "to": "guess",
+      "trigger": "clue",
+      "guard": "one word not on the board; number 1 to 9"
+    },
+    {
+      "from": "clue",
+      "to": "clue",
+      "trigger": "timer runs out",
+      "action": "the other team's turn"
+    },
+    {
+      "from": "guess",
+      "to": "guess",
+      "trigger": "guess of the team's own word",
+      "guard": "guesses left and words left"
+    },
+    {
+      "from": "guess",
+      "to": "clue",
+      "trigger": "neutral or other team's word, stop, last guess used, or timer runs out",
+      "action": "the other team's turn"
+    },
+    {
+      "from": "guess",
+      "to": "over",
+      "trigger": "guess",
+      "guard": "the game-over word, or a team's last word"
+    },
+    {
+      "from": "over",
+      "to": "clue",
+      "trigger": "new game (host)",
+      "action": "new board, same teams"
+    },
+    {
+      "from": "clue",
+      "to": "lobby",
+      "trigger": "back to teams (host)"
+    },
+    {
+      "from": "guess",
+      "to": "lobby",
+      "trigger": "back to teams (host)"
+    },
+    {
+      "from": "over",
+      "to": "lobby",
+      "trigger": "back to teams (host)"
+    }
+  ]
+}
