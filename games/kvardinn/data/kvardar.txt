@@ -1,0 +1,197 @@
+# Kvarðinn: spjöldin (kvarðarnir)
+#
+# Ein lína er eitt spjald: vinstri endi, örin ↔ og hægri endi. Í stað ↔ má líka skrifa <-> eða |
+# Línur sem byrja á # eru athugasemdir og tómar línur skipta engu.
+# Eftir breytingu: npm test (athugar skrána) og síðan dreifing (README.md).
+
+## Matur og drykkur
+Kalt ↔ Heitt
+Vont ↔ Gott
+Súrt ↔ Sætt
+Bragðlaust ↔ Bragðmikið
+Mjúkt ↔ Stökkt
+Ódýrt ↔ Dýrt
+Hversdagsmatur ↔ Veislumatur
+Skyndibiti ↔ Fínn veitingastaður
+Morgunmatur ↔ Kvöldmatur
+Ógeðslegt ↔ Ljúffengt
+Auðvelt að elda ↔ Erfitt að elda
+Lyktar illa ↔ Ilmar vel
+Bland í poka ↔ Konfektkassi
+Gott í hófi ↔ Gott í miklu magni
+Áunninn smekkur ↔ Ást við fyrstu sýn
+Úldið ↔ Ferskt
+Kaffitýpa ↔ Tetýpa
+Snarl ↔ Heil máltíð
+
+## Veður og náttúra
+Logn ↔ Rok
+Sumarlegt ↔ Vetrarlegt
+Vorlegt ↔ Haustlegt
+Blautt ↔ Þurrt
+Dimmt ↔ Bjart
+Grátt ↔ Litríkt
+Gluggaveður ↔ Alvöru blíða
+Náttúrulegt ↔ Manngert
+Öruggt ↔ Hættulegt
+Lítið ↔ Stórt
+Létt ↔ Þungt
+Hægt ↔ Hratt
+Mjúkt ↔ Hart
+Kyrrlátt ↔ Hávaðasamt
+Innivera ↔ Útivera
+Heiti potturinn ↔ Kaldi potturinn
+
+## Staðir og ferðalög
+Sveit ↔ Borg
+Íslenskt ↔ Útlenskt
+Hálendið ↔ Miðbærinn
+Nálægt ↔ Langt í burtu
+Norðlenskt ↔ Sunnlenskt
+Falin perla ↔ Fjölsóttur ferðamannastaður
+Túristagildra ↔ Algjörlega þess virði
+Gott að heimsækja ↔ Gott að búa á
+Sumarbústaðaferð ↔ Sólarlandaferð
+Tjaldútilega ↔ Fimm stjörnu hótel
+Bara á Íslandi ↔ Alls staðar í heiminum
+Túristar elska ↔ Íslendingar elska
+Krúttlegt ↔ Tilkomumikið
+Gagnslaust í útilegu ↔ Ómissandi í útilegu
+
+## Hátíðir og hefðir
+Ekkert jólalegt ↔ Mjög jólalegt
+Hversdags ↔ Spari
+Hversdagslegt ↔ Hátíðlegt
+Gömul hefð ↔ Ný hefð
+Mjúkur pakki ↔ Harður pakki
+Léleg gjöf ↔ Frábær gjöf
+Skylda ↔ Ánægja
+Fyrir fjölskylduna ↔ Fyrir vinahópinn
+Enginn dansar ↔ Allir dansa
+Rólegt kvöld ↔ Mikið fjör
+Mánudagur ↔ Föstudagur
+Sunnudagskvöld ↔ Laugardagskvöld
+Hefðbundið ↔ Óhefðbundið
+
+## Tónlist, sjónvarp og bækur
+Lélegt ↔ Frábært
+Gleymist strax ↔ Sígilt
+Grátlegt ↔ Hlægilegt
+Langdregið ↔ Spennandi
+Lágmenning ↔ Hámenning
+Hallærislegt ↔ Svalt
+Barnvænt ↔ Bara fyrir fullorðna
+Brekkusöngslag ↔ Óperuaría
+Rólegt lag ↔ Stuðlag
+Betra sem bók ↔ Betra sem bíómynd
+Ástarsaga ↔ Glæpasaga
+Sumarlesning ↔ Jólabók
+Skemmtilegt einu sinni ↔ Skemmtilegt aftur og aftur
+Ófyndið ↔ Sprenghlægilegt
+Fyndið óvart ↔ Fyndið viljandi
+Lélegt hljómsveitarnafn ↔ Frábært hljómsveitarnafn
+Raunsætt ↔ Eins og í bíómynd
+Óþekkt ↔ Heimsfrægt
+Frægt á Íslandi ↔ Frægt um allan heim
+
+## Sögur og þjóðtrú
+Sönn saga ↔ Uppspuni
+Hetja ↔ Skúrkur
+Göfugt ↔ Lúalegt
+Draugalegt ↔ Notalegt
+Krúttlegt ↔ Ógnvekjandi
+Tröllslegt ↔ Álfalegt
+Hjátrú ↔ Staðreynd
+Blessun ↔ Bölvun
+Dularfullt ↔ Augljóst
+Prúður ↔ Hrekkjóttur
+Huglaus ↔ Hugrakkur
+Fornt ↔ Nútímalegt
+Sannleikur ↔ Kjaftasaga
+Fyrirgefanlegt ↔ Ófyrirgefanlegt
+Smá svindl ↔ Stórglæpur
+
+## Hversdagslífið og venjur
+Morgunhani ↔ Nátthrafn
+Óreiða ↔ Skipulag
+Pirrandi ↔ Róandi
+Óþarfi ↔ Nauðsyn
+Auðvelt ↔ Erfitt
+Leiðinlegt ↔ Skemmtilegt
+Slæmur vani ↔ Góður vani
+Ókurteist ↔ Kurteist
+Lúxus ↔ Nauðsynjavara
+Peningasóun ↔ Góð kaup
+Fljótlegt ↔ Tímafrekt
+Gerist daglega ↔ Gerist einu sinni á ævinni
+Einkamál ↔ Allir mega vita
+Sóðalegt ↔ Snyrtilegt
+Best að gera einn ↔ Best að gera með öðrum
+Ég myndi aldrei ↔ Ég geri það oft
+Fyrir eldri kynslóðina ↔ Fyrir yngri kynslóðina
+Fjársjóður ↔ Drasl
+Verkfæri ↔ Leikfang
+Stöðutákn ↔ Nytjahlutur
+Gamaldags ↔ Nútímalegt
+Einfalt ↔ Flókið
+Óþægilegt ↔ Þægilegt
+Afslappandi ↔ Krefjandi
+Slæmt á fyrsta stefnumóti ↔ Gott á fyrsta stefnumóti
+Mamma myndi hneykslast ↔ Mamma yrði stolt
+
+## Persónuleiki
+Feiminn ↔ Félagslyndur
+Hógvær ↔ Montinn
+Nískur ↔ Örlátur
+Varkár ↔ Ævintýragjarn
+Kaldhæðinn ↔ Einlægur
+Rólyndur ↔ Skapstór
+Þrjóskur ↔ Sveigjanlegur
+Svartsýnn ↔ Bjartsýnn
+Þolinmóður ↔ Óþolinmóður
+Alvörugefinn ↔ Galsafenginn
+Heimakær ↔ Ævintýraþyrstur
+Kattamanneskja ↔ Hundamanneskja
+Slæm fyrirmynd ↔ Góð fyrirmynd
+Klaufalegt ↔ Fimlegt
+Barnalegt ↔ Fullorðinslegt
+
+## Smekkur og skoðanir
+Ofmetið ↔ Vanmetið
+Ljótt ↔ Fallegt
+Umdeilt ↔ Allir sammála
+Smekklaust ↔ Smekklegt
+Látlaust ↔ Íburðarmikið
+Gagnslaust ↔ Gagnlegt
+Má missa sín ↔ Má alls ekki missa af
+Börn hata ↔ Börn elska
+Tímasóun ↔ Tíma vel varið
+Heimskulegt ↔ Gáfulegt
+Fáránlegt ↔ Sjálfsagt
+Smámál ↔ Stórmál
+Órómantískt ↔ Rómantískt
+Klisja ↔ Frumlegt
+Venjulegt ↔ Skrýtið
+Ómerkilegt ↔ Merkilegt
+Dauflegt ↔ Fjörugt
+Kuldalegt ↔ Hlýlegt
+Saklaust ↔ Syndsamlegt
+Ætti að banna ↔ Ætti að vera skylda
+Fyrirsjáanlegt ↔ Óvænt
+Grín ↔ Alvara
+Hrós ↔ Móðgun
+Heppni ↔ Hæfileikar
+Ekki frétt ↔ Forsíðufrétt
+Feimnismál ↔ Daglegt umræðuefni
+Sjaldgæft ↔ Algengt
+Óvinsælt ↔ Vinsælt
+Tilheyrir fortíðinni ↔ Tilheyrir framtíðinni
+Kantað ↔ Kringlótt
+
+## Orð og nöfn
+Ljótt orð ↔ Fallegt orð
+Auðvelt að bera fram ↔ Erfitt að bera fram
+Gamalt orð ↔ Nýyrði
+Slangur ↔ Vandað mál
+Hljómar íslenskt ↔ Hljómar útlenskt
+Hundanafn ↔ Kattarnafn

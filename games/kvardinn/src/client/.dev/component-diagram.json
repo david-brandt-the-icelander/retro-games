@@ -1,0 +1,171 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Kvarðinn page component diagram",
+  "folder": "games/kvardinn/src/client",
+  "description": "The page in the browser: main.ts renders the screen from the room's latest View, the scale is one element that survives re-renders so a drag is never interrupted, and net.ts keeps one WebSocket to the room open across drops and refreshes.",
+  "sources": [
+    {
+      "path": "games/kvardinn/src/client/main.ts",
+      "symbol": "render"
+    },
+    {
+      "path": "games/kvardinn/src/client/main.ts",
+      "symbol": "onMessage"
+    },
+    {
+      "path": "games/kvardinn/src/client/net.ts",
+      "symbol": "Connection"
+    },
+    {
+      "path": "games/kvardinn/src/client/scale.ts",
+      "symbol": "Scale"
+    },
+    {
+      "path": "games/kvardinn/src/client/sound.ts",
+      "symbol": "playPoints"
+    },
+    {
+      "path": "games/kvardinn/src/client/text.ts",
+      "symbol": "howTo"
+    }
+  ],
+  "components": [
+    {
+      "id": "client",
+      "name": "Kvarðinn page",
+      "responsibility": "Everything that runs in the browser.",
+      "folder": "games/kvardinn/src/client"
+    },
+    {
+      "id": "main",
+      "name": "Screens (main.ts)",
+      "responsibility": "Routes on the hash; the front page (POST api/rooms), join and seat claim, lobby with link and QR code, the round screens, the end screen and the big screen; sends actions and shows errors as toasts.",
+      "folder": "games/kvardinn/src/client"
+    },
+    {
+      "id": "net",
+      "name": "Connection (net.ts)",
+      "responsibility": "One WebSocket to ws/CODE that reconnects with back-off, on visibility and on coming online; says hello with the saved seat; pings every 25 s; stops on gone. loadSeat and saveSeat keep the seat per room.",
+      "folder": "games/kvardinn/src/client"
+    },
+    {
+      "id": "scale",
+      "name": "Scale (scale.ts)",
+      "responsibility": "The bar between the card's ends, the draggable pointer with pointer, keyboard and nudge controls, and the scoring bands for the giver and after the reveal.",
+      "folder": "games/kvardinn/src/client"
+    },
+    {
+      "id": "sound",
+      "name": "Sound (sound.ts)",
+      "responsibility": "Web Audio tones for the reveal and the points; off when the player turns it off on this device.",
+      "folder": "games/kvardinn/src/client"
+    },
+    {
+      "id": "text",
+      "name": "Text (text.ts)",
+      "responsibility": "The game's name, the how-to-play lines, HTML escaping and the points label.",
+      "folder": "games/kvardinn/src/client"
+    },
+    {
+      "id": "engine",
+      "name": "Rules",
+      "responsibility": "The View, Action and team types, the text limits, goals and round counts, and the scoring bands.",
+      "folder": "games/kvardinn/src/engine",
+      "diagram": "games/kvardinn/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "worker",
+      "name": "Worker and rooms",
+      "responsibility": "Creates the room and holds its game.",
+      "folder": "games/kvardinn/worker",
+      "diagram": "games/kvardinn/worker/.dev/component-diagram.json"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "client",
+      "to": "main",
+      "kind": "contains",
+      "description": "The entry point build.mjs bundles."
+    },
+    {
+      "from": "client",
+      "to": "net",
+      "kind": "contains",
+      "description": "The line to the room."
+    },
+    {
+      "from": "client",
+      "to": "scale",
+      "kind": "contains",
+      "description": "The shared pointer."
+    },
+    {
+      "from": "client",
+      "to": "sound",
+      "kind": "contains",
+      "description": "The tones."
+    },
+    {
+      "from": "client",
+      "to": "text",
+      "kind": "contains",
+      "description": "Shared words."
+    },
+    {
+      "from": "main",
+      "to": "net",
+      "kind": "depends-on",
+      "description": "Opens a Connection per room and sends join, claim and act messages through it; the Connection says hello itself."
+    },
+    {
+      "from": "main",
+      "to": "scale",
+      "kind": "depends-on",
+      "description": "Moves the one Scale element into each screen, sends its drags as move actions, and holds a redraw until a drag ends."
+    },
+    {
+      "from": "main",
+      "to": "sound",
+      "kind": "depends-on",
+      "description": "Unlocks audio on a tap and plays the reveal."
+    },
+    {
+      "from": "main",
+      "to": "text",
+      "kind": "depends-on",
+      "description": "The how-to text and escaping."
+    },
+    {
+      "from": "scale",
+      "to": "sound",
+      "kind": "depends-on",
+      "description": "The sweep while the target is uncovered."
+    },
+    {
+      "from": "main",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Types and limits only."
+    },
+    {
+      "from": "scale",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "BANDS, to draw the scoring bands."
+    },
+    {
+      "from": "main",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "POST api/rooms for a new room."
+    },
+    {
+      "from": "net",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "The WebSocket ws/CODE."
+    }
+  ]
+}

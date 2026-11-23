@@ -27,6 +27,7 @@ Each game needs a sign-in with Google or GitHub, icelander.net's one sign-in (th
 | Hand of the Isle: an original god game made in Godot 4. Reshape an island and call down earthquakes, swamps and floods so your followers outgrow a rival deity's, in the browser. Invited players only (the role `games:hand-of-the-isle`) | [icelander.net/games/fresh/hand-of-the-isle](https://icelander.net/games/fresh/hand-of-the-isle/) | [games/hand-of-the-isle](games/hand-of-the-isle) |
 | Pinochle: partnership auction pinochle for phones and browsers, solo against bots | [icelander.net/games/fresh/pinochle](https://icelander.net/games/fresh/pinochle/) | [games/pinochle](games/pinochle) |
 | Dulmál: an original Icelandic team word-association game for 4–8 players, each on their own phone, in the same room or apart; one-word clues to a 5×5 board, with an optional big-screen view for a TV. Invited players only (the role `games:dulmal`) | [icelander.net/games/dulmal](https://icelander.net/games/dulmal/) | [games/dulmal](games/dulmal) |
+| Kvarðinn: an original Icelandic team guessing game on a scale for 4–8 players, each on their own phone in the same room or remote, with a big-screen view. Invited players only (the role `games:kvardinn`) | [icelander.net/games/kvardinn](https://icelander.net/games/kvardinn/) | [games/kvardinn](games/kvardinn) |
 
 ## Deploying
 

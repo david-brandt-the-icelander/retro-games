@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Rules",
+  "folder": "games/kvardinn/src/engine",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Rules",
+      "summary": "Kvarðinn's rules as plain data and pure functions, and the parser for the scale cards.",
+      "purpose": "Holds one room's whole Game and every move a player can make: act() checks and applies an action, and viewFor() gives each device what it may see. The room's Durable Object runs it, the page uses its types and limits, and the tests play whole games with it from a seed.",
+      "boundaries": [
+        "No clocks and no Math.random: randomness, who is online and the built-in cards come in through Ctx.",
+        "Knows nothing of WebSockets, storage or the page.",
+        "viewFor() never puts seat tokens or the deck in a view, and the target only in the clue-giver's until the reveal."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/kvardinn/src/engine/game.ts",
+          "symbol": "act"
+        },
+        {
+          "path": "games/kvardinn/src/engine/game.ts",
+          "symbol": "viewFor"
+        },
+        {
+          "path": "games/kvardinn/src/engine/cards.ts",
+          "symbol": "parseCards"
+        }
+      ]
+    }
+  ]
+}
