@@ -31,7 +31,7 @@
       "id": "host-browser",
       "name": "Host's browser",
       "kind": "client",
-      "description": "The page, on the device of whoever starts the room; signed in to icelander.net unless HOST_SIGN_IN is none.",
+      "description": "The page, on the device of whoever starts the room; signed in to icelander.net with the role games:laumufarthegi.",
       "actor": "Actors/room-host.md"
     },
     {

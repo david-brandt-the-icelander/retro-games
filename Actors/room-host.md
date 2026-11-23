@@ -10,7 +10,7 @@
 
 ## How they reach it
 
-Laumufarþegi's page at icelander.net/games/fresh/laumufarthegi/, on a phone or a computer; signed in to icelander.net to start a room, unless the Worker's `HOST_SIGN_IN` is `none`. After that, the room's WebSocket, like every player.
+Laumufarþegi's page at icelander.net/games/fresh/laumufarthegi/, on a phone or a computer; signed in to icelander.net with the invite-only role `games:laumufarthegi` (the Worker's `HOST_ROLE`), unless `HOST_SIGN_IN` is `none`. After that, the room's WebSocket, like every player.
 
 ## Not to be confused with
 

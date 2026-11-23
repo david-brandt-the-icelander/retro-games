@@ -19,7 +19,11 @@
   "vars": {
     // The login service's public keys (icelander.net docs/accounts.md, "Keys").
     "ACCOUNTS_JWKS": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"kid\":\"k2026a\",\"x\":\"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc\"}]}",
-    // "none" lets anyone start a room; anything else needs icelander.net's sign-in to start one. Joining never does.
-    "HOST_SIGN_IN": "required"
+    // "none" lets anyone start a room; any other value needs icelander.net's sign-in with HOST_ROLE to start one.
+    // Joining a room never needs a sign-in.
+    "HOST_SIGN_IN": "required",
+    // Starting a room is invite-only: the role is declared in the icelander.net repository (accounts/src/config.js)
+    // and granted, or sent as an invitation, at icelander.net/private/admin.
+    "HOST_ROLE": "games:laumufarthegi"
   }
 }

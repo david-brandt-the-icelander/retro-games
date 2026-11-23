@@ -3,10 +3,11 @@
 //
 //   GET  {BASE}/                      the game (anyone with the link may play)
 //   GET  {BASE}/api/me                whether the visitor may start a room, and where to sign in
-//   POST {BASE}/api/rooms             starts a room; needs icelander.net's sign-in unless HOST_SIGN_IN is "none"
+//   POST {BASE}/api/rooms             starts a room; needs icelander.net's sign-in and HOST_ROLE, unless HOST_SIGN_IN is "none"
 //   GET  {BASE}/api/rooms/CODE/ws     the room's WebSocket (no sign-in: the room code in the link is the key)
 //
-// Only the person starting a room signs in; the others join from the shared link with just a name.
+// As deployed, starting a room is for invited hosts only: signed in to icelander.net with the role games:laumufarthegi
+// (HOST_ROLE), granted at icelander.net/private/admin. Everyone else joins from the shared link with just a name.
 import { createAuth, sameOrigin, type AuthEnv } from "../../../vendor/icelander-auth/index.js";
 import { BASE, CODE_LENGTH, CODE_LETTERS, isCode, type CreatedRoom } from "../shared/protocol";
 
@@ -21,14 +22,16 @@ export interface Env extends AuthEnv {
   ROOMS: RoomNamespace;
   /** "1" turns on the sign-in library's stand-in sign-in (localhost only). */
   DEV_LOGIN?: string;
-  /** "none" lets anyone start a room; anything else needs icelander.net's sign-in. */
+  /** "none" lets anyone start a room; anything else needs icelander.net's sign-in with HOST_ROLE. */
   HOST_SIGN_IN?: string;
+  /** The role a host needs (default "games:play", which every signed-in player holds). */
+  HOST_ROLE?: string;
 }
 
 const AUTH = createAuth({ app: "site", cookie: "site_session", home: `${BASE}/`, implicitRole: "reader", rolePrefixes: ["games"] });
 const shared = (env: Env): Env => (env.DEV_LOGIN === "1" ? { ...env, DEV_SIGN_IN: "true" } : env);
-/** The role every signed-in player of icelander.net's games holds. */
-const ROLE = "games:play";
+/** The role every signed-in player of icelander.net's games holds: the default for HOST_ROLE. */
+const PLAY_ROLE = "games:play";
 
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
@@ -53,23 +56,24 @@ export default {
   },
 };
 
-/** Whether this visitor may start a room: open to all, or signed in to icelander.net. */
-async function mayHost(req: Request, env: Env): Promise<{ ok: boolean; name: string }> {
-  if (env.HOST_SIGN_IN === "none") return { ok: true, name: "" };
+/** Whether this visitor may start a room: open to all, or signed in to icelander.net with the host role. */
+async function mayHost(req: Request, env: Env): Promise<{ ok: boolean; signedIn: boolean; name: string }> {
+  if (env.HOST_SIGN_IN === "none") return { ok: true, signedIn: false, name: "" };
   const user = await AUTH.currentUser(req, shared(env));
-  return { ok: !!user && AUTH.hasRole(user, ROLE), name: user?.name ?? "" };
+  return { ok: !!user && AUTH.hasRole(user, env.HOST_ROLE || PLAY_ROLE), signedIn: !!user, name: user?.name ?? "" };
 }
 
 async function me(req: Request, env: Env): Promise<Response> {
   if (req.method !== "GET") return json({ error: "Method not allowed" }, 405);
   const h = await mayHost(req, env);
-  return json({ canHost: h.ok, name: h.name, signIn: AUTH.signInPath(`${BASE}/`) }, 200, { "Cache-Control": "private, no-store" });
+  return json({ canHost: h.ok, signedIn: h.signedIn, name: h.name, signIn: AUTH.signInPath(`${BASE}/`) }, 200, { "Cache-Control": "private, no-store" });
 }
 
 async function createRoom(req: Request, env: Env, url: URL): Promise<Response> {
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
   if (!sameOrigin(req, url)) return json({ error: "Forbidden" }, 403);
   const h = await mayHost(req, env);
+  if (!h.ok && h.signedIn) return json({ error: "Aðeins boðnir gestgjafar geta stofnað leik. Þú getur samt gengið í leik með hlekk frá öðrum." }, 403);
   if (!h.ok) return json({ error: "Skráðu þig inn á icelander.net til að stofna leik.", signIn: AUTH.signInPath(`${BASE}/`) }, 401);
   const body = (await req.json().catch(() => ({}))) as { name?: unknown };
   const name = typeof body.name === "string" && body.name.trim() ? body.name : h.name;

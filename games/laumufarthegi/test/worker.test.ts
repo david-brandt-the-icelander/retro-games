@@ -16,8 +16,9 @@ function env(over: Partial<Env> = {}): Env & { created: string[]; forwarded: str
     ACCOUNTS_JWKS: '{"keys":[{"kty":"OKP","crv":"Ed25519","kid":"k2026a","x":"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc"}]}',
     ACCOUNTS: {
       async session(value: string) {
-        return value === "member"
-          ? ({ id: "a-member", email: "m@example.com", emails: ["m@example.com"], name: "Magga", picture: null, roles: ["site:reader", "games:play"], supporter: false, accountIds: {}, via: "provider" } as const)
+        const roles: Record<string, string[]> = { member: ["site:reader", "games:play"], invited: ["site:reader", "games:play", "games:laumufarthegi"] };
+        return roles[value]
+          ? ({ id: `a-${value}`, email: `${value}@example.com`, emails: [`${value}@example.com`], name: value === "invited" ? "Inga" : "Magga", picture: null, roles: roles[value], supporter: false, accountIds: {}, via: "provider" } as const)
           : null;
       },
     } as unknown as Env["ACCOUNTS"],
@@ -84,6 +85,18 @@ test("starting a room needs a sign-in; a signed-in player gets a room code and t
   assert.equal(e.created[0], `${room.code}:Anna`);
   const me = (await (await call(e, `${BASE}/api/me`, { who: "member" })).json()) as { canHost: boolean; name: string };
   assert.deepEqual([me.canHost, me.name], [true, "Magga"]);
+});
+
+test("with HOST_ROLE set, only invited hosts start rooms; a signed-in player without the role gets 403", async () => {
+  const e = env({ HOST_ROLE: "games:laumufarthegi" });
+  const member = await call(e, `${BASE}/api/rooms`, { method: "POST", who: "member", body: "{}", headers: { Origin: ORIGIN } });
+  assert.equal(member.status, 403);
+  const me = (await (await call(e, `${BASE}/api/me`, { who: "member" })).json()) as { canHost: boolean; signedIn: boolean };
+  assert.deepEqual([me.canHost, me.signedIn], [false, true]);
+  const invited = await call(e, `${BASE}/api/rooms`, { method: "POST", who: "invited", body: "{}", headers: { Origin: ORIGIN } });
+  assert.equal(invited.status, 201);
+  assert.equal(e.created[0].split(":")[1], "Inga", "the signed-in name is used when none is sent");
+  assert.equal((await call(e, `${BASE}/api/rooms`, { method: "POST", body: "{}", headers: { Origin: ORIGIN } })).status, 401);
 });
 
 test("HOST_SIGN_IN none lets anyone start a room; another site may not start one", async () => {

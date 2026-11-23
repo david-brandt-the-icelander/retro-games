@@ -33,7 +33,7 @@
       "goal": "Get a game going with the people they want to play with, each on their own device.",
       "preconditions": [
         "The home page is open (no ?r= in the address).",
-        "The host is signed in to icelander.net with the games:play role, unless HOST_SIGN_IN is none."
+        "The host is signed in to icelander.net with the role HOST_ROLE (games:laumufarthegi as deployed), unless HOST_SIGN_IN is none."
       ],
       "postconditions": [
         "A room exists under a new five-letter code, with the host's seat; its token is in the host's localStorage.",

@@ -5,10 +5,10 @@
   "folder": "games/laumufarthegi",
   "entities": [
     {
-      "id": "open-link-host-sign-in",
-      "title": "Anyone with the link plays; only starting a room needs the sign-in",
-      "summary": "Players join a room from its link with just a name and no login; starting a room needs icelander.net's sign-in with games:play, unless HOST_SIGN_IN is set to \"none\", which opens that to everyone too.",
-      "status": "open",
+      "id": "invited-hosts-open-link",
+      "title": "Invited hosts start rooms; anyone with the link plays",
+      "summary": "Starting a room needs icelander.net's sign-in with the invite-only role games:laumufarthegi. Everyone else joins a room from its link with just a name and no login.",
+      "status": "decided",
       "context": "Every other game on icelander.net/games serves its page only to signed-in players with the games:play role. Laumufarþegi is a party game for a group, often colleagues: the owner wants the host to paste a link in a Teams chat and everyone to join from it at once, without each of them signing in to icelander.net first. Starting rooms with no sign-in at all would leave the Worker open to anyone creating rooms.",
       "options": [
         {
@@ -24,15 +24,15 @@
           "consequences": "Joining needs only the link and a name; creating rooms stays tied to icelander.net accounts. HOST_SIGN_IN \"none\" turns it into the second option without a code change. The room code is the only key to a room."
         }
       ],
-      "decision": "No sign-in to join; icelander.net's sign-in with games:play to start a room, unless the Worker's HOST_SIGN_IN var is \"none\". The page, api/me and the room's WebSocket need no sign-in; only POST api/rooms checks it, and only from this site's origin.",
-      "rationale": "The owner asked for joining from a link pasted in Teams with no login; keeping the sign-in for starting a room keeps room creation with the site's members, and the var lets the owner open hosting to all if wanted.",
-      "decidedBy": "Proposed by Claude Code; the owner asked only that players join from a shared link with no login",
+      "decision": "HOST_SIGN_IN \"required\" and HOST_ROLE \"games:laumufarthegi\": only POST api/rooms checks the sign-in and the role (from this site's origin only); the page, api/me and the room's WebSocket never need a sign-in. HOST_SIGN_IN \"none\" would open hosting to everyone without a code change.",
+      "rationale": "The owner chose it: the game is published on icelander.net as an invite-only game, but its players are groups who get a link in Teams and shouldn't need accounts. Keeping the invitation on hosting keeps room creation with people the owner invited.",
+      "decidedBy": "The owner",
       "decidedOn": "2026-11-23",
       "origin": {
         "kind": "conversation",
         "by": "Owner",
         "date": "2026-11-23",
-        "description": "The owner asked for players to join via a link pasted in Teams, with no login."
+        "description": "The owner asked for joining via a link pasted in Teams with no login, then to publish the game on icelander.net invite-only, with only hosts needing the invitation."
       },
       "evidenceStatus": "source-verified",
       "sources": [
@@ -68,8 +68,7 @@
           "path": "games/laumufarthegi/worker/.dev/limitations.json",
           "entityId": "code-is-the-key"
         }
-      ],
-      "waitingOn": "The owner: keep the host sign-in, or set HOST_SIGN_IN to \"none\" so anyone may start a room"
+      ]
     },
     {
       "id": "server-authoritative",

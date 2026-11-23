@@ -7,10 +7,10 @@
     {
       "id": "host-sign-in",
       "title": "Who may start a room",
-      "summary": "\"none\" lets anyone start a room; any other value, or none set, needs icelander.net's sign-in with the games:play role. Joining a room never needs a sign-in.",
+      "summary": "\"none\" lets anyone start a room; any other value needs icelander.net's sign-in with the HOST_ROLE role. Joining a room never needs a sign-in.",
       "key": "HOST_SIGN_IN",
       "type": "string var",
-      "default": "Unset means the sign-in is required; wrangler.jsonc sets a value that requires it.",
+      "default": "Unset means the sign-in is required; wrangler.jsonc sets \"required\".",
       "sensitive": false,
       "scope": "per Worker",
       "takesEffect": "per-use",
@@ -34,9 +34,29 @@
         {
           "relation": "implements",
           "path": "games/laumufarthegi/.dev/decisions.json",
-          "entityId": "open-link-host-sign-in"
+          "entityId": "invited-hosts-open-link"
         }
       ]
+    },
+    {
+      "id": "host-role",
+      "title": "Host role",
+      "summary": "The role a host must hold to start a room when HOST_SIGN_IN is not \"none\". wrangler.jsonc sets games:laumufarthegi, an invite-only role declared in the icelander.net repository (accounts/src/config.js) and granted at icelander.net/private/admin.",
+      "key": "HOST_ROLE",
+      "default": "Unset means games:play, which every signed-in player holds.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "mayHost"
+        },
+        {
+          "path": "games/laumufarthegi/wrangler.jsonc",
+          "symbol": "vars.HOST_ROLE"
+        }
+      ],
+      "type": "string var",
+      "sensitive": false
     },
     {
       "id": "dev-login",

@@ -164,13 +164,15 @@ function homeScreen(): Node {
     const body = await r.json().catch(() => ({}));
     create.disabled = false;
     if (r.status === 401) { status.replaceChildren(String(body.error ?? ""), " ", h("a", { href: body.signIn }, "Skrá inn")); return; }
+    if (r.status === 403) { status.replaceChildren(String(body.error ?? "")); return; }
     if (!r.ok) { showToast(body.error ?? "Ekki tókst að stofna leik."); return; }
     const room = body as CreatedRoom;
     store.set(tokenKey(room.code), room.token);
     openRoom(room.code);
   } }, "Stofna nýjan leik");
-  fetch(`${BASE}/api/me`).then((r) => r.json()).then((m: { canHost: boolean; name: string; signIn: string }) => {
-    if (!m.canHost) status.replaceChildren("Til að stofna leik þarftu að ", h("a", { href: m.signIn }, "skrá þig inn"), ". Aðrir ganga í leikinn með hlekknum, án innskráningar.");
+  fetch(`${BASE}/api/me`).then((r) => r.json()).then((m: { canHost: boolean; signedIn: boolean; name: string; signIn: string }) => {
+    if (!m.canHost && m.signedIn) status.replaceChildren("Aðeins boðnir gestgjafar geta stofnað leik. Fáðu hlekk frá gestgjafa til að ganga í leik.");
+    else if (!m.canHost) status.replaceChildren("Til að stofna leik þarftu boð og að ", h("a", { href: m.signIn }, "skrá þig inn"), ". Aðrir ganga í leikinn með hlekknum, án innskráningar.");
     else if (m.name && !name.value) name.value = m.name;
   }).catch(() => undefined);
   const goJoin = () => {

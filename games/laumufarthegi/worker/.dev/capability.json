@@ -53,7 +53,7 @@
         }
       ],
       "access": [
-        "Starting a room: a signed-in icelander.net user with the games:play role, or anyone when HOST_SIGN_IN is none; same-origin requests only.",
+        "Starting a room: a signed-in icelander.net user with the HOST_ROLE role (games:laumufarthegi as deployed), or anyone when HOST_SIGN_IN is none; same-origin requests only.",
         "Joining a room and playing in it: anyone who knows the room's code, from this site's origin; no sign-in.",
         "A seat: whoever presents its token.",
         "Host actions (settings, start, next, end, kick, resetTopics): the room's host only; claimHost: any other player once the host has been disconnected for 30 s."

@@ -50,7 +50,7 @@
         {
           "relation": "relates-to",
           "path": "games/laumufarthegi/.dev/decisions.json",
-          "entityId": "open-link-host-sign-in"
+          "entityId": "invited-hosts-open-link"
         }
       ]
     }

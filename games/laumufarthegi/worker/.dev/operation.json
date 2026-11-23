@@ -35,7 +35,7 @@
       },
       "action": "query",
       "transport": "GET {BASE}/api/me",
-      "authorization": "None; the answer depends on mayHost: everyone when HOST_SIGN_IN is none, otherwise a signed-in icelander.net user with the games:play role.",
+      "authorization": "None; the answer depends on mayHost: everyone when HOST_SIGN_IN is none, otherwise a signed-in icelander.net user with the HOST_ROLE role (games:laumufarthegi as deployed).",
       "result": "200 JSON {canHost, name, signIn}, not cached.",
       "failures": [
         "Any other method: 405."
@@ -61,7 +61,7 @@
       },
       "action": "command",
       "transport": "POST {BASE}/api/rooms with JSON {name}; then POST /create on the Room for that code",
-      "authorization": "Same origin (sameOrigin); then mayHost: anyone when HOST_SIGN_IN is none, otherwise a signed-in icelander.net user with games:play.",
+      "authorization": "Same origin (sameOrigin); then mayHost: anyone when HOST_SIGN_IN is none, otherwise a signed-in icelander.net user with HOST_ROLE (games:laumufarthegi as deployed).",
       "result": "201 JSON CreatedRoom {code, token, playerId}: the five-letter code and the host's seat. The host's name is the one sent, or else the signed-in name.",
       "failures": [
         "Not POST: 405.",

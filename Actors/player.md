@@ -37,4 +37,4 @@ Hivestorm's page at icelander.net/games/retro/hivestorm/, signed in to icelander
 
 Shatterbelt's page is at icelander.net/games/retro/shatterbelt/, signed in the same way, with a keyboard, a gamepad or a touch screen; its online games, for two to nine pilots, start on the same multiplayer page, and every pilot in them is a player too.
 
-Laumufarþegi's page is at icelander.net/games/fresh/laumufarthegi/, opened from a room's link (`?r=CODE`) or by typing the room's code, on a phone or a computer. Unlike the other games, a player needs no sign-in: only the [Room host](room-host.md) who starts a room signs in, and a player is known only by the name they give and the seat token their browser keeps.
+Laumufarþegi's page is at icelander.net/games/fresh/laumufarthegi/, opened from a room's link (`?r=CODE`) or by typing the room's code, on a phone or a computer. Unlike the other games, a player needs no sign-in: only the [Room host](room-host.md) who starts a room signs in, with the invite-only role, and a player is known only by the name they give and the seat token their browser keeps.

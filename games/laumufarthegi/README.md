@@ -6,7 +6,7 @@ Play at [icelander.net/games/fresh/laumufarthegi](https://icelander.net/games/fr
 
 ## Hosting and sharing a game
 
-1. Open the game, type your name and press **Stofna nýjan leik**. Starting a room needs an icelander.net sign-in; the page links to it.
+1. Open the game, type your name and press **Stofna nýjan leik**. Starting a room is for **invited hosts**: you must be signed in to icelander.net with the role `games:laumufarthegi`, which the site's owner grants or sends as an invitation at icelander.net/private/admin.
 2. The lobby shows a five-letter room code and a link (`…/laumufarthegi/?r=ABCDE`). Press **Afrita hlekk** and paste the link into Teams, a chat or an email.
 3. The others open the link, type a name and are in. They don't sign in or install anything. Three connected players are needed; at most ten fit.
 4. As host, choose the settings:
@@ -39,7 +39,7 @@ The server decides everything. Each player's device only ever receives what that
 | `shared/game.ts` | The rules as pure functions: phases (lobby → clues → voting → guess → reveal → over), points, timeouts, topic choice, and `view()`, which is each player's own view of the room. |
 | `shared/protocol.ts` | The game's address, room codes, and the WebSocket messages. |
 | `shared/topics.ts` | The topics, read at build time from [`../word-lists/data/topic-grids.json`](../word-lists/data/topic-grids.json): 118 topics of 16 words. A change to that file reaches this game on its next build and deploy. |
-| `worker/index.ts` | The Worker. It serves the page (open to everyone) and has these routes:<br>• `GET api/me`: whether you may start a room.<br>• `POST api/rooms`: starts a room; needs a sign-in unless `HOST_SIGN_IN` is `"none"`.<br>• `GET api/rooms/CODE/ws`: the room's WebSocket. |
+| `worker/index.ts` | The Worker. It serves the page (open to everyone) and has these routes:<br>• `GET api/me`: whether you may start a room.<br>• `POST api/rooms`: starts a room; needs a sign-in with `HOST_ROLE` unless `HOST_SIGN_IN` is `"none"`.<br>• `GET api/rooms/CODE/ws`: the room's WebSocket. |
 | `worker/room.ts` | The Durable Object `Room`, one per room. It keeps the state in its storage, holds the players' hibernating WebSockets and runs the clue, vote and guess timers on its alarm. |
 | `web/` | The page: `index.html`, `app.ts` (built to `app.js`), `style.css`, the icon and the security headers (`_headers`). |
 | `test/` | Tests for the rules, for the room object on a fake runtime, and for the Worker's routes and sign-in rule. |
@@ -66,7 +66,7 @@ A merge to `main` deploys the game (`.github/workflows/deploy.yml` runs `npm tes
 
 The game has no database and no secrets. Its first deploy creates the `Room` Durable Object class through the `rooms-v1` migration in `wrangler.jsonc`, and the route `icelander.net/games/fresh/laumufarthegi*`.
 
-The page sends no one to sign in. Only starting a room checks icelander.net's sign-in, through the site's own cookie, so no new app needs registering with the login service. To let anyone start rooms, set `HOST_SIGN_IN` to `"none"` in `wrangler.jsonc`.
+Only starting a room checks icelander.net's sign-in, through the site's own cookie (no new app needs registering with the login service): `HOST_SIGN_IN` is `"required"` and `HOST_ROLE` is `games:laumufarthegi` in `wrangler.jsonc`. The role is declared in the icelander.net repository (`accounts/src/config.js`) and granted, or sent as an invitation, at icelander.net/private/admin. Joining a room never needs a sign-in. Set `HOST_SIGN_IN` to `"none"` to let anyone start rooms.
 
 ## Credits
 

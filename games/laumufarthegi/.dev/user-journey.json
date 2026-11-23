@@ -38,7 +38,7 @@
       "stages": [
         {
           "id": "start",
-          "context": "Opens the game's address; signed in to icelander.net, or told to sign in first.",
+          "context": "Opens the game's address, signed in to icelander.net with the invite-only role games:laumufarthegi; otherwise the page says how to sign in or that hosting is by invitation.",
           "touchpoint": "The home page",
           "action": "Types a name and starts a room.",
           "outcome": "The lobby, with a five-letter code and a link.",
