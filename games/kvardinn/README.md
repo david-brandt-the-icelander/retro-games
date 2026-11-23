@@ -1,6 +1,6 @@
 # Kvarðinn
 
-> **At [icelander.net/games/fresh/kvardinn](https://icelander.net/games/fresh/kvardinn/)**, for invited players only (role `games:kvardinn`, granted at icelander.net/private/admin).
+> **At [icelander.net/games/kvardinn](https://icelander.net/games/kvardinn/)**, for invited players only (role `games:kvardinn`, granted at icelander.net/private/admin).
 
 An original Icelandic party game for 4–8 players (up to 12), some in the same room and some remote. Everyone joins from one shared link on their own phone or laptop: a name, a team, and play. Nothing to install. On icelander.net each player signs in once and needs the invite; on a standalone copy (below) nobody signs in.
 
@@ -21,7 +21,7 @@ A player who refreshes, loses signal or locks their phone gets the same seat bac
 
 The game is one Cloudflare Worker with a Durable Object per room. Rooms are deleted after two idle days.
 
-**On icelander.net** (`wrangler.jsonc`, route `icelander.net/games/fresh/kvardinn*`): a merge to `main` deploys it, like the other games. `worker/handler.ts` lets in only players signed in to icelander.net who hold `games:kvardinn`, for the page, for starting rooms and for the room connections alike; anyone else is sent to sign in or told the game is for invited players. Grant the role to each player (and to whoever signs in on the TV for the big screen) at icelander.net/private/admin. A player whose sign-in runs out mid-game is sent to sign in again.
+**On icelander.net** (`wrangler.jsonc`, route `icelander.net/games/kvardinn*`): nothing deploys from GitHub any more, so the owner deploys it by hand from this folder with `npm run deploy` (tests, build, `wrangler deploy`), with wrangler logged in to icelander.net's Cloudflare account. The first deploy also creates the `Room` Durable Object class (migration `rooms-v1`). `worker/handler.ts` lets in only players signed in to icelander.net who hold `games:kvardinn`, for the page, for starting rooms and for the room connections alike; anyone else is sent to sign in or told the game is for invited players. Grant the role to each player (and to whoever signs in on the TV for the big screen) at icelander.net/private/admin. A player whose sign-in runs out mid-game is sent to sign in again.
 
 **On your own Cloudflare account**, open to anyone with the link and with no sign-in (the `standalone` environment; the free plan is enough):
 

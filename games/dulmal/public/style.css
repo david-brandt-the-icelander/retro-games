@@ -1,0 +1,383 @@
+/* Dulmál — night sky, northern lights, basalt and sea. Large type, large targets.
+   Team colours: Hraun is molten lava (orange), Jökull is glacier ice (pale blue); each also has
+   its own icon, so the teams never depend on colour alone. */
+
+:root {
+  --bg: #0b1622;
+  --bg-2: #0f2133;
+  --panel: #152a3d;
+  --panel-2: #1d364b;
+  --line: #2e4a60;
+  --text: #f2f6f5;
+  --muted: #b9c8cf;
+  --green: #4fe3a3;
+  --green-deep: #1fae75;
+  --sky: #7fd6ff;
+  --violet: #b08cff;
+  --basalt: #2b3138;
+  --basalt-2: #3b434c;
+
+  --card: #f3f0e8;
+  --card-ink: #13202b;
+
+  --hraun: #f28a4a;
+  --hraun-deep: #c4521a;
+  --hraun-tint: #fcd9c2;
+  --hraun-ink: #2b1205;
+  --jokull: #7ccbee;
+  --jokull-deep: #2a86b6;
+  --jokull-tint: #d2ecf8;
+  --jokull-ink: #06263a;
+  --neutral: #cfc6b3;
+  --neutral-tint: #ebe6da;
+  --neutral-ink: #2c2820;
+  --ghost: #1f1529;
+  --ghost-ink: #efe5ff;
+
+  --radius: 14px;
+  --tap: 54px;
+  font-size: 18px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: var(--text);
+  font: 400 1rem/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background:
+    radial-gradient(60rem 22rem at 15% -6rem, rgba(79, 227, 163, 0.20), transparent 70%),
+    radial-gradient(50rem 20rem at 90% -4rem, rgba(176, 140, 255, 0.20), transparent 70%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 55%, #081019 100%);
+  background-attachment: fixed;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+h1, h2, h3 { line-height: 1.2; margin: 0 0 0.6rem; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.1rem; margin-top: 1rem; }
+p { margin: 0.4rem 0; }
+code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.85rem; word-break: break-all; color: var(--sky); }
+[hidden] { display: none !important; }
+
+/* ── Logo ── */
+.logo { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 0; font-weight: 800; letter-spacing: 0.01em; }
+.logo span { font-size: 2.6rem; line-height: 1; background: linear-gradient(90deg, #e9fff5, #d8f2ff 55%, #eee3ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.logo .aurora { width: 7.5rem; height: 1.6rem; margin-bottom: -0.2rem; }
+.bar .logo span, .sbar .logo span { font-size: 1.7rem; }
+.bar .logo .aurora, .sbar .logo .aurora { width: 5rem; height: 1.1rem; }
+
+/* ── Layout ── */
+main { max-width: 46rem; margin: 0 auto; padding: 1rem 1rem 3rem; }
+main.center { min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 1.2rem; }
+.hero { text-align: center; padding: 1.5rem 0 1rem; }
+.hero .logo { align-items: center; }
+.hero.small { padding: 0.5rem 0; }
+.tagline { color: var(--muted); font-size: 1.1rem; margin-top: 0.6rem; }
+.room-title { font-size: 1.4rem; font-weight: 700; margin-top: 0.4rem; }
+.big-note { font-size: 1.2rem; }
+
+.panel {
+  background: linear-gradient(180deg, rgba(29, 54, 75, 0.92), rgba(21, 42, 61, 0.92));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.1rem;
+  margin: 0.9rem 0;
+}
+.panel.muted { background: rgba(21, 42, 61, 0.55); }
+.stack { display: flex; flex-direction: column; gap: 0.6rem; }
+.row { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+.hint { color: var(--muted); font-size: 0.95rem; }
+.section-title { margin-top: 1.4rem; }
+
+label, .label { font-weight: 600; font-size: 1rem; display: block; }
+
+input, select, textarea {
+  font: inherit;
+  font-size: 1.15rem;
+  color: var(--card-ink);
+  background: var(--card);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 0.7rem 0.85rem;
+  min-height: var(--tap);
+  width: 100%;
+}
+textarea { font-size: 1rem; min-height: 7rem; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 4px rgba(79, 227, 163, 0.3); }
+.code-input { text-transform: uppercase; letter-spacing: 0.35em; font-weight: 800; font-size: 1.6rem; text-align: center; }
+
+/* ── Buttons ── */
+.btn {
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+  min-height: var(--tap);
+  padding: 0.6rem 1.15rem;
+  border-radius: var(--radius);
+  border: 2px solid var(--line);
+  background: var(--panel-2);
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+  text-decoration: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover { border-color: var(--sky); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn.primary { background: linear-gradient(135deg, var(--green), #6fe7d0); color: #052a1c; border-color: transparent; }
+.btn.primary:hover { filter: brightness(1.05); }
+.btn.huge { width: 100%; min-height: 64px; font-size: 1.25rem; }
+.btn.small { min-height: 44px; font-size: 0.95rem; padding: 0.4rem 0.8rem; }
+.btn.danger { border-color: #a34a4a; }
+.btn.ghostbtn { background: transparent; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+
+.ticon { display: inline-flex; width: 1.3em; height: 1.3em; flex: none; }
+.ticon svg { width: 100%; height: 100%; }
+.t-hraun .ticon { color: var(--hraun); }
+.t-jokull .ticon { color: var(--jokull); }
+
+/* ── Lobby ── */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 0.4rem; }
+.room-code {
+  font-weight: 800; font-size: 1.6rem; letter-spacing: 0.2em; padding: 0.2rem 0.6rem 0.2rem 0.8rem;
+  border-radius: 12px; background: var(--basalt); border: 1px solid var(--basalt-2);
+}
+.room-code.huge { font-size: 5rem; letter-spacing: 0.25em; display: inline-block; margin-top: 0.5rem; }
+.link-row { background: rgba(0, 0, 0, 0.25); border-radius: 10px; padding: 0.6rem 0.75rem; margin: 0.5rem 0; }
+.qr { background: #fff; border-radius: 14px; padding: 0.6rem; width: min(260px, 70vw); margin: 0.8rem auto 0; }
+.qr svg { display: block; width: 100%; height: auto; }
+
+.rename { margin: 0.6rem 0; }
+.rename .row { flex-wrap: nowrap; }
+.rename input { flex: 1; }
+
+.teams { display: grid; grid-template-columns: 1fr; gap: 0.9rem; }
+@media (min-width: 640px) { .teams { grid-template-columns: 1fr 1fr; } }
+.team { border-radius: 18px; padding: 0.9rem; border: 2px solid; background: rgba(11, 22, 34, 0.6); }
+.team.t-hraun { border-color: var(--hraun-deep); background: linear-gradient(180deg, rgba(196, 82, 26, 0.25), rgba(11, 22, 34, 0.6) 60%); }
+.team.t-jokull { border-color: var(--jokull-deep); background: linear-gradient(180deg, rgba(42, 134, 182, 0.28), rgba(11, 22, 34, 0.6) 60%); }
+.team h3 { display: flex; align-items: center; gap: 0.5rem; font-size: 1.4rem; margin: 0 0 0.6rem; }
+.team .count { margin-left: auto; font-size: 1rem; color: var(--muted); }
+.plist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.plist .empty { color: var(--muted); }
+.player { background: rgba(255, 255, 255, 0.06); border-radius: 12px; padding: 0.6rem 0.7rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.6rem; }
+.player.is-away { opacity: 0.7; }
+.pname { display: flex; align-items: center; gap: 0.45rem; flex: 1 1 auto; min-width: 0; font-size: 1.1rem; }
+.pname strong { overflow-wrap: anywhere; }
+.pactions { display: flex; flex-wrap: wrap; gap: 0.4rem; width: 100%; }
+.dot { width: 0.65rem; height: 0.65rem; border-radius: 50%; background: #6b7a84; flex: none; }
+.dot.on { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.tag { font-size: 0.8rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: var(--muted); }
+.tag.you { background: rgba(79, 227, 163, 0.2); color: var(--green); }
+.tag.away { background: rgba(255, 255, 255, 0.08); }
+.role { font-size: 0.9rem; color: var(--muted); }
+.role.clue { color: #fff; font-weight: 700; background: linear-gradient(90deg, rgba(79, 227, 163, 0.25), rgba(176, 140, 255, 0.25)); padding: 0.1rem 0.5rem; border-radius: 8px; }
+.actions { display: flex; flex-direction: column; gap: 0.7rem; }
+.footer-actions { text-align: center; margin-top: 1rem; }
+
+.howto { margin-top: 1.2rem; background: rgba(21, 42, 61, 0.6); border: 1px solid var(--line); border-radius: 18px; padding: 0.9rem 1.1rem; }
+.howto summary { font-weight: 800; font-size: 1.2rem; cursor: pointer; min-height: 2rem; }
+.howto ol, .howto-screen ol { margin: 0.6rem 0 0; padding-left: 1.4rem; }
+.howto li, .howto-screen li { margin: 0.35rem 0; }
+
+/* ── Game ── */
+main.game { max-width: 64rem; padding: 0.5rem 0.5rem 2rem; }
+.gtop { display: flex; gap: 0.5rem; align-items: stretch; }
+.scores { display: flex; gap: 0.5rem; flex: 1; }
+.score {
+  flex: 1; display: flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.7rem; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06); border: 2px solid transparent; font-weight: 700;
+}
+.score .sname { font-size: 1rem; }
+.score .snum { font-size: 1.6rem; margin-left: auto; line-height: 1; }
+.score .sleft { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+.score { min-width: 0; }
+.score .sname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 430px) {
+  .score { padding: 0.3rem 0.5rem; gap: 0.3rem; }
+  .score .sleft { display: none; }
+  .score .snum { font-size: 1.45rem; }
+}
+.score.t-hraun.on { border-color: var(--hraun); background: rgba(242, 138, 74, 0.16); }
+.score.t-jokull.on { border-color: var(--jokull); background: rgba(124, 203, 238, 0.16); }
+.menu-btn { font-size: 1.4rem; min-width: 54px; }
+
+.turn { margin-top: 0.5rem; }
+.tbanner {
+  display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.9rem; border-radius: 14px;
+  font-weight: 800; font-size: 1.45rem;
+}
+.tbanner .ticon { width: 1.6rem; height: 1.6rem; color: inherit !important; }
+.tbanner.t-hraun { background: linear-gradient(90deg, var(--hraun), #f6a874); color: var(--hraun-ink); }
+.tbanner.t-jokull { background: linear-gradient(90deg, var(--jokull), #b4e3f7); color: var(--jokull-ink); }
+.countdown { margin-left: auto; font-variant-numeric: tabular-nums; background: rgba(0, 0, 0, 0.22); color: #fff; padding: 0.1rem 0.6rem; border-radius: 10px; font-size: 1.25rem; }
+.countdown.low { background: #8a1c1c; animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0.6; } }
+.status { font-size: 1.15rem; margin: 0.45rem 0.2rem; color: var(--muted); font-weight: 600; }
+.status.mine { color: var(--text); }
+
+.clue {
+  display: flex; align-items: center; gap: 0.7rem; margin: 0.3rem 0 0.6rem; padding: 0.55rem 0.9rem;
+  border-radius: 14px; background: var(--basalt); border: 2px solid var(--basalt-2);
+}
+.clue.t-hraun { border-color: var(--hraun); }
+.clue.t-jokull { border-color: var(--jokull); }
+.clabel { color: var(--muted); font-size: 0.95rem; font-weight: 600; }
+.cword { font-size: 1.6rem; font-weight: 800; overflow-wrap: anywhere; }
+.cnum { margin-left: auto; font-size: 1.6rem; font-weight: 800; min-width: 2.6rem; text-align: center; background: var(--card); color: var(--card-ink); border-radius: 10px; }
+
+/* The board: basalt columns behind pumice-coloured cards. */
+.board {
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; padding: 6px;
+  border-radius: 16px; background: linear-gradient(180deg, #232a31, #1a2026); border: 1px solid #39424b;
+}
+.card {
+  position: relative; display: flex; align-items: center; justify-content: center; text-align: center;
+  aspect-ratio: 5 / 4; min-height: 52px; padding: 4px; border-radius: 10px; border: 0;
+  background: var(--card); color: var(--card-ink);
+  font: 700 16px/1.08 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+  cursor: default; overflow: hidden;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.card .w { display: block; max-width: 100%; white-space: nowrap; }
+.card .cicon { position: absolute; top: 3px; right: 3px; width: 14px; height: 14px; opacity: 0.85; }
+.card .cicon svg { width: 100%; height: 100%; display: block; }
+.card.tap { cursor: pointer; }
+.card.tap:hover { box-shadow: 0 0 0 3px var(--sky); }
+.card.tap:active { transform: scale(0.97); }
+.card.picked { box-shadow: 0 0 0 4px var(--green), 0 0 18px rgba(79, 227, 163, 0.7); transform: scale(1.04); z-index: 1; }
+
+/* What a clue-giver sees: every word's colour, faintly, with its icon. */
+.card.key.k-hraun { background: var(--hraun-tint); box-shadow: inset 0 0 0 3px var(--hraun-deep); color: var(--hraun-ink); }
+.card.key.k-hraun .cicon { color: var(--hraun-deep); }
+.card.key.k-jokull { background: var(--jokull-tint); box-shadow: inset 0 0 0 3px var(--jokull-deep); color: var(--jokull-ink); }
+.card.key.k-jokull .cicon { color: var(--jokull-deep); }
+.card.key.k-neutral { background: var(--neutral-tint); color: var(--neutral-ink); }
+.card.key.k-neutral .cicon { color: #8d846f; }
+.card.key.k-ghost { background: var(--ghost); color: var(--ghost-ink); box-shadow: inset 0 0 0 3px var(--violet); }
+.card.key.k-ghost .cicon { color: var(--violet); }
+
+/* A word that has come up: solid colour. */
+.card.revealed.k-hraun { background: var(--hraun); color: var(--hraun-ink); }
+.card.revealed.k-jokull { background: var(--jokull); color: var(--jokull-ink); }
+.card.revealed.k-neutral { background: var(--neutral); color: var(--neutral-ink); }
+.card.revealed.k-ghost { background: var(--ghost); color: var(--ghost-ink); box-shadow: 0 0 0 3px var(--violet), 0 0 22px rgba(176, 140, 255, 0.7); }
+.card.revealed .cicon { width: 18px; height: 18px; }
+.card.revealed:not(.k-ghost) .w { font-weight: 600; }
+/* For the clue-giver, words already found step back so the ones left stand out. */
+.board.clue-view .card.revealed:not(.last) { opacity: 0.5; }
+.card.last { animation: pop 0.6s ease; }
+@keyframes pop { 0% { transform: scale(0.85); } 60% { transform: scale(1.06); } 100% { transform: scale(1); } }
+
+.event { min-height: 1.6rem; margin: 0.55rem 0.2rem; font-size: 1.05rem; font-weight: 600; }
+
+.action { margin-top: 0.3rem; }
+.clue-form { display: flex; flex-direction: column; gap: 0.55rem; background: var(--panel); border: 2px solid var(--green); border-radius: 18px; padding: 0.9rem; }
+.clue-form input { font-size: 1.4rem; font-weight: 700; }
+.numbers { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 5px; }
+.num { font: inherit; font-weight: 800; font-size: 1.3rem; min-height: var(--tap); border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); color: var(--text); cursor: pointer; padding: 0; touch-action: manipulation; }
+.num.on { background: var(--green); color: #052a1c; border-color: var(--green); }
+.confirm { background: var(--panel); border: 2px solid var(--green); border-radius: 18px; padding: 0.9rem; }
+.confirm .ctext { font-size: 1.35rem; font-weight: 800; margin: 0 0 0.7rem; }
+.confirm .row .btn.huge { flex: 2; width: auto; }
+.confirm .row .btn:not(.huge) { flex: 1; min-height: 64px; }
+.guessbar { display: flex; align-items: center; gap: 0.8rem; justify-content: space-between; background: var(--panel); border-radius: 16px; padding: 0.6rem 0.8rem; }
+.guessbar .gleft { font-size: 1.2rem; font-weight: 700; }
+.guessbar.quiet { background: transparent; padding-left: 0.2rem; }
+
+.over { border-radius: 18px; padding: 1.1rem; text-align: center; border: 3px solid; display: flex; flex-direction: column; gap: 0.6rem; background: var(--panel); }
+.over.t-hraun { border-color: var(--hraun); }
+.over.t-jokull { border-color: var(--jokull); }
+.otitle { font-size: 2rem; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.otitle .ticon { width: 2.2rem; height: 2.2rem; }
+
+.menu { position: fixed; inset: 0; z-index: 20; background: rgba(5, 10, 16, 0.7); overflow-y: auto; padding: 0.6rem; }
+.menu-inner { max-width: 40rem; margin: 0 auto; background: var(--bg-2); border: 1px solid var(--line); border-radius: 18px; padding: 1rem; }
+.menu-head { display: flex; align-items: center; justify-content: space-between; }
+.menu-head h2 { margin: 0; }
+.clue-log { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.clue-log li { display: inline-flex; align-items: center; gap: 0.35rem; background: rgba(255, 255, 255, 0.07); border-radius: 10px; padding: 0.3rem 0.6rem; font-size: 1.05rem; }
+.teams.compact .team { padding: 0.6rem; }
+.menu .stack { margin-top: 0.8rem; }
+.room-line { color: var(--muted); font-size: 0.95rem; margin-top: 1rem; }
+
+/* Small phones: every pixel of width goes to the cards. */
+@media (max-width: 430px) {
+  main.game { padding-left: 0.25rem; padding-right: 0.25rem; }
+  .board { gap: 4px; padding: 4px; border-radius: 12px; }
+  .card { padding: 2px; border-radius: 8px; }
+  .card .cicon { width: 12px; height: 12px; top: 2px; right: 2px; }
+}
+
+/* Wider screens: board on the left, everything else beside it. */
+@media (min-width: 900px) {
+  main.game { display: grid; grid-template-columns: minmax(0, 1fr) 21rem; grid-template-areas: "top top" "board turn" "board clue" "board event" "board action" "board ."; column-gap: 1rem; align-items: start; }
+  main.game .gtop { grid-area: top; }
+  main.game .turn { grid-area: turn; }
+  main.game #clue { grid-area: clue; }
+  main.game .board { grid-area: board; margin-top: 0.5rem; }
+  main.game .event { grid-area: event; }
+  main.game .action { grid-area: action; }
+}
+
+/* ── Big screen ── */
+.screen { max-width: none; padding: 1.2rem 1.6rem; }
+.slobby { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem 2.4rem; align-items: start; }
+.slobby .sbar { grid-column: 1 / -1; }
+.sjoin { display: flex; gap: 1.6rem; align-items: center; }
+.qr.big { width: min(32vh, 320px); margin: 0; flex: none; }
+.scan { font-size: 1.6rem; font-weight: 700; }
+.sorurl { font-size: 1.2rem; color: var(--muted); }
+.howto-screen { font-size: 1.25rem; background: rgba(21, 42, 61, 0.6); border-radius: 18px; padding: 1rem 1.4rem; }
+.slobby .teams { grid-template-columns: 1fr 1fr; }
+.slobby .team h3 { font-size: 1.8rem; }
+.slobby .pname { font-size: 1.4rem; }
+.sbar { display: flex; align-items: center; gap: 1rem; justify-content: space-between; }
+
+.sgame { display: grid; grid-template-columns: minmax(0, 1fr) clamp(18rem, 26vw, 30rem); gap: 1.4rem; height: 100vh; height: 100dvh; padding: 1rem 1.4rem; }
+.board.big { height: calc(100vh - 2rem); height: calc(100dvh - 2rem); grid-template-rows: repeat(5, minmax(0, 1fr)); gap: 10px; padding: 10px; }
+.board.big .card { aspect-ratio: auto; height: 100%; border-radius: 14px; font-size: 32px; }
+.board.big .cicon { width: 26px; height: 26px; top: 8px; right: 8px; }
+.sside { display: flex; flex-direction: column; gap: 1rem; overflow: hidden; }
+.sside .scores { flex: none; flex-direction: column; }
+.sside .score { padding: 0.7rem 1rem; }
+.sside .score .sname { font-size: 1.6rem; }
+.sside .score .snum { font-size: 3rem; }
+.sside .score .sleft { font-size: 1.1rem; }
+.sside .tbanner { font-size: 2rem; }
+.sside .status { font-size: 1.4rem; }
+.sside .clue { flex-direction: column; align-items: flex-start; }
+.sside .cword { font-size: 3rem; }
+.sside .cnum { font-size: 3rem; margin-left: 0; padding: 0 0.8rem; }
+.sside .event { font-size: 1.35rem; }
+.sside .otitle { font-size: 2.6rem; }
+@media (max-width: 800px) {
+  .slobby { grid-template-columns: 1fr; }
+  .sgame { grid-template-columns: 1fr; height: auto; }
+  .board.big { height: auto; }
+  .board.big .card { aspect-ratio: 5 / 4; font-size: 18px; }
+}
+
+/* ── Connection and messages ── */
+.reconnect { display: none; position: sticky; top: 0; z-index: 30; background: #8a5a00; color: #fff; font-weight: 700; text-align: center; padding: 0.6rem; }
+body.offline .reconnect { display: block; }
+#toast {
+  position: fixed; left: 50%; bottom: calc(1.2rem + env(safe-area-inset-bottom)); transform: translate(-50%, 150%);
+  max-width: min(92vw, 34rem); background: #fff; color: #111; font-weight: 700; font-size: 1.1rem;
+  padding: 0.9rem 1.2rem; border-radius: 14px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.25s ease; z-index: 50; text-align: center;
+}
+#toast.show { transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

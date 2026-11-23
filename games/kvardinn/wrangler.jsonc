@@ -1,7 +1,7 @@
-// The Kvarðinn Worker at icelander.net/games/fresh/kvardinn: the page, and the game rooms as
+// The Kvarðinn Worker at icelander.net/games/kvardinn: the page, and the game rooms as
 // Durable Objects (worker/room.ts), all for players signed in to icelander.net who hold the
 // invite-only role games:kvardinn (worker/handler.ts). No database, no secrets.
-// Deployed by .github/workflows/deploy.yml on a merge to main (README.md, "Hosting").
+// Deployed by hand with `npm run deploy` (README.md, "Hosting"); nothing deploys from GitHub.
 //
 // `wrangler deploy --env standalone` instead puts the same game, open to anyone with the link and
 // without icelander.net's sign-in, at the root of a workers.dev address on whatever Cloudflare
@@ -13,7 +13,8 @@
   "compatibility_date": "2025-04-01",
   "workers_dev": false,
   "preview_urls": false,
-  "routes": [{ "pattern": "icelander.net/games/fresh/kvardinn*", "zone_name": "icelander.net" }],
+  // Its route runs before the games hub (the recreations Worker), whose route icelander.net/games/* is less specific.
+  "routes": [{ "pattern": "icelander.net/games/kvardinn*", "zone_name": "icelander.net" }],
   // Every request goes through the Worker first: nothing here is public.
   "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": true },
   "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "Room" }] },
@@ -21,7 +22,7 @@
   // icelander.net's login service: who is signed in, through the site's cookie (icelander.net and its games are one sign-in).
   "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
   "vars": {
-    "BASE": "/games/fresh/kvardinn",
+    "BASE": "/games/kvardinn",
     // The login service's public keys (icelander.net docs/accounts.md, "Keys").
     "ACCOUNTS_JWKS": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"kid\":\"k2026a\",\"x\":\"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc\"}]}"
   },

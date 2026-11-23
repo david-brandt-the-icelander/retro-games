@@ -3,7 +3,7 @@
   "kind": "deployment",
   "title": "Kvarðinn deployment diagram",
   "folder": "games/kvardinn",
-  "description": "How Kvarðinn runs: one Cloudflare Worker with static assets and a Durable Object per room, behind icelander.net's sign-in for holders of the invite-only role games:kvardinn. No database. The same Worker deploys to icelander.net/games/fresh/kvardinn* by default, or, open to anyone, to the root of a workers.dev address with --env standalone.",
+  "description": "How Kvarðinn runs: one Cloudflare Worker with static assets and a Durable Object per room, behind icelander.net's sign-in for holders of the invite-only role games:kvardinn. No database. The same Worker deploys by hand (npm run deploy) to icelander.net/games/kvardinn* by default, or, open to anyone, to the root of a workers.dev address with --env standalone.",
   "sources": [
     {
       "path": "games/kvardinn/wrangler.jsonc",
@@ -24,10 +24,6 @@
     {
       "path": "games/kvardinn/worker/room.ts",
       "symbol": "Room"
-    },
-    {
-      "path": ".github/scripts/changed-games.sh",
-      "symbol": "all"
     }
   ],
   "nodes": [
@@ -49,7 +45,7 @@
       "id": "edge",
       "name": "Cloudflare edge",
       "kind": "host",
-      "description": "Runs the Worker on icelander.net/games/fresh/kvardinn* (BASE /games/fresh/kvardinn), deployed from main like the other games; or, with --env standalone, on a workers.dev address at the root (BASE empty), on whichever account wrangler is logged in to."
+      "description": "Runs the Worker on icelander.net/games/kvardinn* (BASE /games/kvardinn), deployed by hand with npm run deploy (nothing deploys from GitHub); or, with --env standalone, on a workers.dev address at the root (BASE empty), on whichever account wrangler is logged in to."
     },
     {
       "id": "worker",
@@ -99,7 +95,7 @@
       "from": "edge",
       "to": "worker",
       "kind": "hosts",
-      "description": "Routes icelander.net/games/fresh/kvardinn* (or the workers.dev address) to the Worker."
+      "description": "Routes icelander.net/games/kvardinn* (or the workers.dev address) to the Worker."
     },
     {
       "from": "edge",

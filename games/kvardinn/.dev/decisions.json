@@ -118,12 +118,12 @@
     {
       "id": "invite-only",
       "title": "On icelander.net, for invited players only (games:kvardinn)",
-      "summary": "Kvarðinn is published at icelander.net/games/fresh/kvardinn, and every request there (the page, room creation and the room WebSockets) needs icelander.net's sign-in and the invite-only role games:kvardinn, granted at icelander.net/private/admin.",
+      "summary": "Kvarðinn is published at icelander.net/games/kvardinn, next to Dulmál, and every request there (the page, room creation and the room WebSockets) needs icelander.net's sign-in and the invite-only role games:kvardinn, granted at icelander.net/private/admin.",
       "status": "accepted",
-      "context": "The game was written with no sign-in (no-sign-in), and merging deploys it to icelander.net, where every other game is behind the sign-in. The owner was asked whether to publish it openly, behind the sign-in, or only on a separate workers.dev account.",
+      "context": "The game was written with no sign-in (no-sign-in), and would be published on icelander.net, where every other game is behind the sign-in. The owner was asked whether to publish it openly, behind the sign-in, or only on a separate workers.dev account.",
       "options": [
         {
-          "title": "Publish publicly at icelander.net/games/fresh/kvardinn, no sign-in",
+          "title": "Publish publicly at icelander.net/games/kvardinn, no sign-in",
           "consequences": "Guests join with nothing to set up; icelander.net hosts a page open to anyone, with no rate limit on room creation."
         },
         {

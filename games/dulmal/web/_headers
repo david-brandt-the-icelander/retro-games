@@ -1,0 +1,7 @@
+# Cloudflare static-asset headers for Dulmál. Everything comes from this origin; no inline script.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; connect-src 'self' wss://icelander.net; img-src 'self' data:; style-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: same-origin
+  X-Robots-Tag: noindex
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()

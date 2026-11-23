@@ -1,0 +1,25 @@
+// The Dulmál Worker at icelander.net/games/dulmal: the page, and one Durable Object per room that
+// holds the game and talks to every device over a WebSocket (worker/index.ts, worker/room.ts), all
+// for players signed in to icelander.net with the invite-only role games:dulmal. No D1 database and
+// no secrets. Deployed by .github/workflows/deploy.yml on a merge to main.
+// Its route runs before the games hub (the recreations Worker), whose route icelander.net/games/* is less specific.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dulmal",
+  "compatibility_date": "2025-06-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "icelander.net/games/dulmal*", "zone_name": "icelander.net" }],
+  "main": "worker/index.ts",
+  // Every request goes through the Worker first: nothing here is public.
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": true },
+  "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "RoomObject" }] },
+  // Cloudflare applies these in order; keep every entry.
+  "migrations": [{ "tag": "rooms-v1", "new_sqlite_classes": ["RoomObject"] }],
+  // icelander.net's login service: who is signed in, through the site's cookie (icelander.net and its games are one sign-in).
+  "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
+  "vars": {
+    // The login service's public keys (icelander.net docs/accounts.md, "Keys").
+    "ACCOUNTS_JWKS": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"kid\":\"k2026a\",\"x\":\"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc\"}]}"
+  }
+}

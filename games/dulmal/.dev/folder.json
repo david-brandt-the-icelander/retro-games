@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Dulmál",
+  "folder": "games/dulmal",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Dulmál",
+      "summary": "An original Icelandic team word-association party game for 4 to 8 players, each on their own phone or computer, in the same room or apart: two teams, Hraun and Jökull, each with a clue-giver who gives one word and one number, on a 5×5 board of Icelandic words.",
+      "purpose": "Holds the whole game: the rules and the messages in src/shared/, the page in src/client/ and public/, the word list in data/ord.txt, the Worker and the rooms' Durable Object in worker/, and the tests in test/. It is one npm project and one Cloudflare Worker.",
+      "boundaries": [
+        "Invite-only: every request needs icelander.net's sign-in with the role games:dulmal (decisions.json, invite-only), checked with the shared library in vendor/icelander-auth/, never edited here.",
+        "The room's Durable Object is the only source of truth; the page only shows what it is sent, and the hidden key is sent to clue-givers only, and to everyone once a game is over.",
+        "Rooms are kept in the Durable Object's storage and deleted after three days without activity. Nothing else is stored: no accounts, no scores, no database.",
+        "All text the players see is Icelandic and lives in src/client/text.ts and data/ord.txt."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/dulmal/README.md",
+          "symbol": "Develop"
+        },
+        {
+          "path": "games/dulmal/wrangler.jsonc",
+          "symbol": "durable_objects"
+        }
+      ]
+    }
+  ]
+}
