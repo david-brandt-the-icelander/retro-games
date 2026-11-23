@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/delivery.schema.json",
+  "kind": "delivery",
+  "title": "Laumufarþegi delivery",
+  "folder": "games/laumufarthegi",
+  "entities": [
+    {
+      "id": "production",
+      "title": "Production",
+      "summary": "The laumufarthegi Worker at icelander.net/games/laumufarthegi*, with its static page and the Room Durable Object namespace.",
+      "environment": "production",
+      "purpose": "The game players reach at icelander.net/games/laumufarthegi/ and the room links they share.",
+      "deployedBy": "The owner, from their own machine: `npm run deploy` in games/laumufarthegi with a Cloudflare token for the icelander.net account. Nothing deploys from GitHub's runners (the Deploy workflow was removed on 2026-11-23).",
+      "approvals": [
+        "A pull request: main accepts nothing else.",
+        "A reviewer on the repository's production environment, if one is set."
+      ],
+      "rollback": "No rollback is recorded: deploy the previous commit again with `npm run deploy`, or roll back the Worker's version in Cloudflare's dashboard.",
+      "details": "The Durable Object class Room is created by the rooms-v1 migration in wrangler.jsonc (new_sqlite_classes) when the Worker first deploys; there is no D1 database, so the database-migration gate has nothing of this game's to check. A change to games/word-lists/data/topic-grids.json alone does not deploy this game: changed-games.sh looks only under games/laumufarthegi/, so new topics go live with the game's next change.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/wrangler.jsonc",
+          "symbol": "routes"
+        },
+        {
+          "path": "games/laumufarthegi/wrangler.jsonc",
+          "symbol": "migrations"
+        },
+        {
+          "path": ".github/scripts/changed-games.sh"
+        },
+        {
+          "path": "games/laumufarthegi/package.json",
+          "symbol": "scripts.deploy"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/laumufarthegi/.dev/pipeline.json",
+          "entityId": "deploy"
+        }
+      ]
+    }
+  ]
+}

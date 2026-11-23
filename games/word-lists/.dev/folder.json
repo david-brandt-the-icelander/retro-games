@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Icelandic word lists",
+  "folder": "games/word-lists",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Icelandic word lists",
+      "summary": "Icelandic word lists for original party games (code-clue, grid-clue, outsider, describe-around-traps, category race, one-syllable describing), built from the Árni Magnússon Institute's open data.",
+      "purpose": "Holds the data in data/ (common nouns with per-game suitability, 16-word topic grids, category prompts, one-syllable word forms, and the unused rare-word list from the abandoned bluff game) and in research/ the report, rejected words and the tools that built the lists. No game code lives here.",
+      "boundaries": [
+        "No package.json, so CI neither builds nor deploys this folder.",
+        "Every word is checked against the institute's datasets or málið.is; unconfirmed items are listed in each entry's ostadfest field."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/word-lists/README.md"
+        },
+        {
+          "path": "games/word-lists/research/REPORT.md"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/word-lists/.dev/decisions.json",
+          "label": "Decisions"
+        },
+        {
+          "path": "games/word-lists/.dev/references.json",
+          "label": "Data sources and their licences"
+        }
+      ]
+    }
+  ]
+}

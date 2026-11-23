@@ -1,0 +1,267 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Laumufarþegi rules features",
+  "folder": "games/laumufarthegi/shared",
+  "description": "What the game's rules offer the players of a room, as shared/game.ts implements them. The Room Durable Object applies them; the page only shows the result.",
+  "sources": [
+    {
+      "path": "games/laumufarthegi/shared/game.ts",
+      "symbol": "act"
+    },
+    {
+      "path": "games/laumufarthegi/shared/game.ts",
+      "symbol": "view"
+    }
+  ],
+  "entities": [
+    {
+      "id": "seats",
+      "name": "Seats by name, kept by a token",
+      "description": "Anyone in the room joins with a name and gets a seat they can take back.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "addPlayer"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "byToken"
+        }
+      ],
+      "behavior": "A new player gives a name; the room gives them an id and a secret token. Whoever later presents the token gets the same seat, score included. A player counts as connected while any of their sockets is open.",
+      "outcome": "A reload, a dropped connection or a second tab does not lose a player's place or points.",
+      "constraints": [
+        "A name is trimmed, single-spaced, stripped of control characters and cut to NAME_MAX (20) characters; an empty name is refused.",
+        "Names are unique in a room, ignoring case.",
+        "A room holds at most MAX_PLAYERS (10) players."
+      ],
+      "implementation": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "addPlayer"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "cleanName"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "setConnected"
+        },
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.webSocketMessage"
+        }
+      ]
+    },
+    {
+      "id": "deal-a-round",
+      "name": "A round dealt from the topic grids",
+      "description": "Each round gets a fresh topic, a secret word and a stowaway.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "startRound"
+        }
+      ],
+      "behavior": "The server picks a topic that fits the host's settings and has not been used in this room, one of its 16 words as the secret, one connected player as the stowaway, and a shuffled clue order of the connected players. When every fitting topic has been used, they all become available again and everyone is told so.",
+      "outcome": "Every player sees the same topic and grid; all but the stowaway also know the secret word.",
+      "constraints": [
+        "At least MIN_PLAYERS (3) connected players.",
+        "Only topics of difficulty up to settings.maxDifficulty (1–3), and only child-friendly ones when settings.childOnly is set.",
+        "Players who join during a round wait for the next one; a player in the round who disconnects keeps their place, and their turn runs out."
+      ],
+      "implementation": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "startRound"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "shuffle"
+        },
+        {
+          "path": "games/laumufarthegi/shared/topics.ts",
+          "symbol": "TOPICS"
+        }
+      ]
+    },
+    {
+      "id": "clues-in-turn",
+      "name": "Clues in turn, against the clock",
+      "description": "Each player in the round gives one short clue, in order.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "act"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "advanceClues"
+        }
+      ],
+      "behavior": "Only the player whose turn it is may give a clue. A turn that runs out is recorded as an empty clue (\"—\") and the next player's turn begins.",
+      "outcome": "Everyone sees every clue next to its giver, ready for the vote.",
+      "constraints": [
+        "A clue is cleaned like a name and cut to CLUE_MAX (30) characters; an empty clue is refused.",
+        "A player who knows the secret word may not give the word itself (ignoring case, spaces and closing punctuation); the stowaway, who does not know it, may.",
+        "settings.clueSeconds (15–180) per turn."
+      ],
+      "implementation": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "act"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "cleanClue"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "sameWord"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "tick"
+        }
+      ]
+    },
+    {
+      "id": "vote-and-guess",
+      "name": "The vote, and the caught stowaway's guess",
+      "description": "The players vote out a suspect; a caught stowaway gets one guess at the word.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "closeVoting"
+        }
+      ],
+      "behavior": "Every player in the round votes for someone else in it and may change their vote. The vote closes when everyone has voted or its time runs out. If one player has the most votes and it is the stowaway, the stowaway picks one of the 16 words as their guess; otherwise the round ends.",
+      "outcome": "The stowaway is caught or escapes, and a caught stowaway may still save a point.",
+      "constraints": [
+        "No vote for oneself; only players in the round vote or are voted for.",
+        "A tie, or no votes, catches nobody.",
+        "settings.voteSeconds (20–300) for the vote; GUESS_SECONDS (45) for the guess, after which no guess counts as a wrong one."
+      ],
+      "implementation": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "act"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "closeVoting"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "tick"
+        }
+      ]
+    },
+    {
+      "id": "scoring",
+      "name": "Points per round, over a set number of rounds",
+      "description": "Each round's points are added to the players' scores; the game ends after the host's number of rounds.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "finishRound"
+        }
+      ],
+      "behavior": "Each player who voted for the stowaway gets 1. A stowaway not caught gets 3; caught and guessing the word, 1; caught and guessing wrong, every other player in the round gets 1. The reveal shows the secret, the stowaway, the votes and the points; after settings.rounds rounds the game is over, and the host can start a new one with the scores at 0.",
+      "outcome": "A ranked scoreboard and a winner, or several on a tie.",
+      "constraints": [
+        "settings.rounds is 1–20.",
+        "A round ended early by the host scores nothing."
+      ],
+      "implementation": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "finishRound"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "act"
+        }
+      ]
+    },
+    {
+      "id": "private-views",
+      "name": "Each player sees only what they may",
+      "description": "The state is cut down per player before it leaves the server.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "view"
+        }
+      ],
+      "behavior": "view() gives each player the topic, the clues and the players' standing, the secret word only if they are in the round and not the stowaway, whether they themselves are the stowaway, the accused only once the vote has caught someone, and the stowaway, the votes and the points only at the reveal. Other players' tokens never leave the server.",
+      "outcome": "No device holds the secret word or the stowaway's identity before its player may know them, whatever its browser shows.",
+      "constraints": [
+        "A player who joined during a round sees no secret until the reveal."
+      ],
+      "implementation": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "view"
+        },
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.broadcast"
+        }
+      ]
+    },
+    {
+      "id": "host-controls",
+      "name": "The host runs the room",
+      "description": "One player, the host, sets up and paces the game, and another can take over if the host is gone.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "act"
+        }
+      ],
+      "behavior": "The host changes the settings (rounds, seconds per clue and vote, difficulty, child-friendly topics) between games, starts a game, moves from one round's reveal to the next, ends a game early, removes a player and makes every topic available again. When the host has been disconnected for HOST_GRACE_MS (30 s), any other player may take over as host.",
+      "outcome": "A room keeps going without one person's device and can be cleared of unwanted guests.",
+      "constraints": [
+        "Settings change only in the lobby or after a game, and are clamped to their ranges.",
+        "The host cannot remove themselves, or a player in the round being played (until its reveal)."
+      ],
+      "implementation": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "act"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "clampSettings"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "view"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "state",
+      "folder": "games/laumufarthegi/shared",
+      "path": "games/laumufarthegi/shared/.dev/Phase.state-diagram.json",
+      "relationship": "The phases these features move a room through."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/laumufarthegi/worker",
+      "path": "games/laumufarthegi/worker/.dev/capability.json",
+      "relationship": "The rooms capability these features make up."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/laumufarthegi/web",
+      "path": "games/laumufarthegi/web/.dev/use-case.json",
+      "relationship": "The use cases that exercise them."
+    }
+  ]
+}

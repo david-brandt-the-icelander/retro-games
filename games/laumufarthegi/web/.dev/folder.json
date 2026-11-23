@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Laumufarþegi browser page",
+  "folder": "games/laumufarthegi/web",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Laumufarþegi browser page",
+      "summary": "The page players open from the shared link: plain TypeScript with no framework, in Icelandic, made for phones.",
+      "purpose": "app.ts draws the screen for the view the room sends and sends the player's taps back as actions; index.html, style.css and favicon.svg are the page; _headers sets the static assets' security headers. build.mjs bundles app.ts and copies the rest into dist/games/laumufarthegi/.",
+      "boundaries": [
+        "No rules and no secrets here: the page shows only the view the room sent this player, and the room checks every action again.",
+        "Text goes into the page as text, never as HTML (the h() helper).",
+        "Keeps only a seat token per room and the last name typed, in localStorage."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "h"
+        },
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "store"
+        },
+        {
+          "path": "games/laumufarthegi/web/_headers"
+        },
+        {
+          "path": "games/laumufarthegi/build.mjs",
+          "symbol": "SITE"
+        }
+      ]
+    }
+  ]
+}

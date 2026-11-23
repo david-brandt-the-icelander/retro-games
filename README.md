@@ -28,6 +28,7 @@ Each game needs a sign-in with Google or GitHub, icelander.net's one sign-in (th
 | Pinochle: partnership auction pinochle for phones and browsers, solo against bots | [icelander.net/games/fresh/pinochle](https://icelander.net/games/fresh/pinochle/) | [games/pinochle](games/pinochle) |
 | Dulmál: an original Icelandic team word-association game for 4–8 players, each on their own phone, in the same room or apart; one-word clues to a 5×5 board, with an optional big-screen view for a TV. Invited players only (the role `games:dulmal`) | [icelander.net/games/dulmal](https://icelander.net/games/dulmal/) | [games/dulmal](games/dulmal) |
 | Kvarðinn: an original Icelandic team guessing game on a scale for 4–8 players, each on their own phone in the same room or remote, with a big-screen view. Invited players only (the role `games:kvardinn`) | [icelander.net/games/kvardinn](https://icelander.net/games/kvardinn/) | [games/kvardinn](games/kvardinn) |
+| Laumufarþegi: an Icelandic party word game for 3–10 players on their own phones. Everyone but the stowaway knows the secret word; give clues, then vote out the stowaway. Join from a shared link with no sign-in; starting a room is for invited hosts (the role `games:laumufarthegi`) | [icelander.net/games/laumufarthegi](https://icelander.net/games/laumufarthegi/) | [games/laumufarthegi](games/laumufarthegi) |
 
 ## Deploying
 

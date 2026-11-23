@@ -9,6 +9,7 @@
 **Evidence (Shatterbelt):** `games/shatterbelt/worker/index.ts` (`AUTH`, `gamePage`: Shatterbelt's page and score API need the same sign-in and role), `games/shatterbelt/src/main.ts` (`launch`, `joinMatch`), `games/shatterbelt/src/input.ts` (`Input.controls`: one pilot per browser)
 **Evidence (Dulmál):** `games/dulmal/worker/index.ts` (`default.fetch`: the page, the room API and each room's WebSocket need a sign-in to icelander.net with the invite-only role `games:dulmal`), `games/dulmal/src/shared/game.ts` (`join`, `claim`: a seat in a room, kept by a token in the browser), `games/dulmal/src/client/main.ts` (`connect`)
 **Evidence (Kvarðinn):** `games/kvardinn/worker/handler.ts` (`handle`: the same sign-in, and the invite-only role games:kvardinn), `games/kvardinn/src/engine/game.ts` (`addPlayer`: a seat is a name, a team and a seat token; `effectiveHost`: the first player in, or while they are away the earliest-joined player online, gets the host's buttons), `games/kvardinn/src/client/net.ts` (`loadSeat`, `saveSeat`: the seat is kept in that browser)
+**Evidence (Laumufarþegi):** `games/laumufarthegi/worker/index.ts` (`openSocket`: a room's WebSocket needs no sign-in, only the room's code), `games/laumufarthegi/worker/room.ts` (`Room.webSocketMessage`: a player is a seat taken by name and kept by its token), `games/laumufarthegi/shared/game.ts` (`Player`, `addPlayer`, `view`), `games/laumufarthegi/web/app.ts` (`joinScreen`, `roundScreen`, `voteCard`)
 
 ## What they want from the system
 
@@ -25,6 +26,8 @@
 - To fly Shatterbelt with up to eight friends online, each on their own device, together or against each other, and see everyone's scores on the table ([Shatterbelt's use cases](../games/shatterbelt/src/.dev/use-case.json), `fly-online`; [journeys](../games/shatterbelt/.dev/user-journey.json), `fly-with-friends`).
 - To play Dulmál, an Icelandic team word game, with friends and family in the same room or elsewhere, each on their own phone, by opening one shared link ([Dulmál's deployment diagram](../games/dulmal/.dev/deployment-diagram.json)).
 - To play Kvarðinn with friends, some in the same room and some remote, each on their own phone, joining from one link with a name: give clues, guess on the scale as a team, and win or beat the group's best ([Kvarðinn's deployment](../games/kvardinn/.dev/deployment-diagram.json); [the phases of a game](../games/kvardinn/src/engine/.dev/Game.state-diagram.json)).
+- To join a Laumufarþegi game from a link someone shared, with just a name, and play its rounds on their own phone ([Laumufarþegi's use cases](../games/laumufarthegi/web/.dev/use-case.json), `join-from-link`, `play-a-round`; [journeys](../games/laumufarthegi/.dev/user-journey.json), `join-from-a-link`).
+- To keep a Laumufarþegi game going when its host has gone ([use cases](../games/laumufarthegi/web/.dev/use-case.json), `take-over-as-host`).
 
 ## How they reach it
 
@@ -40,3 +43,4 @@ Shatterbelt's page is at icelander.net/games/retro/shatterbelt/, signed in the s
 
 Dulmál's page is at icelander.net/games/dulmal/, signed in to icelander.net with the invite-only role `games:dulmal`: a player opens a room's link (`?herbergi=CODE`), or types its four-letter code, and gives a name. A TV or projector in the room can show the board with `&skjar=1`; it is a screen, not a player.
 Kvarðinn is at icelander.net/games/kvardinn/, signed in to icelander.net with the invite-only role games:kvardinn (a standalone copy on a workers.dev address needs no sign-in): a player opens the room's link or types its code, gives a name and picks a team, on a phone or a laptop. The host is a player too, the first one in; the code gives them more buttons but knows them only as a seat. A big screen (`#CODE/skjar`) is a device the players open, not a player: it holds no seat.
+Laumufarþegi's page is at icelander.net/games/laumufarthegi/, opened from a room's link (`?r=CODE`) or by typing the room's code, on a phone or a computer. Unlike the other games, a player needs no sign-in: only the [Room host](room-host.md) who starts a room signs in, with the invite-only role, and a player is known only by the name they give and the seat token their browser keeps.

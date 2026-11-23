@@ -1,0 +1,770 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-use-case/schema.json",
+  "kind": "use-case",
+  "title": "Laumufarþegi page use cases",
+  "folder": "games/laumufarthegi/web",
+  "description": "What the host and the players do with the page, step by step. The page only shows the room's views and sends actions; the rules the steps rely on are in shared/, and the routes and the room in worker/.",
+  "sources": [
+    {
+      "path": "games/laumufarthegi/web/app.ts",
+      "symbol": "screen"
+    },
+    {
+      "path": "games/laumufarthegi/web/app.ts",
+      "symbol": "connect"
+    }
+  ],
+  "entities": [
+    {
+      "id": "start-a-room",
+      "name": "Start a room and its game",
+      "description": "The host makes a room, shares its link, sets the game up and starts it once enough players are in.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "homeScreen"
+        },
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "lobbyScreen"
+        }
+      ],
+      "actor": "Room host",
+      "goal": "Get a game going with the people they want to play with, each on their own device.",
+      "preconditions": [
+        "The home page is open (no ?r= in the address).",
+        "The host is signed in to icelander.net with the role HOST_ROLE (games:laumufarthegi as deployed), unless HOST_SIGN_IN is none."
+      ],
+      "postconditions": [
+        "A room exists under a new five-letter code, with the host's seat; its token is in the host's localStorage.",
+        "The address is BASE/?r=CODE, the link the others need.",
+        "Once started, the room is in its first round."
+      ],
+      "flow": [
+        {
+          "id": "may-host",
+          "actor": "Page",
+          "action": "Asks api/me whether this visitor may start a room, and fills in their signed-in name when the name field is empty.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "homeScreen"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "name",
+          "actor": "Room host",
+          "action": "Types or keeps their name and presses Stofna nýjan leik.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "homeScreen"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/room-host.md"
+        },
+        {
+          "id": "create",
+          "actor": "Page",
+          "action": "POSTs the name to api/rooms, keeps the returned token for the room's code, puts ?r=CODE in the address and connects to the room with the token.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "homeScreen"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "openRoom"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "connect"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "lobby",
+          "actor": "Page",
+          "action": "Shows the lobby: the code, the share link with a copy button, the players as they join, and the settings the host may change.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "lobbyScreen"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "settingsCard"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "share",
+          "actor": "Room host",
+          "action": "Copies the link (Afrita hlekk) and pastes it where the others will see it, for example a Teams chat.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "copy"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "lobbyScreen"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/room-host.md"
+        },
+        {
+          "id": "settings",
+          "actor": "Room host",
+          "action": "Optionally sets the number of rounds, the seconds per clue and for the vote, the topics' difficulty and child-friendly topics only.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "settingsCard"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/room-host.md"
+        },
+        {
+          "id": "start",
+          "actor": "Room host",
+          "action": "Presses Byrja leikinn once at least three players are connected.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "lobbyScreen"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/room-host.md"
+        },
+        {
+          "id": "dealt",
+          "actor": "Page",
+          "action": "Draws the round screen from the first round's view.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "roundScreen"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "may-host",
+          "condition": "The visitor may not start a room.",
+          "outcome": "The page says so with a link to sign in, and that the others join from the link without signing in.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "homeScreen"
+            }
+          ]
+        },
+        {
+          "atStep": "name",
+          "condition": "The name is empty.",
+          "outcome": "A message asks for it; nothing is sent.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "homeScreen"
+            }
+          ]
+        },
+        {
+          "atStep": "create",
+          "condition": "The server answers 401.",
+          "outcome": "Its message is shown with a sign-in link.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "homeScreen"
+            },
+            {
+              "path": "games/laumufarthegi/worker/index.ts",
+              "symbol": "createRoom"
+            }
+          ]
+        },
+        {
+          "atStep": "create",
+          "condition": "Any other failure (no free code, a server error).",
+          "outcome": "The server's message, or a general one, is shown briefly; the host may try again.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "homeScreen"
+            }
+          ]
+        },
+        {
+          "atStep": "start",
+          "condition": "Fewer than three players are connected.",
+          "outcome": "The button is disabled and counts the players connected; the room would refuse the start too.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "lobbyScreen"
+            },
+            {
+              "path": "games/laumufarthegi/shared/game.ts",
+              "symbol": "startRound"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/room-host.md",
+      "supportingActors": [
+        {
+          "name": "Player",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    },
+    {
+      "id": "join-from-link",
+      "name": "Join a room from its link",
+      "description": "A player opens the shared link, gives a name and takes a seat, with no sign-in.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "joinScreen"
+        },
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "connect"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Get into the game their colleagues or friends are about to play.",
+      "preconditions": [
+        "The player has the room's link (BASE/?r=CODE) or its five letters.",
+        "The room exists and has fewer than ten players."
+      ],
+      "postconditions": [
+        "The player has a seat in the room, and its token is in their localStorage, so a reload takes the same seat.",
+        "They see the lobby, or the round under way."
+      ],
+      "flow": [
+        {
+          "id": "open",
+          "actor": "Player",
+          "action": "Opens the link.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "openRoom"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "ask-name",
+          "actor": "Page",
+          "action": "With no token stored for this room, shows the room's code and asks for a name, filled in with the last one used.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "joinScreen"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "name",
+          "actor": "Player",
+          "action": "Types a name and presses Ganga í leikinn.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "joinScreen"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "join",
+          "actor": "Page",
+          "action": "Opens the room's WebSocket and sends join with the name; on welcome, keeps the seat's token.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "connect"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "wait",
+          "actor": "Page",
+          "action": "Shows the lobby with the players and the settings, and waits for the host to start.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "lobbyScreen"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "open",
+          "condition": "The player has only the code.",
+          "outcome": "They type it on the home page under Ganga í leik; anything but five code letters is refused with a message.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "homeScreen"
+            }
+          ]
+        },
+        {
+          "atStep": "ask-name",
+          "condition": "A token for this room is already stored (a reload, or the host's own device).",
+          "outcome": "The page reconnects with the token straight to the same seat.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "openRoom"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "connect"
+            }
+          ]
+        },
+        {
+          "atStep": "join",
+          "condition": "The name is taken or the room is full.",
+          "outcome": "The room's reason is shown and the name entry comes back.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "connect"
+            },
+            {
+              "path": "games/laumufarthegi/shared/game.ts",
+              "symbol": "addPlayer"
+            }
+          ]
+        },
+        {
+          "atStep": "join",
+          "condition": "The room no longer exists.",
+          "outcome": "The socket is closed with 4404, the stored token is dropped and the page says the game is gone.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "connect"
+            },
+            {
+              "path": "games/laumufarthegi/worker/room.ts",
+              "symbol": "Room.webSocketMessage"
+            }
+          ]
+        },
+        {
+          "atStep": "wait",
+          "condition": "A round is already under way.",
+          "outcome": "The player watches it without the secret word and is dealt into the next round.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "roleBanner"
+            }
+          ]
+        },
+        {
+          "atStep": "join",
+          "condition": "The connection drops later.",
+          "outcome": "The page shows that it is reconnecting and tries again, waiting longer each time, with the stored token.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "connect"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "connectionBadge"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    },
+    {
+      "id": "play-a-round",
+      "name": "Play a round",
+      "description": "A player in the round gives a clue, votes for the stowaway and sees how the round went.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "roundScreen"
+        },
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "revealScreen"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Find the stowaway without giving the word away, or, as the stowaway, pass unnoticed; and score points.",
+      "preconditions": [
+        "The player has a seat and was connected when the round was dealt."
+      ],
+      "postconditions": [
+        "The round's points are added to every player's score.",
+        "Everyone has seen the secret word, the stowaway, the votes and the points."
+      ],
+      "flow": [
+        {
+          "id": "role",
+          "actor": "Page",
+          "action": "Shows the topic's 16 words and the player's role: the secret word, marked in the grid, or that they are the stowaway.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "roundScreen"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "roleBanner"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "clue",
+          "actor": "Player",
+          "action": "When the page says it is their turn, types one short clue and sends it before the countdown ends.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "roundScreen"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "clues",
+          "actor": "Page",
+          "action": "Shows each player's clue as it comes, and whose turn it is.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "cluesCard"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "vote",
+          "actor": "Player",
+          "action": "Votes for one of the others, each shown with their clue, and may change the vote until everyone has voted.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "voteCard"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "reveal",
+          "actor": "Page",
+          "action": "Shows the stowaway, the secret word, the verdict, everyone's vote and the round's points, and the scores so far.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "revealScreen"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "clue",
+          "condition": "The clue is the secret word itself, from a player who knows it.",
+          "outcome": "The room refuses it and the page shows why; the player tries another.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/shared/game.ts",
+              "symbol": "act"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "connect"
+            }
+          ]
+        },
+        {
+          "atStep": "clue",
+          "condition": "The countdown ends first.",
+          "outcome": "The clue is recorded as \"—\" and the next player's turn begins.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/shared/game.ts",
+              "symbol": "tick"
+            }
+          ]
+        },
+        {
+          "atStep": "vote",
+          "condition": "The vote catches the stowaway, and this player is the stowaway.",
+          "outcome": "The page says they were caught and makes the grid's words buttons; they pick one as their guess before the countdown ends.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "roundScreen"
+            }
+          ]
+        },
+        {
+          "atStep": "vote",
+          "condition": "The vote catches the stowaway, and this player is someone else.",
+          "outcome": "The page names the stowaway, who is now guessing.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "roundScreen"
+            }
+          ]
+        },
+        {
+          "atStep": "role",
+          "condition": "The player is not in this round (they joined during it).",
+          "outcome": "They see the grid and the clues without the secret word and do not vote.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "roleBanner"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "voteCard"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    },
+    {
+      "id": "run-the-game",
+      "name": "Run the game to its end",
+      "description": "The host moves from round to round, removes a player if need be, and ends the game.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "revealScreen"
+        },
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "overScreen"
+        }
+      ],
+      "actor": "Room host",
+      "goal": "Play the number of rounds chosen, see who won, and play again if the group wants.",
+      "preconditions": [
+        "The host's seat is the room's host, and a game has started."
+      ],
+      "postconditions": [
+        "The game is over and everyone sees the final standings and the winner, or winners on a tie."
+      ],
+      "flow": [
+        {
+          "id": "next",
+          "actor": "Room host",
+          "action": "At each round's reveal, presses Næsta umferð; after the last round, Sjá lokastöðu.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "revealScreen"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/room-host.md"
+        },
+        {
+          "id": "final",
+          "actor": "Page",
+          "action": "Shows the final standings and the winners, the settings, and to the host a button for a new game with the same players.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "overScreen"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "next",
+          "condition": "The host wants to stop before the last round.",
+          "outcome": "Ljúka leik, confirmed, ends the game; a round under way is not scored.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "hostBar"
+            }
+          ]
+        },
+        {
+          "atStep": "next",
+          "condition": "Someone should leave the room.",
+          "outcome": "The host removes them from the player list, after confirming; the room refuses while that player is in the round being played. The removed player's page says so.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "playersCard"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "screen"
+            }
+          ]
+        },
+        {
+          "atStep": "next",
+          "condition": "Fewer than three players are connected for the next round.",
+          "outcome": "The room refuses and the host is told why.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/shared/game.ts",
+              "symbol": "startRound"
+            }
+          ]
+        },
+        {
+          "atStep": "final",
+          "condition": "The group wants another game.",
+          "outcome": "The host starts a new one: scores back to 0, the first round dealt.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "overScreen"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/room-host.md",
+      "supportingActors": [
+        {
+          "name": "Player",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    },
+    {
+      "id": "take-over-as-host",
+      "name": "Take over from a host who has gone",
+      "description": "When the host's device has been disconnected for 30 seconds, another player takes over the room.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "claimHost"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Keep the game going without the host.",
+      "preconditions": [
+        "The player has a seat; the host has been disconnected for at least 30 seconds."
+      ],
+      "postconditions": [
+        "The player is the room's host, with the host's buttons; the old host plays on as an ordinary player if they come back."
+      ],
+      "flow": [
+        {
+          "id": "offer",
+          "actor": "Page",
+          "action": "Says the host is not connected and offers Taka við stjórninni.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "claimHost"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "claim",
+          "actor": "Player",
+          "action": "Presses it.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "claimHost"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "claim",
+          "condition": "The host has reconnected, or another player claimed first.",
+          "outcome": "The room refuses with a reason, or the offer disappears with the next view.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/shared/game.ts",
+              "symbol": "act"
+            },
+            {
+              "path": "games/laumufarthegi/shared/game.ts",
+              "symbol": "view"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/laumufarthegi/worker",
+      "path": "games/laumufarthegi/worker/.dev/operation.json",
+      "relationship": "The routes and room messages the steps call."
+    },
+    {
+      "kind": "capability",
+      "folder": "games/laumufarthegi/worker",
+      "path": "games/laumufarthegi/worker/.dev/capability.json",
+      "relationship": "The capability these use cases use."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/laumufarthegi/shared",
+      "path": "games/laumufarthegi/shared/.dev/feature.json",
+      "relationship": "The rules features they exercise."
+    },
+    {
+      "kind": "state",
+      "folder": "games/laumufarthegi/shared",
+      "path": "games/laumufarthegi/shared/.dev/Phase.state-diagram.json",
+      "relationship": "The phases the screens follow."
+    },
+    {
+      "kind": "user-journey",
+      "folder": "games/laumufarthegi",
+      "path": "games/laumufarthegi/.dev/user-journey.json",
+      "relationship": "The journeys these use cases are part of."
+    }
+  ]
+}

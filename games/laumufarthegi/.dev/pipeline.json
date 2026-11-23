@@ -1,0 +1,64 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/pipeline.schema.json",
+  "kind": "pipeline",
+  "title": "Laumufarþegi pipeline",
+  "folder": "games/laumufarthegi",
+  "entities": [
+    {
+      "id": "pull-request",
+      "title": "On a pull request",
+      "summary": "Laumufarþegi is typechecked, tested and built, and every .dev diagram and knowledge file is validated.",
+      "trigger": "A pull request that changes games/laumufarthegi outside its .dev folders, or anything under .github/ outside .github/.dev (ci.yml).",
+      "checks": [
+        "npm ci",
+        "npm test: tsc --noEmit, build.mjs --test, then the node:test suites in dist-test/",
+        "npm run build",
+        "No .dev folders in dist/: the build must not ship the folders' documentation",
+        "python3 Meta/Agents/Skills/validate_diagrams.py, for the whole repository",
+        "python3 Meta/Agents/Knowledge/validate_knowledge.py, for the whole repository"
+      ],
+      "blocks": "merge",
+      "notChecked": [
+        "The page in a real browser, and the Durable Object on Cloudflare's runtime: the tests fake it.",
+        "A change only to games/word-lists/: it does not count as a change to this game."
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": ".github/workflows/game.yml",
+          "symbol": "jobs"
+        },
+        {
+          "path": "games/laumufarthegi/package.json",
+          "symbol": "scripts.test"
+        }
+      ]
+    },
+    {
+      "id": "deploy",
+      "title": "Deploying, by hand",
+      "summary": "The owner runs npm run deploy: the tests, the build, then wrangler deploy.",
+      "trigger": "The owner, on their own machine; nothing deploys from GitHub's runners.",
+      "checks": [
+        "npm test",
+        "node build.mjs",
+        "npx wrangler deploy"
+      ],
+      "blocks": "release",
+      "secrets": [
+        "A Cloudflare API token for the icelander.net account, on the owner's machine"
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/package.json",
+          "symbol": "scripts.deploy"
+        }
+      ]
+    }
+  ]
+}

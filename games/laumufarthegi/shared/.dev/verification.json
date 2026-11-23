@@ -1,0 +1,122 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Laumufarþegi rules verification",
+  "folder": "games/laumufarthegi/shared",
+  "entities": [
+    {
+      "id": "rules",
+      "title": "The rules, phase by phase",
+      "summary": "test/game.test.ts plays rooms through act() and tick() with a fixed clock and random source and checks each rule.",
+      "subject": [
+        {
+          "path": "games/laumufarthegi/shared/.dev/feature.json",
+          "entityId": "deal-a-round"
+        },
+        {
+          "path": "games/laumufarthegi/shared/.dev/feature.json",
+          "entityId": "clues-in-turn"
+        },
+        {
+          "path": "games/laumufarthegi/shared/.dev/feature.json",
+          "entityId": "vote-and-guess"
+        },
+        {
+          "path": "games/laumufarthegi/shared/.dev/feature.json",
+          "entityId": "scoring"
+        },
+        {
+          "path": "games/laumufarthegi/shared/.dev/feature.json",
+          "entityId": "host-controls"
+        },
+        {
+          "path": "games/laumufarthegi/shared/.dev/feature.json",
+          "entityId": "seats"
+        },
+        {
+          "path": "games/laumufarthegi/shared/.dev/Phase.state-diagram.json"
+        }
+      ],
+      "criteria": [
+        "A game needs three connected players and only the host starts it; a start deals a topic, a secret, a stowaway and a clue order",
+        "Clues go in turn; the secret word itself is refused except from the stowaway; a turn, the vote and the guess each time out",
+        "Votes are not for oneself, may be changed, and close when everyone has voted",
+        "Each scoring case: caught and wrong, caught and right, a wrong accusation, a tie",
+        "The game runs its rounds and ends; a new game resets the scores",
+        "No topic repeats until all that fit are used, and the difficulty and child-friendly filters hold",
+        "Settings are host only, between games and in range; another player may take over once the host has been away; the host may not remove a player in the current round",
+        "Names are required, unique ignoring case and trimmed, and a room holds ten",
+        "Every real topic has 16 different words and a difficulty"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/laumufarthegi/test/game.test.ts",
+          "command": "npm test",
+          "description": "Seventeen node:test cases, one per criterion group above."
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/test/game.test.ts"
+        },
+        {
+          "path": "games/laumufarthegi/package.json",
+          "symbol": "scripts.test"
+        }
+      ]
+    },
+    {
+      "id": "private-views",
+      "title": "Who sees the secret word and the stowaway",
+      "summary": "The secret word reaches only the players in the round who are not the stowaway, and nobody learns the stowaway before the reveal.",
+      "subject": [
+        {
+          "path": "games/laumufarthegi/shared/.dev/feature.json",
+          "entityId": "private-views"
+        },
+        {
+          "path": "games/laumufarthegi/.dev/decisions.json",
+          "entityId": "server-authoritative"
+        }
+      ],
+      "criteria": [
+        "In a round, view() gives the secret to each player in it but the stowaway, and to no one who joined during it",
+        "Before the reveal, no view names the stowaway except the stowaway's own, and no view has the reveal or the accused while clues are given or votes cast"
+      ],
+      "notChecked": [
+        "That the reveal's view carries the secret, the stowaway, the votes and the points: no test reads the view at the reveal."
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/laumufarthegi/test/game.test.ts",
+          "symbol": "only the players who should know it see the secret word, and nobody sees the stowaway before the reveal",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/laumufarthegi/test/game.test.ts",
+          "symbol": "a player who joins during a round waits for the next one and sees no secret",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/laumufarthegi/test/room.test.ts",
+          "symbol": "each socket gets its own view: the secret only for those allowed, and a second tab keeps a player connected",
+          "command": "npm test"
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/test/game.test.ts"
+        },
+        {
+          "path": "games/laumufarthegi/test/room.test.ts"
+        }
+      ]
+    }
+  ]
+}

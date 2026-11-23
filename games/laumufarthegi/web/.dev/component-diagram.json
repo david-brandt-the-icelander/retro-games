@@ -1,0 +1,103 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Laumufarþegi browser page component diagram",
+  "folder": "games/laumufarthegi/web",
+  "description": "The page each player opens on their own phone or computer: plain TypeScript that draws the screen the room's view calls for and passes on what the player taps. It holds no rules: the room decides everything.",
+  "sources": [
+    {
+      "path": "games/laumufarthegi/web/app.ts",
+      "symbol": "screen"
+    },
+    {
+      "path": "games/laumufarthegi/web/app.ts",
+      "symbol": "connect"
+    },
+    {
+      "path": "games/laumufarthegi/web/index.html",
+      "symbol": "app"
+    },
+    {
+      "path": "games/laumufarthegi/build.mjs",
+      "symbol": "SITE"
+    }
+  ],
+  "components": [
+    {
+      "id": "web",
+      "name": "Browser page",
+      "responsibility": "The page's source, built by build.mjs into dist/games/laumufarthegi/.",
+      "folder": "games/laumufarthegi/web"
+    },
+    {
+      "id": "app",
+      "name": "Screens and connection (app.ts)",
+      "responsibility": "Home (start a room, or type a code), the name entry for a link, and one screen per phase: lobby with the share link and the host's settings, the round (topic grid, role banner, clues, vote, guess), the reveal and the final standings. Opens the room's WebSocket, joins with the stored token or the name typed, reconnects with backoff, pings every 25 s, shows the deadline's countdown against the server's clock, and copies the share link to the clipboard.",
+      "folder": "games/laumufarthegi/web"
+    },
+    {
+      "id": "page",
+      "name": "Page shell (index.html, style.css, favicon.svg, _headers)",
+      "responsibility": "The HTML that loads app.js, the styles, the icon, and the static headers: a Content-Security-Policy that allows only this origin and its WebSocket.",
+      "folder": "games/laumufarthegi/web"
+    },
+    {
+      "id": "shared",
+      "name": "Shared code",
+      "responsibility": "Types, limits and the path the page uses.",
+      "folder": "games/laumufarthegi/shared",
+      "diagram": "games/laumufarthegi/shared/.dev/component-diagram.json"
+    },
+    {
+      "id": "worker",
+      "name": "Worker and rooms",
+      "responsibility": "The API and each room's WebSocket.",
+      "folder": "games/laumufarthegi/worker",
+      "diagram": "games/laumufarthegi/worker/.dev/component-diagram.json"
+    },
+    {
+      "id": "storage",
+      "name": "Browser localStorage",
+      "responsibility": "Each room's seat token (laumufarthegi:CODE) and the last name typed (laumufarthegi:name); the page works without it, losing the seat on a reload.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "web",
+      "to": "app",
+      "kind": "contains",
+      "description": "Bundled and minified by esbuild into app.js."
+    },
+    {
+      "from": "web",
+      "to": "page",
+      "kind": "contains",
+      "description": "Copied unchanged into dist/."
+    },
+    {
+      "from": "page",
+      "to": "app",
+      "kind": "depends-on",
+      "description": "Loads app.js as a module; app.ts draws into #app."
+    },
+    {
+      "from": "app",
+      "to": "shared",
+      "kind": "depends-on",
+      "description": "CLUE_MAX, MIN_PLAYERS, NAME_MAX and the Action, Settings and View types from game.ts; BASE, isCode and the message types from protocol.ts. Not the rules themselves."
+    },
+    {
+      "from": "app",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "GET api/me and POST api/rooms by fetch; the WebSocket api/rooms/CODE/ws for join, actions, state and errors."
+    },
+    {
+      "from": "app",
+      "to": "storage",
+      "kind": "depends-on",
+      "description": "Reads, writes and deletes the token and the name, each wrapped against a blocked store."
+    }
+  ]
+}

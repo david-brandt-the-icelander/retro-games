@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Laumufarþegi Worker capabilities",
+  "folder": "games/laumufarthegi/worker",
+  "description": "What the Worker can do for the people in a game.",
+  "sources": [
+    {
+      "path": "games/laumufarthegi/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/laumufarthegi/worker/room.ts",
+      "symbol": "Room"
+    }
+  ],
+  "entities": [
+    {
+      "id": "rooms",
+      "name": "Party rooms",
+      "description": "Starting a room, joining it from its link, and playing it to the end, with the server as the only referee.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "createRoom"
+        },
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.webSocketMessage"
+        }
+      ],
+      "responsibility": "Keeps each room's state in its own Durable Object, applies every player's actions and timeouts one at a time through the shared rules, and sends each player only what they may see.",
+      "operations": [
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "me"
+        },
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "createRoom"
+        },
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "openSocket"
+        },
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.webSocketMessage"
+        },
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.alarm"
+        }
+      ],
+      "access": [
+        "Starting a room: a signed-in icelander.net user with the HOST_ROLE role (games:laumufarthegi as deployed), or anyone when HOST_SIGN_IN is none; same-origin requests only.",
+        "Joining a room and playing in it: anyone who knows the room's code, from this site's origin; no sign-in.",
+        "A seat: whoever presents its token.",
+        "Host actions (settings, start, next, end, kick, resetTopics): the room's host only; claimHost: any other player once the host has been disconnected for 30 s."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/laumufarthegi/worker",
+      "path": "games/laumufarthegi/worker/.dev/operation.json",
+      "relationship": "The operations through which it is reached."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/laumufarthegi/shared",
+      "path": "games/laumufarthegi/shared/.dev/feature.json",
+      "relationship": "The rules features that make it up."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/laumufarthegi/web",
+      "path": "games/laumufarthegi/web/.dev/use-case.json",
+      "relationship": "The use cases that use it."
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "Laumufarþegi deployment diagram",
+  "folder": "games/laumufarthegi",
+  "description": "How Laumufarþegi runs: one Cloudflare Worker with static assets and a Durable Object namespace, Room, with one SQLite-backed object per room code. Every player's browser holds a WebSocket to their room's object, which keeps the room's state and decides the game. No database and no secrets; the login service is asked only when someone starts a room.",
+  "sources": [
+    {
+      "path": "games/laumufarthegi/wrangler.jsonc",
+      "symbol": "laumufarthegi"
+    },
+    {
+      "path": "games/laumufarthegi/build.mjs",
+      "symbol": "SITE"
+    },
+    {
+      "path": "games/laumufarthegi/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/laumufarthegi/worker/room.ts",
+      "symbol": "Room"
+    },
+    {
+      "path": "games/laumufarthegi/web/_headers",
+      "symbol": "Content-Security-Policy"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "host-browser",
+      "name": "Host's browser",
+      "kind": "client",
+      "description": "The page, on the device of whoever starts the room; signed in to icelander.net with the role games:laumufarthegi.",
+      "actor": "Actors/room-host.md"
+    },
+    {
+      "id": "player-browser",
+      "name": "Player's browser",
+      "kind": "client",
+      "description": "The page, opened from the room's link on a player's own phone or computer; no sign-in. Keeps the seat's token in localStorage.",
+      "actor": "Actors/player.md"
+    },
+    {
+      "id": "edge",
+      "name": "Cloudflare edge",
+      "kind": "host",
+      "description": "Runs the Worker on the route icelander.net/games/laumufarthegi*, ahead of the games hub's less specific icelander.net/games/*, and serves the static assets."
+    },
+    {
+      "id": "worker",
+      "name": "laumufarthegi Worker",
+      "kind": "process",
+      "description": "worker/index.ts: the page (uncached HTML), api/me, api/rooms and the room's WebSocket upgrade; every other path is a static asset from ./dist."
+    },
+    {
+      "id": "room",
+      "name": "Room Durable Object",
+      "kind": "process",
+      "description": "One object per room code (ROOMS.idFromName): takes the room's hibernatable WebSockets, applies actions one at a time and runs its alarm for timeouts and the idle clean-up."
+    },
+    {
+      "id": "room-storage",
+      "name": "Room storage",
+      "kind": "database",
+      "description": "Each object's own SQLite-backed storage (the rooms-v1 migration's new_sqlite_classes), holding the room's whole state under one key until the room is deleted."
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "accounts.icelander.net, in the icelander.net repository: who holds the site_session cookie and their games: roles. Reached only through a service binding.",
+      "condition": "api/me and api/rooms, unless HOST_SIGN_IN is none"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "bundle",
+      "name": "app.js",
+      "source": "games/laumufarthegi/web/app.ts",
+      "deployedTo": "edge",
+      "description": "esbuild bundle of web/app.ts with the shared types, minified, served as a static asset and run in the browser."
+    },
+    {
+      "id": "page",
+      "name": "index.html, style.css, favicon.svg and _headers",
+      "source": "games/laumufarthegi/web/index.html",
+      "deployedTo": "edge",
+      "description": "Copied into dist/games/laumufarthegi/ (and _headers to dist/): a Content-Security-Policy that allows only this origin and wss://icelander.net."
+    },
+    {
+      "id": "script",
+      "name": "Worker script",
+      "source": "games/laumufarthegi/worker/index.ts",
+      "deployedTo": "worker",
+      "description": "The fetch handler, bundled by wrangler with the shared rules and the topic grids."
+    },
+    {
+      "id": "room-class",
+      "name": "Room class",
+      "source": "games/laumufarthegi/worker/room.ts",
+      "deployedTo": "room",
+      "description": "Exported from the same Worker script and bound as ROOMS."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "edge",
+      "to": "worker",
+      "kind": "hosts",
+      "description": "Routes icelander.net/games/laumufarthegi* to the Worker; the Worker runs first only for the page and api/*."
+    },
+    {
+      "from": "edge",
+      "to": "room",
+      "kind": "hosts",
+      "description": "Runs each room's object."
+    },
+    {
+      "from": "host-browser",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "HTTPS: the page, GET api/me, POST api/rooms; then a WebSocket to the room like every player."
+    },
+    {
+      "from": "player-browser",
+      "to": "worker",
+      "kind": "connects-to",
+      "description": "HTTPS for the page; WebSocket (wss) GET api/rooms/CODE/ws, kept open with a ping every 25 s."
+    },
+    {
+      "from": "worker",
+      "to": "room",
+      "kind": "connects-to",
+      "description": "Durable Object binding ROOMS: POST /create, and /ws with the browser's upgrade passed through."
+    },
+    {
+      "from": "room",
+      "to": "room-storage",
+      "kind": "connects-to",
+      "description": "ctx.storage: get, put, setAlarm, deleteAll."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS (entrypoint Internal), only to decide who may start a room."
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/limitations.schema.json",
+  "kind": "limitations",
+  "title": "Laumufarþegi Worker limitations",
+  "folder": "games/laumufarthegi/worker",
+  "entities": [
+    {
+      "id": "rooms-are-temporary",
+      "title": "A room is gone a day after its last change",
+      "summary": "Rooms keep no history: a room nobody has changed for 24 hours deletes its storage, names and scores included, and its link stops working.",
+      "impact": "An old link, say one still in a Teams chat, says the game no longer exists; the host starts a new room and shares the new link.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "IDLE_MS"
+        },
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.alarm"
+        },
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "connect"
+        }
+      ]
+    },
+    {
+      "id": "code-is-the-key",
+      "title": "Knowing a room's code is enough to join it",
+      "summary": "Joining needs no sign-in: anyone with the link or the five letters may take a free seat, up to ten players.",
+      "impact": "A link that travels further than intended lets strangers in; the host can remove them (once any round they are playing is over), but nothing stops them joining again under another name.",
+      "workaround": "Start a new room and share its link only with the intended players.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "openSocket"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "addPlayer"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "act"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/laumufarthegi/.dev/decisions.json",
+          "entityId": "invited-hosts-open-link"
+        }
+      ]
+    }
+  ]
+}

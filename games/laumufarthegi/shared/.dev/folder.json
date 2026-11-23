@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Laumufarþegi shared code",
+  "folder": "games/laumufarthegi/shared",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Laumufarþegi shared code",
+      "summary": "The rules, the WebSocket protocol and the topic list, imported by both the Worker and the browser page.",
+      "purpose": "game.ts holds the rules as pure functions over a room's State (the Phase machine, the scoring and the per-player view); protocol.ts the messages between the page and the room and the game's path; topics.ts the topic grids bundled from games/word-lists. Keeping them here lets the Room Durable Object decide everything while the page uses the same types and limits.",
+      "boundaries": [
+        "Nothing here touches the network, the clock or a random source: the Room passes in the time and random numbers, so the tests can replay any game.",
+        "The topic data belongs to games/word-lists/ and is only read here, at build time.",
+        "The page imports only types, limits and BASE from here; the rules run on the server alone."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "act"
+        },
+        {
+          "path": "games/laumufarthegi/shared/protocol.ts",
+          "symbol": "ServerMessage"
+        },
+        {
+          "path": "games/laumufarthegi/shared/topics.ts",
+          "symbol": "TOPICS"
+        },
+        {
+          "path": "games/laumufarthegi/web/app.ts"
+        }
+      ]
+    }
+  ]
+}

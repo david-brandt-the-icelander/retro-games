@@ -1,0 +1,7 @@
+# Cloudflare static-asset headers. Everything comes from this origin. The live connection to a room is a WebSocket
+# to this origin, named outright for browsers whose 'self' leaves out wss:.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; connect-src 'self' wss://icelander.net; img-src 'self' data:; style-src 'self'; font-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()

@@ -1,0 +1,147 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "Laumufarþegi Worker settings",
+  "folder": "games/laumufarthegi/worker",
+  "entities": [
+    {
+      "id": "host-sign-in",
+      "title": "Who may start a room",
+      "summary": "\"none\" lets anyone start a room; any other value needs icelander.net's sign-in with the HOST_ROLE role. Joining a room never needs a sign-in.",
+      "key": "HOST_SIGN_IN",
+      "type": "string var",
+      "default": "Unset means the sign-in is required; wrangler.jsonc sets \"required\".",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "per-use",
+      "validation": "Compared with \"none\" only.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "Env"
+        },
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "mayHost"
+        },
+        {
+          "path": "games/laumufarthegi/wrangler.jsonc",
+          "symbol": "vars"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "implements",
+          "path": "games/laumufarthegi/.dev/decisions.json",
+          "entityId": "invited-hosts-open-link"
+        }
+      ]
+    },
+    {
+      "id": "host-role",
+      "title": "Host role",
+      "summary": "The role a host must hold to start a room when HOST_SIGN_IN is not \"none\". wrangler.jsonc sets games:laumufarthegi, an invite-only role declared in the icelander.net repository (accounts/src/config.js) and granted at icelander.net/private/admin.",
+      "key": "HOST_ROLE",
+      "default": "Unset means games:play, which every signed-in player holds.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "mayHost"
+        },
+        {
+          "path": "games/laumufarthegi/wrangler.jsonc",
+          "symbol": "vars.HOST_ROLE"
+        }
+      ],
+      "type": "string var",
+      "sensitive": false
+    },
+    {
+      "id": "dev-login",
+      "title": "Stand-in sign-in",
+      "summary": "\"1\" turns on the sign-in library's stand-in sign-in, which the library honours only on a local host.",
+      "key": "DEV_LOGIN",
+      "type": "string var",
+      "default": "Unset: off.",
+      "sensitive": false,
+      "scope": "per Worker; local development only",
+      "takesEffect": "per-use",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "shared"
+        },
+        {
+          "path": "vendor/icelander-auth/index.js",
+          "symbol": "createAuth"
+        }
+      ]
+    },
+    {
+      "id": "accounts",
+      "title": "Login service binding and keys",
+      "summary": "The service binding to icelander.net's login service and its public keys; without both, nobody is signed in and only HOST_SIGN_IN none lets anyone start a room.",
+      "key": "ACCOUNTS, ACCOUNTS_JWKS",
+      "type": "service binding (entrypoint Internal); JSON string var of public keys",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/wrangler.jsonc",
+          "symbol": "services"
+        },
+        {
+          "path": "vendor/icelander-auth/index.js",
+          "symbol": "createAuth"
+        }
+      ]
+    },
+    {
+      "id": "rooms",
+      "title": "Rooms binding",
+      "summary": "The Durable Object namespace of the Room class, one object per room code (idFromName).",
+      "key": "ROOMS",
+      "type": "Durable Object binding",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/wrangler.jsonc",
+          "symbol": "durable_objects"
+        },
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "Env"
+        }
+      ]
+    },
+    {
+      "id": "assets",
+      "title": "Static assets",
+      "summary": "The built page in dist/; the Worker runs first for the page itself and api/*, everything else is served as a file.",
+      "key": "ASSETS",
+      "type": "assets binding",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/wrangler.jsonc",
+          "symbol": "assets"
+        },
+        {
+          "path": "games/laumufarthegi/build.mjs",
+          "symbol": "SITE"
+        }
+      ]
+    }
+  ]
+}

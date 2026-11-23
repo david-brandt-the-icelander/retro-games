@@ -1,0 +1,5385 @@
+{
+ "leyfi": "CC BY-SA 4.0. Frumsamið efni; dæmi staðfest í gagnasöfnum Stofnunar Árna Magnússonar (málið.is).",
+ "flokkar": [
+  {
+   "flokkur_texti": "Eitthvað kringlótt",
+   "daemi": [
+    "bolti",
+    "hringur",
+    "diskur",
+    "klukka",
+    "mynt",
+    "pítsa",
+    "hjól",
+    "appelsína"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað gult",
+   "daemi": [
+    "banani",
+    "sítróna",
+    "sól",
+    "ostur",
+    "eggjarauða",
+    "fífill",
+    "sinnep",
+    "kanarífugl"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað rautt",
+   "daemi": [
+    "jarðarber",
+    "tómatur",
+    "rós",
+    "kirsuber",
+    "slökkviliðsbíll",
+    "jólasveinahúfa",
+    "paprika",
+    "varalitur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað blátt",
+   "daemi": [
+    "himinn",
+    "sjór",
+    "bláber",
+    "gallabuxur",
+    "gleym-mér-ei",
+    "safír",
+    "bláklukka",
+    "páfugl"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað grænt",
+   "daemi": [
+    "gras",
+    "froskur",
+    "agúrka",
+    "laufblað",
+    "kál",
+    "pera",
+    "baun",
+    "mosi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað hvítt",
+   "daemi": [
+    "snjór",
+    "mjólk",
+    "ský",
+    "sykur",
+    "salt",
+    "tönn",
+    "ísbjörn",
+    "skyr"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað mjúkt",
+   "daemi": [
+    "koddi",
+    "sæng",
+    "bangsi",
+    "ull",
+    "æðardúnn",
+    "svampur",
+    "flísteppi",
+    "kettlingur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað hart",
+   "daemi": [
+    "steinn",
+    "demantur",
+    "járn",
+    "hnetuskel",
+    "múrsteinn",
+    "hamar",
+    "klaki",
+    "gler"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað kalt",
+   "daemi": [
+    "snjór",
+    "ís",
+    "ísmoli",
+    "jökull",
+    "frostpinni",
+    "frystikista",
+    "hrím",
+    "grýlukerti"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað heitt",
+   "daemi": [
+    "sól",
+    "eldur",
+    "ofn",
+    "kaffi",
+    "hver",
+    "hraun",
+    "kakó",
+    "heitur pottur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem flýgur",
+   "daemi": [
+    "fugl",
+    "flugvél",
+    "þyrla",
+    "flugdreki",
+    "fiðrildi",
+    "býfluga",
+    "loftbelgur",
+    "dróni"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem flýtur",
+   "daemi": [
+    "korkur",
+    "bátur",
+    "bauja",
+    "ísjaki",
+    "kútur",
+    "gúmmíönd",
+    "laufblað",
+    "vindsæng"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á hjólum",
+   "daemi": [
+    "bíll",
+    "reiðhjól",
+    "strætó",
+    "hjólabretti",
+    "innkaupakerra",
+    "barnavagn",
+    "ferðataska",
+    "lest"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað með takka",
+   "daemi": [
+    "fjarstýring",
+    "lyklaborð",
+    "lyfta",
+    "reiknivél",
+    "örbylgjuofn",
+    "dyrabjalla",
+    "þvottavél",
+    "harmonikka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem opnast",
+   "daemi": [
+    "hurð",
+    "gluggi",
+    "bók",
+    "krukka",
+    "kassi",
+    "regnhlíf",
+    "ísskápur",
+    "taska"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem ilmar",
+   "daemi": [
+    "rós",
+    "nýbakað brauð",
+    "kaffi",
+    "ilmvatn",
+    "sápa",
+    "kanill",
+    "jólatré",
+    "vanilla"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað oddhvasst",
+   "daemi": [
+    "nál",
+    "blýantur",
+    "títuprjónn",
+    "kaktus",
+    "nagli",
+    "píla",
+    "horn",
+    "gaffall"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað úr tré",
+   "daemi": [
+    "borð",
+    "stóll",
+    "blýantur",
+    "sleif",
+    "girðing",
+    "eldspýta",
+    "fiðla",
+    "bókahilla"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað úr plasti",
+   "daemi": [
+    "plastpoki",
+    "kubbur",
+    "tannbursti",
+    "vatnsbrúsi",
+    "greiða",
+    "fata",
+    "sogrör",
+    "plastglas"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað úr gleri",
+   "daemi": [
+    "gluggi",
+    "glas",
+    "flaska",
+    "spegill",
+    "ljósapera",
+    "gleraugu",
+    "krukka",
+    "vasi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað úr ull",
+   "daemi": [
+    "lopapeysa",
+    "vettlingur",
+    "sokkur",
+    "húfa",
+    "trefill",
+    "teppi",
+    "sjal",
+    "ullarnærföt"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í eldhúsinu",
+   "daemi": [
+    "pottur",
+    "panna",
+    "ísskápur",
+    "eldavél",
+    "sleif",
+    "gaffall",
+    "brauðrist",
+    "kaffivél"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á baðherberginu",
+   "daemi": [
+    "tannbursti",
+    "sápa",
+    "handklæði",
+    "spegill",
+    "sturta",
+    "baðkar",
+    "klósett",
+    "hárþurrka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í verkfærakassanum",
+   "daemi": [
+    "hamar",
+    "skrúfjárn",
+    "sög",
+    "tommustokkur",
+    "töng",
+    "nagli",
+    "skrúfa",
+    "hallamál"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Leikfang",
+   "daemi": [
+    "dúkka",
+    "bolti",
+    "kubbur",
+    "bangsi",
+    "flugdreki",
+    "jójó",
+    "púsluspil",
+    "leikfangabíll"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Flík",
+   "daemi": [
+    "peysa",
+    "buxur",
+    "úlpa",
+    "skyrta",
+    "kjóll",
+    "pils",
+    "jakki",
+    "stuttermabolur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Skófatnaður",
+   "daemi": [
+    "stígvél",
+    "strigaskór",
+    "sandali",
+    "inniskór",
+    "gönguskór",
+    "takkaskór",
+    "klossi",
+    "spariskór"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Farartæki",
+   "daemi": [
+    "bíll",
+    "strætó",
+    "lest",
+    "flugvél",
+    "bátur",
+    "mótorhjól",
+    "þyrla",
+    "dráttarvél"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Raftæki",
+   "daemi": [
+    "sjónvarp",
+    "tölva",
+    "ísskápur",
+    "ryksuga",
+    "hárþurrka",
+    "brauðrist",
+    "þvottavél",
+    "farsími"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Húsgagn",
+   "daemi": [
+    "sófi",
+    "rúm",
+    "borð",
+    "stóll",
+    "fataskápur",
+    "bókahilla",
+    "kommóða",
+    "hægindastóll"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í vasanum",
+   "daemi": [
+    "lykill",
+    "sími",
+    "veski",
+    "vasaklútur",
+    "tyggjó",
+    "smápeningur",
+    "kvittun",
+    "varasalvi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem lýsir",
+   "daemi": [
+    "kerti",
+    "lampi",
+    "vasaljós",
+    "sól",
+    "viti",
+    "jólasería",
+    "norðurljós",
+    "ljósapera"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað agnarsmátt",
+   "daemi": [
+    "sandkorn",
+    "maur",
+    "fræ",
+    "rykkorn",
+    "snjókorn",
+    "saltkorn",
+    "perla",
+    "fló"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað risastórt",
+   "daemi": [
+    "fjall",
+    "steypireyður",
+    "jökull",
+    "skýjakljúfur",
+    "skemmtiferðaskip",
+    "flugvél",
+    "risaeðla",
+    "eldfjall"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað brothætt",
+   "daemi": [
+    "egg",
+    "glas",
+    "spegill",
+    "vasi",
+    "ljósapera",
+    "diskur",
+    "gluggarúða",
+    "jólakúla"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað með fjórum fótum",
+   "daemi": [
+    "borð",
+    "stóll",
+    "hundur",
+    "köttur",
+    "hestur",
+    "rúm",
+    "kýr",
+    "kind"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem bráðnar",
+   "daemi": [
+    "ís",
+    "snjór",
+    "smjör",
+    "súkkulaði",
+    "kerti",
+    "jökull",
+    "klaki",
+    "ostur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem hringir",
+   "daemi": [
+    "sími",
+    "dyrabjalla",
+    "vekjaraklukka",
+    "kirkjuklukka",
+    "skólabjalla",
+    "hjólabjalla",
+    "eggjaklukka",
+    "kúabjalla"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað klístrað",
+   "daemi": [
+    "hunang",
+    "lím",
+    "tyggjó",
+    "síróp",
+    "límband",
+    "karamella",
+    "trjákvoða",
+    "sulta"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem maður safnar",
+   "daemi": [
+    "frímerki",
+    "mynt",
+    "steinn",
+    "skel",
+    "servíetta",
+    "límmiði",
+    "póstkort",
+    "hljómplata"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "hlutir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Fugl",
+   "daemi": [
+    "lundi",
+    "hrafn",
+    "örn",
+    "kría",
+    "rjúpa",
+    "gæs",
+    "máfur",
+    "ugla"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskur fugl",
+   "daemi": [
+    "lóa",
+    "spói",
+    "hrossagaukur",
+    "tjaldur",
+    "álft",
+    "maríuerla",
+    "þröstur",
+    "sólskríkja"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Sjófugl",
+   "daemi": [
+    "lundi",
+    "fýll",
+    "súla",
+    "langvía",
+    "álka",
+    "skarfur",
+    "æðarfugl",
+    "kría"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Fiskur",
+   "daemi": [
+    "þorskur",
+    "ýsa",
+    "lax",
+    "síld",
+    "ufsi",
+    "karfi",
+    "steinbítur",
+    "lúða"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Spendýr",
+   "daemi": [
+    "hundur",
+    "köttur",
+    "hestur",
+    "kýr",
+    "refur",
+    "hvalur",
+    "mús",
+    "fíll"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Gæludýr",
+   "daemi": [
+    "hundur",
+    "köttur",
+    "kanína",
+    "hamstur",
+    "gullfiskur",
+    "páfagaukur",
+    "naggrís",
+    "skjaldbaka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr á sveitabæ",
+   "daemi": [
+    "kýr",
+    "kind",
+    "hestur",
+    "svín",
+    "geit",
+    "hæna",
+    "önd",
+    "gæs"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr í Afríku",
+   "daemi": [
+    "ljón",
+    "fíll",
+    "gíraffi",
+    "sebrahestur",
+    "nashyrningur",
+    "flóðhestur",
+    "blettatígur",
+    "górilla"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr í sjónum",
+   "daemi": [
+    "hvalur",
+    "selur",
+    "hákarl",
+    "krossfiskur",
+    "marglytta",
+    "kolkrabbi",
+    "höfrungur",
+    "humar"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Skordýr",
+   "daemi": [
+    "fluga",
+    "maur",
+    "býfluga",
+    "fiðrildi",
+    "maríubjalla",
+    "geitungur",
+    "engispretta",
+    "járnsmiður"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Blóm",
+   "daemi": [
+    "rós",
+    "túlípani",
+    "fífill",
+    "sóley",
+    "fjóla",
+    "baldursbrá",
+    "gleym-mér-ei",
+    "sólblóm"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskt villiblóm",
+   "daemi": [
+    "holtasóley",
+    "lambagras",
+    "blóðberg",
+    "eyrarrós",
+    "hrafnaklukka",
+    "lúpína",
+    "geldingahnappur",
+    "bláklukka"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Tré",
+   "daemi": [
+    "birki",
+    "reynir",
+    "ösp",
+    "greni",
+    "fura",
+    "eik",
+    "lerki",
+    "víðir"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr sem syndir",
+   "daemi": [
+    "selur",
+    "höfrungur",
+    "önd",
+    "mörgæs",
+    "froskur",
+    "otur",
+    "skjaldbaka",
+    "ísbjörn"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr sem hoppar",
+   "daemi": [
+    "kengúra",
+    "froskur",
+    "kanína",
+    "engispretta",
+    "fló",
+    "lamb",
+    "héri",
+    "geit"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr með hala",
+   "daemi": [
+    "hundur",
+    "köttur",
+    "mús",
+    "hestur",
+    "api",
+    "refur",
+    "eðla",
+    "íkorni"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr á norðurslóðum",
+   "daemi": [
+    "ísbjörn",
+    "rostungur",
+    "tófa",
+    "hreindýr",
+    "náhvalur",
+    "snæugla",
+    "sauðnaut",
+    "selur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr í frumskóginum",
+   "daemi": [
+    "api",
+    "tígrisdýr",
+    "páfagaukur",
+    "slanga",
+    "jagúar",
+    "letidýr",
+    "froskur",
+    "órangútan"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Rándýr",
+   "daemi": [
+    "ljón",
+    "úlfur",
+    "refur",
+    "hákarl",
+    "örn",
+    "ísbjörn",
+    "tígrisdýr",
+    "ugla"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Verpir eggjum",
+   "daemi": [
+    "hæna",
+    "önd",
+    "krókódíll",
+    "skjaldbaka",
+    "slanga",
+    "strútur",
+    "froskur",
+    "nefdýr"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Stórt dýr",
+   "daemi": [
+    "fíll",
+    "hvalur",
+    "gíraffi",
+    "nashyrningur",
+    "flóðhestur",
+    "björn",
+    "elgur",
+    "úlfaldi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Lítið dýr",
+   "daemi": [
+    "mús",
+    "maur",
+    "hamstur",
+    "kólibrífugl",
+    "froskur",
+    "snigill",
+    "músarrindill",
+    "mýfluga"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Vex í garðinum",
+   "daemi": [
+    "gras",
+    "rós",
+    "kartafla",
+    "rabarbari",
+    "birki",
+    "fífill",
+    "jarðarber",
+    "graslaukur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr á Íslandi",
+   "daemi": [
+    "refur",
+    "hreindýr",
+    "lundi",
+    "selur",
+    "minkur",
+    "hestur",
+    "kind",
+    "lax"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Hvalur",
+   "daemi": [
+    "steypireyður",
+    "hnúfubakur",
+    "búrhvalur",
+    "háhyrningur",
+    "hrefna",
+    "langreyður",
+    "grindhvalur",
+    "náhvalur"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Hundategund",
+   "daemi": [
+    "íslenskur fjárhundur",
+    "labrador",
+    "púðluhundur",
+    "schäfer",
+    "dalmatíuhundur",
+    "bolabítur",
+    "chihuahua",
+    "border collie"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýraungi",
+   "daemi": [
+    "lamb",
+    "kálfur",
+    "folald",
+    "hvolpur",
+    "kettlingur",
+    "kiðlingur",
+    "grís",
+    "ungi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Karldýr",
+   "daemi": [
+    "hrútur",
+    "naut",
+    "hani",
+    "steggur",
+    "stóðhestur",
+    "göltur",
+    "hafur",
+    "högni"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr með horn",
+   "daemi": [
+    "naut",
+    "hrútur",
+    "geit",
+    "hreindýr",
+    "nashyrningur",
+    "elgur",
+    "sauðnaut",
+    "einhyrningur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr með skel",
+   "daemi": [
+    "snigill",
+    "skjaldbaka",
+    "krabbi",
+    "kræklingur",
+    "humar",
+    "ostra",
+    "kuðungur",
+    "hörpuskel"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Svarthvítt dýr",
+   "daemi": [
+    "sebrahestur",
+    "panda",
+    "mörgæs",
+    "háhyrningur",
+    "dalmatíuhundur",
+    "skunkur",
+    "tjaldur",
+    "greifingi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Kryddjurt",
+   "daemi": [
+    "steinselja",
+    "basilíka",
+    "mynta",
+    "dill",
+    "rósmarín",
+    "timían",
+    "salvía",
+    "kóríander"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Vex í skóginum",
+   "daemi": [
+    "sveppur",
+    "mosi",
+    "birki",
+    "burkni",
+    "köngull",
+    "greni",
+    "bláber",
+    "lyng"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr í skóginum",
+   "daemi": [
+    "refur",
+    "dádýr",
+    "íkorni",
+    "björn",
+    "ugla",
+    "úlfur",
+    "broddgöltur",
+    "elgur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýrahljóð",
+   "daemi": [
+    "hnegg",
+    "jarm",
+    "gelt",
+    "mjálm",
+    "baul",
+    "hrín",
+    "kvak",
+    "urr"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýraheimili",
+   "daemi": [
+    "hreiður",
+    "greni",
+    "býflugnabú",
+    "fjós",
+    "hesthús",
+    "hundakofi",
+    "fiskabúr",
+    "maurabú"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Hluti af plöntu",
+   "daemi": [
+    "rót",
+    "stöngull",
+    "laufblað",
+    "blóm",
+    "fræ",
+    "börkur",
+    "grein",
+    "þyrnir"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Lifir í ferskvatni",
+   "daemi": [
+    "lax",
+    "urriði",
+    "bleikja",
+    "önd",
+    "álft",
+    "áll",
+    "hornsíli",
+    "otur"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Grasbítur",
+   "daemi": [
+    "kýr",
+    "kind",
+    "hestur",
+    "geit",
+    "kanína",
+    "hreindýr",
+    "gíraffi",
+    "sebrahestur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Loðið dýr",
+   "daemi": [
+    "kind",
+    "kanína",
+    "refur",
+    "björn",
+    "sauðnaut",
+    "lamadýr",
+    "hamstur",
+    "köttur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "dýr_og_jurtir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Ávöxtur",
+   "daemi": [
+    "epli",
+    "banani",
+    "appelsína",
+    "pera",
+    "vínber",
+    "ananas",
+    "mangó",
+    "kíví"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Grænmeti",
+   "daemi": [
+    "gulrót",
+    "kartafla",
+    "agúrka",
+    "tómatur",
+    "spergilkál",
+    "laukur",
+    "paprika",
+    "rófa"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Ber",
+   "daemi": [
+    "bláber",
+    "krækiber",
+    "jarðarber",
+    "hindber",
+    "rifsber",
+    "sólber",
+    "hrútaber",
+    "aðalbláber"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í ísskápnum",
+   "daemi": [
+    "mjólk",
+    "smjör",
+    "skyr",
+    "ostur",
+    "egg",
+    "sulta",
+    "appelsínusafi",
+    "skinka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Morgunmatur",
+   "daemi": [
+    "hafragrautur",
+    "morgunkorn",
+    "súrmjólk",
+    "ristað brauð",
+    "egg",
+    "jógúrt",
+    "beikon",
+    "hrökkbrauð"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Fiskréttur",
+   "daemi": [
+    "plokkfiskur",
+    "fiskibollur",
+    "fiskur í raspi",
+    "saltfiskur",
+    "fiskisúpa",
+    "sushi",
+    "gellur",
+    "ofnbakaður lax"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Sælgæti",
+   "daemi": [
+    "súkkulaði",
+    "lakkrís",
+    "brjóstsykur",
+    "karamella",
+    "hlaup",
+    "sleikjó",
+    "tyggjó",
+    "kandífloss"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Kaka",
+   "daemi": [
+    "súkkulaðikaka",
+    "gulrótarkaka",
+    "ostakaka",
+    "marengsterta",
+    "skúffukaka",
+    "vínarterta",
+    "brúnterta",
+    "afmæliskaka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Úr bakaríinu",
+   "daemi": [
+    "rúnstykki",
+    "snúður",
+    "kleina",
+    "vínarbrauð",
+    "smjördeigshorn",
+    "kringla",
+    "skonsa",
+    "sjónvarpskaka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Drykkur",
+   "daemi": [
+    "vatn",
+    "mjólk",
+    "kaffi",
+    "te",
+    "kakó",
+    "appelsínusafi",
+    "sódavatn",
+    "mjólkurhristingur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Krydd",
+   "daemi": [
+    "salt",
+    "pipar",
+    "kanill",
+    "paprikuduft",
+    "karrí",
+    "engifer",
+    "múskat",
+    "negull"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Mjólkurvara",
+   "daemi": [
+    "mjólk",
+    "skyr",
+    "ostur",
+    "smjör",
+    "rjómi",
+    "jógúrt",
+    "súrmjólk",
+    "ís"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Á pítsu",
+   "daemi": [
+    "pepperóní",
+    "sveppur",
+    "ananas",
+    "ostur",
+    "skinka",
+    "ólífa",
+    "laukur",
+    "paprika"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Álegg á brauð",
+   "daemi": [
+    "smjör",
+    "ostur",
+    "skinka",
+    "kæfa",
+    "rúllupylsa",
+    "sulta",
+    "hnetusmjör",
+    "eggjasalat"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Súpa",
+   "daemi": [
+    "kjötsúpa",
+    "tómatsúpa",
+    "sveppasúpa",
+    "aspassúpa",
+    "fiskisúpa",
+    "grænmetissúpa",
+    "kakósúpa",
+    "blómkálssúpa"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á grillið",
+   "daemi": [
+    "pylsa",
+    "hamborgari",
+    "lambalæri",
+    "maískólfur",
+    "kjúklingur",
+    "grillspjót",
+    "sveppur",
+    "banani"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eftirréttur",
+   "daemi": [
+    "ís",
+    "búðingur",
+    "ávaxtasalat",
+    "súkkulaðimús",
+    "skyrterta",
+    "eplakaka",
+    "pönnukaka",
+    "frómas"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Í nestisboxið",
+   "daemi": [
+    "samloka",
+    "epli",
+    "kex",
+    "gulrót",
+    "jógúrt",
+    "rúsínur",
+    "soðið egg",
+    "flatkaka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Hneta eða fræ",
+   "daemi": [
+    "jarðhneta",
+    "möndla",
+    "kasjúhneta",
+    "valhneta",
+    "heslihneta",
+    "pistasíuhneta",
+    "sólblómafræ",
+    "graskersfræ"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Kjöt",
+   "daemi": [
+    "lambakjöt",
+    "nautakjöt",
+    "svínakjöt",
+    "kjúklingur",
+    "hrossakjöt",
+    "hreindýrakjöt",
+    "skinka",
+    "beikon"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað súrt",
+   "daemi": [
+    "sítróna",
+    "súrmjólk",
+    "rabarbari",
+    "greipaldin",
+    "edik",
+    "súrar gúrkur",
+    "límóna",
+    "súrt slátur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað salt",
+   "daemi": [
+    "saltfiskur",
+    "snakk",
+    "popp",
+    "saltkjöt",
+    "saltlakkrís",
+    "ólífa",
+    "saltstangir",
+    "beikon"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sterkt",
+   "daemi": [
+    "chilipipar",
+    "piparrót",
+    "wasabi",
+    "sinnep",
+    "karrí",
+    "engifer",
+    "jalapeño",
+    "sterk sósa"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Sósa",
+   "daemi": [
+    "tómatsósa",
+    "sinnep",
+    "kokteilsósa",
+    "bernaisesósa",
+    "brún sósa",
+    "majónes",
+    "remúlaði",
+    "hvítlaukssósa"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað úr kartöflum",
+   "daemi": [
+    "franskar kartöflur",
+    "kartöflumús",
+    "kartöfluflögur",
+    "bökuð kartafla",
+    "kartöflusalat",
+    "brúnaðar kartöflur",
+    "kartöflugratín",
+    "kartöflubátar"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað úr eggjum",
+   "daemi": [
+    "eggjakaka",
+    "spælegg",
+    "marengs",
+    "majónes",
+    "eggjasalat",
+    "soðið egg",
+    "eggjahræra",
+    "pönnukaka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Á jólaborðinu",
+   "daemi": [
+    "hamborgarhryggur",
+    "rjúpa",
+    "hangikjöt",
+    "laufabrauð",
+    "waldorfsalat",
+    "uppstúfur",
+    "möndlugrautur",
+    "rauðkál"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Veitingar í afmæli",
+   "daemi": [
+    "afmæliskaka",
+    "pítsa",
+    "popp",
+    "skúffukaka",
+    "heitur brauðréttur",
+    "snakk",
+    "djús",
+    "bollakaka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Skyndibiti",
+   "daemi": [
+    "hamborgari",
+    "pítsa",
+    "pylsa",
+    "franskar kartöflur",
+    "kebab",
+    "vefja",
+    "kjúklingavængur",
+    "samloka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Erlendur réttur",
+   "daemi": [
+    "spagettí",
+    "sushi",
+    "taco",
+    "lasanja",
+    "paella",
+    "gúllas",
+    "núðlusúpa",
+    "falafel"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Brauðtegund",
+   "daemi": [
+    "rúgbrauð",
+    "flatkaka",
+    "fransbrauð",
+    "heilhveitibrauð",
+    "súrdeigsbrauð",
+    "laufabrauð",
+    "pítubrauð",
+    "snittubrauð"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Borðað með skeið",
+   "daemi": [
+    "súpa",
+    "grautur",
+    "skyr",
+    "jógúrt",
+    "ís",
+    "búðingur",
+    "morgunkorn",
+    "súrmjólk"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Borðað með höndunum",
+   "daemi": [
+    "pítsa",
+    "hamborgari",
+    "samloka",
+    "pylsa",
+    "epli",
+    "banani",
+    "kleina",
+    "popp"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað úr hveiti",
+   "daemi": [
+    "brauð",
+    "pasta",
+    "pönnukaka",
+    "kex",
+    "kaka",
+    "núðlur",
+    "kleina",
+    "vaffla"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Ofan á vöfflu",
+   "daemi": [
+    "rjómi",
+    "sulta",
+    "súkkulaði",
+    "síróp",
+    "ís",
+    "jarðarber",
+    "flórsykur",
+    "karamellusósa"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í salatið",
+   "daemi": [
+    "kál",
+    "tómatur",
+    "agúrka",
+    "paprika",
+    "laukur",
+    "fetaostur",
+    "ólífa",
+    "lárpera"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Ísbragð",
+   "daemi": [
+    "vanilla",
+    "súkkulaði",
+    "jarðarber",
+    "lakkrís",
+    "karamella",
+    "pistasía",
+    "mynta",
+    "kókos"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Sjávarréttur",
+   "daemi": [
+    "rækja",
+    "humar",
+    "kræklingur",
+    "hörpuskel",
+    "smokkfiskur",
+    "krabbi",
+    "ostra",
+    "kavíar"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað stökkt",
+   "daemi": [
+    "kex",
+    "snakk",
+    "popp",
+    "epli",
+    "gulrót",
+    "morgunkorn",
+    "laufabrauð",
+    "harðfiskur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í dós",
+   "daemi": [
+    "túnfiskur",
+    "bakaðar baunir",
+    "maís",
+    "ananas",
+    "gos",
+    "fiskibollur",
+    "sardína",
+    "kókosmjólk"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "matur",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskt fjall",
+   "daemi": [
+    "Esja",
+    "Herðubreið",
+    "Snæfell",
+    "Keilir",
+    "Kirkjufell",
+    "Súlur",
+    "Baula",
+    "Hengill"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskur bær",
+   "daemi": [
+    "Akureyri",
+    "Ísafjörður",
+    "Selfoss",
+    "Egilsstaðir",
+    "Húsavík",
+    "Vík",
+    "Höfn",
+    "Borgarnes"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslensk á",
+   "daemi": [
+    "Þjórsá",
+    "Ölfusá",
+    "Hvítá",
+    "Jökulsá á Fjöllum",
+    "Blanda",
+    "Elliðaár",
+    "Laxá",
+    "Skjálfandafljót"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskur jökull",
+   "daemi": [
+    "Vatnajökull",
+    "Langjökull",
+    "Hofsjökull",
+    "Mýrdalsjökull",
+    "Snæfellsjökull",
+    "Eyjafjallajökull",
+    "Drangajökull",
+    "Tindfjallajökull"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskur foss",
+   "daemi": [
+    "Gullfoss",
+    "Dettifoss",
+    "Goðafoss",
+    "Seljalandsfoss",
+    "Skógafoss",
+    "Svartifoss",
+    "Dynjandi",
+    "Hraunfossar"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskt eldfjall",
+   "daemi": [
+    "Hekla",
+    "Katla",
+    "Askja",
+    "Grímsvötn",
+    "Eyjafjallajökull",
+    "Krafla",
+    "Eldfell",
+    "Fagradalsfjall"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskur fjörður",
+   "daemi": [
+    "Eyjafjörður",
+    "Skagafjörður",
+    "Hvalfjörður",
+    "Seyðisfjörður",
+    "Breiðafjörður",
+    "Reyðarfjörður",
+    "Dýrafjörður",
+    "Patreksfjörður"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslensk eyja",
+   "daemi": [
+    "Heimaey",
+    "Grímsey",
+    "Viðey",
+    "Flatey",
+    "Hrísey",
+    "Surtsey",
+    "Drangey",
+    "Papey"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Höfuðborg",
+   "daemi": [
+    "París",
+    "Lundúnir",
+    "Ósló",
+    "Kaupmannahöfn",
+    "Berlín",
+    "Róm",
+    "Madríd",
+    "Stokkhólmur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Land í Evrópu",
+   "daemi": [
+    "Noregur",
+    "Danmörk",
+    "Svíþjóð",
+    "Finnland",
+    "Þýskaland",
+    "Frakkland",
+    "Spánn",
+    "Ítalía"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Land í Asíu",
+   "daemi": [
+    "Japan",
+    "Kína",
+    "Indland",
+    "Taíland",
+    "Víetnam",
+    "Suður-Kórea",
+    "Mongólía",
+    "Nepal"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Land í Afríku",
+   "daemi": [
+    "Egyptaland",
+    "Kenía",
+    "Marokkó",
+    "Suður-Afríka",
+    "Nígería",
+    "Gana",
+    "Eþíópía",
+    "Túnis"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Land í Ameríku",
+   "daemi": [
+    "Bandaríkin",
+    "Kanada",
+    "Mexíkó",
+    "Brasilía",
+    "Argentína",
+    "Kúba",
+    "Perú",
+    "Síle"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Borg í Bandaríkjunum",
+   "daemi": [
+    "New York",
+    "Los Angeles",
+    "Chicago",
+    "Boston",
+    "Miami",
+    "Seattle",
+    "Las Vegas",
+    "San Francisco"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Staður í Reykjavík",
+   "daemi": [
+    "Harpa",
+    "Perlan",
+    "Hallgrímskirkja",
+    "Laugavegur",
+    "Tjörnin",
+    "Hljómskálagarðurinn",
+    "Nauthólsvík",
+    "Öskjuhlíð"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Ferðamannastaður á Íslandi",
+   "daemi": [
+    "Þingvellir",
+    "Geysir",
+    "Gullfoss",
+    "Bláa lónið",
+    "Jökulsárlón",
+    "Reynisfjara",
+    "Ásbyrgi",
+    "Mývatn"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Haf eða sjór",
+   "daemi": [
+    "Atlantshaf",
+    "Kyrrahaf",
+    "Indlandshaf",
+    "Norður-Íshaf",
+    "Miðjarðarhaf",
+    "Eystrasalt",
+    "Norðursjór",
+    "Karíbahaf"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Frægt kennileiti",
+   "daemi": [
+    "Eiffelturninn",
+    "Frelsisstyttan",
+    "Kínamúrinn",
+    "Píramídarnir í Gísa",
+    "Big Ben",
+    "Kólosseum",
+    "Skakki turninn í Písa",
+    "Taj Mahal"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Sólarlandastaður",
+   "daemi": [
+    "Tenerife",
+    "Gran Canaria",
+    "Alicante",
+    "Mallorca",
+    "Krít",
+    "Flórída",
+    "Algarve",
+    "Benidorm"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Herbergi í húsi",
+   "daemi": [
+    "eldhús",
+    "stofa",
+    "svefnherbergi",
+    "baðherbergi",
+    "forstofa",
+    "þvottahús",
+    "bílskúr",
+    "háaloft"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Staður í bænum",
+   "daemi": [
+    "skóli",
+    "sundlaug",
+    "bókasafn",
+    "pósthús",
+    "banki",
+    "bakarí",
+    "bensínstöð",
+    "lögreglustöð"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Tegund verslunar",
+   "daemi": [
+    "matvöruverslun",
+    "bókabúð",
+    "blómabúð",
+    "fatabúð",
+    "ísbúð",
+    "leikfangabúð",
+    "fiskbúð",
+    "gleraugnaverslun"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Gististaður",
+   "daemi": [
+    "hótel",
+    "tjald",
+    "sumarbústaður",
+    "farfuglaheimili",
+    "fjallaskáli",
+    "hjólhýsi",
+    "gistiheimili",
+    "húsbíll"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Kaldur staður",
+   "daemi": [
+    "Suðurskautslandið",
+    "Grænland",
+    "Síbería",
+    "Norðurpóllinn",
+    "frystiklefi",
+    "jökull",
+    "Svalbarði",
+    "Alaska"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Heitur staður",
+   "daemi": [
+    "eyðimörk",
+    "Sahara",
+    "gufubað",
+    "hverasvæði",
+    "heitur pottur",
+    "Egyptaland",
+    "frumskógur",
+    "Kanaríeyjar"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Staður í náttúrunni",
+   "daemi": [
+    "fjara",
+    "skógur",
+    "heiði",
+    "dalur",
+    "hellir",
+    "fjall",
+    "mýri",
+    "hraun"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í sundlauginni",
+   "daemi": [
+    "heitur pottur",
+    "rennibraut",
+    "sundgleraugu",
+    "handklæði",
+    "sundhetta",
+    "kútur",
+    "sturta",
+    "gufubað"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á flugvellinum",
+   "daemi": [
+    "flugvél",
+    "vegabréf",
+    "ferðataska",
+    "færiband",
+    "fríhöfn",
+    "öryggisleit",
+    "flugturn",
+    "brottfararspjald"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í fjörunni",
+   "daemi": [
+    "skel",
+    "þari",
+    "steinn",
+    "sandur",
+    "krabbi",
+    "rekaviður",
+    "máfur",
+    "alda"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á tjaldsvæðinu",
+   "daemi": [
+    "tjald",
+    "prímus",
+    "svefnpoki",
+    "hjólhýsi",
+    "grill",
+    "vasaljós",
+    "tjaldhæll",
+    "fellihýsi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á leikvellinum",
+   "daemi": [
+    "róla",
+    "rennibraut",
+    "sandkassi",
+    "vegasalt",
+    "klifurgrind",
+    "ærslabelgur",
+    "hringekja",
+    "aparóla"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í skólanum",
+   "daemi": [
+    "tafla",
+    "kennari",
+    "skólaborð",
+    "skólabjalla",
+    "frímínútur",
+    "matsalur",
+    "íþróttasalur",
+    "stílabók"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í matvörubúðinni",
+   "daemi": [
+    "innkaupakerra",
+    "afgreiðslukassi",
+    "frystir",
+    "burðarpoki",
+    "strikamerki",
+    "verðmiði",
+    "mjólk",
+    "brauð"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á bókasafninu",
+   "daemi": [
+    "bók",
+    "bókahilla",
+    "bókasafnsskírteini",
+    "tímarit",
+    "bókavörður",
+    "myndasaga",
+    "hljóðbók",
+    "lesborð"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í geimnum",
+   "daemi": [
+    "stjarna",
+    "tungl",
+    "sól",
+    "reikistjarna",
+    "geimfar",
+    "loftsteinn",
+    "halastjarna",
+    "geimfari"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á skíðasvæðinu",
+   "daemi": [
+    "skíði",
+    "snjóbretti",
+    "skíðalyfta",
+    "sleði",
+    "skíðaskór",
+    "brekka",
+    "snjótroðari",
+    "skíðagleraugu"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í sumarbústaðnum",
+   "daemi": [
+    "heitur pottur",
+    "pallur",
+    "grill",
+    "spil",
+    "kamína",
+    "gestabók",
+    "koja",
+    "sólstóll"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á höfninni",
+   "daemi": [
+    "skip",
+    "bátur",
+    "krani",
+    "bryggja",
+    "gámur",
+    "máfur",
+    "togari",
+    "ferja"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á bensínstöðinni",
+   "daemi": [
+    "bensíndæla",
+    "pylsa",
+    "bílaþvottur",
+    "rúðuvökvi",
+    "loftdæla",
+    "rúðusköfa",
+    "kaffi",
+    "olía"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "staðir",
+   "ostadfest": [
+    "rúðusköfa"
+   ]
+  },
+  {
+   "flokkur_texti": "Á sólarströnd",
+   "daemi": [
+    "sólhlíf",
+    "sólarvörn",
+    "handklæði",
+    "sandkastali",
+    "sólgleraugu",
+    "sundföt",
+    "strandbolti",
+    "pálmatré"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "staðir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf",
+   "daemi": [
+    "kennari",
+    "læknir",
+    "bóndi",
+    "smiður",
+    "sjómaður",
+    "lögreglumaður",
+    "kokkur",
+    "rafvirki"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf sem er unnið úti",
+   "daemi": [
+    "bóndi",
+    "sjómaður",
+    "garðyrkjumaður",
+    "landvörður",
+    "bréfberi",
+    "leiðsögumaður",
+    "skógarvörður",
+    "byggingaverkamaður"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf með dýrum",
+   "daemi": [
+    "dýralæknir",
+    "bóndi",
+    "tamningamaður",
+    "hundaþjálfari",
+    "smali",
+    "reiðkennari",
+    "fuglafræðingur",
+    "hundasnyrtir"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf í skóla",
+   "daemi": [
+    "kennari",
+    "skólastjóri",
+    "húsvörður",
+    "skólaliði",
+    "matráður",
+    "námsráðgjafi",
+    "bókasafnsfræðingur",
+    "stuðningsfulltrúi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf tengt flugi",
+   "daemi": [
+    "flugmaður",
+    "flugfreyja",
+    "flugþjónn",
+    "flugumferðarstjóri",
+    "flugvirki",
+    "flugstjóri",
+    "hlaðmaður",
+    "tollvörður"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 3,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Fólk á íþróttavelli",
+   "daemi": [
+    "markmaður",
+    "dómari",
+    "þjálfari",
+    "sóknarmaður",
+    "varnarmaður",
+    "fyrirliði",
+    "línuvörður",
+    "áhorfandi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Fjölskyldumeðlimur",
+   "daemi": [
+    "mamma",
+    "pabbi",
+    "amma",
+    "afi",
+    "systir",
+    "bróðir",
+    "frændi",
+    "frænka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Iðnaðarmaður",
+   "daemi": [
+    "smiður",
+    "rafvirki",
+    "pípari",
+    "múrari",
+    "málari",
+    "járnsmiður",
+    "blikksmiður",
+    "dúklagningamaður"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf sem endar á '-ari'",
+   "daemi": [
+    "kennari",
+    "bakari",
+    "málari",
+    "dómari",
+    "pípari",
+    "rakari",
+    "söngvari",
+    "leikari"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf sem endar á '-maður'",
+   "daemi": [
+    "sjómaður",
+    "lögreglumaður",
+    "slökkviliðsmaður",
+    "blaðamaður",
+    "flugmaður",
+    "leiðsögumaður",
+    "tamningamaður",
+    "sölumaður"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf við sjónvarp",
+   "daemi": [
+    "fréttamaður",
+    "þáttastjórnandi",
+    "myndatökumaður",
+    "leikari",
+    "veðurfræðingur",
+    "förðunarfræðingur",
+    "leikstjóri",
+    "hljóðmaður"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf í einkennisbúningi",
+   "daemi": [
+    "lögreglumaður",
+    "slökkviliðsmaður",
+    "flugmaður",
+    "flugfreyja",
+    "kokkur",
+    "bréfberi",
+    "öryggisvörður",
+    "hjúkrunarfræðingur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf á veitingastað",
+   "daemi": [
+    "kokkur",
+    "þjónn",
+    "uppvaskari",
+    "yfirþjónn",
+    "pítsubakari",
+    "sendill",
+    "gjaldkeri",
+    "matreiðslumeistari"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Kóngafólk og aðall",
+   "daemi": [
+    "konungur",
+    "drottning",
+    "prins",
+    "prinsessa",
+    "keisari",
+    "greifi",
+    "hertogi",
+    "riddari"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf unnið á nóttunni",
+   "daemi": [
+    "næturvörður",
+    "lögreglumaður",
+    "bakari",
+    "slökkviliðsmaður",
+    "hjúkrunarfræðingur",
+    "leigubílstjóri",
+    "blaðberi",
+    "flugmaður"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Einhver sem stýrir farartæki",
+   "daemi": [
+    "strætóbílstjóri",
+    "leigubílstjóri",
+    "vörubílstjóri",
+    "flugmaður",
+    "skipstjóri",
+    "lestarstjóri",
+    "gröfumaður",
+    "sjúkraflutningamaður"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Tegund listamanns",
+   "daemi": [
+    "listmálari",
+    "myndhöggvari",
+    "söngvari",
+    "dansari",
+    "leikari",
+    "rithöfundur",
+    "ljósmyndari",
+    "tónskáld"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Hljóðfæraleikari",
+   "daemi": [
+    "trommari",
+    "gítarleikari",
+    "píanóleikari",
+    "fiðluleikari",
+    "bassaleikari",
+    "sellóleikari",
+    "flautuleikari",
+    "organisti"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf sem endar á '-fræðingur'",
+   "daemi": [
+    "jarðfræðingur",
+    "sagnfræðingur",
+    "veðurfræðingur",
+    "líffræðingur",
+    "stærðfræðingur",
+    "hagfræðingur",
+    "sálfræðingur",
+    "fornleifafræðingur"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf tengt sjónum",
+   "daemi": [
+    "sjómaður",
+    "skipstjóri",
+    "stýrimaður",
+    "hafnarvörður",
+    "kafari",
+    "vélstjóri",
+    "netagerðarmaður",
+    "hafnsögumaður"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Einhver í brúðkaupi",
+   "daemi": [
+    "brúður",
+    "brúðgumi",
+    "prestur",
+    "svaramaður",
+    "brúðarmey",
+    "ljósmyndari",
+    "gestur",
+    "hringaberi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Einhver í sirkus",
+   "daemi": [
+    "trúður",
+    "töframaður",
+    "línudansari",
+    "loftfimleikamaður",
+    "sirkusstjóri",
+    "jafnvægislistamaður",
+    "eldgleypir",
+    "kraftajötunn"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 3,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eiginleiki í fari fólks",
+   "daemi": [
+    "glaðlyndur",
+    "feiminn",
+    "hugrakkur",
+    "latur",
+    "duglegur",
+    "forvitinn",
+    "þrjóskur",
+    "hjálpsamur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Tilfinning",
+   "daemi": [
+    "gleði",
+    "sorg",
+    "reiði",
+    "ótti",
+    "öfund",
+    "spenna",
+    "leiði",
+    "stolt"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf sem byrjar á 'S'",
+   "daemi": [
+    "smiður",
+    "sjómaður",
+    "skipstjóri",
+    "söngvari",
+    "slökkviliðsmaður",
+    "sendill",
+    "skólastjóri",
+    "sálfræðingur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf sem byrjar á 'L'",
+   "daemi": [
+    "leikari",
+    "læknir",
+    "lögreglumaður",
+    "ljósmyndari",
+    "leikstjóri",
+    "lyfjafræðingur",
+    "landvörður",
+    "leiðsögumaður"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf sem byrjar á 'B'",
+   "daemi": [
+    "bóndi",
+    "bakari",
+    "bréfberi",
+    "bílstjóri",
+    "blaðamaður",
+    "bókavörður",
+    "bifvélavirki",
+    "blómasali"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Notar skæri í vinnunni",
+   "daemi": [
+    "hárgreiðslukona",
+    "rakari",
+    "klæðskeri",
+    "saumakona",
+    "garðyrkjumaður",
+    "leikskólakennari",
+    "blómaskreytir",
+    "bókbindari"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf tengt bókum",
+   "daemi": [
+    "rithöfundur",
+    "bókavörður",
+    "útgefandi",
+    "prófarkalesari",
+    "þýðandi",
+    "myndskreytir",
+    "bóksali",
+    "ritstjóri"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Einhver sem bankar upp á",
+   "daemi": [
+    "bréfberi",
+    "pípari",
+    "rafvirki",
+    "nágranni",
+    "pítsusendill",
+    "jólasveinn",
+    "blaðberi",
+    "gestur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Starf sem endar á '-stjóri'",
+   "daemi": [
+    "skipstjóri",
+    "skólastjóri",
+    "forstjóri",
+    "bæjarstjóri",
+    "verkstjóri",
+    "leikstjóri",
+    "hljómsveitarstjóri",
+    "ritstjóri"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 2,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Tegund íþróttamanns",
+   "daemi": [
+    "fótboltamaður",
+    "handboltamaður",
+    "sundmaður",
+    "skíðamaður",
+    "kylfingur",
+    "hlaupari",
+    "glímumaður",
+    "körfuboltamaður"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "fólk_og_störf",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskur jólasiður",
+   "daemi": [
+    "laufabrauð",
+    "skórinn í glugganum",
+    "möndlugrautur",
+    "jólabókaflóðið",
+    "skata á Þorláksmessu",
+    "aðventukrans",
+    "jólaboð",
+    "smákökubakstur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Þjóðsagnavera",
+   "daemi": [
+    "álfur",
+    "huldufólk",
+    "tröll",
+    "nykur",
+    "marbendill",
+    "skoffín",
+    "fjörulalli",
+    "nátttröll"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Persóna úr Íslendingasögu",
+   "daemi": [
+    "Gunnar á Hlíðarenda",
+    "Njáll Þorgeirsson",
+    "Hallgerður langbrók",
+    "Egill Skallagrímsson",
+    "Grettir sterki",
+    "Guðrún Ósvífursdóttir",
+    "Kjartan Ólafsson",
+    "Gísli Súrsson"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslendingasaga",
+   "daemi": [
+    "Njáls saga",
+    "Egils saga",
+    "Laxdæla saga",
+    "Grettis saga",
+    "Gísla saga Súrssonar",
+    "Hrafnkels saga Freysgoða",
+    "Eyrbyggja saga",
+    "Vatnsdæla saga"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskt karlmannsnafn",
+   "daemi": [
+    "Jón",
+    "Guðmundur",
+    "Sigurður",
+    "Gunnar",
+    "Ólafur",
+    "Einar",
+    "Kristján",
+    "Magnús"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskt kvenmannsnafn",
+   "daemi": [
+    "Guðrún",
+    "Anna",
+    "Sigríður",
+    "Kristín",
+    "Margrét",
+    "Helga",
+    "Sigrún",
+    "Ingibjörg"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskt nafn sem byrjar á 'Þ'",
+   "daemi": [
+    "Þór",
+    "Þórður",
+    "Þorsteinn",
+    "Þórunn",
+    "Þóra",
+    "Þorgerður",
+    "Þröstur",
+    "Þórhildur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskt gælunafn",
+   "daemi": [
+    "Siggi",
+    "Gunna",
+    "Nonni",
+    "Jói",
+    "Dísa",
+    "Stína",
+    "Palli",
+    "Kalli"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð yfir veður",
+   "daemi": [
+    "rok",
+    "gola",
+    "stormur",
+    "logn",
+    "slydda",
+    "súld",
+    "hríð",
+    "skafrenningur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð yfir snjó",
+   "daemi": [
+    "mjöll",
+    "fönn",
+    "hjarn",
+    "skafl",
+    "lausamjöll",
+    "krapi",
+    "slabb",
+    "hundslappadrífa"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Litur á íslenskum hesti",
+   "daemi": [
+    "rauður",
+    "brúnn",
+    "jarpur",
+    "grár",
+    "leirljós",
+    "bleikur",
+    "skjóttur",
+    "moldóttur"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Merkisdagur á Íslandi",
+   "daemi": [
+    "17. júní",
+    "sumardagurinn fyrsti",
+    "bolludagur",
+    "sprengidagur",
+    "öskudagur",
+    "bóndadagur",
+    "konudagur",
+    "Þorláksmessa"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á gamlárskvöld",
+   "daemi": [
+    "flugeldar",
+    "brenna",
+    "Áramótaskaupið",
+    "stjörnuljós",
+    "áramótaheit",
+    "niðurtalning",
+    "blys",
+    "áramótahattur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á 17. júní",
+   "daemi": [
+    "fáni",
+    "blaðra",
+    "skrúðganga",
+    "fjallkonan",
+    "lúðrasveit",
+    "hoppukastali",
+    "andlitsmálning",
+    "kandíflos"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskur málsháttur",
+   "daemi": [
+    "Margur er knár þótt hann sé smár",
+    "Sjaldan er ein báran stök",
+    "Oft er í holti heyrandi nær",
+    "Hver er sinnar gæfu smiður",
+    "Fall er fararheill",
+    "Betri er krókur en kelda",
+    "Allt er þegar þrennt er",
+    "Lengi býr að fyrstu gerð"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskt barnalag",
+   "daemi": [
+    "Krummi svaf í klettagjá",
+    "Fljúga hvítu fiðrildin",
+    "Bí bí og blaka",
+    "Í skóginum stóð kofi einn",
+    "Höfuð, herðar, hné og tær",
+    "Ein ég sit og sauma",
+    "Afi minn fór á honum Rauð",
+    "Upp á grænum, grænum himinháum hól"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Jólalag",
+   "daemi": [
+    "Jólasveinar einn og átta",
+    "Jólasveinar ganga um gólf",
+    "Bráðum koma blessuð jólin",
+    "Skreytum hús með greinum",
+    "Ég sá mömmu kyssa jólasvein",
+    "Jólasveinninn minn",
+    "Nú skal segja",
+    "Hátíð fer að höndum ein"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á þorrablóti",
+   "daemi": [
+    "harðfiskur",
+    "hákarl",
+    "svið",
+    "trog",
+    "annáll",
+    "fjöldasöngur",
+    "minni kvenna",
+    "sviðasulta"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 2,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Útileikur barna",
+   "daemi": [
+    "fallin spýta",
+    "eina króna",
+    "parís",
+    "snú snú",
+    "teygjutvist",
+    "brennibolti",
+    "stórfiskaleikur",
+    "feluleikur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslenskt náttúrufyrirbæri",
+   "daemi": [
+    "hver",
+    "goshver",
+    "jökull",
+    "foss",
+    "hraun",
+    "eldgos",
+    "norðurljós",
+    "miðnætursól"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem ferðamenn kaupa",
+   "daemi": [
+    "lopapeysa",
+    "lundabangsi",
+    "harðfiskur",
+    "lakkrís",
+    "póstkort",
+    "hraunmoli",
+    "víkingahjálmur",
+    "ullarsokkar"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað að gera í sumarfríi",
+   "daemi": [
+    "útilega",
+    "ættarmót",
+    "keyra hringinn",
+    "sumarbústaður",
+    "veiða í á",
+    "ganga á fjall",
+    "fara í sund",
+    "sólarlandaferð"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íslensk bæjarhátíð",
+   "daemi": [
+    "Fiskidagurinn mikli",
+    "Menningarnótt",
+    "Ljósanótt",
+    "Írskir dagar",
+    "Mærudagar",
+    "Humarhátíð",
+    "Franskir dagar",
+    "Sjóarinn síkáti"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í réttunum",
+   "daemi": [
+    "kind",
+    "lamb",
+    "dilkur",
+    "almenningur",
+    "fjallkóngur",
+    "smali",
+    "lopapeysa",
+    "kjötsúpa"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem fylgir vetrinum",
+   "daemi": [
+    "skammdegi",
+    "myrkur",
+    "hálka",
+    "nagladekk",
+    "snjóskafl",
+    "kuldaskór",
+    "endurskinsmerki",
+    "snjómokstur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Persóna úr þjóðsögu",
+   "daemi": [
+    "Búkolla",
+    "Gilitrutt",
+    "Sæmundur fróði",
+    "Galdra-Loftur",
+    "Bakkabræður",
+    "Djákninn á Myrká",
+    "Hlini kóngsson",
+    "Fjalla-Eyvindur"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Föðurnafn sem endar á '-son'",
+   "daemi": [
+    "Jónsson",
+    "Sigurðsson",
+    "Guðmundsson",
+    "Gunnarsson",
+    "Ólafsson",
+    "Magnússon",
+    "Einarsson",
+    "Kristjánsson"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á öskudaginn",
+   "daemi": [
+    "búningur",
+    "öskupoki",
+    "sælgæti",
+    "söngur",
+    "kötturinn sleginn úr tunnunni",
+    "andlitsmálning",
+    "gríma",
+    "hárkolla"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Mannsnafn sem er líka orð",
+   "daemi": [
+    "Björk",
+    "Hrafn",
+    "Örn",
+    "Ösp",
+    "Snær",
+    "Lilja",
+    "Dögg",
+    "Úlfur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "íslenskt",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Strengjahljóðfæri",
+   "daemi": [
+    "fiðla",
+    "gítar",
+    "selló",
+    "kontrabassi",
+    "harpa",
+    "banjó",
+    "mandólín",
+    "langspil"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Blásturshljóðfæri",
+   "daemi": [
+    "flauta",
+    "trompet",
+    "óbó",
+    "saxófónn",
+    "básúna",
+    "túba",
+    "blokkflauta",
+    "munnharpa"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Ásláttarhljóðfæri",
+   "daemi": [
+    "trommur",
+    "pákur",
+    "þríhorn",
+    "xýlófónn",
+    "tambúrína",
+    "kastanettur",
+    "bongótrommur",
+    "marimba"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 3,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Tónlistarstefna",
+   "daemi": [
+    "rokk",
+    "popp",
+    "djass",
+    "rapp",
+    "kántrí",
+    "blús",
+    "pönk",
+    "þungarokk"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dans",
+   "daemi": [
+    "vals",
+    "tangó",
+    "salsa",
+    "polki",
+    "ballett",
+    "breikdans",
+    "samba",
+    "línudans"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Persóna í ævintýri",
+   "daemi": [
+    "Rauðhetta",
+    "Mjallhvít",
+    "Öskubuska",
+    "Þyrnirós",
+    "Hans og Gréta",
+    "Garðabrúða",
+    "Gosi",
+    "Stígvélaði kötturinn"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað úr ævintýrum",
+   "daemi": [
+    "dreki",
+    "kastali",
+    "galdranorn",
+    "töfrasproti",
+    "einhyrningur",
+    "glerskór",
+    "baunagras",
+    "töfraspegill"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Tegund bókar",
+   "daemi": [
+    "skáldsaga",
+    "ljóðabók",
+    "smásaga",
+    "ævisaga",
+    "ævintýri",
+    "vísindaskáldsaga",
+    "leikrit",
+    "myndasaga"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Tegund kvikmyndar",
+   "daemi": [
+    "gamanmynd",
+    "teiknimynd",
+    "spennumynd",
+    "hrollvekja",
+    "söngvamynd",
+    "heimildarmynd",
+    "ævintýramynd",
+    "vestri"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í leikhúsi",
+   "daemi": [
+    "svið",
+    "tjald",
+    "leikari",
+    "búningur",
+    "leikmynd",
+    "kastljós",
+    "hvíslari",
+    "leikskrá"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað í bíó",
+   "daemi": [
+    "popp",
+    "tjald",
+    "miði",
+    "sæti",
+    "gos",
+    "auglýsing",
+    "hlé",
+    "sýnishorn"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem listmálari notar",
+   "daemi": [
+    "pensill",
+    "strigi",
+    "trönur",
+    "olíulitur",
+    "vatnslitir",
+    "litaspjald",
+    "svunta",
+    "spaði"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Tegund listaverks",
+   "daemi": [
+    "málverk",
+    "höggmynd",
+    "ljósmynd",
+    "teikning",
+    "gjörningur",
+    "vefnaður",
+    "leirlist",
+    "mósaík"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Spil með spilastokk",
+   "daemi": [
+    "Ólsen ólsen",
+    "rommí",
+    "kani",
+    "vist",
+    "svarti Pétur",
+    "veiðimaður",
+    "kasína",
+    "langavitleysa"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Borðspil",
+   "daemi": [
+    "skák",
+    "kotra",
+    "mylla",
+    "lúdó",
+    "slönguspil",
+    "dóminó",
+    "hnefatafl",
+    "minnisspil"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Tímabil í sögunni",
+   "daemi": [
+    "steinöld",
+    "bronsöld",
+    "járnöld",
+    "víkingaöld",
+    "miðaldir",
+    "landnámsöld",
+    "Sturlungaöld",
+    "iðnbyltingin"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Persóna úr barnabók",
+   "daemi": [
+    "Lína langsokkur",
+    "Emil í Kattholti",
+    "Bangsímon",
+    "Lísa í Undralandi",
+    "Múmínsnáðinn",
+    "Karíus og Baktus",
+    "Ronja ræningjadóttir",
+    "Mikki refur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Tegund safns",
+   "daemi": [
+    "listasafn",
+    "byggðasafn",
+    "Þjóðminjasafnið",
+    "sjóminjasafn",
+    "náttúrugripasafn",
+    "bókasafn",
+    "flugsafn",
+    "galdrasafn"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Hátíð í öðru landi",
+   "daemi": [
+    "hrekkjavaka",
+    "þakkargjörðarhátíð",
+    "kínverska nýárið",
+    "kjötkveðjuhátíð",
+    "Valentínusardagur",
+    "dagur heilags Patreks",
+    "Lúsíuhátíð",
+    "Bastilludagurinn"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "menning",
+   "ostadfest": [
+    "Bastilludagurinn"
+   ]
+  },
+  {
+   "flokkur_texti": "Tungumál",
+   "daemi": [
+    "enska",
+    "danska",
+    "þýska",
+    "franska",
+    "spænska",
+    "pólska",
+    "kínverska",
+    "færeyska"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Kveðja á erlendu máli",
+   "daemi": [
+    "hello",
+    "bonjour",
+    "hola",
+    "ciao",
+    "hej",
+    "guten Tag",
+    "konnichiwa",
+    "aloha"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Ævintýri eftir H.C. Andersen",
+   "daemi": [
+    "Litla hafmeyjan",
+    "Ljóti andarunginn",
+    "Nýju fötin keisarans",
+    "Prinsessan á bauninni",
+    "Snædrottningin",
+    "Þumalína",
+    "Eldfærin",
+    "Hans klaufi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 3,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð úr tónlist",
+   "daemi": [
+    "nóta",
+    "taktur",
+    "laglína",
+    "viðlag",
+    "erindi",
+    "dúr",
+    "moll",
+    "tónstigi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Fræg sögupersóna",
+   "daemi": [
+    "Hamlet",
+    "Don Kíkóti",
+    "Róbinson Krúsó",
+    "Sherlock Holmes",
+    "Gúllíver",
+    "Óliver Twist",
+    "Drakúla",
+    "Bjartur í Sumarhúsum"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Hljómsveit eða kór",
+   "daemi": [
+    "kór",
+    "lúðrasveit",
+    "sinfóníuhljómsveit",
+    "karlakór",
+    "strengjakvartett",
+    "rokkhljómsveit",
+    "stórsveit",
+    "dúett"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem tengist víkingum",
+   "daemi": [
+    "langskip",
+    "skjöldur",
+    "hjálmur",
+    "landnám",
+    "rúnir",
+    "langhús",
+    "þing",
+    "goði"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Norrænn guð",
+   "daemi": [
+    "Óðinn",
+    "Þór",
+    "Freyja",
+    "Loki",
+    "Baldur",
+    "Frigg",
+    "Týr",
+    "Heimdallur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Úr norrænni goðafræði",
+   "daemi": [
+    "Ásgarður",
+    "Miðgarður",
+    "Yggdrasill",
+    "Sleipnir",
+    "Mjölnir",
+    "Valhöll",
+    "Miðgarðsormurinn",
+    "Bifröst"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "menning",
+   "ostadfest": [
+    "Miðgarðsormurinn"
+   ]
+  },
+  {
+   "flokkur_texti": "Íslenskt skáld fyrri tíma",
+   "daemi": [
+    "Jónas Hallgrímsson",
+    "Matthías Jochumsson",
+    "Einar Benediktsson",
+    "Davíð Stefánsson",
+    "Steinn Steinarr",
+    "Hallgrímur Pétursson",
+    "Grímur Thomsen",
+    "Tómas Guðmundsson"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað á tónleikum",
+   "daemi": [
+    "svið",
+    "hljóðnemi",
+    "hátalari",
+    "ljósasýning",
+    "áhorfendur",
+    "trommusett",
+    "uppklapp",
+    "aukalag"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Bragarháttur eða ljóðform",
+   "daemi": [
+    "ferskeytla",
+    "sonnetta",
+    "limra",
+    "hæka",
+    "rímur",
+    "dróttkvætt",
+    "fornyrðislag",
+    "ljóðaháttur"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "menning",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem byrjar á 'sk'",
+   "daemi": [
+    "skip",
+    "skór",
+    "skeið",
+    "ský",
+    "skóli",
+    "skæri",
+    "skegg",
+    "skál"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem byrjar á 'þ'",
+   "daemi": [
+    "þak",
+    "þari",
+    "þoka",
+    "þvottur",
+    "þúfa",
+    "þráður",
+    "þumall",
+    "þyrla"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem byrjar á 'hv'",
+   "daemi": [
+    "hvalur",
+    "hver",
+    "hvítur",
+    "hvolpur",
+    "hvísl",
+    "hvönn",
+    "hveiti",
+    "hvirfilbylur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem byrjar á 'fl'",
+   "daemi": [
+    "fluga",
+    "flaska",
+    "fleki",
+    "flugvél",
+    "flétta",
+    "flauta",
+    "fló",
+    "flóð"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem byrjar á 'sn'",
+   "daemi": [
+    "snjór",
+    "snigill",
+    "snuð",
+    "snúra",
+    "snákur",
+    "snekkja",
+    "snúður",
+    "sniðugur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem byrjar á 'str'",
+   "daemi": [
+    "strákur",
+    "strætó",
+    "strönd",
+    "strokleður",
+    "strá",
+    "strengur",
+    "strútur",
+    "strigaskór"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem byrjar á 'ö'",
+   "daemi": [
+    "önd",
+    "öxl",
+    "örn",
+    "ör",
+    "ösp",
+    "öskudagur",
+    "ökkli",
+    "örbylgjuofn"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem byrjar á 'æ'",
+   "daemi": [
+    "æðarfugl",
+    "ævintýri",
+    "æfing",
+    "ættingi",
+    "æska",
+    "ær",
+    "æði",
+    "ættarmót"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem endar á '-ing'",
+   "daemi": [
+    "rigning",
+    "sýning",
+    "sending",
+    "lending",
+    "tilkynning",
+    "kenning",
+    "menning",
+    "teikning"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem rímar við 'kaka'",
+   "daemi": [
+    "taka",
+    "vaka",
+    "baka",
+    "raka",
+    "slaka",
+    "kvaka",
+    "aka",
+    "haka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem rímar við 'sól'",
+   "daemi": [
+    "hjól",
+    "jól",
+    "skjól",
+    "tól",
+    "ból",
+    "stól",
+    "kjól",
+    "hól"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem rímar við 'bær'",
+   "daemi": [
+    "sær",
+    "snær",
+    "ær",
+    "tær",
+    "fær",
+    "nær",
+    "slær",
+    "hlær"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem rímar við 'ljón'",
+   "daemi": [
+    "prjón",
+    "hjón",
+    "sjón",
+    "frón",
+    "flón",
+    "bón",
+    "tjón",
+    "tón"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem rímar við 'skór'",
+   "daemi": [
+    "stór",
+    "kór",
+    "sjór",
+    "snjór",
+    "mór",
+    "fór",
+    "mjór",
+    "slór"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Dýr með þremur stöfum",
+   "daemi": [
+    "kýr",
+    "mús",
+    "örn",
+    "önd",
+    "lóa",
+    "áll",
+    "uxi",
+    "lax"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð með aðeins tveimur stöfum",
+   "daemi": [
+    "ég",
+    "þú",
+    "já",
+    "ís",
+    "ár",
+    "ey",
+    "tá",
+    "bú"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Mannsnafn með þremur stöfum",
+   "daemi": [
+    "Ari",
+    "Jón",
+    "Óli",
+    "Örn",
+    "Ása",
+    "Eva",
+    "Una",
+    "Ída"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Samsett orð með 'snjó'",
+   "daemi": [
+    "snjókarl",
+    "snjóbolti",
+    "snjókorn",
+    "snjóflóð",
+    "snjóþota",
+    "snjómokstur",
+    "snjóskafl",
+    "snjóbretti"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Samsett orð með 'regn'",
+   "daemi": [
+    "regnbogi",
+    "regnkápa",
+    "regnhlíf",
+    "regndropi",
+    "regnskógur",
+    "regnormur",
+    "regnvatn",
+    "regnbuxur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem endar á '-hús'",
+   "daemi": [
+    "gróðurhús",
+    "fjárhús",
+    "hesthús",
+    "pósthús",
+    "sumarhús",
+    "kaffihús",
+    "leikhús",
+    "fuglahús"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem endar á '-bíll'",
+   "daemi": [
+    "sjúkrabíll",
+    "slökkviliðsbíll",
+    "lögreglubíll",
+    "vörubíll",
+    "leigubíll",
+    "sendibíll",
+    "ruslabíll",
+    "húsbíll"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Samsett orð með 'jóla'",
+   "daemi": [
+    "jólatré",
+    "jólagjöf",
+    "jólasveinn",
+    "jólaljós",
+    "jólakort",
+    "jólaskraut",
+    "jólafrí",
+    "jólaball"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem byrjar á 'hand'",
+   "daemi": [
+    "handklæði",
+    "handbolti",
+    "handtaska",
+    "handfang",
+    "handrit",
+    "handsápa",
+    "handavinna",
+    "handleggur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Samsett orð með 'fjall'",
+   "daemi": [
+    "fjallganga",
+    "fjallahjól",
+    "fjallshlíð",
+    "fjallstindur",
+    "fjallaskáli",
+    "fjallagrös",
+    "fjallkona",
+    "fjallgarður"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem endar á '-bolti'",
+   "daemi": [
+    "fótbolti",
+    "körfubolti",
+    "handbolti",
+    "strandbolti",
+    "snjóbolti",
+    "tennisbolti",
+    "golfbolti",
+    "hafnabolti"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð með 'll'",
+   "daemi": [
+    "fjall",
+    "bolli",
+    "hellir",
+    "stóll",
+    "bjalla",
+    "fallegur",
+    "ull",
+    "tröll"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð með 'x'",
+   "daemi": [
+    "lax",
+    "buxur",
+    "kex",
+    "öxl",
+    "uxi",
+    "vax",
+    "texti",
+    "saxófónn"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Byrjar og endar á 'a'",
+   "daemi": [
+    "amma",
+    "alda",
+    "aska",
+    "agúrka",
+    "appelsína",
+    "ausa",
+    "aría",
+    "afmælisveisla"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Nýtt orð án fyrsta stafs",
+   "daemi": [
+    "skál",
+    "sker",
+    "slóð",
+    "hrós",
+    "hraun",
+    "hlið",
+    "grís",
+    "bær"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Lýsingarorð sem byrjar á 'ó'",
+   "daemi": [
+    "óþekkur",
+    "ósýnilegur",
+    "óheppinn",
+    "ótrúlegur",
+    "óvæntur",
+    "óþolinmóður",
+    "óhreinn",
+    "óöruggur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem er bara til í fleirtölu",
+   "daemi": [
+    "skæri",
+    "buxur",
+    "gleraugu",
+    "dyr",
+    "jól",
+    "páskar",
+    "tónleikar",
+    "laun"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Orð sem endar á '-legur'",
+   "daemi": [
+    "fallegur",
+    "skemmtilegur",
+    "hræðilegur",
+    "yndislegur",
+    "leiðinlegur",
+    "dásamlegur",
+    "ægilegur",
+    "ánægjulegur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "orðaleikir",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Boltaíþrótt",
+   "daemi": [
+    "fótbolti",
+    "handbolti",
+    "körfubolti",
+    "blak",
+    "tennis",
+    "golf",
+    "borðtennis",
+    "keila"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Íþrótt án bolta",
+   "daemi": [
+    "sund",
+    "glíma",
+    "skíði",
+    "hlaup",
+    "júdó",
+    "fimleikar",
+    "hjólreiðar",
+    "klifur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Vetraríþrótt",
+   "daemi": [
+    "svig",
+    "gönguskíði",
+    "snjóbretti",
+    "krulla",
+    "íshokkí",
+    "skíðastökk",
+    "listdans á skautum",
+    "skautahlaup"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Grein í frjálsum íþróttum",
+   "daemi": [
+    "hástökk",
+    "langstökk",
+    "kúluvarp",
+    "spjótkast",
+    "kringlukast",
+    "grindahlaup",
+    "boðhlaup",
+    "stangarstökk"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Litur",
+   "daemi": [
+    "rauður",
+    "blár",
+    "grænn",
+    "gulur",
+    "fjólublár",
+    "appelsínugulur",
+    "bleikur",
+    "túrkís"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað gert á morgnana",
+   "daemi": [
+    "vakna",
+    "bursta tennur",
+    "fara í sturtu",
+    "klæða sig",
+    "borða morgunmat",
+    "greiða sér",
+    "búa um rúmið",
+    "hella upp á kaffi"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað gert á kvöldin",
+   "daemi": [
+    "horfa á sjónvarp",
+    "lesa",
+    "fara í bað",
+    "elda kvöldmat",
+    "fara í göngutúr",
+    "spila",
+    "setja í uppþvottavél",
+    "fara að sofa"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Áhugamál",
+   "daemi": [
+    "prjóna",
+    "veiða",
+    "lesa",
+    "mála",
+    "spila",
+    "syngja",
+    "fjallganga",
+    "ljósmyndun"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað að gera í útilegu",
+   "daemi": [
+    "tjalda",
+    "grilla",
+    "syngja við varðeld",
+    "veiða",
+    "ganga",
+    "spila",
+    "tína ber",
+    "sofa í svefnpoka"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Heimilisverk",
+   "daemi": [
+    "ryksuga",
+    "vaska upp",
+    "þvo þvott",
+    "strauja",
+    "skúra",
+    "fara út með ruslið",
+    "elda",
+    "vökva blómin"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað að gera í sundi",
+   "daemi": [
+    "synda",
+    "kafa",
+    "stinga sér",
+    "fara í heita pottinn",
+    "renna sér í rennibrautinni",
+    "fljóta",
+    "fara í gufubað",
+    "fara í kalda pottinn"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem maður getur misst",
+   "daemi": [
+    "lykill",
+    "tönn",
+    "strætó",
+    "þolinmæði",
+    "jafnvægi",
+    "vettlingur",
+    "rödd",
+    "matarlyst"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem hægt er að vinna",
+   "daemi": [
+    "bikar",
+    "verðlaunapeningur",
+    "happdrætti",
+    "kapphlaup",
+    "keppni",
+    "spil",
+    "rifrildi",
+    "getraun"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem börn læra",
+   "daemi": [
+    "hjóla",
+    "synda",
+    "lesa",
+    "skrifa",
+    "reima skó",
+    "telja",
+    "flauta",
+    "binda slaufu"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Leikur í barnaafmæli",
+   "daemi": [
+    "stoppdans",
+    "stólaleikur",
+    "ratleikur",
+    "feluleikur",
+    "Símon segir",
+    "pokahlaup",
+    "eggjahlaup",
+    "skottið á asnann"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Tímaeining eða tímabil",
+   "daemi": [
+    "sekúnda",
+    "mínúta",
+    "klukkustund",
+    "dagur",
+    "vika",
+    "mánuður",
+    "ár",
+    "öld"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Mælieining",
+   "daemi": [
+    "metri",
+    "kíló",
+    "lítri",
+    "gramm",
+    "sentímetri",
+    "kílómetri",
+    "tomma",
+    "tonn"
+   ],
+   "barnvaent": false,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Lögun eða form",
+   "daemi": [
+    "hringur",
+    "ferningur",
+    "þríhyrningur",
+    "rétthyrningur",
+    "sporbaugur",
+    "stjarna",
+    "hjarta",
+    "sexhyrningur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem fylgir afmæli",
+   "daemi": [
+    "afmæliskaka",
+    "kerti",
+    "pakki",
+    "afmælissöngur",
+    "blaðra",
+    "afmæliskort",
+    "veisla",
+    "gestir"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Afsökun fyrir að koma of seint",
+   "daemi": [
+    "sprungið dekk",
+    "vekjaraklukkan hringdi ekki",
+    "strætó kom ekki",
+    "umferð",
+    "týndi lyklunum",
+    "svaf yfir mig",
+    "ófærð",
+    "hundurinn slapp"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Ástæða til að halda veislu",
+   "daemi": [
+    "afmæli",
+    "útskrift",
+    "brúðkaup",
+    "innflutningur",
+    "ferming",
+    "nýtt starf",
+    "áramót",
+    "sigur í keppni"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sagt í síma",
+   "daemi": [
+    "halló",
+    "bless",
+    "já",
+    "heyrðu",
+    "hver er þetta",
+    "ég heyri ekki í þér",
+    "bíddu aðeins",
+    "ég hringi aftur"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Kveðja á íslensku",
+   "daemi": [
+    "halló",
+    "hæ",
+    "bless",
+    "sæl",
+    "góðan daginn",
+    "góða nótt",
+    "gott kvöld",
+    "sjáumst"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað að gera í snjónum",
+   "daemi": [
+    "renna sér á sleða",
+    "búa til snjókarl",
+    "snjókast",
+    "búa til snjóhús",
+    "gera snjóengil",
+    "moka",
+    "fara á skíði",
+    "fara á snjóþotu"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": [
+    "gera snjóengil"
+   ]
+  },
+  {
+   "flokkur_texti": "Eitthvað að gera á rigningardegi",
+   "daemi": [
+    "hoppa í pollum",
+    "lesa",
+    "spila",
+    "horfa á mynd",
+    "baka",
+    "föndra",
+    "púsla",
+    "fara í sund"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Leið til að hreyfa sig",
+   "daemi": [
+    "hlaupa",
+    "ganga",
+    "hoppa",
+    "skríða",
+    "synda",
+    "læðast",
+    "valhoppa",
+    "klifra"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað gert með höndunum",
+   "daemi": [
+    "klappa",
+    "veifa",
+    "skrifa",
+    "prjóna",
+    "teikna",
+    "klóra",
+    "kasta",
+    "grípa"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Námsgrein í skóla",
+   "daemi": [
+    "stærðfræði",
+    "íslenska",
+    "enska",
+    "danska",
+    "náttúrufræði",
+    "landafræði",
+    "smíði",
+    "heimilisfræði"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Skammstöfun",
+   "daemi": [
+    "t.d.",
+    "o.s.frv.",
+    "þ.e.",
+    "m.a.",
+    "kl.",
+    "nr.",
+    "bls.",
+    "u.þ.b."
+   ],
+   "barnvaent": false,
+   "erfidleiki": 3,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað sem foreldrar segja",
+   "daemi": [
+    "farðu að sofa",
+    "burstaðu tennurnar",
+    "taktu til",
+    "klæddu þig vel",
+    "gleymdu ekki húfunni",
+    "borðaðu matinn þinn",
+    "slökktu á tölvunni",
+    "hvar eru skórnir þínir"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Uppfinning",
+   "daemi": [
+    "hjól",
+    "ljósapera",
+    "sími",
+    "prentvél",
+    "áttaviti",
+    "gufuvél",
+    "flugvél",
+    "rennilás"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 2,
+   "tegund": "annað",
+   "ostadfest": []
+  },
+  {
+   "flokkur_texti": "Eitthvað að gera í bílferð",
+   "daemi": [
+    "syngja",
+    "sofa",
+    "telja bíla",
+    "horfa út um gluggann",
+    "borða nesti",
+    "hlusta á hljóðbók",
+    "frúin í Hamborg",
+    "spyrja hvort við séum komin"
+   ],
+   "barnvaent": true,
+   "erfidleiki": 1,
+   "tegund": "annað",
+   "ostadfest": []
+  }
+ ]
+}
