@@ -26,6 +26,7 @@ Each game needs a sign-in with Google or GitHub, icelander.net's one sign-in (th
 | Twelve Banners: a hex-based strategy game for up to 12 civilizations, made in Godot 4 and under construction; against the computer in the browser, online with friends in the Windows, macOS and Linux downloads. Invited players only (the role `games:twelve-banners`) | [icelander.net/games/fresh/twelve-banners](https://icelander.net/games/fresh/twelve-banners/) | [games/twelve-banners](games/twelve-banners) |
 | Hand of the Isle: an original god game made in Godot 4. Reshape an island and call down earthquakes, swamps and floods so your followers outgrow a rival deity's, in the browser. Invited players only (the role `games:hand-of-the-isle`) | [icelander.net/games/fresh/hand-of-the-isle](https://icelander.net/games/fresh/hand-of-the-isle/) | [games/hand-of-the-isle](games/hand-of-the-isle) |
 | Pinochle: partnership auction pinochle for phones and browsers, solo against bots | [icelander.net/games/fresh/pinochle](https://icelander.net/games/fresh/pinochle/) | [games/pinochle](games/pinochle) |
+| Laumufarþegi: an Icelandic party word game for 3–10 players on their own phones. Everyone but the stowaway knows the secret word; give clues, then vote out the stowaway. Join from a shared link; only the host signs in | [icelander.net/games/fresh/laumufarthegi](https://icelander.net/games/fresh/laumufarthegi/) | [games/laumufarthegi](games/laumufarthegi) |
 
 ## Deploying
 
