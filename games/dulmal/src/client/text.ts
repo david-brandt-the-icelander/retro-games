@@ -36,7 +36,7 @@ export const T = {
 
   // Anddyri
   invite: "Bjóddu fleirum",
-  inviteHint: "Sendu tengilinn, eða leyfðu fólki að skanna kóðann með símanum.",
+  inviteHint: "Sendu tengilinn, eða leyfðu fólki að skanna kóðann með símanum. Aðeins þeir sem hefur verið boðið í Dulmál á icelander.net komast inn.",
   copyLink: "Afrita tengil",
   copied: "Tengill afritaður",
   share: "Deila",

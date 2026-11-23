@@ -113,6 +113,9 @@ function connect(): void {
     clearInterval(pingTimer);
     render();
     if (gone) return;
+    // Many failures in a row can mean the sign-in ran out: reloading the page sends the player to
+    // sign in and straight back to this room, in the same seat.
+    if (retry >= 5 && navigator.onLine && document.visibilityState === "visible") { location.reload(); return; }
     retry = Math.min(retry + 1, 6);
     retryTimer = window.setTimeout(connect, Math.min(1000 * 2 ** (retry - 1), 10000));
   };

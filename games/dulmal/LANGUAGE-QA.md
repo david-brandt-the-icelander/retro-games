@@ -42,3 +42,5 @@ Harmo|nikka, Þrettán|dinn, Höf|rungur, Prin|sessa, Kóngu|ló, Ævin|týri, K
 | *Ertu með sjónvarp eða skjávarpa? Opnaðu tengilinn þar og veldu „Stór skjár“.* | |
 | *Hraun fékk vísbendinguna „Sjór“ 2.* | |
 | The eight lines of *Svona er leikið* (`HOW_TO` in `src/client/text.ts`) | Especially line 5: *Það má giska einu sinni oftar en talan segir, eða hætta fyrr.* |
+| *Aðeins þeir sem hefur verið boðið í Dulmál á icelander.net komast inn.* | Invite hint in the lobby. |
+| *Dulmál er aðeins opið boðsgestum og þessum aðgangi hefur ekki verið boðið enn.* / *Ef þér var boðið á öðru netfangi skaltu skrá þig inn með því.* | The page for a signed-in player without an invitation (`notInvited` in `worker/index.ts`). |

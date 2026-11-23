@@ -9,6 +9,8 @@
     "noImplicitReturns": true,
     "noUncheckedIndexedAccess": true,
     "skipLibCheck": true,
+    "allowJs": true,
+    "checkJs": false,
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "types": ["node"]

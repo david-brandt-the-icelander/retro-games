@@ -5,23 +5,23 @@
   "folder": "games/dulmal",
   "entities": [
     {
-      "id": "no-sign-in",
-      "title": "Dulmál needs no sign-in",
-      "summary": "Unlike the other games, Dulmál's Worker does not check icelander.net's sign-in: a shared link or a four-letter code is all a player needs.",
+      "id": "invite-only",
+      "title": "Dulmál is for invited players only",
+      "summary": "Every request, the page, the room API and each room's WebSocket, needs a sign-in to icelander.net with the invite-only role games:dulmal, granted at icelander.net/private/admin.",
       "status": "accepted",
-      "context": "Every other game's Worker checks icelander.net's sign-in (AGENTS.md, Sign-in). Dulmál is meant for adults who are not gamers, joining from their own phones with one shared link, and the owner asked for no logins and no installs.",
+      "context": "The first version needed no sign-in, as the first brief asked (no logins). Before publishing, the owner asked for it to be invite-only, like Pinochle, at icelander.net/games/dulmal.",
       "options": [
         {
-          "title": "No sign-in; rooms are reached by code",
-          "consequences": "Anyone who has a room's link can join it. Room codes are four letters from 19, about 130,000 codes, and rooms expire after three days idle."
+          "title": "Invite-only, through the site's sign-in",
+          "consequences": "Each guest needs an icelander.net sign-in and the games:dulmal role before they can open a room's link. The room API and WebSockets are checked too, so a room's code alone gets nobody in."
         },
         {
-          "title": "The site's sign-in, as the other games",
-          "consequences": "Every guest would need a Google or GitHub account and the games: role before they could play."
+          "title": "No sign-in; rooms reached by code",
+          "consequences": "Anyone with a link can join; the first version did this."
         }
       ],
-      "decision": "No sign-in.",
-      "rationale": "The owner's brief: everyone joins with one shared link, no logins, no installs.",
+      "decision": "Invite-only, with the role games:dulmal, at icelander.net/games/dulmal.",
+      "rationale": "The owner's request when merging.",
       "decidedBy": "Owner",
       "decidedOn": "2026-11-23",
       "evidenceStatus": "source-verified",
@@ -29,14 +29,18 @@
         {
           "path": "games/dulmal/worker/index.ts",
           "symbol": "default.fetch"
+        },
+        {
+          "path": "games/dulmal/worker/config.ts",
+          "symbol": "ROLE"
         }
       ]
     },
     {
       "id": "game-name",
       "title": "The game's name",
-      "summary": "The game is called Dulmál for now; Huldumál and Leyniorð were the other suggestions.",
-      "status": "open",
+      "summary": "The game is called Dulmál, at icelander.net/games/dulmal.",
+      "status": "accepted",
       "context": "The game needed its own Icelandic name, not that of any published game. Changing it means GAME_NAME in src/client/text.ts, the title in public/index.html and, if the address should change too, the route in wrangler.jsonc and BASE in worker/config.ts.",
       "options": [
         {
@@ -52,14 +56,17 @@
           "consequences": "'Secret word', or 'password': clear, but also an everyday word for a password."
         }
       ],
-      "waitingOn": "Owner",
       "evidenceStatus": "source-verified",
       "sources": [
         {
           "path": "games/dulmal/src/client/text.ts",
           "symbol": "GAME_NAME"
         }
-      ]
+      ],
+      "decision": "Dulmál.",
+      "rationale": "The owner's choice.",
+      "decidedBy": "Owner",
+      "decidedOn": "2026-11-23"
     },
     {
       "id": "icelandic-review",

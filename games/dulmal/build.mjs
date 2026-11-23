@@ -1,4 +1,4 @@
-// Builds Dulmál into dist/games/fresh/dulmal/ and the tests into dist-test/.
+// Builds Dulmál into dist/games/dulmal/ and the tests into dist-test/.
 //
 //   node build.mjs           the page: public/ copied, src/client/main.ts bundled into app.js
 //   node build.mjs --test    the TypeScript tests
@@ -7,7 +7,7 @@
 import { build } from "esbuild";
 import { cpSync, mkdirSync, readdirSync, rmSync } from "node:fs";
 
-const SITE = "dist/games/fresh/dulmal";
+const SITE = "dist/games/dulmal";
 
 if (process.argv.includes("--test")) {
   rmSync("dist-test", { recursive: true, force: true });

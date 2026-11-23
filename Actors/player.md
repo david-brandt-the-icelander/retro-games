@@ -7,7 +7,7 @@
 **Evidence (Hivestorm):** `games/hivestorm/worker/index.ts` (`AUTH`, `gamePage`: the same sign-in and role), `games/hivestorm/src/ui/input.ts` (`Controls`), `games/hivestorm/src/main.ts` (`step`, `joinMatch`, `offerTable`)
 **Evidence (Deep Claim):** `games/deep-claim/worker/index.ts` (`gamePage`: the page needs a sign-in to icelander.net with the `games:play` role), `games/deep-claim/godot/scripts/main.gd` (`Main._update_playing`)
 **Evidence (Shatterbelt):** `games/shatterbelt/worker/index.ts` (`AUTH`, `gamePage`: Shatterbelt's page and score API need the same sign-in and role), `games/shatterbelt/src/main.ts` (`launch`, `joinMatch`), `games/shatterbelt/src/input.ts` (`Input.controls`: one pilot per browser)
-**Evidence (Dulmál):** `games/dulmal/worker/index.ts` (`default.fetch`: no sign-in, a room's link is enough), `games/dulmal/src/shared/game.ts` (`join`, `claim`: a seat in a room, kept by a token in the browser), `games/dulmal/src/client/main.ts` (`connect`)
+**Evidence (Dulmál):** `games/dulmal/worker/index.ts` (`default.fetch`: the page, the room API and each room's WebSocket need a sign-in to icelander.net with the invite-only role `games:dulmal`), `games/dulmal/src/shared/game.ts` (`join`, `claim`: a seat in a room, kept by a token in the browser), `games/dulmal/src/client/main.ts` (`connect`)
 
 ## What they want from the system
 
@@ -36,4 +36,4 @@ Hivestorm's page at icelander.net/games/retro/hivestorm/, signed in to icelander
 
 Shatterbelt's page is at icelander.net/games/retro/shatterbelt/, signed in the same way, with a keyboard, a gamepad or a touch screen; its online games, for two to nine pilots, start on the same multiplayer page, and every pilot in them is a player too.
 
-Dulmál's page is at icelander.net/games/fresh/dulmal/, with no sign-in: a player opens a room's link (`?herbergi=CODE`), or types its four-letter code, and gives a name. A TV or projector in the room can show the board with `&skjar=1`; it is a screen, not a player.
+Dulmál's page is at icelander.net/games/dulmal/, signed in to icelander.net with the invite-only role `games:dulmal`: a player opens a room's link (`?herbergi=CODE`), or types its four-letter code, and gives a name. A TV or projector in the room can show the board with `&skjar=1`; it is a screen, not a player.

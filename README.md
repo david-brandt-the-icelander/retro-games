@@ -3,7 +3,7 @@ Recreations of retro-games that I have made with the help of AI
 
 ## Games
 
-Each game except Dulmál needs a sign-in with Google or GitHub, icelander.net's one sign-in (the games are part of the site) (icelander.net's login service; the `recreations` repository's `docs/SIGN-IN.md`). Each game's Worker checks it with the shared library in `vendor/icelander-auth/`, which is copied unchanged from the icelander.net repository: don't edit it here. The high-score tables stay public.
+Each game needs a sign-in with Google or GitHub, icelander.net's one sign-in (the games are part of the site) (icelander.net's login service; the `recreations` repository's `docs/SIGN-IN.md`). Each game's Worker checks it with the shared library in `vendor/icelander-auth/`, which is copied unchanged from the icelander.net repository: don't edit it here. The high-score tables stay public.
 
 | Game | Play | Source |
 |---|---|---|
@@ -26,7 +26,7 @@ Each game except Dulmál needs a sign-in with Google or GitHub, icelander.net's 
 | Twelve Banners: a hex-based strategy game for up to 12 civilizations, made in Godot 4 and under construction; against the computer in the browser, online with friends in the Windows, macOS and Linux downloads. Invited players only (the role `games:twelve-banners`) | [icelander.net/games/fresh/twelve-banners](https://icelander.net/games/fresh/twelve-banners/) | [games/twelve-banners](games/twelve-banners) |
 | Hand of the Isle: an original god game made in Godot 4. Reshape an island and call down earthquakes, swamps and floods so your followers outgrow a rival deity's, in the browser. Invited players only (the role `games:hand-of-the-isle`) | [icelander.net/games/fresh/hand-of-the-isle](https://icelander.net/games/fresh/hand-of-the-isle/) | [games/hand-of-the-isle](games/hand-of-the-isle) |
 | Pinochle: partnership auction pinochle for phones and browsers, solo against bots | [icelander.net/games/fresh/pinochle](https://icelander.net/games/fresh/pinochle/) | [games/pinochle](games/pinochle) |
-| Dulmál: an original Icelandic team word-association game for 4–8 players, each on their own phone, in the same room or apart; one-word clues to a 5×5 board, with an optional big-screen view for a TV. No sign-in: share the room's link | [icelander.net/games/fresh/dulmal](https://icelander.net/games/fresh/dulmal/) | [games/dulmal](games/dulmal) |
+| Dulmál: an original Icelandic team word-association game for 4–8 players, each on their own phone, in the same room or apart; one-word clues to a 5×5 board, with an optional big-screen view for a TV. Invited players only (the role `games:dulmal`) | [icelander.net/games/dulmal](https://icelander.net/games/dulmal/) | [games/dulmal](games/dulmal) |
 
 ## Deploying
 

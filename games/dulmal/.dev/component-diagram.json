@@ -3,7 +3,7 @@
   "kind": "component",
   "title": "Dulmál component diagram",
   "folder": "games/dulmal",
-  "description": "Dulmál: a page that every device loads, a Worker that serves it and opens rooms, and one Durable Object per room that applies the shared rules and sends each device the view it may see.",
+  "description": "Dulmál: a page that every device loads, a Worker that checks the sign-in, serves the page and opens rooms, and one Durable Object per room that applies the shared rules and sends each device the view it may see.",
   "sources": [
     {
       "path": "games/dulmal/worker/index.ts",
@@ -50,8 +50,14 @@
     {
       "id": "worker",
       "name": "Worker and rooms",
-      "responsibility": "worker/: serves the page, creates rooms with fresh codes, and routes each room's WebSocket to its Durable Object (RoomObject, with its logic in RoomCore), which stores the room, runs the turn timer as an alarm and deletes idle rooms.",
+      "responsibility": "worker/: checks the sign-in and the games:dulmal role on every request, serves the page, creates rooms with new codes, and routes each room's WebSocket to its Durable Object (RoomObject, with its logic in RoomCore), which stores the room, runs the turn timer as an alarm and deletes idle rooms.",
       "folder": "games/dulmal/worker"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Says who is signed in and with which games: roles.",
+      "external": true
     }
   ],
   "relationships": [
@@ -102,6 +108,12 @@
       "to": "rules",
       "kind": "depends-on",
       "description": "Only the message types and constants."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Checks the site_session cookie through the ACCOUNTS service binding."
     }
   ]
 }
