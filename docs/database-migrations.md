@@ -1,18 +1,18 @@
 # Database migrations
 
-Production's database is migrated **by hand, never by the deploy pipeline**. Two checks make
-sure nobody forgets:
+Production's database is migrated **by hand**, and the games are deployed by hand too: nothing
+deploys from GitHub. One check, and one step before every deploy, make sure nobody forgets:
 
 - **The pull request check** "Database migration" (`.github/workflows/migrations.yml`) fails
   when a pull request changes a game's `worker/schema.sql` or `worker/migrations/` and its description does not acknowledge the
   migration. It runs again whenever the description is edited.
-- **The deploy gate** (`.github/workflows/deploy.yml`, before anything is uploaded) looks at
-  every commit since the last successful deploy that changed those files. Each must have
-  arrived through a pull request whose description acknowledges the migration, or nothing is
-  deployed.
+- **Before deploying a game by hand** (`npm run deploy`), whoever deploys applies any migration
+  it needs first. To see what changed since the commit last deployed, run
+  `.github/scripts/migration-gate.sh deploy <that commit>` from the repository root: it lists each
+  database change, prints the exact command for each, and says whether its pull request
+  acknowledged it.
 
-Both run `.github/scripts/migration-gate.sh`, which also prints the exact command for each
-changed file.
+The pull request check runs the same script, `.github/scripts/migration-gate.sh`.
 
 Each game has its own D1 database, named in its `wrangler.jsonc`:
 
@@ -81,7 +81,7 @@ Only do this when the owner has asked for the change to go live. Follow every st
    ```
 
    The "Database migration" check runs again and passes.
-6. **Merge.** Merging to `main` deploys.
+6. **Merge, then deploy.** Merging to `main` deploys nothing; the owner then runs `npm run deploy` in the game's folder.
 
 ### When no migration is needed
 
@@ -96,11 +96,10 @@ Never use this line to skip a migration that is needed.
 
 ## When something went wrong
 
-- **The deploy stopped at the gate after a merge.** Nothing was deployed. Apply the migration
-  (above), add the acknowledgement to the merged pull request's description, and re-run the
-  failed jobs of that Deploy run: `gh run rerun <run id> --failed`.
-- **A database change was pushed to `main` without a pull request.** Apply the migration, then
-  deploy by hand with the acknowledgement: `gh workflow run deploy.yml --ref main -f migration_applied=true`.
+- **A game was deployed before its migration was applied.** Apply the migration (above) at once,
+  and add the acknowledgement to the merged pull request's description.
+- **A database change reached `main` without a pull request.** Apply the migration before the
+  next `npm run deploy` of that game.
 - **The migration broke production.** Tell the owner. Restoring the database to the bookmark
   from step 2 (`cd games/<game> && npx wrangler d1 time-travel restore <database> --bookmark=<bookmark>`) undoes
   every write since then, not just the migration, so only the owner decides on it.

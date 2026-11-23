@@ -45,4 +45,4 @@ The developer flags `godot --path godot -- --autoplay [--level=N] [--goto=N] [--
 
 ## Deploy
 
-A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`, which installs Godot for this game as it does for Gambit). By hand: `npm run deploy`. The Worker has no database and no secrets; its route is `icelander.net/games/retro/rampart*`. The games page lists it from `site/games.json` in the icelander.net repository.
+Nothing deploys from GitHub any more: the owner deploys it from their own machine with `npm run deploy` (tests, the Godot export, `wrangler deploy`), which needs Godot 4.7.2 and its export templates installed. The Worker has no database and no secrets; its route is `icelander.net/games/retro/rampart*`. The games page lists it from `site/games.json` in the icelander.net repository.

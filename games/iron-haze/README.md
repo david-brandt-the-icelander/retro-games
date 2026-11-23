@@ -76,7 +76,7 @@ the PATH as `godot`).
 | `npm run build` | The landing page, the web export and the three desktop builds, into `dist/` |
 | `npm run build:web` | The landing page and the web export only |
 | `npm run dev` | `build:web`, then `wrangler dev`. For the stand-in sign-in put `DEV_LOGIN="1"` in `.dev.vars` and run `npx wrangler dev --local-upstream localhost:8787`, with a `site_session` cookie of `dev.` and base64url JSON such as `{"email":"you@example.com","roles":["games:iron-haze"]}` |
-| `npm run deploy` | Test, build and deploy by hand (normally the merge to `main` does it) |
+| `npm run deploy` | Test, build and deploy, from the owner's machine (nothing deploys from GitHub) |
 
 Developer flags for the Godot project, after `--` on its command line: `--demo` (two armies clash mid-map),
 `--gallery` (one of everything by your base), `--aivsai --report` (an AI plays your side; the economy is printed
@@ -84,6 +84,5 @@ every 15 s), `--cam=x,z,zoom`, `--select=<kind>`, and `--shot=file.png --shotdel
 
 ## Deploy
 
-A merge to `main` that changes this folder deploys it (`.github/workflows/deploy.yml`, which installs Godot 4.7.2 and
-its export templates for the Godot games). The Worker needs no database and no secrets: only the route
+Nothing deploys from GitHub any more: the owner deploys it from their own machine with `npm run deploy` (tests, the Godot export, `wrangler deploy`), which needs Godot 4.7.2 and its export templates installed. The Worker needs no database and no secrets: only the route
 `icelander.net/games/fresh/iron-haze*` and the service binding to the login service, both in `wrangler.jsonc`.

@@ -1,6 +1,6 @@
 // The Twelve Banners Worker at icelander.net/games/fresh/twelve-banners: the landing page, the Godot web build and the desktop
 // builds, all for players holding games:twelve-banners (worker/index.ts). No database, no secrets.
-// Deployed by .github/workflows/deploy.yml on a merge to main (README "Deploy").
+// Deployed from the owner's machine with `npm run deploy` (README "Deploy"); nothing deploys from GitHub.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "twelve-banners",

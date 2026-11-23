@@ -12,17 +12,13 @@
     {
       "path": ".github/workflows/ci.yml",
       "symbol": "jobs"
-    },
-    {
-      "path": ".github/workflows/deploy.yml",
-      "symbol": "jobs"
     }
   ],
   "entities": [
     {
       "id": "ship-a-change",
       "name": "Ship a change to a game",
-      "description": "A change made on a branch is checked on a pull request and, once merged, deployed to icelander.net.",
+      "description": "A change made on a branch is checked on a pull request, merged, and then deployed by the owner from their own machine.",
       "sources": [
         {
           "path": "AGENTS.md",
@@ -37,8 +33,8 @@
           "symbol": "jobs"
         },
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "jobs"
+          "path": "games/rally/package.json",
+          "symbol": "scripts.deploy"
         }
       ],
       "actor": "Owner",
@@ -55,8 +51,8 @@
         "The game's own tests pass in its folder (npm test)."
       ],
       "postconditions": [
-        "Each game the change touched, outside its .dev folders, runs the merged code on icelander.net.",
-        "A change to .dev files alone is on main and nothing was deployed."
+        "Each game the change touched, once the owner has deployed it, runs the merged code on icelander.net.",
+        "Merging alone deploys nothing."
       ],
       "flow": [
         {
@@ -113,7 +109,7 @@
           "actor": "Owner",
           "participantKind": "actor",
           "actorDocument": "Actors/owner.md",
-          "action": "Merges the pull request, which deploys it.",
+          "action": "Merges the pull request. That deploys nothing.",
           "sources": [
             {
               "path": "AGENTS.md",
@@ -122,51 +118,28 @@
           ]
         },
         {
-          "id": "gate",
-          "actor": "Deploy",
-          "participantKind": "system",
-          "action": "Checks every database change since the last successful deploy for an acknowledgement.",
-          "sources": [
-            {
-              "path": ".github/workflows/deploy.yml",
-              "symbol": "jobs.migrations"
-            },
-            {
-              "path": ".github/scripts/last-deployed.sh",
-              "symbol": "last"
-            },
-            {
-              "path": ".github/scripts/migration-gate.sh",
-              "symbol": "deploy"
-            }
-          ]
-        },
-        {
           "id": "deploy",
-          "actor": "Deploy",
-          "participantKind": "system",
-          "action": "Lists the games the push changed and, for each, tests, builds and runs wrangler deploy in the production environment.",
+          "actor": "Owner",
+          "participantKind": "actor",
+          "action": "Applies any database migration the change needs (Migrate a game's database), then runs npm run deploy in each changed game's folder: tests, build, wrangler deploy.",
           "sources": [
             {
-              "path": ".github/workflows/deploy.yml",
-              "symbol": "jobs.deploy"
+              "path": "games/rally/package.json",
+              "symbol": "scripts.deploy"
             },
             {
-              "path": ".github/scripts/changed-games.sh",
-              "symbol": "all"
-            },
-            {
-              "path": ".github/workflows/game.yml",
-              "symbol": "jobs"
+              "path": "docs/database-migrations.md",
+              "symbol": "Database migrations"
             }
-          ]
+          ],
+          "actorDocument": "Actors/owner.md"
         }
       ],
       "alternatives": [
         {
           "atStep": "ci",
           "condition": "The pull request changes only .dev files, outside .github/ or not.",
-          "outcome": "No game is tested; the validators still run, and the merge deploys nothing.",
+          "outcome": "No game is tested; the validators still run.",
           "sources": [
             {
               "path": ".github/scripts/changed-games.sh",
@@ -205,39 +178,13 @@
           ]
         },
         {
-          "atStep": "gate",
-          "condition": "A database change since the last deploy is not acknowledged.",
-          "outcome": "Nothing is deployed.",
-          "sources": [
-            {
-              "path": ".github/scripts/migration-gate.sh",
-              "symbol": "deploy"
-            }
-          ]
-        },
-        {
           "atStep": "deploy",
-          "condition": "A production reviewer is set.",
-          "outcome": "Each game's deploy waits for the reviewer's approval.",
+          "condition": "The game's tests or build fail on the owner's machine.",
+          "outcome": "npm run deploy stops before wrangler deploy; that game stays as it was.",
           "sources": [
             {
-              "path": ".github/workflows/game.yml",
-              "symbol": "environment"
-            },
-            {
-              "path": ".github/workflows/deploy.yml",
-              "symbol": "Deploy"
-            }
-          ]
-        },
-        {
-          "atStep": "deploy",
-          "condition": "One game's tests, build or deploy fail.",
-          "outcome": "That game stays as it was; the others are deployed.",
-          "sources": [
-            {
-              "path": ".github/workflows/deploy.yml",
-              "symbol": "fail-fast"
+              "path": "games/rally/package.json",
+              "symbol": "scripts.deploy"
             }
           ]
         }

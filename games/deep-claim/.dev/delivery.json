@@ -10,12 +10,11 @@
       "summary": "The deep-claim Worker at icelander.net/games/retro/deep-claim*, with its static game and no database.",
       "environment": "production",
       "purpose": "The game players reach at icelander.net/games/retro/deep-claim/.",
-      "deployedBy": "The Deploy workflow on every push to main that changes games/deep-claim outside its .dev folders (or anything under .github/ outside .github/.dev); by hand with Run workflow; or `npm run deploy` with a Cloudflare token. The workflow installs Godot 4.7.2 and its web export templates for the Godot games it lists (game.yml), deep-claim among them.",
+      "deployedBy": "The owner, from their own machine: `npm run deploy` in games/deep-claim, with wrangler signed in to the icelander.net account. It needs Godot 4.7.2 and its web export templates installed. Nothing deploys from GitHub (the Deploy workflow was removed on 2026-11-23).",
       "approvals": [
-        "A pull request: main accepts nothing else.",
-        "A reviewer on the repository's production environment, if one is set."
+        "A pull request: main accepts nothing else."
       ],
-      "rollback": "No rollback is recorded. The Deploy workflow deploys only from main, so going back means merging a revert, which deploys it.",
+      "rollback": "No rollback is recorded: check out the previous commit and run `npm run deploy` again, or roll back the Worker's version in Cloudflare's dashboard.",
       "details": "The Worker's route runs ahead of the games hub's less specific icelander.net/games/*. workers_dev and preview URLs are off, so production is the only address.",
       "evidenceStatus": "source-verified",
       "sources": [

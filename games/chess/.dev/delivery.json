@@ -10,12 +10,11 @@
       "summary": "The chess Worker at icelander.net/games/retro/chess*, with the static game, the GameRoom Durable Objects and the D1 database chess.",
       "environment": "production",
       "purpose": "The game players reach at icelander.net/games/retro/chess/.",
-      "deployedBy": "The Deploy workflow on every push to main that changes games/chess outside its .dev folders (or anything under .github/ outside .github/.dev); by hand with Run workflow; or npm run deploy (npm test, npm run test:godot, npm run build, wrangler deploy) with Godot 4.7.2 and a Cloudflare token.",
+      "deployedBy": "The owner, from their own machine: `npm run deploy` in games/chess, with wrangler signed in to the icelander.net account. Nothing deploys from GitHub (the Deploy workflow was removed on 2026-11-23).",
       "approvals": [
-        "A pull request: main accepts nothing else.",
-        "A reviewer on the repository's production environment, if one is set."
+        "A pull request: main accepts nothing else."
       ],
-      "rollback": "No rollback is recorded. The Deploy workflow deploys only from main, so going back means merging a revert, which deploys it. A database change is not undone by this; it is applied by hand and written so the previous code keeps working (docs/database-migrations.md).",
+      "rollback": "No rollback is recorded: check out the previous commit and run `npm run deploy` again, or roll back the Worker's version in Cloudflare's dashboard.",
       "details": "The Worker's route runs ahead of the games hub's less specific icelander.net/games/*. The Durable Object class GameRoom came with migration rooms-v1, which must stay. One-time set-up (the database, the login service's keys in ACCOUNTS_JWKS, and optionally Resend) is in the README's Deploy section and the runbooks.",
       "evidenceStatus": "documented",
       "sources": [
@@ -26,10 +25,6 @@
         {
           "path": "games/chess/wrangler.jsonc",
           "symbol": "migrations"
-        },
-        {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "on"
         },
         {
           "path": "games/chess/package.json",

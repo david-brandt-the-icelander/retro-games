@@ -37,25 +37,24 @@
     },
     {
       "id": "deploy",
-      "title": "On a push to main",
-      "summary": "The same steps again, then wrangler deploy.",
-      "trigger": "A push to main that changes games/hivestorm or .github/, or Run workflow on the Deploy workflow (one game or all).",
+      "title": "Deploying, by hand",
+      "summary": "Nothing deploys from GitHub: the owner runs npm run deploy in this folder, which runs the tests and the build, then wrangler deploy.",
+      "trigger": "The owner, on their own machine (the Deploy workflow was removed on 2026-11-23).",
       "checks": [
-        "The migration gate: every database change since the last deploy has been acknowledged",
+        "Any database migration this change needs, applied first by hand (docs/database-migrations.md)",
         "npm test",
         "npm run build",
-        "No .dev folders in dist/: the build must not ship the folders' documentation",
         "npx wrangler deploy"
       ],
       "blocks": "release",
       "secrets": [
-        "CLOUDFLARE_API_TOKEN"
+        "The owner's wrangler login, or a Cloudflare API token, for the icelander.net account"
       ],
       "evidenceStatus": "documented",
       "sources": [
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "jobs"
+          "path": "games/hivestorm/package.json",
+          "symbol": "scripts.deploy"
         },
         {
           "path": "docs/database-migrations.md",

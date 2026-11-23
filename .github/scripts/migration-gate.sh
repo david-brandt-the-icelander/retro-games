@@ -3,7 +3,7 @@
 # database reaches main, or is about to, without an acknowledgement that production's database
 # has been migrated.
 #   migration-gate.sh pr <base sha> <pull request number>   the pull request check (migrations.yml)
-#   migration-gate.sh deploy [<base sha>]                    before every deploy (deploy.yml)
+#   migration-gate.sh deploy [<base sha>]                    by hand, before deploying a game (docs/database-migrations.md)
 # Needs gh, signed in (GH_TOKEN in Actions).
 set -euo pipefail
 cd "$(dirname "$0")/../.."

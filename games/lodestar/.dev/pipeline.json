@@ -39,22 +39,17 @@
     },
     {
       "id": "main",
-      "title": "On a merge to main",
-      "summary": "Nothing: the Deploy workflow neither builds nor deploys LodeStar.",
-      "trigger": "A push to main (deploy.yml).",
+      "title": "After a merge to main",
+      "summary": "Nothing: no workflow deploys any game, and LodeStar has no package.json or Worker to deploy.",
+      "trigger": "None: the owner deploys games by hand, and LodeStar is not one of them.",
       "checks": [
         "None for LodeStar"
       ],
       "notChecked": [
-        "Everything; LodeStar is not among deploy.yml's games"
+        "Everything; LodeStar is exported by hand (src/hosting/godot/.dev/runbooks.json)"
       ],
       "evidenceStatus": "source-verified",
-      "sources": [
-        {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "options"
-        }
-      ]
+      "sources": []
     }
   ]
 }

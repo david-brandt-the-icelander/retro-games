@@ -12,7 +12,7 @@
       "checks": [
         "python3 Meta/Agents/Skills/validate_diagrams.py",
         "python3 Meta/Agents/Knowledge/validate_knowledge.py",
-        "For each game changed outside its .dev folders, or every game when .github/ changed outside .github/.dev: game.yml without deploying"
+        "For each game changed outside its .dev folders, or every game when .github/ changed outside .github/.dev: game.yml (install, tests, build)"
       ],
       "blocks": "nothing on its own: main requires only the Database migration check",
       "notChecked": [
@@ -92,31 +92,31 @@
       ]
     },
     {
-      "id": "push-to-main",
-      "title": "On a push to main",
-      "summary": "The migration gate, then each changed game tested, built and deployed.",
-      "trigger": "A push to main, which only a merged pull request makes; or Run workflow, for one game or all.",
+      "id": "deploy-by-hand",
+      "title": "Deploying, by hand",
+      "summary": "Nothing deploys from GitHub: the owner runs npm run deploy in a game's folder, which runs its tests, its build, then wrangler deploy.",
+      "trigger": "The owner, on their own machine.",
       "checks": [
-        "migration-gate.sh deploy, from the last successful deploy",
-        "For each changed game: game.yml with deploy true"
+        "npm test",
+        "npm run build",
+        "npx wrangler deploy"
       ],
       "blocks": "release",
       "secrets": [
-        "CLOUDFLARE_API_TOKEN"
+        "The owner's wrangler login, or CLOUDFLARE_API_TOKEN, for icelander.net's Cloudflare account"
+      ],
+      "notChecked": [
+        "The migration gate does not run on its own any more: whoever deploys applies a game's migrations first, and can run migration-gate.sh deploy by hand to list them (docs/database-migrations.md)."
       ],
       "evidenceStatus": "source-verified",
       "sources": [
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "jobs"
+          "path": "games/rally/package.json",
+          "symbol": "scripts.deploy"
         },
         {
-          "path": ".github/scripts/last-deployed.sh",
-          "symbol": "last"
-        },
-        {
-          "path": ".github/scripts/migration-gate.sh",
-          "symbol": "deploy"
+          "path": "docs/database-migrations.md",
+          "symbol": "Database migrations"
         }
       ]
     }

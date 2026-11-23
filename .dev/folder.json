@@ -8,9 +8,9 @@
       "id": "folder",
       "title": "retro-games",
       "summary": "Six games made with the help of AI, five of them played in the browser on icelander.net, each documented in .dev folders beside its code.",
-      "purpose": "The repository root holds the games in games/, the workflows that test and deploy them in .github/, the database migration procedure in docs/, the sign-in library the games' Workers vendor in vendor/icelander-auth/, the actors the .dev files name in Actors/, the skills and knowledge catalogue the .dev files follow in Meta/Agents/, and the clean-room remake skills in .claude/skills/.",
+      "purpose": "The repository root holds the games in games/, the workflows that test them in .github/, the database migration procedure in docs/, the sign-in library the games' Workers vendor in vendor/icelander-auth/, the actors the .dev files name in Actors/, the skills and knowledge catalogue the .dev files follow in Meta/Agents/, and the clean-room remake skills in .claude/skills/.",
       "boundaries": [
-        "Every change reaches main through a pull request, and a merge to main deploys each game it changes; nothing here deploys by hand.",
+        "Every change reaches main through a pull request. Merging deploys nothing: the owner deploys each game from their own machine with npm run deploy (the Deploy workflow was removed on 2026-11-23).",
         "vendor/icelander-auth/ is a copy of packages/icelander-auth/ in the icelander.net repository, kept unchanged and checked against its STAMP.json; it is changed there, never here.",
         "Meta/Agents/Skills and Meta/Agents/Knowledge are copies from the human-assisted-software-development repository, changed there and copied here, except Meta/Agents/Skills/knowledge-driven-development, which LodeStar still uses.",
         "The games hub that relays online matches and serves /me lives in another repository; the games only connect to it."
@@ -30,8 +30,8 @@
           "symbol": "icelander-auth"
         },
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "on.push"
+          "path": "games/rally/package.json",
+          "symbol": "scripts.deploy"
         }
       ],
       "links": [

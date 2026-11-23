@@ -50,5 +50,5 @@ npm test && npm run test:godot
 npm run build      # dist/games/retro/thrustbound/, with the engine split under Cloudflare's 25 MiB limit
 ```
 
-A merge to `main` deploys it (`.github/workflows/deploy.yml`); `npm run deploy` does the same by hand.
+Nothing deploys from GitHub any more: the owner deploys it from their own machine with `npm run deploy` (tests, the Godot export, `wrangler deploy`), which needs Godot 4.7.2 and its export templates installed.
 It has no database and no secrets.

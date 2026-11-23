@@ -7,7 +7,7 @@
     {
       "id": "deploy",
       "title": "Merging to main deploys the game",
-      "summary": "The Deploy workflow tests, builds and uploads the game whenever its folder changes on main.",
+      "summary": "The owner tests, builds and uploads the game from their own machine with npm run deploy.",
       "steps": [
         "npm test (the Worker), npm run test:godot (maps and the message layer)",
         "npm run build: Godot 4.7.2 web export, the engine split in parts, boot.js",
@@ -26,8 +26,8 @@
       ],
       "environment": "production",
       "purpose": "The game players reach at icelander.net/games/retro/double-cross/.",
-      "deployedBy": "The Deploy workflow on every push to main that changes games/double-cross outside its .dev folders; by hand with Run workflow; or `npm run deploy` with a Cloudflare token.",
-      "rollback": "No rollback is recorded. The Deploy workflow deploys only from main, so going back means merging a revert, which deploys it. There is no database to undo."
+      "deployedBy": "The owner, from their own machine: `npm run deploy` in games/double-cross, with wrangler signed in to the icelander.net account. Nothing deploys from GitHub (the Deploy workflow was removed on 2026-11-23).",
+      "rollback": "No rollback is recorded: check out the previous commit and run `npm run deploy` again, or roll back the Worker's version in Cloudflare's dashboard. There is no database to undo."
     }
   ]
 }

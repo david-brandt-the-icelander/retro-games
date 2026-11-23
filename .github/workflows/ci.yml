@@ -1,7 +1,7 @@
 name: CI
 
 # On every pull request: the .dev diagrams and knowledge files, and each game the pull request changes,
-# tested and built as its deploy would (game.yml), without deploying.
+# tested and built as `npm run deploy` would before deploying (game.yml). Nothing here deploys.
 
 on:
   pull_request:

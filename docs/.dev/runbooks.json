@@ -16,7 +16,7 @@
         "Apply each new migration file once, in filename order: npx wrangler d1 execute <database> --remote -y --file worker/migrations/<file>",
         "Look at a table the migration changed",
         "Add the acknowledgement line to the pull request's description",
-        "Merge: merging deploys"
+        "Merge, then deploy the game from the owner's machine with npm run deploy (merging deploys nothing)"
       ],
       "verify": "The Database migration check passes on the pull request.",
       "evidenceStatus": "documented",
@@ -61,16 +61,15 @@
     },
     {
       "id": "deploy-stopped-at-gate",
-      "title": "The deploy stopped at the migration gate",
-      "summary": "A merge brought a database change nobody acknowledged, so nothing was deployed.",
+      "title": "A game was deployed before its migration was applied",
+      "summary": "No gate runs before a deploy any more, so a game can reach production ahead of its database.",
       "purpose": "recover",
-      "when": "The migrations job of a Deploy run failed.",
+      "when": "The game misbehaves after npm run deploy, and its pull request's migration was not applied.",
       "steps": [
-        "Apply the migration as in Apply a migration to production",
-        "Add the acknowledgement to the merged pull request's description",
-        "Re-run the failed jobs: gh run rerun <run id> --failed"
+        "Apply the migration at once, as in Apply a migration to production",
+        "Add the acknowledgement to the merged pull request's description"
       ],
-      "verify": "The Deploy run's migrations job passes and the games deploy.",
+      "verify": "The game works against the migrated database.",
       "evidenceStatus": "documented",
       "sources": [
         {
@@ -82,14 +81,14 @@
     {
       "id": "pushed-without-pull-request",
       "title": "A database change reached main without a pull request",
-      "summary": "No pull request carries an acknowledgement, so the gate can only be passed by hand.",
+      "summary": "No pull request carries an acknowledgement for it.",
       "purpose": "recover",
-      "when": "The gate reports a commit that no pull request brought.",
+      "when": "migration-gate.sh deploy, run by hand before a deploy, reports a commit that no pull request brought.",
       "steps": [
         "Apply the migration",
-        "Deploy by hand with the acknowledgement: gh workflow run deploy.yml --ref main -f migration_applied=true"
+        "Then deploy the game from the owner's machine with npm run deploy"
       ],
-      "verify": "The Deploy run passes the gate.",
+      "verify": "The game works against the migrated database.",
       "evidenceStatus": "documented",
       "sources": [
         {

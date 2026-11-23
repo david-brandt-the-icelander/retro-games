@@ -3,14 +3,10 @@
   "kind": "operation",
   "title": "Workflow operations",
   "folder": ".github",
-  "description": "The events that start each workflow, and the scripts the workflows call, which can also be run by hand from the repository root.",
+  "description": "The events that start each workflow, the scripts they call (which can also be run by hand from the repository root), and deploying a game by hand.",
   "sources": [
     {
       "path": ".github/workflows/ci.yml",
-      "symbol": "on"
-    },
-    {
-      "path": ".github/workflows/deploy.yml",
       "symbol": "on"
     },
     {
@@ -73,52 +69,26 @@
       ]
     },
     {
-      "id": "deploy-changed-games",
-      "name": "Deploy the changed games",
-      "description": "Deploys each game a push to main changed, once the migration gate passes.",
-      "sources": [
-        {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "jobs"
-        },
-        {
-          "path": ".github/workflows/game.yml",
-          "symbol": "jobs"
-        }
-      ],
-      "entrypoint": {
-        "path": ".github/workflows/deploy.yml",
-        "symbol": "on.push"
-      },
-      "action": "command",
-      "transport": "GitHub push event on main",
-      "authorization": "Only pull requests reach main (AGENTS.md); deploy jobs run in the production environment, with its reviewer if one is set, and need CLOUDFLARE_API_TOKEN.",
-      "result": "Each changed game tested, built and deployed with wrangler deploy; a change to .dev files alone deploys nothing.",
-      "failures": [
-        "A database change since the last deploy is not acknowledged: the migrations job fails and nothing is deployed.",
-        "A game's tests, build or deploy fail: that game is not deployed, and the others still are."
-      ]
-    },
-    {
       "id": "deploy-by-hand",
       "name": "Deploy by hand",
-      "description": "Run workflow on deploy.yml deploys one game, or all, from main.",
+      "description": "The owner deploys one game from their own machine: its tests, its build, then wrangler deploy.",
       "sources": [
         {
-          "path": ".github/workflows/deploy.yml",
-          "symbol": "on.workflow_dispatch"
+          "path": "games/rally/package.json",
+          "symbol": "scripts.deploy"
         }
       ],
       "entrypoint": {
-        "path": ".github/workflows/deploy.yml",
-        "symbol": "on.workflow_dispatch"
+        "path": "games/rally/package.json",
+        "symbol": "scripts.deploy"
       },
       "action": "command",
-      "transport": "GitHub workflow_dispatch, with the inputs game and migration_applied",
-      "authorization": "Whoever GitHub lets run workflows in the repository; the same production environment and secret as a push.",
-      "result": "The chosen game, or every game, deployed; migration_applied acknowledges any database change since the last deploy.",
+      "transport": "npm run deploy, in the game's folder",
+      "authorization": "The owner's own wrangler login, or a CLOUDFLARE_API_TOKEN, for icelander.net's Cloudflare account; AGENTS.md tells agents not to deploy unless the owner asks.",
+      "result": "That game's Worker and assets on icelander.net. Godot games also need Godot 4.7.2 and its export templates installed.",
       "failures": [
-        "A database change is not acknowledged and migration_applied is not ticked: nothing is deployed."
+        "The game's tests or build fail: nothing is deployed.",
+        "A database migration the change needs was not applied first: the new code runs against the old database (docs/database-migrations.md)."
       ]
     },
     {
@@ -139,26 +109,6 @@
       "transport": ".github/scripts/changed-games.sh [<base sha>]",
       "authorization": "None.",
       "result": "A JSON array of game folders. Files in .dev folders are left out; a change under .github/ means every game; with no base, or one Git cannot diff against, every game.",
-      "failures": []
-    },
-    {
-      "id": "find-last-deploy",
-      "name": "Find the last deployed commit",
-      "description": "The commit the last successful Deploy run deployed, where the migration gate starts.",
-      "sources": [
-        {
-          "path": ".github/scripts/last-deployed.sh",
-          "symbol": "last"
-        }
-      ],
-      "entrypoint": {
-        "path": ".github/scripts/last-deployed.sh",
-        "symbol": "last"
-      },
-      "action": "query",
-      "transport": ".github/scripts/last-deployed.sh [<before sha>]",
-      "authorization": "gh signed in with read access to the repository's Actions runs.",
-      "result": "That commit; else the push's before commit; else nothing, when Git has neither.",
       "failures": []
     },
     {
@@ -184,9 +134,9 @@
         "symbol": "mode"
       },
       "action": "query",
-      "transport": ".github/scripts/migration-gate.sh pr <base sha> <pull request number> | deploy [<base sha>]",
+      "transport": ".github/scripts/migration-gate.sh pr <base sha> <pull request number> | deploy <commit last deployed>",
       "authorization": "gh signed in with read access to pull requests.",
-      "result": "Exits 0 when there is no database change or every change is acknowledged (in the pull request, by the pull request that brought each commit, or by migration_applied); prints how to apply each changed file.",
+      "result": "Exits 0 when there is no database change or every change is acknowledged (in the pull request, or by the pull request that brought each commit); prints how to apply each changed file. Its deploy mode is run by hand before deploying a game.",
       "failures": [
         "A change is not acknowledged: exit 1, with an error annotation.",
         "No mode, or an unknown one: the usage line, exit 2."

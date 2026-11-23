@@ -1,6 +1,6 @@
 // The Hand of the Isle Worker at icelander.net/games/fresh/hand-of-the-isle: the landing page and the Godot web build,
 // both for players holding games:hand-of-the-isle (worker/index.ts). No database, no secrets.
-// Deployed by .github/workflows/deploy.yml on a merge to main (README "Deploy").
+// Deployed from the owner's machine with `npm run deploy` (README "Deploy"); nothing deploys from GitHub.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hand-of-the-isle",

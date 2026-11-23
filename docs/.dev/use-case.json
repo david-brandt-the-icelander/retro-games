@@ -3,7 +3,7 @@
   "kind": "use-case",
   "title": "Database use cases",
   "folder": "docs",
-  "description": "Changing a game's live database, which the deploy pipeline never does.",
+  "description": "Changing a game's live database, which deploying a game never does.",
   "sources": [
     {
       "path": "docs/database-migrations.md",
@@ -193,8 +193,8 @@
         },
         {
           "atStep": "check-passes",
-          "condition": "The merge was made and the deploy stopped at the gate.",
-          "outcome": "Apply, acknowledge on the merged pull request, and re-run the failed Deploy jobs.",
+          "condition": "The game was deployed before the migration was applied.",
+          "outcome": "Apply the migration at once, and acknowledge it on the merged pull request.",
           "sources": [
             {
               "path": "docs/database-migrations.md",

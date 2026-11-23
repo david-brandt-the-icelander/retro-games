@@ -1,7 +1,8 @@
 // The Dulmál Worker at icelander.net/games/dulmal: the page, and one Durable Object per room that
 // holds the game and talks to every device over a WebSocket (worker/index.ts, worker/room.ts), all
 // for players signed in to icelander.net with the invite-only role games:dulmal. No D1 database and
-// no secrets. Deployed by .github/workflows/deploy.yml on a merge to main.
+// no secrets. Deployed from the owner's machine with `npm run deploy`;
+// nothing deploys from GitHub.
 // Its route runs before the games hub (the recreations Worker), whose route icelander.net/games/* is less specific.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
