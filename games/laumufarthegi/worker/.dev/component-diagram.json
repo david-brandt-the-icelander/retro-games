@@ -1,0 +1,137 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Laumufarþegi Worker component diagram",
+  "folder": "games/laumufarthegi/worker",
+  "description": "The Worker at icelander.net/games/fresh/laumufarthegi: routes the page, a small API and each room's WebSocket, checks icelander.net's sign-in only to start a room, and runs one Room Durable Object per room, which holds the room's state in its storage, applies every action through the shared rules and sends each player their own view.",
+  "sources": [
+    {
+      "path": "games/laumufarthegi/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/laumufarthegi/worker/index.ts",
+      "symbol": "mayHost"
+    },
+    {
+      "path": "games/laumufarthegi/worker/room.ts",
+      "symbol": "Room"
+    },
+    {
+      "path": "games/laumufarthegi/wrangler.jsonc",
+      "symbol": "durable_objects"
+    },
+    {
+      "path": "vendor/icelander-auth/index.js",
+      "symbol": "createAuth"
+    }
+  ],
+  "components": [
+    {
+      "id": "worker",
+      "name": "Laumufarþegi Worker",
+      "responsibility": "Everything that runs on Cloudflare for the game.",
+      "folder": "games/laumufarthegi/worker"
+    },
+    {
+      "id": "router",
+      "name": "Routes (index.ts)",
+      "responsibility": "Redirects the bare path to BASE/; answers api/me (may this visitor start a room, and where to sign in), api/rooms (start a room: sign-in unless HOST_SIGN_IN is none, same origin only, a fresh random code, retried on a clash) and api/rooms/CODE/ws (a valid code, a WebSocket upgrade, this site's origin, passed to the room); serves every other GET from the static assets with the HTML uncached; a thrown error becomes a JSON 500. Exports Room.",
+      "folder": "games/laumufarthegi/worker"
+    },
+    {
+      "id": "room",
+      "name": "Room Durable Object (room.ts)",
+      "responsibility": "One per room code: /create makes the room once; /ws accepts a hibernatable WebSocket. Each socket's first message joins (a token takes back a seat, a name takes a new one); every later message is an action applied with act(), after which the state is saved and each open socket gets its player's view. Answers ping with pong, marks a player disconnected when their last socket closes, tells removed players and closes their sockets, runs out timeouts on its alarm, and deletes itself after IDLE_MS (24 h) without a change.",
+      "folder": "games/laumufarthegi/worker"
+    },
+    {
+      "id": "shared",
+      "name": "Shared code",
+      "responsibility": "The rules, the protocol and the topics.",
+      "folder": "games/laumufarthegi/shared",
+      "diagram": "games/laumufarthegi/shared/.dev/component-diagram.json"
+    },
+    {
+      "id": "web",
+      "name": "Browser page",
+      "responsibility": "The built page in dist/, served through the ASSETS binding.",
+      "folder": "games/laumufarthegi/web",
+      "diagram": "games/laumufarthegi/web/.dev/component-diagram.json"
+    },
+    {
+      "id": "signin",
+      "name": "Sign-in (vendor/icelander-auth)",
+      "responsibility": "The shared library: createAuth (currentUser, hasRole, signInPath) and sameOrigin.",
+      "folder": "vendor/icelander-auth"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Who holds the site_session cookie, and their games: roles (service binding ACCOUNTS).",
+      "external": true
+    },
+    {
+      "id": "storage",
+      "name": "Durable Object storage and alarm",
+      "responsibility": "Each Room's own SQLite-backed storage (one key, state), its single alarm, and the runtime's hibernatable WebSockets with their attachments.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "worker",
+      "to": "router",
+      "kind": "contains",
+      "description": "The fetch handler, wrangler's main."
+    },
+    {
+      "from": "worker",
+      "to": "room",
+      "kind": "contains",
+      "description": "The Durable Object class, bound as ROOMS."
+    },
+    {
+      "from": "router",
+      "to": "room",
+      "kind": "depends-on",
+      "description": "ROOMS.get(ROOMS.idFromName(code)).fetch: POST /create, a 409 meaning the code is taken; /ws with the browser's upgrade request."
+    },
+    {
+      "from": "router",
+      "to": "signin",
+      "kind": "depends-on",
+      "description": "AUTH.currentUser and AUTH.hasRole (games:play) in mayHost; signInPath for the answer; sameOrigin before starting a room."
+    },
+    {
+      "from": "router",
+      "to": "shared",
+      "kind": "depends-on",
+      "description": "BASE, CODE_LETTERS, CODE_LENGTH, isCode and CreatedRoom."
+    },
+    {
+      "from": "router",
+      "to": "web",
+      "kind": "depends-on",
+      "description": "ASSETS.fetch for every path outside api/."
+    },
+    {
+      "from": "room",
+      "to": "shared",
+      "kind": "depends-on",
+      "description": "newRoom, addPlayer, byToken, setConnected, act, tick and view from game.ts; isCode and the message types from protocol.ts; TOPICS."
+    },
+    {
+      "from": "room",
+      "to": "storage",
+      "kind": "depends-on",
+      "description": "storage.get and put of state, setAlarm for the next deadline or the idle clean-up, deleteAll; acceptWebSocket, getWebSockets and serializeAttachment for the player id on each socket."
+    },
+    {
+      "from": "signin",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Asks who holds the session cookie."
+    }
+  ]
+}

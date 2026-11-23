@@ -1,0 +1,194 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "Laumufarþegi Worker operations",
+  "folder": "games/laumufarthegi/worker",
+  "description": "The ways into the Worker and its Room Durable Object: two HTTP routes, the room's WebSocket and the messages it takes, and the room's alarm. BASE is /games/fresh/laumufarthegi.",
+  "sources": [
+    {
+      "path": "games/laumufarthegi/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/laumufarthegi/worker/room.ts",
+      "symbol": "Room"
+    },
+    {
+      "path": "games/laumufarthegi/shared/protocol.ts",
+      "symbol": "ClientMessage"
+    }
+  ],
+  "entities": [
+    {
+      "id": "me",
+      "name": "May I start a room?",
+      "description": "Tells the page whether this visitor may start a room, their name if signed in, and the sign-in path.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "me"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/laumufarthegi/worker/index.ts",
+        "symbol": "me"
+      },
+      "action": "query",
+      "transport": "GET {BASE}/api/me",
+      "authorization": "None; the answer depends on mayHost: everyone when HOST_SIGN_IN is none, otherwise a signed-in icelander.net user with the games:play role.",
+      "result": "200 JSON {canHost, name, signIn}, not cached.",
+      "failures": [
+        "Any other method: 405."
+      ]
+    },
+    {
+      "id": "create-room",
+      "name": "Start a room",
+      "description": "Makes a new room under a fresh code, with the caller as its host.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "createRoom"
+        },
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.fetch"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/laumufarthegi/worker/index.ts",
+        "symbol": "createRoom"
+      },
+      "action": "command",
+      "transport": "POST {BASE}/api/rooms with JSON {name}; then POST /create on the Room for that code",
+      "authorization": "Same origin (sameOrigin); then mayHost: anyone when HOST_SIGN_IN is none, otherwise a signed-in icelander.net user with games:play.",
+      "result": "201 JSON CreatedRoom {code, token, playerId}: the five-letter code and the host's seat. The host's name is the one sent, or else the signed-in name.",
+      "failures": [
+        "Not POST: 405.",
+        "From another site: 403.",
+        "Not allowed to host: 401 with the message and the sign-in path.",
+        "Six random codes in a row already taken: 503.",
+        "The Room fails to create: 500."
+      ]
+    },
+    {
+      "id": "open-socket",
+      "name": "Open a room's WebSocket",
+      "description": "Connects a browser to a room; no sign-in, since the code in the link is the key.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "openSocket"
+        },
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.fetch"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/laumufarthegi/worker/index.ts",
+        "symbol": "openSocket"
+      },
+      "action": "command",
+      "transport": "GET {BASE}/api/rooms/CODE/ws with Upgrade: websocket; passed on to /ws on the Room for that code",
+      "authorization": "No sign-in. The code must be valid, and an Origin header, when sent, must be this site's.",
+      "result": "101: a hibernatable WebSocket accepted by the room.",
+      "failures": [
+        "Not a valid code: 404.",
+        "No WebSocket upgrade: 426.",
+        "Another site's Origin: 403.",
+        "No room with this code: 404 from the Room."
+      ]
+    },
+    {
+      "id": "join",
+      "name": "Join a room",
+      "description": "The first message on a socket: take back a seat with its token, or take a new one with a name.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.webSocketMessage"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/laumufarthegi/worker/room.ts",
+        "symbol": "Room.webSocketMessage"
+      },
+      "action": "command",
+      "transport": "WebSocket message {t: \"join\", token?, name?}",
+      "authorization": "Whoever holds a seat's token gets that seat; anyone else may take a new seat by name.",
+      "result": "welcome {token, playerId} to this socket, the player marked connected, the state saved and every socket sent its view.",
+      "failures": [
+        "An unknown token and no name: error, asking for a name.",
+        "No name, a taken name or a full room: error with the reason.",
+        "The room no longer exists: error, and the socket is closed with 4404."
+      ]
+    },
+    {
+      "id": "action",
+      "name": "Play an action",
+      "description": "Any later message: settings, start, clue, vote, guess, next, end, kick, claimHost or resetTopics.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.webSocketMessage"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "act"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/laumufarthegi/worker/room.ts",
+        "symbol": "Room.webSocketMessage"
+      },
+      "action": "command",
+      "transport": "WebSocket message, an Action ({t: ..., ...})",
+      "authorization": "The socket must have joined; act() checks the rest per action: the host alone for settings, start, next, end, kick and resetTopics; the player whose turn it is for a clue; players in the round for votes; the stowaway for the guess; anyone but the host for claimHost, once the host has been away 30 s.",
+      "result": "The state saved, the alarm set for the next deadline, and every open socket sent its player's view; sockets of removed players get removed and are closed with 4403.",
+      "failures": [
+        "Not joined yet: error.",
+        "Refused by the rules: error with the reason, to this socket only; nothing changes.",
+        "Not a string, longer than 2000 characters, not JSON or without a t: ignored."
+      ]
+    },
+    {
+      "id": "alarm",
+      "name": "Run out a timeout, or delete an idle room",
+      "description": "The room's alarm, set after every save for the next deadline or a day after the last change.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.alarm"
+        },
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.save"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/laumufarthegi/worker/room.ts",
+        "symbol": "Room.alarm"
+      },
+      "action": "command",
+      "transport": "Durable Object alarm",
+      "authorization": "The runtime only.",
+      "result": "A room unchanged for IDLE_MS (24 h) closes every socket with 4404 and deletes its storage; otherwise tick() runs out a missed clue, the vote or the guess, everyone gets their view, and the next alarm is set.",
+      "failures": []
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/laumufarthegi/worker",
+      "path": "games/laumufarthegi/worker/.dev/capability.json",
+      "relationship": "The capability these operations expose."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/laumufarthegi/web",
+      "path": "games/laumufarthegi/web/.dev/use-case.json",
+      "relationship": "The use cases that call them."
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/glossary.schema.json",
+  "kind": "glossary",
+  "title": "Laumufarþegi terms",
+  "folder": "games/laumufarthegi/shared",
+  "entities": [
+    {
+      "id": "laumufarthegi",
+      "title": "Stowaway (laumufarþegi)",
+      "summary": "The one player in a round who is not shown the secret word and tries to pass as someone who knows it. The game is named after them.",
+      "aliases": [
+        "laumufarþegi",
+        "Round.stowaway"
+      ],
+      "notToBeConfusedWith": [
+        "The accused (Round.accused): the player the vote picked, who may or may not be the stowaway."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "Round"
+        }
+      ]
+    },
+    {
+      "id": "efni",
+      "title": "Topic (efni)",
+      "summary": "A theme with a grid of 16 words (ord), a difficulty (erfidleiki, 1–3), a child-friendly flag (barnvaent) and a category (flokkur). The field names are Icelandic, as in the word-list data.",
+      "aliases": [
+        "efni",
+        "efnisgrind",
+        "Topic"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "Topic"
+        },
+        {
+          "path": "games/laumufarthegi/shared/topics.ts",
+          "symbol": "TOPICS"
+        }
+      ]
+    },
+    {
+      "id": "leynord",
+      "title": "Secret word (leyniorð)",
+      "summary": "The one word of the topic's 16 (Round.secret, an index) that every player in the round but the stowaway is shown.",
+      "aliases": [
+        "leyniorð",
+        "Round.secret"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "Round"
+        }
+      ]
+    },
+    {
+      "id": "stjornandi",
+      "title": "Host (stjórnandi)",
+      "summary": "The player who controls a room (State.hostId): at first whoever started it, later whoever took over after the host had been away.",
+      "aliases": [
+        "stjórnandi",
+        "gestgjafi",
+        "State.hostId"
+      ],
+      "notToBeConfusedWith": [
+        "The Cloudflare host that runs the Worker."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "State"
+        },
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "newRoom"
+        }
+      ]
+    },
+    {
+      "id": "leiknumer",
+      "title": "Room code (leiknúmer)",
+      "summary": "Five letters from an alphabet without I, O, Q and W that name a room; the link ?r=CODE carries it, and knowing it is all it takes to join.",
+      "aliases": [
+        "leiknúmer",
+        "code"
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/protocol.ts",
+          "symbol": "CODE_LETTERS"
+        },
+        {
+          "path": "games/laumufarthegi/shared/protocol.ts",
+          "symbol": "isCode"
+        }
+      ]
+    }
+  ]
+}

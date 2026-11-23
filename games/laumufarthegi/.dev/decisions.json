@@ -1,0 +1,130 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Laumufarþegi decisions",
+  "folder": "games/laumufarthegi",
+  "entities": [
+    {
+      "id": "open-link-host-sign-in",
+      "title": "Anyone with the link plays; only starting a room needs the sign-in",
+      "summary": "Players join a room from its link with just a name and no login; starting a room needs icelander.net's sign-in with games:play, unless HOST_SIGN_IN is set to \"none\", which opens that to everyone too.",
+      "status": "open",
+      "context": "Every other game on icelander.net/games serves its page only to signed-in players with the games:play role. Laumufarþegi is a party game for a group, often colleagues: the owner wants the host to paste a link in a Teams chat and everyone to join from it at once, without each of them signing in to icelander.net first. Starting rooms with no sign-in at all would leave the Worker open to anyone creating rooms.",
+      "options": [
+        {
+          "title": "Sign-in for everyone, like the other games",
+          "consequences": "Consistent with the site, but each player needs an icelander.net account with games:play before they can join, which defeats joining from a Teams link."
+        },
+        {
+          "title": "No sign-in at all",
+          "consequences": "Simplest to join and to host; anyone on the internet can create rooms."
+        },
+        {
+          "title": "No sign-in to join; sign-in to start a room, switchable",
+          "consequences": "Joining needs only the link and a name; creating rooms stays tied to icelander.net accounts. HOST_SIGN_IN \"none\" turns it into the second option without a code change. The room code is the only key to a room."
+        }
+      ],
+      "decision": "No sign-in to join; icelander.net's sign-in with games:play to start a room, unless the Worker's HOST_SIGN_IN var is \"none\". The page, api/me and the room's WebSocket need no sign-in; only POST api/rooms checks it, and only from this site's origin.",
+      "rationale": "The owner asked for joining from a link pasted in Teams with no login; keeping the sign-in for starting a room keeps room creation with the site's members, and the var lets the owner open hosting to all if wanted.",
+      "decidedBy": "Proposed by Claude Code; the owner asked only that players join from a shared link with no login",
+      "decidedOn": "2026-11-23",
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "date": "2026-11-23",
+        "description": "The owner asked for players to join via a link pasted in Teams, with no login."
+      },
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "mayHost"
+        },
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "createRoom"
+        },
+        {
+          "path": "games/laumufarthegi/worker/index.ts",
+          "symbol": "openSocket"
+        },
+        {
+          "path": "games/laumufarthegi/wrangler.jsonc",
+          "symbol": "vars.HOST_SIGN_IN"
+        },
+        {
+          "path": "games/laumufarthegi/test/worker.test.ts",
+          "symbol": "HOST_SIGN_IN none lets anyone start a room; another site may not start one"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "implemented-by",
+          "path": "games/laumufarthegi/worker/.dev/configuration.json",
+          "entityId": "host-sign-in"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/laumufarthegi/worker/.dev/limitations.json",
+          "entityId": "code-is-the-key"
+        }
+      ],
+      "waitingOn": "The owner: keep the host sign-in, or set HOST_SIGN_IN to \"none\" so anyone may start a room"
+    },
+    {
+      "id": "server-authoritative",
+      "title": "The room's server decides everything, and each device gets only its own view",
+      "summary": "The Room Durable Object holds the whole state and applies every action and timeout; each browser is sent view(state, its player), so the secret word and the stowaway never reach a device that should not see them.",
+      "status": "accepted",
+      "context": "The game rests on two secrets: the secret word, which the stowaway must not see, and who the stowaway is, which nobody else may know until the reveal. Anything sent to a browser can be read in its developer tools, whatever the page shows. Some other online games here (Double Cross) decide a match in the host's browser and relay it through the games hub.",
+      "options": [
+        {
+          "title": "Host's browser decides, relayed to the others",
+          "consequences": "No server state of the game's own, but the host's device knows both secrets, so the host could never play fairly."
+        },
+        {
+          "title": "Every browser gets the whole state and hides what it should not show",
+          "consequences": "Simple, but any player can read the secret word and the stowaway from the network traffic."
+        },
+        {
+          "title": "The server decides and sends each player only their view",
+          "consequences": "A Durable Object per room with its own storage and alarm; the rules run only on the server (shared/game.ts, pure and testable), the page holds no rules, and every action is checked there."
+        }
+      ],
+      "decision": "Server-authoritative: one Room Durable Object per room keeps the state, applies actions one at a time through act() and timeouts through tick(), and sends each socket view(state, playerId). The secret goes only to players in the round who are not the stowaway, the stowaway is told only to themselves, and the accused, the votes and the stowaway reach everyone only when the rules make them public. Tokens stay on the server except each player's own.",
+      "rationale": "It is the only option in which no device, the host's included, ever holds a secret its player may not know.",
+      "origin": "The design the game was built with: worker/room.ts and shared/game.ts say so in their opening comments.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/shared/game.ts",
+          "symbol": "view"
+        },
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.broadcast"
+        },
+        {
+          "path": "games/laumufarthegi/worker/room.ts",
+          "symbol": "Room.webSocketMessage"
+        },
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "screen"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "implemented-by",
+          "path": "games/laumufarthegi/shared/.dev/feature.json",
+          "entityId": "private-views"
+        },
+        {
+          "relation": "verified-by",
+          "path": "games/laumufarthegi/shared/.dev/verification.json",
+          "entityId": "private-views"
+        }
+      ]
+    }
+  ]
+}

@@ -119,6 +119,13 @@
       "responsibility": "A new spy-trap party game in Godot: search for intel, rig traps, reach the extraction door, alone or online with up to eight agents.",
       "folder": "games/double-cross",
       "diagram": "games/double-cross/.dev/component-diagram.json"
+    },
+    {
+      "id": "laumufarthegi",
+      "name": "Laumufarþegi",
+      "responsibility": "An Icelandic outsider word game for 3–10 players on their own phones: a Worker with a Durable Object per room; anyone with the link plays, starting a room needs the sign-in.",
+      "folder": "games/laumufarthegi",
+      "diagram": "games/laumufarthegi/.dev/component-diagram.json"
     }
   ],
   "relationships": [
@@ -211,6 +218,12 @@
       "to": "double-cross",
       "kind": "contains",
       "description": "Double Cross is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "laumufarthegi",
+      "kind": "contains",
+      "description": "Laumufarþegi is one of the games."
     }
   ]
 }

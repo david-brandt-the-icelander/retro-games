@@ -1,0 +1,90 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Laumufarþegi Worker verification",
+  "folder": "games/laumufarthegi/worker",
+  "entities": [
+    {
+      "id": "routes",
+      "title": "Who may reach what",
+      "summary": "test/worker.test.ts calls the Worker's fetch handler with a stand-in login service, assets and rooms.",
+      "subject": [
+        {
+          "path": "games/laumufarthegi/worker/.dev/operation.json"
+        },
+        {
+          "path": "games/laumufarthegi/.dev/decisions.json",
+          "entityId": "open-link-host-sign-in"
+        }
+      ],
+      "criteria": [
+        "The vendored sign-in library matches its stamp",
+        "The page is served to anyone, uncached, and the bare path redirects to BASE/",
+        "Starting a room without a sign-in is 401 with the sign-in path; api/me says canHost false; a signed-in player gets 201 with a five-letter code, and api/me gives their name",
+        "With HOST_SIGN_IN none anyone starts a room; another site's origin gets 403 and a GET gets 405",
+        "The room socket needs a valid code (404), an upgrade (426) and this site's origin (403); other api paths are 404",
+        "Paths outside the game are 404"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/laumufarthegi/test/worker.test.ts",
+          "command": "npm test",
+          "description": "Six node:test cases, one per criterion."
+        }
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/test/worker.test.ts"
+        }
+      ]
+    },
+    {
+      "id": "room",
+      "title": "The Room Durable Object",
+      "summary": "test/room.test.ts runs Room on a fake runtime (in-memory storage, alarm and sockets) with a fixed clock and random source.",
+      "subject": [
+        {
+          "path": "games/laumufarthegi/worker/.dev/operation.json",
+          "entityId": "join"
+        },
+        {
+          "path": "games/laumufarthegi/worker/.dev/operation.json",
+          "entityId": "action"
+        },
+        {
+          "path": "games/laumufarthegi/worker/.dev/operation.json",
+          "entityId": "alarm"
+        }
+      ],
+      "criteria": [
+        "A room is created once; a second create for its code is 409",
+        "The host joins with the token; guests join by name, and a reload with the stored token gets the same seat",
+        "A taken name, or an unknown token without a name, is refused; no action is taken before joining",
+        "Each socket gets its own view (one stowaway, without the secret; the same secret for all others); a second tab keeps a player connected",
+        "The alarm is set for the deadline and runs out a turn; a room unchanged for a day clears its storage and closes its sockets with 4404",
+        "A removed player's socket is told so and closed with 4403",
+        "A message to a room that no longer exists closes the socket with 4404"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/laumufarthegi/test/room.test.ts",
+          "command": "npm test",
+          "description": "Seven node:test cases, one per criterion."
+        }
+      ],
+      "notChecked": [
+        "The real Cloudflare runtime: hibernation, alarms and storage are faked.",
+        "The page in a browser."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/test/room.test.ts"
+        }
+      ]
+    }
+  ]
+}

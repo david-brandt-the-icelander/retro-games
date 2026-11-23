@@ -1,0 +1,164 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Laumufarþegi component diagram",
+  "folder": "games/laumufarthegi",
+  "description": "Laumufarþegi: an Icelandic online party word game for 3–10 players on their own devices. A plain-TypeScript page shows each player their view; one Cloudflare Worker serves it and runs one Durable Object per room, which decides everything with the shared rules. Topics come from the repository's shared word lists.",
+  "sources": [
+    {
+      "path": "games/laumufarthegi/package.json",
+      "symbol": "scripts"
+    },
+    {
+      "path": "games/laumufarthegi/build.mjs",
+      "symbol": "SITE"
+    },
+    {
+      "path": "games/laumufarthegi/wrangler.jsonc",
+      "symbol": "main"
+    },
+    {
+      "path": "games/laumufarthegi/worker/index.ts",
+      "symbol": "default.fetch"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Laumufarþegi",
+      "responsibility": "One game: the page, the Worker with its rooms, the shared code and the tests, built and deployed together as one npm project.",
+      "folder": "games/laumufarthegi"
+    },
+    {
+      "id": "shared",
+      "name": "Shared code",
+      "responsibility": "The rules (the Phase machine, scoring, per-player views), the WebSocket protocol and the topics.",
+      "folder": "games/laumufarthegi/shared",
+      "diagram": "games/laumufarthegi/shared/.dev/component-diagram.json"
+    },
+    {
+      "id": "worker",
+      "name": "Worker and rooms",
+      "responsibility": "The routes, the sign-in for starting a room, and the Room Durable Object.",
+      "folder": "games/laumufarthegi/worker",
+      "diagram": "games/laumufarthegi/worker/.dev/component-diagram.json"
+    },
+    {
+      "id": "web",
+      "name": "Browser page",
+      "responsibility": "The screens and the connection to the room.",
+      "folder": "games/laumufarthegi/web",
+      "diagram": "games/laumufarthegi/web/.dev/component-diagram.json"
+    },
+    {
+      "id": "test",
+      "name": "Tests",
+      "responsibility": "node:test suites for the rules (game.test.ts), the Room on a fake runtime (room.test.ts) and the Worker's routes (worker.test.ts), bundled by build.mjs --test.",
+      "folder": "games/laumufarthegi/test"
+    },
+    {
+      "id": "word-lists",
+      "name": "Icelandic word lists",
+      "responsibility": "The 16-word topic grids, shared with other party games; not a game itself.",
+      "folder": "games/word-lists"
+    },
+    {
+      "id": "signin",
+      "name": "Sign-in (vendor/icelander-auth)",
+      "responsibility": "icelander.net's shared sign-in library, copied in and never edited here.",
+      "folder": "vendor/icelander-auth"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Who is signed in, and their games: roles.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "shared",
+      "kind": "contains",
+      "description": "Imported by the Worker and the page."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "wrangler's main, deployed with wrangler."
+    },
+    {
+      "from": "game",
+      "to": "web",
+      "kind": "contains",
+      "description": "Built by build.mjs into dist/."
+    },
+    {
+      "from": "game",
+      "to": "test",
+      "kind": "contains",
+      "description": "Run by npm test."
+    },
+    {
+      "from": "web",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "api/me, api/rooms and the room's WebSocket."
+    },
+    {
+      "from": "worker",
+      "to": "web",
+      "kind": "depends-on",
+      "description": "Serves the built page from the ASSETS binding."
+    },
+    {
+      "from": "web",
+      "to": "shared",
+      "kind": "depends-on",
+      "description": "Types, limits, BASE and isCode."
+    },
+    {
+      "from": "worker",
+      "to": "shared",
+      "kind": "depends-on",
+      "description": "The rules, the protocol and the topics."
+    },
+    {
+      "from": "shared",
+      "to": "word-lists",
+      "kind": "depends-on",
+      "description": "topics.ts bundles data/topic-grids.json at build time."
+    },
+    {
+      "from": "worker",
+      "to": "signin",
+      "kind": "depends-on",
+      "description": "createAuth and sameOrigin, only for starting a room."
+    },
+    {
+      "from": "signin",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Service binding ACCOUNTS."
+    },
+    {
+      "from": "test",
+      "to": "shared",
+      "kind": "depends-on",
+      "description": "game.test.ts drives the rules with a fixed clock and random source."
+    },
+    {
+      "from": "test",
+      "to": "worker",
+      "kind": "depends-on",
+      "description": "room.test.ts runs Room on a fake runtime; worker.test.ts calls the fetch handler with stand-in bindings."
+    },
+    {
+      "from": "test",
+      "to": "signin",
+      "kind": "depends-on",
+      "description": "checkVendored: the library matches its stamp."
+    }
+  ]
+}

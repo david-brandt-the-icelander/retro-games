@@ -1,0 +1,240 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-user-journey/schema.json",
+  "kind": "user-journey",
+  "title": "Laumufarþegi journeys",
+  "folder": "games/laumufarthegi",
+  "description": "The host's and the players' experience of a game, as the page leads them through it: its screens in order, its how-to-play text and its prompts (\"Sendu hlekkinn á hina, t.d. í Teams\").",
+  "sources": [
+    {
+      "path": "games/laumufarthegi/web/app.ts",
+      "symbol": "screen"
+    },
+    {
+      "path": "games/laumufarthegi/web/app.ts",
+      "symbol": "HOW_TO"
+    }
+  ],
+  "entities": [
+    {
+      "id": "host-a-game",
+      "name": "Host a game for a group",
+      "description": "Someone starts a room, gets the group into it from a shared link, and runs the game to its winner.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "homeScreen"
+        },
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "lobbyScreen"
+        },
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "overScreen"
+        }
+      ],
+      "persona": "Room host",
+      "goal": "Give a group of 3–10 people, each on their own device, a game of Laumufarþegi with as little setting up as possible.",
+      "stages": [
+        {
+          "id": "start",
+          "context": "Opens the game's address; signed in to icelander.net, or told to sign in first.",
+          "touchpoint": "The home page",
+          "action": "Types a name and starts a room.",
+          "outcome": "The lobby, with a five-letter code and a link.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "homeScreen"
+            }
+          ]
+        },
+        {
+          "id": "invite",
+          "context": "The group is somewhere else, for example in a Teams chat or meeting.",
+          "touchpoint": "The lobby's share link, then the group's own chat",
+          "action": "Copies the link and pastes it to the group.",
+          "outcome": "Players appear in the lobby's list as they join.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "lobbyScreen"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "copy"
+            }
+          ]
+        },
+        {
+          "id": "set-up",
+          "context": "The group is in; some may be children, or new to the game.",
+          "touchpoint": "The lobby's settings",
+          "action": "Chooses the number of rounds, the time for clues and the vote, how hard the topics are and whether only child-friendly ones are used, and starts the game.",
+          "outcome": "The first round is dealt to everyone at once.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "settingsCard"
+            }
+          ]
+        },
+        {
+          "id": "rounds",
+          "context": "The host plays each round like everyone else.",
+          "touchpoint": "The round and reveal screens",
+          "action": "Plays, and moves the group on from each reveal; removes anyone who should not be there.",
+          "outcome": "A running score after each round.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "revealScreen"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "playersCard"
+            }
+          ]
+        },
+        {
+          "id": "finish",
+          "context": "The last round is over, or the group has had enough.",
+          "touchpoint": "The final standings",
+          "action": "Sees the winners; may start another game with the same players.",
+          "outcome": "The game is over; the room is deleted a day after its last use.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "overScreen"
+            },
+            {
+              "path": "games/laumufarthegi/worker/room.ts",
+              "symbol": "IDLE_MS"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/room-host.md",
+      "supportingActors": [
+        {
+          "name": "Player",
+          "actorDocument": "Actors/player.md"
+        }
+      ]
+    },
+    {
+      "id": "join-from-a-link",
+      "name": "Join a game from a link",
+      "description": "A player taps the link someone shared, plays the rounds on their own phone and sees who won.",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "joinScreen"
+        },
+        {
+          "path": "games/laumufarthegi/web/app.ts",
+          "symbol": "roundScreen"
+        }
+      ],
+      "persona": "Player",
+      "goal": "Play along with the group without creating an account or installing anything.",
+      "stages": [
+        {
+          "id": "arrive",
+          "context": "Someone has pasted the room's link, for example in Teams.",
+          "touchpoint": "The link, and the page's name entry",
+          "action": "Opens it, types a name and joins; no sign-in.",
+          "outcome": "The lobby with the others, the rules under Hvernig er spilað?, waiting for the host.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "joinScreen"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "howTo"
+            }
+          ]
+        },
+        {
+          "id": "role",
+          "context": "The host starts a round.",
+          "touchpoint": "The round screen",
+          "action": "Reads the topic's 16 words and their role: the secret word, or that they are the stowaway.",
+          "outcome": "Knows what to hide, or what to fake.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "roleBanner"
+            }
+          ]
+        },
+        {
+          "id": "clue-and-vote",
+          "context": "Their turn comes, with a countdown.",
+          "touchpoint": "The clue box, then the vote",
+          "action": "Gives one clue, reads the others', and votes for whoever seems not to know the word.",
+          "outcome": "The vote catches the stowaway, who then guesses the word, or misses them.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "roundScreen"
+            },
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "voteCard"
+            }
+          ]
+        },
+        {
+          "id": "reveal",
+          "context": "The round is over.",
+          "touchpoint": "The reveal screen",
+          "action": "Sees the stowaway, the word, who voted for whom and the points.",
+          "outcome": "Their score so far; the next round when the host moves on.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "revealScreen"
+            }
+          ]
+        },
+        {
+          "id": "back",
+          "context": "The phone locks, the page reloads or the connection drops.",
+          "touchpoint": "The same page",
+          "action": "Comes back to it.",
+          "outcome": "The page reconnects to the same seat with its stored token, score intact.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "connect"
+            }
+          ]
+        },
+        {
+          "id": "end",
+          "context": "The host ends the game.",
+          "touchpoint": "The final standings",
+          "action": "Sees the ranking and the winners.",
+          "outcome": "Done, or another game with the same group.",
+          "sources": [
+            {
+              "path": "games/laumufarthegi/web/app.ts",
+              "symbol": "overScreen"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/laumufarthegi/web",
+      "path": "games/laumufarthegi/web/.dev/use-case.json",
+      "relationship": "The use cases behind the journeys' stages."
+    }
+  ]
+}

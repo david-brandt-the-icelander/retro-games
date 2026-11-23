@@ -7,6 +7,7 @@
 **Evidence (Hivestorm):** `games/hivestorm/worker/index.ts` (`AUTH`, `gamePage`: the same sign-in and role), `games/hivestorm/src/ui/input.ts` (`Controls`), `games/hivestorm/src/main.ts` (`step`, `joinMatch`, `offerTable`)
 **Evidence (Deep Claim):** `games/deep-claim/worker/index.ts` (`gamePage`: the page needs a sign-in to icelander.net with the `games:play` role), `games/deep-claim/godot/scripts/main.gd` (`Main._update_playing`)
 **Evidence (Shatterbelt):** `games/shatterbelt/worker/index.ts` (`AUTH`, `gamePage`: Shatterbelt's page and score API need the same sign-in and role), `games/shatterbelt/src/main.ts` (`launch`, `joinMatch`), `games/shatterbelt/src/input.ts` (`Input.controls`: one pilot per browser)
+**Evidence (Laumufarþegi):** `games/laumufarthegi/worker/index.ts` (`openSocket`: a room's WebSocket needs no sign-in, only the room's code), `games/laumufarthegi/worker/room.ts` (`Room.webSocketMessage`: a player is a seat taken by name and kept by its token), `games/laumufarthegi/shared/game.ts` (`Player`, `addPlayer`, `view`), `games/laumufarthegi/web/app.ts` (`joinScreen`, `roundScreen`, `voteCard`)
 
 ## What they want from the system
 
@@ -21,6 +22,8 @@
 - To play a friend at Hivestorm on another device, taking turns, each with their own score on the table ([Hivestorm's use cases](../games/hivestorm/src/.dev/use-case.json), `play-online`; [journeys](../games/hivestorm/.dev/user-journey.json), `play-a-friend`).
 - To fly Shatterbelt alone and get onto its high-score table ([Shatterbelt's use cases](../games/shatterbelt/src/.dev/use-case.json), `fly-solo-and-enter-table`; [journeys](../games/shatterbelt/.dev/user-journey.json), `climb-the-table`).
 - To fly Shatterbelt with up to eight friends online, each on their own device, together or against each other, and see everyone's scores on the table ([Shatterbelt's use cases](../games/shatterbelt/src/.dev/use-case.json), `fly-online`; [journeys](../games/shatterbelt/.dev/user-journey.json), `fly-with-friends`).
+- To join a Laumufarþegi game from a link someone shared, with just a name, and play its rounds on their own phone ([Laumufarþegi's use cases](../games/laumufarthegi/web/.dev/use-case.json), `join-from-link`, `play-a-round`; [journeys](../games/laumufarthegi/.dev/user-journey.json), `join-from-a-link`).
+- To keep a Laumufarþegi game going when its host has gone ([use cases](../games/laumufarthegi/web/.dev/use-case.json), `take-over-as-host`).
 
 ## How they reach it
 
@@ -33,3 +36,5 @@ Samosa's page at icelander.net/games/retro/samosa/, signed in to icelander.net, 
 Hivestorm's page at icelander.net/games/retro/hivestorm/, signed in to icelander.net, with a keyboard or the touch buttons under the screen. Its online games also start on the multiplayer page, which opens the game with `?match=ID`; there, the other player plays their own turns of the same two-player game.
 
 Shatterbelt's page is at icelander.net/games/retro/shatterbelt/, signed in the same way, with a keyboard, a gamepad or a touch screen; its online games, for two to nine pilots, start on the same multiplayer page, and every pilot in them is a player too.
+
+Laumufarþegi's page is at icelander.net/games/fresh/laumufarthegi/, opened from a room's link (`?r=CODE`) or by typing the room's code, on a phone or a computer. Unlike the other games, a player needs no sign-in: only the [Room host](room-host.md) who starts a room signs in, and a player is known only by the name they give and the seat token their browser keeps.

@@ -1,0 +1,191 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Laumufarþegi room phase state diagram",
+  "folder": "games/laumufarthegi/shared",
+  "description": "The phase of one room (State.phase, of type Phase): the lobby, the three steps of a round (clues in turn, the vote, the caught stowaway's guess), the reveal of a round, and the end of a game. act() moves it on a player's action and tick() when the current step's deadline (round.deadline) has passed; both are pure, with the time and the random numbers passed in. The Room Durable Object (worker/room.ts) owns the state, calls them, and sets its alarm for the deadline; it also deletes a room unused for a day, which ends the machine from any state and is not drawn here. Joining, leaving, settings, kicking, taking over as host and resetting the topics change the state but not the phase, and are drawn only where they matter. A rejected action (Result ok false) changes nothing and is sent back to that player alone as an error.",
+  "sources": [
+    {
+      "path": "games/laumufarthegi/shared/game.ts",
+      "symbol": "Phase"
+    },
+    {
+      "path": "games/laumufarthegi/shared/game.ts",
+      "symbol": "newRoom"
+    },
+    {
+      "path": "games/laumufarthegi/shared/game.ts",
+      "symbol": "act"
+    },
+    {
+      "path": "games/laumufarthegi/shared/game.ts",
+      "symbol": "tick"
+    },
+    {
+      "path": "games/laumufarthegi/shared/game.ts",
+      "symbol": "startRound"
+    },
+    {
+      "path": "games/laumufarthegi/shared/game.ts",
+      "symbol": "advanceClues"
+    },
+    {
+      "path": "games/laumufarthegi/shared/game.ts",
+      "symbol": "closeVoting"
+    },
+    {
+      "path": "games/laumufarthegi/shared/game.ts",
+      "symbol": "finishRound"
+    },
+    {
+      "path": "games/laumufarthegi/worker/room.ts",
+      "symbol": "Room.alarm"
+    },
+    {
+      "path": "games/laumufarthegi/test/game.test.ts",
+      "symbol": "a turn that runs out counts as an empty clue; the vote and the guess time out too"
+    }
+  ],
+  "machine": "State.phase in shared/game.ts, written by act(), tick() and their helpers startRound, advanceClues, closeVoting and finishRound",
+  "initialState": "lobby",
+  "states": [
+    {
+      "id": "lobby",
+      "description": "A new room (newRoom): the host, who started it, and whoever has joined from the link. The host may change the settings, remove players and reset the topics; there is no round."
+    },
+    {
+      "id": "clues",
+      "description": "A round is dealt: a topic of 16 words, a secret word among them and a stowaway among the connected players, who give one clue each in a shuffled order (round.order, round.turn). The deadline is the current turn's, clueSeconds from when it began."
+    },
+    {
+      "id": "voting",
+      "description": "Every player in the round votes for who they think the stowaway is, not themselves, and may change their vote until everyone has voted. The deadline is voteSeconds from the last clue."
+    },
+    {
+      "id": "guess",
+      "description": "The vote caught the stowaway alone at the top; the stowaway, and only they, may guess the secret word among the 16. Everyone now sees who was accused. The deadline is GUESS_SECONDS (45 s)."
+    },
+    {
+      "id": "reveal",
+      "description": "The round is scored and over: everyone sees the secret word, the stowaway, the votes, the guess and each player's points. No deadline; the host moves on."
+    },
+    {
+      "id": "over",
+      "description": "The game has ended, after its last round or by the host's End; there is no round. The scores stay until a new game; the host may change the settings and start again with the same room."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "lobby",
+      "to": "clues",
+      "trigger": "start",
+      "guard": "the host sent it; at least MIN_PLAYERS (3) players are connected; some topic fits the settings' difficulty and child-friendly filter",
+      "action": "Every score and roundsPlayed back to 0; startRound: a topic not yet used that fits (all fitting topics become unused again, with a notice, when none is left), the connected players shuffled into the clue order, a secret word 0–15 and a stowaway drawn, the first turn's deadline set."
+    },
+    {
+      "from": "lobby",
+      "to": "lobby",
+      "trigger": "start, settings, kick, claimHost or resetTopics",
+      "guard": "start refused (not the host, fewer than 3 connected, or no topic fits), or any of the others",
+      "action": "Refused: an error to the sender only. Otherwise settings are clamped to their ranges (host only), a player other than the host is removed (host only), the host's seat passes to the claimant once the host has been away HOST_GRACE_MS, or the used topics are cleared (host only)."
+    },
+    {
+      "from": "clues",
+      "to": "clues",
+      "trigger": "clue, or tick after the turn's deadline",
+      "guard": "it is the sender's turn and the clue is not empty and, unless the sender is the stowaway, not the secret word itself; players remain after this turn",
+      "action": "The clue (cleaned, at most CLUE_MAX characters), or \"—\" for a turn that ran out, is recorded; the next player's turn begins with a new deadline."
+    },
+    {
+      "from": "clues",
+      "to": "voting",
+      "trigger": "clue, or tick after the turn's deadline",
+      "guard": "it was the last player's turn",
+      "action": "The clue or \"—\" is recorded; the vote's deadline is set."
+    },
+    {
+      "from": "voting",
+      "to": "voting",
+      "trigger": "vote",
+      "guard": "the sender and the accused are both in the round and are not the same player; not everyone has voted yet",
+      "action": "The sender's vote is recorded or replaced."
+    },
+    {
+      "from": "voting",
+      "to": "guess",
+      "trigger": "the last vote, or tick after the vote's deadline",
+      "guard": "one player has the most votes, and it is the stowaway",
+      "action": "closeVoting records the accused; the guess's deadline is set."
+    },
+    {
+      "from": "voting",
+      "to": "reveal",
+      "trigger": "the last vote, or tick after the vote's deadline",
+      "guard": "the votes tie, nobody voted, or the player with the most votes is not the stowaway",
+      "action": "finishRound: each player who voted for the stowaway +1, the stowaway +3; the scores are added up and roundsPlayed counts the round."
+    },
+    {
+      "from": "guess",
+      "to": "reveal",
+      "trigger": "guess, or tick after the guess's deadline",
+      "guard": "a guess must come from the stowaway and name one of the 16 words; a guess that runs out counts as wrong",
+      "action": "finishRound: each player who voted for the stowaway +1; then the stowaway +1 for the right word, or every other player in the round +1 for a wrong one."
+    },
+    {
+      "from": "reveal",
+      "to": "clues",
+      "trigger": "next",
+      "guard": "the host sent it; fewer rounds played than settings.rounds; at least 3 players connected and a topic fits",
+      "action": "startRound deals the next round."
+    },
+    {
+      "from": "reveal",
+      "to": "reveal",
+      "trigger": "next",
+      "guard": "the host sent it with rounds left, but fewer than 3 players are connected or no topic fits",
+      "action": "Refused: an error to the host only."
+    },
+    {
+      "from": "reveal",
+      "to": "over",
+      "trigger": "next",
+      "guard": "the host sent it, and settings.rounds rounds have been played",
+      "action": "The round is cleared."
+    },
+    {
+      "from": "clues",
+      "to": "over",
+      "trigger": "end",
+      "guard": "the host sent it",
+      "action": "The round is cleared, unscored."
+    },
+    {
+      "from": "voting",
+      "to": "over",
+      "trigger": "end",
+      "guard": "the host sent it",
+      "action": "The round is cleared, unscored."
+    },
+    {
+      "from": "guess",
+      "to": "over",
+      "trigger": "end",
+      "guard": "the host sent it",
+      "action": "The round is cleared, unscored."
+    },
+    {
+      "from": "reveal",
+      "to": "over",
+      "trigger": "end",
+      "guard": "the host sent it",
+      "action": "The round is cleared; its points are already counted."
+    },
+    {
+      "from": "over",
+      "to": "clues",
+      "trigger": "start",
+      "guard": "the same as from the lobby",
+      "action": "A new game with the same room: scores and roundsPlayed back to 0, and the first round dealt. Topics used in the last game stay used."
+    }
+  ]
+}

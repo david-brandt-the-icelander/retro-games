@@ -1,0 +1,95 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Laumufarþegi shared code component diagram",
+  "folder": "games/laumufarthegi/shared",
+  "description": "The TypeScript both the Worker and the browser page import: the rules as pure functions over a room's state, the WebSocket messages, and the topic list bundled from the shared word lists.",
+  "sources": [
+    {
+      "path": "games/laumufarthegi/shared/game.ts",
+      "symbol": "act"
+    },
+    {
+      "path": "games/laumufarthegi/shared/game.ts",
+      "symbol": "view"
+    },
+    {
+      "path": "games/laumufarthegi/shared/protocol.ts",
+      "symbol": "ClientMessage"
+    },
+    {
+      "path": "games/laumufarthegi/shared/topics.ts",
+      "symbol": "TOPICS"
+    }
+  ],
+  "components": [
+    {
+      "id": "shared",
+      "name": "Shared code",
+      "responsibility": "Everything the Worker and the page agree on.",
+      "folder": "games/laumufarthegi/shared"
+    },
+    {
+      "id": "rules",
+      "name": "Rules (game.ts)",
+      "responsibility": "The room's State and the Phase machine: newRoom, addPlayer, setConnected, act (every player action), tick (timeouts), the scoring, and view, which cuts the state down to what one player may see. No network, no clock and no randomness of its own: time and random numbers are arguments.",
+      "folder": "games/laumufarthegi/shared"
+    },
+    {
+      "id": "protocol",
+      "name": "Protocol (protocol.ts)",
+      "responsibility": "BASE (the game's path on icelander.net), the room-code alphabet and isCode, the browser-to-room ClientMessage (join, then actions), the room-to-browser ServerMessage (welcome, state, error, removed) and the CreatedRoom answer.",
+      "folder": "games/laumufarthegi/shared"
+    },
+    {
+      "id": "topics",
+      "name": "Topics (topics.ts)",
+      "responsibility": "TOPICS: the 16-word topic grids, each with its difficulty, child-friendly flag and category, mapped from the word-list data.",
+      "folder": "games/laumufarthegi/shared"
+    },
+    {
+      "id": "word-lists",
+      "name": "Icelandic word lists",
+      "responsibility": "games/word-lists/data/topic-grids.json, a data folder shared by several party games.",
+      "folder": "games/word-lists"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "shared",
+      "to": "rules",
+      "kind": "contains",
+      "description": "game.ts."
+    },
+    {
+      "from": "shared",
+      "to": "protocol",
+      "kind": "contains",
+      "description": "protocol.ts."
+    },
+    {
+      "from": "shared",
+      "to": "topics",
+      "kind": "contains",
+      "description": "topics.ts."
+    },
+    {
+      "from": "protocol",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Action and View types for the messages."
+    },
+    {
+      "from": "topics",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "The Topic type."
+    },
+    {
+      "from": "topics",
+      "to": "word-lists",
+      "kind": "depends-on",
+      "description": "Imports data/topic-grids.json (efnisgrindur); esbuild and wrangler bundle it at build time, so a change there reaches the game only when it is next built."
+    }
+  ]
+}

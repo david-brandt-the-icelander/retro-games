@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/delivery.schema.json",
+  "kind": "delivery",
+  "title": "Laumufarþegi delivery",
+  "folder": "games/laumufarthegi",
+  "entities": [
+    {
+      "id": "production",
+      "title": "Production",
+      "summary": "The laumufarthegi Worker at icelander.net/games/fresh/laumufarthegi*, with its static page and the Room Durable Object namespace.",
+      "environment": "production",
+      "purpose": "The game players reach at icelander.net/games/fresh/laumufarthegi/ and the room links they share.",
+      "deployedBy": "The Deploy workflow on every push to main that changes games/laumufarthegi outside its .dev folders (or anything under .github/ outside .github/.dev); or `npm run deploy` with a Cloudflare token. Run workflow's list of games does not name laumufarthegi, so it can be deployed by hand from Actions only with all.",
+      "approvals": [
+        "A pull request: main accepts nothing else.",
+        "A reviewer on the repository's production environment, if one is set."
+      ],
+      "rollback": "No rollback is recorded. The Deploy workflow deploys only from main, so going back means merging a revert, which deploys it. Rooms live in Durable Object storage, which a deploy does not clear, so a change to the shape of State must still read rooms stored by the previous code.",
+      "details": "The Durable Object class Room is created by the rooms-v1 migration in wrangler.jsonc (new_sqlite_classes) when the Worker first deploys; there is no D1 database, so the database-migration gate has nothing of this game's to check. A change to games/word-lists/data/topic-grids.json alone does not deploy this game: changed-games.sh looks only under games/laumufarthegi/, so new topics go live with the game's next change.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/wrangler.jsonc",
+          "symbol": "routes"
+        },
+        {
+          "path": "games/laumufarthegi/wrangler.jsonc",
+          "symbol": "migrations"
+        },
+        {
+          "path": ".github/workflows/deploy.yml",
+          "symbol": "on"
+        },
+        {
+          "path": ".github/scripts/changed-games.sh"
+        },
+        {
+          "path": "games/laumufarthegi/package.json",
+          "symbol": "scripts.deploy"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/laumufarthegi/.dev/pipeline.json",
+          "entityId": "deploy"
+        }
+      ]
+    }
+  ]
+}

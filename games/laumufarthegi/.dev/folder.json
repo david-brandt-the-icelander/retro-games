@@ -1,0 +1,49 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Laumufarþegi",
+  "folder": "games/laumufarthegi",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Laumufarþegi",
+      "summary": "An Icelandic online party word game in the outsider genre for 3–10 players, each on their own phone: everyone but the stowaway knows the secret word among 16 on a topic; they give clues in turn and vote to find the stowaway.",
+      "purpose": "Holds the whole game: the rules, protocol and topics in shared/, the Cloudflare Worker and its Room Durable Object in worker/, the plain-TypeScript page in web/, and the tests in test/. It is one npm project, built by build.mjs (the page into dist/, the tests into dist-test/) and deployed as one Worker at icelander.net/games/fresh/laumufarthegi.",
+      "boundaries": [
+        "Unlike the other games, anyone with a room's link may play without signing in; only starting a room needs icelander.net's sign-in (decisions.json, open-link-host-sign-in). The sign-in library is vendor/icelander-auth/, never edited here.",
+        "The server decides the game; the page holds no rules (decisions.json, server-authoritative).",
+        "No database and no high-score table: a room lives in its Durable Object's storage and is deleted a day after its last change.",
+        "The topic grids belong to games/word-lists/ and are bundled at build time; the game does not change them."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/laumufarthegi/package.json",
+          "symbol": "scripts"
+        },
+        {
+          "path": "games/laumufarthegi/build.mjs",
+          "symbol": "SITE"
+        },
+        {
+          "path": "games/laumufarthegi/wrangler.jsonc",
+          "symbol": "main"
+        },
+        {
+          "path": "games/laumufarthegi/shared/topics.ts",
+          "symbol": "TOPICS"
+        }
+      ],
+      "links": [
+        {
+          "label": "Decisions",
+          "path": "games/laumufarthegi/.dev/decisions.json"
+        },
+        {
+          "label": "Word lists",
+          "path": "games/word-lists/.dev/folder.json"
+        }
+      ]
+    }
+  ]
+}
