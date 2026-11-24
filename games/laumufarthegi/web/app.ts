@@ -1,6 +1,7 @@
 // Laumufarþegi in the browser: one page that draws the screen the room's view calls for. The room's Durable
 // Object decides everything; this file only shows the view it is sent and passes on what the player taps.
 import { CLUE_MAX, MIN_PLAYERS, NAME_MAX, type Action, type Settings, type View } from "../shared/game";
+import { tour } from "./tour";
 import { BASE, isCode, type ClientMessage, type CreatedRoom, type ServerMessage } from "../shared/protocol";
 
 const HOW_TO = [
@@ -145,8 +146,13 @@ function connectionBadge(): Node {
   return h("span", { class: on ? "conn on" : "conn off" }, on ? `Leikur ${code}` : "Tengist aftur…");
 }
 
+/** The poster art on the start and join pages. */
+function cover(): Node {
+  return h("img", { class: "cover", src: `${BASE}/cover.svg`, alt: "", width: 300, height: 400 });
+}
+
 function howTo(): Node {
-  return h("details", { class: "howto", open: !current || current.phase === "lobby" ? true : undefined },
+  return h("details", { class: "howto", open: current && current.phase === "lobby" ? true : undefined },
     h("summary", null, "Hvernig er spilað?"),
     h("ol", null, ...HOW_TO.map((line) => h("li", null, line))));
 }
@@ -182,9 +188,11 @@ function homeScreen(): Node {
   };
   joinCode.addEventListener("keydown", (e) => { if (e.key === "Enter") goJoin(); });
   return page(
+    cover(),
     h("p", { class: "lead" }, "Orðaleikur fyrir 3–10 manns þar sem einn veit ekki leyniorðið."),
     h("section", { class: "card" }, h("h2", null, "Stofna leik"), h("label", { for: "host-name" }, "Nafn"), name, create, status),
     h("section", { class: "card" }, h("h2", null, "Ganga í leik"), h("label", { for: "join-code" }, "Leiknúmer"), joinCode, h("button", { class: "btn", onclick: goJoin }, "Ganga í leik")),
+    tour(render),
     howTo(),
   );
 }
@@ -201,10 +209,12 @@ function joinScreen(): Node {
   };
   name.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
   return page(
+    cover(),
     h("section", { class: "card" },
       h("h2", null, "Ganga í leik ", h("span", { class: "code" }, code!)),
       h("label", { for: "join-name" }, "Hvað heitir þú?"), name,
       h("button", { class: "btn primary", onclick: go }, "Ganga í leikinn")),
+    tour(render),
     howTo(),
   );
 }

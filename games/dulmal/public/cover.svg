@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1622"/><stop offset=".55" stop-color="#0f2133"/><stop offset="1" stop-color="#081019"/></linearGradient>
+    <linearGradient id="aur" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4fe3a3"/><stop offset=".55" stop-color="#7fd6ff"/><stop offset="1" stop-color="#b08cff"/></linearGradient>
+    <filter id="blur" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+  </defs>
+  <rect width="300" height="400" fill="url(#sky)"/>
+  <!-- northern lights -->
+  <g filter="url(#blur)" opacity=".75">
+    <path d="M-20 92 C40 30 90 120 150 70 S250 20 320 66" fill="none" stroke="url(#aur)" stroke-width="26"/>
+    <path d="M-20 130 C50 86 110 150 170 112 S260 80 320 108" fill="none" stroke="url(#aur)" stroke-width="12" opacity=".6"/>
+  </g>
+  <path d="M-10 88 C40 34 90 118 150 70 S250 24 310 64" fill="none" stroke="url(#aur)" stroke-width="4" stroke-linecap="round" opacity=".9"/>
+  <g fill="#fff"><circle cx="40" cy="30" r="1.2"/><circle cx="220" cy="22" r="1"/><circle cx="270" cy="120" r="1.3"/><circle cx="96" cy="150" r="1"/><circle cx="180" cy="40" r="1.1"/></g>
+  <!-- the board: a 5×5 grid of word cards on basalt -->
+  <rect x="38" y="168" width="224" height="184" rx="12" fill="#1f262d" stroke="#39424b" stroke-width="2"/>
+  <g>
+    <rect x="46" y="176" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="89" y="176" width="38" height="30" rx="5" fill="#f28a4a"/><rect x="132" y="176" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="175" y="176" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="218" y="176" width="38" height="30" rx="5" fill="#7ccbee"/>
+    <rect x="46" y="211" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="89" y="211" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="132" y="211" width="38" height="30" rx="5" fill="#cfc6b3"/><rect x="175" y="211" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="218" y="211" width="38" height="30" rx="5" fill="#f3f0e8"/>
+    <rect x="46" y="246" width="38" height="30" rx="5" fill="#7ccbee"/><rect x="89" y="246" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="132" y="246" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="175" y="246" width="38" height="30" rx="5" fill="#f28a4a"/><rect x="218" y="246" width="38" height="30" rx="5" fill="#f3f0e8"/>
+    <rect x="46" y="281" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="89" y="281" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="132" y="281" width="38" height="30" rx="5" fill="#1f1529" stroke="#b08cff" stroke-width="2"/><rect x="175" y="281" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="218" y="281" width="38" height="30" rx="5" fill="#f3f0e8"/>
+    <rect x="46" y="316" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="89" y="316" width="38" height="30" rx="5" fill="#f28a4a"/><rect x="132" y="316" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="175" y="316" width="38" height="30" rx="5" fill="#f3f0e8"/><rect x="218" y="316" width="38" height="30" rx="5" fill="#f3f0e8"/>
+  </g>
+  <!-- word strokes on the cards -->
+  <g stroke="#13202b" stroke-width="3" stroke-linecap="round" opacity=".55">
+    <path d="M55 191h20M141 191h20M184 191h20M55 226h20M98 226h20M184 226h20M227 226h20M98 261h20M141 261h20M227 261h20M55 296h20M98 296h20M184 296h20M227 296h20M55 331h20M141 331h20M184 331h20M227 331h20"/>
+  </g>
+  <!-- ghost on the game-over card -->
+  <path d="M143 307v-14a8 8 0 0 1 16 0v14l-2.7-2-2.6 2-2.7-2-2.6 2-2.7-2z" fill="#efe5ff"/>
+  <!-- basalt columns along the foot -->
+  <g fill="#2b3138"><path d="M0 400V372l14-6 14 6v28z"/><path d="M28 400V362l14-6 14 6v38z"/><path d="M56 400V376l14-6 14 6v24z"/><path d="M216 400V378l14-6 14 6v22z"/><path d="M244 400V364l14-6 14 6v36z"/><path d="M272 400V374l14-6 14 6v26z"/></g>
+</svg>

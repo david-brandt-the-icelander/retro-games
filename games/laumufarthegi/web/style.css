@@ -150,3 +150,37 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid var(--auror
   .cell { min-height: 58px; font-size: .85rem; }
   .huge { font-size: 1.9rem; }
 }
+
+/* Poster art and the walkthrough (start and join pages) */
+.cover { display: block; width: 100%; height: 13rem; object-fit: cover; object-position: 50% 55%; border-radius: var(--radius); border: 1px solid var(--card-edge); margin: 0 0 14px; -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent); mask-image: linear-gradient(180deg, #000 70%, transparent); }
+.tour h2 { margin-top: 0; }
+.tstage { background: rgba(11, 29, 51, .7); border: 1px solid var(--card-edge); border-radius: 14px; padding: 12px; min-height: 200px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+.ttopic { margin: 0; text-align: center; } .ttopic small { display: block; color: var(--muted); } .ttopic b { font-size: 1.35rem; color: var(--ice); }
+.tgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.tw { display: grid; place-items: center; min-height: 36px; padding: 2px; border-radius: 8px; background: #dfeaf6; color: #0b1d33; font-weight: 700; font-size: clamp(11px, 3.4vw, 15px); text-align: center; overflow-wrap: anywhere; }
+.tsmall .tw { min-height: 28px; font-size: clamp(9px, 2.6vw, 12px); }
+.thalf { grid-template-columns: repeat(2, 1fr); }
+.thalf .tw { min-height: 30px; font-size: clamp(11px, 3.2vw, 14px); }
+.tw.secret { background: var(--aurora); box-shadow: 0 0 0 3px rgba(94, 230, 180, .35); }
+.tw.pick { background: var(--warn); box-shadow: 0 0 0 3px rgba(255, 179, 92, .4); }
+.tphones { display: flex; gap: 8px; }
+.tphone { flex: 1; min-width: 0; padding: 8px; border-radius: 14px; border: 2px solid var(--card-edge); background: var(--bg); }
+.trole { margin: 0 0 6px; text-align: center; font-weight: 800; font-size: .85rem; } .trole.crew { color: var(--aurora); } .trole.stow { color: var(--stow); }
+.tphone:last-child { border-color: var(--stow); }
+.tnote { margin: 6px 0 0; text-align: center; font-size: .85rem; color: var(--muted); } .tnote b { color: var(--text); }
+.tclues { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.tclues li { display: flex; justify-content: space-between; gap: 10px; padding: 10px 14px; border-radius: 12px; background: var(--card); border: 1px solid var(--card-edge); }
+.tclues .who { color: var(--muted); } .tclues .what { font-weight: 800; font-size: 1.15rem; }
+.tclues li.now { border-color: var(--aurora); } .tclues li.now .what { color: var(--aurora); font-weight: 600; font-size: 1rem; }
+.tvote { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.vbtn { padding: 10px 14px; border-radius: 12px; border: 2px solid var(--card-edge); background: var(--card); font-weight: 700; } .vbtn i { font-style: normal; color: var(--stow); margin-left: 4px; font-size: .7rem; }
+.vbtn.on { border-color: var(--stow); background: rgba(255, 122, 138, .15); }
+.tscore { display: flex; justify-content: space-around; gap: 8px; margin: 0; font-size: .9rem; color: var(--muted); } .tscore b { color: var(--aurora); }
+.tcopy { margin: 14px 0 6px; min-height: 8.4rem; } .tcopy h3 { margin: 0 0 6px; font-size: 1.3rem; } .tcopy p { margin: 4px 0; }
+.tkick { color: var(--aurora); font-size: .8rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin: 0 !important; }
+.tdots { display: flex; justify-content: center; gap: 2px; }
+.tdot { width: 40px; height: 40px; padding: 0; border: 0; background: transparent; cursor: pointer; position: relative; }
+.tdot::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--card-edge); transition: background .15s, transform .15s; }
+.tdot.on::after { background: var(--aurora); transform: scale(1.3); }
+.tdot:focus-visible { outline: 3px solid var(--ice); border-radius: 8px; }
+.tnav { display: flex; gap: 10px; margin-top: 6px; } .tnav .btn { flex: 1; } .btn.ghost { background: transparent; color: var(--muted); }

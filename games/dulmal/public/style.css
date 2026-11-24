@@ -381,3 +381,36 @@ body.offline .reconnect { display: block; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ── Start and join pages: poster art and the walkthrough ── */
+.hero.art { padding: 0 0 0.8rem; }
+.hero.art .banner { display: block; width: 100%; height: 11rem; object-fit: cover; object-position: 50% 42%; border-radius: 22px; border: 1px solid var(--line); margin-bottom: 0.9rem; -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent); mask-image: linear-gradient(180deg, #000 70%, transparent); }
+.hero.art.small .banner { height: 7rem; object-position: 50% 30%; }
+
+.tour h2 { margin-bottom: 0.8rem; }
+.tstage { background: rgba(8, 16, 25, 0.55); border: 1px solid var(--line); border-radius: 14px; padding: 0.8rem; min-height: 11.5rem; display: flex; flex-direction: column; justify-content: center; gap: 0.7rem; }
+.tboard { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+.tboard .card { min-height: 0; aspect-ratio: 5 / 4; font-size: clamp(9px, 2.9vw, 13px); padding: 2px; }
+.tboard .card .cicon { width: 11px; height: 11px; top: 2px; right: 2px; }
+.tteams { display: flex; align-items: center; justify-content: center; gap: 0.6rem; }
+.tteam { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; padding: 0.8rem 0.4rem; border-radius: 14px; border: 2px solid; text-align: center; }
+.tteam.t-hraun { border-color: var(--hraun-deep); background: rgba(196, 82, 26, 0.25); }
+.tteam.t-jokull { border-color: var(--jokull-deep); background: rgba(42, 134, 182, 0.28); }
+.tteam .ticon { width: 2.4rem; height: 2.4rem; display: block; }
+.tteam .ticon svg { width: 100%; height: 100%; display: block; }
+.tteam b { font-size: 1.3rem; }
+.tteam small { color: var(--muted); font-size: 0.78rem; }
+.tvs { color: var(--muted); font-size: 0.9rem; }
+.tclue { align-self: center; display: inline-flex; align-items: baseline; gap: 0.6rem; padding: 0.35rem 0.9rem; border-radius: 999px; border: 2px solid var(--hraun); background: rgba(242, 138, 74, 0.16); }
+.tclue span { color: var(--muted); font-size: 0.8rem; }
+.tclue b { font-size: 1.25rem; white-space: nowrap; }
+.tcopy { margin: 0.9rem 0 0.2rem; min-height: 8.2rem; }
+.tcopy h3 { margin: 0 0 0.3rem; font-size: 1.3rem; }
+.tkick { color: var(--green); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin: 0; }
+.tdots { display: flex; justify-content: center; gap: 0.2rem; }
+.tdot { width: 2.2rem; height: 2.2rem; padding: 0; border: 0; background: transparent; cursor: pointer; position: relative; }
+.tdot::after { content: ""; position: absolute; left: 50%; top: 50%; width: 0.7rem; height: 0.7rem; margin: -0.35rem 0 0 -0.35rem; border-radius: 50%; background: var(--line); transition: background 0.15s, transform 0.15s; }
+.tdot.on::after { background: var(--green); transform: scale(1.3); }
+.tdot:focus-visible { outline: 3px solid var(--sky); border-radius: 8px; }
+.tnav { display: flex; justify-content: space-between; gap: 0.6rem; margin-top: 0.4rem; }
+.tnav .btn { flex: 1; }
