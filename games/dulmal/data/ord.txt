@@ -236,7 +236,7 @@ Græn|land
 Hetja
 Hefnd
 Örlög
-Bóndi
+Sveit
 
 # ── Staðir og kennileiti ──
 Reykja|vík
