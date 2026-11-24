@@ -71,9 +71,9 @@
     {
       "id": "icelandic-review",
       "title": "A native speaker's review of the word list and the page's text",
-      "summary": "The words and phrases listed in LANGUAGE-QA.md were written without a native speaker's check.",
+      "summary": "The words and phrases in doubt were reviewed on 2026-11-24 and seven were corrected (LANGUAGE-QA.md). A few judgement calls, marked check there, still wait on a native speaker.",
       "status": "open",
-      "context": "All player-facing text is Icelandic. LANGUAGE-QA.md lists the words and phrases whose spelling, form or naturalness is least certain.",
+      "context": "All player-facing text is Icelandic and was written without a native speaker. LANGUAGE-QA.md lists every word and phrase that was in doubt, with what was decided: Bóndi became Sveit, gisk became ágiskun, and five page texts were reworded.",
       "options": [
         {
           "title": "Review and correct",
