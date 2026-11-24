@@ -3,7 +3,7 @@
   "kind": "deployment",
   "title": "retro-games deployment diagram",
   "folder": ".",
-  "description": "Where every game runs: eight Workers on icelander.net, five with their own D1 database and MEG with a Durable Object, Gambit's Durable Objects, the services they call, the runner that deploys them, and LodeStar on the pilot's own computer.",
+  "description": "Where every game runs: eight Workers on icelander.net, five with their own D1 database and MEG with a Durable Object, Gambit's Durable Objects, the services they call, the owner's computer that deploys them, and LodeStar on the pilot's own computer.",
   "sources": [
     {
       "path": "games/rally/wrangler.jsonc",
@@ -30,8 +30,8 @@
       "symbol": "routes"
     },
     {
-      "path": ".github/workflows/deploy.yml",
-      "symbol": "jobs"
+      "path": "games/rally/package.json",
+      "symbol": "scripts.deploy"
     },
     {
       "path": "games/lodestar/export_presets.cfg",
@@ -202,10 +202,11 @@
       "condition": "RESEND_API_KEY and MAIL_FROM are set"
     },
     {
-      "id": "actions",
-      "name": "GitHub Actions runner",
-      "kind": "host",
-      "description": "Runs the Deploy workflow, which deploys each changed game."
+      "id": "owner-computer",
+      "name": "Owner's computer",
+      "kind": "client",
+      "description": "Deploys each game by hand: npm run deploy in the game's folder tests it, builds it and runs wrangler deploy. Nothing deploys from GitHub.",
+      "actor": "Actors/owner.md"
     },
     {
       "id": "w-double-cross",
@@ -359,7 +360,7 @@
       "name": "LodeStar desktop export",
       "source": "games/lodestar/export_presets.cfg",
       "deployedTo": "desktop",
-      "description": "The Godot export with the Rust sim as a GDExtension; not deployed by the workflows."
+      "description": "The Godot export with the Rust sim as a GDExtension; it has no npm run deploy and is not deployed to Cloudflare."
     },
     {
       "id": "site-meg",
@@ -558,10 +559,10 @@
       "description": "Service binding ACCOUNTS: the page needs a signed-in player."
     },
     {
-      "from": "actions",
+      "from": "owner-computer",
       "to": "edge",
       "kind": "connects-to",
-      "description": "wrangler deploy, with CLOUDFLARE_API_TOKEN."
+      "description": "wrangler deploy, with the owner's Cloudflare credentials."
     },
     {
       "from": "edge",

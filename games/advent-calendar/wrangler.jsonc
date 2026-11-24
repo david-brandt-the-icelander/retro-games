@@ -1,6 +1,6 @@
 // The Advent calendar Worker at icelander.net/games/fresh/advent-calendar: the page and its art, all for players
 // holding games:advent-calendar (worker/index.ts). No database, no secrets.
-// Deployed by .github/workflows/deploy.yml on a merge to main (README "Deploy").
+// Deployed by the owner from their own machine with `npm run deploy` (README "Deploy").
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "advent-calendar",

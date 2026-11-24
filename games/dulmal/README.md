@@ -40,4 +40,4 @@ To get past the sign-in locally, put `DEV_LOGIN="1"` in `.dev.vars`, run `npx wr
 
 ## Deploy
 
-A merge to `main` deploys it (`.github/workflows/deploy.yml`), as `npm run deploy` does: `wrangler deploy` creates the Worker, its route and the `RoomObject` Durable Object class (migration `rooms-v1`). There is no D1 database and no secret; the sign-in goes through the `ACCOUNTS` service binding.
+Nothing deploys from GitHub any more: the owner deploys it from their own machine by running `npm run deploy` in this folder (the tests, the build, then `wrangler deploy`), with wrangler logged in to icelander.net's Cloudflare account. `wrangler deploy` creates the Worker, its route and the `RoomObject` Durable Object class (migration `rooms-v1`). There is no D1 database and no secret; the sign-in goes through the `ACCOUNTS` service binding.

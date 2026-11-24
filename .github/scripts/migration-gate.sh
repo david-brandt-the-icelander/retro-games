@@ -3,7 +3,12 @@
 # database reaches main, or is about to, without an acknowledgement that production's database
 # has been migrated.
 #   migration-gate.sh pr <base sha> <pull request number>   the pull request check (migrations.yml)
-#   migration-gate.sh deploy [<base sha>]                    before every deploy (deploy.yml)
+#   migration-gate.sh deploy [<base sha>]                    the commits since <base sha>, by the pull
+#                                                            requests that brought them. No workflow
+#                                                            runs it: the Deploy workflow that ran it
+#                                                            before every deploy was removed
+#                                                            (2026-11-21), and games are deployed by
+#                                                            hand with `npm run deploy`.
 # Needs gh, signed in (GH_TOKEN in Actions).
 set -euo pipefail
 cd "$(dirname "$0")/../.."

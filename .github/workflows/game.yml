@@ -1,7 +1,10 @@
 name: Game
 
-# One game, tested and built, and deployed when `deploy` is true. Called by ci.yml and deploy.yml
-# so both run exactly the same steps as the game's own `npm run deploy` (its README.md).
+# One game, tested and built, and deployed when `deploy` is true. Called by ci.yml, without
+# deploying, so a pull request runs the same steps as the game's own `npm run deploy` (its
+# README.md) short of `wrangler deploy`. Nothing calls it with `deploy` true since the Deploy
+# workflow was removed (2026-11-21): the owner deploys each game from their own machine with
+# `npm run deploy` in its folder.
 
 on:
   workflow_call:

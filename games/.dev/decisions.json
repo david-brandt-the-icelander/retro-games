@@ -61,11 +61,11 @@
       "title": "Share code between the web games?",
       "summary": "Moving the copied online play, high-score table, page look and name rules into one packages/game-kit/ ends the rule that the games share no code at build time.",
       "status": "open",
-      "context": "online.ts is identical in Rally, Hivestorm and Shatterbelt; look.ts differs by two lines across four Workers; Samosa's name rules are copied into three games; the score Workers repeat one capability and one Seed state machine. Two open backlog items in games/rally/src ask for a check that the copies agree. Each game is deployed on its own, and changed-games.sh picks the games to deploy by the files changed.",
+      "context": "online.ts is identical in Rally, Hivestorm and Shatterbelt; look.ts differs by two lines across four Workers; Samosa's name rules are copied into three games; the score Workers repeat one capability and one Seed state machine. Two open backlog items in games/rally/src ask for a check that the copies agree. Each game is deployed on its own, by the owner running npm run deploy in its folder, and changed-games.sh picks the games a pull request tests by the files changed.",
       "options": [
         {
           "title": "Share them in packages/game-kit/",
-          "consequences": "One copy of the code and of its views; a change to the kit deploys every game that uses it, at once."
+          "consequences": "One copy of the code and of its views; a change to the kit changes every game that uses it, and each must be tested and deployed again."
         },
         {
           "title": "Keep the copies and check they agree",
