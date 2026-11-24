@@ -46,3 +46,6 @@ These are split at `|` on small screens: Harmo\|nikka, Þrettán\|dinn, Höf\|ru
 | *Ertu með sjónvarp eða skjávarpa? …* | Kept. |
 | *Hraun fékk vísbendinguna „Sjór“ 2.* | Kept. |
 | Not-invited page: *Dulmál er aðeins opið boðsgestum og þessum aðgangi hefur ekki verið boðið enn.* | Kept. Correct impersonal dative (*aðgangi … boðið*). |
+
+| Walkthrough on the start and join pages (`src/client/text.ts`, `TOUR`) | Five short steps: *Tvö lið*, *Borð með 25 orðum*, *Sögumaðurinn sér lykilinn*, *Liðið giskar*, *Varist drauginn!*; buttons *Næsta*, *Til baka*, *Sjá aftur*; *Skref 2 af 5*. Is *Sjór 2 þýðir að tvö orð tengjast sjónum* clear, and *Rétt orð fær lit liðsins* natural? |
+| Not-invited page, new pitch line | *Orðaleikur fyrir tvö lið, hvert á sínum síma: sögumaðurinn gefur eitt orð og tölu …* Natural? |

@@ -100,8 +100,12 @@ function notInvited(): Response {
 <html lang="is"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kvarðinn · boðsgestir</title><meta name="robots" content="noindex">
 <style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0a1020;color:#f3f6fb;font:20px/1.5 system-ui,sans-serif}
-main{max-width:30rem;padding:2rem 1.25rem}h1{font-size:1.8rem;margin:0 0 .75rem}a{color:#36c6d8}</style></head>
-<body><main><p><a href="/games/">Leikir</a> / Kvarðinn</p><h1>Kvarðinn</h1>
+main{max-width:30rem;padding:0 1.25rem 2rem}h1{font-size:1.8rem;margin:0 0 .75rem}a{color:#36c6d8}
+.art{height:9rem;margin:0 -1.25rem 1.25rem;background:radial-gradient(120% 90% at 20% 0,rgba(62,230,168,.35),transparent 60%),radial-gradient(100% 90% at 85% 0,rgba(139,123,255,.35),transparent 60%),linear-gradient(#0f1830,#0a1020);display:grid;place-items:center;font-size:1.3rem;font-weight:800;letter-spacing:.04em}
+.art span{padding:.25rem 1rem;border-radius:999px;background:linear-gradient(90deg,#4cc3ff,#ffb547);color:#0a1020}
+.pitch{color:#b3bdd0}</style></head>
+<body><main><div class="art" aria-hidden="true"><span>Kalt ↔ Heitt</span></div><p><a href="/games/">Leikir</a> / Kvarðinn</p><h1>Kvarðinn</h1>
+<p class="pitch">Íslenskur giskuleikur fyrir 4–8 manns, hvert í sínum síma: einn sér leynimarkið á kvarða milli tveggja andstæðna, gefur vísbendingu og liðið dregur vísinn.</p>
 <p>Kvarðinn er aðeins fyrir boðsgesti og þessum aðgangi hefur ekki verið boðið enn.</p>
 <p>Ef þér var boðið á öðru netfangi, skráðu þig inn með því. <a href="/games/">Aftur í leikina</a></p>
 <p lang="en" style="color:#b3bdd0;font-size:.85em">Kvarðinn is open to invited players only, and this account hasn't been invited yet.</p></main></body></html>`;

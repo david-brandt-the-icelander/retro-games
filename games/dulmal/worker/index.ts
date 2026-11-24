@@ -81,8 +81,12 @@ function notInvited(): Response {
 <html lang="is"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dulmál · aðeins fyrir boðsgesti</title><meta name="robots" content="noindex">
 <style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b1622;color:#f2f6f5;font:19px/1.5 system-ui,sans-serif}
-main{max-width:30rem;padding:2rem 1.25rem}h1{font-size:2rem;margin:0 0 .75rem}a{color:#4fe3a3}</style></head>
-<body><main><h1>Dulmál</h1>
+main{max-width:30rem;padding:0 1.25rem 2rem}h1{font-size:2rem;margin:0 0 .75rem}a{color:#4fe3a3}
+.art{height:9rem;margin:0 -1.25rem 1.25rem;background:radial-gradient(120% 90% at 20% 0,rgba(79,227,163,.4),transparent 60%),radial-gradient(100% 90% at 85% 0,rgba(176,140,255,.4),transparent 60%),linear-gradient(#0f2133,#0b1622);display:flex;gap:.6rem;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem}
+.art span{padding:.3rem 1rem;border-radius:999px}.h{background:#f28a4a;color:#2b1205}.j{background:#7ccbee;color:#06263a}
+.pitch{color:#b9c8cf}</style></head>
+<body><main><div class="art" aria-hidden="true"><span class="h">Hraun</span><span class="j">Jökull</span></div><h1>Dulmál</h1>
+<p class="pitch">Orðaleikur fyrir tvö lið, hvert á sínum síma: sögumaðurinn gefur eitt orð og tölu og liðið finnur sín orð á borði með 25 orðum. Varist drauginn!</p>
 <p>Dulmál er aðeins opið boðsgestum og þessum aðgangi hefur ekki verið boðið enn.</p>
 <p>Ef þér var boðið á öðru netfangi skaltu skrá þig inn með því. <a href="/games/">Aftur í leikina</a></p>
 <p lang="en"><small>Dulmál is open to invited players only, and this account hasn't been invited yet.</small></p></main></body></html>`;

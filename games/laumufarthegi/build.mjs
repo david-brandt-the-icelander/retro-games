@@ -14,7 +14,7 @@ if (process.argv.includes("--test")) {
 } else {
   rmSync("dist", { recursive: true, force: true });
   mkdirSync(SITE, { recursive: true });
-  for (const f of ["index.html", "style.css", "favicon.svg"]) cpSync(`web/${f}`, `${SITE}/${f}`);
+  for (const f of ["index.html", "style.css", "favicon.svg", "cover.svg"]) cpSync(`web/${f}`, `${SITE}/${f}`);
   cpSync("web/_headers", "dist/_headers");
   await build({ entryPoints: { app: "web/app.ts" }, bundle: true, minify: true, format: "esm", target: "es2020", outdir: SITE });
 }

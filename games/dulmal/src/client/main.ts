@@ -7,6 +7,7 @@ import qrcode from "qrcode-generator";
 import type { CardKind, ClientMsg, GameView, PlayerView, ServerMsg, Team, View } from "../shared/protocol";
 import { TEAMS, TIMERS, other } from "../shared/protocol";
 import { ERROR, GAME_NAME, HOW_TO, T, TEAM_NAME } from "./text";
+import { bindTour, tourHtml } from "./tour";
 
 // ── Where we are ──
 
@@ -190,10 +191,13 @@ function render(): void {
 
 const logo = () => `<span class="logo" aria-label="${GAME_NAME}"><svg class="aurora" viewBox="0 0 120 30" aria-hidden="true"><path d="M2 22C20 4 38 26 60 12S100 2 118 14" fill="none" stroke="url(#ag)" stroke-width="5" stroke-linecap="round"/><defs><linearGradient id="ag" x1="0" x2="1"><stop offset="0" stop-color="#4fe3a3"/><stop offset=".55" stop-color="#7fd6ff"/><stop offset="1" stop-color="#b08cff"/></linearGradient></defs></svg><span>${GAME_NAME}</span></span>`;
 
+/** The poster art behind the logo on the start and join pages. */
+const banner = () => `<img class="banner" src="${BASE}/cover.svg" alt="" width="300" height="400">`;
+
 const reconnectBar = `<div class="reconnect" role="status">${T.reconnecting}</div>`;
 
 function howTo(): string {
-  return `<details class="howto" open><summary>${T.howTo}</summary><ol>${HOW_TO.map((l) => `<li>${esc(l)}</li>`).join("")}</ol></details>`;
+  return `${tourHtml()}<details class="howto"><summary>${T.howTo}</summary><ol>${HOW_TO.map((l) => `<li>${esc(l)}</li>`).join("")}</ol></details>`;
 }
 
 // Start page
@@ -201,7 +205,7 @@ function howTo(): string {
 function renderHome(): void {
   setFrame("home", `
     <main class="home">
-      <header class="hero">${logo()}<p class="tagline">${T.tagline}</p></header>
+      <header class="hero art">${banner()}${logo()}<p class="tagline">${T.tagline}</p></header>
       <section class="panel">
         <h2>${T.newGame}</h2>
         <form id="create-form" class="stack">
@@ -232,7 +236,7 @@ function renderJoin(v: View): void {
   setFrame("join", `
     ${reconnectBar}
     <main class="home">
-      <header class="hero small">${logo()}<p class="room-title">${T.room(esc(v.code))}</p></header>
+      <header class="hero art small">${banner()}${logo()}<p class="room-title">${T.room(esc(v.code))}</p></header>
       <section class="panel">
         <form id="join-form" class="stack">
           <label for="join-name">${T.whatName}</label>
@@ -690,5 +694,6 @@ document.addEventListener("click", (e) => {
   }
 });
 
+bindTour();
 render();
 connect();

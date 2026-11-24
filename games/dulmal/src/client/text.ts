@@ -154,6 +154,26 @@ export const HOW_TO: readonly string[] = [
   "Liðið sem fyrst finnur öll sín orð vinnur.",
 ];
 
+/** The walkthrough on the start and join pages (tour.ts). */
+export const TOUR = {
+  title: "Svona gengur leikurinn fyrir sig",
+  stepLabel: (n: number, of: number) => `Skref ${n} af ${of}`,
+  next: "Næsta",
+  back: "Til baka",
+  again: "Sjá aftur",
+  versus: "á móti",
+  giver: "sögumaður",
+  guessers: "giskarar",
+  clueLabel: "Vísbending sögumanns",
+  steps: [
+    { title: "Tvö lið", body: "Hraun og Jökull keppa. Hvort lið hefur einn sögumann og svo giskara. Allir spila í sínum eigin síma." },
+    { title: "Borð með 25 orðum", body: "Allir sjá sömu orðin. Hvaða orð tilheyra hverju liði vita bara sögumennirnir." },
+    { title: "Sögumaðurinn sér lykilinn", body: "Sögumaðurinn sér liti orðanna og gefur vísbendingu: eitt orð og tölu. „Sjór 2“ þýðir að tvö orð tengjast sjónum." },
+    { title: "Liðið giskar", body: "Ýtið á orð. Rétt orð fær lit liðsins og þið megið halda áfram. Hlutlaust orð eða orð hins liðsins endar umferðina." },
+    { title: "Varist drauginn!", body: "Eitt orð er draugur. Liðið sem velur hann tapar strax. Liðið sem finnur öll sín orð fyrst vinnur." },
+  ],
+};
+
 export const ERROR: Record<ErrorCode, string> = {
   bad: "Eitthvað fór úrskeiðis. Reyndu aftur.",
   noRoom: "Þetta herbergi finnst ekki. Athugaðu kóðann.",

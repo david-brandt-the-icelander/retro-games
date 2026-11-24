@@ -76,3 +76,5 @@ The working name is **Kvarðinn** ("the scale"). Two alternatives:
 | Bíðum eftir að allir komi inn. Anna hefur leikinn. | lobby, non-host | Natural? |
 | Sleppa þessari umferð? Sama lið fær nýja umferð. | host confirm | Natural? |
 | Kvarðinn er aðeins fyrir boðsgesti og þessum aðgangi hefur ekki verið boðið enn. / Ef þér var boðið á öðru netfangi, skráðu þig inn með því. | page for a signed-in player without the invite (`worker/handler.ts`) | Natural? Is "boðsgestir" right for "invited players"? |
+| Walkthrough on the front and join pages (`src/client/tour.ts`) | Six steps from *Tvö lið, hvert á sínum síma* to *Afhjúpunin*; *Sá sem gefur vísbendingu sér markið*, *Hitt liðið veðjar*; buttons *Næsta*, *Til baka*, *Sjá aftur*. Is *veðjar* right for the other team's left/right bet, and *Afhjúpunin* for the reveal? | 
+| Not-invited page, new pitch line | *Íslenskur giskuleikur fyrir 4–8 manns, hvert í sínum síma: einn sér leynimarkið …* Natural? |

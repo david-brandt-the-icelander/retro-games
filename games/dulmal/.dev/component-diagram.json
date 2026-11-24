@@ -38,7 +38,7 @@
     {
       "id": "page",
       "name": "Page",
-      "responsibility": "src/client/ and public/: the start, join, lobby, game and big-screen screens, all text in Icelandic (text.ts), a WebSocket that reconnects to the same seat.",
+      "responsibility": "src/client/ and public/: the start, join, lobby, game and big-screen screens, all text in Icelandic (text.ts), a five-step illustrated walkthrough on the start and join pages (tour.ts) under the poster art (public/cover.svg), a WebSocket that reconnects to the same seat.",
       "folder": "games/dulmal/src/client"
     },
     {

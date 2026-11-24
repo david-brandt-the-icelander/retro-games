@@ -13,6 +13,7 @@ import { Connection, loadSeat, saveSeat, type ServerMessage } from "./net";
 import { Scale } from "./scale";
 import { playPoints, playTick, setSound, soundOn, unlockAudio } from "./sound";
 import { GAME_NAME, esc, howTo, stig } from "./text";
+import { bindTour, tourHtml } from "./tour";
 
 const app = document.getElementById("app")!;
 const toastEl = document.getElementById("toast")!;
@@ -262,6 +263,7 @@ function logo(): string {
 function homeHtml(): string {
   return `<div class="home">
     <div class="hero">
+      <img class="banner" src="${location.pathname.replace(/[^/]*$/, "")}cover.svg" alt="" width="300" height="400">
       ${logo()}
       <h1 class="title">${GAME_NAME}</h1>
       <p class="lead">Giskuleikur fyrir 4–8 manns. Hvert í sínum síma, í sama herbergi eða hvert heima hjá sér.</p>
@@ -277,8 +279,13 @@ function homeHtml(): string {
         </div>
       </form>
     </div>
-    ${howToHtml(10)}
+    ${welcomeHowToHtml(10)}
   </div>`;
+}
+
+/** The front and join pages show the illustrated walkthrough, with the rules as text beneath it. */
+function welcomeHowToHtml(goal: number): string {
+  return `${tourHtml()}<details class="panel howto"><summary>Svona er spilað – allar reglurnar</summary><ol>${howTo(goal).map((l) => `<li>${esc(l)}</li>`).join("")}</ol></details>`;
 }
 
 function howToHtml(goal: number): string {
@@ -298,6 +305,7 @@ function joinHtml(): string {
   const suggested: TeamId = counts[0] <= counts[1] ? 0 : 1;
   const chosen = (document.querySelector<HTMLInputElement>('input[name="team"]:checked')?.value ?? String(suggested)) as "0" | "1";
   return `<div class="join">
+    <img class="banner small" src="${location.pathname.replace(/[^/]*$/, "")}cover.svg" alt="" width="300" height="400">
     <section class="panel">
       <h1>Vertu með!</h1>
       ${v.phase !== "lobby" ? `<p class="note">Leikurinn er hafinn, en þú getur samt komið inn.</p>` : ""}
@@ -315,7 +323,7 @@ function joinHtml(): string {
       <p>Ef þú skiptir um tæki eða datt út, ýttu á nafnið þitt:</p>
       <div class="claimlist">${offline.map((p) => `<button type="button" class="btn" data-claim="${p.id}">${esc(p.name)}</button>`).join("")}</div>
     </section>` : ""}
-    ${howToHtml(v.settings.goal)}
+    ${welcomeHowToHtml(v.settings.goal)}
   </div>`;
 }
 
@@ -760,4 +768,5 @@ app.addEventListener("submit", (e) => {
 
 window.addEventListener("hashchange", enterRoute);
 window.addEventListener("popstate", enterRoute);
+bindTour(render);
 enterRoute();
