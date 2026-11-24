@@ -60,7 +60,7 @@
     {
       "id": "migration-gate",
       "name": "Migration gate (migration-gate.sh)",
-      "responsibility": "Finds database files changed since a commit and fails unless each change is acknowledged; the workflows run only its pr mode.",
+      "responsibility": "Finds database files changed since a commit and fails unless each change is acknowledged; the workflows run only its pr mode, and the zizd deploy step (.zazzle/zizd) its deploy mode, for one game.",
       "folder": ".github/scripts"
     },
     {

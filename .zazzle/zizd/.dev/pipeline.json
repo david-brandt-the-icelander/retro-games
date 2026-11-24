@@ -1,0 +1,53 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/pipeline.schema.json",
+  "kind": "pipeline",
+  "title": "The games' zizd pipelines",
+  "folder": ".zazzle/zizd",
+  "entities": [
+    {
+      "id": "build",
+      "title": "Build a game",
+      "summary": "The build step of a game's pipeline: the game's tests, its Godot tests when it has them, its build, and the Worker bundled without deploying.",
+      "trigger": "A commit on main that changes the game's folder, vendor/, the step folders or the migration gate (the pipeline's paths; README.md), picked up by a zazzle builder.",
+      "checks": [
+        "npm ci and npm test in games/GAME",
+        "npm run test:godot, when the game's package.json has it",
+        "npm run build, and no .dev folder in dist/",
+        "wrangler deploy --dry-run --outdir, with the game's locked wrangler"
+      ],
+      "blocks": "the deploy step: a failed build leaves nothing to deploy",
+      "notChecked": [
+        "The .dev validators and the Database migration pull request check: pull-request checks stay in .github/workflows until zizd runs them.",
+        "LodeStar and Dawn Chorus: neither has a pipeline here."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        { "path": ".zazzle/zizd/build/run.sh" },
+        { "path": ".zazzle/zizd/build/Dockerfile" },
+        { "path": ".zazzle/zizd/README.md", "symbol": "The pipeline files" }
+      ]
+    },
+    {
+      "id": "deploy",
+      "title": "Deploy a game",
+      "summary": "The deploy step: refuses without credentials, holds back an unacknowledged database change, then uploads the build's bundle and assets.",
+      "trigger": "A zazzle deployer serving the pipeline, on the newest finished build of main.",
+      "checks": [
+        "CLOUDFLARE_API_TOKEN and GITHUB_TOKEN are set, and the artifacts are of this game and commit",
+        "migration-gate.sh deploy for this game: every worker/schema.sql or worker/migrations/ change since the last deploy by zizd is acknowledged in its pull request",
+        "ZAZZLE_HALT_FILE before the gate and before the upload (exit 75)"
+      ],
+      "blocks": "the deploy",
+      "notChecked": [
+        "Whether the migration was in fact applied to production: the gate reads the acknowledgement, not the database."
+      ],
+      "secrets": ["CLOUDFLARE_API_TOKEN", "GITHUB_TOKEN", "CLOUDFLARE_ACCOUNT_ID (optional)"],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        { "path": ".zazzle/zizd/deploy/run.sh" },
+        { "path": ".zazzle/zizd/deploy/Dockerfile" },
+        { "path": ".github/scripts/migration-gate.sh", "symbol": "deploy" }
+      ]
+    }
+  ]
+}
