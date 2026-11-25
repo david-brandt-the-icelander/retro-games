@@ -11,10 +11,15 @@ forgets:
 It runs `.github/scripts/migration-gate.sh`, which also prints the exact command for each
 changed file.
 
-**No gate runs before a deploy any more.** The Deploy workflow, which checked every database
+**No gate runs before a deploy by hand.** The Deploy workflow, which checked every database
 change since the last deploy before uploading anything, was removed (2026-11-21). The owner
 deploys each game by hand, from their own machine, with `npm run deploy` in the game's folder,
 which does not look at the database: the pull request check is the only one.
+
+The zizd pipelines (`.zazzle/zizd/README.md`) bring that gate back: their deploy step runs
+`migration-gate.sh deploy` for its own game and deploys nothing while a change to that game's
+database since its last deploy by zizd is unacknowledged. It applies no migration either. The
+pipelines are not registered yet, so until they are, deploys are still by hand.
 
 Each game has its own D1 database, named in its `wrangler.jsonc`:
 

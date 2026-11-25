@@ -4,11 +4,13 @@
 # has been migrated.
 #   migration-gate.sh pr <base sha> <pull request number>   the pull request check (migrations.yml)
 #   migration-gate.sh deploy [<base sha>]                    the commits since <base sha>, by the pull
-#                                                            requests that brought them. No workflow
-#                                                            runs it: the Deploy workflow that ran it
-#                                                            before every deploy was removed
-#                                                            (2026-11-21), and games are deployed by
-#                                                            hand with `npm run deploy`.
+#                                                            requests that brought them. The zizd
+#                                                            pipelines' deploy step runs it before each
+#                                                            deploy (.zazzle/zizd/deploy/run.sh); no
+#                                                            workflow does since the Deploy workflow was
+#                                                            removed (2026-11-21).
+# MIGRATION_GATE_GAME=<folder> looks only at that game's database (each game has its own); unset, at
+# every game's.
 # Needs gh, signed in (GH_TOKEN in Actions).
 set -euo pipefail
 cd "$(dirname "$0")/../.."
@@ -16,7 +18,9 @@ cd "$(dirname "$0")/../.."
 DOC=docs/database-migrations.md
 # What counts as a database change, and how each file reaches production. Each game has its own
 # database, named in its wrangler.jsonc. A .dev/ folder documents the code and is never applied.
-PATHS=(':(glob)games/*/worker/schema.sql' ':(glob)games/*/worker/migrations/**' ':(exclude,glob)**/.dev/**')
+game=${MIGRATION_GATE_GAME:-*}
+case "$game" in '*') ;; ''|*[!a-z0-9_-]*) echo "MIGRATION_GATE_GAME=$game is not a game's folder" >&2; exit 2 ;; esac
+PATHS=(":(glob)games/$game/worker/schema.sql" ":(glob)games/$game/worker/migrations/**" ':(exclude,glob)**/.dev/**')
 how_to() {
   local game db
   game=$(cut -d/ -f2 <<<"$1")

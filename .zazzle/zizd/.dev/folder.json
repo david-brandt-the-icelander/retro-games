@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "zizd step containers",
+  "folder": ".zazzle/zizd",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "zizd step containers",
+      "summary": "The two step containers every game's zizd pipeline runs: build (test and build) and deploy (the migration gate, then the upload).",
+      "purpose": "Holds the containers zazzle's builders and deployers run for retro-games, written against zazzle's step-pipeline spec: build/ tests and builds one game and leaves its bundle, assets and config as artifacts; deploy/ runs the database migration gate and uploads those artifacts with wrangler, never rebuilding. Each reads its game from the pipeline's name. README.md holds the pipeline files, one per game, and the config key names.",
+      "boundaries": [
+        "The pipeline files and config values live in the orchestrator (continuous_integration_and_delivery), not here; README.md has copies of the pipeline files and names the keys, never their values.",
+        "Production's databases are never migrated here: the deploy step only refuses while a migration is unacknowledged (docs/database-migrations.md).",
+        "Until the pipelines are registered, nothing runs these containers but a person trying them by hand; the owner still deploys with npm run deploy."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        { "path": ".zazzle/zizd/README.md", "symbol": "The pipeline files" },
+        { "path": ".zazzle/zizd/build/run.sh" },
+        { "path": ".zazzle/zizd/deploy/run.sh" }
+      ],
+      "links": [
+        { "path": ".github/scripts/migration-gate.sh", "label": "The migration gate the deploy step runs" },
+        { "path": "docs/database-migrations.md", "label": "Database migrations" }
+      ]
+    }
+  ]
+}

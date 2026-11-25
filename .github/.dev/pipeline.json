@@ -74,7 +74,7 @@
       "blocks": "merge",
       "notChecked": [
         "Whether the migration was in fact applied to production: the gate reads the acknowledgement, not the database.",
-        "Anything at deploy time: no gate runs before a deploy any more, since the owner deploys each game by hand with npm run deploy."
+        "Anything at deploy time: that is the zizd deploy step's migration-gate.sh deploy (.zazzle/zizd/.dev/pipeline.json), once its pipelines are registered; a deploy by hand with npm run deploy runs no gate."
       ],
       "evidenceStatus": "source-verified",
       "sources": [
