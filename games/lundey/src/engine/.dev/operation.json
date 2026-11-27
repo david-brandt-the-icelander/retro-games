@@ -1,0 +1,173 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-operation/schema.json",
+  "kind": "operation",
+  "title": "Engine operations",
+  "folder": "games/lundey/src/engine",
+  "description": "The functions through which the page and the tests drive a game.",
+  "sources": [
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.step"
+    },
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.newGame"
+    },
+    {
+      "path": "games/lundey/src/engine/maze.ts",
+      "symbol": "buildMaze"
+    },
+    {
+      "path": "games/lundey/src/engine/autopilot.ts",
+      "symbol": "autopilot"
+    }
+  ],
+  "entities": [
+    {
+      "id": "make-game",
+      "name": "Make a game",
+      "description": "A Game on its title screen, with its generator seeded.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lundey/src/engine/game.ts",
+        "symbol": "Game"
+      },
+      "action": "query",
+      "transport": "constructor (new Game(seed))",
+      "authorization": "None: in-process code. The page (src/main.ts) and the tests construct it.",
+      "result": "A Game in the attract phase with a burrow dug and the puffin and hunters at their starting places; the seed feeds the generator every later game draws its burrows from. best is 0 until the page sets it.",
+      "failures": []
+    },
+    {
+      "id": "step",
+      "name": "Step a game",
+      "description": "Moves the game on by one sixtieth of a second with one step's Input.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.step"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lundey/src/engine/game.ts",
+        "symbol": "Game.step"
+      },
+      "action": "command",
+      "transport": "method of Game",
+      "authorization": "None: in-process code. The page calls it sixty times a second; the tests call it directly.",
+      "result": "The game is changed in place. start begins a game from the title screen or the game-over screen, or a real game from a demo; pause toggles the pause in ready and play; dir is the way the puffin will turn. What happened in the step is collected for takeEvents().",
+      "failures": [
+        "A start press on the game-over screen does nothing in its first 45 steps.",
+        "A pause press does something only in the ready and play phases of a real game: not on the title or game-over screens, not in a demo, and not while a puffin is being caught or a burrow cleared.",
+        "While paused, every other input is ignored."
+      ]
+    },
+    {
+      "id": "new-game",
+      "name": "Start a game or a demo",
+      "description": "Starts a game from burrow 1, as a real game or as a demo.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.newGame"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lundey/src/engine/game.ts",
+        "symbol": "Game.newGame"
+      },
+      "action": "command",
+      "transport": "method of Game (newGame(demo = false))",
+      "authorization": "None: in-process code. step() calls it on a start press; the page calls newGame(true) for the title screen's demo.",
+      "result": "Score 0, three puffins, burrow 1, a new base seed drawn for this game's burrows, the pause cleared, the ready phase begun, and a start event collected.",
+      "failures": []
+    },
+    {
+      "id": "take-events",
+      "name": "Take the events",
+      "description": "Hands over what has happened since the last call.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.takeEvents"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lundey/src/engine/game.ts",
+        "symbol": "Game.takeEvents"
+      },
+      "action": "command",
+      "transport": "method of Game",
+      "authorization": "None: in-process code. The page calls it after every step and plays a sound for each event.",
+      "result": "The collected GameEvents, in order; the Game's list is emptied.",
+      "failures": []
+    },
+    {
+      "id": "build-maze",
+      "name": "Dig a burrow",
+      "description": "The burrow for a seed.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "buildMaze"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lundey/src/engine/maze.ts",
+        "symbol": "buildMaze"
+      },
+      "action": "query",
+      "transport": "exported function",
+      "authorization": "None: in-process code. Game.loadLevel and the tests call it.",
+      "result": "A Maze: the seed, every tile as turf, tunnel, den or door, the tiles that start with a sand eel, the four that start with a feather, and the row whose tunnel runs off the island's sides. The same seed always gives the same Maze.",
+      "failures": []
+    },
+    {
+      "id": "autopilot",
+      "name": "Ask the simple player for a direction",
+      "description": "Which way a simple player would point the puffin now.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/autopilot.ts",
+          "symbol": "autopilot"
+        }
+      ],
+      "entrypoint": {
+        "path": "games/lundey/src/engine/autopilot.ts",
+        "symbol": "autopilot"
+      },
+      "action": "query",
+      "transport": "exported function",
+      "authorization": "None: in-process code. The page calls it on every step of a demo; the tests use it to play burrows.",
+      "result": "A direction, 0 to 3. It reads the Game and changes nothing.",
+      "failures": [
+        "-1 outside the ready and play phases, or when no tunnel leads on."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/capability.json",
+      "relationship": "The capability these belong to."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/feature.json",
+      "relationship": "The features it offers."
+    },
+    {
+      "kind": "state",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/Game.state-diagram.json",
+      "relationship": "The phases of a game."
+    }
+  ]
+}

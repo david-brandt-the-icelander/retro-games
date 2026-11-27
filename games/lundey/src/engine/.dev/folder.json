@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Engine",
+  "folder": "games/lundey/src/engine",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Engine",
+      "summary": "The game with no page and no clock: its numbers, its seeded generator, the burrow digger, the Game and a simple player for the demo.",
+      "purpose": "Plays Lundey one step (a sixtieth of a second) at a time from a seed and the player's controls, so the page and the tests get the same game from the same seed and the same controls.",
+      "boundaries": [
+        "Positions, speeds and times are whole numbers (thousandths of a tile, and steps), and random numbers come only from rng.ts. Nothing here reads a clock, the page or the network.",
+        "Decides everything about the game and draws nothing: the page (src/main.ts) steps it, and src/ui/ draws it and sounds its events.",
+        "autopilot.ts is a player, not a rule: it reads a Game and answers a direction, for the title screen's demo and for the tests.",
+        "Nothing records or replays a game: the best score is the page's, kept on the device (games/lundey/.dev/backlog.json, replay-checked-table)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.step"
+        },
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "buildMaze"
+        },
+        {
+          "path": "games/lundey/src/engine/rng.ts",
+          "symbol": "Rng"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "UNIT"
+        },
+        {
+          "path": "games/lundey/src/engine/autopilot.ts",
+          "symbol": "autopilot"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/backlog.json",
+          "entityId": "replay-checked-table"
+        }
+      ]
+    }
+  ]
+}

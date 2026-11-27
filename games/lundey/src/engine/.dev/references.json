@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/references.schema.json",
+  "kind": "references",
+  "title": "Engine references",
+  "folder": "games/lundey/src/engine",
+  "entities": [
+    {
+      "id": "mulberry32",
+      "title": "mulberry32",
+      "summary": "The seeded generator in rng.ts.",
+      "relevance": "A small 32-bit generator built from Math.imul and shifts: the same seed gives the same sequence wherever the game runs, which is what lets a seed stand for a burrow and a game be played again in a test.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/rng.ts",
+          "symbol": "Rng"
+        }
+      ]
+    }
+  ]
+}

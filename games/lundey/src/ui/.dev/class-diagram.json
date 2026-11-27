@@ -1,0 +1,164 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Lundey UI classes",
+  "folder": "games/lundey/src/ui",
+  "description": "The renderer, the controls and the sound, with the engine types they read, produce and play. Private members are left out.",
+  "sources": [
+    {
+      "path": "games/lundey/src/ui/render.ts",
+      "symbol": "Renderer"
+    },
+    {
+      "path": "games/lundey/src/ui/input.ts",
+      "symbol": "Controls"
+    },
+    {
+      "path": "games/lundey/src/ui/sound.ts",
+      "symbol": "Sound"
+    },
+    {
+      "path": "games/lundey/src/ui/art.ts",
+      "symbol": "Coat"
+    }
+  ],
+  "types": [
+    {
+      "id": "ui.Renderer",
+      "name": "Renderer",
+      "kind": "class",
+      "sources": [
+        "games/lundey/src/ui/render.ts"
+      ],
+      "members": [
+        "constructor(c: CanvasRenderingContext2D)",
+        "draw(g: Game, scale: number): void"
+      ]
+    },
+    {
+      "id": "ui.Controls",
+      "name": "Controls",
+      "kind": "class",
+      "sources": [
+        "games/lundey/src/ui/input.ts"
+      ],
+      "members": [
+        "onActivity: () => void",
+        "onMute: () => void",
+        "constructor(root: Document, screen: HTMLElement)",
+        "bindButton(el: HTMLElement, action: string): void",
+        "queuePause(): void",
+        "read(playing: boolean): Input"
+      ]
+    },
+    {
+      "id": "ui.Sound",
+      "name": "Sound",
+      "kind": "class",
+      "sources": [
+        "games/lundey/src/ui/sound.ts"
+      ],
+      "members": [
+        "on: boolean",
+        "unlock(): void",
+        "play(e: GameEvent): void",
+        "tern(): void"
+      ]
+    },
+    {
+      "id": "ui.Coat",
+      "name": "Coat",
+      "kind": "interface",
+      "sources": [
+        "games/lundey/src/ui/art.ts"
+      ],
+      "members": [
+        "main: string",
+        "dark: string",
+        "light: string",
+        "eye: string"
+      ]
+    },
+    {
+      "id": "ui.Season",
+      "name": "Season",
+      "kind": "interface",
+      "sources": [
+        "games/lundey/src/ui/render.ts"
+      ],
+      "members": [
+        "name: string",
+        "sea: string",
+        "turf: string",
+        "shade: string",
+        "tuft: string",
+        "flower: string",
+        "earth: string",
+        "sand: string",
+        "grit: string"
+      ]
+    },
+    {
+      "id": "engine.Game",
+      "name": "Game",
+      "kind": "class",
+      "sources": [
+        "games/lundey/src/engine/game.ts"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "engine.Input",
+      "name": "Input",
+      "kind": "interface",
+      "sources": [
+        "games/lundey/src/engine/game.ts"
+      ],
+      "members": [],
+      "external": true
+    },
+    {
+      "id": "engine.GameEvent",
+      "name": "GameEvent",
+      "kind": "type",
+      "sources": [
+        "games/lundey/src/engine/game.ts"
+      ],
+      "members": [],
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "ui.Renderer",
+      "to": "engine.Game",
+      "kind": "depends-on",
+      "description": "draw() reads a Game and never changes it."
+    },
+    {
+      "from": "ui.Renderer",
+      "to": "ui.Coat",
+      "kind": "depends-on",
+      "description": "A hunter's own coat, or the washed-out one while terns mob it."
+    },
+    {
+      "from": "ui.Renderer",
+      "to": "ui.Season",
+      "kind": "depends-on",
+      "description": "The island's colours for the level."
+    },
+    {
+      "from": "ui.Controls",
+      "to": "engine.Input",
+      "kind": "depends-on",
+      "description": "read() returns one step's Input."
+    },
+    {
+      "from": "ui.Sound",
+      "to": "engine.GameEvent",
+      "kind": "depends-on",
+      "description": "play() takes one event."
+    }
+  ]
+}

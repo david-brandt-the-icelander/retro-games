@@ -1,0 +1,84 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/blockers.schema.json",
+  "kind": "blockers",
+  "title": "Lundey blockers",
+  "folder": "games/lundey",
+  "entities": [
+    {
+      "id": "first-deploy",
+      "title": "Nobody can be invited or play yet",
+      "summary": "The game has not been deployed, and the login service that is deployed does not yet know the role games:lundey, so no player can be invited.",
+      "blocked": [
+        {
+          "path": "games/lundey/.dev/user-journey.json",
+          "entityId": "a-run-at-the-best",
+          "description": "No player can reach the game."
+        },
+        {
+          "path": "games/lundey/.dev/delivery.json",
+          "entityId": "production",
+          "description": "The first deploy."
+        }
+      ],
+      "cause": "The role games:lundey is registered in the icelander.net repository's accounts/src/config.js, and the game's card is added to icelander.net/games, in a pull request there that is not merged. Until the login service is deployed with the role, it cannot be granted to anyone. The Worker itself has not been deployed either: deploying is the owner's.",
+      "unblockWhen": "The icelander.net pull request is merged and its login service deployed with games:lundey; the owner runs npm run deploy in games/lundey; and the role is granted to the first players at icelander.net/private/admin.",
+      "canUnblock": "Owner",
+      "since": "2026-11-27",
+      "details": "The icelander.net repository was not read from here: the state of its pull request is recorded as the coding agent reported it on 2026-11-27. The open decision stands-in-for-request may change which role is registered and where the card goes.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lundey/README.md",
+          "symbol": "Lundey"
+        },
+        {
+          "path": "games/lundey/worker/config.ts",
+          "symbol": "ROLE"
+        },
+        {
+          "path": "games/lundey/package.json",
+          "symbol": "scripts.deploy"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/decisions.json",
+          "entityId": "stands-in-for-request"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/runbooks.json",
+          "entityId": "first-publish"
+        }
+      ]
+    },
+    {
+      "id": "zizd-not-registered",
+      "title": "The lundey pipeline is not in the orchestrator",
+      "summary": "Lundey's zizd pipeline is written down in .zazzle/zizd/README.md, but nothing runs it until its file is added to the orchestrator.",
+      "blocked": [
+        {
+          "path": "games/lundey/.dev/pipeline.json",
+          "entityId": "zizd",
+          "description": "Building and deploying Lundey through zizd."
+        }
+      ],
+      "cause": "Pipeline files live in the orchestrator (continuous_integration_and_delivery), which is another repository; .zazzle/zizd/README.md holds only the copy that goes there.",
+      "unblockWhen": "The owner adds david-brandt-the-icelander/retro-games:lundey to the orchestrator, with the pipeline file the README gives.",
+      "canUnblock": "Owner",
+      "since": "2026-11-27",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": ".zazzle/zizd/README.md",
+          "symbol": "lundey"
+        },
+        {
+          "path": ".zazzle/zizd/README.md",
+          "symbol": "The pipeline files"
+        }
+      ]
+    }
+  ]
+}

@@ -56,6 +56,10 @@
     {
       "path": "games/hand-of-the-isle/wrangler.jsonc",
       "symbol": "hand-of-the-isle"
+    },
+    {
+      "path": "games/lundey/wrangler.jsonc",
+      "symbol": "routes"
     }
   ],
   "nodes": [
@@ -219,6 +223,12 @@
       "name": "neon-cycles Worker",
       "kind": "process",
       "description": "Neon Cycles' Worker on icelander.net/games/retro/neon-cycles*, with no database; it joins the Godot engine from its parts. Its own deployment diagram is in games/neon-cycles/.dev."
+    },
+    {
+      "id": "w-lundey",
+      "name": "lundey Worker",
+      "kind": "process",
+      "description": "Lundey's Worker on icelander.net/games/lundey*, for holders of games:lundey only; no database. Its own deployment diagram is in games/lundey/.dev."
     }
   ],
   "artifacts": [
@@ -417,6 +427,20 @@
       "source": "games/neon-cycles/worker/index.ts",
       "deployedTo": "w-neon-cycles",
       "description": "Bundled by wrangler deploy."
+    },
+    {
+      "id": "site-lundey",
+      "name": "Lundey's page and game",
+      "source": "games/lundey/src/main.ts",
+      "deployedTo": "edge",
+      "description": "dist/games/lundey/: the page, its styles and its icon from public/, and game.js bundled from src/main.ts; served as static assets."
+    },
+    {
+      "id": "script-lundey",
+      "name": "lundey Worker script",
+      "source": "games/lundey/worker/index.ts",
+      "deployedTo": "w-lundey",
+      "description": "Gates every file on games:lundey."
     }
   ],
   "relationships": [
@@ -635,6 +659,18 @@
       "to": "accounts",
       "kind": "connects-to",
       "description": "Service binding ACCOUNTS: every file needs a signed-in player holding games:hand-of-the-isle."
+    },
+    {
+      "from": "edge",
+      "to": "w-lundey",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/lundey*."
+    },
+    {
+      "from": "w-lundey",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: every file needs a signed-in player holding games:lundey."
     }
   ]
 }

@@ -1,0 +1,358 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Engine verification",
+  "folder": "games/lundey/src/engine",
+  "entities": [
+    {
+      "id": "burrows",
+      "title": "Burrows",
+      "summary": "Whatever the seed, a burrow the game can be played on, checked over 300 seeds.",
+      "subject": [
+        {
+          "path": "games/lundey/src/engine/.dev/feature.json",
+          "entityId": "seeded-burrows"
+        }
+      ],
+      "criteria": [
+        "The same seed digs the same burrow, and different seeds dig different ones",
+        "Every burrow is a mirror image of itself, left to right",
+        "Every tunnel can be reached from where the puffin starts, and none is a dead end",
+        "The den is three tiles shut in by turf with one door above it, which the puffin cannot get through",
+        "One tunnel runs off both sides of the island and comes back on the other; the rest of the edge is turf",
+        "Tunnels are one tile wide",
+        "Four feathers, one in each quarter, and a sand eel on every other tunnel tile but the puffin's own"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lundey/test/maze.test.ts",
+          "symbol": "the same seed digs the same burrow, and different seeds dig different ones",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/maze.test.ts",
+          "symbol": "every burrow is a mirror image of itself, left to right",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/maze.test.ts",
+          "symbol": "every tunnel can be reached from where the puffin starts, and none is a dead end",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/maze.test.ts",
+          "symbol": "the den is three tiles shut in by turf, with one door up to the tunnel above it",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/maze.test.ts",
+          "symbol": "one tunnel runs off both sides of the island, and the rest of the edge is turf",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/maze.test.ts",
+          "symbol": "tunnels are one tile wide: no four tunnel tiles make a square",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/maze.test.ts",
+          "symbol": "four feathers, one in each quarter, and a sand eel on every other tunnel tile but the puffin's own",
+          "command": "npm test"
+        }
+      ],
+      "notChecked": [
+        "Seeds other than the 300 the test makes.",
+        "Whether a burrow is fair or pleasant to play: nobody has judged that (games/lundey/.dev/limitations.json, not-play-tested)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/test/maze.test.ts",
+          "symbol": "SEEDS"
+        },
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "buildMaze"
+        }
+      ]
+    },
+    {
+      "id": "puffin-and-phases",
+      "title": "The puffin, the phases and the same game twice",
+      "summary": "A game waits, counts in and plays; the puffin moves as pointed; pause stops everything; a seed and its controls replay exactly.",
+      "subject": [
+        {
+          "path": "games/lundey/src/engine/.dev/feature.json",
+          "entityId": "puffin"
+        },
+        {
+          "path": "games/lundey/src/engine/.dev/feature.json",
+          "entityId": "same-seed-same-game"
+        },
+        {
+          "path": "games/lundey/src/engine/.dev/Game.state-diagram.json"
+        }
+      ],
+      "criteria": [
+        "A game waits on the title screen, counts in, and then plays, with the fox out and the others in the den",
+        "The puffin stands until it is pointed somewhere, then runs a tile every ten steps and eats what it finds",
+        "It turns where the player last pointed as soon as there is a tunnel that way, turns round on the spot between tiles, and stops at turf",
+        "The tunnel off one side of the island comes back on the other",
+        "The same seed and the same controls give the same game; another seed gives another burrow",
+        "Pause stops everything, the frame count included, until it is pressed again"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "a game waits on the title screen, counts in, and then plays",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "the puffin stands until it is pointed somewhere, then runs a tile every ten steps and eats what it finds",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "it turns where the player last pointed as soon as there is a tunnel that way, and stops at turf",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "the tunnel off one side of the island comes back on the other",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "the same seed and the same controls give the same game",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "pause stops everything until it is pressed again",
+          "command": "npm test"
+        }
+      ],
+      "notChecked": [
+        "That a start press on the game-over screen is ignored for its first 45 steps."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "started"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.step"
+        }
+      ]
+    },
+    {
+      "id": "hunters",
+      "title": "The hunters",
+      "summary": "Hunters keep to the tunnels and leave the den in turn; the mink, the fox and the raven each hunt in their own way.",
+      "subject": [
+        {
+          "path": "games/lundey/src/engine/.dev/feature.json",
+          "entityId": "four-hunters"
+        },
+        {
+          "path": "games/lundey/src/engine/.dev/Hunter.state-diagram.json"
+        }
+      ],
+      "criteria": [
+        "Hunters stay on tiles they may walk, leave the den in the order fox, mink, skua, raven, and never turn back on their own",
+        "The mink takes the shortest way to the puffin and catches one that stands still, in the time its speed allows",
+        "The fox follows the puffin's trail round the den where the mink, from the same tile, takes the short way",
+        "The raven dives when it sees the puffin down a straight tunnel, and is faster by the dive's bonus"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "hunters keep to the tunnels, leave the den in turn, and never turn back on their own",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "the mink takes the shortest way to the puffin and catches one that stands still",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "the fox follows the puffin's scent where the mink takes the shortest way",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "the raven wanders until it sees the puffin down a straight tunnel, then dives, faster",
+          "command": "npm test"
+        }
+      ],
+      "notChecked": [
+        "The skua's way to the puffin's next meal has no test of its own.",
+        "Hunting and prowling in turn, and how long each lasts.",
+        "The raven's rest between dives, and that a scent older than eight seconds is not followed."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "place"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.choose"
+        }
+      ]
+    },
+    {
+      "id": "feathers",
+      "title": "Feathers and routs",
+      "summary": "A feather mobs the hunters that are out; the puffin routs the ones it touches; they go home, rest and come back; the terns leave.",
+      "subject": [
+        {
+          "path": "games/lundey/src/engine/.dev/feature.json",
+          "entityId": "tern-feathers"
+        },
+        {
+          "path": "games/lundey/src/engine/.dev/Hunter.state-diagram.json"
+        }
+      ],
+      "criteria": [
+        "A feather mobs the hunters out in the tunnels and leaves one in the den alone",
+        "Touching mobbed hunters routs them, for 250 and then 500, without costing a puffin",
+        "A routed hunter reaches the middle of the den, rests, and comes out again",
+        "When the terns' time runs out, mobbed hunters are out again",
+        "A mobbed hunter gets farther from the puffin"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "a feather brings the terns: hunters out in the tunnels turn tail, and the puffin routs the ones it touches",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "when the terns leave, mobbed hunters hunt again",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "a mobbed hunter runs away from the puffin",
+          "command": "npm test"
+        }
+      ],
+      "notChecked": [
+        "The third and fourth rout under one feather (750 and 1,000).",
+        "A second feather while the terns are still out."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "place"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.touch"
+        }
+      ]
+    },
+    {
+      "id": "lives-and-levels",
+      "title": "Lives, burrows, scoring and the demo",
+      "summary": "A caught puffin costs a life and three end the game; a cleared burrow brings a bonus and a new, harder burrow; an extra puffin comes at 4,000; the demo plays itself.",
+      "subject": [
+        {
+          "path": "games/lundey/src/engine/.dev/feature.json",
+          "entityId": "score-and-lives"
+        },
+        {
+          "path": "games/lundey/src/engine/.dev/feature.json",
+          "entityId": "harder-burrows"
+        },
+        {
+          "path": "games/lundey/src/engine/.dev/feature.json",
+          "entityId": "demo-player"
+        },
+        {
+          "path": "games/lundey/src/engine/.dev/Game.state-diagram.json"
+        }
+      ],
+      "criteria": [
+        "A caught puffin costs a life, the eels stay eaten, and the third ends the game, which then returns to the title screen with the best score raised",
+        "Eating every eel clears the burrow: two treats were shown, the score is the eels, feathers and treats and the clean bonus, and a different burrow follows as level 2",
+        "On level 2 hunters are faster, the terns stay less long, prowls are shorter and the raven waits less",
+        "An extra puffin comes at 4,000 points, and never more than five are held",
+        "A demo plays by itself to its end, leaves the best score alone, and gives way to a real game on a start press"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "a caught puffin costs a life; the eels stay eaten; three and the game is over",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "eating every eel clears the burrow: a bonus for a clean run, then a new burrow, harder",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "an extra puffin at 4000 points, and never more than five",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "the demo plays by itself, scores nothing towards the best, and gives way to a real game",
+          "command": "npm test"
+        }
+      ],
+      "notChecked": [
+        "The later extra puffins, every 8,000 points.",
+        "Treats beyond the first burrow's herring, and that a treat goes away after ten seconds.",
+        "The burrow-clearing test shuts the hunters in the den, so it does not show that a burrow can be cleared with them out."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "denned"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.puffinArrives"
+        },
+        {
+          "path": "games/lundey/src/engine/autopilot.ts",
+          "symbol": "autopilot"
+        }
+      ]
+    }
+  ]
+}

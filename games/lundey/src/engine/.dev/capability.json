@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-capability/schema.json",
+  "kind": "capability",
+  "title": "Engine capability",
+  "folder": "games/lundey/src/engine",
+  "description": "What the engine can do for the page and the tests.",
+  "sources": [
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.step"
+    },
+    {
+      "path": "games/lundey/src/engine/maze.ts",
+      "symbol": "buildMaze"
+    }
+  ],
+  "entities": [
+    {
+      "id": "deterministic-maze-chase",
+      "name": "Deterministic maze chase",
+      "description": "Plays a game of Lundey with no page, no clock and no randomness of its own.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game"
+        },
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "buildMaze"
+        },
+        {
+          "path": "games/lundey/src/engine/rng.ts",
+          "symbol": "Rng"
+        }
+      ],
+      "responsibility": "Holds the rules of the game, digs each level's burrow from a seed and plays the game one step at a time, so the same seed and the same controls always give the same game.",
+      "operations": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.step"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.newGame"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.takeEvents"
+        },
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "buildMaze"
+        },
+        {
+          "path": "games/lundey/src/engine/autopilot.ts",
+          "symbol": "autopilot"
+        }
+      ],
+      "access": [
+        "Nothing checks: it is a library bundled into the page (src/main.ts) and into the tests. Who may load the page is the Worker's business (games/lundey/worker)."
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "operation",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/operation.json",
+      "relationship": "The operations through which it is reached."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/feature.json",
+      "relationship": "The features it offers."
+    },
+    {
+      "kind": "state",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/Game.state-diagram.json",
+      "relationship": "The phases of a game."
+    },
+    {
+      "kind": "state",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/Hunter.state-diagram.json",
+      "relationship": "A hunter's round: den, leaving, out, mobbed, routed."
+    }
+  ]
+}

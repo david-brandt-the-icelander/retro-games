@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/contracts.schema.json",
+  "kind": "contracts",
+  "title": "Worker contracts",
+  "folder": "games/lundey/worker",
+  "entities": [
+    {
+      "id": "address-and-role",
+      "title": "The game's address and its role",
+      "summary": "Lundey is at icelander.net/games/lundey/ and is served to holders of games:lundey; the icelander.net site relies on both.",
+      "contractType": "http-api",
+      "consumers": [
+        "icelander.net's games page, whose card for Lundey links to /games/lundey/ (the icelander.net repository; in a pull request not merged on 2026-11-27)",
+        "icelander.net's login service, which has to know the role games:lundey before it can be granted at icelander.net/private/admin (accounts/src/config.js in that repository; the same pull request)",
+        "Players' bookmarks"
+      ],
+      "guarantees": [
+        "GET and HEAD under /games/lundey/ answer a signed-in holder of games:lundey with the game's files",
+        "/games/lundey redirects to /games/lundey/",
+        "A visitor who is not signed in is sent to /auth/sign-in?return=… on the same host",
+        "No other path and no other method is answered"
+      ],
+      "compatibility": "Changing BASE means changing the route in wrangler.jsonc, SITE in build.mjs and the card on icelander.net together. Changing ROLE means the new role is known to the login service first. test/worker.test.ts pins both. Which role guards the game is part of an open decision (games/lundey/.dev/decisions.json, stands-in-for-request).",
+      "definition": "games/lundey/worker/config.ts",
+      "details": "What the icelander.net repository holds was not read from here: the card and the role's registration are recorded as the coding agent reported them.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lundey/worker/config.ts",
+          "symbol": "BASE"
+        },
+        {
+          "path": "games/lundey/worker/config.ts",
+          "symbol": "ROLE"
+        },
+        {
+          "path": "games/lundey/wrangler.jsonc",
+          "symbol": "routes"
+        },
+        {
+          "path": "games/lundey/build.mjs",
+          "symbol": "SITE"
+        },
+        {
+          "path": "games/lundey/test/worker.test.ts",
+          "symbol": "the game lives at /games/lundey, for holders of games:lundey"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "documents",
+          "path": "games/lundey/worker/.dev/operation.json",
+          "entityId": "get-file"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/decisions.json",
+          "entityId": "stands-in-for-request"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/blockers.json",
+          "entityId": "first-deploy"
+        }
+      ]
+    }
+  ]
+}

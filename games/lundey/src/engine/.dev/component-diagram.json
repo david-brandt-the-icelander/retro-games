@@ -1,0 +1,147 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Lundey engine component diagram",
+  "folder": "games/lundey/src/engine",
+  "description": "The game itself, stepped sixty times a second, with no drawing, no sound and no page. One seeded generator digs every burrow and makes every random choice, so a seed and a set of controls always play out the same.",
+  "sources": [
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game"
+    },
+    {
+      "path": "games/lundey/src/engine/maze.ts",
+      "symbol": "buildMaze"
+    },
+    {
+      "path": "games/lundey/src/engine/rules.ts",
+      "symbol": "hunterSpeed"
+    },
+    {
+      "path": "games/lundey/src/engine/rng.ts",
+      "symbol": "Rng"
+    },
+    {
+      "path": "games/lundey/src/engine/autopilot.ts",
+      "symbol": "autopilot"
+    }
+  ],
+  "components": [
+    {
+      "id": "engine",
+      "name": "Lundey engine",
+      "responsibility": "The game, with no drawing, no sound and no page.",
+      "folder": "games/lundey/src/engine"
+    },
+    {
+      "id": "game",
+      "name": "Game (game.ts)",
+      "responsibility": "The phases of a game, the puffin, the four hunters, the terns, treats, score and lives; step(input) moves everything on by one sixtieth of a second and collects the step's events.",
+      "folder": "games/lundey/src/engine"
+    },
+    {
+      "id": "maze",
+      "name": "Burrows (maze.ts)",
+      "responsibility": "Digs a burrow from a seed (buildMaze), and answers how tiles join (neighbour, walkable) and how far apart they are along the tunnels (distances).",
+      "folder": "games/lundey/src/engine"
+    },
+    {
+      "id": "rules",
+      "name": "Rules (rules.ts)",
+      "responsibility": "Every number the game plays by: the island's size, speeds, waits, how long things last and what they score, and how each changes from burrow to burrow.",
+      "folder": "games/lundey/src/engine"
+    },
+    {
+      "id": "rng",
+      "name": "Rng (rng.ts)",
+      "responsibility": "mulberry32: the seeded generator behind every burrow and every random choice.",
+      "folder": "games/lundey/src/engine"
+    },
+    {
+      "id": "autopilot",
+      "name": "Autopilot (autopilot.ts)",
+      "responsibility": "A simple player: heads for the nearest eel, feather or treat and shies from hunters that come close. Plays the demo and the tests.",
+      "folder": "games/lundey/src/engine"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "engine",
+      "to": "game",
+      "kind": "contains",
+      "description": "The game."
+    },
+    {
+      "from": "engine",
+      "to": "maze",
+      "kind": "contains",
+      "description": "Its burrows."
+    },
+    {
+      "from": "engine",
+      "to": "rules",
+      "kind": "contains",
+      "description": "Its numbers."
+    },
+    {
+      "from": "engine",
+      "to": "rng",
+      "kind": "contains",
+      "description": "Random numbers."
+    },
+    {
+      "from": "engine",
+      "to": "autopilot",
+      "kind": "contains",
+      "description": "The demo's player."
+    },
+    {
+      "from": "game",
+      "to": "maze",
+      "kind": "depends-on",
+      "description": "Digs each level's burrow, and steers hunters by distances along its tunnels."
+    },
+    {
+      "from": "game",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Speeds, waits, durations and points."
+    },
+    {
+      "from": "game",
+      "to": "rng",
+      "kind": "depends-on",
+      "description": "Each game's burrows, a prowling hunter's turns, the raven's wandering and where a treat washes up."
+    },
+    {
+      "from": "maze",
+      "to": "rng",
+      "kind": "depends-on",
+      "description": "Every choice made while digging."
+    },
+    {
+      "from": "maze",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "The island's size and the kinds of tile."
+    },
+    {
+      "from": "autopilot",
+      "to": "game",
+      "kind": "depends-on",
+      "description": "Reads the Game: the puffin, the hunters, what is left to eat."
+    },
+    {
+      "from": "autopilot",
+      "to": "maze",
+      "kind": "depends-on",
+      "description": "Distances to food and to hunters."
+    },
+    {
+      "from": "autopilot",
+      "to": "rules",
+      "kind": "depends-on",
+      "description": "Directions."
+    }
+  ]
+}

@@ -93,6 +93,8 @@ export class Game {
 
   constructor(seed: number) {
     this.rng = new Rng(seed);
+    // The burrow behind the title screen comes from the seed too; each game then draws a base of its own.
+    this.base = seed >>> 0;
     this.maze = buildMaze(seed);
     this.loadLevel();
   }

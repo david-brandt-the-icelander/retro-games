@@ -1,0 +1,160 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-user-journey/schema.json",
+  "kind": "user-journey",
+  "title": "Lundey journeys",
+  "folder": "games/lundey",
+  "description": "An invited player's experience of Lundey, as the README describes the game and as the Worker and the page lead a player through it.",
+  "sources": [
+    {
+      "path": "games/lundey/README.md",
+      "symbol": "Lundey"
+    },
+    {
+      "path": "games/lundey/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/lundey/src/main.ts",
+      "symbol": "step"
+    }
+  ],
+  "entities": [
+    {
+      "id": "a-run-at-the-best",
+      "name": "A run at the best score",
+      "description": "An invited player signs in, learns the hunters from the title screen, plays burrow after burrow and comes back to beat their own best.",
+      "sources": [
+        {
+          "path": "games/lundey/README.md",
+          "symbol": "Lundey"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "BEST_KEY"
+        }
+      ],
+      "persona": "Player",
+      "goal": "Get further into the burrows than last time, and beat the best score on their device.",
+      "stages": [
+        {
+          "id": "sign-in",
+          "context": "Has been invited (holds games:lundey) and arrives at icelander.net/games/lundey/ signed out.",
+          "touchpoint": "icelander.net's sign-in",
+          "action": "Signs in, and is sent back to the game.",
+          "outcome": "The title screen: the four hunters and how each hunts, what a tern's feather does, and the keys. Someone signed in at an address that was not invited sees a page saying so instead.",
+          "sources": [
+            {
+              "path": "games/lundey/worker/index.ts",
+              "symbol": "default.fetch"
+            },
+            {
+              "path": "games/lundey/worker/index.ts",
+              "symbol": "notInvited"
+            },
+            {
+              "path": "games/lundey/src/ui/render.ts",
+              "symbol": "Renderer.title"
+            }
+          ]
+        },
+        {
+          "id": "start",
+          "context": "The title screen, or the demo it plays when left alone for twelve seconds.",
+          "touchpoint": "The game's screen: Enter, a tap, the PLAY button or a gamepad",
+          "action": "Starts a game.",
+          "outcome": "BURROW 1, READY!, with three puffins, and the puffin at home under the hunters' den.",
+          "sources": [
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "DEMO_AFTER"
+            },
+            {
+              "path": "games/lundey/src/ui/input.ts",
+              "symbol": "Controls"
+            },
+            {
+              "path": "games/lundey/src/ui/render.ts",
+              "symbol": "Renderer.words"
+            }
+          ]
+        },
+        {
+          "id": "burrows",
+          "context": "The fox is out at once; the mink, the skua and the raven follow from the den.",
+          "touchpoint": "The game's screen, with the arrow keys or WASD, swipes, the on-screen buttons or a gamepad",
+          "action": "Gathers every sand eel, takes a tern's feather to turn on the hunters, and picks up the treats that wash up.",
+          "outcome": "BURROW CLEARED, and a new burrow in the next season, with faster hunters and terns that stay less long.",
+          "sources": [
+            {
+              "path": "games/lundey/README.md",
+              "symbol": "Lundey"
+            },
+            {
+              "path": "games/lundey/README.md",
+              "symbol": "Rules, in numbers"
+            },
+            {
+              "path": "games/lundey/src/engine/game.ts",
+              "symbol": "Game.step"
+            }
+          ]
+        },
+        {
+          "id": "game-over",
+          "context": "The last puffin is caught.",
+          "touchpoint": "GAME OVER, with the score",
+          "action": "Reads the score, and presses Enter or taps to play again.",
+          "outcome": "A score better than the best is kept on this device and shown as BEST from then on.",
+          "sources": [
+            {
+              "path": "games/lundey/src/ui/render.ts",
+              "symbol": "Renderer.words"
+            },
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "step"
+            }
+          ]
+        },
+        {
+          "id": "come-back",
+          "context": "Later, in the same browser.",
+          "touchpoint": "BEST, at the top of the screen",
+          "action": "Opens the game again.",
+          "outcome": "The best score is still there to beat. On another device, or in a private window, it starts from 0.",
+          "sources": [
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "load"
+            },
+            {
+              "path": "games/lundey/README.md",
+              "symbol": "Lundey"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "use-case",
+      "folder": "games/lundey/src",
+      "path": "games/lundey/src/.dev/use-case.json",
+      "relationship": "The use case behind the journey's stages."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/lundey/worker",
+      "path": "games/lundey/worker/.dev/operation.json",
+      "relationship": "How the page is fetched, and who is turned away."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/feature.json",
+      "relationship": "The game the stages describe."
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Lundey",
+  "folder": "games/lundey",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Lundey",
+      "summary": "An original single-player maze chase for the browser: a puffin gathers sand eels in a burrow maze dug afresh from a seed on every level, hunted by a fox, a mink, a skua and a raven. For invited players.",
+      "purpose": "Holds the whole game: the browser game in src/ (a pure engine, a canvas UI and the page's loop), the page in public/, the Worker that serves it to invited players in worker/, and the tests in test/. It is one npm project and one Cloudflare Worker.",
+      "boundaries": [
+        "Original work: the game, its maze generator, its characters, its art and its sounds were all made for this repository (README.md).",
+        "Invite-only: every file is served only to players signed in to icelander.net who hold games:lundey, checked with the shared library in vendor/icelander-auth/, never edited here. Whether the game, its place on the games page and that role stand in for what the owner asked for is an open decision (decisions.json, stands-in-for-request).",
+        "Nothing is kept on a server: no database, no Durable Object, no secrets and no API. The best score lives in the player's browser.",
+        "On its own: no online play, no lobby and no shared table, and the page loads nothing from the games hub."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/README.md",
+          "symbol": "Lundey"
+        },
+        {
+          "path": "games/lundey/wrangler.jsonc",
+          "symbol": "main"
+        },
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/lundey/package.json",
+          "symbol": "scripts"
+        },
+        {
+          "path": "games/lundey/public/index.html",
+          "symbol": "script"
+        }
+      ],
+      "links": [
+        {
+          "path": "games/lundey/README.md",
+          "label": "README"
+        },
+        {
+          "path": "games/lundey/.dev/component-diagram.json",
+          "label": "Component diagram"
+        },
+        {
+          "path": "games/lundey/.dev/deployment-diagram.json",
+          "label": "Deployment diagram"
+        },
+        {
+          "path": "games/lundey/.dev/decisions.json",
+          "label": "The open decision"
+        }
+      ]
+    }
+  ]
+}

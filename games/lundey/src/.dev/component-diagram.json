@@ -1,0 +1,99 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Lundey browser game component diagram",
+  "folder": "games/lundey/src",
+  "description": "The browser side of Lundey: the engine, the canvas UI and the page that runs them. Nothing here talks to a server.",
+  "sources": [
+    {
+      "path": "games/lundey/src/main.ts",
+      "symbol": "frame"
+    },
+    {
+      "path": "games/lundey/src/main.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/lundey/src/main.ts",
+      "symbol": "load"
+    }
+  ],
+  "components": [
+    {
+      "id": "client",
+      "name": "Lundey browser game",
+      "responsibility": "Everything that runs in the browser.",
+      "folder": "games/lundey/src"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "The Game, its burrows, its numbers, its seeded generator and the demo's player; no page.",
+      "folder": "games/lundey/src/engine",
+      "diagram": "games/lundey/src/engine/.dev/component-diagram.json"
+    },
+    {
+      "id": "ui",
+      "name": "UI",
+      "responsibility": "The drawn cast, canvas drawing, controls and sound.",
+      "folder": "games/lundey/src/ui",
+      "diagram": "games/lundey/src/ui/.dev/component-diagram.json"
+    },
+    {
+      "id": "page",
+      "name": "Page (main.ts)",
+      "responsibility": "The loop at sixty steps a second, the canvas's size, the best score and the sound setting, the demo, the pause when the tab is hidden, and which of PLAY and PAUSE the page shows.",
+      "folder": "games/lundey/src"
+    },
+    {
+      "id": "storage",
+      "name": "Browser localStorage",
+      "responsibility": "Keeps the best score and the sound setting on the device.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "client",
+      "to": "engine",
+      "kind": "contains",
+      "description": "The game."
+    },
+    {
+      "from": "client",
+      "to": "ui",
+      "kind": "contains",
+      "description": "Drawing, input and sound."
+    },
+    {
+      "from": "client",
+      "to": "page",
+      "kind": "contains",
+      "description": "The entry point, bundled as game.js."
+    },
+    {
+      "from": "page",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Makes the Game, steps it, starts its demo and asks the autopilot for the demo's directions."
+    },
+    {
+      "from": "page",
+      "to": "ui",
+      "kind": "depends-on",
+      "description": "Reads Controls once a step, draws with Renderer once a frame and plays each event with Sound."
+    },
+    {
+      "from": "ui",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Draws a Game, produces its Input and sounds its events."
+    },
+    {
+      "from": "page",
+      "to": "storage",
+      "kind": "depends-on",
+      "description": "lundey.best and lundey.sound, read at load and written when they change."
+    }
+  ]
+}

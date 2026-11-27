@@ -1,0 +1,302 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-class-diagram/schema.json",
+  "kind": "class",
+  "title": "Lundey engine classes",
+  "folder": "games/lundey/src/engine",
+  "description": "The Game and its generator, with the data the Game holds and the types the page reads from it. Private members are left out.",
+  "sources": [
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game"
+    },
+    {
+      "path": "games/lundey/src/engine/rng.ts",
+      "symbol": "Rng"
+    },
+    {
+      "path": "games/lundey/src/engine/maze.ts",
+      "symbol": "Maze"
+    },
+    {
+      "path": "games/lundey/src/engine/rules.ts",
+      "symbol": "HunterKind"
+    }
+  ],
+  "types": [
+    {
+      "id": "engine.Game",
+      "name": "Game",
+      "kind": "class",
+      "sources": [
+        "games/lundey/src/engine/game.ts"
+      ],
+      "members": [
+        "phase: Phase",
+        "paused: boolean",
+        "demo: boolean",
+        "frame: number",
+        "score: number",
+        "best: number",
+        "lives: number",
+        "level: number",
+        "maze: Maze",
+        "eels: Uint8Array",
+        "feathers: Uint8Array",
+        "eelsLeft: number",
+        "eaten: number",
+        "puffin: Puffin",
+        "hunters: Hunter[]",
+        "mob: number",
+        "chain: number",
+        "treat: { tile: number; steps: number } | null",
+        "popups: Popup[]",
+        "timer: number",
+        "clean: boolean",
+        "constructor(seed: number)",
+        "takeEvents(): GameEvent[]",
+        "newGame(demo = false): void",
+        "step(input: Input): void"
+      ]
+    },
+    {
+      "id": "engine.Rng",
+      "name": "Rng",
+      "kind": "class",
+      "sources": [
+        "games/lundey/src/engine/rng.ts"
+      ],
+      "members": [
+        "constructor(seed: number)",
+        "next(): number",
+        "int(n: number): number",
+        "chance(p: number): boolean",
+        "pick<T>(xs: T[]): T"
+      ]
+    },
+    {
+      "id": "engine.Maze",
+      "name": "Maze",
+      "kind": "interface",
+      "sources": [
+        "games/lundey/src/engine/maze.ts"
+      ],
+      "members": [
+        "seed: number",
+        "tiles: Uint8Array",
+        "eels: number[]",
+        "feathers: number[]",
+        "tunnelRow: number"
+      ]
+    },
+    {
+      "id": "engine.Input",
+      "name": "Input",
+      "kind": "interface",
+      "sources": [
+        "games/lundey/src/engine/game.ts"
+      ],
+      "members": [
+        "dir: Dir | -1",
+        "start: boolean",
+        "pause: boolean"
+      ]
+    },
+    {
+      "id": "engine.Mover",
+      "name": "Mover",
+      "kind": "interface",
+      "sources": [
+        "games/lundey/src/engine/game.ts"
+      ],
+      "members": [
+        "tile: number",
+        "dir: Dir",
+        "off: number"
+      ]
+    },
+    {
+      "id": "engine.Puffin",
+      "name": "Puffin",
+      "kind": "interface",
+      "sources": [
+        "games/lundey/src/engine/game.ts"
+      ],
+      "members": [
+        "want: Dir | -1",
+        "moving: boolean"
+      ]
+    },
+    {
+      "id": "engine.Hunter",
+      "name": "Hunter",
+      "kind": "interface",
+      "sources": [
+        "games/lundey/src/engine/game.ts"
+      ],
+      "members": [
+        "kind: HunterKind",
+        "state: HunterState",
+        "wait: number",
+        "hunting: boolean",
+        "mood: number",
+        "dive: number",
+        "diveRest: number"
+      ]
+    },
+    {
+      "id": "engine.Popup",
+      "name": "Popup",
+      "kind": "interface",
+      "sources": [
+        "games/lundey/src/engine/game.ts"
+      ],
+      "members": [
+        "x: number",
+        "y: number",
+        "points: number",
+        "steps: number"
+      ]
+    },
+    {
+      "id": "engine.Phase",
+      "name": "Phase",
+      "kind": "type",
+      "sources": [
+        "games/lundey/src/engine/game.ts"
+      ],
+      "members": [
+        "attract | ready | play | caught | cleared | over"
+      ]
+    },
+    {
+      "id": "engine.HunterState",
+      "name": "HunterState",
+      "kind": "type",
+      "sources": [
+        "games/lundey/src/engine/game.ts"
+      ],
+      "members": [
+        "den | leaving | out | mobbed | routed"
+      ]
+    },
+    {
+      "id": "engine.GameEvent",
+      "name": "GameEvent",
+      "kind": "type",
+      "sources": [
+        "games/lundey/src/engine/game.ts"
+      ],
+      "members": [
+        "start | ready | eel | feather | rout | mobEnd | dive | treatShown | treat | extra | caught | clear | over | pause"
+      ]
+    },
+    {
+      "id": "engine.HunterKind",
+      "name": "HunterKind",
+      "kind": "type",
+      "sources": [
+        "games/lundey/src/engine/rules.ts"
+      ],
+      "members": [
+        "fox | mink | skua | raven"
+      ]
+    },
+    {
+      "id": "engine.Dir",
+      "name": "Dir",
+      "kind": "type",
+      "sources": [
+        "games/lundey/src/engine/rules.ts"
+      ],
+      "members": [
+        "0 | 1 | 2 | 3: up, right, down, left"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "engine.Game",
+      "to": "engine.Rng",
+      "kind": "depends-on",
+      "description": "Each game's burrows and every random choice in play."
+    },
+    {
+      "from": "engine.Game",
+      "to": "engine.Maze",
+      "kind": "depends-on",
+      "description": "The current level's burrow."
+    },
+    {
+      "from": "engine.Game",
+      "to": "engine.Input",
+      "kind": "depends-on",
+      "description": "step() takes one step's Input."
+    },
+    {
+      "from": "engine.Game",
+      "to": "engine.Puffin",
+      "kind": "depends-on",
+      "description": "The player's puffin."
+    },
+    {
+      "from": "engine.Game",
+      "to": "engine.Hunter",
+      "kind": "depends-on",
+      "description": "The four hunters, made afresh for each burrow and each life."
+    },
+    {
+      "from": "engine.Game",
+      "to": "engine.Popup",
+      "kind": "depends-on",
+      "description": "Points rising from where they were scored."
+    },
+    {
+      "from": "engine.Game",
+      "to": "engine.Phase",
+      "kind": "depends-on",
+      "description": "Its phase."
+    },
+    {
+      "from": "engine.Game",
+      "to": "engine.GameEvent",
+      "kind": "depends-on",
+      "description": "What happened in a step, for the page's sounds."
+    },
+    {
+      "from": "engine.Puffin",
+      "to": "engine.Mover",
+      "kind": "inherits",
+      "description": "A mover that remembers where it was last pointed."
+    },
+    {
+      "from": "engine.Hunter",
+      "to": "engine.Mover",
+      "kind": "inherits",
+      "description": "A mover with a kind, a state and its timers."
+    },
+    {
+      "from": "engine.Hunter",
+      "to": "engine.HunterState",
+      "kind": "depends-on",
+      "description": "Where it is in its round: den, leaving, out, mobbed or routed."
+    },
+    {
+      "from": "engine.Hunter",
+      "to": "engine.HunterKind",
+      "kind": "depends-on",
+      "description": "Which of the four it is."
+    },
+    {
+      "from": "engine.Mover",
+      "to": "engine.Dir",
+      "kind": "depends-on",
+      "description": "The way it faces."
+    },
+    {
+      "from": "engine.Input",
+      "to": "engine.Dir",
+      "kind": "depends-on",
+      "description": "The way the player last pointed."
+    }
+  ]
+}

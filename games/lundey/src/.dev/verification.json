@@ -1,0 +1,61 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Browser game verification",
+  "folder": "games/lundey/src",
+  "entities": [
+    {
+      "id": "page-by-eye",
+      "title": "The page, looked at in a browser",
+      "summary": "The page, its drawing and its layout have been looked at by hand in headless Chromium; no automated test runs them.",
+      "subject": [
+        {
+          "path": "games/lundey/src/.dev/feature.json"
+        },
+        {
+          "path": "games/lundey/src/ui/.dev/feature.json",
+          "entityId": "drawn-island"
+        },
+        {
+          "path": "games/lundey/src/.dev/use-case.json",
+          "entityId": "play-a-game"
+        }
+      ],
+      "criteria": [
+        "The title screen shows",
+        "A game can be started and played",
+        "Mobbed hunters are drawn as mobbed",
+        "The page fits a phone's screen, with the touch buttons under the game"
+      ],
+      "checks": [
+        {
+          "type": "manual",
+          "description": "npm run build, serve dist/ with any static server, open /games/lundey/ and look at the title screen, a game in play, hunters while the terns mob them, and the page at a phone's size. Done by the coding agent in headless Chromium on 2026-11-27; no script repeats it."
+        }
+      ],
+      "notChecked": [
+        "No automated test runs main.ts or anything in ui/ (render.ts, art.ts, input.ts, sound.ts): the tests have no browser.",
+        "Sound, swipes on a real touch screen and a gamepad were not among what was looked at.",
+        "No person has played the game (games/lundey/.dev/limitations.json, not-play-tested)."
+      ],
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lundey/README.md",
+          "symbol": "Lundey"
+        },
+        {
+          "path": "games/lundey/package.json",
+          "symbol": "scripts.test"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/limitations.json",
+          "entityId": "not-play-tested"
+        }
+      ]
+    }
+  ]
+}

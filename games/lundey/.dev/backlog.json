@@ -1,0 +1,64 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/backlog.schema.json",
+  "kind": "backlog",
+  "title": "Lundey backlog",
+  "folder": "games/lundey",
+  "entities": [
+    {
+      "id": "replay-checked-table",
+      "title": "A high-score table checked by replay",
+      "summary": "Lundey keeps only a best score on each device. Its engine gives the same game from the same seed and controls, so a shared table checked by replay could be added, as Hivestorm has.",
+      "type": "feature",
+      "status": "open",
+      "details": "What it would take: the Worker issues a game's seed instead of the page drawing one from Math.random; the page records each step's Input; the Worker replays a submitted game with src/engine and keeps only the score the replay gives; and somewhere to keep the table, which the Worker does not have today (no database, no Durable Object). From then on the engine's behaviour is a promise: a change to rules.ts, maze.ts, game.ts or rng.ts changes what a recording replays to.",
+      "acceptanceCriteria": [
+        "A game that may enter the table starts from a seed the Worker issued",
+        "The Worker replays a submitted game with src/engine and lists only the score the replay gives",
+        "Invited players can see the table"
+      ],
+      "origin": {
+        "kind": "agent",
+        "by": "Coding agent",
+        "date": "2026-11-27",
+        "description": "Proposed while writing the game: the engine was written to replay exactly, and the first version uses that only in its tests. The owner has not asked for it."
+      },
+      "evidenceStatus": "proposed",
+      "sources": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "BEST_KEY"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "game"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.step"
+        },
+        {
+          "path": "games/lundey/test/game.test.ts",
+          "symbol": "the same seed and the same controls give the same game"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/limitations.json",
+          "entityId": "best-on-device-only"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/hivestorm/worker/.dev/capability.json",
+          "entityId": "high-score-table",
+          "description": "The same thing in a sibling game."
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/src/engine/.dev/feature.json",
+          "entityId": "same-seed-same-game"
+        }
+      ]
+    }
+  ]
+}

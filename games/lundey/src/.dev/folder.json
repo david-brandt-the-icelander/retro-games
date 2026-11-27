@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Browser game",
+  "folder": "games/lundey/src",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Browser game",
+      "summary": "Everything that runs in the player's browser: the engine, the UI and the page's loop.",
+      "purpose": "Wires the engine to the page in main.ts: sixty steps a second whatever the screen's refresh rate, a frame drawn at the screen's own resolution, the sounds, the best score and the sound setting kept in the browser, the demo when the title screen is left alone, and a pause when the tab is hidden.",
+      "boundaries": [
+        "The rules live in engine/; drawing, controls and sound in ui/. main.ts holds no rule of the game.",
+        "Talks to no server: the page makes no request of its own once its files are loaded, and what it keeps, it keeps in the browser's localStorage.",
+        "Bundled by build.mjs into one game.js; who may load it is the Worker's business (games/lundey/worker)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "frame"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "BEST_KEY"
+        },
+        {
+          "path": "games/lundey/build.mjs",
+          "symbol": "opts"
+        }
+      ]
+    }
+  ]
+}

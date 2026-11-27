@@ -1,0 +1,165 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Lundey game phase state diagram",
+  "folder": "games/lundey/src/engine",
+  "description": "The phase of the Game. Pausing is a separate flag: a pause press toggles Game.paused in ready and play (never in a demo), and while it is set step() changes nothing, the frame count included. A demo is the same machine with Game.demo set: the page starts one with newGame(true) and feeds it the autopilot's directions, and it goes back to attract when its puffin is caught or its burrow cleared, so a demo never reaches over. Every timed phase counts Game.timer down once a step.",
+  "sources": [
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.step"
+    },
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.newGame"
+    },
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.puffinArrives"
+    },
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.touch"
+    },
+    {
+      "path": "games/lundey/src/main.ts",
+      "symbol": "step"
+    }
+  ],
+  "machine": "Game.phase (src/engine/game.ts)",
+  "initialState": "attract",
+  "states": [
+    {
+      "id": "attract",
+      "description": "The title screen. Nothing moves; only the frame count runs, for the title's animation."
+    },
+    {
+      "id": "ready",
+      "description": "Counting in before play: 170 steps at the start of a game, 120 after a caught puffin or a cleared burrow. The puffin's next turn can already be chosen."
+    },
+    {
+      "id": "play",
+      "description": "The puffin and the hunters move; lasts until the last eel is eaten or the puffin is caught."
+    },
+    {
+      "id": "caught",
+      "description": "A hunter caught the puffin: 120 steps while it spins away."
+    },
+    {
+      "id": "cleared",
+      "description": "The last eel was eaten: 170 steps while the island flashes."
+    },
+    {
+      "id": "over",
+      "description": "No puffins left: the score stays up for 300 steps, or until start is pressed."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "attract",
+      "to": "ready",
+      "trigger": "step(): start pressed",
+      "action": "newGame(): score 0, three puffins, burrow 1, a new base seed drawn for this game's burrows, loadLevel(); timer = FIRST_READY_STEPS; emit start."
+    },
+    {
+      "from": "attract",
+      "to": "ready",
+      "trigger": "newGame(true), called by the page (src/main.ts, step)",
+      "guard": "the title screen has stood for DEMO_AFTER steps (twelve seconds)",
+      "action": "The same as a real game, with Game.demo set: nothing it scores counts towards the best, and it earns no extra puffin."
+    },
+    {
+      "from": "ready",
+      "to": "play",
+      "trigger": "step(): the timer reaches 0",
+      "guard": "not paused"
+    },
+    {
+      "from": "play",
+      "to": "cleared",
+      "trigger": "puffinArrives(): the last eel is eaten",
+      "action": "CLEAN_POINTS and a popup if no puffin was lost on this burrow; timer = CLEARED_STEPS; emit clear."
+    },
+    {
+      "from": "play",
+      "to": "caught",
+      "trigger": "touch(): a hunter that is out, and not mobbed, comes within TOUCH of the puffin",
+      "action": "lives−−; clean = false; timer = CAUGHT_STEPS; emit caught."
+    },
+    {
+      "from": "caught",
+      "to": "ready",
+      "trigger": "step(): the timer reaches 0",
+      "guard": "not a demo, and puffins are left",
+      "action": "resetActors(): puffin and hunters back at their starts, the eels as they are; timer = READY_STEPS; emit ready."
+    },
+    {
+      "from": "caught",
+      "to": "over",
+      "trigger": "step(): the timer reaches 0",
+      "guard": "not a demo, and no puffins are left",
+      "action": "timer = OVER_STEPS; emit over."
+    },
+    {
+      "from": "caught",
+      "to": "attract",
+      "trigger": "step(): the timer reaches 0",
+      "guard": "a demo",
+      "action": "demo = false."
+    },
+    {
+      "from": "cleared",
+      "to": "ready",
+      "trigger": "step(): the timer reaches 0",
+      "guard": "not a demo",
+      "action": "level++; loadLevel(): a new burrow with all its eels and feathers; timer = READY_STEPS; emit ready."
+    },
+    {
+      "from": "cleared",
+      "to": "attract",
+      "trigger": "step(): the timer reaches 0",
+      "guard": "a demo",
+      "action": "demo = false."
+    },
+    {
+      "from": "over",
+      "to": "ready",
+      "trigger": "step(): start pressed",
+      "guard": "more than 45 steps into over",
+      "action": "newGame(): a new game; emit start."
+    },
+    {
+      "from": "over",
+      "to": "attract",
+      "trigger": "step(): the timer reaches 0"
+    },
+    {
+      "from": "ready",
+      "to": "ready",
+      "trigger": "step(): start pressed",
+      "guard": "a demo is playing",
+      "action": "newGame(): a real game, from burrow 1 with three puffins; the demo flag is cleared; emit start."
+    },
+    {
+      "from": "play",
+      "to": "ready",
+      "trigger": "step(): start pressed",
+      "guard": "a demo is playing",
+      "action": "newGame(): a real game, from burrow 1 with three puffins; the demo flag is cleared; emit start."
+    },
+    {
+      "from": "caught",
+      "to": "ready",
+      "trigger": "step(): start pressed",
+      "guard": "a demo is playing",
+      "action": "newGame(): a real game, from burrow 1 with three puffins; the demo flag is cleared; emit start."
+    },
+    {
+      "from": "cleared",
+      "to": "ready",
+      "trigger": "step(): start pressed",
+      "guard": "a demo is playing",
+      "action": "newGame(): a real game, from burrow 1 with three puffins; the demo flag is cleared; emit start."
+    }
+  ]
+}

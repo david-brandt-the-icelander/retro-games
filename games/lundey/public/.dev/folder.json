@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Page",
+  "folder": "games/lundey/public",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Page",
+      "summary": "The game's HTML page, its styles, its icon and the headers Cloudflare serves with them.",
+      "purpose": "Holds what the build copies unchanged into dist/games/lundey/: index.html with the canvas, a cross of touch buttons with PLAY or PAUSE in its middle, the sound button and the site's footer links; lundey.css, which scales the 336 × 420 screen to fit, puts the buttons under it on phones and beside it on a phone held sideways, and hides the cross on a keyboard-and-mouse device; icon.svg; and _headers, which the build moves to the root of dist/.",
+      "boundaries": [
+        "No script of its own: the build adds game.js from src/main.ts. The content security policy in _headers allows script, style and connections from this origin only, with no inline script or style.",
+        "The page asks not to be indexed, in its own meta tag and in _headers.",
+        "build.mjs skips this .dev/ when it copies the folder, so it is never served (games/.dev/decisions.json, publish-dev-files)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/public/index.html",
+          "symbol": "pad"
+        },
+        {
+          "path": "games/lundey/public/lundey.css",
+          "symbol": "#pad"
+        },
+        {
+          "path": "games/lundey/public/_headers",
+          "symbol": "Content-Security-Policy"
+        },
+        {
+          "path": "games/lundey/build.mjs",
+          "symbol": "cpSync"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/.dev/decisions.json",
+          "entityId": "publish-dev-files"
+        }
+      ]
+    }
+  ]
+}

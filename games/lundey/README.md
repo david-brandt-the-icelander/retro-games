@@ -28,7 +28,7 @@ They live in `src/engine/rules.ts`. The game takes 60 steps a second; speeds are
 
 | | |
 |---|---|
-| Island | 21 × 23 tiles; about 230 to 255 sand eels a burrow |
+| Island | 21 × 23 tiles; about 225 to 260 sand eels a burrow |
 | Speeds | puffin 100; fox 90, mink 84, skua 94, raven 80 (diving +28); each burrow +2, up to +12; mobbed 52; routed 220 |
 | Out of the den | fox at once; mink after 2 s, skua 7 s, raven 12 s (half a second sooner each burrow) |
 | Hunt, then prowl | fox 14 s and 4 s; mink 10 s and 5 s; skua 12 s and 4 s (prowls half a second shorter each burrow, never under 1 s) |

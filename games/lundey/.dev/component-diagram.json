@@ -1,0 +1,79 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Lundey component diagram",
+  "folder": "games/lundey",
+  "description": "Lundey, an original maze chase: the browser plays the whole game, and the Worker only decides who may fetch it.",
+  "sources": [
+    {
+      "path": "games/lundey/wrangler.jsonc",
+      "symbol": "lundey"
+    },
+    {
+      "path": "games/lundey/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/lundey/src/main.ts",
+      "symbol": "frame"
+    },
+    {
+      "path": "games/lundey/build.mjs",
+      "symbol": "SITE"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Lundey",
+      "responsibility": "One game: the browser game and its Worker, built and deployed together.",
+      "folder": "games/lundey"
+    },
+    {
+      "id": "client",
+      "name": "Browser game",
+      "responsibility": "The engine, the drawing, the controls, the sound and the page's loop; keeps the best score in the browser.",
+      "folder": "games/lundey/src",
+      "diagram": "games/lundey/src/.dev/component-diagram.json"
+    },
+    {
+      "id": "worker",
+      "name": "Worker",
+      "responsibility": "Serves the built game to players who hold games:lundey; keeps nothing.",
+      "folder": "games/lundey/worker",
+      "diagram": "games/lundey/worker/.dev/component-diagram.json"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Who is signed in to icelander.net, and which games: roles they hold.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    {
+      "from": "game",
+      "to": "client",
+      "kind": "contains",
+      "description": "Built by build.mjs, with public/, into dist/games/lundey/."
+    },
+    {
+      "from": "game",
+      "to": "worker",
+      "kind": "contains",
+      "description": "Deployed with wrangler."
+    },
+    {
+      "from": "worker",
+      "to": "client",
+      "kind": "depends-on",
+      "description": "Serves the built page and game.js as static assets; the two exchange nothing else."
+    },
+    {
+      "from": "worker",
+      "to": "accounts",
+      "kind": "depends-on",
+      "description": "Asks, on every request, whether the visitor is signed in and holds games:lundey."
+    }
+  ]
+}

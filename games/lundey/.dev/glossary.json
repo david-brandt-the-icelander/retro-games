@@ -1,0 +1,344 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/glossary.schema.json",
+  "kind": "glossary",
+  "title": "Lundey glossary",
+  "folder": "games/lundey",
+  "entities": [
+    {
+      "id": "lundey",
+      "title": "Lundey",
+      "summary": "The island the game is set on, and the game's name: \"puffin island\".",
+      "sources": [
+        {
+          "path": "games/lundey/README.md",
+          "symbol": "Lundey"
+        }
+      ]
+    },
+    {
+      "id": "burrow",
+      "title": "Burrow",
+      "summary": "One level's maze of tunnels cut into the turf, dug from a seed; the score line counts burrows, not levels.",
+      "aliases": [
+        "level",
+        "maze"
+      ],
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "buildMaze"
+        },
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "Renderer.scoreLine"
+        }
+      ]
+    },
+    {
+      "id": "puffin",
+      "title": "Puffin",
+      "summary": "The player's character; also a life: a game starts with three puffins.",
+      "aliases": [
+        "life"
+      ],
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Puffin"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "START_LIVES"
+        }
+      ]
+    },
+    {
+      "id": "sand-eel",
+      "title": "Sand eel",
+      "summary": "What the puffin gathers, one on almost every tunnel tile, 5 points each; a burrow is cleared when the last is eaten.",
+      "aliases": [
+        "eel"
+      ],
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "Maze"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "EEL_POINTS"
+        }
+      ]
+    },
+    {
+      "id": "hunter",
+      "title": "Hunter",
+      "summary": "One of the four that chase the puffin: Refur the fox, Minkur the mink, Skúmur the skua and Hrafn the raven.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "KINDS"
+        },
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "NAMES"
+        }
+      ]
+    },
+    {
+      "id": "den",
+      "title": "Den",
+      "summary": "The three tiles in the middle of the island where hunters wait and where a routed hunter goes; shut in by turf, with one door above it that only hunters use.",
+      "notToBeConfusedWith": [
+        "A burrow: the puffin's maze, which the den sits in the middle of."
+      ],
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "DEN_TILES"
+        },
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "DOOR_TILE"
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "title": "Gate",
+      "summary": "The tunnel tile just above the den's door: where the fox starts, and where a hunter leaving the den is out.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "GATE_TILE"
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "title": "Home",
+      "summary": "The tile under the den where the puffin starts each burrow and each life.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "HOME_TILE"
+        }
+      ]
+    },
+    {
+      "id": "feather",
+      "title": "Tern's feather",
+      "summary": "One of four pickups in a burrow, 25 points; picking it up brings the arctic terns.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "Maze"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "FEATHER_POINTS"
+        }
+      ]
+    },
+    {
+      "id": "mobbed",
+      "title": "Mobbed",
+      "summary": "A hunter the terns are at: slow, running from the puffin, and routed if the puffin touches it.",
+      "aliases": [
+        "mob"
+      ],
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "HunterState"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "mobSteps"
+        }
+      ]
+    },
+    {
+      "id": "rout",
+      "title": "Rout",
+      "summary": "Touching a mobbed hunter: it scores 250 for the first under one feather, then 500, 750 and 1,000, and the hunter runs home to the den.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.touch"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "ROUT_POINTS"
+        }
+      ]
+    },
+    {
+      "id": "scent",
+      "title": "Scent",
+      "summary": "The trail the puffin leaves: for each tile, when it was last there. The fox follows scent up to eight seconds old.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.fresh"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "SCENT_STEPS"
+        }
+      ]
+    },
+    {
+      "id": "hunt-and-prowl",
+      "title": "Hunt and prowl",
+      "summary": "The two moods the fox, the mink and the skua take in turn while out: hunting in their own way, then prowling, turning at random.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Hunter"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "prowlSteps"
+        }
+      ]
+    },
+    {
+      "id": "dive",
+      "title": "Dive",
+      "summary": "The raven's rush at a puffin it has seen down a straight tunnel: three seconds, faster than the puffin on any burrow.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.choose"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "DIVE_BONUS"
+        }
+      ]
+    },
+    {
+      "id": "treat",
+      "title": "Treat",
+      "summary": "A herring, crab, mussel, starfish or pearl that washes up twice a burrow for ten seconds, worth 100 to 800 by the burrow's number.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "TREATS"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.showTreat"
+        }
+      ]
+    },
+    {
+      "id": "clean-burrow",
+      "title": "Clean burrow",
+      "summary": "A burrow cleared without losing a puffin on it, worth 500.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "CLEAN_POINTS"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.puffinArrives"
+        }
+      ]
+    },
+    {
+      "id": "island-tunnel",
+      "title": "The tunnel off the island",
+      "summary": "The one row whose tunnel leaves a side of the island and comes back on the other.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "neighbour"
+        },
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "Maze"
+        }
+      ]
+    },
+    {
+      "id": "season",
+      "title": "Season",
+      "summary": "The island's colours and the name under it, one of five in turn by the burrow's number. It changes nothing in the game.",
+      "sources": [
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "seasonOf"
+        }
+      ]
+    },
+    {
+      "id": "step",
+      "title": "Step",
+      "summary": "One sixtieth of a second: the unit the engine moves in and counts every time in.",
+      "notToBeConfusedWith": [
+        "A frame the page draws: the screen may draw more or fewer of those than there are steps."
+      ],
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "STEPS_PER_SECOND"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.step"
+        }
+      ]
+    },
+    {
+      "id": "seed",
+      "title": "Seed",
+      "summary": "A 32-bit number that fixes a burrow, or every burrow and every random choice of the games a Game plays.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/rng.ts",
+          "symbol": "Rng"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.loadLevel"
+        }
+      ]
+    },
+    {
+      "id": "demo",
+      "title": "Demo",
+      "summary": "A game the autopilot plays when the title screen is left alone; it scores nothing towards the best.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.newGame"
+        },
+        {
+          "path": "games/lundey/src/engine/autopilot.ts",
+          "symbol": "autopilot"
+        }
+      ]
+    },
+    {
+      "id": "invited-player",
+      "title": "Invited player",
+      "summary": "A player signed in to icelander.net who holds the role games:lundey, granted at icelander.net/private/admin.",
+      "notToBeConfusedWith": [
+        "A player with games:play, the role the site's other games ask for: it does not open Lundey."
+      ],
+      "sources": [
+        {
+          "path": "games/lundey/worker/config.ts",
+          "symbol": "ROLE"
+        },
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "default.fetch"
+        }
+      ]
+    }
+  ]
+}

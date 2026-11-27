@@ -1,0 +1,120 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Lundey UI component diagram",
+  "folder": "games/lundey/src/ui",
+  "description": "The canvas drawing, the drawn cast, the controls and the sound effects, each reading the engine's types.",
+  "sources": [
+    {
+      "path": "games/lundey/src/ui/render.ts",
+      "symbol": "Renderer"
+    },
+    {
+      "path": "games/lundey/src/ui/art.ts",
+      "symbol": "drawPuffin"
+    },
+    {
+      "path": "games/lundey/src/ui/input.ts",
+      "symbol": "Controls"
+    },
+    {
+      "path": "games/lundey/src/ui/sound.ts",
+      "symbol": "Sound"
+    }
+  ],
+  "components": [
+    {
+      "id": "ui",
+      "name": "Lundey UI",
+      "responsibility": "The browser-facing pieces the page wires together.",
+      "folder": "games/lundey/src/ui"
+    },
+    {
+      "id": "render",
+      "name": "Renderer (render.ts)",
+      "responsibility": "Draws a Game: the island and its burrow in the level's season, what lies in the tunnels, the puffin and the hunters, the score line, and the title, ready, paused, cleared and game-over words.",
+      "folder": "games/lundey/src/ui"
+    },
+    {
+      "id": "art",
+      "name": "Art (art.ts)",
+      "responsibility": "The puffin, the fox, the mink, the skua, the raven, a tern, a sand eel, a feather and the five treats, each drawn with canvas shapes; the hunters' coats.",
+      "folder": "games/lundey/src/ui"
+    },
+    {
+      "id": "input",
+      "name": "Controls (input.ts)",
+      "responsibility": "Keyboard, swipes, on-screen buttons and a gamepad as one Input a step.",
+      "folder": "games/lundey/src/ui"
+    },
+    {
+      "id": "sound",
+      "name": "Sound (sound.ts)",
+      "responsibility": "Web Audio effects made on the fly, one for each game event, and the terns' cry.",
+      "folder": "games/lundey/src/ui"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "The Game, its burrows and its numbers.",
+      "folder": "games/lundey/src/engine",
+      "diagram": "games/lundey/src/engine/.dev/component-diagram.json"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "ui",
+      "to": "render",
+      "kind": "contains",
+      "description": "Drawing."
+    },
+    {
+      "from": "ui",
+      "to": "art",
+      "kind": "contains",
+      "description": "The cast and pickups."
+    },
+    {
+      "from": "ui",
+      "to": "input",
+      "kind": "contains",
+      "description": "Input."
+    },
+    {
+      "from": "ui",
+      "to": "sound",
+      "kind": "contains",
+      "description": "Sound."
+    },
+    {
+      "from": "render",
+      "to": "art",
+      "kind": "depends-on",
+      "description": "Every character and pickup, and the coats."
+    },
+    {
+      "from": "render",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Reads the Game, its Maze and the rules' numbers."
+    },
+    {
+      "from": "art",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "A drawing for each HunterKind and Treat."
+    },
+    {
+      "from": "input",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Produces the engine's Input."
+    },
+    {
+      "from": "sound",
+      "to": "engine",
+      "kind": "depends-on",
+      "description": "Plays GameEvents."
+    }
+  ]
+}
