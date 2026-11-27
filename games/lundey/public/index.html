@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lundey</title>
+<meta name="description" content="Lundey: a maze chase. A puffin gathers sand eels from a burrow maze that is dug afresh on every level, hunted by a fox, a mink, a skua and a raven.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b1a2b">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="lundey.css">
+</head>
+<body data-phase="attract">
+<canvas id="screen" width="336" height="420" role="img" aria-label="Lundey game screen. Press Enter to play; the arrow keys or W, A, S and D turn the puffin."></canvas>
+<div id="pad">
+  <div class="cross">
+    <button type="button" data-action="up" class="up" aria-label="Up">&#9650;</button>
+    <button type="button" data-action="left" class="left" aria-label="Left">&#9664;</button>
+    <button type="button" data-action="start" class="start">PLAY</button>
+    <button type="button" data-action="pause" class="pause">PAUSE</button>
+    <button type="button" data-action="right" class="right" aria-label="Right">&#9654;</button>
+    <button type="button" data-action="down" class="down" aria-label="Down">&#9660;</button>
+  </div>
+  <div class="row small">
+    <button type="button" id="sound" aria-pressed="true">SOUND ON (M)</button>
+  </div>
+  <nav class="site-links" aria-label="icelander.net"><a href="https://icelander.net/trains">Trains of thought</a> · <a href="/games/">Games</a> · <a href="https://icelander.net/">About and contact</a></nav>
+</div>
+<noscript><p class="noscript">This game needs JavaScript.</p></noscript>
+<script src="game.js"></script>
+</body>
+</html>

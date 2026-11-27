@@ -1,0 +1,22 @@
+// The Lundey Worker at icelander.net/games/lundey: the page, its script and its styles, all for invited players
+// signed in to icelander.net (worker/index.ts). No database, no secrets.
+// Deployed by the owner from their own machine with `npm run deploy` (README, first paragraph).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lundey",
+  "compatibility_date": "2025-01-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "icelander.net/games/lundey*", "zone_name": "icelander.net" }
+  ],
+  "main": "worker/index.ts",
+  // Every request goes through the Worker first: nothing here is public.
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": true },
+  // icelander.net's login service: who is signed in, through the site's cookie (icelander.net and its games are one sign-in).
+  "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
+  "vars": {
+    // The login service's public keys (icelander.net docs/accounts.md, "Keys").
+    "ACCOUNTS_JWKS": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"kid\":\"k2026a\",\"x\":\"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc\"}]}"
+  }
+}

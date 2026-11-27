@@ -1,0 +1,54 @@
+/* Lundey's page: the 336×420 screen scaled to fit, with a cross of touch buttons below it on phones and tablets. */
+:root { --pad-h: 214px; --btn: #17304a; --btn-hot: #ffe27a; --fg: #fff; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #0b1a2b; color: var(--fg); }
+body {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  padding: 8px 16px env(safe-area-inset-bottom); overflow: hidden;
+  font: bold 14px/1 ui-monospace, Menlo, Consolas, monospace;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+canvas#screen {
+  display: block;
+  /* As large as fits, keeping the 4:5 shape. */
+  height: min(calc(100dvh - var(--pad-h) - 24px), calc((100vw - 32px) * 420 / 336));
+  aspect-ratio: 336 / 420; width: auto; max-width: 100%;
+  border-radius: 10px; touch-action: none;
+}
+#pad { display: flex; flex-direction: column; gap: 8px; width: min(100%, 420px); height: var(--pad-h); }
+#pad .row { display: flex; gap: 8px; justify-content: center; }
+#pad button {
+  min-height: 44px; font: inherit; color: var(--fg); background: var(--btn);
+  border: 1px solid #2c5278; border-radius: 8px; touch-action: none; cursor: pointer;
+}
+#pad button:active { background: var(--btn-hot); color: #000; }
+/* Up, down, left and right around the play (or pause) button. */
+#pad .cross { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 44px); gap: 6px; width: min(100%, 260px); align-self: center; font-size: 18px; }
+#pad .cross .up { grid-area: 1 / 2; }
+#pad .cross .left { grid-area: 2 / 1; }
+#pad .cross .start, #pad .cross .pause { grid-area: 2 / 2; font-size: 12px; }
+#pad .cross .start { background: #7a2f16; border-color: #cf5a2a; }
+#pad .cross .right { grid-area: 2 / 3; }
+#pad .cross .down { grid-area: 3 / 2; }
+#pad .small button { min-height: 32px; padding: 0 12px; font-size: 12px; font-weight: normal; color: #9fc3dc; background: none; border-color: #2c5278; }
+body[data-phase="playing"] #pad .start { display: none; }
+body[data-phase="attract"] #pad .pause { display: none; }
+
+/* Keyboard-and-mouse devices use the keys: no touch buttons, just the sound toggle. */
+@media (hover: hover) and (pointer: fine) {
+  :root { --pad-h: 64px; }
+  #pad .cross { display: none; }
+}
+
+/* Phones on their side: buttons beside the screen. */
+@media (orientation: landscape) and (max-height: 540px) and (pointer: coarse) {
+  :root { --pad-h: 0px; }
+  body { flex-direction: row; gap: 16px; padding: 8px 16px; }
+  canvas#screen { height: calc(100dvh - 16px); }
+  #pad { height: auto; width: 240px; }
+}
+/* The site's footer links, the same on every icelander.net page, always under the game. */
+.site-links { color: #6f8aa3; font: 13px/1.7 system-ui, -apple-system, "Segoe UI", sans-serif; font-weight: normal; text-align: center; }
+.site-links a { color: #a9c3da; text-underline-offset: .15em; }
+.site-links a:hover, .site-links a:focus-visible { color: #fff; }
+.noscript { font: 16px/1.5 system-ui, sans-serif; text-align: center; }
