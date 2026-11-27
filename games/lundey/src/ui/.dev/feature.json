@@ -1,0 +1,195 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "UI features",
+  "folder": "games/lundey/src/ui",
+  "description": "What the player sees, hears and plays with.",
+  "sources": [
+    {
+      "path": "games/lundey/src/ui/render.ts",
+      "symbol": "Renderer.draw"
+    },
+    {
+      "path": "games/lundey/src/ui/input.ts",
+      "symbol": "Controls"
+    },
+    {
+      "path": "games/lundey/src/ui/sound.ts",
+      "symbol": "Sound.play"
+    }
+  ],
+  "entities": [
+    {
+      "id": "controls",
+      "name": "Keyboard, swipes, on-screen buttons or a gamepad",
+      "description": "Four ways to point the puffin, start a game and pause it.",
+      "sources": [
+        {
+          "path": "games/lundey/src/ui/input.ts",
+          "symbol": "Controls"
+        },
+        {
+          "path": "games/lundey/src/ui/input.ts",
+          "symbol": "Controls.bindButton"
+        }
+      ],
+      "behavior": "The arrow keys or W, A, S and D point the puffin; Enter, Space or the numeric Enter starts; P or Escape pauses; M turns the sound on or off. On a touch screen a swipe anywhere on the game's screen points the puffin, and a turn can follow without lifting the finger; a touch that goes nowhere is a tap, which starts. On-screen buttons point, start and pause. On the first connected gamepad the d-pad or the left stick points, A starts, and Start pauses during a game and starts one otherwise. Controls.read hands the page everything pressed since the last step and forgets it.",
+      "outcome": "The game plays on a desktop, a phone or a tablet, and with a controller, without a setting to choose between them.",
+      "constraints": [
+        "A direction is sent once, when it is chosen: the puffin remembers it.",
+        "Keys pressed with Ctrl, Alt or the Meta (Command) key are left to the browser, and a held key's repeats do not start, pause or mute again.",
+        "A swipe counts once the finger has moved 14 CSS pixels.",
+        "Only the first connected gamepad is read; the stick points past six tenths of its travel."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/ui/input.ts",
+          "symbol": "Controls"
+        },
+        {
+          "path": "games/lundey/src/ui/input.ts",
+          "symbol": "Controls.bindButton"
+        },
+        {
+          "path": "games/lundey/src/ui/input.ts",
+          "symbol": "Controls.readGamepad"
+        },
+        {
+          "path": "games/lundey/src/ui/input.ts",
+          "symbol": "Controls.read"
+        },
+        {
+          "path": "games/lundey/src/ui/input.ts",
+          "symbol": "KEYS"
+        },
+        {
+          "path": "games/lundey/src/ui/input.ts",
+          "symbol": "SWIPE"
+        }
+      ]
+    },
+    {
+      "id": "drawn-island",
+      "name": "An island drawn with shapes, in a different season on each burrow",
+      "description": "The island, its burrow, the cast and the words, all drawn on the canvas with no image files.",
+      "sources": [
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "Renderer.draw"
+        },
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "drawIsland"
+        }
+      ],
+      "behavior": "Renderer.draw paints the island and its tunnels as a picture it keeps until the burrow, the season or the screen's size changes, then the sand eels, feathers and treat, the hunters and the puffin, points rising from where they were scored, and the score line: SCORE, BEST and BURROW above, spare puffins, the season's name and the burrow's treat below. Five seasons take turns by the burrow's number. A mobbed hunter is drawn washed-out blue with two terns wheeling round it, and flashes its own colours for the last two seconds; while the terns are out, a bar under the island shows how long they will stay. A routed hunter is faint and small. A diving raven's eyes turn red. A caught puffin spins away in a puff of feathers, and a cleared island flashes. The title screen names the four hunters and how each hunts, what a tern's feather does, and the keys.",
+      "outcome": "The player can tell at a glance what each hunter is, which of them can be routed and for how much longer.",
+      "constraints": [
+        "336 × 420 at scale 1: 21 × 23 tiles of 16, with a line of 26 above and below; the page chooses the scale.",
+        "During a demo the score line shows 0 and the word DEMO is over the island.",
+        "Whatever is at the island's side is drawn again at the other side, so going through the tunnel off the island is seen at both ends."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "Renderer.draw"
+        },
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "drawIsland"
+        },
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "seasonOf"
+        },
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "Renderer.hunter"
+        },
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "Renderer.scoreLine"
+        },
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "Renderer.words"
+        },
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "Renderer.title"
+        },
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "across"
+        },
+        {
+          "path": "games/lundey/src/ui/art.ts",
+          "symbol": "drawHunter"
+        },
+        {
+          "path": "games/lundey/src/ui/art.ts",
+          "symbol": "COWED"
+        },
+        {
+          "path": "games/lundey/src/ui/art.ts",
+          "symbol": "drawTreat"
+        }
+      ]
+    },
+    {
+      "id": "made-sounds",
+      "name": "Sounds made on the fly",
+      "description": "Every game event has a sound, made with Web Audio; there are no sound files.",
+      "sources": [
+        {
+          "path": "games/lundey/src/ui/sound.ts",
+          "symbol": "Sound.play"
+        },
+        {
+          "path": "games/lundey/src/ui/sound.ts",
+          "symbol": "Sound.tern"
+        }
+      ],
+      "behavior": "Sound.play turns one game event into a short tune, sweep or burst of noise: two gulps in turn for eels, a call for a feather, a rout, the terns leaving, a dive, a treat washing up and being taken, an extra puffin, a caught puffin, a cleared burrow, the start, the count-in, game over and pause. Sound.tern is a tern's cry, which the page calls again and again while the terns are out.",
+      "outcome": "The player hears what happened without looking away from the puffin.",
+      "constraints": [
+        "Nothing plays until the player first presses a key, touches the screen or uses the gamepad, as browsers require (Sound.unlock).",
+        "Nothing plays while Sound.on is false, or in a browser without Web Audio."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/ui/sound.ts",
+          "symbol": "Sound.play"
+        },
+        {
+          "path": "games/lundey/src/ui/sound.ts",
+          "symbol": "Sound.tern"
+        },
+        {
+          "path": "games/lundey/src/ui/sound.ts",
+          "symbol": "Sound.unlock"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "feature",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/feature.json",
+      "relationship": "The game these draw, sound and control."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lundey/src",
+      "path": "games/lundey/src/.dev/feature.json",
+      "relationship": "What the page adds: the loop, the best score, the demo and the sound setting."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/lundey/src",
+      "path": "games/lundey/src/.dev/use-case.json",
+      "relationship": "The use case the controls and the screen serve."
+    }
+  ]
+}

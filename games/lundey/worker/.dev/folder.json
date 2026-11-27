@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Worker",
+  "folder": "games/lundey/worker",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Worker",
+      "summary": "The Cloudflare Worker: serves the built game to invited players, and keeps nothing.",
+      "purpose": "Stands in front of every file of the game: checks icelander.net's sign-in and the invite-only role games:lundey, then hands the request to Cloudflare's static assets and marks the answer private.",
+      "boundaries": [
+        "No database, no Durable Object, no secrets and no API: it answers GET and HEAD for the game's files and nothing else. The game itself runs in the browser.",
+        "The sign-in is checked with vendor/icelander-auth, which is icelander.net's and never edited here. The sign-in pages themselves (/auth/…) are not this Worker's: its route covers only icelander.net/games/lundey*.",
+        "config.ts holds the address and the role in a module of their own, because a Worker's main module may export nothing but its handler."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "AUTH"
+        },
+        {
+          "path": "games/lundey/worker/config.ts",
+          "symbol": "ROLE"
+        },
+        {
+          "path": "games/lundey/wrangler.jsonc",
+          "symbol": "routes"
+        }
+      ]
+    }
+  ]
+}

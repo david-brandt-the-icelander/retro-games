@@ -1,0 +1,237 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Browser game features",
+  "folder": "games/lundey/src",
+  "description": "What the page adds to the engine and the UI.",
+  "sources": [
+    {
+      "path": "games/lundey/src/main.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/lundey/src/main.ts",
+      "symbol": "frame"
+    }
+  ],
+  "entities": [
+    {
+      "id": "steady-loop",
+      "name": "Sixty steps a second, sharp on any screen",
+      "description": "The game runs at the same speed on every display, and is drawn at the display's own resolution.",
+      "sources": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "frame"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "step"
+        }
+      ],
+      "behavior": "On every animation frame the page adds the time that has passed to what it owes, steps the game once for each sixtieth of a second owed, and draws once. The canvas is given as many pixels as the screen shows it with, so the drawn shapes stay sharp on a dense display and when the window is resized.",
+      "outcome": "The puffin and the hunters move at the same speed on a 60 Hz laptop, a 120 Hz phone and a slow machine.",
+      "constraints": [
+        "At most a quarter of a second is made up after a hold-up.",
+        "The scale is kept between 1 and 8 times the 336 × 420 picture."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "frame"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "fit"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "STEPS_PER_SECOND"
+        }
+      ]
+    },
+    {
+      "id": "best-on-device",
+      "name": "The best score is kept on the device",
+      "description": "The best score is remembered in the browser and shown at the top of the screen.",
+      "sources": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "BEST_KEY"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "load"
+        }
+      ],
+      "behavior": "The page reads the best score from the browser's localStorage when it loads and gives it to the Game, which raises it as the score passes it. When it has grown, the page saves it the next time a puffin is caught, a burrow is cleared or the game ends.",
+      "outcome": "A player sees the score to beat each time they come back on the same device.",
+      "constraints": [
+        "It never leaves the browser: there is no high-score table, and another device or browser starts from 0.",
+        "A browser that refuses storage keeps nothing between visits.",
+        "A best reached and not yet followed by a caught puffin, a cleared burrow or the end of the game is lost if the page is closed.",
+        "A demo never changes it."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "BEST_KEY"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "load"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "save"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.add"
+        }
+      ]
+    },
+    {
+      "id": "demo",
+      "name": "A demo when the title screen is left alone",
+      "description": "After twelve seconds on the title screen the game plays itself.",
+      "sources": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "DEMO_AFTER"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "step"
+        }
+      ],
+      "behavior": "The page counts the steps the title screen has stood; at twelve seconds it starts a demo and, on every step of it, points the puffin where the autopilot says. The demo makes no sound. A start press begins a real game.",
+      "outcome": "Someone who has not played can see how the game goes before starting.",
+      "constraints": [
+        "The demo lasts one puffin or one burrow, whichever ends first; then the title screen stands for another twelve seconds."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "DEMO_AFTER"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/lundey/src/engine/autopilot.ts",
+          "symbol": "autopilot"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.newGame"
+        }
+      ]
+    },
+    {
+      "id": "pause-when-hidden",
+      "name": "A pause when the tab is hidden",
+      "description": "Nobody is caught while they are away.",
+      "sources": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "visibilitychange"
+        },
+        {
+          "path": "games/lundey/src/ui/input.ts",
+          "symbol": "Controls.queuePause"
+        }
+      ],
+      "behavior": "When the tab is hidden during the count-in or play of a real game that is not already paused, the page queues a pause press, which the game takes on its next step.",
+      "outcome": "The game is waiting, paused, when the player comes back, and carries on when they press pause again.",
+      "constraints": [
+        "The game does not carry on by itself when the tab is shown again."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "visibilitychange"
+        },
+        {
+          "path": "games/lundey/src/ui/input.ts",
+          "symbol": "Controls.queuePause"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.step"
+        }
+      ]
+    },
+    {
+      "id": "sound-setting",
+      "name": "Sound on or off, remembered",
+      "description": "The M key or the button under the screen turns the sound on or off, and the choice is kept.",
+      "sources": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "SOUND_KEY"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "toggleSound"
+        }
+      ],
+      "behavior": "The page reads the setting from localStorage when it loads, shows it on the button (SOUND ON or SOUND OFF, and aria-pressed), and saves it each time it is changed. While the terns are out in a real game it plays a tern's cry every 32 steps.",
+      "outcome": "A player who turned the sound off does not have to do it again on the next visit.",
+      "constraints": [
+        "On, unless the browser has kept off."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "SOUND_KEY"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "toggleSound"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "showSound"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/lundey/src/ui/sound.ts",
+          "symbol": "Sound.tern"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "feature",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/feature.json",
+      "relationship": "The game the page runs."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lundey/src/ui",
+      "path": "games/lundey/src/ui/.dev/feature.json",
+      "relationship": "The controls, the drawing and the sounds the page wires in."
+    },
+    {
+      "kind": "use-case",
+      "folder": "games/lundey/src",
+      "path": "games/lundey/src/.dev/use-case.json",
+      "relationship": "The use case that exercises these."
+    }
+  ]
+}

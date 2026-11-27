@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/verification.schema.json",
+  "kind": "verification",
+  "title": "Worker verification",
+  "folder": "games/lundey/worker",
+  "entities": [
+    {
+      "id": "who-may-fetch",
+      "title": "Who may fetch what",
+      "summary": "Signed out, signed in without the role, and invited, for the page and for its files; other paths and methods.",
+      "subject": [
+        {
+          "path": "games/lundey/worker/.dev/capability.json",
+          "entityId": "invited-files"
+        },
+        {
+          "path": "games/lundey/worker/.dev/operation.json",
+          "entityId": "get-file"
+        },
+        {
+          "path": "games/lundey/worker/.dev/feature.json",
+          "entityId": "private-caching"
+        }
+      ],
+      "criteria": [
+        "The address is /games/lundey and the role is games:lundey",
+        "A visitor who is not signed in is redirected to sign in and back, for the page, the script and the icon alike",
+        "A signed-in player holding games:play and games:recreations but not games:lundey gets the not-invited page with 403, never stored, for all three",
+        "An invited player gets the page (private, no-cache) and the script (private, max-age=3600), and a 404 for a file the build does not make",
+        "A path outside the game is 404, a POST is 405, and the bare address redirects to its slash"
+      ],
+      "checks": [
+        {
+          "type": "automated",
+          "path": "games/lundey/test/worker.test.ts",
+          "symbol": "the game lives at /games/lundey, for holders of games:lundey",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/worker.test.ts",
+          "symbol": "a visitor who isn't signed in is sent to sign in and back",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/worker.test.ts",
+          "symbol": "a signed-in player without the role gets the not-invited page, and none of the game",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/worker.test.ts",
+          "symbol": "an invited player gets the page and the files, privately",
+          "command": "npm test"
+        },
+        {
+          "type": "automated",
+          "path": "games/lundey/test/worker.test.ts",
+          "symbol": "nothing outside the game is answered; no writes; the bare address gets its slash",
+          "command": "npm test"
+        }
+      ],
+      "notChecked": [
+        "The real login service and the real sign-in pages: the tests stand in for ACCOUNTS with an object that knows two players.",
+        "Cloudflare's static assets and the headers in public/_headers: the tests stand in for ASSETS.",
+        "The stand-in sign-in (DEV_LOGIN).",
+        "The deployed Worker: it has not been deployed (games/lundey/.dev/blockers.json, first-deploy)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/test/worker.test.ts",
+          "symbol": "USERS"
+        },
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "default.fetch"
+        }
+      ]
+    }
+  ]
+}

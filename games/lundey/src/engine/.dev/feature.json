@@ -1,0 +1,451 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Engine features",
+  "folder": "games/lundey/src/engine",
+  "description": "The game itself: the burrows, the puffin, the four hunters, the terns, what scores, and how it gets harder.",
+  "sources": [
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game"
+    },
+    {
+      "path": "games/lundey/src/engine/maze.ts",
+      "symbol": "buildMaze"
+    },
+    {
+      "path": "games/lundey/src/engine/rules.ts",
+      "symbol": "hunterSpeed"
+    },
+    {
+      "path": "games/lundey/src/engine/autopilot.ts",
+      "symbol": "autopilot"
+    }
+  ],
+  "entities": [
+    {
+      "id": "seeded-burrows",
+      "name": "A new burrow on every level, dug from a seed",
+      "description": "Each level's maze is dug afresh: never the same twice, and always one the game can be played on.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "buildMaze"
+        },
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "neighbour"
+        }
+      ],
+      "behavior": "buildMaze digs the left half of a 21 × 23 island on a grid of rooms two tiles apart: every room is joined into one tree, a few more walls are knocked through for loops, ways are opened across the middle (always above and below the den, sometimes elsewhere), and any room left with one way out is given another. A ring of tunnel runs round the den, and one row, away from the den's, is opened off the side of the island. The right half is the mirror image of the left. The den is three tiles shut in by turf with a door above it; a feather lies in one room of each quarter, and a sand eel on every other tunnel tile but the one the puffin starts on. A game draws a base seed from its generator when it starts, and each level's burrow is dug from that and the level's number.",
+      "outcome": "A player meets a different burrow on every level and in every game, and none of them has a dead end to be cornered in.",
+      "constraints": [
+        "Tunnels are one tile wide and every tunnel tile has at least two ways out.",
+        "Only hunters go through the den and its door; the puffin cannot get in.",
+        "The tunnel off the side of the island comes back on the other side, in the same row; there is no way off the top or the bottom.",
+        "Before the first game, the burrow behind the title screen is dug from the seed the Game was made with; each game then draws a base seed of its own."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "buildMaze"
+        },
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "neighbour"
+        },
+        {
+          "path": "games/lundey/src/engine/maze.ts",
+          "symbol": "walkable"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.loadLevel"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.newGame"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "COLS"
+        }
+      ]
+    },
+    {
+      "id": "puffin",
+      "name": "The puffin runs where it was last pointed",
+      "description": "The player points; the puffin turns as soon as there is a tunnel that way, and eats what it runs over.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.movePuffin"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.puffinArrives"
+        }
+      ],
+      "behavior": "The puffin stands at home, under the den, until it is pointed somewhere. It remembers the way it was last pointed: at the middle of each tile it turns that way if there is a tunnel there, otherwise carries straight on, and stops when turf is ahead. Between two tiles, pointing back turns it round on the spot. It covers a tile every ten steps. Arriving on a tile it eats the sand eel there, picks up the feather or the treat, and leaves its scent.",
+      "outcome": "A turn can be chosen ahead of the corner, also during the count-in, and a mistake can be undone at once by pointing back.",
+      "constraints": [
+        "One speed, the same on every burrow: 100 thousandths of a tile a step.",
+        "A direction with no tunnel that way is kept, and taken at the first tile that has one."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.movePuffin"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.puffinArrives"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.turnBack"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "PUFFIN_SPEED"
+        }
+      ]
+    },
+    {
+      "id": "four-hunters",
+      "name": "Four hunters, four ways of hunting",
+      "description": "A fox, a mink, a skua and a raven come out of the den in turn, and each goes after the puffin in its own way.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.moveHunter"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.choose"
+        }
+      ],
+      "behavior": "The fox starts outside the den; the mink, the skua and the raven wait in it for two, seven and twelve seconds on the first burrow. A hunter chooses its way at the middle of each tile and never turns back unless there is no other way. The mink takes the shortest way to the puffin. The fox follows the puffin's scent, going to whichever neighbouring tile the puffin was on most recently, as long as that is more recently than the tile it stands on and no more than eight seconds ago; without such a trail it takes the shortest way. The skua, while it is more than six tiles from the puffin, flies to the puffin's next meal: the eel nearest the puffin that is at least four tiles from it; closer than that, or with no such eel left, it takes the shortest way. These three hunt and prowl in turn, and a prowling hunter turns at random. The raven only wanders at random until, at the middle of a tile, it sees the puffin down a straight run of tunnel: then it dives, by the shortest way and faster, for three seconds, and must rest before it can dive again. A hunter that is out and comes within six tenths of a tile of the puffin catches it.",
+      "outcome": "Each hunter can be read and outwitted differently: crossing its own trail throws the fox, the skua can be drawn away from where the puffin is, and the raven is only dangerous down a straight tunnel.",
+      "constraints": [
+        "Speeds, in thousandths of a tile a step, on the first burrow: fox 90, mink 84, skua 94, raven 80 and 108 in a dive; the puffin's is 100.",
+        "Hunt, then prowl: fox 14 s and 4 s, mink 10 s and 5 s, skua 12 s and 4 s. The raven has no such turns.",
+        "The raven looks only when it reaches the middle of a tile, along its own row or column, and not through the tunnel off the island's sides. A dive lasts 3 s, and 2.5 s must pass before the next.",
+        "The distance that counts as a touch is measured along the row and the column added together, and round the island's sides."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.moveHunter"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.choose"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.toward"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.fresh"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.sees"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.touch"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.speedOf"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "HUNTER_SPEED"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "DEN_WAIT"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "HUNT_STEPS"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "SCENT_STEPS"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "SKUA_CLOSE"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "DIVE_STEPS"
+        }
+      ]
+    },
+    {
+      "id": "tern-feathers",
+      "name": "A tern's feather turns the chase round",
+      "description": "Picking up a feather brings the arctic terns, who mob every hunter in the tunnels so the puffin can rout them.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.puffinArrives"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.play"
+        }
+      ],
+      "behavior": "Four feathers lie in each burrow. When the puffin picks one up, every hunter that is out is mobbed: it turns tail, slows down and takes at each tile the way that leads farthest from the puffin. Touching a mobbed hunter routs it: it scores 250 for the first under one feather, 500 for the second, 750 and 1,000, the game stands still for a moment, and the hunter runs home to the den, rests two and a half seconds and comes out again as itself. When the terns leave, the hunters still mobbed go back to hunting.",
+      "outcome": "The player has four chances a burrow to turn on the hunters, and a reason to gather them together first.",
+      "constraints": [
+        "The terns stay 8 s on the first burrow, half a second less on each one after, never under 3 s.",
+        "Hunters in the den, leaving it or running home are not mobbed, and one that comes out while the terns are about hunts as usual.",
+        "The count of routs starts again with each feather; a second feather while the terns are out starts their time again.",
+        "A mobbed hunter moves at 52, a routed one at 220."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.puffinArrives"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.play"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.touch"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.choose"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "mobSteps"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "ROUT_POINTS"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "DEN_REST"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "HIT_STOP"
+        }
+      ]
+    },
+    {
+      "id": "score-and-lives",
+      "name": "Points, treats and puffins",
+      "description": "What scores, what washes up, and how many puffins a game has.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.puffinArrives"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.showTreat"
+        }
+      ],
+      "behavior": "A sand eel is worth 5 points and a feather 25. Twice a burrow, when three tenths and seven tenths of its eels are eaten, a treat washes up for ten seconds on an emptied tunnel tile at least six tiles from the puffin: a herring, a crab, a mussel, a starfish or a pearl by the burrow's number, worth 100, 200, 300, 500 or 800. A burrow finished without losing a puffin is worth 500 more. A game starts with three puffins; another comes at 4,000 points and at every 8,000 after. A caught puffin is lost: the eels stay eaten, and the puffin and all four hunters go back to where a burrow starts. With none left the game is over. The Game raises its best score as the score passes it.",
+      "outcome": "A score that rewards clearing burrows cleanly and routing hunters in a row, and a game that lasts as long as its puffins.",
+      "constraints": [
+        "Never more than five puffins.",
+        "From the fifth burrow on the treat is always the pearl.",
+        "A demo's score does not raise the best, and a demo earns no extra puffin."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.puffinArrives"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.showTreat"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.add"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.touch"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.step"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "TREAT_POINTS"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "treatFor"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "EXTRA_AT"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "MAX_LIVES"
+        }
+      ]
+    },
+    {
+      "id": "harder-burrows",
+      "name": "Every burrow is harder than the last",
+      "description": "The numbers the hunters and the terns play by change with the burrow's number.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "hunterSpeed"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "denWait"
+        }
+      ],
+      "behavior": "On each burrow after the first every hunter is 2 faster, up to 12; the mink, the skua and the raven leave the den half a second sooner; the fox, the mink and the skua prowl for half a second less; and the terns stay half a second less.",
+      "outcome": "The same game asks more of the player the longer it lasts.",
+      "constraints": [
+        "The puffin's speed never changes, so from the fourth burrow the skua is as fast as the puffin, and from the sixth the fox is too.",
+        "Floors: the mink waits at least 1 s, the skua 2 s and the raven 3 s; a prowl lasts at least 1 s; the terns stay at least 3 s."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "hunterSpeed"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "denWait"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "prowlSteps"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "mobSteps"
+        }
+      ]
+    },
+    {
+      "id": "demo-player",
+      "name": "A player for the demo",
+      "description": "The engine can play itself, for the title screen's demo and for the tests.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/autopilot.ts",
+          "symbol": "autopilot"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.newGame"
+        }
+      ],
+      "behavior": "autopilot answers a direction for the puffin from the state of a Game: towards the nearest eel, feather or treat along the tunnels, away from hunters that are out and within seven tiles, and a little against turning back. Between two tiles with a hunter close ahead it turns round. A game started with newGame(true) is a demo: it scores nothing towards the best, earns no extra puffin, and goes back to the title screen when its puffin is caught or its burrow is cleared. A start press during a demo begins a real game.",
+      "outcome": "The title screen can show the game being played, and the tests can play whole burrows.",
+      "constraints": [
+        "It is a simple player and no champion: it looks only at distances, not at where a hunter is heading.",
+        "It answers no direction outside the ready and play phases."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/engine/autopilot.ts",
+          "symbol": "autopilot"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.newGame"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.step"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.add"
+        }
+      ]
+    },
+    {
+      "id": "same-seed-same-game",
+      "name": "The same seed and the same controls give the same game",
+      "description": "Nothing in a game depends on the clock, the machine or chance outside the seed.",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.step"
+        },
+        {
+          "path": "games/lundey/src/engine/rng.ts",
+          "symbol": "Rng"
+        }
+      ],
+      "behavior": "The Game is made with a seed, moves only when step() is called, and takes every random number from its own generator. Positions are whole thousandths of a tile, times are whole steps, and distances are whole tiles.",
+      "outcome": "The tests can play a game and expect an exact result, and a game could be played again from its seed and controls.",
+      "constraints": [
+        "The page makes its Game with a seed from Math.random, and nothing records the controls, so a game played on the page cannot be played again today."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.step"
+        },
+        {
+          "path": "games/lundey/src/engine/rng.ts",
+          "symbol": "Rng"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "UNIT"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "game"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/capability.json",
+      "relationship": "The capability these belong to."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/operation.json",
+      "relationship": "The operations through which it is reached."
+    },
+    {
+      "kind": "state",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/Game.state-diagram.json",
+      "relationship": "The phases of a game."
+    },
+    {
+      "kind": "state",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/Hunter.state-diagram.json",
+      "relationship": "A hunter's round: den, leaving, out, mobbed, routed."
+    }
+  ]
+}

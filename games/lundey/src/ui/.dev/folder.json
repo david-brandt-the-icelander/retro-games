@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "UI",
+  "folder": "games/lundey/src/ui",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "UI",
+      "summary": "The cast and pickups as canvas shapes, the drawing of the island and the words over it, the controls and the sound.",
+      "purpose": "Turns the engine's Game and its events into what the player sees and hears on a 336 × 420 canvas drawn at the screen's own resolution, and keys, swipes, on-screen buttons and a gamepad into one Input a step.",
+      "boundaries": [
+        "Decides nothing about the game: the engine does. Renderer.draw reads a Game and never changes it.",
+        "No image files and no sound files: every character and pickup is drawn with canvas shapes in art.ts, and every sound is made with Web Audio in sound.ts.",
+        "Does not run itself: the page (src/main.ts) owns the loop, calls Controls.read once a step and Renderer.draw once a frame."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/src/ui/render.ts",
+          "symbol": "Renderer.draw"
+        },
+        {
+          "path": "games/lundey/src/ui/art.ts",
+          "symbol": "drawHunter"
+        },
+        {
+          "path": "games/lundey/src/ui/input.ts",
+          "symbol": "Controls.read"
+        },
+        {
+          "path": "games/lundey/src/ui/sound.ts",
+          "symbol": "Sound.play"
+        }
+      ]
+    }
+  ]
+}

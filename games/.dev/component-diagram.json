@@ -140,6 +140,13 @@
       "responsibility": "An Icelandic outsider word game for 3–10 players on their own phones: a Worker with a Durable Object per room; anyone with the link plays, starting a room needs the sign-in.",
       "folder": "games/laumufarthegi",
       "diagram": "games/laumufarthegi/.dev/component-diagram.json"
+    },
+    {
+      "id": "lundey",
+      "name": "Lundey",
+      "responsibility": "An original single-player maze chase in TypeScript on a canvas: a puffin gathers sand eels in a burrow maze dug afresh from a seed on every level, hunted by a fox, a mink, a skua and a raven. Its Worker serves it only to holders of the invite-only role games:lundey and keeps nothing; the best score stays on the device.",
+      "folder": "games/lundey",
+      "diagram": "games/lundey/.dev/component-diagram.json"
     }
   ],
   "relationships": [
@@ -250,6 +257,12 @@
       "to": "laumufarthegi",
       "kind": "contains",
       "description": "Laumufarþegi is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "lundey",
+      "kind": "contains",
+      "description": "Lundey is one of the games."
     }
   ]
 }

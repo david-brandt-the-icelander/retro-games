@@ -1,0 +1,95 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "Worker settings",
+  "folder": "games/lundey/worker",
+  "entities": [
+    {
+      "id": "assets",
+      "title": "Static assets",
+      "summary": "The built game in dist/; every request runs the Worker first.",
+      "key": "ASSETS",
+      "type": "assets binding",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/wrangler.jsonc",
+          "symbol": "assets"
+        },
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "Env"
+        }
+      ]
+    },
+    {
+      "id": "accounts",
+      "title": "Login service",
+      "summary": "icelander.net's accounts Worker, through its Internal entrypoint.",
+      "key": "ACCOUNTS",
+      "type": "service binding",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/wrangler.jsonc",
+          "symbol": "services"
+        },
+        {
+          "path": "vendor/icelander-auth/index.js",
+          "symbol": "createAuth"
+        }
+      ]
+    },
+    {
+      "id": "jwks",
+      "title": "Login service's public keys",
+      "summary": "The keys the sign-in library needs before it counts sign-in as configured; public, not secret.",
+      "key": "ACCOUNTS_JWKS",
+      "type": "JSON Web Key Set (string)",
+      "sensitive": false,
+      "scope": "per Worker",
+      "takesEffect": "at-startup",
+      "details": "Changed when icelander.net rotates its keys (its docs/accounts.md, Keys). Without the binding and at least one key here, sign-in is off and nobody is signed in.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/wrangler.jsonc",
+          "symbol": "vars"
+        },
+        {
+          "path": "vendor/icelander-auth/index.js",
+          "symbol": "parseJwks"
+        }
+      ]
+    },
+    {
+      "id": "dev-login",
+      "title": "Stand-in sign-in for local work",
+      "summary": "\"1\" turns on the sign-in library's stand-in sign-in, which works on a local host only.",
+      "key": "DEV_LOGIN",
+      "type": "\"1\" or unset",
+      "sensitive": false,
+      "scope": "local development",
+      "takesEffect": "at-startup",
+      "default": "unset",
+      "details": "Not set in wrangler.jsonc, so it is off wherever the Worker is deployed. The Worker passes it on as the library's DEV_SIGN_IN, which the library honours only on a local host.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "shared"
+        },
+        {
+          "path": "vendor/icelander-auth/index.js",
+          "symbol": "createAuth"
+        }
+      ]
+    }
+  ]
+}

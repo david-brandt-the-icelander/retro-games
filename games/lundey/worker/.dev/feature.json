@@ -1,0 +1,111 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-feature/schema.json",
+  "kind": "feature",
+  "title": "Worker features",
+  "folder": "games/lundey/worker",
+  "description": "How the game's files are guarded and cached.",
+  "sources": [
+    {
+      "path": "games/lundey/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "games/lundey/wrangler.jsonc",
+      "symbol": "assets"
+    }
+  ],
+  "entities": [
+    {
+      "id": "invited-only",
+      "name": "Nothing of the game for the uninvited",
+      "description": "Every file, not only the page, is behind the sign-in and the role.",
+      "sources": [
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/lundey/wrangler.jsonc",
+          "symbol": "assets"
+        }
+      ],
+      "behavior": "Cloudflare runs the Worker before its static assets for every request on the route. The Worker asks the sign-in library whether the request comes from a player holding games:lundey, and only then fetches the file. Someone signed out is redirected to sign in and comes back to the same address; someone signed in without the role gets a short page that says the game is for invited players, suggests signing in with the address they were invited at, and links back to the games.",
+      "outcome": "The page, the script, the styles and the icon reach invited players only.",
+      "constraints": [
+        "GET and HEAD only: the Worker takes no writes.",
+        "Nothing is remembered between requests: the login service is asked each time.",
+        "If the login service or its keys are not configured, nobody counts as signed in, so nobody gets a file."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "AUTH"
+        },
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "notInvited"
+        },
+        {
+          "path": "games/lundey/worker/config.ts",
+          "symbol": "ROLE"
+        },
+        {
+          "path": "games/lundey/wrangler.jsonc",
+          "symbol": "assets"
+        },
+        {
+          "path": "vendor/icelander-auth/index.js",
+          "symbol": "requireRole"
+        }
+      ]
+    },
+    {
+      "id": "private-caching",
+      "name": "Files are marked private",
+      "description": "No shared cache may keep a file of the game.",
+      "sources": [
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "notInvited"
+        }
+      ],
+      "behavior": "The Worker replaces the static assets' caching header on every file it serves: the page is private and checked again on every visit, and everything else is private and kept for at most an hour. The not-invited page is never stored.",
+      "outcome": "A cache between Cloudflare and the player never holds a copy it could hand to someone who was not invited, and a new page is seen on the next visit after a deploy.",
+      "constraints": [
+        "game.js has the same name in every build, so for up to an hour after a deploy a player's own browser may run the previous script with the new page."
+      ],
+      "implementation": [
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "notInvited"
+        }
+      ]
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "capability",
+      "folder": "games/lundey/worker",
+      "path": "games/lundey/worker/.dev/capability.json",
+      "relationship": "The capability this belongs to."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/lundey/worker",
+      "path": "games/lundey/worker/.dev/operation.json",
+      "relationship": "The one way in."
+    }
+  ]
+}

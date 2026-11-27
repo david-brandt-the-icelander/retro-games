@@ -1,0 +1,53 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/delivery.schema.json",
+  "kind": "delivery",
+  "title": "Lundey delivery",
+  "folder": "games/lundey",
+  "entities": [
+    {
+      "id": "production",
+      "title": "Production",
+      "summary": "The lundey Worker on icelander.net/games/lundey*, with the built game as its static assets. Not deployed yet.",
+      "environment": "production",
+      "purpose": "The game invited players reach at icelander.net/games/lundey/.",
+      "deployedBy": "The owner, from their own machine: npm run deploy in games/lundey (npm test, then npm run build, then wrangler deploy), with wrangler signed in to the icelander.net Cloudflare account. Merging to main deploys nothing. Its zizd pipeline is written down but not registered (pipeline.json, zizd).",
+      "approvals": [
+        "The owner's: only the owner deploys, and only the owner publishes (decisions.json, stands-in-for-request).",
+        "A pull request for anything that reaches main."
+      ],
+      "rollback": "No rollback is recorded: check out an earlier commit and run npm run deploy again, or roll back the Worker's version in Cloudflare. There is no database, so nothing else has to be undone; a best score kept in a browser is not touched by a deploy.",
+      "details": "workers_dev and preview URLs are off, so production is the only address. As of 2026-11-27 the Worker has not been deployed, and nobody can be invited until the login service knows the role (blockers.json, first-deploy). An invitation is the role games:lundey, granted at icelander.net/private/admin.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lundey/wrangler.jsonc",
+          "symbol": "routes"
+        },
+        {
+          "path": "games/lundey/wrangler.jsonc",
+          "symbol": "workers_dev"
+        },
+        {
+          "path": "games/lundey/package.json",
+          "symbol": "scripts.deploy"
+        },
+        {
+          "path": "games/lundey/README.md",
+          "symbol": "Lundey"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/pipeline.json",
+          "entityId": "deploy-by-hand"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/blockers.json",
+          "entityId": "first-deploy"
+        }
+      ]
+    }
+  ]
+}

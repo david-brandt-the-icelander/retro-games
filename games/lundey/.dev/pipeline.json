@@ -1,0 +1,87 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/pipeline.schema.json",
+  "kind": "pipeline",
+  "title": "Lundey pipeline",
+  "folder": "games/lundey",
+  "entities": [
+    {
+      "id": "deploy-by-hand",
+      "title": "Deploying, by hand",
+      "summary": "The owner runs npm run deploy: npm test, then npm run build, then wrangler deploy.",
+      "trigger": "The owner, on their own machine. Nothing deploys on a push or a merge.",
+      "checks": [
+        "npm test: tsc --noEmit, then the node:test suites in test/ (the burrows over 300 seeds, the game, the Worker)",
+        "npm run build: tsc --noEmit, then build.mjs",
+        "wrangler deploy"
+      ],
+      "blocks": "release",
+      "secrets": [
+        "Cloudflare credentials for the icelander.net account, on the owner's machine"
+      ],
+      "notChecked": [
+        "Behaviour in a real browser: drawing, input, sound and the page's loop (games/lundey/src/.dev/verification.json).",
+        "That dist/ holds no .dev folder: build.mjs leaves them out, and only the zizd build step checks it.",
+        "Whether the login service knows games:lundey: deployed before it does, the game is reachable by nobody (blockers.json, first-deploy)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/package.json",
+          "symbol": "scripts.deploy"
+        },
+        {
+          "path": "games/lundey/package.json",
+          "symbol": "scripts.test"
+        },
+        {
+          "path": "games/lundey/build.mjs",
+          "symbol": "cpSync"
+        }
+      ]
+    },
+    {
+      "id": "zizd",
+      "title": "The lundey zizd pipeline",
+      "summary": "david-brandt-the-icelander/retro-games:lundey runs the two step containers every game shares: build, then deploy. Its file is listed in .zazzle/zizd/README.md and is not yet in the orchestrator.",
+      "trigger": "Once registered: a commit on main that changes games/lundey outside its .dev folders, vendor/, the two step folders or the migration gate.",
+      "checks": [
+        "build: npm ci, npm test, npm run build, no .dev folder in dist/, and wrangler deploy --dry-run with the game's own wrangler (.zazzle/zizd/.dev/pipeline.json, build)",
+        "deploy: the shared deploy step, which uploads the build's bundle and assets (.zazzle/zizd/.dev/pipeline.json, deploy). Lundey has no database, so the migration gate has nothing of its to hold back"
+      ],
+      "blocks": "the deploy step, when the build fails",
+      "notChecked": [
+        "Behaviour in a real browser.",
+        "The .dev validators: they are pull-request checks, which zizd does not run."
+      ],
+      "status": "not registered",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": ".zazzle/zizd/README.md",
+          "symbol": "lundey"
+        },
+        {
+          "path": ".zazzle/zizd/README.md",
+          "symbol": "paths"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "depends-on",
+          "path": ".zazzle/zizd/.dev/pipeline.json",
+          "entityId": "build"
+        },
+        {
+          "relation": "depends-on",
+          "path": ".zazzle/zizd/.dev/pipeline.json",
+          "entityId": "deploy"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/blockers.json",
+          "entityId": "zizd-not-registered"
+        }
+      ]
+    }
+  ]
+}

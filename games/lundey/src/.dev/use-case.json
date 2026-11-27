@@ -1,0 +1,275 @@
+{
+  "$schema": "../../../../Meta/Agents/Skills/describe-use-case/schema.json",
+  "kind": "use-case",
+  "title": "Browser game use cases",
+  "folder": "games/lundey/src",
+  "description": "What a player does with the page, step by step.",
+  "sources": [
+    {
+      "path": "games/lundey/src/main.ts",
+      "symbol": "step"
+    },
+    {
+      "path": "games/lundey/src/main.ts",
+      "symbol": "frame"
+    }
+  ],
+  "entities": [
+    {
+      "id": "play-a-game",
+      "name": "Play a game of Lundey",
+      "description": "A player starts a game, clears what burrows they can, and leaves a best score on the device.",
+      "sources": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "step"
+        },
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game.step"
+        }
+      ],
+      "actor": "Player",
+      "goal": "Clear as many burrows as they can, and beat the best score kept on this device.",
+      "preconditions": [
+        "The page is open: the Worker serves it only to a signed-in player who holds games:lundey (games/lundey/worker).",
+        "The title screen is showing, or the demo it plays when left alone."
+      ],
+      "postconditions": [
+        "The game is over, and the title screen comes back.",
+        "If the score passed the best kept on this device, the new best is saved in the browser and shown as BEST."
+      ],
+      "flow": [
+        {
+          "id": "title",
+          "actor": "Page",
+          "action": "Shows the title screen, with the best score read from the browser.",
+          "sources": [
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "load"
+            },
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "BEST_KEY"
+            },
+            {
+              "path": "games/lundey/src/ui/render.ts",
+              "symbol": "Renderer.title"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "start",
+          "actor": "Player",
+          "action": "Presses Enter or Space, taps the screen, or presses PLAY or the gamepad's A.",
+          "sources": [
+            {
+              "path": "games/lundey/src/ui/input.ts",
+              "symbol": "Controls"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "count-in",
+          "actor": "Page",
+          "action": "Starts a game on burrow 1 with three puffins, and counts in.",
+          "sources": [
+            {
+              "path": "games/lundey/src/engine/game.ts",
+              "symbol": "Game.newGame"
+            },
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "step"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "steer",
+          "actor": "Player",
+          "action": "Points the puffin with the arrow keys or WASD, a swipe, the on-screen cross or the gamepad, and pauses when they like.",
+          "sources": [
+            {
+              "path": "games/lundey/src/ui/input.ts",
+              "symbol": "Controls.read"
+            }
+          ],
+          "participantKind": "actor",
+          "actorDocument": "Actors/player.md"
+        },
+        {
+          "id": "run",
+          "actor": "Page",
+          "action": "Steps the game sixty times a second with the step's controls, draws each frame at the screen's own resolution, and plays a sound for each event.",
+          "sources": [
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "frame"
+            },
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "step"
+            },
+            {
+              "path": "games/lundey/src/ui/render.ts",
+              "symbol": "Renderer.draw"
+            },
+            {
+              "path": "games/lundey/src/ui/sound.ts",
+              "symbol": "Sound.play"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "carry-on",
+          "actor": "Page",
+          "action": "Goes on to the next burrow when one is cleared and to the next puffin when one is caught, and saves the best score if it has grown, each time a puffin is caught, a burrow is cleared or the game ends.",
+          "sources": [
+            {
+              "path": "games/lundey/src/engine/game.ts",
+              "symbol": "Game.step"
+            },
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "step"
+            },
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "save"
+            }
+          ],
+          "participantKind": "system"
+        },
+        {
+          "id": "over",
+          "actor": "Page",
+          "action": "Shows GAME OVER and the score when the last puffin is caught, then the title screen again after five seconds, or a new game on a start press.",
+          "sources": [
+            {
+              "path": "games/lundey/src/engine/game.ts",
+              "symbol": "Game.step"
+            },
+            {
+              "path": "games/lundey/src/ui/render.ts",
+              "symbol": "Renderer.words"
+            }
+          ],
+          "participantKind": "system"
+        }
+      ],
+      "alternatives": [
+        {
+          "atStep": "title",
+          "condition": "Nobody starts a game for twelve seconds.",
+          "outcome": "The page starts a demo that the autopilot plays, without sound and without touching the best score. A start press begins a real game; otherwise the demo ends when its puffin is caught or its burrow cleared, and the title screen comes back.",
+          "sources": [
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "DEMO_AFTER"
+            },
+            {
+              "path": "games/lundey/src/engine/autopilot.ts",
+              "symbol": "autopilot"
+            },
+            {
+              "path": "games/lundey/src/engine/game.ts",
+              "symbol": "Game.newGame"
+            }
+          ]
+        },
+        {
+          "atStep": "title",
+          "condition": "The browser refuses storage, as a private window may.",
+          "outcome": "The best score starts at 0 and a new best is not kept; the game plays as usual.",
+          "sources": [
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "load"
+            },
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "save"
+            }
+          ]
+        },
+        {
+          "atStep": "steer",
+          "condition": "The tab is hidden during the count-in or play.",
+          "outcome": "The page queues a pause, taken on the next step. The game waits, paused, until the player presses pause again.",
+          "sources": [
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "visibilitychange"
+            },
+            {
+              "path": "games/lundey/src/ui/input.ts",
+              "symbol": "Controls.queuePause"
+            }
+          ]
+        },
+        {
+          "atStep": "run",
+          "condition": "The page was held up for more than a quarter of a second.",
+          "outcome": "Only a quarter of a second of steps is made up; the rest of the time is dropped, so the game never races to catch up.",
+          "sources": [
+            {
+              "path": "games/lundey/src/main.ts",
+              "symbol": "frame"
+            }
+          ]
+        }
+      ],
+      "actorDocument": "Actors/player.md"
+    }
+  ],
+  "relatedViews": [
+    {
+      "kind": "feature",
+      "folder": "games/lundey/src",
+      "path": "games/lundey/src/.dev/feature.json",
+      "relationship": "The page's features the steps rely on."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lundey/src/ui",
+      "path": "games/lundey/src/ui/.dev/feature.json",
+      "relationship": "The controls, the drawing and the sounds."
+    },
+    {
+      "kind": "feature",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/feature.json",
+      "relationship": "The game being played."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/operation.json",
+      "relationship": "The engine's operations the page calls: step, newGame, takeEvents and autopilot."
+    },
+    {
+      "kind": "state",
+      "folder": "games/lundey/src/engine",
+      "path": "games/lundey/src/engine/.dev/Game.state-diagram.json",
+      "relationship": "The phases the game goes through."
+    },
+    {
+      "kind": "operation",
+      "folder": "games/lundey/worker",
+      "path": "games/lundey/worker/.dev/operation.json",
+      "relationship": "How the page is fetched: only by an invited player."
+    },
+    {
+      "kind": "user-journey",
+      "folder": "games/lundey",
+      "path": "games/lundey/.dev/user-journey.json",
+      "relationship": "The journey this use case is part of."
+    }
+  ]
+}

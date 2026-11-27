@@ -1,0 +1,77 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/limitations.schema.json",
+  "kind": "limitations",
+  "title": "Lundey limitations",
+  "folder": "games/lundey",
+  "entities": [
+    {
+      "id": "not-play-tested",
+      "title": "No person has play-tested it",
+      "summary": "The game's numbers (speeds, waits, how long the terns stay, how fast it gets harder) were chosen by the coding agent, and checked only by the automated tests and a look in a headless browser. No person has played it.",
+      "impact": "How hard the game is, and how it feels to play, are not known. The numbers in src/engine/rules.ts may want tuning once the first players have tried it.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "HUNTER_SPEED"
+        },
+        {
+          "path": "games/lundey/src/engine/rules.ts",
+          "symbol": "hunterSpeed"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/src/.dev/verification.json",
+          "entityId": "page-by-eye"
+        }
+      ]
+    },
+    {
+      "id": "best-on-device-only",
+      "title": "The best score stays on the device",
+      "summary": "The best score is kept in the browser's localStorage only. There is no high-score table and no check of a score by replay.",
+      "impact": "A best score cannot be compared with anyone else's, does not follow the player to another device or browser, and is gone when the browser's site data is cleared; a private window keeps none.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "BEST_KEY"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "save"
+        },
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "default.fetch"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/backlog.json",
+          "entityId": "replay-checked-table"
+        }
+      ]
+    },
+    {
+      "id": "one-player",
+      "title": "One player, on one device",
+      "summary": "A game has one puffin and one set of controls; there is no second player, on the same device or online.",
+      "impact": "Friends cannot play together or against each other, except by comparing scores themselves.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/src/engine/game.ts",
+          "symbol": "Game"
+        },
+        {
+          "path": "games/lundey/src/ui/input.ts",
+          "symbol": "Controls.read"
+        }
+      ]
+    }
+  ]
+}

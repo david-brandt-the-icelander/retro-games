@@ -1,0 +1,118 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Lundey hunter state diagram",
+  "folder": "games/lundey/src/engine",
+  "description": "Where one hunter is in its round. resetActors() makes all four afresh at the start of every burrow and after every caught puffin: the mink, the skua and the raven in the den with a wait each, and the fox alone already out, on the tile above the den's door. Hunters move only while the Game's phase is play, and stand still with everything else for HIT_STOP steps after a rout. The terns' time (Game.mob) belongs to the Game, not to a hunter: a feather mobs only the hunters that are out at that moment, so one in the den, on its way out or running home is left alone, and one that comes out while the terns are still about comes out as itself. Another feather while a hunter is mobbed leaves it mobbed and starts the terns' time again. While out, a fox, mink or skua also hunts and prowls in turn (Hunter.hunting, Hunter.mood), and the raven dives and rests (Hunter.dive, Hunter.diveRest); those are the self transitions on out.",
+  "sources": [
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.moveHunter"
+    },
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.puffinArrives"
+    },
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.play"
+    },
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.touch"
+    },
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.choose"
+    },
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.resetActors"
+    },
+    {
+      "path": "games/lundey/src/engine/game.ts",
+      "symbol": "Game.speedOf"
+    }
+  ],
+  "machine": "Hunter.state (src/engine/game.ts)",
+  "initialState": "den",
+  "states": [
+    {
+      "id": "den",
+      "description": "Waiting in the den, still, while Hunter.wait counts down. The fox never starts here: it starts out."
+    },
+    {
+      "id": "leaving",
+      "description": "On the way out through the den's door at LEAVING_SPEED, by the shortest way to the tile above the door."
+    },
+    {
+      "id": "out",
+      "description": "In the tunnels, hunting in its own way at its own speed; the only state in which it catches the puffin. A raven in a dive is faster by DIVE_BONUS."
+    },
+    {
+      "id": "mobbed",
+      "description": "Mobbed by terns: at MOBBED_SPEED, taking at every tile the way that leads farthest from the puffin. Touching the puffin now routs it."
+    },
+    {
+      "id": "routed",
+      "description": "Routed: runs at ROUTED_SPEED by the shortest way back to the middle of the den, through the door, and touches nothing."
+    }
+  ],
+  "transitions": [
+    {
+      "from": "den",
+      "to": "leaving",
+      "trigger": "moveHunter(): the wait reaches 0"
+    },
+    {
+      "from": "leaving",
+      "to": "out",
+      "trigger": "moveHunter(): arrives on the tile above the den's door (GATE_TILE)"
+    },
+    {
+      "from": "out",
+      "to": "mobbed",
+      "trigger": "puffinArrives(): the puffin picks up a tern's feather",
+      "action": "Any dive is called off (dive = 0), and a hunter between two tiles turns round where it stands. For the Game: mob = mobSteps(level), chain = 0, emit feather."
+    },
+    {
+      "from": "mobbed",
+      "to": "out",
+      "trigger": "play(): the terns' time (Game.mob) reaches 0",
+      "action": "Emit mobEnd, once for all of them."
+    },
+    {
+      "from": "mobbed",
+      "to": "routed",
+      "trigger": "touch(): comes within TOUCH of the puffin",
+      "action": "chain++; ROUT_POINTS × chain scored, with a popup; the game stands still for HIT_STOP steps; emit rout."
+    },
+    {
+      "from": "routed",
+      "to": "den",
+      "trigger": "moveHunter(): arrives at the middle of the den (DEN_MIDDLE)",
+      "action": "wait = DEN_REST; faces up."
+    },
+    {
+      "from": "out",
+      "to": "out",
+      "trigger": "moveHunter(): the mood runs out",
+      "guard": "a fox, a mink or a skua",
+      "action": "hunting flips; mood = HUNT_STEPS for its kind when it starts to hunt, prowlSteps(kind, level) when it starts to prowl."
+    },
+    {
+      "from": "out",
+      "to": "out",
+      "trigger": "choose(): at the middle of a tile, the raven sees the puffin down a straight run of tunnel",
+      "guard": "the raven, not diving, and rested from its last dive",
+      "action": "dive = DIVE_STEPS; emit dive."
+    },
+    {
+      "from": "out",
+      "to": "out",
+      "trigger": "moveHunter(): the dive runs out",
+      "guard": "the raven, diving",
+      "action": "diveRest = DIVE_REST, counted down before it can dive again."
+    }
+  ]
+}

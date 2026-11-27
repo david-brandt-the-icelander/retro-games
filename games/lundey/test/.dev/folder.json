@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Tests",
+  "folder": "games/lundey/test",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Tests",
+      "summary": "The node:test suites for the burrows, the game and the Worker.",
+      "purpose": "Checks the game without a browser: build.mjs --test bundles each *.test.ts into dist-test/, and npm test runs them after the type-check. maze.test.ts digs 300 burrows; game.test.ts plays the engine step by step; worker.test.ts calls the Worker's handler with stand-ins for the login service and the static assets.",
+      "boundaries": [
+        "What each suite checks is recorded in the verification files of the folders it checks: src/engine and worker.",
+        "Nothing here runs the page, the drawing, the controls or the sound (games/lundey/src/.dev/verification.json)."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/build.mjs",
+          "symbol": "--test"
+        },
+        {
+          "path": "games/lundey/package.json",
+          "symbol": "scripts.test"
+        },
+        {
+          "path": "games/lundey/test/maze.test.ts",
+          "symbol": "SEEDS"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/src/engine/.dev/verification.json"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/worker/.dev/verification.json"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/src/.dev/verification.json"
+        }
+      ]
+    }
+  ]
+}

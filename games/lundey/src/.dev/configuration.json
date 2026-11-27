@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../../Meta/Agents/Knowledge/schemas/configuration.schema.json",
+  "kind": "configuration",
+  "title": "Browser game settings",
+  "folder": "games/lundey/src",
+  "entities": [
+    {
+      "id": "best",
+      "title": "Best score",
+      "summary": "The best score reached in this browser, shown at the top of the screen.",
+      "key": "localStorage lundey.best",
+      "type": "whole number",
+      "default": "0",
+      "sensitive": false,
+      "scope": "per browser",
+      "takesEffect": "at-startup",
+      "details": "Read once when the page loads; written when it has grown, at the next caught puffin, cleared burrow or game over. A browser that refuses storage starts at 0 each time.",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "BEST_KEY"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "load"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "step"
+        }
+      ]
+    },
+    {
+      "id": "sound",
+      "title": "Sound",
+      "summary": "Whether sound is on, remembered in this browser.",
+      "key": "localStorage lundey.sound",
+      "type": "on | off",
+      "default": "on",
+      "sensitive": false,
+      "scope": "per browser",
+      "takesEffect": "per-use",
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "SOUND_KEY"
+        },
+        {
+          "path": "games/lundey/src/main.ts",
+          "symbol": "toggleSound"
+        }
+      ]
+    }
+  ]
+}

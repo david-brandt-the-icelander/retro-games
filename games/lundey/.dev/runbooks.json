@@ -1,0 +1,84 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/runbooks.schema.json",
+  "kind": "runbooks",
+  "title": "Lundey runbooks",
+  "folder": "games/lundey",
+  "entities": [
+    {
+      "id": "setup",
+      "title": "Work on Lundey",
+      "summary": "Install, test, build and look at the game in its folder.",
+      "purpose": "setup",
+      "when": "Before changing anything in games/lundey.",
+      "steps": [
+        "cd games/lundey",
+        "npm install",
+        "npm test (the type-check, then the maze, game and Worker tests)",
+        "npm run build (into dist/games/lundey/, with _headers at dist/)",
+        "npm run dev rebuilds the bundle as the source changes",
+        "To look at it without the sign-in: serve dist/ with any static server and open /games/lundey/"
+      ],
+      "verify": "npm test passes.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lundey/README.md",
+          "symbol": "Lundey"
+        },
+        {
+          "path": "games/lundey/package.json",
+          "symbol": "scripts"
+        },
+        {
+          "path": "games/lundey/build.mjs",
+          "symbol": "SITE"
+        }
+      ]
+    },
+    {
+      "id": "first-publish",
+      "title": "Publish for the first time, and invite players",
+      "summary": "The owner's steps from a merged game to an invited player on the title screen.",
+      "purpose": "operate",
+      "when": "The owner has decided to publish (decisions.json, stands-in-for-request). Never on an agent's own initiative.",
+      "steps": [
+        "In the icelander.net repository: merge the pull request that registers games:lundey (accounts/src/config.js) and adds the game's card, and deploy the login service and the site as that repository says",
+        "In games/lundey, on the owner's machine: npm run deploy",
+        "Grant games:lundey to each invited player at icelander.net/private/admin",
+        "Add the lundey pipeline file from .zazzle/zizd/README.md to the orchestrator, so later changes can go through zizd"
+      ],
+      "verify": "At icelander.net/games/lundey/: signed out, the site's sign-in; signed in without the role, the not-invited page; signed in with it, the title screen.",
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lundey/README.md",
+          "symbol": "Lundey"
+        },
+        {
+          "path": "games/lundey/package.json",
+          "symbol": "scripts.deploy"
+        },
+        {
+          "path": "games/lundey/worker/index.ts",
+          "symbol": "default.fetch"
+        },
+        {
+          "path": ".zazzle/zizd/README.md",
+          "symbol": "lundey"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/blockers.json",
+          "entityId": "first-deploy"
+        },
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/.dev/blockers.json",
+          "entityId": "zizd-not-registered"
+        }
+      ]
+    }
+  ]
+}

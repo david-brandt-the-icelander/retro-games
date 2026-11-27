@@ -323,6 +323,22 @@ Not removed yet. When the pipelines are registered and have deployed each game o
 }
 ```
 
+### `lundey`
+
+```json
+{
+  "id": "david-brandt-the-icelander/retro-games:lundey",
+  "repos": ["https://github.com/david-brandt-the-icelander/retro-games.git"],
+  "paths": ["games/lundey", "vendor", ".zazzle/zizd/build", ".zazzle/zizd/deploy", ".github/scripts/migration-gate.sh", "!**/.dev/**"],
+  "steps": [
+    {"name": "build", "path": ".zazzle/zizd/build"},
+    {"name": "deploy", "path": ".zazzle/zizd/deploy", "config": ["CLOUDFLARE_API_TOKEN", "GITHUB_TOKEN", "CLOUDFLARE_ACCOUNT_ID?"], "deploys": true}
+  ],
+  "supersede": true,
+  "halt": { "deployment": "should" }
+}
+```
+
 ### `meg`
 
 ```json

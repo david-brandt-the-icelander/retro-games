@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/decisions.schema.json",
+  "kind": "decisions",
+  "title": "Lundey decisions",
+  "folder": "games/lundey",
+  "entities": [
+    {
+      "id": "stands-in-for-request",
+      "title": "Does Lundey stand in for the game the owner asked for?",
+      "summary": "The owner asked for a faithful clone of an existing arcade maze game, to go in the site's Recreations group. The coding agent declined to recreate that game and built this original maze chase instead, listed in the Action group as its own invite-only game with its own role. The owner has not yet said whether that stands.",
+      "status": "open",
+      "context": "The request was for a faithful clone of an existing arcade maze game, placed in the Recreations group of icelander.net's games page. The coding agent declined to recreate that game. It built Lundey instead: an original maze chase with its own maze generator, characters, art and sounds (README.md), served at icelander.net/games/lundey to holders of the invite-only role games:lundey, with a card in the Action group of the games page. The card and the role's registration are in a pull request to the icelander.net repository that is not merged. Three things follow from the substitution and are the owner's to confirm: whether an original game is accepted in place of what was asked for; which group of the games page its card belongs in; and whether games:lundey or games:recreations guards it.",
+      "options": [
+        {
+          "title": "Lundey stands, as built",
+          "consequences": "An original game in the Action group, behind its own role games:lundey. The icelander.net pull request (the role and the card) can go ahead as it is, and each player is invited by being granted the role."
+        },
+        {
+          "title": "Lundey stands, in the Recreations group",
+          "consequences": "The card moves to Recreations in the icelander.net pull request; nothing changes in this repository. The game is an original, so the group's name would not describe it."
+        },
+        {
+          "title": "Lundey stands, guarded by games:recreations",
+          "consequences": "ROLE in worker/config.ts and what test/worker.test.ts expects change, and games:lundey need not be registered with the login service. Everyone who holds games:recreations could then play, with no invitation of their own. Can be combined with either group."
+        },
+        {
+          "title": "Lundey does not stand in for the request",
+          "consequences": "It is not published as the answer to the request. Whether it is published at all, and what is built for the request, are then separate questions for the owner."
+        }
+      ],
+      "waitingOn": "Owner",
+      "blocks": [
+        {
+          "path": "games/lundey/.dev/blockers.json",
+          "entityId": "first-deploy",
+          "description": "What is published, where its card goes and which role is registered follow from the answer. Nothing in the code waits on it."
+        }
+      ],
+      "origin": {
+        "kind": "conversation",
+        "by": "Owner",
+        "description": "The owner's request for the game, and the coding agent's answer to it. Recorded here on 2026-11-27, the day the game was written."
+      },
+      "evidenceStatus": "documented",
+      "sources": [
+        {
+          "path": "games/lundey/worker/config.ts",
+          "symbol": "ROLE"
+        },
+        {
+          "path": "games/lundey/README.md",
+          "symbol": "Lundey"
+        },
+        {
+          "path": "games/lundey/test/worker.test.ts",
+          "symbol": "a signed-in player without the role gets the not-invited page, and none of the game"
+        }
+      ],
+      "relationships": [
+        {
+          "relation": "relates-to",
+          "path": "games/lundey/worker/.dev/contracts.json",
+          "entityId": "address-and-role"
+        }
+      ]
+    }
+  ]
+}
