@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../../../Meta/Agents/Skills/describe-state-diagram/schema.json",
+  "kind": "state",
+  "title": "Game mode state diagram",
+  "folder": "games/kong-climb/src/engine",
+  "description": "What a Game is doing. step() simulates the world only in play; in the other modes it counts frames and shows an animation.",
+  "sources": [
+    {
+      "path": "games/kong-climb/src/engine/game.ts",
+      "symbol": "Game.step"
+    },
+    {
+      "path": "games/kong-climb/src/engine/game.ts",
+      "symbol": "Game.loadStage"
+    },
+    {
+      "path": "games/kong-climb/src/engine/game.ts",
+      "symbol": "Game.die"
+    }
+  ],
+  "machine": "Game.mode",
+  "initialState": "ready",
+  "states": [
+    { "id": "ready", "description": "A stage has just been built; the hero stands still and GET READY shows for 80 frames." },
+    { "id": "play", "description": "The hero, the ape's throws, barrels or pies, fireballs, springs, lifts, belts, hammer, pickups and the bonus clock are all simulated." },
+    { "id": "dying", "description": "The hero is spinning or lying down for 110 frames; the world is frozen." },
+    { "id": "clear", "description": "The stage is won: the bonus has been added to the score and the 220-frame celebration runs (on the rivets stage the ape falls)." },
+    { "id": "over", "description": "The last life is lost. The page waits for a key or a tap and returns to the title." }
+  ],
+  "transitions": [
+    { "from": "ready", "to": "play", "trigger": "80 frames elapse" },
+    { "from": "play", "to": "dying", "trigger": "a barrel, pie, fireball or spring touches the hero, a fall of more than 30 pixels, or the bonus reaching 0", "action": "a life is taken away" },
+    { "from": "dying", "to": "ready", "trigger": "110 frames elapse with lives left", "action": "the stage is built afresh" },
+    { "from": "dying", "to": "over", "trigger": "110 frames elapse with no lives left" },
+    { "from": "play", "to": "clear", "trigger": "the hero reaches the captive's platform, or the last rivet is removed", "action": "the bonus is added to the score" },
+    { "from": "clear", "to": "ready", "trigger": "220 frames elapse", "action": "the next stage is built; after the last stage of a round, the next round begins" }
+  ]
+}

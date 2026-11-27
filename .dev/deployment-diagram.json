@@ -152,6 +152,12 @@
       "description": "MEG's Worker on icelander.net/games/retro/meg*; its high-score table is a Durable Object; its own deployment diagram is in games/meg/.dev."
     },
     {
+      "id": "w-kong-climb",
+      "name": "kong-climb Worker",
+      "kind": "process",
+      "description": "Kong Climb's Worker on icelander.net/games/recreations/arcade/kong-climb*, for holders of games:recreations; no database; its own deployment diagram is in games/kong-climb/.dev."
+    },
+    {
       "id": "w-hedgerow",
       "name": "hedgerow Worker",
       "kind": "process",
@@ -377,6 +383,20 @@
       "description": "Bundled by wrangler deploy."
     },
     {
+      "id": "site-kong-climb",
+      "name": "Kong Climb's page and game",
+      "source": "games/kong-climb/public/index.html",
+      "deployedTo": "edge",
+      "description": "Copied into dist/ with the bundled game script and served as static assets."
+    },
+    {
+      "id": "script-kong-climb",
+      "name": "Kong Climb's Worker script",
+      "source": "games/kong-climb/worker/index.ts",
+      "deployedTo": "w-kong-climb",
+      "description": "Bundled by wrangler deploy."
+    },
+    {
       "id": "site-swarmhold",
       "name": "Swarmhold's page and game",
       "source": "games/swarmhold/godot/project.godot",
@@ -575,6 +595,18 @@
       "to": "accounts",
       "kind": "connects-to",
       "description": "Service binding ACCOUNTS: the page needs a signed-in player."
+    },
+    {
+      "from": "edge",
+      "to": "w-kong-climb",
+      "kind": "hosts",
+      "description": "Route icelander.net/games/recreations/arcade/kong-climb*."
+    },
+    {
+      "from": "w-kong-climb",
+      "to": "accounts",
+      "kind": "connects-to",
+      "description": "Service binding ACCOUNTS: every request needs a signed-in player holding games:recreations."
     },
     {
       "from": "edge",

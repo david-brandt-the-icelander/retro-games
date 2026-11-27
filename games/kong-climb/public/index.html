@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="robots" content="noindex">
+<title>Kong Climb</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="kong.css">
+</head>
+<body>
+<main id="app">
+  <div id="stage"><canvas id="screen" width="224" height="256" aria-label="Kong Climb: the game screen"></canvas></div>
+  <div id="pad" aria-label="Touch controls">
+    <div class="dpad">
+      <button data-key="left" aria-label="Left">◀</button>
+      <button data-key="up" aria-label="Up / climb up">▲</button>
+      <button data-key="down" aria-label="Down / climb down">▼</button>
+      <button data-key="right" aria-label="Right">▶</button>
+    </div>
+    <div class="side">
+      <button id="pause" type="button">Pause</button>
+      <button id="mute" type="button" aria-pressed="false">Sound</button>
+    </div>
+    <button class="jump" data-key="jump" aria-label="Jump">JUMP</button>
+  </div>
+  <p id="help">Arrows or WASD: move and climb · Space or Z: jump · P: pause · M: sound · <a href="/games/">Back to the games</a></p>
+</main>
+<script src="kong.js"></script>
+</body>
+</html>

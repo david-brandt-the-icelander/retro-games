@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-component-diagram/schema.json",
+  "kind": "component",
+  "title": "Kong Climb component diagram",
+  "folder": "games/kong-climb",
+  "description": "Kong Climb: a rules engine with no drawing in it, a browser page that steps and draws it, and a small Worker that serves the page to invited players.",
+  "sources": [
+    {
+      "path": "games/kong-climb/src/engine/game.ts",
+      "symbol": "Game"
+    },
+    {
+      "path": "games/kong-climb/src/client/main.ts",
+      "symbol": "tick"
+    },
+    {
+      "path": "games/kong-climb/worker/handler.ts",
+      "symbol": "handle"
+    }
+  ],
+  "components": [
+    {
+      "id": "game",
+      "name": "Kong Climb",
+      "responsibility": "One game: the browser page and its Worker, built and deployed together.",
+      "folder": "games/kong-climb"
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "responsibility": "src/engine: the four stages as data (levels.ts), the rules stepped 60 times a second (game.ts: hero, barrels, pies, fireballs, springs, lifts, hammer, rivets, score, lives, bonus) and the seeded random generator. No drawing, no browser.",
+      "folder": "games/kong-climb/src/engine"
+    },
+    {
+      "id": "client",
+      "name": "Browser page",
+      "responsibility": "src/client and public/: the fixed-rate loop, keyboard and touch input, canvas drawing of every sprite from rectangles, synthesized sound, the title screen and the best score.",
+      "folder": "games/kong-climb/src/client"
+    },
+    {
+      "id": "worker",
+      "name": "Worker",
+      "responsibility": "worker/: sends anyone signed out to sign in, shows a signed-in player without the role a page saying the game is invite-only, and serves the page and its files from the assets binding.",
+      "folder": "games/kong-climb/worker"
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "responsibility": "Says who is signed in and with which games: roles.",
+      "external": true
+    },
+    {
+      "id": "storage",
+      "name": "Browser localStorage",
+      "responsibility": "Keeps the best score on the device.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    { "from": "game", "to": "engine", "kind": "contains", "description": "Bundled into the page's script by build.mjs." },
+    { "from": "game", "to": "client", "kind": "contains", "description": "Copied and bundled by build.mjs into dist/." },
+    { "from": "game", "to": "worker", "kind": "contains", "description": "Deployed with wrangler." },
+    { "from": "client", "to": "engine", "kind": "depends-on", "description": "Builds a Game, calls step(input) each frame and draws what it finds; reads its events to play sounds." },
+    { "from": "worker", "to": "client", "kind": "depends-on", "description": "Serves the page and its files from the ASSETS binding." },
+    { "from": "worker", "to": "accounts", "kind": "depends-on", "description": "Checks the site_session cookie through the ACCOUNTS service binding and the games:recreations role." },
+    { "from": "client", "to": "storage", "kind": "depends-on", "description": "Reads and writes kong-climb-high, and plays on without it if storage is blocked." }
+  ]
+}

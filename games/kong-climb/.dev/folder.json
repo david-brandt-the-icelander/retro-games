@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../Meta/Agents/Knowledge/schemas/folder.schema.json",
+  "kind": "folder",
+  "title": "Kong Climb",
+  "folder": "games/kong-climb",
+  "entities": [
+    {
+      "id": "folder",
+      "title": "Kong Climb",
+      "summary": "A recreation of the 1981 arcade climber for the browser, desktop and phone: dodge an ape's barrels, pies, springs and fireballs across four stages and reach the captive. It keeps the original's rules and feel and draws everything itself.",
+      "purpose": "Holds the whole game: the rules engine in src/engine, the canvas page, sound and input in src/client, the page and stylesheet in public/, the Worker that serves them to invited players in worker/, and the tests in test/. It is one npm project and one Cloudflare Worker, and is listed in the Recreations group on icelander.net/games.",
+      "boundaries": [
+        "The sign-in is icelander.net's; the Worker checks it with the shared library in vendor/icelander-auth/, never edited here, and serves nothing to a player without the invite-only role games:recreations.",
+        "The game runs wholly in the browser: no server state, no high-score table (the best score is kept in the browser's localStorage). Nothing is loaded from outside the origin.",
+        "Sprites, sounds, stage layouts, names and text are written for this game. Only the rules and the feel of the original are kept."
+      ],
+      "evidenceStatus": "source-verified",
+      "sources": [
+        {
+          "path": "games/kong-climb/README.md",
+          "symbol": "How it works"
+        },
+        {
+          "path": "games/kong-climb/wrangler.jsonc",
+          "symbol": "kong-climb"
+        }
+      ]
+    }
+  ]
+}
