@@ -1,0 +1,22 @@
+{
+  "name": "kong-climb",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kong Climb: a recreation of the 1981 arcade climber. Dodge the ape's barrels, climb four stages and rescue the captive.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && node build.mjs",
+    "test": "npm run typecheck && node build.mjs --test && node --no-warnings --test dist-test/test/*.test.mjs",
+    "dev": "BASE_PATH= node build.mjs && wrangler dev --env standalone --ip 0.0.0.0",
+    "deploy": "npm test && npm run build && wrangler deploy"
+  },
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261123.1",
+    "@types/node": "^22.20.5",
+    "esbuild": "^0.25.12",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.163.0"
+  }
+}
