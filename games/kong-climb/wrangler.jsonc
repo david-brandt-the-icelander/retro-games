@@ -1,0 +1,35 @@
+// The Kong Climb Worker at icelander.net/games/recreations/arcade/kong-climb: the page and its files, for players
+// signed in to icelander.net who hold the invite-only role games:recreations (worker/handler.ts). No database, no secrets.
+// Deployed by hand with `npm run deploy` (README.md, "Deploy"); nothing deploys from GitHub.
+//
+// `wrangler deploy --env standalone` instead puts the same game, open to anyone with the link and
+// without icelander.net's sign-in, at the root of a workers.dev address on whatever Cloudflare
+// account wrangler is logged in to.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kong-climb",
+  "main": "worker/index.ts",
+  "compatibility_date": "2025-04-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  // Its route runs before the games hub (the recreations Worker), whose route icelander.net/games/* is less specific.
+  "routes": [{ "pattern": "icelander.net/games/recreations/arcade/kong-climb*", "zone_name": "icelander.net" }],
+  // Every request goes through the Worker first: nothing here is public.
+  "assets": { "directory": "./dist", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": true },
+  // icelander.net's login service: who is signed in, through the site's cookie (icelander.net and its games are one sign-in).
+  "services": [{ "binding": "ACCOUNTS", "service": "accounts", "entrypoint": "Internal" }],
+  "vars": {
+    "BASE": "/games/recreations/arcade/kong-climb",
+    // The login service's public keys (icelander.net docs/accounts.md, "Keys").
+    "ACCOUNTS_JWKS": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"kid\":\"k2026a\",\"x\":\"WIEomi0LTalJvQndhD7abl8ty3YcliQ0vEz4XjLXayc\"}]}"
+  },
+  "env": {
+    "standalone": {
+      "name": "kong-climb",
+      "workers_dev": true,
+      "routes": [],
+      "services": [],
+      "vars": { "BASE": "", "OPEN": "1" }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "$schema": "../../../Meta/Agents/Skills/describe-deployment-diagram/schema.json",
+  "kind": "deployment",
+  "title": "Kong Climb deployment diagram",
+  "folder": "games/kong-climb",
+  "description": "How Kong Climb runs: one Cloudflare Worker with static assets, no database and no secrets. The browser runs the whole game; the Worker checks the sign-in and the invite-only role, and serves the files.",
+  "sources": [
+    {
+      "path": "games/kong-climb/wrangler.jsonc",
+      "symbol": "kong-climb"
+    },
+    {
+      "path": "games/kong-climb/build.mjs",
+      "symbol": "BASE_PATH"
+    },
+    {
+      "path": "games/kong-climb/worker/index.ts",
+      "symbol": "default.fetch"
+    },
+    {
+      "path": "vendor/icelander-auth/index.js",
+      "symbol": "createAuth"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "browser",
+      "name": "Player's browser",
+      "kind": "client",
+      "description": "Runs the whole game and keeps the best score in localStorage.",
+      "actor": "Actors/player.md"
+    },
+    {
+      "id": "edge",
+      "name": "Cloudflare edge",
+      "kind": "host",
+      "description": "Runs the Worker on icelander.net/games/recreations/arcade/kong-climb*, ahead of the games hub's less specific route."
+    },
+    {
+      "id": "worker",
+      "name": "kong-climb Worker",
+      "kind": "process",
+      "description": "worker/index.ts: the sign-in and role check on every request, then the page and its files from ./dist."
+    },
+    {
+      "id": "accounts",
+      "name": "icelander.net login service",
+      "kind": "external-service",
+      "description": "accounts.icelander.net, in the icelander.net repository (accounts/): who holds the host's site_session cookie and their games: roles. The Worker reaches it only through a service binding."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "page",
+      "name": "index.html, kong.css and kong.js",
+      "source": "games/kong-climb/public/index.html",
+      "deployedTo": "edge",
+      "description": "The page and its stylesheet, copied into dist/, and the game script bundled from src/ by esbuild."
+    },
+    {
+      "id": "script",
+      "name": "Worker script",
+      "source": "games/kong-climb/worker/index.ts",
+      "deployedTo": "worker",
+      "description": "The fetch handler, bundled by wrangler."
+    }
+  ],
+  "relationships": [
+    { "from": "edge", "to": "worker", "kind": "hosts", "description": "Routes icelander.net/games/recreations/arcade/kong-climb* to the Worker." },
+    { "from": "browser", "to": "worker", "kind": "connects-to", "description": "HTTPS: the page and its assets." },
+    { "from": "worker", "to": "accounts", "kind": "connects-to", "description": "Service binding ACCOUNTS (entrypoint Internal): every request needs a signed-in player holding games:recreations." }
+  ]
+}

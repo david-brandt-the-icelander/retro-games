@@ -108,6 +108,13 @@
       "diagram": "games/meg/.dev/component-diagram.json"
     },
     {
+      "id": "kong-climb",
+      "name": "Kong Climb",
+      "responsibility": "A recreation of a 1981 arcade climber: a pure engine and a canvas page, served by a Worker to invited players only; no database.",
+      "folder": "games/kong-climb",
+      "diagram": "games/kong-climb/.dev/component-diagram.json"
+    },
+    {
       "id": "hub",
       "name": "Games hub",
       "responsibility": "The games hub at icelander.net/games (the recreations repository's Worker): sign-in, /me, the multiplayer lobby and one WebSocket relay per online match.",
@@ -190,6 +197,12 @@
       "to": "meg",
       "kind": "contains",
       "description": "MEG is one of the games."
+    },
+    {
+      "from": "games",
+      "to": "kong-climb",
+      "kind": "contains",
+      "description": "Kong Climb is one of the games."
     },
     {
       "from": "rally",
